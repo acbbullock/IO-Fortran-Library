@@ -1,0 +1,14 @@
+name = "IO-Fortran-Library"
+version = "1.0.0"
+license = "MIT"
+author = "Austin C Bullock"
+maintainer = "acb.bullock@gmail.com"
+copyright = "© 2022, Austin C Bullock"
+
+[build]
+auto-executables = true
+auto-tests = true
+auto-examples = true
+
+[install]
+library = false
