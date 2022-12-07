@@ -16664,6 +16664,7 @@ submodule (io_fortran_lib) text_io
         integer :: i, j, row, column, l1, l2, sep_pos
 
         complex(real128) :: c
+        type(String), allocatable, dimension(:) :: lines
         character(len=:), allocatable, dimension(:) :: im_chars, non_separating_chars
         character(len=:), allocatable :: file, decimal, sep, number
         character(len=1) :: prev_char, current_char
@@ -16790,75 +16791,57 @@ submodule (io_fortran_lib) text_io
             if ( current_char == nl ) exit
         end do
 
-        allocate( into(n_rows, n_columns) )
-    
-        ignore_sep = .false.
+        allocate( lines(n_rows) )
+
         row = 1
-        column = 1
         l1 = 1
-        l2 = 1
-        i = 1
 
-        read_into: do while ( i <= file_length )
-            current_char = file(i:i)
-            if ( current_char == '(' ) then
-                ignore_sep = .true.
-            else if ( current_char == ')' ) then
-                ignore_sep = .false.
+        do i = 1, file_length
+            if ( file(i:i) == nl ) then
+                lines(row)%s = file(l1:i)
+                if ( row /= n_rows ) then
+                    row = row + 1
+                    l1 = i + 1
+                else
+                    exit
+                end if
             end if
+        end do
 
-            if ( any(non_separating_chars == current_char) ) then
-                if ( .not. any(non_separating_chars == file(l2:l2)) ) l1 = i
-                l2 = i
-            else if ( current_char == im_chars(1) ) then
-                number = file(l1:i-1)
-                do j = 2, len(number)
-                    if ( (number(j:j) == '+') .or. (number(j:j) == '-') ) then
-                        if ( fmt == 'es' ) then
-                            if ( (number(j-1:j-1) /= 'E') .and. (number(j-1:j-1) /= 'e') ) then
+        deallocate(file)
+
+        allocate( into(n_rows, n_columns) )
+
+        do concurrent (row = 1:n_rows) local(column, l1, l2, ignore_sep, i) shared(lines, into)
+            ignore_sep = .false.
+            column = 1
+            l1 = 1
+            l2 = 1
+            i = 1
+            read_into: do while ( i <= len(lines(row)%s) )
+                current_char = lines(row)%s(i:i)
+                if ( current_char == '(' ) then
+                    ignore_sep = .true.
+                else if ( current_char == ')' ) then
+                    ignore_sep = .false.
+                end if
+
+                if ( any(non_separating_chars == current_char) ) then
+                    if ( .not. any(non_separating_chars == lines(row)%s(l2:l2)) ) l1 = i
+                    l2 = i
+                else if ( current_char == im_chars(1) ) then
+                    number = lines(row)%s(l1:i-1)
+                    do j = 2, len(number)
+                        if ( (number(j:j) == '+') .or. (number(j:j) == '-') ) then
+                            if ( fmt == 'es' ) then
+                                if ( (number(j-1:j-1) /= 'E') .and. (number(j-1:j-1) /= 'e') ) then
+                                    sep_pos = j
+                                    exit
+                                end if
+                            else
                                 sep_pos = j
                                 exit
                             end if
-                        else
-                            sep_pos = j
-                            exit
-                        end if
-                    end if
-                end do
-                if ( fmt == 'z' ) then
-                    read(unit=number(:sep_pos-1), fmt='('//fmt//')') c%re
-                    read(unit=number(sep_pos+1:), fmt='('//fmt//')') c%im
-                else
-                    read(unit=number(:sep_pos-1), fmt=*, decimal=decimal) c%re
-                    read(unit=number(sep_pos:), fmt=*, decimal=decimal) c%im
-                end if
-                into(row, column) = c
-                if ( column /= n_columns ) then
-                    column = column + 1
-                else
-                    if ( row /= n_rows ) then
-                        row = row + 1
-                        column = 1
-                    else
-                        exit read_into
-                    end if
-                end if
-                l2 = i
-                i = i + size(im_chars)
-                cycle read_into
-            else
-                if ( ignore_sep ) then
-                    l2 = i + 1
-                    i = i + 1
-                    cycle read_into
-                end if
-
-                if ( any(non_separating_chars == file(l2:l2)) ) then
-                    number = file(l1+1:l2-1)
-                    do j = 1, len(number)
-                        if ( number(j:j) == sep ) then
-                            sep_pos = j
-                            exit
                         end if
                     end do
                     if ( fmt == 'z' ) then
@@ -16866,26 +16849,53 @@ submodule (io_fortran_lib) text_io
                         read(unit=number(sep_pos+1:), fmt='('//fmt//')') c%im
                     else
                         read(unit=number(:sep_pos-1), fmt=*, decimal=decimal) c%re
-                        read(unit=number(sep_pos+1:), fmt=*, decimal=decimal) c%im
+                        read(unit=number(sep_pos:), fmt=*, decimal=decimal) c%im
                     end if
                     into(row, column) = c
                     if ( column /= n_columns ) then
                         column = column + 1
                     else
-                        if ( row /= n_rows ) then
-                            row = row + 1
-                            column = 1
+                        exit read_into
+                    end if
+                    l2 = i
+                    i = i + size(im_chars)
+                    cycle read_into
+                else
+                    if ( ignore_sep ) then
+                        l2 = i + 1
+                        i = i + 1
+                        cycle read_into
+                    end if
+
+                    if ( any(non_separating_chars == lines(row)%s(l2:l2)) ) then
+                        number = lines(row)%s(l1+1:l2-1)
+                        do j = 1, len(number)
+                            if ( number(j:j) == sep ) then
+                                sep_pos = j
+                                exit
+                            end if
+                        end do
+                        if ( fmt == 'z' ) then
+                            read(unit=number(:sep_pos-1), fmt='('//fmt//')') c%re
+                            read(unit=number(sep_pos+1:), fmt='('//fmt//')') c%im
+                        else
+                            read(unit=number(:sep_pos-1), fmt=*, decimal=decimal) c%re
+                            read(unit=number(sep_pos+1:), fmt=*, decimal=decimal) c%im
+                        end if
+                        into(row, column) = c
+                        if ( column /= n_columns ) then
+                            column = column + 1
                         else
                             exit read_into
                         end if
+                        l2 = i
+                    else
+                        l2 = i
                     end if
-                    l2 = i
-                else
-                    l2 = i
                 end if
-            end if
-            i = i + 1
-        end do read_into
+                i = i + 1
+            end do read_into
+        end do
     end procedure from_text_2dc128
     module procedure from_text_2dc64
         logical :: exists, ignore_sep
@@ -16894,6 +16904,7 @@ submodule (io_fortran_lib) text_io
         integer :: i, j, row, column, l1, l2, sep_pos
 
         complex(real64) :: c
+        type(String), allocatable, dimension(:) :: lines
         character(len=:), allocatable, dimension(:) :: im_chars, non_separating_chars
         character(len=:), allocatable :: file, decimal, sep, number
         character(len=1) :: prev_char, current_char
@@ -17020,75 +17031,57 @@ submodule (io_fortran_lib) text_io
             if ( current_char == nl ) exit
         end do
 
-        allocate( into(n_rows, n_columns) )
-    
-        ignore_sep = .false.
+        allocate( lines(n_rows) )
+
         row = 1
-        column = 1
         l1 = 1
-        l2 = 1
-        i = 1
 
-        read_into: do while ( i <= file_length )
-            current_char = file(i:i)
-            if ( current_char == '(' ) then
-                ignore_sep = .true.
-            else if ( current_char == ')' ) then
-                ignore_sep = .false.
+        do i = 1, file_length
+            if ( file(i:i) == nl ) then
+                lines(row)%s = file(l1:i)
+                if ( row /= n_rows ) then
+                    row = row + 1
+                    l1 = i + 1
+                else
+                    exit
+                end if
             end if
+        end do
 
-            if ( any(non_separating_chars == current_char) ) then
-                if ( .not. any(non_separating_chars == file(l2:l2)) ) l1 = i
-                l2 = i
-            else if ( current_char == im_chars(1) ) then
-                number = file(l1:i-1)
-                do j = 2, len(number)
-                    if ( (number(j:j) == '+') .or. (number(j:j) == '-') ) then
-                        if ( fmt == 'es' ) then
-                            if ( (number(j-1:j-1) /= 'E') .and. (number(j-1:j-1) /= 'e') ) then
+        deallocate(file)
+
+        allocate( into(n_rows, n_columns) )
+
+        do concurrent (row = 1:n_rows) local(column, l1, l2, ignore_sep, i) shared(lines, into)
+            ignore_sep = .false.
+            column = 1
+            l1 = 1
+            l2 = 1
+            i = 1
+            read_into: do while ( i <= len(lines(row)%s) )
+                current_char = lines(row)%s(i:i)
+                if ( current_char == '(' ) then
+                    ignore_sep = .true.
+                else if ( current_char == ')' ) then
+                    ignore_sep = .false.
+                end if
+
+                if ( any(non_separating_chars == current_char) ) then
+                    if ( .not. any(non_separating_chars == lines(row)%s(l2:l2)) ) l1 = i
+                    l2 = i
+                else if ( current_char == im_chars(1) ) then
+                    number = lines(row)%s(l1:i-1)
+                    do j = 2, len(number)
+                        if ( (number(j:j) == '+') .or. (number(j:j) == '-') ) then
+                            if ( fmt == 'es' ) then
+                                if ( (number(j-1:j-1) /= 'E') .and. (number(j-1:j-1) /= 'e') ) then
+                                    sep_pos = j
+                                    exit
+                                end if
+                            else
                                 sep_pos = j
                                 exit
                             end if
-                        else
-                            sep_pos = j
-                            exit
-                        end if
-                    end if
-                end do
-                if ( fmt == 'z' ) then
-                    read(unit=number(:sep_pos-1), fmt='('//fmt//')') c%re
-                    read(unit=number(sep_pos+1:), fmt='('//fmt//')') c%im
-                else
-                    read(unit=number(:sep_pos-1), fmt=*, decimal=decimal) c%re
-                    read(unit=number(sep_pos:), fmt=*, decimal=decimal) c%im
-                end if
-                into(row, column) = c
-                if ( column /= n_columns ) then
-                    column = column + 1
-                else
-                    if ( row /= n_rows ) then
-                        row = row + 1
-                        column = 1
-                    else
-                        exit read_into
-                    end if
-                end if
-                l2 = i
-                i = i + size(im_chars)
-                cycle read_into
-            else
-                if ( ignore_sep ) then
-                    l2 = i + 1
-                    i = i + 1
-                    cycle read_into
-                end if
-
-                if ( any(non_separating_chars == file(l2:l2)) ) then
-                    number = file(l1+1:l2-1)
-                    do j = 1, len(number)
-                        if ( number(j:j) == sep ) then
-                            sep_pos = j
-                            exit
                         end if
                     end do
                     if ( fmt == 'z' ) then
@@ -17096,26 +17089,53 @@ submodule (io_fortran_lib) text_io
                         read(unit=number(sep_pos+1:), fmt='('//fmt//')') c%im
                     else
                         read(unit=number(:sep_pos-1), fmt=*, decimal=decimal) c%re
-                        read(unit=number(sep_pos+1:), fmt=*, decimal=decimal) c%im
+                        read(unit=number(sep_pos:), fmt=*, decimal=decimal) c%im
                     end if
                     into(row, column) = c
                     if ( column /= n_columns ) then
                         column = column + 1
                     else
-                        if ( row /= n_rows ) then
-                            row = row + 1
-                            column = 1
+                        exit read_into
+                    end if
+                    l2 = i
+                    i = i + size(im_chars)
+                    cycle read_into
+                else
+                    if ( ignore_sep ) then
+                        l2 = i + 1
+                        i = i + 1
+                        cycle read_into
+                    end if
+
+                    if ( any(non_separating_chars == lines(row)%s(l2:l2)) ) then
+                        number = lines(row)%s(l1+1:l2-1)
+                        do j = 1, len(number)
+                            if ( number(j:j) == sep ) then
+                                sep_pos = j
+                                exit
+                            end if
+                        end do
+                        if ( fmt == 'z' ) then
+                            read(unit=number(:sep_pos-1), fmt='('//fmt//')') c%re
+                            read(unit=number(sep_pos+1:), fmt='('//fmt//')') c%im
+                        else
+                            read(unit=number(:sep_pos-1), fmt=*, decimal=decimal) c%re
+                            read(unit=number(sep_pos+1:), fmt=*, decimal=decimal) c%im
+                        end if
+                        into(row, column) = c
+                        if ( column /= n_columns ) then
+                            column = column + 1
                         else
                             exit read_into
                         end if
+                        l2 = i
+                    else
+                        l2 = i
                     end if
-                    l2 = i
-                else
-                    l2 = i
                 end if
-            end if
-            i = i + 1
-        end do read_into
+                i = i + 1
+            end do read_into
+        end do
     end procedure from_text_2dc64
     module procedure from_text_2dc32
         logical :: exists, ignore_sep
@@ -17124,6 +17144,7 @@ submodule (io_fortran_lib) text_io
         integer :: i, j, row, column, l1, l2, sep_pos
 
         complex(real32) :: c
+        type(String), allocatable, dimension(:) :: lines
         character(len=:), allocatable, dimension(:) :: im_chars, non_separating_chars
         character(len=:), allocatable :: file, decimal, sep, number
         character(len=1) :: prev_char, current_char
@@ -17250,75 +17271,57 @@ submodule (io_fortran_lib) text_io
             if ( current_char == nl ) exit
         end do
 
-        allocate( into(n_rows, n_columns) )
-    
-        ignore_sep = .false.
+        allocate( lines(n_rows) )
+
         row = 1
-        column = 1
         l1 = 1
-        l2 = 1
-        i = 1
 
-        read_into: do while ( i <= file_length )
-            current_char = file(i:i)
-            if ( current_char == '(' ) then
-                ignore_sep = .true.
-            else if ( current_char == ')' ) then
-                ignore_sep = .false.
+        do i = 1, file_length
+            if ( file(i:i) == nl ) then
+                lines(row)%s = file(l1:i)
+                if ( row /= n_rows ) then
+                    row = row + 1
+                    l1 = i + 1
+                else
+                    exit
+                end if
             end if
+        end do
 
-            if ( any(non_separating_chars == current_char) ) then
-                if ( .not. any(non_separating_chars == file(l2:l2)) ) l1 = i
-                l2 = i
-            else if ( current_char == im_chars(1) ) then
-                number = file(l1:i-1)
-                do j = 2, len(number)
-                    if ( (number(j:j) == '+') .or. (number(j:j) == '-') ) then
-                        if ( fmt == 'es' ) then
-                            if ( (number(j-1:j-1) /= 'E') .and. (number(j-1:j-1) /= 'e') ) then
+        deallocate(file)
+
+        allocate( into(n_rows, n_columns) )
+
+        do concurrent (row = 1:n_rows) local(column, l1, l2, ignore_sep, i) shared(lines, into)
+            ignore_sep = .false.
+            column = 1
+            l1 = 1
+            l2 = 1
+            i = 1
+            read_into: do while ( i <= len(lines(row)%s) )
+                current_char = lines(row)%s(i:i)
+                if ( current_char == '(' ) then
+                    ignore_sep = .true.
+                else if ( current_char == ')' ) then
+                    ignore_sep = .false.
+                end if
+
+                if ( any(non_separating_chars == current_char) ) then
+                    if ( .not. any(non_separating_chars == lines(row)%s(l2:l2)) ) l1 = i
+                    l2 = i
+                else if ( current_char == im_chars(1) ) then
+                    number = lines(row)%s(l1:i-1)
+                    do j = 2, len(number)
+                        if ( (number(j:j) == '+') .or. (number(j:j) == '-') ) then
+                            if ( fmt == 'es' ) then
+                                if ( (number(j-1:j-1) /= 'E') .and. (number(j-1:j-1) /= 'e') ) then
+                                    sep_pos = j
+                                    exit
+                                end if
+                            else
                                 sep_pos = j
                                 exit
                             end if
-                        else
-                            sep_pos = j
-                            exit
-                        end if
-                    end if
-                end do
-                if ( fmt == 'z' ) then
-                    read(unit=number(:sep_pos-1), fmt='('//fmt//')') c%re
-                    read(unit=number(sep_pos+1:), fmt='('//fmt//')') c%im
-                else
-                    read(unit=number(:sep_pos-1), fmt=*, decimal=decimal) c%re
-                    read(unit=number(sep_pos:), fmt=*, decimal=decimal) c%im
-                end if
-                into(row, column) = c
-                if ( column /= n_columns ) then
-                    column = column + 1
-                else
-                    if ( row /= n_rows ) then
-                        row = row + 1
-                        column = 1
-                    else
-                        exit read_into
-                    end if
-                end if
-                l2 = i
-                i = i + size(im_chars)
-                cycle read_into
-            else
-                if ( ignore_sep ) then
-                    l2 = i + 1
-                    i = i + 1
-                    cycle read_into
-                end if
-
-                if ( any(non_separating_chars == file(l2:l2)) ) then
-                    number = file(l1+1:l2-1)
-                    do j = 1, len(number)
-                        if ( number(j:j) == sep ) then
-                            sep_pos = j
-                            exit
                         end if
                     end do
                     if ( fmt == 'z' ) then
@@ -17326,26 +17329,53 @@ submodule (io_fortran_lib) text_io
                         read(unit=number(sep_pos+1:), fmt='('//fmt//')') c%im
                     else
                         read(unit=number(:sep_pos-1), fmt=*, decimal=decimal) c%re
-                        read(unit=number(sep_pos+1:), fmt=*, decimal=decimal) c%im
+                        read(unit=number(sep_pos:), fmt=*, decimal=decimal) c%im
                     end if
                     into(row, column) = c
                     if ( column /= n_columns ) then
                         column = column + 1
                     else
-                        if ( row /= n_rows ) then
-                            row = row + 1
-                            column = 1
+                        exit read_into
+                    end if
+                    l2 = i
+                    i = i + size(im_chars)
+                    cycle read_into
+                else
+                    if ( ignore_sep ) then
+                        l2 = i + 1
+                        i = i + 1
+                        cycle read_into
+                    end if
+
+                    if ( any(non_separating_chars == lines(row)%s(l2:l2)) ) then
+                        number = lines(row)%s(l1+1:l2-1)
+                        do j = 1, len(number)
+                            if ( number(j:j) == sep ) then
+                                sep_pos = j
+                                exit
+                            end if
+                        end do
+                        if ( fmt == 'z' ) then
+                            read(unit=number(:sep_pos-1), fmt='('//fmt//')') c%re
+                            read(unit=number(sep_pos+1:), fmt='('//fmt//')') c%im
+                        else
+                            read(unit=number(:sep_pos-1), fmt=*, decimal=decimal) c%re
+                            read(unit=number(sep_pos+1:), fmt=*, decimal=decimal) c%im
+                        end if
+                        into(row, column) = c
+                        if ( column /= n_columns ) then
+                            column = column + 1
                         else
                             exit read_into
                         end if
+                        l2 = i
+                    else
+                        l2 = i
                     end if
-                    l2 = i
-                else
-                    l2 = i
                 end if
-            end if
-            i = i + 1
-        end do read_into
+                i = i + 1
+            end do read_into
+        end do
     end procedure from_text_2dc32
 
     module procedure from_text_1dr128
@@ -17775,6 +17805,7 @@ submodule (io_fortran_lib) text_io
         integer :: n_rows, n_columns
         integer :: i, row, column, l1, l2
 
+        type(String), allocatable, dimension(:) :: lines
         character(len=:), allocatable, dimension(:) :: non_separating_chars
         character(len=:), allocatable :: file, decimal
         character(len=1) :: prev_char, current_char
@@ -17873,40 +17904,54 @@ submodule (io_fortran_lib) text_io
             if ( current_char == nl ) exit
         end do
 
-        allocate( into(n_rows, n_columns) )
-    
-        row = 1
-        column = 1
-        l1 = 1
-        l2 = 1
+        allocate( lines(n_rows) )
 
-        read_into: do i = 1, file_length
-            if ( any(non_separating_chars == file(i:i)) ) then
-                if ( .not. any(non_separating_chars == file(l2:l2)) ) l1 = i
-                l2 = i
-            else
-                if ( any(non_separating_chars == file(l2:l2)) ) then
-                    if ( fmt == 'z' ) then
-                        read(unit=file(l1:l2), fmt='('//fmt//')') into(row, column)
-                    else
-                        read(unit=file(l1:l2), fmt=*, decimal=decimal) into(row, column)
-                    end if
-                    if ( column /= n_columns ) then
-                        column = column + 1
-                    else
-                        if ( row /= n_rows ) then
-                            row = row + 1
-                            column = 1
+        row = 1
+        l1 = 1
+
+        do i = 1, file_length
+            if ( file(i:i) == nl ) then
+                lines(row)%s = file(l1:i)
+                if ( row /= n_rows ) then
+                    row = row + 1
+                    l1 = i + 1
+                else
+                    exit
+                end if
+            end if
+        end do
+
+        deallocate(file)
+
+        allocate( into(n_rows, n_columns) )
+
+        do concurrent (row = 1:n_rows) local(column, l1, l2) shared(lines, into)
+            column = 1
+            l1 = 1
+            l2 = 1
+            read_into: do i = 1, len(lines(row)%s)
+                if ( any(non_separating_chars == lines(row)%s(i:i)) ) then
+                    if ( .not. any(non_separating_chars == lines(row)%s(l2:l2)) ) l1 = i
+                    l2 = i
+                else
+                    if ( any(non_separating_chars == lines(row)%s(l2:l2)) ) then
+                        if ( fmt == 'z' ) then
+                            read(unit=lines(row)%s(l1:l2), fmt='('//fmt//')') into(row, column)
+                        else
+                            read(unit=lines(row)%s(l1:l2), fmt=*, decimal=decimal) into(row, column)
+                        end if
+                        if ( column /= n_columns ) then
+                            column = column + 1
                         else
                             exit read_into
                         end if
+                        l2 = i
+                    else
+                        l2 = i
                     end if
-                    l2 = i
-                else
-                    l2 = i
                 end if
-            end if
-        end do read_into
+            end do read_into
+        end do
     end procedure from_text_2dr128
     module procedure from_text_2dr64
         logical :: exists
@@ -17914,6 +17959,7 @@ submodule (io_fortran_lib) text_io
         integer :: n_rows, n_columns
         integer :: i, row, column, l1, l2
 
+        type(String), allocatable, dimension(:) :: lines
         character(len=:), allocatable, dimension(:) :: non_separating_chars
         character(len=:), allocatable :: file, decimal
         character(len=1) :: prev_char, current_char
@@ -18012,40 +18058,54 @@ submodule (io_fortran_lib) text_io
             if ( current_char == nl ) exit
         end do
 
-        allocate( into(n_rows, n_columns) )
-    
-        row = 1
-        column = 1
-        l1 = 1
-        l2 = 1
+        allocate( lines(n_rows) )
 
-        read_into: do i = 1, file_length
-            if ( any(non_separating_chars == file(i:i)) ) then
-                if ( .not. any(non_separating_chars == file(l2:l2)) ) l1 = i
-                l2 = i
-            else
-                if ( any(non_separating_chars == file(l2:l2)) ) then
-                    if ( fmt == 'z' ) then
-                        read(unit=file(l1:l2), fmt='('//fmt//')') into(row, column)
-                    else
-                        read(unit=file(l1:l2), fmt=*, decimal=decimal) into(row, column)
-                    end if
-                    if ( column /= n_columns ) then
-                        column = column + 1
-                    else
-                        if ( row /= n_rows ) then
-                            row = row + 1
-                            column = 1
+        row = 1
+        l1 = 1
+
+        do i = 1, file_length
+            if ( file(i:i) == nl ) then
+                lines(row)%s = file(l1:i)
+                if ( row /= n_rows ) then
+                    row = row + 1
+                    l1 = i + 1
+                else
+                    exit
+                end if
+            end if
+        end do
+
+        deallocate(file)
+
+        allocate( into(n_rows, n_columns) )
+
+        do concurrent (row = 1:n_rows) local(column, l1, l2) shared(lines, into)
+            column = 1
+            l1 = 1
+            l2 = 1
+            read_into: do i = 1, len(lines(row)%s)
+                if ( any(non_separating_chars == lines(row)%s(i:i)) ) then
+                    if ( .not. any(non_separating_chars == lines(row)%s(l2:l2)) ) l1 = i
+                    l2 = i
+                else
+                    if ( any(non_separating_chars == lines(row)%s(l2:l2)) ) then
+                        if ( fmt == 'z' ) then
+                            read(unit=lines(row)%s(l1:l2), fmt='('//fmt//')') into(row, column)
+                        else
+                            read(unit=lines(row)%s(l1:l2), fmt=*, decimal=decimal) into(row, column)
+                        end if
+                        if ( column /= n_columns ) then
+                            column = column + 1
                         else
                             exit read_into
                         end if
+                        l2 = i
+                    else
+                        l2 = i
                     end if
-                    l2 = i
-                else
-                    l2 = i
                 end if
-            end if
-        end do read_into
+            end do read_into
+        end do
     end procedure from_text_2dr64
     module procedure from_text_2dr32
         logical :: exists
@@ -18053,6 +18113,7 @@ submodule (io_fortran_lib) text_io
         integer :: n_rows, n_columns
         integer :: i, row, column, l1, l2
 
+        type(String), allocatable, dimension(:) :: lines
         character(len=:), allocatable, dimension(:) :: non_separating_chars
         character(len=:), allocatable :: file, decimal
         character(len=1) :: prev_char, current_char
@@ -18151,40 +18212,54 @@ submodule (io_fortran_lib) text_io
             if ( current_char == nl ) exit
         end do
 
-        allocate( into(n_rows, n_columns) )
-    
-        row = 1
-        column = 1
-        l1 = 1
-        l2 = 1
+        allocate( lines(n_rows) )
 
-        read_into: do i = 1, file_length
-            if ( any(non_separating_chars == file(i:i)) ) then
-                if ( .not. any(non_separating_chars == file(l2:l2)) ) l1 = i
-                l2 = i
-            else
-                if ( any(non_separating_chars == file(l2:l2)) ) then
-                    if ( fmt == 'z' ) then
-                        read(unit=file(l1:l2), fmt='('//fmt//')') into(row, column)
-                    else
-                        read(unit=file(l1:l2), fmt=*, decimal=decimal) into(row, column)
-                    end if
-                    if ( column /= n_columns ) then
-                        column = column + 1
-                    else
-                        if ( row /= n_rows ) then
-                            row = row + 1
-                            column = 1
+        row = 1
+        l1 = 1
+
+        do i = 1, file_length
+            if ( file(i:i) == nl ) then
+                lines(row)%s = file(l1:i)
+                if ( row /= n_rows ) then
+                    row = row + 1
+                    l1 = i + 1
+                else
+                    exit
+                end if
+            end if
+        end do
+
+        deallocate(file)
+
+        allocate( into(n_rows, n_columns) )
+
+        do concurrent (row = 1:n_rows) local(column, l1, l2) shared(lines, into)
+            column = 1
+            l1 = 1
+            l2 = 1
+            read_into: do i = 1, len(lines(row)%s)
+                if ( any(non_separating_chars == lines(row)%s(i:i)) ) then
+                    if ( .not. any(non_separating_chars == lines(row)%s(l2:l2)) ) l1 = i
+                    l2 = i
+                else
+                    if ( any(non_separating_chars == lines(row)%s(l2:l2)) ) then
+                        if ( fmt == 'z' ) then
+                            read(unit=lines(row)%s(l1:l2), fmt='('//fmt//')') into(row, column)
+                        else
+                            read(unit=lines(row)%s(l1:l2), fmt=*, decimal=decimal) into(row, column)
+                        end if
+                        if ( column /= n_columns ) then
+                            column = column + 1
                         else
                             exit read_into
                         end if
+                        l2 = i
+                    else
+                        l2 = i
                     end if
-                    l2 = i
-                else
-                    l2 = i
                 end if
-            end if
-        end do read_into
+            end do read_into
+        end do
     end procedure from_text_2dr32
 
     module procedure from_text_1di64
@@ -18714,6 +18789,7 @@ submodule (io_fortran_lib) text_io
         integer :: n_rows, n_columns
         integer :: i, row, column, l1, l2
 
+        type(String), allocatable, dimension(:) :: lines
         character(len=:), allocatable, dimension(:) :: non_separating_chars
         character(len=:), allocatable :: file
         character(len=1) :: prev_char, current_char
@@ -18806,36 +18882,50 @@ submodule (io_fortran_lib) text_io
             if ( current_char == nl ) exit
         end do
 
-        allocate( into(n_rows, n_columns) )
-    
-        row = 1
-        column = 1
-        l1 = 1
-        l2 = 1
+        allocate( lines(n_rows) )
 
-        read_into: do i = 1, file_length
-            if ( any(non_separating_chars == file(i:i)) ) then
-                if ( .not. any(non_separating_chars == file(l2:l2)) ) l1 = i
-                l2 = i
-            else
-                if ( any(non_separating_chars == file(l2:l2)) ) then
-                    read(unit=file(l1:l2), fmt='('//fmt//')') into(row, column)
-                    if ( column /= n_columns ) then
-                        column = column + 1
-                    else
-                        if ( row /= n_rows ) then
-                            row = row + 1
-                            column = 1
+        row = 1
+        l1 = 1
+
+        do i = 1, file_length
+            if ( file(i:i) == nl ) then
+                lines(row)%s = file(l1:i)
+                if ( row /= n_rows ) then
+                    row = row + 1
+                    l1 = i + 1
+                else
+                    exit
+                end if
+            end if
+        end do
+
+        deallocate(file)
+
+        allocate( into(n_rows, n_columns) )
+
+        do concurrent (row = 1:n_rows) local(column, l1, l2) shared(lines, into)
+            column = 1
+            l1 = 1
+            l2 = 1
+            read_into: do i = 1, len(lines(row)%s)
+                if ( any(non_separating_chars == lines(row)%s(i:i)) ) then
+                    if ( .not. any(non_separating_chars == lines(row)%s(l2:l2)) ) l1 = i
+                    l2 = i
+                else
+                    if ( any(non_separating_chars == lines(row)%s(l2:l2)) ) then
+                        read(unit=lines(row)%s(l1:l2), fmt='('//fmt//')') into(row, column)
+                        if ( column /= n_columns ) then
+                            column = column + 1
                         else
                             exit read_into
                         end if
+                        l2 = i
+                    else
+                        l2 = i
                     end if
-                    l2 = i
-                else
-                    l2 = i
                 end if
-            end if
-        end do read_into
+            end do read_into
+        end do
     end procedure from_text_2di64
     module procedure from_text_2di32
         logical :: exists
@@ -18843,6 +18933,7 @@ submodule (io_fortran_lib) text_io
         integer :: n_rows, n_columns
         integer :: i, row, column, l1, l2
 
+        type(String), allocatable, dimension(:) :: lines
         character(len=:), allocatable, dimension(:) :: non_separating_chars
         character(len=:), allocatable :: file
         character(len=1) :: prev_char, current_char
@@ -18935,36 +19026,50 @@ submodule (io_fortran_lib) text_io
             if ( current_char == nl ) exit
         end do
 
-        allocate( into(n_rows, n_columns) )
-    
-        row = 1
-        column = 1
-        l1 = 1
-        l2 = 1
+        allocate( lines(n_rows) )
 
-        read_into: do i = 1, file_length
-            if ( any(non_separating_chars == file(i:i)) ) then
-                if ( .not. any(non_separating_chars == file(l2:l2)) ) l1 = i
-                l2 = i
-            else
-                if ( any(non_separating_chars == file(l2:l2)) ) then
-                    read(unit=file(l1:l2), fmt='('//fmt//')') into(row, column)
-                    if ( column /= n_columns ) then
-                        column = column + 1
-                    else
-                        if ( row /= n_rows ) then
-                            row = row + 1
-                            column = 1
+        row = 1
+        l1 = 1
+
+        do i = 1, file_length
+            if ( file(i:i) == nl ) then
+                lines(row)%s = file(l1:i)
+                if ( row /= n_rows ) then
+                    row = row + 1
+                    l1 = i + 1
+                else
+                    exit
+                end if
+            end if
+        end do
+
+        deallocate(file)
+
+        allocate( into(n_rows, n_columns) )
+
+        do concurrent (row = 1:n_rows) local(column, l1, l2) shared(lines, into)
+            column = 1
+            l1 = 1
+            l2 = 1
+            read_into: do i = 1, len(lines(row)%s)
+                if ( any(non_separating_chars == lines(row)%s(i:i)) ) then
+                    if ( .not. any(non_separating_chars == lines(row)%s(l2:l2)) ) l1 = i
+                    l2 = i
+                else
+                    if ( any(non_separating_chars == lines(row)%s(l2:l2)) ) then
+                        read(unit=lines(row)%s(l1:l2), fmt='('//fmt//')') into(row, column)
+                        if ( column /= n_columns ) then
+                            column = column + 1
                         else
                             exit read_into
                         end if
+                        l2 = i
+                    else
+                        l2 = i
                     end if
-                    l2 = i
-                else
-                    l2 = i
                 end if
-            end if
-        end do read_into
+            end do read_into
+        end do
     end procedure from_text_2di32
     module procedure from_text_2di16
         logical :: exists
@@ -18972,6 +19077,7 @@ submodule (io_fortran_lib) text_io
         integer :: n_rows, n_columns
         integer :: i, row, column, l1, l2
 
+        type(String), allocatable, dimension(:) :: lines
         character(len=:), allocatable, dimension(:) :: non_separating_chars
         character(len=:), allocatable :: file
         character(len=1) :: prev_char, current_char
@@ -19064,36 +19170,50 @@ submodule (io_fortran_lib) text_io
             if ( current_char == nl ) exit
         end do
 
-        allocate( into(n_rows, n_columns) )
-    
-        row = 1
-        column = 1
-        l1 = 1
-        l2 = 1
+        allocate( lines(n_rows) )
 
-        read_into: do i = 1, file_length
-            if ( any(non_separating_chars == file(i:i)) ) then
-                if ( .not. any(non_separating_chars == file(l2:l2)) ) l1 = i
-                l2 = i
-            else
-                if ( any(non_separating_chars == file(l2:l2)) ) then
-                    read(unit=file(l1:l2), fmt='('//fmt//')') into(row, column)
-                    if ( column /= n_columns ) then
-                        column = column + 1
-                    else
-                        if ( row /= n_rows ) then
-                            row = row + 1
-                            column = 1
+        row = 1
+        l1 = 1
+
+        do i = 1, file_length
+            if ( file(i:i) == nl ) then
+                lines(row)%s = file(l1:i)
+                if ( row /= n_rows ) then
+                    row = row + 1
+                    l1 = i + 1
+                else
+                    exit
+                end if
+            end if
+        end do
+
+        deallocate(file)
+
+        allocate( into(n_rows, n_columns) )
+
+        do concurrent (row = 1:n_rows) local(column, l1, l2) shared(lines, into)
+            column = 1
+            l1 = 1
+            l2 = 1
+            read_into: do i = 1, len(lines(row)%s)
+                if ( any(non_separating_chars == lines(row)%s(i:i)) ) then
+                    if ( .not. any(non_separating_chars == lines(row)%s(l2:l2)) ) l1 = i
+                    l2 = i
+                else
+                    if ( any(non_separating_chars == lines(row)%s(l2:l2)) ) then
+                        read(unit=lines(row)%s(l1:l2), fmt='('//fmt//')') into(row, column)
+                        if ( column /= n_columns ) then
+                            column = column + 1
                         else
                             exit read_into
                         end if
+                        l2 = i
+                    else
+                        l2 = i
                     end if
-                    l2 = i
-                else
-                    l2 = i
                 end if
-            end if
-        end do read_into
+            end do read_into
+        end do
     end procedure from_text_2di16
     module procedure from_text_2di8
         logical :: exists
@@ -19101,6 +19221,7 @@ submodule (io_fortran_lib) text_io
         integer :: n_rows, n_columns
         integer :: i, row, column, l1, l2
 
+        type(String), allocatable, dimension(:) :: lines
         character(len=:), allocatable, dimension(:) :: non_separating_chars
         character(len=:), allocatable :: file
         character(len=1) :: prev_char, current_char
@@ -19193,36 +19314,50 @@ submodule (io_fortran_lib) text_io
             if ( current_char == nl ) exit
         end do
 
-        allocate( into(n_rows, n_columns) )
-    
-        row = 1
-        column = 1
-        l1 = 1
-        l2 = 1
+        allocate( lines(n_rows) )
 
-        read_into: do i = 1, file_length
-            if ( any(non_separating_chars == file(i:i)) ) then
-                if ( .not. any(non_separating_chars == file(l2:l2)) ) l1 = i
-                l2 = i
-            else
-                if ( any(non_separating_chars == file(l2:l2)) ) then
-                    read(unit=file(l1:l2), fmt='('//fmt//')') into(row, column)
-                    if ( column /= n_columns ) then
-                        column = column + 1
-                    else
-                        if ( row /= n_rows ) then
-                            row = row + 1
-                            column = 1
+        row = 1
+        l1 = 1
+
+        do i = 1, file_length
+            if ( file(i:i) == nl ) then
+                lines(row)%s = file(l1:i)
+                if ( row /= n_rows ) then
+                    row = row + 1
+                    l1 = i + 1
+                else
+                    exit
+                end if
+            end if
+        end do
+
+        deallocate(file)
+
+        allocate( into(n_rows, n_columns) )
+
+        do concurrent (row = 1:n_rows) local(column, l1, l2) shared(lines, into)
+            column = 1
+            l1 = 1
+            l2 = 1
+            read_into: do i = 1, len(lines(row)%s)
+                if ( any(non_separating_chars == lines(row)%s(i:i)) ) then
+                    if ( .not. any(non_separating_chars == lines(row)%s(l2:l2)) ) l1 = i
+                    l2 = i
+                else
+                    if ( any(non_separating_chars == lines(row)%s(l2:l2)) ) then
+                        read(unit=lines(row)%s(l1:l2), fmt='('//fmt//')') into(row, column)
+                        if ( column /= n_columns ) then
+                            column = column + 1
                         else
                             exit read_into
                         end if
+                        l2 = i
+                    else
+                        l2 = i
                     end if
-                    l2 = i
-                else
-                    l2 = i
                 end if
-            end if
-        end do read_into
+            end do read_into
+        end do
     end procedure from_text_2di8
 
     module procedure from_text_1dchar
