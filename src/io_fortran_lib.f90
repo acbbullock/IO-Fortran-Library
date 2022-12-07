@@ -14,13 +14,14 @@ module io_fortran_lib
     public :: aprint, to_str, to_file, from_file                                                           !! Array I/O
     public :: str, echo                                                                                   !! String I/O
     public :: nl                                                                                           !! Constants
+    public :: String                                                                                         !! Classes
 
     !! Definitions and Interfaces ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     character(len=1), parameter :: nl = new_line('a')                                             !! New line character
 
     character(len=*), dimension(*), parameter :: text_ext = [ 'csv', 'txt', 'ods', 'odf', 'odm', 'odt',  &
                                                               'xls', 'xlsx', 'doc', 'docx', 'md', 'log', &
-                                                              'rtf', 'org', 'embed' ]
+                                                              'rtf', 'org', 'embed', 'dbf', 'html' ]
 
     character(len=*), dimension(*), parameter :: binary_ext = [ 'dat', 'bin' ]
 
@@ -29,6 +30,10 @@ module io_fortran_lib
     character(len=*), dimension(*), parameter :: int_fmts = [ 'i', 'z' ]
 
     character(len=*), dimension(*), parameter :: locales = [ 'US', 'EU' ]
+
+    type String
+        character(len=:), allocatable :: s
+    end type String
 
     interface aprint                                                                        !! Submodule array_printing
         module impure subroutine aprint_1dc128(x, fmt, decimals, im)
@@ -5422,6 +5427,8 @@ submodule (io_fortran_lib) internal_io
     end procedure str_i8
 
     module procedure to_str_1dc128
+        type(String), allocatable, dimension(:) :: string_arr
+        integer, allocatable, dimension(:) :: str_lengths
         character(len=:), allocatable :: locale_, delim_, fmt_, im_
         integer :: i, decimals_
 
@@ -5469,13 +5476,25 @@ submodule (io_fortran_lib) internal_io
             im_ = trim(adjustl(im))
         end if
 
-        x_str = ''
-        do i = 1, size(x)-1
-            x_str = x_str//str(x(i), locale=locale_, fmt=fmt_, decimals=decimals_, im=im_)//delim_
+        allocate( string_arr(size(x)), str_lengths(size(x)) )
+
+        do concurrent (i = 1:size(x)-1)
+            string_arr(i)%s = str(x(i), locale=locale_, fmt=fmt_, decimals=decimals_, im=im_)//delim_
+            str_lengths(i) = len(string_arr(i)%s)
         end do
-        x_str = x_str//str(x(size(x)), locale=locale_, fmt=fmt_, decimals=decimals_, im=im_)
+        string_arr(size(x))%s = str(x(size(x)), locale=locale_, fmt=fmt_, decimals=decimals_, im=im_)
+        str_lengths(size(x)) = len(string_arr(size(x))%s)
+
+        allocate( character(len=sum(str_lengths)) :: x_str )
+
+        x_str(1:str_lengths(1)) = string_arr(1)%s
+        do concurrent (i = 2:size(x))
+            x_str(1 + sum(str_lengths(1:i-1)):sum(str_lengths(1:i))) = string_arr(i)%s
+        end do
     end procedure to_str_1dc128
     module procedure to_str_1dc64
+        type(String), allocatable, dimension(:) :: string_arr
+        integer, allocatable, dimension(:) :: str_lengths
         character(len=:), allocatable :: locale_, delim_, fmt_, im_
         integer :: i, decimals_
 
@@ -5523,13 +5542,25 @@ submodule (io_fortran_lib) internal_io
             im_ = trim(adjustl(im))
         end if
 
-        x_str = ''
-        do i = 1, size(x)-1
-            x_str = x_str//str(x(i), locale=locale_, fmt=fmt_, decimals=decimals_, im=im_)//delim_
+        allocate( string_arr(size(x)), str_lengths(size(x)) )
+
+        do concurrent (i = 1:size(x)-1)
+            string_arr(i)%s = str(x(i), locale=locale_, fmt=fmt_, decimals=decimals_, im=im_)//delim_
+            str_lengths(i) = len(string_arr(i)%s)
         end do
-        x_str = x_str//str(x(size(x)), locale=locale_, fmt=fmt_, decimals=decimals_, im=im_)
+        string_arr(size(x))%s = str(x(size(x)), locale=locale_, fmt=fmt_, decimals=decimals_, im=im_)
+        str_lengths(size(x)) = len(string_arr(size(x))%s)
+
+        allocate( character(len=sum(str_lengths)) :: x_str )
+
+        x_str(1:str_lengths(1)) = string_arr(1)%s
+        do concurrent (i = 2:size(x))
+            x_str(1 + sum(str_lengths(1:i-1)):sum(str_lengths(1:i))) = string_arr(i)%s
+        end do
     end procedure to_str_1dc64
     module procedure to_str_1dc32
+        type(String), allocatable, dimension(:) :: string_arr
+        integer, allocatable, dimension(:) :: str_lengths
         character(len=:), allocatable :: locale_, delim_, fmt_, im_
         integer :: i, decimals_
 
@@ -5577,14 +5608,26 @@ submodule (io_fortran_lib) internal_io
             im_ = trim(adjustl(im))
         end if
 
-        x_str = ''
-        do i = 1, size(x)-1
-            x_str = x_str//str(x(i), locale=locale_, fmt=fmt_, decimals=decimals_, im=im_)//delim_
+        allocate( string_arr(size(x)), str_lengths(size(x)) )
+
+        do concurrent (i = 1:size(x)-1)
+            string_arr(i)%s = str(x(i), locale=locale_, fmt=fmt_, decimals=decimals_, im=im_)//delim_
+            str_lengths(i) = len(string_arr(i)%s)
         end do
-        x_str = x_str//str(x(size(x)), locale=locale_, fmt=fmt_, decimals=decimals_, im=im_)
+        string_arr(size(x))%s = str(x(size(x)), locale=locale_, fmt=fmt_, decimals=decimals_, im=im_)
+        str_lengths(size(x)) = len(string_arr(size(x))%s)
+
+        allocate( character(len=sum(str_lengths)) :: x_str )
+
+        x_str(1:str_lengths(1)) = string_arr(1)%s
+        do concurrent (i = 2:size(x))
+            x_str(1 + sum(str_lengths(1:i-1)):sum(str_lengths(1:i))) = string_arr(i)%s
+        end do
     end procedure to_str_1dc32
 
     module procedure to_str_1dr128
+        type(String), allocatable, dimension(:) :: string_arr
+        integer, allocatable, dimension(:) :: str_lengths
         character(len=:), allocatable :: locale_, delim_, fmt_
         integer :: i, decimals_
 
@@ -5626,13 +5669,25 @@ submodule (io_fortran_lib) internal_io
             decimals_ = decimals
         end if
 
-        x_str = ''
-        do i = 1, size(x)-1
-            x_str = x_str//str(x(i), locale=locale_, fmt=fmt_, decimals=decimals_)//delim_
+        allocate( string_arr(size(x)), str_lengths(size(x)) )
+
+        do concurrent (i = 1:size(x)-1)
+            string_arr(i)%s = str(x(i), locale=locale_, fmt=fmt_, decimals=decimals_)//delim_
+            str_lengths(i) = len(string_arr(i)%s)
         end do
-        x_str = x_str//str(x(size(x)), locale=locale_, fmt=fmt_, decimals=decimals_)
+        string_arr(size(x))%s = str(x(size(x)), locale=locale_, fmt=fmt_, decimals=decimals_)
+        str_lengths(size(x)) = len(string_arr(size(x))%s)
+
+        allocate( character(len=sum(str_lengths)) :: x_str )
+
+        x_str(1:str_lengths(1)) = string_arr(1)%s
+        do concurrent (i = 2:size(x))
+            x_str(1 + sum(str_lengths(1:i-1)):sum(str_lengths(1:i))) = string_arr(i)%s
+        end do
     end procedure to_str_1dr128
     module procedure to_str_1dr64
+        type(String), allocatable, dimension(:) :: string_arr
+        integer, allocatable, dimension(:) :: str_lengths
         character(len=:), allocatable :: locale_, delim_, fmt_
         integer :: i, decimals_
 
@@ -5674,13 +5729,25 @@ submodule (io_fortran_lib) internal_io
             decimals_ = decimals
         end if
 
-        x_str = ''
-        do i = 1, size(x)-1
-            x_str = x_str//str(x(i), locale=locale_, fmt=fmt_, decimals=decimals_)//delim_
+        allocate( string_arr(size(x)), str_lengths(size(x)) )
+
+        do concurrent (i = 1:size(x)-1)
+            string_arr(i)%s = str(x(i), locale=locale_, fmt=fmt_, decimals=decimals_)//delim_
+            str_lengths(i) = len(string_arr(i)%s)
         end do
-        x_str = x_str//str(x(size(x)), locale=locale_, fmt=fmt_, decimals=decimals_)
+        string_arr(size(x))%s = str(x(size(x)), locale=locale_, fmt=fmt_, decimals=decimals_)
+        str_lengths(size(x)) = len(string_arr(size(x))%s)
+
+        allocate( character(len=sum(str_lengths)) :: x_str )
+
+        x_str(1:str_lengths(1)) = string_arr(1)%s
+        do concurrent (i = 2:size(x))
+            x_str(1 + sum(str_lengths(1:i-1)):sum(str_lengths(1:i))) = string_arr(i)%s
+        end do
     end procedure to_str_1dr64
     module procedure to_str_1dr32
+        type(String), allocatable, dimension(:) :: string_arr
+        integer, allocatable, dimension(:) :: str_lengths
         character(len=:), allocatable :: locale_, delim_, fmt_
         integer :: i, decimals_
 
@@ -5722,14 +5789,26 @@ submodule (io_fortran_lib) internal_io
             decimals_ = decimals
         end if
 
-        x_str = ''
-        do i = 1, size(x)-1
-            x_str = x_str//str(x(i), locale=locale_, fmt=fmt_, decimals=decimals_)//delim_
+        allocate( string_arr(size(x)), str_lengths(size(x)) )
+
+        do concurrent (i = 1:size(x)-1)
+            string_arr(i)%s = str(x(i), locale=locale_, fmt=fmt_, decimals=decimals_)//delim_
+            str_lengths(i) = len(string_arr(i)%s)
         end do
-        x_str = x_str//str(x(size(x)), locale=locale_, fmt=fmt_, decimals=decimals_)
+        string_arr(size(x))%s = str(x(size(x)), locale=locale_, fmt=fmt_, decimals=decimals_)
+        str_lengths(size(x)) = len(string_arr(size(x))%s)
+
+        allocate( character(len=sum(str_lengths)) :: x_str )
+
+        x_str(1:str_lengths(1)) = string_arr(1)%s
+        do concurrent (i = 2:size(x))
+            x_str(1 + sum(str_lengths(1:i-1)):sum(str_lengths(1:i))) = string_arr(i)%s
+        end do
     end procedure to_str_1dr32
 
     module procedure to_str_1di64
+        type(String), allocatable, dimension(:) :: string_arr
+        integer, allocatable, dimension(:) :: str_lengths
         character(len=:), allocatable :: delim_, fmt_
         integer :: i
 
@@ -5750,13 +5829,25 @@ submodule (io_fortran_lib) internal_io
             end if
         end if
 
-        x_str = ''
-        do i = 1, size(x)-1
-            x_str = x_str//str(x(i), fmt=fmt_)//delim_
+        allocate( string_arr(size(x)), str_lengths(size(x)) )
+
+        do concurrent (i = 1:size(x)-1)
+            string_arr(i)%s = str(x(i), fmt=fmt_)//delim_
+            str_lengths(i) = len(string_arr(i)%s)
         end do
-        x_str = x_str//str(x(size(x)), fmt=fmt_)
+        string_arr(size(x))%s = str(x(size(x)), fmt=fmt_)
+        str_lengths(size(x)) = len(string_arr(size(x))%s)
+
+        allocate( character(len=sum(str_lengths)) :: x_str )
+
+        x_str(1:str_lengths(1)) = string_arr(1)%s
+        do concurrent (i = 2:size(x))
+            x_str(1 + sum(str_lengths(1:i-1)):sum(str_lengths(1:i))) = string_arr(i)%s
+        end do
     end procedure to_str_1di64
     module procedure to_str_1di32
+        type(String), allocatable, dimension(:) :: string_arr
+        integer, allocatable, dimension(:) :: str_lengths
         character(len=:), allocatable :: delim_, fmt_
         integer :: i
 
@@ -5777,13 +5868,25 @@ submodule (io_fortran_lib) internal_io
             end if
         end if
 
-        x_str = ''
-        do i = 1, size(x)-1
-            x_str = x_str//str(x(i), fmt=fmt_)//delim_
+        allocate( string_arr(size(x)), str_lengths(size(x)) )
+
+        do concurrent (i = 1:size(x)-1)
+            string_arr(i)%s = str(x(i), fmt=fmt_)//delim_
+            str_lengths(i) = len(string_arr(i)%s)
         end do
-        x_str = x_str//str(x(size(x)), fmt=fmt_)
+        string_arr(size(x))%s = str(x(size(x)), fmt=fmt_)
+        str_lengths(size(x)) = len(string_arr(size(x))%s)
+
+        allocate( character(len=sum(str_lengths)) :: x_str )
+
+        x_str(1:str_lengths(1)) = string_arr(1)%s
+        do concurrent (i = 2:size(x))
+            x_str(1 + sum(str_lengths(1:i-1)):sum(str_lengths(1:i))) = string_arr(i)%s
+        end do
     end procedure to_str_1di32
     module procedure to_str_1di16
+        type(String), allocatable, dimension(:) :: string_arr
+        integer, allocatable, dimension(:) :: str_lengths
         character(len=:), allocatable :: delim_, fmt_
         integer :: i
 
@@ -5804,13 +5907,25 @@ submodule (io_fortran_lib) internal_io
             end if
         end if
 
-        x_str = ''
-        do i = 1, size(x)-1
-            x_str = x_str//str(x(i), fmt=fmt_)//delim_
+        allocate( string_arr(size(x)), str_lengths(size(x)) )
+
+        do concurrent (i = 1:size(x)-1)
+            string_arr(i)%s = str(x(i), fmt=fmt_)//delim_
+            str_lengths(i) = len(string_arr(i)%s)
         end do
-        x_str = x_str//str(x(size(x)), fmt=fmt_)
+        string_arr(size(x))%s = str(x(size(x)), fmt=fmt_)
+        str_lengths(size(x)) = len(string_arr(size(x))%s)
+
+        allocate( character(len=sum(str_lengths)) :: x_str )
+
+        x_str(1:str_lengths(1)) = string_arr(1)%s
+        do concurrent (i = 2:size(x))
+            x_str(1 + sum(str_lengths(1:i-1)):sum(str_lengths(1:i))) = string_arr(i)%s
+        end do
     end procedure to_str_1di16
     module procedure to_str_1di8
+        type(String), allocatable, dimension(:) :: string_arr
+        integer, allocatable, dimension(:) :: str_lengths
         character(len=:), allocatable :: delim_, fmt_
         integer :: i
 
@@ -5831,11 +5946,21 @@ submodule (io_fortran_lib) internal_io
             end if
         end if
 
-        x_str = ''
-        do i = 1, size(x)-1
-            x_str = x_str//str(x(i), fmt=fmt_)//delim_
+        allocate( string_arr(size(x)), str_lengths(size(x)) )
+
+        do concurrent (i = 1:size(x)-1)
+            string_arr(i)%s = str(x(i), fmt=fmt_)//delim_
+            str_lengths(i) = len(string_arr(i)%s)
         end do
-        x_str = x_str//str(x(size(x)), fmt=fmt_)
+        string_arr(size(x))%s = str(x(size(x)), fmt=fmt_)
+        str_lengths(size(x)) = len(string_arr(size(x))%s)
+
+        allocate( character(len=sum(str_lengths)) :: x_str )
+
+        x_str(1:str_lengths(1)) = string_arr(1)%s
+        do concurrent (i = 2:size(x))
+            x_str(1 + sum(str_lengths(1:i-1)):sum(str_lengths(1:i))) = string_arr(i)%s
+        end do
     end procedure to_str_1di8
 
     module procedure to_str_1dchar
@@ -14867,150 +14992,166 @@ submodule (io_fortran_lib) text_io
     end procedure echo_string
 
     module procedure to_text_1dc128
-        logical :: exists
-        integer :: file_unit, i
+        type(String), allocatable, dimension(:) :: string_arr
         character(len=:), allocatable :: label
+        integer :: file_unit, i
+        logical :: exists
 
         inquire( file=file_name, exist=exists )
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='formatted', &
-                  action='write', access='sequential', position='rewind' )
+            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
+                  action='write', access='stream', position='rewind' )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='formatted', &
-                  action='write', access='sequential', position='rewind' )
+            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
+                  action='write', access='stream', position='rewind' )
         end if
 
         if ( all(header == '') ) then
             continue
         else if ( size(header) == 1 ) then
             if ( dim == 1 ) then
-                write(unit=file_unit, fmt='(a)') trim(adjustl(header(1)))
+                write( unit=file_unit ) trim(adjustl(header(1)))//nl
             else if ( dim == 2 ) then
                 label = trim(adjustl(header(1)))
                 do i = lbound(x, dim=1), ubound(x, dim=1) - 1
-                    write(unit=file_unit, fmt='(a)', advance='no') label//str(i)//delim
+                    write( unit=file_unit ) label//str(i)//delim
                 end do
-                write(unit=file_unit, fmt='(a)') label//str(ubound(x, dim=1))
+                write( unit=file_unit ) label//str(ubound(x, dim=1))//nl
             end if
         else if ( size(header) == size(x) ) then
-            write(unit=file_unit, fmt='(a)') to_str(header, delim=delim)
+            write( unit=file_unit ) to_str(header, delim=delim)//nl
         end if
 
         if ( dim == 1 ) then
-            do i = lbound(x, dim=1), ubound(x, dim=1)
-                write(unit=file_unit, fmt='(a)') str(x(i), locale=locale, fmt=fmt, decimals=decimals, im=im)
+            allocate( string_arr(size(x)) )
+            do concurrent (i = 1:size(x))
+                string_arr(i)%s = str(x(i), locale=locale, fmt=fmt, decimals=decimals, im=im)//nl
+            end do
+            do i = 1, size(x)
+                write( unit=file_unit ) string_arr(i)%s
             end do
         else if ( dim == 2 ) then
-            write(unit=file_unit, fmt='(a)') to_str(x, locale=locale, delim=delim, fmt=fmt, decimals=decimals, im=im)
+            write( unit=file_unit ) to_str(x, locale=locale, delim=delim, fmt=fmt, decimals=decimals, im=im)//nl
         end if
 
         close(file_unit)
     end procedure to_text_1dc128
     module procedure to_text_1dc64
-        logical :: exists
-        integer :: file_unit, i
+        type(String), allocatable, dimension(:) :: string_arr
         character(len=:), allocatable :: label
+        integer :: file_unit, i
+        logical :: exists
 
         inquire( file=file_name, exist=exists )
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='formatted', &
-                  action='write', access='sequential', position='rewind' )
+            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
+                  action='write', access='stream', position='rewind' )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='formatted', &
-                  action='write', access='sequential', position='rewind' )
+            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
+                  action='write', access='stream', position='rewind' )
         end if
 
         if ( all(header == '') ) then
             continue
         else if ( size(header) == 1 ) then
             if ( dim == 1 ) then
-                write(unit=file_unit, fmt='(a)') trim(adjustl(header(1)))
+                write( unit=file_unit ) trim(adjustl(header(1)))//nl
             else if ( dim == 2 ) then
                 label = trim(adjustl(header(1)))
                 do i = lbound(x, dim=1), ubound(x, dim=1) - 1
-                    write(unit=file_unit, fmt='(a)', advance='no') label//str(i)//delim
+                    write( unit=file_unit ) label//str(i)//delim
                 end do
-                write(unit=file_unit, fmt='(a)') label//str(ubound(x, dim=1))
+                write( unit=file_unit ) label//str(ubound(x, dim=1))//nl
             end if
         else if ( size(header) == size(x) ) then
-            write(unit=file_unit, fmt='(a)') to_str(header, delim=delim)
+            write( unit=file_unit ) to_str(header, delim=delim)//nl
         end if
 
         if ( dim == 1 ) then
-            do i = lbound(x, dim=1), ubound(x, dim=1)
-                write(unit=file_unit, fmt='(a)') str(x(i), locale=locale, fmt=fmt, decimals=decimals, im=im)
+            allocate( string_arr(size(x)) )
+            do concurrent (i = 1:size(x))
+                string_arr(i)%s = str(x(i), locale=locale, fmt=fmt, decimals=decimals, im=im)//nl
+            end do
+            do i = 1, size(x)
+                write( unit=file_unit ) string_arr(i)%s
             end do
         else if ( dim == 2 ) then
-            write(unit=file_unit, fmt='(a)') to_str(x, locale=locale, delim=delim, fmt=fmt, decimals=decimals, im=im)
+            write( unit=file_unit ) to_str(x, locale=locale, delim=delim, fmt=fmt, decimals=decimals, im=im)//nl
         end if
 
         close(file_unit)
     end procedure to_text_1dc64
     module procedure to_text_1dc32
-        logical :: exists
-        integer :: file_unit, i
+        type(String), allocatable, dimension(:) :: string_arr
         character(len=:), allocatable :: label
+        integer :: file_unit, i
+        logical :: exists
 
         inquire( file=file_name, exist=exists )
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='formatted', &
-                  action='write', access='sequential', position='rewind' )
+            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
+                  action='write', access='stream', position='rewind' )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='formatted', &
-                  action='write', access='sequential', position='rewind' )
+            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
+                  action='write', access='stream', position='rewind' )
         end if
 
         if ( all(header == '') ) then
             continue
         else if ( size(header) == 1 ) then
             if ( dim == 1 ) then
-                write(unit=file_unit, fmt='(a)') trim(adjustl(header(1)))
+                write( unit=file_unit ) trim(adjustl(header(1)))//nl
             else if ( dim == 2 ) then
                 label = trim(adjustl(header(1)))
                 do i = lbound(x, dim=1), ubound(x, dim=1) - 1
-                    write(unit=file_unit, fmt='(a)', advance='no') label//str(i)//delim
+                    write( unit=file_unit ) label//str(i)//delim
                 end do
-                write(unit=file_unit, fmt='(a)') label//str(ubound(x, dim=1))
+                write( unit=file_unit ) label//str(ubound(x, dim=1))//nl
             end if
         else if ( size(header) == size(x) ) then
-            write(unit=file_unit, fmt='(a)') to_str(header, delim=delim)
+            write( unit=file_unit ) to_str(header, delim=delim)//nl
         end if
 
         if ( dim == 1 ) then
-            do i = lbound(x, dim=1), ubound(x, dim=1)
-                write(unit=file_unit, fmt='(a)') str(x(i), locale=locale, fmt=fmt, decimals=decimals, im=im)
+            allocate( string_arr(size(x)) )
+            do concurrent (i = 1:size(x))
+                string_arr(i)%s = str(x(i), locale=locale, fmt=fmt, decimals=decimals, im=im)//nl
+            end do
+            do i = 1, size(x)
+                write( unit=file_unit ) string_arr(i)%s
             end do
         else if ( dim == 2 ) then
-            write(unit=file_unit, fmt='(a)') to_str(x, locale=locale, delim=delim, fmt=fmt, decimals=decimals, im=im)
+            write( unit=file_unit ) to_str(x, locale=locale, delim=delim, fmt=fmt, decimals=decimals, im=im)//nl
         end if
 
         close(file_unit)
     end procedure to_text_1dc32
 
     module procedure to_text_2dc128
-        logical :: exists
-        integer :: file_unit, i, j
+        type(String), allocatable, dimension(:) :: string_arr
         character(len=:), allocatable :: label
+        integer :: file_unit, i, j
+        logical :: exists
 
         inquire( file=file_name, exist=exists )
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='formatted', &
-                  action='write', access='sequential', position='rewind' )
+            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
+                  action='write', access='stream', position='rewind' )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='formatted', &
-                  action='write', access='sequential', position='rewind' )
+            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
+                  action='write', access='stream', position='rewind' )
         end if
 
         if ( all(header == '') ) then
@@ -15018,35 +15159,41 @@ submodule (io_fortran_lib) text_io
         else if ( size(header) == 1 ) then
             label = trim(adjustl(header(1)))
             do j = lbound(x, dim=2), ubound(x, dim=2) - 1
-                write(unit=file_unit, fmt='(a)', advance='no') label//str(j)//delim
+                write( unit=file_unit ) label//str(j)//delim
             end do
-            write(unit=file_unit, fmt='(a)') label//str(ubound(x, dim=2))
+            write( unit=file_unit ) label//str(ubound(x, dim=2))//nl
         else if ( size(header) == size(x, dim=2) ) then
-            write(unit=file_unit, fmt='(a)') to_str(header, delim=delim)
+            write( unit=file_unit ) to_str(header, delim=delim)//nl
         end if
 
-        do i = lbound(x, dim=1), ubound(x, dim=1)
-            write(unit=file_unit, fmt='(a)') to_str(x(i,:), locale=locale, delim=delim, fmt=fmt, &
-                                                            decimals=decimals, im=im)
+        allocate( string_arr(size(x, dim=1)) )
+
+        do concurrent (i = 1:size(x, dim=1))
+            string_arr(i)%s = to_str(x(i,:), locale=locale, delim=delim, fmt=fmt, decimals=decimals, im=im)//nl
+        end do
+
+        do i = 1, size(x, dim=1)
+            write( unit=file_unit ) string_arr(i)%s
         end do
 
         close(file_unit)
     end procedure to_text_2dc128
     module procedure to_text_2dc64
-        logical :: exists
-        integer :: file_unit, i, j
+        type(String), allocatable, dimension(:) :: string_arr
         character(len=:), allocatable :: label
+        integer :: file_unit, i, j
+        logical :: exists
 
         inquire( file=file_name, exist=exists )
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='formatted', &
-                  action='write', access='sequential', position='rewind' )
+            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
+                  action='write', access='stream', position='rewind' )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='formatted', &
-                  action='write', access='sequential', position='rewind' )
+            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
+                  action='write', access='stream', position='rewind' )
         end if
 
         if ( all(header == '') ) then
@@ -15054,35 +15201,41 @@ submodule (io_fortran_lib) text_io
         else if ( size(header) == 1 ) then
             label = trim(adjustl(header(1)))
             do j = lbound(x, dim=2), ubound(x, dim=2) - 1
-                write(unit=file_unit, fmt='(a)', advance='no') label//str(j)//delim
+                write( unit=file_unit ) label//str(j)//delim
             end do
-            write(unit=file_unit, fmt='(a)') label//str(ubound(x, dim=2))
+            write( unit=file_unit ) label//str(ubound(x, dim=2))//nl
         else if ( size(header) == size(x, dim=2) ) then
-            write(unit=file_unit, fmt='(a)') to_str(header, delim=delim)
+            write( unit=file_unit ) to_str(header, delim=delim)//nl
         end if
 
-        do i = lbound(x, dim=1), ubound(x, dim=1)
-            write(unit=file_unit, fmt='(a)') to_str(x(i,:), locale=locale, delim=delim, fmt=fmt, &
-                                                            decimals=decimals, im=im)
+        allocate( string_arr(size(x, dim=1)) )
+
+        do concurrent (i = 1:size(x, dim=1))
+            string_arr(i)%s = to_str(x(i,:), locale=locale, delim=delim, fmt=fmt, decimals=decimals, im=im)//nl
+        end do
+
+        do i = 1, size(x, dim=1)
+            write( unit=file_unit ) string_arr(i)%s
         end do
 
         close(file_unit)
     end procedure to_text_2dc64
     module procedure to_text_2dc32
-        logical :: exists
-        integer :: file_unit, i, j
+        type(String), allocatable, dimension(:) :: string_arr
         character(len=:), allocatable :: label
+        integer :: file_unit, i, j
+        logical :: exists
 
         inquire( file=file_name, exist=exists )
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='formatted', &
-                  action='write', access='sequential', position='rewind' )
+            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
+                  action='write', access='stream', position='rewind' )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='formatted', &
-                  action='write', access='sequential', position='rewind' )
+            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
+                  action='write', access='stream', position='rewind' )
         end if
 
         if ( all(header == '') ) then
@@ -15090,166 +15243,187 @@ submodule (io_fortran_lib) text_io
         else if ( size(header) == 1 ) then
             label = trim(adjustl(header(1)))
             do j = lbound(x, dim=2), ubound(x, dim=2) - 1
-                write(unit=file_unit, fmt='(a)', advance='no') label//str(j)//delim
+                write( unit=file_unit ) label//str(j)//delim
             end do
-            write(unit=file_unit, fmt='(a)') label//str(ubound(x, dim=2))
+            write( unit=file_unit ) label//str(ubound(x, dim=2))//nl
         else if ( size(header) == size(x, dim=2) ) then
-            write(unit=file_unit, fmt='(a)') to_str(header, delim=delim)
+            write( unit=file_unit ) to_str(header, delim=delim)//nl
         end if
 
-        do i = lbound(x, dim=1), ubound(x, dim=1)
-            write(unit=file_unit, fmt='(a)') to_str(x(i,:), locale=locale, delim=delim, fmt=fmt, &
-                                                            decimals=decimals, im=im)
+        allocate( string_arr(size(x, dim=1)) )
+
+        do concurrent (i = 1:size(x, dim=1))
+            string_arr(i)%s = to_str(x(i,:), locale=locale, delim=delim, fmt=fmt, decimals=decimals, im=im)//nl
+        end do
+
+        do i = 1, size(x, dim=1)
+            write( unit=file_unit ) string_arr(i)%s
         end do
 
         close(file_unit)
     end procedure to_text_2dc32
 
     module procedure to_text_1dr128
-        logical :: exists
-        integer :: file_unit, i
+        type(String), allocatable, dimension(:) :: string_arr
         character(len=:), allocatable :: label
+        integer :: file_unit, i
+        logical :: exists
 
         inquire( file=file_name, exist=exists )
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='formatted', &
-                  action='write', access='sequential', position='rewind' )
+            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
+                  action='write', access='stream', position='rewind' )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='formatted', &
-                  action='write', access='sequential', position='rewind' )
+            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
+                  action='write', access='stream', position='rewind' )
         end if
 
         if ( all(header == '') ) then
             continue
         else if ( size(header) == 1 ) then
             if ( dim == 1 ) then
-                write(unit=file_unit, fmt='(a)') trim(adjustl(header(1)))
+                write( unit=file_unit ) trim(adjustl(header(1)))//nl
             else if ( dim == 2 ) then
                 label = trim(adjustl(header(1)))
                 do i = lbound(x, dim=1), ubound(x, dim=1) - 1
-                    write(unit=file_unit, fmt='(a)', advance='no') label//str(i)//delim
+                    write( unit=file_unit ) label//str(i)//delim
                 end do
-                write(unit=file_unit, fmt='(a)') label//str(ubound(x, dim=1))
+                write( unit=file_unit ) label//str(ubound(x, dim=1))//nl
             end if
         else if ( size(header) == size(x) ) then
-            write(unit=file_unit, fmt='(a)') to_str(header, delim=delim)
+            write( unit=file_unit ) to_str(header, delim=delim)//nl
         end if
 
         if ( dim == 1 ) then
-            do i = lbound(x, dim=1), ubound(x, dim=1)
-                write(unit=file_unit, fmt='(a)') str(x(i), locale=locale, fmt=fmt, decimals=decimals)
+            allocate( string_arr(size(x)) )
+            do concurrent (i = 1:size(x))
+                string_arr(i)%s = str(x(i), locale=locale, fmt=fmt, decimals=decimals)//nl
+            end do
+            do i = 1, size(x)
+                write( unit=file_unit ) string_arr(i)%s
             end do
         else if ( dim == 2 ) then
-            write(unit=file_unit, fmt='(a)') to_str(x, locale=locale, delim=delim, fmt=fmt, decimals=decimals)
+            write( unit=file_unit ) to_str(x, locale=locale, delim=delim, fmt=fmt, decimals=decimals)//nl
         end if
 
         close(file_unit)
     end procedure to_text_1dr128
     module procedure to_text_1dr64
-        logical :: exists
-        integer :: file_unit, i
+        type(String), allocatable, dimension(:) :: string_arr
         character(len=:), allocatable :: label
+        integer :: file_unit, i
+        logical :: exists
 
         inquire( file=file_name, exist=exists )
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='formatted', &
-                  action='write', access='sequential', position='rewind' )
+            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
+                  action='write', access='stream', position='rewind' )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='formatted', &
-                  action='write', access='sequential', position='rewind' )
+            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
+                  action='write', access='stream', position='rewind' )
         end if
 
         if ( all(header == '') ) then
             continue
         else if ( size(header) == 1 ) then
             if ( dim == 1 ) then
-                write(unit=file_unit, fmt='(a)') trim(adjustl(header(1)))
+                write( unit=file_unit ) trim(adjustl(header(1)))//nl
             else if ( dim == 2 ) then
                 label = trim(adjustl(header(1)))
                 do i = lbound(x, dim=1), ubound(x, dim=1) - 1
-                    write(unit=file_unit, fmt='(a)', advance='no') label//str(i)//delim
+                    write( unit=file_unit ) label//str(i)//delim
                 end do
-                write(unit=file_unit, fmt='(a)') label//str(ubound(x, dim=1))
+                write( unit=file_unit ) label//str(ubound(x, dim=1))//nl
             end if
         else if ( size(header) == size(x) ) then
-            write(unit=file_unit, fmt='(a)') to_str(header, delim=delim)
+            write( unit=file_unit ) to_str(header, delim=delim)//nl
         end if
 
         if ( dim == 1 ) then
-            do i = lbound(x, dim=1), ubound(x, dim=1)
-                write(unit=file_unit, fmt='(a)') str(x(i), locale=locale, fmt=fmt, decimals=decimals)
+            allocate( string_arr(size(x)) )
+            do concurrent (i = 1:size(x))
+                string_arr(i)%s = str(x(i), locale=locale, fmt=fmt, decimals=decimals)//nl
+            end do
+            do i = 1, size(x)
+                write( unit=file_unit ) string_arr(i)%s
             end do
         else if ( dim == 2 ) then
-            write(unit=file_unit, fmt='(a)') to_str(x, locale=locale, delim=delim, fmt=fmt, decimals=decimals)
+            write( unit=file_unit ) to_str(x, locale=locale, delim=delim, fmt=fmt, decimals=decimals)//nl
         end if
 
         close(file_unit)
     end procedure to_text_1dr64
     module procedure to_text_1dr32
-        logical :: exists
-        integer :: file_unit, i
+        type(String), allocatable, dimension(:) :: string_arr
         character(len=:), allocatable :: label
+        integer :: file_unit, i
+        logical :: exists
 
         inquire( file=file_name, exist=exists )
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='formatted', &
-                  action='write', access='sequential', position='rewind' )
+            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
+                  action='write', access='stream', position='rewind' )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='formatted', &
-                  action='write', access='sequential', position='rewind' )
+            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
+                  action='write', access='stream', position='rewind' )
         end if
 
         if ( all(header == '') ) then
             continue
         else if ( size(header) == 1 ) then
             if ( dim == 1 ) then
-                write(unit=file_unit, fmt='(a)') trim(adjustl(header(1)))
+                write( unit=file_unit ) trim(adjustl(header(1)))//nl
             else if ( dim == 2 ) then
                 label = trim(adjustl(header(1)))
                 do i = lbound(x, dim=1), ubound(x, dim=1) - 1
-                    write(unit=file_unit, fmt='(a)', advance='no') label//str(i)//delim
+                    write( unit=file_unit ) label//str(i)//delim
                 end do
-                write(unit=file_unit, fmt='(a)') label//str(ubound(x, dim=1))
+                write( unit=file_unit ) label//str(ubound(x, dim=1))//nl
             end if
         else if ( size(header) == size(x) ) then
-            write(unit=file_unit, fmt='(a)') to_str(header, delim=delim)
+            write( unit=file_unit ) to_str(header, delim=delim)//nl
         end if
 
         if ( dim == 1 ) then
-            do i = lbound(x, dim=1), ubound(x, dim=1)
-                write(unit=file_unit, fmt='(a)') str(x(i), locale=locale, fmt=fmt, decimals=decimals)
+            allocate( string_arr(size(x)) )
+            do concurrent (i = 1:size(x))
+                string_arr(i)%s = str(x(i), locale=locale, fmt=fmt, decimals=decimals)//nl
+            end do
+            do i = 1, size(x)
+                write( unit=file_unit ) string_arr(i)%s
             end do
         else if ( dim == 2 ) then
-            write(unit=file_unit, fmt='(a)') to_str(x, locale=locale, delim=delim, fmt=fmt, decimals=decimals)
+            write( unit=file_unit ) to_str(x, locale=locale, delim=delim, fmt=fmt, decimals=decimals)//nl
         end if
 
         close(file_unit)
     end procedure to_text_1dr32
 
     module procedure to_text_2dr128
-        logical :: exists
-        integer :: file_unit, i, j
+        type(String), allocatable, dimension(:) :: string_arr
         character(len=:), allocatable :: label
+        integer :: file_unit, i, j
+        logical :: exists
 
         inquire( file=file_name, exist=exists )
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='formatted', &
-                  action='write', access='sequential', position='rewind' )
+            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
+                  action='write', access='stream', position='rewind' )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='formatted', &
-                  action='write', access='sequential', position='rewind' )
+            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
+                  action='write', access='stream', position='rewind' )
         end if
 
         if ( all(header == '') ) then
@@ -15257,34 +15431,41 @@ submodule (io_fortran_lib) text_io
         else if ( size(header) == 1 ) then
             label = trim(adjustl(header(1)))
             do j = lbound(x, dim=2), ubound(x, dim=2) - 1
-                write(unit=file_unit, fmt='(a)', advance='no') label//str(j)//delim
+                write( unit=file_unit ) label//str(j)//delim
             end do
-            write(unit=file_unit, fmt='(a)') label//str(ubound(x, dim=2))
+            write( unit=file_unit ) label//str(ubound(x, dim=2))//nl
         else if ( size(header) == size(x, dim=2) ) then
-            write(unit=file_unit, fmt='(a)') to_str(header, delim=delim)
+            write( unit=file_unit ) to_str(header, delim=delim)//nl
         end if
 
-        do i = lbound(x, dim=1), ubound(x, dim=1)
-            write(unit=file_unit, fmt='(a)') to_str(x(i,:), locale=locale, delim=delim, fmt=fmt, decimals=decimals)
+        allocate( string_arr(size(x, dim=1)) )
+
+        do concurrent (i = 1:size(x, dim=1))
+            string_arr(i)%s = to_str(x(i,:), locale=locale, delim=delim, fmt=fmt, decimals=decimals)//nl
+        end do
+
+        do i = 1, size(x, dim=1)
+            write( unit=file_unit ) string_arr(i)%s
         end do
 
         close(file_unit)
     end procedure to_text_2dr128
     module procedure to_text_2dr64
-        logical :: exists
-        integer :: file_unit, i, j
+        type(String), allocatable, dimension(:) :: string_arr
         character(len=:), allocatable :: label
+        integer :: file_unit, i, j
+        logical :: exists
 
         inquire( file=file_name, exist=exists )
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='formatted', &
-                  action='write', access='sequential', position='rewind' )
+            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
+                  action='write', access='stream', position='rewind' )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='formatted', &
-                  action='write', access='sequential', position='rewind' )
+            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
+                  action='write', access='stream', position='rewind' )
         end if
 
         if ( all(header == '') ) then
@@ -15292,34 +15473,41 @@ submodule (io_fortran_lib) text_io
         else if ( size(header) == 1 ) then
             label = trim(adjustl(header(1)))
             do j = lbound(x, dim=2), ubound(x, dim=2) - 1
-                write(unit=file_unit, fmt='(a)', advance='no') label//str(j)//delim
+                write( unit=file_unit ) label//str(j)//delim
             end do
-            write(unit=file_unit, fmt='(a)') label//str(ubound(x, dim=2))
+            write( unit=file_unit ) label//str(ubound(x, dim=2))//nl
         else if ( size(header) == size(x, dim=2) ) then
-            write(unit=file_unit, fmt='(a)') to_str(header, delim=delim)
+            write( unit=file_unit ) to_str(header, delim=delim)//nl
         end if
 
-        do i = lbound(x, dim=1), ubound(x, dim=1)
-            write(unit=file_unit, fmt='(a)') to_str(x(i,:), locale=locale, delim=delim, fmt=fmt, decimals=decimals)
+        allocate( string_arr(size(x, dim=1)) )
+
+        do concurrent (i = 1:size(x, dim=1))
+            string_arr(i)%s = to_str(x(i,:), locale=locale, delim=delim, fmt=fmt, decimals=decimals)//nl
+        end do
+
+        do i = 1, size(x, dim=1)
+            write( unit=file_unit ) string_arr(i)%s
         end do
 
         close(file_unit)
     end procedure to_text_2dr64
     module procedure to_text_2dr32
-        logical :: exists
-        integer :: file_unit, i, j
+        type(String), allocatable, dimension(:) :: string_arr
         character(len=:), allocatable :: label
+        integer :: file_unit, i, j
+        logical :: exists
 
         inquire( file=file_name, exist=exists )
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='formatted', &
-                  action='write', access='sequential', position='rewind' )
+            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
+                  action='write', access='stream', position='rewind' )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='formatted', &
-                  action='write', access='sequential', position='rewind' )
+            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
+                  action='write', access='stream', position='rewind' )
         end if
 
         if ( all(header == '') ) then
@@ -15327,208 +15515,235 @@ submodule (io_fortran_lib) text_io
         else if ( size(header) == 1 ) then
             label = trim(adjustl(header(1)))
             do j = lbound(x, dim=2), ubound(x, dim=2) - 1
-                write(unit=file_unit, fmt='(a)', advance='no') label//str(j)//delim
+                write( unit=file_unit ) label//str(j)//delim
             end do
-            write(unit=file_unit, fmt='(a)') label//str(ubound(x, dim=2))
+            write( unit=file_unit ) label//str(ubound(x, dim=2))//nl
         else if ( size(header) == size(x, dim=2) ) then
-            write(unit=file_unit, fmt='(a)') to_str(header, delim=delim)
+            write( unit=file_unit ) to_str(header, delim=delim)//nl
         end if
 
-        do i = lbound(x, dim=1), ubound(x, dim=1)
-            write(unit=file_unit, fmt='(a)') to_str(x(i,:), locale=locale, delim=delim, fmt=fmt, decimals=decimals)
+        allocate( string_arr(size(x, dim=1)) )
+
+        do concurrent (i = 1:size(x, dim=1))
+            string_arr(i)%s = to_str(x(i,:), locale=locale, delim=delim, fmt=fmt, decimals=decimals)//nl
+        end do
+
+        do i = 1, size(x, dim=1)
+            write( unit=file_unit ) string_arr(i)%s
         end do
 
         close(file_unit)
     end procedure to_text_2dr32
 
     module procedure to_text_1di64
-        logical :: exists
-        integer :: file_unit, i
+        type(String), allocatable, dimension(:) :: string_arr
         character(len=:), allocatable :: label
+        integer :: file_unit, i
+        logical :: exists
 
         inquire( file=file_name, exist=exists )
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='formatted', &
-                  action='write', access='sequential', position='rewind' )
+            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
+                  action='write', access='stream', position='rewind' )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='formatted', &
-                  action='write', access='sequential', position='rewind' )
+            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
+                  action='write', access='stream', position='rewind' )
         end if
 
         if ( all(header == '') ) then
             continue
         else if ( size(header) == 1 ) then
             if ( dim == 1 ) then
-                write(unit=file_unit, fmt='(a)') trim(adjustl(header(1)))
+                write( unit=file_unit ) trim(adjustl(header(1)))//nl
             else if ( dim == 2 ) then
                 label = trim(adjustl(header(1)))
                 do i = lbound(x, dim=1), ubound(x, dim=1) - 1
-                    write(unit=file_unit, fmt='(a)', advance='no') label//str(i)//delim
+                    write( unit=file_unit ) label//str(i)//delim
                 end do
-                write(unit=file_unit, fmt='(a)') label//str(ubound(x, dim=1))
+                write( unit=file_unit ) label//str(ubound(x, dim=1))//nl
             end if
         else if ( size(header) == size(x) ) then
-            write(unit=file_unit, fmt='(a)') to_str(header, delim=delim)
+            write( unit=file_unit ) to_str(header, delim=delim)//nl
         end if
 
         if ( dim == 1 ) then
-            do i = lbound(x, dim=1), ubound(x, dim=1)
-                write(unit=file_unit, fmt='(a)') str(x(i), fmt=fmt)
+            allocate( string_arr(size(x)) )
+            do concurrent (i = 1:size(x))
+                string_arr(i)%s = str(x(i), fmt=fmt)//nl
+            end do
+            do i = 1, size(x)
+                write( unit=file_unit ) string_arr(i)%s
             end do
         else if ( dim == 2 ) then
-            write(unit=file_unit, fmt='(a)') to_str(x, delim=delim, fmt=fmt)
+            write( unit=file_unit ) to_str(x, delim=delim, fmt=fmt)//nl
         end if
 
         close(file_unit)
     end procedure to_text_1di64
     module procedure to_text_1di32
-        logical :: exists
-        integer :: file_unit, i
+        type(String), allocatable, dimension(:) :: string_arr
         character(len=:), allocatable :: label
+        integer :: file_unit, i
+        logical :: exists
 
         inquire( file=file_name, exist=exists )
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='formatted', &
-                  action='write', access='sequential', position='rewind' )
+            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
+                  action='write', access='stream', position='rewind' )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='formatted', &
-                  action='write', access='sequential', position='rewind' )
+            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
+                  action='write', access='stream', position='rewind' )
         end if
 
         if ( all(header == '') ) then
             continue
         else if ( size(header) == 1 ) then
             if ( dim == 1 ) then
-                write(unit=file_unit, fmt='(a)') trim(adjustl(header(1)))
+                write( unit=file_unit ) trim(adjustl(header(1)))//nl
             else if ( dim == 2 ) then
                 label = trim(adjustl(header(1)))
                 do i = lbound(x, dim=1), ubound(x, dim=1) - 1
-                    write(unit=file_unit, fmt='(a)', advance='no') label//str(i)//delim
+                    write( unit=file_unit ) label//str(i)//delim
                 end do
-                write(unit=file_unit, fmt='(a)') label//str(ubound(x, dim=1))
+                write( unit=file_unit ) label//str(ubound(x, dim=1))//nl
             end if
         else if ( size(header) == size(x) ) then
-            write(unit=file_unit, fmt='(a)') to_str(header, delim=delim)
+            write( unit=file_unit ) to_str(header, delim=delim)//nl
         end if
 
         if ( dim == 1 ) then
-            do i = lbound(x, dim=1), ubound(x, dim=1)
-                write(unit=file_unit, fmt='(a)') str(x(i), fmt=fmt)
+            allocate( string_arr(size(x)) )
+            do concurrent (i = 1:size(x))
+                string_arr(i)%s = str(x(i), fmt=fmt)//nl
+            end do
+            do i = 1, size(x)
+                write( unit=file_unit ) string_arr(i)%s
             end do
         else if ( dim == 2 ) then
-            write(unit=file_unit, fmt='(a)') to_str(x, delim=delim, fmt=fmt)
+            write( unit=file_unit ) to_str(x, delim=delim, fmt=fmt)//nl
         end if
 
         close(file_unit)
     end procedure to_text_1di32
     module procedure to_text_1di16
-        logical :: exists
-        integer :: file_unit, i
+        type(String), allocatable, dimension(:) :: string_arr
         character(len=:), allocatable :: label
+        integer :: file_unit, i
+        logical :: exists
 
         inquire( file=file_name, exist=exists )
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='formatted', &
-                  action='write', access='sequential', position='rewind' )
+            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
+                  action='write', access='stream', position='rewind' )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='formatted', &
-                  action='write', access='sequential', position='rewind' )
+            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
+                  action='write', access='stream', position='rewind' )
         end if
 
         if ( all(header == '') ) then
             continue
         else if ( size(header) == 1 ) then
             if ( dim == 1 ) then
-                write(unit=file_unit, fmt='(a)') trim(adjustl(header(1)))
+                write( unit=file_unit ) trim(adjustl(header(1)))//nl
             else if ( dim == 2 ) then
                 label = trim(adjustl(header(1)))
                 do i = lbound(x, dim=1), ubound(x, dim=1) - 1
-                    write(unit=file_unit, fmt='(a)', advance='no') label//str(i)//delim
+                    write( unit=file_unit ) label//str(i)//delim
                 end do
-                write(unit=file_unit, fmt='(a)') label//str(ubound(x, dim=1))
+                write( unit=file_unit ) label//str(ubound(x, dim=1))//nl
             end if
         else if ( size(header) == size(x) ) then
-            write(unit=file_unit, fmt='(a)') to_str(header, delim=delim)
+            write( unit=file_unit ) to_str(header, delim=delim)//nl
         end if
 
         if ( dim == 1 ) then
-            do i = lbound(x, dim=1), ubound(x, dim=1)
-                write(unit=file_unit, fmt='(a)') str(x(i), fmt=fmt)
+            allocate( string_arr(size(x)) )
+            do concurrent (i = 1:size(x))
+                string_arr(i)%s = str(x(i), fmt=fmt)//nl
+            end do
+            do i = 1, size(x)
+                write( unit=file_unit ) string_arr(i)%s
             end do
         else if ( dim == 2 ) then
-            write(unit=file_unit, fmt='(a)') to_str(x, delim=delim, fmt=fmt)
+            write( unit=file_unit ) to_str(x, delim=delim, fmt=fmt)//nl
         end if
 
         close(file_unit)
     end procedure to_text_1di16
     module procedure to_text_1di8
-        logical :: exists
-        integer :: file_unit, i
+        type(String), allocatable, dimension(:) :: string_arr
         character(len=:), allocatable :: label
+        integer :: file_unit, i
+        logical :: exists
 
         inquire( file=file_name, exist=exists )
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='formatted', &
-                  action='write', access='sequential', position='rewind' )
+            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
+                  action='write', access='stream', position='rewind' )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='formatted', &
-                  action='write', access='sequential', position='rewind' )
+            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
+                  action='write', access='stream', position='rewind' )
         end if
 
         if ( all(header == '') ) then
             continue
         else if ( size(header) == 1 ) then
             if ( dim == 1 ) then
-                write(unit=file_unit, fmt='(a)') trim(adjustl(header(1)))
+                write( unit=file_unit ) trim(adjustl(header(1)))//nl
             else if ( dim == 2 ) then
                 label = trim(adjustl(header(1)))
                 do i = lbound(x, dim=1), ubound(x, dim=1) - 1
-                    write(unit=file_unit, fmt='(a)', advance='no') label//str(i)//delim
+                    write( unit=file_unit ) label//str(i)//delim
                 end do
-                write(unit=file_unit, fmt='(a)') label//str(ubound(x, dim=1))
+                write( unit=file_unit ) label//str(ubound(x, dim=1))//nl
             end if
         else if ( size(header) == size(x) ) then
-            write(unit=file_unit, fmt='(a)') to_str(header, delim=delim)
+            write( unit=file_unit ) to_str(header, delim=delim)//nl
         end if
 
         if ( dim == 1 ) then
-            do i = lbound(x, dim=1), ubound(x, dim=1)
-                write(unit=file_unit, fmt='(a)') str(x(i), fmt=fmt)
+            allocate( string_arr(size(x)) )
+            do concurrent (i = 1:size(x))
+                string_arr(i)%s = str(x(i), fmt=fmt)//nl
+            end do
+            do i = 1, size(x)
+                write( unit=file_unit ) string_arr(i)%s
             end do
         else if ( dim == 2 ) then
-            write(unit=file_unit, fmt='(a)') to_str(x, delim=delim, fmt=fmt)
+            write( unit=file_unit ) to_str(x, delim=delim, fmt=fmt)//nl
         end if
 
         close(file_unit)
     end procedure to_text_1di8
 
     module procedure to_text_2di64
-        logical :: exists
-        integer :: file_unit, i, j
+        type(String), allocatable, dimension(:) :: string_arr
         character(len=:), allocatable :: label
+        integer :: file_unit, i, j
+        logical :: exists
 
         inquire( file=file_name, exist=exists )
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='formatted', &
-                  action='write', access='sequential', position='rewind' )
+            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
+                  action='write', access='stream', position='rewind' )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='formatted', &
-                  action='write', access='sequential', position='rewind' )
+            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
+                  action='write', access='stream', position='rewind' )
         end if
 
         if ( all(header == '') ) then
@@ -15536,34 +15751,41 @@ submodule (io_fortran_lib) text_io
         else if ( size(header) == 1 ) then
             label = trim(adjustl(header(1)))
             do j = lbound(x, dim=2), ubound(x, dim=2) - 1
-                write(unit=file_unit, fmt='(a)', advance='no') label//str(j)//delim
+                write( unit=file_unit ) label//str(j)//delim
             end do
-            write(unit=file_unit, fmt='(a)') label//str(ubound(x, dim=2))
+            write( unit=file_unit ) label//str(ubound(x, dim=2))//nl
         else if ( size(header) == size(x, dim=2) ) then
-            write(unit=file_unit, fmt='(a)') to_str(header, delim=delim)
+            write( unit=file_unit ) to_str(header, delim=delim)//nl
         end if
 
-        do i = lbound(x, dim=1), ubound(x, dim=1)
-            write(unit=file_unit, fmt='(a)') to_str(x(i,:), delim=delim, fmt=fmt)
+        allocate( string_arr(size(x, dim=1)) )
+
+        do concurrent (i = 1:size(x, dim=1))
+            string_arr(i)%s = to_str(x(i,:), delim=delim, fmt=fmt)//nl
+        end do
+
+        do i = 1, size(x, dim=1)
+            write( unit=file_unit ) string_arr(i)%s
         end do
 
         close(file_unit)
     end procedure to_text_2di64
     module procedure to_text_2di32
-        logical :: exists
-        integer :: file_unit, i, j
+        type(String), allocatable, dimension(:) :: string_arr
         character(len=:), allocatable :: label
+        integer :: file_unit, i, j
+        logical :: exists
 
         inquire( file=file_name, exist=exists )
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='formatted', &
-                  action='write', access='sequential', position='rewind' )
+            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
+                  action='write', access='stream', position='rewind' )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='formatted', &
-                  action='write', access='sequential', position='rewind' )
+            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
+                  action='write', access='stream', position='rewind' )
         end if
 
         if ( all(header == '') ) then
@@ -15571,34 +15793,41 @@ submodule (io_fortran_lib) text_io
         else if ( size(header) == 1 ) then
             label = trim(adjustl(header(1)))
             do j = lbound(x, dim=2), ubound(x, dim=2) - 1
-                write(unit=file_unit, fmt='(a)', advance='no') label//str(j)//delim
+                write( unit=file_unit ) label//str(j)//delim
             end do
-            write(unit=file_unit, fmt='(a)') label//str(ubound(x, dim=2))
+            write( unit=file_unit ) label//str(ubound(x, dim=2))//nl
         else if ( size(header) == size(x, dim=2) ) then
-            write(unit=file_unit, fmt='(a)') to_str(header, delim=delim)
+            write( unit=file_unit ) to_str(header, delim=delim)//nl
         end if
 
-        do i = lbound(x, dim=1), ubound(x, dim=1)
-            write(unit=file_unit, fmt='(a)') to_str(x(i,:), delim=delim, fmt=fmt)
+        allocate( string_arr(size(x, dim=1)) )
+
+        do concurrent (i = 1:size(x, dim=1))
+            string_arr(i)%s = to_str(x(i,:), delim=delim, fmt=fmt)//nl
+        end do
+
+        do i = 1, size(x, dim=1)
+            write( unit=file_unit ) string_arr(i)%s
         end do
 
         close(file_unit)
     end procedure to_text_2di32
     module procedure to_text_2di16
-        logical :: exists
-        integer :: file_unit, i, j
+        type(String), allocatable, dimension(:) :: string_arr
         character(len=:), allocatable :: label
+        integer :: file_unit, i, j
+        logical :: exists
 
         inquire( file=file_name, exist=exists )
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='formatted', &
-                  action='write', access='sequential', position='rewind' )
+            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
+                  action='write', access='stream', position='rewind' )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='formatted', &
-                  action='write', access='sequential', position='rewind' )
+            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
+                  action='write', access='stream', position='rewind' )
         end if
 
         if ( all(header == '') ) then
@@ -15606,34 +15835,41 @@ submodule (io_fortran_lib) text_io
         else if ( size(header) == 1 ) then
             label = trim(adjustl(header(1)))
             do j = lbound(x, dim=2), ubound(x, dim=2) - 1
-                write(unit=file_unit, fmt='(a)', advance='no') label//str(j)//delim
+                write( unit=file_unit ) label//str(j)//delim
             end do
-            write(unit=file_unit, fmt='(a)') label//str(ubound(x, dim=2))
+            write( unit=file_unit ) label//str(ubound(x, dim=2))//nl
         else if ( size(header) == size(x, dim=2) ) then
-            write(unit=file_unit, fmt='(a)') to_str(header, delim=delim)
+            write( unit=file_unit ) to_str(header, delim=delim)//nl
         end if
 
-        do i = lbound(x, dim=1), ubound(x, dim=1)
-            write(unit=file_unit, fmt='(a)') to_str(x(i,:), delim=delim, fmt=fmt)
+        allocate( string_arr(size(x, dim=1)) )
+
+        do concurrent (i = 1:size(x, dim=1))
+            string_arr(i)%s = to_str(x(i,:), delim=delim, fmt=fmt)//nl
+        end do
+
+        do i = 1, size(x, dim=1)
+            write( unit=file_unit ) string_arr(i)%s
         end do
 
         close(file_unit)
     end procedure to_text_2di16
     module procedure to_text_2di8
-        logical :: exists
-        integer :: file_unit, i, j
+        type(String), allocatable, dimension(:) :: string_arr
         character(len=:), allocatable :: label
+        integer :: file_unit, i, j
+        logical :: exists
 
         inquire( file=file_name, exist=exists )
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='formatted', &
-                  action='write', access='sequential', position='rewind' )
+            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
+                  action='write', access='stream', position='rewind' )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='formatted', &
-                  action='write', access='sequential', position='rewind' )
+            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
+                  action='write', access='stream', position='rewind' )
         end if
 
         if ( all(header == '') ) then
@@ -15641,15 +15877,21 @@ submodule (io_fortran_lib) text_io
         else if ( size(header) == 1 ) then
             label = trim(adjustl(header(1)))
             do j = lbound(x, dim=2), ubound(x, dim=2) - 1
-                write(unit=file_unit, fmt='(a)', advance='no') label//str(j)//delim
+                write( unit=file_unit ) label//str(j)//delim
             end do
-            write(unit=file_unit, fmt='(a)') label//str(ubound(x, dim=2))
+            write( unit=file_unit ) label//str(ubound(x, dim=2))//nl
         else if ( size(header) == size(x, dim=2) ) then
-            write(unit=file_unit, fmt='(a)') to_str(header, delim=delim)
+            write( unit=file_unit ) to_str(header, delim=delim)//nl
         end if
 
-        do i = lbound(x, dim=1), ubound(x, dim=1)
-            write(unit=file_unit, fmt='(a)') to_str(x(i,:), delim=delim, fmt=fmt)
+        allocate( string_arr(size(x, dim=1)) )
+
+        do concurrent (i = 1:size(x, dim=1))
+            string_arr(i)%s = to_str(x(i,:), delim=delim, fmt=fmt)//nl
+        end do
+
+        do i = 1, size(x, dim=1)
+            write( unit=file_unit ) string_arr(i)%s
         end do
 
         close(file_unit)
@@ -15739,13 +15981,14 @@ submodule (io_fortran_lib) text_io
     module procedure from_text_1dc128
         logical :: exists, ignore_sep
         integer :: file_unit, iostat
-        integer :: n_rows, n_columns, file_length
+        integer :: n_rows, n_columns
         integer :: i, j, ind, l1, l2, sep_pos
 
         complex(real128) :: c
         character(len=:), allocatable, dimension(:) :: im_chars, non_separating_chars
         character(len=:), allocatable :: file, decimal, sep, number
         character(len=1) :: prev_char, current_char
+        integer(int64) :: file_length
 
         inquire( file=file_name, exist=exists )
 
@@ -15964,13 +16207,14 @@ submodule (io_fortran_lib) text_io
     module procedure from_text_1dc64
         logical :: exists, ignore_sep
         integer :: file_unit, iostat
-        integer :: n_rows, n_columns, file_length
+        integer :: n_rows, n_columns
         integer :: i, j, ind, l1, l2, sep_pos
 
         complex(real64) :: c
         character(len=:), allocatable, dimension(:) :: im_chars, non_separating_chars
         character(len=:), allocatable :: file, decimal, sep, number
         character(len=1) :: prev_char, current_char
+        integer(int64) :: file_length
 
         inquire( file=file_name, exist=exists )
 
@@ -16189,13 +16433,14 @@ submodule (io_fortran_lib) text_io
     module procedure from_text_1dc32
         logical :: exists, ignore_sep
         integer :: file_unit, iostat
-        integer :: n_rows, n_columns, file_length
+        integer :: n_rows, n_columns
         integer :: i, j, ind, l1, l2, sep_pos
 
         complex(real32) :: c
         character(len=:), allocatable, dimension(:) :: im_chars, non_separating_chars
         character(len=:), allocatable :: file, decimal, sep, number
         character(len=1) :: prev_char, current_char
+        integer(int64) :: file_length
 
         inquire( file=file_name, exist=exists )
 
@@ -16415,13 +16660,14 @@ submodule (io_fortran_lib) text_io
     module procedure from_text_2dc128
         logical :: exists, ignore_sep
         integer :: file_unit, iostat
-        integer :: n_rows, n_columns, file_length
+        integer :: n_rows, n_columns
         integer :: i, j, row, column, l1, l2, sep_pos
 
         complex(real128) :: c
         character(len=:), allocatable, dimension(:) :: im_chars, non_separating_chars
         character(len=:), allocatable :: file, decimal, sep, number
         character(len=1) :: prev_char, current_char
+        integer(int64) :: file_length
 
         inquire( file=file_name, exist=exists )
 
@@ -16644,13 +16890,14 @@ submodule (io_fortran_lib) text_io
     module procedure from_text_2dc64
         logical :: exists, ignore_sep
         integer :: file_unit, iostat
-        integer :: n_rows, n_columns, file_length
+        integer :: n_rows, n_columns
         integer :: i, j, row, column, l1, l2, sep_pos
 
         complex(real64) :: c
         character(len=:), allocatable, dimension(:) :: im_chars, non_separating_chars
         character(len=:), allocatable :: file, decimal, sep, number
         character(len=1) :: prev_char, current_char
+        integer(int64) :: file_length
 
         inquire( file=file_name, exist=exists )
 
@@ -16873,13 +17120,14 @@ submodule (io_fortran_lib) text_io
     module procedure from_text_2dc32
         logical :: exists, ignore_sep
         integer :: file_unit, iostat
-        integer :: n_rows, n_columns, file_length
+        integer :: n_rows, n_columns
         integer :: i, j, row, column, l1, l2, sep_pos
 
         complex(real32) :: c
         character(len=:), allocatable, dimension(:) :: im_chars, non_separating_chars
         character(len=:), allocatable :: file, decimal, sep, number
         character(len=1) :: prev_char, current_char
+        integer(int64) :: file_length
 
         inquire( file=file_name, exist=exists )
 
@@ -17103,12 +17351,13 @@ submodule (io_fortran_lib) text_io
     module procedure from_text_1dr128
         logical :: exists
         integer :: file_unit, iostat
-        integer :: n_rows, n_columns, file_length
+        integer :: n_rows, n_columns
         integer :: i, ind, l1, l2
 
         character(len=:), allocatable, dimension(:) :: non_separating_chars
         character(len=:), allocatable :: file, decimal
         character(len=1) :: prev_char, current_char
+        integer(int64) :: file_length
 
         inquire( file=file_name, exist=exists )
 
@@ -17242,12 +17491,13 @@ submodule (io_fortran_lib) text_io
     module procedure from_text_1dr64
         logical :: exists
         integer :: file_unit, iostat
-        integer :: n_rows, n_columns, file_length
+        integer :: n_rows, n_columns
         integer :: i, ind, l1, l2
 
         character(len=:), allocatable, dimension(:) :: non_separating_chars
         character(len=:), allocatable :: file, decimal
         character(len=1) :: prev_char, current_char
+        integer(int64) :: file_length
 
         inquire( file=file_name, exist=exists )
 
@@ -17381,12 +17631,13 @@ submodule (io_fortran_lib) text_io
     module procedure from_text_1dr32
         logical :: exists
         integer :: file_unit, iostat
-        integer :: n_rows, n_columns, file_length
+        integer :: n_rows, n_columns
         integer :: i, ind, l1, l2
 
         character(len=:), allocatable, dimension(:) :: non_separating_chars
         character(len=:), allocatable :: file, decimal
         character(len=1) :: prev_char, current_char
+        integer(int64) :: file_length
 
         inquire( file=file_name, exist=exists )
 
@@ -17521,12 +17772,13 @@ submodule (io_fortran_lib) text_io
     module procedure from_text_2dr128
         logical :: exists
         integer :: file_unit, iostat
-        integer :: n_rows, n_columns, file_length
+        integer :: n_rows, n_columns
         integer :: i, row, column, l1, l2
 
         character(len=:), allocatable, dimension(:) :: non_separating_chars
         character(len=:), allocatable :: file, decimal
         character(len=1) :: prev_char, current_char
+        integer(int64) :: file_length
 
         inquire( file=file_name, exist=exists )
 
@@ -17659,12 +17911,13 @@ submodule (io_fortran_lib) text_io
     module procedure from_text_2dr64
         logical :: exists
         integer :: file_unit, iostat
-        integer :: n_rows, n_columns, file_length
+        integer :: n_rows, n_columns
         integer :: i, row, column, l1, l2
 
         character(len=:), allocatable, dimension(:) :: non_separating_chars
         character(len=:), allocatable :: file, decimal
         character(len=1) :: prev_char, current_char
+        integer(int64) :: file_length
 
         inquire( file=file_name, exist=exists )
 
@@ -17797,12 +18050,13 @@ submodule (io_fortran_lib) text_io
     module procedure from_text_2dr32
         logical :: exists
         integer :: file_unit, iostat
-        integer :: n_rows, n_columns, file_length
+        integer :: n_rows, n_columns
         integer :: i, row, column, l1, l2
 
         character(len=:), allocatable, dimension(:) :: non_separating_chars
         character(len=:), allocatable :: file, decimal
         character(len=1) :: prev_char, current_char
+        integer(int64) :: file_length
 
         inquire( file=file_name, exist=exists )
 
@@ -17936,12 +18190,13 @@ submodule (io_fortran_lib) text_io
     module procedure from_text_1di64
         logical :: exists
         integer :: file_unit, iostat
-        integer :: n_rows, n_columns, file_length
+        integer :: n_rows, n_columns
         integer :: i, ind, l1, l2
 
         character(len=:), allocatable, dimension(:) :: non_separating_chars
         character(len=:), allocatable :: file
         character(len=1) :: prev_char, current_char
+        integer(int64) :: file_length
 
         inquire( file=file_name, exist=exists )
 
@@ -18065,12 +18320,13 @@ submodule (io_fortran_lib) text_io
     module procedure from_text_1di32
         logical :: exists
         integer :: file_unit, iostat
-        integer :: n_rows, n_columns, file_length
+        integer :: n_rows, n_columns
         integer :: i, ind, l1, l2
 
         character(len=:), allocatable, dimension(:) :: non_separating_chars
         character(len=:), allocatable :: file
         character(len=1) :: prev_char, current_char
+        integer(int64) :: file_length
 
         inquire( file=file_name, exist=exists )
 
@@ -18194,12 +18450,13 @@ submodule (io_fortran_lib) text_io
     module procedure from_text_1di16
         logical :: exists
         integer :: file_unit, iostat
-        integer :: n_rows, n_columns, file_length
+        integer :: n_rows, n_columns
         integer :: i, ind, l1, l2
 
         character(len=:), allocatable, dimension(:) :: non_separating_chars
         character(len=:), allocatable :: file
         character(len=1) :: prev_char, current_char
+        integer(int64) :: file_length
 
         inquire( file=file_name, exist=exists )
 
@@ -18323,12 +18580,13 @@ submodule (io_fortran_lib) text_io
     module procedure from_text_1di8
         logical :: exists
         integer :: file_unit, iostat
-        integer :: n_rows, n_columns, file_length
+        integer :: n_rows, n_columns
         integer :: i, ind, l1, l2
 
         character(len=:), allocatable, dimension(:) :: non_separating_chars
         character(len=:), allocatable :: file
         character(len=1) :: prev_char, current_char
+        integer(int64) :: file_length
 
         inquire( file=file_name, exist=exists )
 
@@ -18453,12 +18711,13 @@ submodule (io_fortran_lib) text_io
     module procedure from_text_2di64
         logical :: exists
         integer :: file_unit, iostat
-        integer :: n_rows, n_columns, file_length
+        integer :: n_rows, n_columns
         integer :: i, row, column, l1, l2
 
         character(len=:), allocatable, dimension(:) :: non_separating_chars
         character(len=:), allocatable :: file
         character(len=1) :: prev_char, current_char
+        integer(int64) :: file_length
 
         inquire( file=file_name, exist=exists )
 
@@ -18581,12 +18840,13 @@ submodule (io_fortran_lib) text_io
     module procedure from_text_2di32
         logical :: exists
         integer :: file_unit, iostat
-        integer :: n_rows, n_columns, file_length
+        integer :: n_rows, n_columns
         integer :: i, row, column, l1, l2
 
         character(len=:), allocatable, dimension(:) :: non_separating_chars
         character(len=:), allocatable :: file
         character(len=1) :: prev_char, current_char
+        integer(int64) :: file_length
 
         inquire( file=file_name, exist=exists )
 
@@ -18709,12 +18969,13 @@ submodule (io_fortran_lib) text_io
     module procedure from_text_2di16
         logical :: exists
         integer :: file_unit, iostat
-        integer :: n_rows, n_columns, file_length
+        integer :: n_rows, n_columns
         integer :: i, row, column, l1, l2
 
         character(len=:), allocatable, dimension(:) :: non_separating_chars
         character(len=:), allocatable :: file
         character(len=1) :: prev_char, current_char
+        integer(int64) :: file_length
 
         inquire( file=file_name, exist=exists )
 
@@ -18837,12 +19098,13 @@ submodule (io_fortran_lib) text_io
     module procedure from_text_2di8
         logical :: exists
         integer :: file_unit, iostat
-        integer :: n_rows, n_columns, file_length
+        integer :: n_rows, n_columns
         integer :: i, row, column, l1, l2
 
         character(len=:), allocatable, dimension(:) :: non_separating_chars
         character(len=:), allocatable :: file
         character(len=1) :: prev_char, current_char
+        integer(int64) :: file_length
 
         inquire( file=file_name, exist=exists )
 
@@ -18966,12 +19228,13 @@ submodule (io_fortran_lib) text_io
     module procedure from_text_1dchar
         logical :: exists
         integer :: file_unit, iostat
-        integer :: n_rows, n_columns, file_length
+        integer :: n_rows, n_columns
         integer :: i, ind, l1, l2
 
         character(len=:), allocatable, dimension(:) :: separating_chars
         character(len=:), allocatable :: file
         character(len=1) :: prev_char, current_char
+        integer(int64) :: file_length
 
         inquire( file=file_name, exist=exists )
 
@@ -19101,12 +19364,13 @@ submodule (io_fortran_lib) text_io
     module procedure from_text_2dchar
         logical :: exists
         integer :: file_unit, iostat
-        integer :: n_rows, n_columns, file_length
+        integer :: n_rows, n_columns
         integer :: i, row, column, l1, l2
 
         character(len=:), allocatable, dimension(:) :: separating_chars
         character(len=:), allocatable :: file
         character(len=1) :: prev_char, current_char
+        integer(int64) :: file_length
 
         inquire( file=file_name, exist=exists )
 
