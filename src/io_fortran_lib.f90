@@ -14104,27 +14104,33 @@ submodule (io_fortran_lib) text_io
     contains
     !! Writing Procedures ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     module procedure echo_string
-        logical :: exists
+        logical :: exists, append_
         integer :: file_unit
+
+        if ( .not. present(append) ) then
+            append_ = .true.
+        else
+            append_ = .false.
+        end if
 
         inquire( file=file_name, exist=exists )
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='formatted', &
-                  action='write', access='sequential', position='rewind' )
+            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
+                  action='write', access='stream', position='rewind' )
         else
-            if ( (.not. present(append)) .or. (.not. append) ) then
-                open( newunit=file_unit, file=file_name, status='replace', form='formatted', &
-                      action='write', access='sequential', position='rewind' )
-            else if ( append ) then
-                open( newunit=file_unit, file=file_name, status='old', form='formatted', &
-                      action='write', access='sequential', position='append' )
+            if ( .not. append_ ) then
+                open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
+                      action='write', access='stream', position='rewind' )
+            else
+                open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
+                      action='write', access='stream', position='append' )
             end if
         end if
 
-        write(unit=file_unit, fmt='(a)') string
+        write( unit=file_unit ) string//nl
 
         close(file_unit)
     end procedure echo_string
