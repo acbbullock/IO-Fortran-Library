@@ -71,17 +71,17 @@ program main
         real(dp), allocatable, dimension(:) :: u, v
         real(dp), allocatable, dimension(:,:) :: x, y
 
-        allocate( u(rows), v(rows) )
-        call random_number(u); call random_number(v)
+        allocate( u(rows) )
+        call random_number(u)
 
         call system_clock(t1)
-        call to_file(u, file_name='./data/u.csv', header=['u'], dim=1, fmt='f')
+        call to_file(u, file_name='./data/u.csv', header=['u'], dim=1, fmt='e')
         call system_clock(t2, count_rate=rate)
         telapse = real((t2-t1), kind=qp)/rate
         write(*,'(a)') 'time = '//str(telapse, fmt='f', decimals=3)//' seconds for u to disk'
 
         call system_clock(t1)
-        call from_file(file_name='./data/u.csv', into=v, header=.true., fmt='f')
+        call from_file(file_name='./data/u.csv', into=v, header=.true., fmt='e')
         call system_clock(t2, count_rate=rate)
         telapse = real((t2-t1), kind=qp)/rate
         write(*,'(a)') 'time = '//str(telapse, fmt='f', decimals=3)//' seconds for v from disk'
@@ -93,17 +93,17 @@ program main
         end if
         write(*,*)
 
-        allocate( x(rows,columns), y(rows,columns) )
-        call random_number(x); call random_number(y)
+        allocate( x(rows,columns) )
+        call random_number(x)
 
         call system_clock(t1)
-        call to_file(x, file_name='./data/x.csv', header=['x'], fmt='f')
+        call to_file(x, file_name='./data/x.csv', header=['x'], fmt='e')
         call system_clock(t2, count_rate=rate)
         telapse = real((t2-t1), kind=qp)/rate
         write(*,'(a)') 'time = '//str(telapse, fmt='f', decimals=3)//' seconds for x to disk'
 
         call system_clock(t1)
-        call from_file(file_name='./data/x.csv', into=y, header=.true., fmt='f')
+        call from_file(file_name='./data/x.csv', into=y, header=.true., fmt='e')
         call system_clock(t2, count_rate=rate)
         telapse = real((t2-t1), kind=qp)/rate
         write(*,'(a)') 'time = '//str(telapse, fmt='f', decimals=3)//' seconds for y from disk'
@@ -127,13 +127,13 @@ program main
         a = cmplx(u, v, kind=dp)
 
         call system_clock(t1)
-        call to_file(a, file_name='./data/a.csv', header=['a'], dim=1, fmt='f', im='j')
+        call to_file(a, file_name='./data/a.csv', header=['a'], dim=1, fmt='e', im='j')
         call system_clock(t2, count_rate=rate)
         telapse = real((t2-t1), kind=qp)/rate
         write(*,'(a)') 'time = '//str(telapse, fmt='f', decimals=3)//' seconds for a to disk'
 
         call system_clock(t1)
-        call from_file(file_name='./data/a.csv', into=b, header=.true., fmt='f', im='j')
+        call from_file(file_name='./data/a.csv', into=b, header=.true., fmt='e', im='j')
         call system_clock(t2, count_rate=rate)
         telapse = real((t2-t1), kind=qp)/rate
         write(*,'(a)') 'time = '//str(telapse, fmt='f', decimals=3)//' seconds for b from disk'
@@ -150,13 +150,13 @@ program main
         c = cmplx(x, y, kind=dp)
 
         call system_clock(t1)
-        call to_file(c, file_name='./data/c.csv', header=['c'], fmt='f', im='j')
+        call to_file(c, file_name='./data/c.csv', header=['c'], fmt='e', im='j')
         call system_clock(t2, count_rate=rate)
         telapse = real((t2-t1), kind=qp)/rate
         write(*,'(a)') 'time = '//str(telapse, fmt='f', decimals=3)//' seconds for c to disk'
 
         call system_clock(t1)
-        call from_file(file_name='./data/c.csv', into=d, header=.true., fmt='f', im='j')
+        call from_file(file_name='./data/c.csv', into=d, header=.true., fmt='e', im='j')
         call system_clock(t2, count_rate=rate)
         telapse = real((t2-t1), kind=qp)/rate
         write(*,'(a)') 'time = '//str(telapse, fmt='f', decimals=3)//' seconds for d from disk'
