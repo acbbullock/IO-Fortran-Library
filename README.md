@@ -1,4 +1,4 @@
-# API Specification
+# IO Fortran Library
 
 The IO Fortran Library is a Fortran module `io_fortran_lib` which provides high level convenience routines for doing internal and external IO. In particular, the module provides a handful of generic interfaces for performing string-based and array-based IO that are useful for recording program data, reading data into programs, and for writing formatted logs and output. To use `io_fortran_lib` with your [fpm](https://github.com/fortran-lang/fpm) project, add the following lines to your `fpm.toml` file and `use` the module in your program units to access the routines:
 
