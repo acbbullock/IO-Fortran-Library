@@ -19,7 +19,7 @@ The following is a complete list of publicly accessible interfaces:
 6. [`type String`](https://github.com/acbbullock/IO-Fortran-Library/tree/dev#type-string): A wrapper type for an allocatable string.
 7. [`parameter nl`](https://github.com/acbbullock/IO-Fortran-Library/tree/dev#parameter-nl): The new line character constant.
 
-When writing or reading an array, a valid file extension must be present. For arrays of rank 1 or 2, any of the following text file extensions may be used:
+When writing or reading an array, a valid file extension must be present. For arrays of rank `1` or `2`, any of the following text file extensions may be used:
 
 ```fortran
 text_ext = [ 'csv', 'txt', 'ods', 'odf', 'odm', 'odt', 'xls', 'doc', 'log', 'rtf', 'org', 'dbf' ]
