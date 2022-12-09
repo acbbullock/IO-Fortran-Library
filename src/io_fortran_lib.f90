@@ -14110,7 +14110,7 @@ submodule (io_fortran_lib) text_io
         if ( .not. present(append) ) then
             append_ = .true.
         else
-            append_ = .false.
+            append_ = append
         end if
 
         inquire( file=file_name, exist=exists )
