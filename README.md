@@ -1,6 +1,6 @@
 # IO Fortran Library
 
-The IO Fortran Library is a Fortran module `io_fortran_lib` which provides high level convenience routines for doing internal and external IO. In particular, the module provides a handful of generic interfaces for performing string-based and array-based IO that are useful for recording program data, reading data into programs, and for writing formatted logs and output. To use `io_fortran_lib` with your [fpm](https://github.com/fortran-lang/fpm) project, add the following lines to your `fpm.toml` file and `use` the module in your program units to access the routines:
+The IO Fortran Library is a Fortran module `io_fortran_lib` which provides high level routines for doing internal and external IO. In particular, the module provides a handful of generic interfaces for performing string-based and array-based IO that are useful for recording program data, reading data into programs, and for writing formatted logs and output. To use `io_fortran_lib` with your [fpm](https://github.com/fortran-lang/fpm) project, add the following lines to your `fpm.toml` file and `use` the module in your program units to access the routines:
 
 ```toml
 [dependencies]
@@ -19,6 +19,8 @@ The following is a complete list of publicly accessible interfaces:
 6. [`type String`](https://github.com/acbbullock/IO-Fortran-Library#type-string): A wrapper type for an allocatable string.
 7. [`parameter nl`](https://github.com/acbbullock/IO-Fortran-Library#parameter-nl): The new line character constant.
 
+### **IMPORTANT**
+
 When writing or reading an array, a valid file extension must be present. For arrays of rank `1` or `2`, any of the following text file extensions may be used:
 
 ```fortran
@@ -32,8 +34,6 @@ binary_ext = [ 'dat', 'bin' ]
 ```
 
 The routines `to_file` and `from_file` will detect the file extension used and direct whether to write/read a text file or a binary file.
-
-### **IMPORTANT**
 
 Some compilers implement extensions to the Fortran standard by default with regards to character array literals. For example, the array literal
 
