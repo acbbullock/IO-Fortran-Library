@@ -11,13 +11,13 @@ The module is fully self-contained, with no external dependencies, and is writte
 
 The following is a complete list of publicly accessible interfaces:
 
-1. `interface str`: A function for representing a number as a string.
-2. `interface echo`: A subroutine for recording a string to an external file.
-3. `interface to_file`: A subroutine for recording an array to an external file.
-4. `interface from_file`: A subroutine for reading an external file into an array.
-5. `interface aprint`: A subroutine for printing array sections to stdout.
-6. `type String`: A wrapper type for an allocatable string.
-7. `parameter nl`: The new line character constant.
+1. [`interface str`](https://github.com/acbbullock/IO-Fortran-Library/tree/dev#pure-function-str): A function for representing a number as a string.
+2. [`interface echo`](https://github.com/acbbullock/IO-Fortran-Library/tree/dev#impure-subroutine-echo): A subroutine for recording a string to an external file.
+3. [`interface to_file`](https://github.com/acbbullock/IO-Fortran-Library/tree/dev#impure-subroutine-to_file): A subroutine for recording an array to an external file.
+4. [`interface from_file`](https://github.com/acbbullock/IO-Fortran-Library/tree/dev#impure-subroutine-from_file): A subroutine for reading an external file into an array.
+5. [`interface aprint`](https://github.com/acbbullock/IO-Fortran-Library/tree/dev#impure-subroutine-aprint): A subroutine for printing array sections to stdout.
+6. [`type String`](https://github.com/acbbullock/IO-Fortran-Library/tree/dev#type-string): A wrapper type for an allocatable string.
+7. [`parameter nl`](https://github.com/acbbullock/IO-Fortran-Library/tree/dev#parameter-nl): The new line character constant.
 
 When writing or reading an array, a valid file extension must be present. For arrays of rank 1 or 2, any of the following text file extensions may be used:
 
