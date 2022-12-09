@@ -4,7 +4,7 @@ The IO Fortran Library is a Fortran module `io_fortran_lib` which provides high 
 
 ```toml
 [dependencies]
-io_fortran_lib = { git="https://github.com/acbbullock/IO-Fortran-Library", branch="main" }
+IO-Fortran-Library = { git="https://github.com/acbbullock/IO-Fortran-Library", branch="main" }
 ```
 
 The module is fully self-contained, with no external dependencies, and is written to be portable and compliant to the Fortran 2018 standard such that no special extensions or compiler options should be required. All generic procedures which take numeric arguments support all of the standard kinds provided by the intrinsic `iso_fortran_env` module, including `int8`, `int16`, `int32`, `int64`, `real32`, `real64`, and `real128`. All array-based routines additionally support up to rank 15.
