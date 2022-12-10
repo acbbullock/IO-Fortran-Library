@@ -2,20 +2,35 @@
 !!  This program contains passing tests for the text processing routines of the IO Fortran Library.
 !!---------------------------------------------------------------------------------------------------------------------
 program main
-    use, intrinsic :: iso_fortran_env, only: sp=>real32, dp=>real64, qp=>real128, int8, int16, int32, int64
+    use, intrinsic :: iso_fortran_env, only: rk=>real64, ik=>int32, compiler_version, compiler_options
     use io_fortran_lib
     implicit none (type,external)
 
     integer, parameter :: rows = 500
     integer, parameter :: columns = 20
 
+    character(len=:), allocatable :: logfile, logmsg
+    character(len=10) :: date, time
+    logical :: all_passing
+
     call random_init(repeatable=.true., image_distinct=.false.)
 
+    logfile = 'test_results.log'
+    call date_and_time(date=date, time=time)
+
+    logmsg = 'RUNNING TESTS - date: '//trim(adjustl(date))//' | time: '//time
+    call echo(string=logmsg//nl//repeat('-', ncopies=len(logmsg))//nl, file_name=logfile)
+
+    logmsg = '    Integer kind is: '//str(ik)//nl//'    Real kind is: '//str(rk)//nl
+    call echo(logmsg, logfile)
+
+    all_passing = .true.
+
     test_int: block
-        real(dp), allocatable, dimension(:) :: u
-        real(dp), allocatable, dimension(:,:) :: x
-        integer(int32), allocatable, dimension(:) :: i, j
-        integer(int32), allocatable, dimension(:,:) :: k, l
+        real(rk), allocatable, dimension(:) :: u
+        real(rk), allocatable, dimension(:,:) :: x
+        integer(ik), allocatable, dimension(:) :: i, j
+        integer(ik), allocatable, dimension(:,:) :: k, l
 
         allocate( u(rows) )
         call random_number(u)
@@ -25,11 +40,13 @@ program main
         call from_file(file_name='./data/i.csv', into=j, header=.true., fmt='i')
 
         if ( all(i==j) ) then
-            write(*,'(a)') 'i == j SUCCESS'
+            logmsg = '    i == j SUCCESS'
         else
-            write(*,'(a)') 'i /= j FAILURE'
+            logmsg = '    i /= j FAILURE'
+            all_passing = .false.
         end if
-        write(*,*)
+
+        call echo(logmsg, logfile)
 
         allocate( x(rows,columns) )
         call random_number(x)
@@ -39,16 +56,18 @@ program main
         call from_file(file_name='./data/k.csv', into=l, header=.true., fmt='i')
 
         if ( all(k==l) ) then
-            write(*,'(a)') 'k == l SUCCESS'
+            logmsg = '    k == l SUCCESS'
         else
-            write(*,'(a)') 'k /= l FAILURE'
+            logmsg = '    k /= l FAILURE'
+            all_passing = .false.
         end if
-        write(*,*)
+
+        call echo(logmsg, logfile)
     end block test_int
 
     test_real: block
-        real(dp), allocatable, dimension(:) :: u, v
-        real(dp), allocatable, dimension(:,:) :: x, y
+        real(rk), allocatable, dimension(:) :: u, v
+        real(rk), allocatable, dimension(:,:) :: x, y
 
         allocate( u(rows) )
         call random_number(u)
@@ -57,11 +76,13 @@ program main
         call from_file(file_name='./data/u.csv', into=v, header=.true., fmt='e')
 
         if ( all(u==v) ) then
-            write(*,'(a)') 'u == v SUCCESS'
+            logmsg = '    u == v SUCCESS'
         else
-            write(*,'(a)') 'u /= v FAILURE'
+            logmsg = '    u /= v FAILURE'
+            all_passing = .false.
         end if
-        write(*,*)
+
+        call echo(logmsg, logfile)
 
         allocate( x(rows,columns) )
         call random_number(x)
@@ -70,45 +91,61 @@ program main
         call from_file(file_name='./data/x.csv', into=y, header=.true., fmt='e')
 
         if ( all(x==y) ) then
-            write(*,'(a)') 'x == y SUCCESS'
+            logmsg = '    x == y SUCCESS'
         else
-            write(*,'(a)') 'x /= y FAILURE'
+            logmsg = '    x /= y FAILURE'
+            all_passing = .false.
         end if
-        write(*,*)
+
+        call echo(logmsg, logfile)
     end block test_real
 
     test_complex: block
-        real(dp), allocatable, dimension(:) :: u, v
-        real(dp), allocatable, dimension(:,:) :: x, y
-        complex(dp), allocatable, dimension(:) :: a, b
-        complex(dp), allocatable, dimension(:,:) :: c, d
+        real(rk), allocatable, dimension(:) :: u, v
+        real(rk), allocatable, dimension(:,:) :: x, y
+        complex(rk), allocatable, dimension(:) :: a, b
+        complex(rk), allocatable, dimension(:,:) :: c, d
 
         allocate( u(rows), v(rows) )
         call random_number(u); call random_number(v)
-        a = cmplx(u, v, kind=dp)
+        a = cmplx(u, v, kind=rk)
 
         call to_file(a, file_name='./data/a.csv', header=['a'], dim=1, fmt='e', im='j')
         call from_file(file_name='./data/a.csv', into=b, header=.true., fmt='e', im='j')
 
         if ( all(a==b) ) then
-            write(*,'(a)') 'a == b SUCCESS'
+            logmsg = '    a == b SUCCESS'
         else
-            write(*,'(a)') 'a /= b FAILURE'
+            logmsg = '    a /= b FAILURE'
+            all_passing = .false.
         end if
-        write(*,*)
+
+        call echo(logmsg, logfile)
 
         allocate( x(rows,columns), y(rows,columns) )
         call random_number(x); call random_number(y)
-        c = cmplx(x, y, kind=dp)
+        c = cmplx(x, y, kind=rk)
 
         call to_file(c, file_name='./data/c.csv', header=['c'], fmt='e', im='j')
         call from_file(file_name='./data/c.csv', into=d, header=.true., fmt='e', im='j')
 
         if ( all(c==d) ) then
-            write(*,'(a)') 'c == d SUCCESS'
+            logmsg = '    c == d SUCCESS'
         else
-            write(*,'(a)') 'c /= d for FAILURE'
+            logmsg = '    c /= d for FAILURE'
+            all_passing = .false.
         end if
-        write(*,*)
+
+        call echo(logmsg, logfile)
     end block test_complex
+
+    if ( all_passing ) then
+        logmsg = nl//'All tests are passing with compiler "'//compiler_version()//'" '// &
+                     'using compiler options "'//compiler_options()//'".'//nl
+    else
+        logmsg = nl//'Some tests are failing with compiler "'//compiler_version()//'" '// &
+                     'using compiler options "'//compiler_options()//'".'//nl
+    end if
+
+    call echo(logmsg, logfile)
 end program main
