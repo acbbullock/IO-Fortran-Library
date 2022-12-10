@@ -14104,8 +14104,18 @@ submodule (io_fortran_lib) text_io
     contains
     !! Writing Procedures ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     module procedure echo_string
+        character(len=:), allocatable :: ext
         logical :: exists, append_
         integer :: file_unit
+
+        ext = ext_of(file_name)
+
+        if ( .not. any(text_ext == ext) ) then
+            write(*,'(a)')  nl//'WARNING: Skipping write to "'//file_name//'" '// &
+                                'due to unsupported file extension "'//ext//'".'// &
+                            nl//'Supported file extensions: '//to_str(text_ext, delim=' ')
+            return
+        end if
 
         if ( .not. present(append) ) then
             append_ = .true.
