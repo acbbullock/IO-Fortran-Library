@@ -1,9 +1,8 @@
 !!---------------------------------------------------------------------------------------------------------------------
 !!  This module file contains common i/o procedures for arrays of complex, real, integer, and character type. Common
 !!  operations include printing array slices to stdout, reading/writing multidimensional arrays from/to text files
-!!  and binary files. Convenience functions for number -> string conversion are provided as well as vector -> string
-!!  conversion with a specified delimiter. This module is F2018 compliant, has no external dependencies, and has a max
-!!  line length of 120.
+!!  and binary files. Functions for number -> string conversion are provided as well as a simple text logging routine.
+!!  This module is F2018 compliant, has no external dependencies, and has a max line length of 120.
 !!---------------------------------------------------------------------------------------------------------------------
 module io_fortran_lib
     use, intrinsic :: iso_fortran_env, only: real128,real64,real32, int64,int32,int16,int8, input_unit, output_unit
@@ -19,7 +18,7 @@ module io_fortran_lib
     !! Definitions and Interfaces ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     character(len=1), parameter :: nl = new_line('a')                                             !! New line character
 
-    character(len=*), dimension(*), parameter :: text_ext = [ 'csv', 'txt', 'ods', 'odf', 'odm', 'odt',  &
+    character(len=*), dimension(*), parameter :: text_ext = [ 'csv', 'txt', 'ods', 'odf', 'odm', 'odt', &
                                                               'xls', 'doc', 'log', 'rtf', 'org', 'dbf' ]
 
     character(len=*), dimension(*), parameter :: binary_ext = [ 'dat', 'bin' ]
