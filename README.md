@@ -43,7 +43,7 @@ header = [ 'firstcol', 'secondcol' ]
 
 is not standard Fortran 2018 since the strings in the array do not have identical length. Some compilers will accept this and others will not. If required, simply add padding spaces to the left or right of each string to match the length of the longest element. These padding spaces will not be present in the output file.
 
-Additionally, some compilers may allocate strings dynamically on the stack. When reading very large text files, this may result in a segmentation fault unless the compiler is directed to allocate everything on the heap. For example, one would specify `-heap-arrays 0` for the Intel Fortran compiler on Linux (`/heap-arrays:0` on Windows).
+Additionally, some compilers may allocate strings dynamically on the stack. When reading very large text files, this may result in a stack overflow or segmentation fault unless the compiler is directed to allocate everything on the heap. For example, one would specify `-heap-arrays 0` for the Intel Fortran compiler on Linux (`/heap-arrays:0` on Windows).
 
 ## `pure function str`
 
