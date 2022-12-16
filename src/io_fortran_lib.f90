@@ -4934,7 +4934,11 @@ submodule (io_fortran_lib) internal_io
             write(unit=str_tmp, fmt='(es'//str(l)//'.'//str(decimals_)//'e4)', decimal=decimal) x
             x_str = trim(adjustl(str_tmp))
         else if ( fmt_ == 'f' ) then
-            e = int(log10(abs(x)))
+            if ( abs(x) /= 0.0_real128 ) then
+                e = int(log10(abs(x)))
+            else
+                e = 0
+            end if
 
             associate ( max_precision => ceiling( 1.0 + log10(real(radix(x)))*digits(x) ) )
                 if ( e == 0 ) then
@@ -5043,7 +5047,11 @@ submodule (io_fortran_lib) internal_io
             write(unit=str_tmp, fmt='(es'//str(l)//'.'//str(decimals_)//'e3)', decimal=decimal) x
             x_str = trim(adjustl(str_tmp))
         else if ( fmt_ == 'f' ) then
-            e = int(log10(abs(x)))
+            if ( abs(x) /= 0.0_real64 ) then
+                e = int(log10(abs(x)))
+            else
+                e = 0
+            end if
 
             associate ( max_precision => ceiling( 1.0 + log10(real(radix(x)))*digits(x) ) )
                 if ( e == 0 ) then
@@ -5152,7 +5160,11 @@ submodule (io_fortran_lib) internal_io
             write(unit=str_tmp, fmt='(es'//str(l)//'.'//str(decimals_)//'e2)', decimal=decimal) x
             x_str = trim(adjustl(str_tmp))
         else if ( fmt_ == 'f' ) then
-            e = int(log10(abs(x)))
+            if ( abs(x) /= 0.0_real32 ) then
+                e = int(log10(abs(x)))
+            else
+                e = 0
+            end if
 
             associate ( max_precision => ceiling( 1.0 + log10(real(radix(x)))*digits(x) ) )
                 if ( e == 0 ) then
