@@ -8,13 +8,10 @@ license: MIT
 creation_date: %Y-%m-%d %H:%M %z
 print_creation_date: true
 project_github: https://github.com/acbbullock/IO-Fortran-Library
+md_extensions: markdown.extensions.toc
 ---
 
-* [Purpose](#purpose)
-* [Scope](#scope)
-* [How to Use](#how-to-use)
-* [Important User Information](#important-user-information)
-* [License](#license)
+[TOC]
 
 # API Documentation
 
