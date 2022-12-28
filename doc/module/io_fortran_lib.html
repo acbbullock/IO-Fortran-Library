@@ -183,7 +183,7 @@
     
     <div class="col-md-9" id='text'>
     <p>This module defines common I/O procedures for arrays of complex, real, integer, and character type. Common
-operations include printing array slices to stdout, reading/writing multidimensional arrays from/to text files
+operations include printing array sections, reading/writing multidimensional arrays from/to text files
 and binary files. Functions for number -&gt; string conversion are provided as well as a simple text logging
 routine. This module is F2018 compliant, has no external dependencies, and has a max line length of 120.</p>
 <br>        <div class="panel panel-default">
@@ -332,6 +332,8 @@ parameter
     </div>
       <div class="panel-body">
         <p>Public interface for printing array sections to stdout.</p>
+<p>Note that the default values of the optional arguments of aprint are different than for <code>str</code> and <code>to_file</code>,
+with <code>fmt='f'</code> and <code>decimals=2</code> for <code>x</code> of type <code>real</code> or <code>complex</code>, and <code>im='j'</code> for <code>x</code> of type <code>complex</code>.</p>
       </div>
     <ul class="list-group">
           <li class="list-group-item">
@@ -1750,7 +1752,11 @@ parameter
       </h3>
     </div>
       <div class="panel-body">
-        <p>Public interface for writing a number as a string.</p>
+        <p>Public interface for representing a number as a string.</p>
+<p>By default, the function <code>str</code> will write a <code>real</code> or <code>complex</code> number using a number of significant digits
+required in the worst case for a lossless round-trip conversion starting with the internal model
+representation of <code>x</code>. The <code>decimals</code> argument specifies the number of digits to write on the rhs of the
+radix point, which has a maximum allowed by precision, and a minimum of zero.</p>
       </div>
     <ul class="list-group">
           <li class="list-group-item">
@@ -2569,6 +2575,15 @@ parameter
     </div>
       <div class="panel-body">
         <p>Public interface for writing an array to an external file.</p>
+<p>Text writes are allowed if <code>x</code> has rank <code>1</code> or <code>2</code>, and binary writes are allowed if <code>x</code> has any rank
+<code>1</code>-<code>15</code>. For <code>x</code> of rank <code>1</code>, the <code>header</code> may be of size <code>1</code> or <code>size(x)</code> and the <code>dim</code> argument specifies
+whether to write along the rows (<code>dim=1</code>) or along the columns (<code>dim=2</code>), choosing the former by default
+unless <code>size(header) == size(x)</code>. For <code>x</code> of rank <code>2</code>, the <code>header</code> may be of size <code>1</code> or <code>size(x, dim=2)</code>.
+The <code>locale</code>, <code>fmt</code>, <code>decimals</code>, and <code>im</code> arguments are precisely as they are for the <code>str</code> function, and
+are honored in precisely the same ways, with <code>locale</code> additionally determining the default delimiter. It is
+always recommended to omit the delimiter argument for default unless a custom delimiter is really necessary.
+Any invalid actual arguments will be ignored, defaults will be assumed, and a warning message will be issued
+on stdout.</p>
       </div>
     <ul class="list-group">
           <li class="list-group-item">
@@ -12032,6 +12047,15 @@ parameter
     </div>
       <div class="panel-body">
         <p>Public interface for reading an external file into an array.</p>
+<p>The corresponding actual argument of <code>into</code> must be <code>allocatable</code>, and will lose its allocation status if
+already allocated upon passing into <code>from_file</code>. As a result, <code>from_file</code> does not allow reading into
+sections of already allocated arrays. If <code>im</code> is not present when reading textual complex data into an array
+of rank <code>1</code> or <code>2</code>, the data will be assumed to be in ordered pair form. When reading binary data,
+<code>data_shape</code> must be present and its size must equal the rank of <code>into</code> for the read to be valid. In the
+event that any actual arguments provided to <code>from_file</code> are invalid, the subprogram will not allow
+progression of execution of the caller and will issue an <code>error stop</code>. This is due to the critical nature of
+reads and the fact that the procedure may not be able to make the proper assumptions about the data being
+read.</p>
       </div>
     <ul class="list-group">
           <li class="list-group-item">
@@ -24175,6 +24199,9 @@ parameter
     </div>
       <div class="panel-body">
         <p>Public interface for writing a string to an external file.</p>
+<p>The routine <code>echo</code> will write <code>string</code> to file literally, including any new line characters added on the
+part of the programmer, only inserting a new line at the end of the input string. The named file will be
+created if it does not already exist, and will be overwritten if <code>append == .false.</code> (if it already exists).</p>
       </div>
     <ul class="list-group">
           <li class="list-group-item">
@@ -24264,9 +24291,7 @@ parameter
       </h3>
     </div>
     <div class="panel-body">
-      <p>This type is provided primarily for the purpose of standard compliance when needing to declare arrays of
-strings in which the elements may have non-identical lengths or for which the lengths of elements may need
-to vary during run-time.</p>
+      <p>Public wrapper type for an allocatable string.</p><a href="../type/string.html" class="pull-right"><emph>Read more&hellip;</emph></a>
 
         <h4>Components</h4>
           <table class="table table-striped varlist">
@@ -24327,7 +24352,7 @@ to vary during run-time.</p>
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2022-12-27 19:53            </p>
+ on 2022-12-28 01:57            </p>
         </div>
       </div>
       <br>

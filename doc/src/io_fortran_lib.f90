@@ -1,7 +1,7 @@
 module io_fortran_lib
     !------------------------------------------------------------------------------------------------------------------
     !!  This module defines common I/O procedures for arrays of complex, real, integer, and character type. Common
-    !!  operations include printing array slices to stdout, reading/writing multidimensional arrays from/to text files
+    !!  operations include printing array sections, reading/writing multidimensional arrays from/to text files
     !!  and binary files. Functions for number -> string conversion are provided as well as a simple text logging
     !!  routine. This module is F2018 compliant, has no external dependencies, and has a max line length of 120.
     !------------------------------------------------------------------------------------------------------------------
@@ -33,14 +33,23 @@ module io_fortran_lib
     character(len=*), dimension(*), parameter :: locales    = [ 'US', 'EU' ]                ! Allowed locale specifiers
 
     type String                                                                            ! Simple string wrapper type
+        !--------------------------------------------------------------------------------------------------------------
+        !! Public wrapper type for an allocatable string.
+        !!
         !! This type is provided primarily for the purpose of standard compliance when needing to declare arrays of
         !! strings in which the elements may have non-identical lengths or for which the lengths of elements may need
         !! to vary during run-time.
+        !--------------------------------------------------------------------------------------------------------------
         character(len=:), allocatable :: s
     end type String
 
     interface aprint                                                                         ! Submodule array_printing
+        !--------------------------------------------------------------------------------------------------------------
         !! Public interface for printing array sections to stdout.
+        !!
+        !! Note that the default values of the optional arguments of aprint are different than for `str` and `to_file`,
+        !! with `fmt='f'` and `decimals=2` for `x` of type `real` or `complex`, and `im='j'` for `x` of type `complex`.
+        !--------------------------------------------------------------------------------------------------------------
         impure module subroutine aprint_1dc128(x, fmt, decimals, im)
             complex(real128), dimension(:), intent(in) :: x
             character(len=*), intent(in), optional :: fmt
@@ -155,7 +164,14 @@ module io_fortran_lib
     end interface
 
     interface str                                                                               ! Submodule internal_io
-        !! Public interface for writing a number as a string.
+        !--------------------------------------------------------------------------------------------------------------
+        !! Public interface for representing a number as a string.
+        !!
+        !! By default, the function `str` will write a `real` or `complex` number using a number of significant digits
+        !! required in the worst case for a lossless round-trip conversion starting with the internal model
+        !! representation of `x`. The `decimals` argument specifies the number of digits to write on the rhs of the
+        !! radix point, which has a maximum allowed by precision, and a minimum of zero.
+        !--------------------------------------------------------------------------------------------------------------
         pure module function str_c128(x, locale, fmt, decimals, im) result(x_str)
             complex(real128), intent(in) :: x
             character(len=*), intent(in), optional :: locale
@@ -226,7 +242,19 @@ module io_fortran_lib
     end interface
 
     interface to_file                                                                               ! Submodule file_io
+        !--------------------------------------------------------------------------------------------------------------
         !! Public interface for writing an array to an external file.
+        !!
+        !! Text writes are allowed if `x` has rank `1` or `2`, and binary writes are allowed if `x` has any rank
+        !! `1`-`15`. For `x` of rank `1`, the `header` may be of size `1` or `size(x)` and the `dim` argument specifies
+        !! whether to write along the rows (`dim=1`) or along the columns (`dim=2`), choosing the former by default
+        !! unless `size(header) == size(x)`. For `x` of rank `2`, the `header` may be of size `1` or `size(x, dim=2)`.
+        !! The `locale`, `fmt`, `decimals`, and `im` arguments are precisely as they are for the `str` function, and
+        !! are honored in precisely the same ways, with `locale` additionally determining the default delimiter. It is
+        !! always recommended to omit the delimiter argument for default unless a custom delimiter is really necessary.
+        !! Any invalid actual arguments will be ignored, defaults will be assumed, and a warning message will be issued
+        !! on stdout.
+        !--------------------------------------------------------------------------------------------------------------
         impure module subroutine to_file_1dc128(x, file_name, header, dim, locale, delim, fmt, decimals, im)
             complex(real128), dimension(:), intent(in) :: x
             character(len=*), intent(in) :: file_name
@@ -974,7 +1002,19 @@ module io_fortran_lib
     end interface
 
     interface from_file                                                                             ! Submodule file_io
+        !--------------------------------------------------------------------------------------------------------------
         !! Public interface for reading an external file into an array.
+        !!
+        !! The corresponding actual argument of `into` must be `allocatable`, and will lose its allocation status if
+        !! already allocated upon passing into `from_file`. As a result, `from_file` does not allow reading into
+        !! sections of already allocated arrays. If `im` is not present when reading textual complex data into an array
+        !! of rank `1` or `2`, the data will be assumed to be in ordered pair form. When reading binary data,
+        !! `data_shape` must be present and its size must equal the rank of `into` for the read to be valid. In the
+        !! event that any actual arguments provided to `from_file` are invalid, the subprogram will not allow
+        !! progression of execution of the caller and will issue an `error stop`. This is due to the critical nature of
+        !! reads and the fact that the procedure may not be able to make the proper assumptions about the data being
+        !! read.
+        !--------------------------------------------------------------------------------------------------------------
         impure module subroutine from_textfile_1dc128(file_name, into, header, locale, fmt, im)
             character(len=*), intent(in) :: file_name
             complex(real128), allocatable, dimension(:), intent(out) :: into
@@ -1910,7 +1950,13 @@ module io_fortran_lib
     end interface
 
     interface echo                                                                                  ! Submodule text_io
+        !--------------------------------------------------------------------------------------------------------------
         !! Public interface for writing a string to an external file.
+        !!
+        !! The routine `echo` will write `string` to file literally, including any new line characters added on the
+        !! part of the programmer, only inserting a new line at the end of the input string. The named file will be
+        !! created if it does not already exist, and will be overwritten if `append == .false.` (if it already exists).
+        !--------------------------------------------------------------------------------------------------------------
         impure module subroutine echo_string(string, file_name, append)
             character(len=*), intent(in) :: string
             character(len=*), intent(in) :: file_name
