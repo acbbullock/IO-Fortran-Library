@@ -30,7 +30,7 @@ The following is a complete list of publicly accessible interfaces:
 * [`interface from_file`](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/from_file.html): A subroutine for reading an external file into an array.
 * [`interface aprint`](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/aprint.html): A subroutine for printing array sections to stdout.
 
-See the [Important User Information](https://acbbullock.github.io/IO-Fortran-Library/doc/page/user-info.html) and [reference guide](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/index.html) for information on calling the interfaces.
+See the [Important User Information](https://acbbullock.github.io/IO-Fortran-Library/doc/page/user-info.html) and [reference guide](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/index.html) for information on calling the routines.
 
 ## License
 
