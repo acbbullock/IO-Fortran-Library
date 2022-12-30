@@ -39,7 +39,7 @@ To use `io_fortran_lib` with your [fpm](https://github.com/fortran-lang/fpm) pro
 IO-Fortran-Library = { git="https://github.com/acbbullock/IO-Fortran-Library", branch="main" }
 ```
 
-See the [Important User Information](page/user-info.html) and [reference guide](page/Ref/index.html) for information on calling the [interfaces](lists/procedures.html).
+See the [Important User Information](page/user-info.html) and [reference guide](page/Ref/index.html) for information on calling the [routines](lists/procedures.html).
 
 ## License
 
