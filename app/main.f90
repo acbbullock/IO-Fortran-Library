@@ -1,7 +1,7 @@
-!!---------------------------------------------------------------------------------------------------------------------
-!!  This program contains passing tests for the text processing routines of the IO Fortran Library.
-!!---------------------------------------------------------------------------------------------------------------------
 program main
+    !------------------------------------------------------------------------------------------------------------------
+    !!  This program contains passing tests for the text processing routines of the IO Fortran Library.
+    !------------------------------------------------------------------------------------------------------------------
     use, intrinsic :: iso_fortran_env, only: rk=>real64, ik=>int32, compiler_version, compiler_options
     use io_fortran_lib
     implicit none (type,external)
