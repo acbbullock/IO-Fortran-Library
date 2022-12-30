@@ -39,10 +39,11 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="../index.html">IO-Fortran-Library </a>
+          <a class="navbar-brand" href="../index.html">IO-Fortran-Library <small>1.1.0</small></a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
+            <li><a href='../page/index.html'>API Design</a></li>
             <li class="dropdown hidden-xs visible-sm visible-md hidden-lg">
               <a href="#" class="dropdown-toggle"
               data-toggle="dropdown" role="button"
@@ -182,9 +183,9 @@
     </div>
     
     <div class="col-md-9" id='text'>
-    <p>This module defines common I/O procedures for arrays of complex, real, integer, and character type. Common
-operations include printing array sections, reading/writing multidimensional arrays from/to text files
-and binary files. Functions for number -&gt; string conversion are provided as well as a simple text logging
+    <p>This module provides common I/O routines for arrays of complex, real, integer, and character type. Such
+routines include printing array sections and reading/writing multidimensional arrays from/to text files
+and binary files. An interface for number -&gt; string conversion is provided as well as a simple text logging
 routine. This module is F2018 compliant, has no external dependencies, and has a max line length of 120.</p>
 <br>        <div class="panel panel-default">
       <div class="panel-heading">
@@ -312,7 +313,8 @@ parameter
 <td> =</td>
                 <td>new_line('a')</td>
             <td>
-                <p>New line character constant</p>
+                <p>This is the new line character constant, provided for the purpose of inserting new lines into strings without
+needing to call the <code>new_line</code> intrinsic each time.</p>
             </td>
         </tr>
     </tbody>
@@ -331,9 +333,8 @@ parameter
       </h3>
     </div>
       <div class="panel-body">
-        <p>Public interface for printing array sections to stdout.</p>
-<p>Note that the default values of the optional arguments of aprint are different than for <code>str</code> and <code>to_file</code>,
-with <code>fmt='f'</code> and <code>decimals=2</code> for <code>x</code> of type <code>real</code> or <code>complex</code>, and <code>im='j'</code> for <code>x</code> of type <code>complex</code>.</p>
+        <p>Subroutine for printing array sections to stdout.</p>
+<p>For a user reference, see <a href="../page/Ref/aprint.html">aprint</a>.</p>
       </div>
     <ul class="list-group">
           <li class="list-group-item">
@@ -1752,11 +1753,11 @@ with <code>fmt='f'</code> and <code>decimals=2</code> for <code>x</code> of type
       </h3>
     </div>
       <div class="panel-body">
-        <p>Public interface for representing a number as a string.</p>
-<p>By default, the function <code>str</code> will write a <code>real</code> or <code>complex</code> number using a number of significant digits
+        <p>Function for representing a number as a string.</p>
+<p>By default behavior, <code>str</code> will write a <code>real</code> or <code>complex</code> number using a number of significant digits
 required in the worst case for a lossless round-trip conversion starting with the internal model
-representation of <code>x</code>. The <code>decimals</code> argument specifies the number of digits to write on the rhs of the
-radix point, which has a maximum allowed by precision, and a minimum of zero.</p>
+representation of <code>x</code>.</p>
+<p>For a user reference, see <a href="../page/Ref/str.html">str</a>.</p>
       </div>
     <ul class="list-group">
           <li class="list-group-item">
@@ -2574,16 +2575,12 @@ radix point, which has a maximum allowed by precision, and a minimum of zero.</p
       </h3>
     </div>
       <div class="panel-body">
-        <p>Public interface for writing an array to an external file.</p>
-<p>Text writes are allowed if <code>x</code> has rank <code>1</code> or <code>2</code>, and binary writes are allowed if <code>x</code> has any rank
-<code>1</code>-<code>15</code>. For <code>x</code> of rank <code>1</code>, the <code>header</code> may be of size <code>1</code> or <code>size(x)</code> and the <code>dim</code> argument specifies
-whether to write along the rows (<code>dim=1</code>) or along the columns (<code>dim=2</code>), choosing the former by default
-unless <code>size(header) == size(x)</code>. For <code>x</code> of rank <code>2</code>, the <code>header</code> may be of size <code>1</code> or <code>size(x, dim=2)</code>.
-The <code>locale</code>, <code>fmt</code>, <code>decimals</code>, and <code>im</code> arguments are precisely as they are for the <code>str</code> function, and
-are honored in precisely the same ways, with <code>locale</code> additionally determining the default delimiter. It is
-always recommended to omit the delimiter argument for default unless a custom delimiter is really necessary.
-Any invalid actual arguments will be ignored, defaults will be assumed, and a warning message will be issued
-on stdout.</p>
+        <p>Subroutine for writing an array to an external file.</p>
+<p>The file <code>file_name</code> will be created if it does not already exist and will be overwritten if it does exist.
+Writing to text is allowed for arrays of rank <code>1</code> or <code>2</code>, and writing to binary is allowed for arrays of any
+rank <code>1</code>-<code>15</code>. Any invalid actual arguments will be ignored, defaults will be assumed, and a warning message
+will be issued on stdout.</p>
+<p>For a user reference, see <a href="../page/Ref/to_file.html">to_file</a>.</p>
       </div>
     <ul class="list-group">
           <li class="list-group-item">
@@ -12046,16 +12043,12 @@ on stdout.</p>
       </h3>
     </div>
       <div class="panel-body">
-        <p>Public interface for reading an external file into an array.</p>
-<p>The corresponding actual argument of <code>into</code> must be <code>allocatable</code>, and will lose its allocation status if
-already allocated upon passing into <code>from_file</code>. As a result, <code>from_file</code> does not allow reading into
-sections of already allocated arrays. If <code>im</code> is not present when reading textual complex data into an array
-of rank <code>1</code> or <code>2</code>, the data will be assumed to be in ordered pair form. When reading binary data,
-<code>data_shape</code> must be present and its size must equal the rank of <code>into</code> for the read to be valid. In the
-event that any actual arguments provided to <code>from_file</code> are invalid, the subprogram will not allow
+        <p>Subroutine for reading an external file into an array.</p>
+<p>In the event that any actual arguments provided to <code>from_file</code> are invalid, the subprogram will not allow
 progression of execution of the caller and will issue an <code>error stop</code>. This is due to the critical nature of
 reads and the fact that the procedure may not be able to make the proper assumptions about the data being
 read.</p>
+<p>For a user reference, see <a href="../page/Ref/from_file.html">from_file</a>.</p>
       </div>
     <ul class="list-group">
           <li class="list-group-item">
@@ -24198,10 +24191,10 @@ read.</p>
       </h3>
     </div>
       <div class="panel-body">
-        <p>Public interface for writing a string to an external file.</p>
-<p>The routine <code>echo</code> will write <code>string</code> to file literally, including any new line characters added on the
-part of the programmer, only inserting a new line at the end of the input string. The named file will be
-created if it does not already exist, and will be overwritten if <code>append == .false.</code> (if it already exists).</p>
+        <p>Subroutine for writing a string to an external file.</p>
+<p>The file <code>file_name</code> will be created if it does not already exist and will be overwritten if <code>append</code> is
+<code>.false.</code> (if it already exists), with a new line always being inserted at the end of <code>string</code>.</p>
+<p>For a user reference, see <a href="../page/Ref/echo.html">echo</a>.</p>
       </div>
     <ul class="list-group">
           <li class="list-group-item">
@@ -24352,7 +24345,7 @@ created if it does not already exist, and will be overwritten if <code>append ==
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2022-12-28 04:42            </p>
+ on 2022-12-30 03:53            </p>
         </div>
       </div>
       <br>
