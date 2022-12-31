@@ -5,7 +5,7 @@ author: Austin C Bullock
 
 ## [interface to_file](../../interface/to_file.html)
 
-If `x` is `integer` and rank `1`, `2`:
+For `x` of type `integer` and of rank `1`, `2`:
 
 ```fortran
 call to_file(x, file_name, header, dim, delim, fmt)
@@ -21,7 +21,7 @@ call to_file(x, file_name, header, delim, fmt)
 * `delim` is `optional` and of type `character(len=*)`
 * `fmt` is `optional`, may be one of `int_fmts`
 
-If `x` is `real` and rank `1`, `2`:
+For `x` of type `real` and of rank `1`, `2`:
 
 ```fortran
 call to_file(x, file_name, header, dim, locale, delim, fmt, decimals)
@@ -39,7 +39,7 @@ call to_file(x, file_name, header, locale, delim, fmt, decimals)
 * `fmt` is `optional`, may be one of `real_fmts`
 * `decimals` is `optional` and of type `integer`
 
-If `x` is `complex` and rank `1`, `2`:
+For `x` of type `complex` and of rank `1`, `2`:
 
 ```fortran
 call to_file(x, file_name, header, dim, locale, delim, fmt, decimals, im)
@@ -58,7 +58,7 @@ call to_file(x, file_name, header, locale, delim, fmt, decimals, im)
 * `decimals` is `optional` and of type `integer`
 * `im` is `optional` and of type `character(len=*)`
 
-If `x` is any rank `3`-`15` and of type `integer`, `real`, `complex`:
+For `x` of any rank `3`-`15` and of type `integer`, `real`, `complex`:
 
 ```fortran
 call to_file(x, file_name)
@@ -70,7 +70,7 @@ call to_file(x, file_name)
 
 ### Optional Arguments
 
-Header (default is none): `header` is a [character array literal](../user-info.html#compiler-dependent-behavior). For `x` of rank `1`, `header` may be of size `1` or `size(x)`. For `x` of rank `2`, `header` may be of size `1` or `size(x, dim=2)`.
+Header (default is none): `header` is a [character array literal](../UserInfo/compilers.html). For `x` of rank `1`, `header` may be of size `1` or `size(x)`. For `x` of rank `2`, `header` may be of size `1` or `size(x, dim=2)`.
 
 Dimension: `dim` specifies whether to write along the rows (`dim=1`) or along the columns (`dim=2`), choosing the former by default unless `size(header)` is `size(x)`.
 
@@ -94,6 +94,6 @@ Real formats (default is `'e'`):
 real_fmts = [ 'e', 'f', 'z' ]
 ```
 
-Decimals: `decimals` specifies the number of digits on the rhs of the radix point, with a default determined internally based on the [text format](../user-info.html) and precision.
+Decimals: `decimals` specifies the number of digits on the rhs of the radix point, with a default determined internally based on the [text format](../UserInfo/text-fmts.html) and precision.
 
 Imaginary unit: `im` specifies the form of a complex number. By default, `complex` numbers will be written as ordered pairs, e.g. `(2.45,3.45)`. If `im` is specified, then the number will be written as a sum with the specified imaginary unit, e.g. `2.45+3.45j` for `im='j'` or `2.45+3.45*1i` for `im='*1i'`.
