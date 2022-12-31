@@ -99,7 +99,7 @@
   <div class="row">
     <div class="col-md-9 col-md-push-3" id='text'>
       <h2 id="interface-to_file"><a href="../../interface/to_file.html">interface to_file</a></h2>
-<p>If <code>x</code> is <code>integer</code> and rank <code>1</code>, <code>2</code>:</p>
+<p>For <code>x</code> of type <code>integer</code> and of rank <code>1</code>, <code>2</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">to_file</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">file_name</span><span class="p">,</span><span class="w"> </span><span class="n">header</span><span class="p">,</span><span class="w"> </span><span class="nb">dim</span><span class="p">,</span><span class="w"> </span><span class="n">delim</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 
@@ -113,7 +113,7 @@
 <li><code>delim</code> is <code>optional</code> and of type <code>character(len=*)</code></li>
 <li><code>fmt</code> is <code>optional</code>, may be one of <code>int_fmts</code></li>
 </ul>
-<p>If <code>x</code> is <code>real</code> and rank <code>1</code>, <code>2</code>:</p>
+<p>For <code>x</code> of type <code>real</code> and of rank <code>1</code>, <code>2</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">to_file</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">file_name</span><span class="p">,</span><span class="w"> </span><span class="n">header</span><span class="p">,</span><span class="w"> </span><span class="nb">dim</span><span class="p">,</span><span class="w"> </span><span class="n">locale</span><span class="p">,</span><span class="w"> </span><span class="n">delim</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">,</span><span class="w"> </span><span class="n">decimals</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 
@@ -129,7 +129,7 @@
 <li><code>fmt</code> is <code>optional</code>, may be one of <code>real_fmts</code></li>
 <li><code>decimals</code> is <code>optional</code> and of type <code>integer</code></li>
 </ul>
-<p>If <code>x</code> is <code>complex</code> and rank <code>1</code>, <code>2</code>:</p>
+<p>For <code>x</code> of type <code>complex</code> and of rank <code>1</code>, <code>2</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">to_file</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">file_name</span><span class="p">,</span><span class="w"> </span><span class="n">header</span><span class="p">,</span><span class="w"> </span><span class="nb">dim</span><span class="p">,</span><span class="w"> </span><span class="n">locale</span><span class="p">,</span><span class="w"> </span><span class="n">delim</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">,</span><span class="w"> </span><span class="n">decimals</span><span class="p">,</span><span class="w"> </span><span class="n">im</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 
@@ -146,7 +146,7 @@
 <li><code>decimals</code> is <code>optional</code> and of type <code>integer</code></li>
 <li><code>im</code> is <code>optional</code> and of type <code>character(len=*)</code></li>
 </ul>
-<p>If <code>x</code> is any rank <code>3</code>-<code>15</code> and of type <code>integer</code>, <code>real</code>, <code>complex</code>:</p>
+<p>For <code>x</code> of any rank <code>3</code>-<code>15</code> and of type <code>integer</code>, <code>real</code>, <code>complex</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">to_file</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">file_name</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 
@@ -155,7 +155,7 @@
 </ul>
 <p></p><div class="alert alert-warning" role="alert"><h4>Warning</h4><p><code>file_name</code> may be a relative path, but absolute paths are not guaranteed to work on every platform.</p></div>
 <h3 id="optional-arguments">Optional Arguments</h3>
-<p>Header (default is none): <code>header</code> is a <a href="../user-info.html#compiler-dependent-behavior">character array literal</a>. For <code>x</code> of rank <code>1</code>, <code>header</code> may be of size <code>1</code> or <code>size(x)</code>. For <code>x</code> of rank <code>2</code>, <code>header</code> may be of size <code>1</code> or <code>size(x, dim=2)</code>.</p>
+<p>Header (default is none): <code>header</code> is a <a href="../UserInfo/compilers.html">character array literal</a>. For <code>x</code> of rank <code>1</code>, <code>header</code> may be of size <code>1</code> or <code>size(x)</code>. For <code>x</code> of rank <code>2</code>, <code>header</code> may be of size <code>1</code> or <code>size(x, dim=2)</code>.</p>
 <p>Dimension: <code>dim</code> specifies whether to write along the rows (<code>dim=1</code>) or along the columns (<code>dim=2</code>), choosing the former by default unless <code>size(header)</code> is <code>size(x)</code>.</p>
 <p>Locales (default is <code>'US'</code>):</p>
 <div class="codehilite"><pre><span></span><code><span class="n">locales</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s1">&#39;US&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;EU&#39;</span><span class="w"> </span><span class="p">]</span><span class="w"></span>
@@ -170,7 +170,7 @@
 <div class="codehilite"><pre><span></span><code><span class="n">real_fmts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s1">&#39;e&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;f&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;z&#39;</span><span class="w"> </span><span class="p">]</span><span class="w"></span>
 </code></pre></div>
 
-<p>Decimals: <code>decimals</code> specifies the number of digits on the rhs of the radix point, with a default determined internally based on the <a href="../user-info.html">text format</a> and precision.</p>
+<p>Decimals: <code>decimals</code> specifies the number of digits on the rhs of the radix point, with a default determined internally based on the <a href="../UserInfo/text-fmts.html">text format</a> and precision.</p>
 <p>Imaginary unit: <code>im</code> specifies the form of a complex number. By default, <code>complex</code> numbers will be written as ordered pairs, e.g. <code>(2.45,3.45)</code>. If <code>im</code> is specified, then the number will be written as a sum with the specified imaginary unit, e.g. <code>2.45+3.45j</code> for <code>im='j'</code> or <code>2.45+3.45*1i</code> for <code>im='*1i'</code>.</p>
     </div>
     <div class="col-md-3 col-md-pull-9">
@@ -182,7 +182,25 @@
           <hr>
           <ul class="nav nav-stacked nav-pills">
             <li role="presentation">
-            <a href='../../page/./user-info.html'>Important User Information</a>
+            <a href='../../page/UserInfo/index.html'>Important User Information</a>
+            <ul class="nav nav-stacked nav-pills">
+                          <li role="presentation">
+            <a href='../../page/UserInfo/text-fmts.html'>Numeric text formats</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/UserInfo/locale-fmts.html'>Locales</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/UserInfo/file-ext.html'>File extensions</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/UserInfo/compilers.html'>Compiler-dependent behavior</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/UserInfo/thread-safety.html'>Thread safety</a>
+            </li>
+
+            </ul>
             </li>
             <li role="presentation">
             <a href='../../page/Ref/index.html'>Reference Guide</a>
@@ -205,6 +223,21 @@
 
             </ul>
             </li>
+            <li role="presentation">
+            <a href='../../page/Examples/index.html'>Tutorials</a>
+            <ul class="nav nav-stacked nav-pills">
+                          <li role="presentation">
+            <a href='../../page/Examples/csv.html'>csv file IO</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Examples/binary.html'>binary file IO</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Examples/logging.html'>log file output</a>
+            </li>
+
+            </ul>
+            </li>
           </ul>
         </div>
     </div>
@@ -221,7 +254,7 @@
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2022-12-30 03:53            </p>
+ on 2022-12-30 18:42            </p>
         </div>
       </div>
       <br>

@@ -1,8 +1,9 @@
 ---
 title: API Design
 author: Austin C Bullock
-ordered_subpage: user-info.md
+ordered_subpage: UserInfo
 ordered_subpage: Ref
+ordered_subpage: Examples
 ---
 
 The API is made available for use through the following statement:

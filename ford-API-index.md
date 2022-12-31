@@ -26,7 +26,7 @@ The purpose of this project is to provide accessible and flexible interfaces for
 
 ## Scope
 
-The IO Fortran Library is a Fortran module [[io_fortran_lib]] which provides high level routines for doing internal and external IO. In particular, the module provides a handful of generic interfaces for performing string-based and array-based IO that are useful for recording program data, reading data into programs, and for writing formatted logs and output. For instance, one may write/read numeric data to/from `.csv` and `.dat` files, represent single numbers as strings inside of a string expression, and efficiently write strings to a `.log` file.
+The IO Fortran Library is a Fortran module [[io_fortran_lib]] which provides high level routines for doing internal and external I/O. In particular, the module provides a handful of generic interfaces for performing string-based and array-based I/O that are useful for recording program data, reading data into programs, and for writing formatted logs and output. For instance, one may write/read numeric data to/from `.csv` and `.dat` files, represent single numbers as strings inside of a string expression, and efficiently write strings to a `.log` file.
 
 @note The module is fully self-contained, with no external dependencies, and is written to be portable and compliant to the Fortran 2018 standard such that no special extensions or compiler options should be required. All generic interfaces which take numeric arguments support all of the standard kinds provided by the intrinsic `iso_fortran_env` module, including `int8`, `int16`, `int32`, `int64`, `real32`, `real64`, and `real128`. All array-based routines additionally support up to rank 15.
 
@@ -39,7 +39,7 @@ To use `io_fortran_lib` with your [fpm](https://github.com/fortran-lang/fpm) pro
 IO-Fortran-Library = { git="https://github.com/acbbullock/IO-Fortran-Library", branch="main" }
 ```
 
-See the [Important User Information](page/user-info.html) and [reference guide](page/Ref/index.html) for information on calling the [routines](lists/procedures.html).
+See the [important user information](page/UserInfo/index.html) and [reference guide](page/Ref/index.html) for information about calling the [routines](lists/procedures.html), and further see the [tutorials](page/Examples/index.html) for complete example programs.
 
 ## License
 
