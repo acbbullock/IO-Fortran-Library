@@ -1,5 +1,5 @@
 ---
-title: binary file IO
+title: binary file I/O
 author: Austin C Bullock
 ---
 

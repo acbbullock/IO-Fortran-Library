@@ -30,7 +30,7 @@ The following links to the documentation provide user instructions for each of t
 * [`interface from_file`](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/from_file.html): A subroutine for reading an external file into an array.
 * [`interface aprint`](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/aprint.html): A subroutine for printing arrays and array sections to stdout.
 
-See the [Important User Information](https://acbbullock.github.io/IO-Fortran-Library/doc/page/UserInfo/index.html) and [reference guide](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/index.html) for information about calling the routines, and further see the [tutorials](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Examples/index.html) for complete example programs.
+See the [important user information](https://acbbullock.github.io/IO-Fortran-Library/doc/page/UserInfo/index.html) and [reference guide](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/index.html) for information about calling the routines, and further see the [tutorials](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Examples/index.html) for complete example programs.
 
 ## License
 
