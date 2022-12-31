@@ -10,7 +10,7 @@ module io_fortran_lib
     implicit none (type,external)                                                     ! No implicit types or interfaces
     private
 
-    ! Public APIs ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ! Public API list ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     public :: aprint, to_file, from_file                                                                    ! Array I/O
     public :: str, echo                                                                                    ! String I/O
     public :: nl                                                                                            ! Constants
@@ -162,6 +162,14 @@ module io_fortran_lib
         impure recursive module subroutine aprint_2dchar(x)
             character(len=*), dimension(:,:), intent(in) :: x
         end subroutine aprint_2dchar
+
+        impure recursive module subroutine aprint_1dString(x)
+            type(String), dimension(:), intent(in) :: x
+        end subroutine aprint_1dString
+
+        impure recursive module subroutine aprint_2dString(x)
+            type(String), dimension(:,:), intent(in) :: x
+        end subroutine aprint_2dString
     end interface
 
     interface str                                                                               ! Submodule internal_io
@@ -3803,7 +3811,7 @@ submodule (io_fortran_lib) array_printing
     module procedure aprint_1dc128
         character(len=:), allocatable, dimension(:) :: x_str
         character(len=:), allocatable :: fmt_, im_, xre_max_str, xre_min_str, xim_max_str, xim_min_str
-        integer :: i, n_rows, decimals_, l
+        integer :: i, decimals_, l
 
         if ( .not. present(fmt) ) then
             fmt_ = 'f'
@@ -3828,8 +3836,6 @@ submodule (io_fortran_lib) array_printing
             im_ = trim(adjustl(im))
         end if
 
-        n_rows = size(x)
-
         if ( len(im_) > 0 ) then
             l = len(im_)
         else
@@ -3853,9 +3859,9 @@ submodule (io_fortran_lib) array_printing
             l = l + len(xim_min_str)
         end if
 
-        allocate( character(len=l) :: x_str(n_rows) )
+        allocate( character(len=l) :: x_str(lbound(x, dim=1):ubound(x, dim=1)) )
 
-        do concurrent (i = 1:n_rows)
+        do concurrent (i = lbound(x, dim=1):ubound(x, dim=1))
             x_str(i) = str(x(i), fmt=fmt_, decimals=decimals_, im=im_)
         end do
 
@@ -3864,7 +3870,7 @@ submodule (io_fortran_lib) array_printing
     module procedure aprint_1dc64
         character(len=:), allocatable, dimension(:) :: x_str
         character(len=:), allocatable :: fmt_, im_, xre_max_str, xre_min_str, xim_max_str, xim_min_str
-        integer :: i, n_rows, decimals_, l
+        integer :: i, decimals_, l
 
         if ( .not. present(fmt) ) then
             fmt_ = 'f'
@@ -3889,8 +3895,6 @@ submodule (io_fortran_lib) array_printing
             im_ = trim(adjustl(im))
         end if
 
-        n_rows = size(x)
-
         if ( len(im_) > 0 ) then
             l = len(im_)
         else
@@ -3914,9 +3918,9 @@ submodule (io_fortran_lib) array_printing
             l = l + len(xim_min_str)
         end if
 
-        allocate( character(len=l) :: x_str(n_rows) )
+        allocate( character(len=l) :: x_str(lbound(x, dim=1):ubound(x, dim=1)) )
 
-        do concurrent (i = 1:n_rows)
+        do concurrent (i = lbound(x, dim=1):ubound(x, dim=1))
             x_str(i) = str(x(i), fmt=fmt_, decimals=decimals_, im=im_)
         end do
 
@@ -3925,7 +3929,7 @@ submodule (io_fortran_lib) array_printing
     module procedure aprint_1dc32
         character(len=:), allocatable, dimension(:) :: x_str
         character(len=:), allocatable :: fmt_, im_, xre_max_str, xre_min_str, xim_max_str, xim_min_str
-        integer :: i, n_rows, decimals_, l
+        integer :: i, decimals_, l
 
         if ( .not. present(fmt) ) then
             fmt_ = 'f'
@@ -3950,8 +3954,6 @@ submodule (io_fortran_lib) array_printing
             im_ = trim(adjustl(im))
         end if
 
-        n_rows = size(x)
-
         if ( len(im_) > 0 ) then
             l = len(im_)
         else
@@ -3975,9 +3977,9 @@ submodule (io_fortran_lib) array_printing
             l = l + len(xim_min_str)
         end if
 
-        allocate( character(len=l) :: x_str(n_rows) )
+        allocate( character(len=l) :: x_str(lbound(x, dim=1):ubound(x, dim=1)) )
 
-        do concurrent (i = 1:n_rows)
+        do concurrent (i = lbound(x, dim=1):ubound(x, dim=1))
             x_str(i) = str(x(i), fmt=fmt_, decimals=decimals_, im=im_)
         end do
 
@@ -3987,7 +3989,7 @@ submodule (io_fortran_lib) array_printing
     module procedure aprint_2dc128
         character(len=:), allocatable, dimension(:,:) :: x_str
         character(len=:), allocatable :: fmt_, im_, xre_max_str, xre_min_str, xim_max_str, xim_min_str
-        integer :: i, j, n_rows, n_columns, decimals_, l
+        integer :: i, j, decimals_, l
 
         if ( .not. present(fmt) ) then
             fmt_ = 'f'
@@ -4012,9 +4014,6 @@ submodule (io_fortran_lib) array_printing
             im_ = trim(adjustl(im))
         end if
 
-        n_rows = size(x, dim=1)
-        n_columns = size(x, dim=2)
-
         if ( len(im_) > 0 ) then
             l = len(im_)
         else
@@ -4038,9 +4037,9 @@ submodule (io_fortran_lib) array_printing
             l = l + len(xim_min_str)
         end if
 
-        allocate( character(len=l) :: x_str(n_rows, n_columns) )
+        allocate( character(len=l) :: x_str(lbound(x, dim=1):ubound(x, dim=1), lbound(x, dim=2):ubound(x, dim=2)) )
 
-        do concurrent (j = 1:n_columns, i = 1:n_rows)
+        do concurrent (j = lbound(x, dim=2):ubound(x, dim=2), i = lbound(x, dim=1):ubound(x, dim=1))
             x_str(i,j) = str(x(i,j), fmt=fmt_, decimals=decimals_, im=im_)
         end do
 
@@ -4049,7 +4048,7 @@ submodule (io_fortran_lib) array_printing
     module procedure aprint_2dc64
         character(len=:), allocatable, dimension(:,:) :: x_str
         character(len=:), allocatable :: fmt_, im_, xre_max_str, xre_min_str, xim_max_str, xim_min_str
-        integer :: i, j, n_rows, n_columns, decimals_, l
+        integer :: i, j, decimals_, l
 
         if ( .not. present(fmt) ) then
             fmt_ = 'f'
@@ -4074,9 +4073,6 @@ submodule (io_fortran_lib) array_printing
             im_ = trim(adjustl(im))
         end if
 
-        n_rows = size(x, dim=1)
-        n_columns = size(x, dim=2)
-
         if ( len(im_) > 0 ) then
             l = len(im_)
         else
@@ -4100,9 +4096,9 @@ submodule (io_fortran_lib) array_printing
             l = l + len(xim_min_str)
         end if
 
-        allocate( character(len=l) :: x_str(n_rows, n_columns) )
+        allocate( character(len=l) :: x_str(lbound(x, dim=1):ubound(x, dim=1), lbound(x, dim=2):ubound(x, dim=2)) )
 
-        do concurrent (j = 1:n_columns, i = 1:n_rows)
+        do concurrent (j = lbound(x, dim=2):ubound(x, dim=2), i = lbound(x, dim=1):ubound(x, dim=1))
             x_str(i,j) = str(x(i,j), fmt=fmt_, decimals=decimals_, im=im_)
         end do
 
@@ -4111,7 +4107,7 @@ submodule (io_fortran_lib) array_printing
     module procedure aprint_2dc32
         character(len=:), allocatable, dimension(:,:) :: x_str
         character(len=:), allocatable :: fmt_, im_, xre_max_str, xre_min_str, xim_max_str, xim_min_str
-        integer :: i, j, n_rows, n_columns, decimals_, l
+        integer :: i, j, decimals_, l
 
         if ( .not. present(fmt) ) then
             fmt_ = 'f'
@@ -4136,9 +4132,6 @@ submodule (io_fortran_lib) array_printing
             im_ = trim(adjustl(im))
         end if
 
-        n_rows = size(x, dim=1)
-        n_columns = size(x, dim=2)
-
         if ( len(im_) > 0 ) then
             l = len(im_)
         else
@@ -4162,9 +4155,9 @@ submodule (io_fortran_lib) array_printing
             l = l + len(xim_min_str)
         end if
 
-        allocate( character(len=l) :: x_str(n_rows, n_columns) )
+        allocate( character(len=l) :: x_str(lbound(x, dim=1):ubound(x, dim=1), lbound(x, dim=2):ubound(x, dim=2)) )
 
-        do concurrent (j = 1:n_columns, i = 1:n_rows)
+        do concurrent (j = lbound(x, dim=2):ubound(x, dim=2), i = lbound(x, dim=1):ubound(x, dim=1))
             x_str(i,j) = str(x(i,j), fmt=fmt_, decimals=decimals_, im=im_)
         end do
 
@@ -4174,7 +4167,7 @@ submodule (io_fortran_lib) array_printing
     module procedure aprint_1dr128
         character(len=:), allocatable, dimension(:) :: x_str
         character(len=:), allocatable :: fmt_, x_max_str, x_min_str, x_abs_min_str, source
-        integer :: i, n_rows, decimals_
+        integer :: i, decimals_
 
         if ( .not. present(fmt) ) then
             fmt_ = 'f'
@@ -4193,8 +4186,6 @@ submodule (io_fortran_lib) array_printing
             decimals_ = decimals
         end if
 
-        n_rows = size(x)
-
         x_max_str = str(maxval(x), fmt=fmt_, decimals=decimals_)
         x_min_str = str(minval(x), fmt=fmt_, decimals=decimals_)
         x_abs_min_str = str(minval(abs(x)), fmt=fmt_, decimals=decimals_)
@@ -4207,9 +4198,9 @@ submodule (io_fortran_lib) array_printing
 
         if ( len(x_abs_min_str) > len(source) ) source = x_abs_min_str
 
-        allocate( x_str(n_rows), source=source )
+        allocate( x_str(lbound(x, dim=1):ubound(x, dim=1)), source=source )
 
-        do concurrent (i = 1:n_rows)
+        do concurrent (i = lbound(x, dim=1):ubound(x, dim=1))
             x_str(i) = str(x(i), fmt=fmt_, decimals=decimals_)
         end do
 
@@ -4218,7 +4209,7 @@ submodule (io_fortran_lib) array_printing
     module procedure aprint_1dr64
         character(len=:), allocatable, dimension(:) :: x_str
         character(len=:), allocatable :: fmt_, x_max_str, x_min_str, x_abs_min_str, source
-        integer :: i, n_rows, decimals_
+        integer :: i, decimals_
 
         if ( .not. present(fmt) ) then
             fmt_ = 'f'
@@ -4237,8 +4228,6 @@ submodule (io_fortran_lib) array_printing
             decimals_ = decimals
         end if
 
-        n_rows = size(x)
-
         x_max_str = str(maxval(x), fmt=fmt_, decimals=decimals_)
         x_min_str = str(minval(x), fmt=fmt_, decimals=decimals_)
         x_abs_min_str = str(minval(abs(x)), fmt=fmt_, decimals=decimals_)
@@ -4251,9 +4240,9 @@ submodule (io_fortran_lib) array_printing
 
         if ( len(x_abs_min_str) > len(source) ) source = x_abs_min_str
 
-        allocate( x_str(n_rows), source=source )
+        allocate( x_str(lbound(x, dim=1):ubound(x, dim=1)), source=source )
 
-        do concurrent (i = 1:n_rows)
+        do concurrent (i = lbound(x, dim=1):ubound(x, dim=1))
             x_str(i) = str(x(i), fmt=fmt_, decimals=decimals_)
         end do
 
@@ -4262,7 +4251,7 @@ submodule (io_fortran_lib) array_printing
     module procedure aprint_1dr32
         character(len=:), allocatable, dimension(:) :: x_str
         character(len=:), allocatable :: fmt_, x_max_str, x_min_str, x_abs_min_str, source
-        integer :: i, n_rows, decimals_
+        integer :: i, decimals_
 
         if ( .not. present(fmt) ) then
             fmt_ = 'f'
@@ -4281,8 +4270,6 @@ submodule (io_fortran_lib) array_printing
             decimals_ = decimals
         end if
 
-        n_rows = size(x)
-
         x_max_str = str(maxval(x), fmt=fmt_, decimals=decimals_)
         x_min_str = str(minval(x), fmt=fmt_, decimals=decimals_)
         x_abs_min_str = str(minval(abs(x)), fmt=fmt_, decimals=decimals_)
@@ -4295,9 +4282,9 @@ submodule (io_fortran_lib) array_printing
 
         if ( len(x_abs_min_str) > len(source) ) source = x_abs_min_str
 
-        allocate( x_str(n_rows), source=source )
+        allocate( x_str(lbound(x, dim=1):ubound(x, dim=1)), source=source )
 
-        do concurrent (i = 1:n_rows)
+        do concurrent (i = lbound(x, dim=1):ubound(x, dim=1))
             x_str(i) = str(x(i), fmt=fmt_, decimals=decimals_)
         end do
 
@@ -4307,7 +4294,7 @@ submodule (io_fortran_lib) array_printing
     module procedure aprint_2dr128
         character(len=:), allocatable, dimension(:,:) :: x_str
         character(len=:), allocatable :: fmt_, x_max_str, x_min_str, x_abs_min_str, source
-        integer :: i, j, n_rows, n_columns, decimals_
+        integer :: i, j, decimals_
 
         if ( .not. present(fmt) ) then
             fmt_ = 'f'
@@ -4326,9 +4313,6 @@ submodule (io_fortran_lib) array_printing
             decimals_ = decimals
         end if
 
-        n_rows = size(x, dim=1)
-        n_columns = size(x, dim=2)
-
         x_max_str = str(maxval(x), fmt=fmt_, decimals=decimals_)
         x_min_str = str(minval(x), fmt=fmt_, decimals=decimals_)
         x_abs_min_str = str(minval(abs(x)), fmt=fmt_, decimals=decimals_)
@@ -4341,9 +4325,9 @@ submodule (io_fortran_lib) array_printing
 
         if ( len(x_abs_min_str) > len(source) ) source = x_abs_min_str
 
-        allocate( x_str(n_rows, n_columns), source=source )
+        allocate( x_str(lbound(x, dim=1):ubound(x, dim=1), lbound(x, dim=2):ubound(x, dim=2)), source=source )
 
-        do concurrent (j = 1:n_columns, i = 1:n_rows)
+        do concurrent (j = lbound(x, dim=2):ubound(x, dim=2), i = lbound(x, dim=1):ubound(x, dim=1))
             x_str(i,j) = str(x(i,j), fmt=fmt_, decimals=decimals_)
         end do
 
@@ -4352,7 +4336,7 @@ submodule (io_fortran_lib) array_printing
     module procedure aprint_2dr64
         character(len=:), allocatable, dimension(:,:) :: x_str
         character(len=:), allocatable :: fmt_, x_max_str, x_min_str, x_abs_min_str, source
-        integer :: i, j, n_rows, n_columns, decimals_
+        integer :: i, j, decimals_
 
         if ( .not. present(fmt) ) then
             fmt_ = 'f'
@@ -4371,9 +4355,6 @@ submodule (io_fortran_lib) array_printing
             decimals_ = decimals
         end if
 
-        n_rows = size(x, dim=1)
-        n_columns = size(x, dim=2)
-
         x_max_str = str(maxval(x), fmt=fmt_, decimals=decimals_)
         x_min_str = str(minval(x), fmt=fmt_, decimals=decimals_)
         x_abs_min_str = str(minval(abs(x)), fmt=fmt_, decimals=decimals_)
@@ -4386,9 +4367,9 @@ submodule (io_fortran_lib) array_printing
 
         if ( len(x_abs_min_str) > len(source) ) source = x_abs_min_str
 
-        allocate( x_str(n_rows, n_columns), source=source )
+        allocate( x_str(lbound(x, dim=1):ubound(x, dim=1), lbound(x, dim=2):ubound(x, dim=2)), source=source )
 
-        do concurrent (j = 1:n_columns, i = 1:n_rows)
+        do concurrent (j = lbound(x, dim=2):ubound(x, dim=2), i = lbound(x, dim=1):ubound(x, dim=1))
             x_str(i,j) = str(x(i,j), fmt=fmt_, decimals=decimals_)
         end do
 
@@ -4397,7 +4378,7 @@ submodule (io_fortran_lib) array_printing
     module procedure aprint_2dr32
         character(len=:), allocatable, dimension(:,:) :: x_str
         character(len=:), allocatable :: fmt_, x_max_str, x_min_str, x_abs_min_str, source
-        integer :: i, j, n_rows, n_columns, decimals_
+        integer :: i, j, decimals_
 
         if ( .not. present(fmt) ) then
             fmt_ = 'f'
@@ -4416,9 +4397,6 @@ submodule (io_fortran_lib) array_printing
             decimals_ = decimals
         end if
 
-        n_rows = size(x, dim=1)
-        n_columns = size(x, dim=2)
-
         x_max_str = str(maxval(x), fmt=fmt_, decimals=decimals_)
         x_min_str = str(minval(x), fmt=fmt_, decimals=decimals_)
         x_abs_min_str = str(minval(abs(x)), fmt=fmt_, decimals=decimals_)
@@ -4431,9 +4409,9 @@ submodule (io_fortran_lib) array_printing
 
         if ( len(x_abs_min_str) > len(source) ) source = x_abs_min_str
 
-        allocate( x_str(n_rows, n_columns), source=source )
+        allocate( x_str(lbound(x, dim=1):ubound(x, dim=1), lbound(x, dim=2):ubound(x, dim=2)), source=source )
 
-        do concurrent (j = 1:n_columns, i = 1:n_rows)
+        do concurrent (j = lbound(x, dim=2):ubound(x, dim=2), i = lbound(x, dim=1):ubound(x, dim=1))
             x_str(i,j) = str(x(i,j), fmt=fmt_, decimals=decimals_)
         end do
 
@@ -4443,7 +4421,7 @@ submodule (io_fortran_lib) array_printing
     module procedure aprint_1di64
         character(len=:), allocatable, dimension(:) :: x_str
         character(len=:), allocatable :: fmt_, x_max_str, x_min_str, source
-        integer :: i, n_rows
+        integer :: i
 
         if ( .not. present(fmt) ) then
             fmt_ = 'i'
@@ -4456,8 +4434,6 @@ submodule (io_fortran_lib) array_printing
             end if
         end if
 
-        n_rows = size(x)
-
         x_max_str = str(maxval(x), fmt=fmt_)
         x_min_str = str(minval(x), fmt=fmt_)
 
@@ -4467,9 +4443,9 @@ submodule (io_fortran_lib) array_printing
             source = x_min_str
         end if
 
-        allocate( x_str(n_rows), source=source )
+        allocate( x_str(lbound(x, dim=1):ubound(x, dim=1)), source=source )
 
-        do concurrent (i = 1:n_rows)
+        do concurrent (i = lbound(x, dim=1):ubound(x, dim=1))
             x_str(i) = str(x(i), fmt=fmt_)
         end do
 
@@ -4478,7 +4454,7 @@ submodule (io_fortran_lib) array_printing
     module procedure aprint_1di32
         character(len=:), allocatable, dimension(:) :: x_str
         character(len=:), allocatable :: fmt_, x_max_str, x_min_str, source
-        integer :: i, n_rows
+        integer :: i
 
         if ( .not. present(fmt) ) then
             fmt_ = 'i'
@@ -4491,8 +4467,6 @@ submodule (io_fortran_lib) array_printing
             end if
         end if
 
-        n_rows = size(x)
-
         x_max_str = str(maxval(x), fmt=fmt_)
         x_min_str = str(minval(x), fmt=fmt_)
 
@@ -4502,9 +4476,9 @@ submodule (io_fortran_lib) array_printing
             source = x_min_str
         end if
 
-        allocate( x_str(n_rows), source=source )
+        allocate( x_str(lbound(x, dim=1):ubound(x, dim=1)), source=source )
 
-        do concurrent (i = 1:n_rows)
+        do concurrent (i = lbound(x, dim=1):ubound(x, dim=1))
             x_str(i) = str(x(i), fmt=fmt_)
         end do
 
@@ -4513,7 +4487,7 @@ submodule (io_fortran_lib) array_printing
     module procedure aprint_1di16
         character(len=:), allocatable, dimension(:) :: x_str
         character(len=:), allocatable :: fmt_, x_max_str, x_min_str, source
-        integer :: i, n_rows
+        integer :: i
 
         if ( .not. present(fmt) ) then
             fmt_ = 'i'
@@ -4526,8 +4500,6 @@ submodule (io_fortran_lib) array_printing
             end if
         end if
 
-        n_rows = size(x)
-
         x_max_str = str(maxval(x), fmt=fmt_)
         x_min_str = str(minval(x), fmt=fmt_)
 
@@ -4537,9 +4509,9 @@ submodule (io_fortran_lib) array_printing
             source = x_min_str
         end if
 
-        allocate( x_str(n_rows), source=source )
+        allocate( x_str(lbound(x, dim=1):ubound(x, dim=1)), source=source )
 
-        do concurrent (i = 1:n_rows)
+        do concurrent (i = lbound(x, dim=1):ubound(x, dim=1))
             x_str(i) = str(x(i), fmt=fmt_)
         end do
 
@@ -4548,7 +4520,7 @@ submodule (io_fortran_lib) array_printing
     module procedure aprint_1di8
         character(len=:), allocatable, dimension(:) :: x_str
         character(len=:), allocatable :: fmt_, x_max_str, x_min_str, source
-        integer :: i, n_rows
+        integer :: i
 
         if ( .not. present(fmt) ) then
             fmt_ = 'i'
@@ -4561,8 +4533,6 @@ submodule (io_fortran_lib) array_printing
             end if
         end if
 
-        n_rows = size(x)
-
         x_max_str = str(maxval(x), fmt=fmt_)
         x_min_str = str(minval(x), fmt=fmt_)
 
@@ -4572,9 +4542,9 @@ submodule (io_fortran_lib) array_printing
             source = x_min_str
         end if
 
-        allocate( x_str(n_rows), source=source )
+        allocate( x_str(lbound(x, dim=1):ubound(x, dim=1)), source=source )
 
-        do concurrent (i = 1:n_rows)
+        do concurrent (i = lbound(x, dim=1):ubound(x, dim=1))
             x_str(i) = str(x(i), fmt=fmt_)
         end do
 
@@ -4584,7 +4554,7 @@ submodule (io_fortran_lib) array_printing
     module procedure aprint_2di64
         character(len=:), allocatable, dimension(:,:) :: x_str
         character(len=:), allocatable :: fmt_, x_max_str, x_min_str, source, str_tmp
-        integer :: i, j, n_rows, n_columns
+        integer :: i, j
 
         if ( .not. present(fmt) ) then
             fmt_ = 'i'
@@ -4597,9 +4567,6 @@ submodule (io_fortran_lib) array_printing
             end if
         end if
 
-        n_rows = size(x, dim=1)
-        n_columns = size(x, dim=2)
-
         x_max_str = str(maxval(x), fmt=fmt_)
         x_min_str = str(minval(x), fmt=fmt_)
 
@@ -4609,9 +4576,9 @@ submodule (io_fortran_lib) array_printing
             source = x_min_str
         end if
 
-        allocate( x_str(n_rows, n_columns), source=source )
+        allocate( x_str(lbound(x, dim=1):ubound(x, dim=1), lbound(x, dim=2):ubound(x, dim=2)), source=source )
 
-        do concurrent (j = 1:n_columns, i = 1:n_rows)
+        do concurrent (j = lbound(x, dim=2):ubound(x, dim=2), i = lbound(x, dim=1):ubound(x, dim=1))
             x_str(i,j) = str(x(i,j), fmt=fmt_)
         end do
 
@@ -4620,7 +4587,7 @@ submodule (io_fortran_lib) array_printing
     module procedure aprint_2di32
         character(len=:), allocatable, dimension(:,:) :: x_str
         character(len=:), allocatable :: fmt_, x_max_str, x_min_str, source, str_tmp
-        integer :: i, j, n_rows, n_columns
+        integer :: i, j
 
         if ( .not. present(fmt) ) then
             fmt_ = 'i'
@@ -4633,9 +4600,6 @@ submodule (io_fortran_lib) array_printing
             end if
         end if
 
-        n_rows = size(x, dim=1)
-        n_columns = size(x, dim=2)
-
         x_max_str = str(maxval(x), fmt=fmt_)
         x_min_str = str(minval(x), fmt=fmt_)
 
@@ -4645,9 +4609,9 @@ submodule (io_fortran_lib) array_printing
             source = x_min_str
         end if
 
-        allocate( x_str(n_rows, n_columns), source=source )
+        allocate( x_str(lbound(x, dim=1):ubound(x, dim=1), lbound(x, dim=2):ubound(x, dim=2)), source=source )
 
-        do concurrent (j = 1:n_columns, i = 1:n_rows)
+        do concurrent (j = lbound(x, dim=2):ubound(x, dim=2), i = lbound(x, dim=1):ubound(x, dim=1))
             x_str(i,j) = str(x(i,j), fmt=fmt_)
         end do
 
@@ -4656,7 +4620,7 @@ submodule (io_fortran_lib) array_printing
     module procedure aprint_2di16
         character(len=:), allocatable, dimension(:,:) :: x_str
         character(len=:), allocatable :: fmt_, x_max_str, x_min_str, source, str_tmp
-        integer :: i, j, n_rows, n_columns
+        integer :: i, j
 
         if ( .not. present(fmt) ) then
             fmt_ = 'i'
@@ -4669,9 +4633,6 @@ submodule (io_fortran_lib) array_printing
             end if
         end if
 
-        n_rows = size(x, dim=1)
-        n_columns = size(x, dim=2)
-
         x_max_str = str(maxval(x), fmt=fmt_)
         x_min_str = str(minval(x), fmt=fmt_)
 
@@ -4681,9 +4642,9 @@ submodule (io_fortran_lib) array_printing
             source = x_min_str
         end if
 
-        allocate( x_str(n_rows, n_columns), source=source )
+        allocate( x_str(lbound(x, dim=1):ubound(x, dim=1), lbound(x, dim=2):ubound(x, dim=2)), source=source )
 
-        do concurrent (j = 1:n_columns, i = 1:n_rows)
+        do concurrent (j = lbound(x, dim=2):ubound(x, dim=2), i = lbound(x, dim=1):ubound(x, dim=1))
             x_str(i,j) = str(x(i,j), fmt=fmt_)
         end do
 
@@ -4692,7 +4653,7 @@ submodule (io_fortran_lib) array_printing
     module procedure aprint_2di8
         character(len=:), allocatable, dimension(:,:) :: x_str
         character(len=:), allocatable :: fmt_, x_max_str, x_min_str, source, str_tmp
-        integer :: i, j, n_rows, n_columns
+        integer :: i, j
 
         if ( .not. present(fmt) ) then
             fmt_ = 'i'
@@ -4705,9 +4666,6 @@ submodule (io_fortran_lib) array_printing
             end if
         end if
 
-        n_rows = size(x, dim=1)
-        n_columns = size(x, dim=2)
-
         x_max_str = str(maxval(x), fmt=fmt_)
         x_min_str = str(minval(x), fmt=fmt_)
 
@@ -4717,9 +4675,9 @@ submodule (io_fortran_lib) array_printing
             source = x_min_str
         end if
 
-        allocate( x_str(n_rows, n_columns), source=source )
+        allocate( x_str(lbound(x, dim=1):ubound(x, dim=1), lbound(x, dim=2):ubound(x, dim=2)), source=source )
 
-        do concurrent (j = 1:n_columns, i = 1:n_rows)
+        do concurrent (j = lbound(x, dim=2):ubound(x, dim=2), i = lbound(x, dim=1):ubound(x, dim=1))
             x_str(i,j) = str(x(i,j), fmt=fmt_)
         end do
 
@@ -4757,6 +4715,45 @@ submodule (io_fortran_lib) array_printing
         
         write(unit=*, fmt='(a)') '   ┣ '//to_str(x(ubound(x, dim=1),:), delim=' ', trimstring=.false.)//' ┫'//nl
     end procedure aprint_2dchar
+
+    module procedure aprint_1dString
+        integer :: i, max_length
+        character(len=:), allocatable, dimension(:) :: char_arr
+
+        max_length = 0
+        do i = lbound(x, dim=1), ubound(x, dim=1)
+            if ( len(x(i)%s) > max_length ) max_length = len(x(i)%s)
+        end do
+
+        allocate( character(len=max_length) :: char_arr(lbound(x, dim=1):ubound(x, dim=1)) )
+
+        do concurrent (i = lbound(x, dim=1):ubound(x, dim=1))
+            char_arr(i) = x(i)%s
+        end do
+
+        call aprint(char_arr)
+    end procedure aprint_1dString
+
+    module procedure aprint_2dString
+        integer :: i, j, max_length
+        character(len=:), allocatable, dimension(:,:) :: char_arr
+
+        max_length = 0
+        do j = lbound(x, dim=2), ubound(x, dim=2)
+            do i = lbound(x, dim=1), ubound(x, dim=1)
+                if ( len(x(i,j)%s) > max_length ) max_length = len(x(i,j)%s)
+            end do
+        end do
+
+        allocate( character(len=max_length) :: &
+                  char_arr(lbound(x, dim=1):ubound(x, dim=1), lbound(x, dim=2):ubound(x, dim=2)) )
+
+        do concurrent (j = lbound(x, dim=2):ubound(x, dim=2), i = lbound(x, dim=1):ubound(x, dim=1))
+            char_arr(i,j) = x(i,j)%s
+        end do
+
+        call aprint(char_arr)
+    end procedure aprint_2dString
 end submodule array_printing
 
 submodule (io_fortran_lib) internal_io
