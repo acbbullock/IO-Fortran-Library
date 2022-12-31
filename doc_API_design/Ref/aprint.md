@@ -5,7 +5,7 @@ author: Austin C Bullock
 
 ## [interface aprint](../../interface/aprint.html)
 
-For `x` of rank `1` or `2` and of type `character`:
+For `x` of rank `1` or `2` and of type `character`, [`String`](../../type/string.html):
 
 ```fortran
 call aprint(x)
