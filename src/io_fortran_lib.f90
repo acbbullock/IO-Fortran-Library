@@ -47,7 +47,7 @@ module io_fortran_lib
 
     interface aprint                                                                         ! Submodule array_printing
         !--------------------------------------------------------------------------------------------------------------
-        !! Subroutine for printing array sections to stdout.
+        !! Subroutine for printing arrays and array sections to stdout.
         !!
         !! For a user reference, see [aprint](../page/Ref/aprint.html).
         !--------------------------------------------------------------------------------------------------------------
