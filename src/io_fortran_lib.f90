@@ -13,8 +13,8 @@ module io_fortran_lib
     ! Public API list ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     public :: aprint, to_file, from_file                                                                    ! Array I/O
     public :: str, echo                                                                                    ! String I/O
-    public :: nl                                                                                            ! Constants
     public :: String                                                                                          ! Classes
+    public :: nl                                                                                            ! Constants
 
     ! Definitions and Interfaces ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     character(len=1), parameter :: nl = new_line('a')
@@ -34,16 +34,120 @@ module io_fortran_lib
 
     character(len=*), dimension(*), parameter :: locales    = [ 'US', 'EU' ]                ! Allowed locale specifiers
 
-    type String                                                                            ! Simple string wrapper type
+    type String                                                                                   ! String wrapper type
         !--------------------------------------------------------------------------------------------------------------
-        !! Public wrapper type for an allocatable string.
+        !! Wrapper type for an allocatable string.
         !!
         !! This type is provided primarily for the purpose of standard compliance when needing to declare arrays of
         !! strings in which the elements may have non-identical lengths or for which the lengths of elements may need
         !! to vary during run-time.
+        !!
+        !! The form and function of this type was influenced by Rust's
+        !! [String](https://doc.rust-lang.org/std/string/struct.String.html)
         !--------------------------------------------------------------------------------------------------------------
+        private
         character(len=:), allocatable :: s
+        contains
+            private
+            procedure, pass(self), public :: empty
+            procedure, pass(self), public :: len => length
+            procedure, pass(self), public :: push
+            procedure, pass(self), public :: print => print_String
+            procedure, nopass, public :: aprint => aprint_1dString, aprint_2dString
     end type String
+
+    interface String                                                                      ! Submodule String_procedures
+        !--------------------------------------------------------------------------------------------------------------
+        !! Constructors for type String
+        !--------------------------------------------------------------------------------------------------------------
+        pure elemental recursive type(String) module function new_Str_c128(x, locale, fmt, decimals, im) result(self)
+            complex(real128), intent(in) :: x
+            character(len=*), intent(in), optional :: locale
+            character(len=*), intent(in), optional :: fmt
+            integer, intent(in), optional :: decimals
+            character(len=*), intent(in), optional :: im
+        end function new_Str_c128
+        pure elemental recursive type(String) module function new_Str_c64(x, locale, fmt, decimals, im) result(self)
+            complex(real64), intent(in) :: x
+            character(len=*), intent(in), optional :: locale
+            character(len=*), intent(in), optional :: fmt
+            integer, intent(in), optional :: decimals
+            character(len=*), intent(in), optional :: im
+        end function new_Str_c64
+        pure elemental recursive type(String) module function new_Str_c32(x, locale, fmt, decimals, im) result(self)
+            complex(real32), intent(in) :: x
+            character(len=*), intent(in), optional :: locale
+            character(len=*), intent(in), optional :: fmt
+            integer, intent(in), optional :: decimals
+            character(len=*), intent(in), optional :: im
+        end function new_Str_c32
+
+        pure elemental recursive type(String) module function new_Str_r128(x, locale, fmt, decimals) result(self)
+            real(real128), intent(in) :: x
+            character(len=*), intent(in), optional :: locale
+            character(len=*), intent(in), optional :: fmt
+            integer, intent(in), optional :: decimals
+        end function new_Str_r128
+        pure elemental recursive type(String) module function new_Str_r64(x, locale, fmt, decimals) result(self)
+            real(real64), intent(in) :: x
+            character(len=*), intent(in), optional :: locale
+            character(len=*), intent(in), optional :: fmt
+            integer, intent(in), optional :: decimals
+        end function new_Str_r64
+        pure elemental recursive type(String) module function new_Str_r32(x, locale, fmt, decimals) result(self)
+            real(real32), intent(in) :: x
+            character(len=*), intent(in), optional :: locale
+            character(len=*), intent(in), optional :: fmt
+            integer, intent(in), optional :: decimals
+        end function new_Str_r32
+
+        pure elemental recursive type(String) module function new_Str_i64(x, fmt) result(self)
+            integer(int64), intent(in) :: x
+            character(len=*), intent(in), optional :: fmt
+        end function new_Str_i64
+        pure elemental recursive type(String) module function new_Str_i32(x, fmt) result(self)
+            integer(int32), intent(in) :: x
+            character(len=*), intent(in), optional :: fmt
+        end function new_Str_i32
+        pure elemental recursive type(String) module function new_Str_i16(x, fmt) result(self)
+            integer(int16), intent(in) :: x
+            character(len=*), intent(in), optional :: fmt
+        end function new_Str_i16
+        pure elemental recursive type(String) module function new_Str_i8(x, fmt) result(self)
+            integer(int8), intent(in) :: x
+            character(len=*), intent(in), optional :: fmt
+        end function new_Str_i8
+
+        pure elemental recursive type(String) module function new_Str_char(chars) result(self)
+            character(len=*), intent(in) :: chars
+        end function new_Str_char
+    end interface
+
+    interface                                                                             ! Submodule String_procedures
+        !--------------------------------------------------------------------------------------------------------------
+        !! Methods for type String
+        !--------------------------------------------------------------------------------------------------------------
+        pure elemental recursive module subroutine empty(self)
+            !! Sets component s to the empty string '' elementally.
+            class(String), intent(inout) :: self
+        end subroutine empty
+
+        pure elemental recursive integer module function length(self) result(self_len)
+            !! Returns length of component s elementally. Unallocated components return -1.
+            class(String), intent(in) :: self
+        end function length
+
+        pure elemental recursive module subroutine push(self, chars)
+            !! Appends chars to component s elementally.
+            class(String), intent(inout) :: self
+            character(len=*), intent(in) :: chars
+        end subroutine push
+
+        impure recursive module subroutine print_String(self)
+            !! Prints component s for non-array String
+            class(String), intent(in) :: self
+        end subroutine print_String
+    end interface
 
     interface aprint                                                                         ! Submodule array_printing
         !--------------------------------------------------------------------------------------------------------------
@@ -164,11 +268,11 @@ module io_fortran_lib
         end subroutine aprint_2dchar
 
         impure recursive module subroutine aprint_1dString(x)
-            type(String), dimension(:), intent(in) :: x
+            class(String), dimension(:), intent(in) :: x
         end subroutine aprint_1dString
 
         impure recursive module subroutine aprint_2dString(x)
-            type(String), dimension(:,:), intent(in) :: x
+            class(String), dimension(:,:), intent(in) :: x
         end subroutine aprint_2dString
     end interface
 
@@ -3805,6 +3909,316 @@ module io_fortran_lib
 
 end module io_fortran_lib
 
+submodule (io_fortran_lib) String_procedures
+    !! This submodule provides module procedure implementations for the **public interface** `String` and for the
+    !! **type-bound procedures** of type `String`.
+    contains
+    module procedure new_Str_c128
+        character(len=:), allocatable :: locale_, fmt_, im_
+        integer :: decimals_
+
+        if ( .not. present(locale) ) then
+            locale_ = 'US'
+        else
+            if ( any(locales == locale) ) then
+                locale_ = locale
+            else
+                locale_ = 'US'
+            end if
+        end if
+
+        if ( .not. present(fmt) ) then
+            fmt_ = 'e'
+        else
+            if ( any(real_fmts == fmt) ) then
+                fmt_ = fmt
+            else
+                fmt_ = 'e'
+            end if
+        end if
+
+        if ( .not. present(decimals) ) then
+            decimals_ = 150
+        else
+            decimals_ = decimals
+        end if
+
+        if ( .not. present(im) ) then
+            im_ = ''
+        else
+            im_ = trim(adjustl(im))
+        end if
+
+        self%s = str(x, locale=locale_, fmt=fmt_, decimals=decimals_, im=im_)
+    end procedure new_Str_c128
+    module procedure new_Str_c64
+        character(len=:), allocatable :: locale_, fmt_, im_
+        integer :: decimals_
+
+        if ( .not. present(locale) ) then
+            locale_ = 'US'
+        else
+            if ( any(locales == locale) ) then
+                locale_ = locale
+            else
+                locale_ = 'US'
+            end if
+        end if
+
+        if ( .not. present(fmt) ) then
+            fmt_ = 'e'
+        else
+            if ( any(real_fmts == fmt) ) then
+                fmt_ = fmt
+            else
+                fmt_ = 'e'
+            end if
+        end if
+
+        if ( .not. present(decimals) ) then
+            decimals_ = 150
+        else
+            decimals_ = decimals
+        end if
+
+        if ( .not. present(im) ) then
+            im_ = ''
+        else
+            im_ = trim(adjustl(im))
+        end if
+
+        self%s = str(x, locale=locale_, fmt=fmt_, decimals=decimals_, im=im_)
+    end procedure new_Str_c64
+    module procedure new_Str_c32
+        character(len=:), allocatable :: locale_, fmt_, im_
+        integer :: decimals_
+
+        if ( .not. present(locale) ) then
+            locale_ = 'US'
+        else
+            if ( any(locales == locale) ) then
+                locale_ = locale
+            else
+                locale_ = 'US'
+            end if
+        end if
+
+        if ( .not. present(fmt) ) then
+            fmt_ = 'e'
+        else
+            if ( any(real_fmts == fmt) ) then
+                fmt_ = fmt
+            else
+                fmt_ = 'e'
+            end if
+        end if
+
+        if ( .not. present(decimals) ) then
+            decimals_ = 150
+        else
+            decimals_ = decimals
+        end if
+
+        if ( .not. present(im) ) then
+            im_ = ''
+        else
+            im_ = trim(adjustl(im))
+        end if
+
+        self%s = str(x, locale=locale_, fmt=fmt_, decimals=decimals_, im=im_)
+    end procedure new_Str_c32
+
+    module procedure new_Str_r128
+        character(len=:), allocatable :: locale_, fmt_
+        integer :: decimals_
+
+        if ( .not. present(locale) ) then
+            locale_ = 'US'
+        else
+            if ( any(locales == locale) ) then
+                locale_ = locale
+            else
+                locale_ = 'US'
+            end if
+        end if
+
+        if ( .not. present(fmt) ) then
+            fmt_ = 'e'
+        else
+            if ( any(real_fmts == fmt) ) then
+                fmt_ = fmt
+            else
+                fmt_ = 'e'
+            end if
+        end if
+
+        if ( .not. present(decimals) ) then
+            decimals_ = 150
+        else
+            decimals_ = decimals
+        end if
+
+        self%s = str(x, locale=locale_, fmt=fmt_, decimals=decimals_)
+    end procedure new_Str_r128
+    module procedure new_Str_r64
+        character(len=:), allocatable :: locale_, fmt_
+        integer :: decimals_
+
+        if ( .not. present(locale) ) then
+            locale_ = 'US'
+        else
+            if ( any(locales == locale) ) then
+                locale_ = locale
+            else
+                locale_ = 'US'
+            end if
+        end if
+
+        if ( .not. present(fmt) ) then
+            fmt_ = 'e'
+        else
+            if ( any(real_fmts == fmt) ) then
+                fmt_ = fmt
+            else
+                fmt_ = 'e'
+            end if
+        end if
+
+        if ( .not. present(decimals) ) then
+            decimals_ = 150
+        else
+            decimals_ = decimals
+        end if
+
+        self%s = str(x, locale=locale_, fmt=fmt_, decimals=decimals_)
+    end procedure new_Str_r64
+    module procedure new_Str_r32
+        character(len=:), allocatable :: locale_, fmt_
+        integer :: decimals_
+
+        if ( .not. present(locale) ) then
+            locale_ = 'US'
+        else
+            if ( any(locales == locale) ) then
+                locale_ = locale
+            else
+                locale_ = 'US'
+            end if
+        end if
+
+        if ( .not. present(fmt) ) then
+            fmt_ = 'e'
+        else
+            if ( any(real_fmts == fmt) ) then
+                fmt_ = fmt
+            else
+                fmt_ = 'e'
+            end if
+        end if
+
+        if ( .not. present(decimals) ) then
+            decimals_ = 150
+        else
+            decimals_ = decimals
+        end if
+
+        self%s = str(x, locale=locale_, fmt=fmt_, decimals=decimals_)
+    end procedure new_Str_r32
+
+    module procedure new_Str_i64
+        character(len=:), allocatable :: fmt_
+
+        if ( .not. present(fmt) ) then
+            fmt_ = 'i'
+        else
+            if ( any(int_fmts == fmt) ) then
+                fmt_ = fmt
+            else
+                fmt_ = 'i'
+            end if
+        end if
+
+        self%s = str(x, fmt=fmt_)
+    end procedure new_Str_i64
+    module procedure new_Str_i32
+        character(len=:), allocatable :: fmt_
+
+        if ( .not. present(fmt) ) then
+            fmt_ = 'i'
+        else
+            if ( any(int_fmts == fmt) ) then
+                fmt_ = fmt
+            else
+                fmt_ = 'i'
+            end if
+        end if
+
+        self%s = str(x, fmt=fmt_)
+    end procedure new_Str_i32
+    module procedure new_Str_i16
+        character(len=:), allocatable :: fmt_
+
+        if ( .not. present(fmt) ) then
+            fmt_ = 'i'
+        else
+            if ( any(int_fmts == fmt) ) then
+                fmt_ = fmt
+            else
+                fmt_ = 'i'
+            end if
+        end if
+
+        self%s = str(x, fmt=fmt_)
+    end procedure new_Str_i16
+    module procedure new_Str_i8
+        character(len=:), allocatable :: fmt_
+
+        if ( .not. present(fmt) ) then
+            fmt_ = 'i'
+        else
+            if ( any(int_fmts == fmt) ) then
+                fmt_ = fmt
+            else
+                fmt_ = 'i'
+            end if
+        end if
+
+        self%s = str(x, fmt=fmt_)
+    end procedure new_Str_i8
+
+    module procedure new_Str_char
+        self%s = chars
+    end procedure new_Str_char
+
+    module procedure empty
+        self%s = ''
+    end procedure empty
+
+    module procedure length
+        if ( .not. allocated(self%s) ) then
+            self_len = -1
+        else
+            self_len = len(self%s)
+        end if
+    end procedure length
+
+    module procedure push
+        if ( .not. allocated(self%s) ) then
+            self%s = chars
+        else
+            self%s = self%s//chars
+        end if
+    end procedure push
+
+    module procedure print_String
+        if ( .not. allocated(self%s) ) then
+            write(*,'(a)') ''
+        else
+            write(*,'(a)') self%s
+        end if
+    end procedure print_String
+end submodule String_procedures
+
 submodule (io_fortran_lib) array_printing
     !! This submodule provides module procedure implementations for the **public interface** `aprint`.
     contains
@@ -4717,39 +5131,43 @@ submodule (io_fortran_lib) array_printing
     end procedure aprint_2dchar
 
     module procedure aprint_1dString
-        integer :: i, max_length
         character(len=:), allocatable, dimension(:) :: char_arr
+        integer, allocatable, dimension(:) :: lengths
+        integer :: i, max_length
 
-        max_length = 0
-        do i = lbound(x, dim=1), ubound(x, dim=1)
-            if ( len(x(i)%s) > max_length ) max_length = len(x(i)%s)
-        end do
+        lengths = x%len()
+        max_length = maxval(lengths)
 
         allocate( character(len=max_length) :: char_arr(lbound(x, dim=1):ubound(x, dim=1)) )
 
         do concurrent (i = lbound(x, dim=1):ubound(x, dim=1))
-            char_arr(i) = x(i)%s
+            if ( lengths(i) < 0 ) then
+                char_arr(i) = ''
+            else
+                char_arr(i) = x(i)%s
+            end if
         end do
 
         call aprint(char_arr)
     end procedure aprint_1dString
 
     module procedure aprint_2dString
-        integer :: i, j, max_length
         character(len=:), allocatable, dimension(:,:) :: char_arr
+        integer, allocatable, dimension(:,:) :: lengths
+        integer :: i, j, max_length
 
-        max_length = 0
-        do j = lbound(x, dim=2), ubound(x, dim=2)
-            do i = lbound(x, dim=1), ubound(x, dim=1)
-                if ( len(x(i,j)%s) > max_length ) max_length = len(x(i,j)%s)
-            end do
-        end do
+        lengths = x%len()
+        max_length = maxval(lengths)
 
         allocate( character(len=max_length) :: &
                   char_arr(lbound(x, dim=1):ubound(x, dim=1), lbound(x, dim=2):ubound(x, dim=2)) )
 
         do concurrent (j = lbound(x, dim=2):ubound(x, dim=2), i = lbound(x, dim=1):ubound(x, dim=1))
-            char_arr(i,j) = x(i,j)%s
+            if ( lengths(i,j) < 0 ) then
+                char_arr(i,j) = ''
+            else
+                char_arr(i,j) = x(i,j)%s
+            end if
         end do
 
         call aprint(char_arr)
