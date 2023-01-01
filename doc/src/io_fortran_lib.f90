@@ -36,19 +36,20 @@ module io_fortran_lib
 
     type String                                                                                   ! String wrapper type
         !--------------------------------------------------------------------------------------------------------------
-        !! Wrapper type for an allocatable string.
+        !! Wrapper type for an allocatable `character` string.
         !!
-        !! This type is provided primarily for the purpose of standard compliance when needing to declare arrays of
-        !! strings in which the elements may have non-identical lengths or for which the lengths of elements may need
-        !! to vary during run-time.
+        !! This type is provided for more advanced string handling needs and for the purpose of standard compliance
+        !! when needing to declare arrays of `character` strings in which the elements may have non-identical lengths
+        !! or for which the lengths of elements may need to vary during run-time.
         !!
         !! The form and function of this type was influenced by Rust's
         !! [String](https://doc.rust-lang.org/std/string/struct.String.html).
         !--------------------------------------------------------------------------------------------------------------
         private
-        character(len=:), allocatable :: s
+        character(len=:), allocatable :: s                                               !! Component is a string slice
         contains
             private
+            procedure, pass(self), public :: val
             procedure, pass(self), public :: empty
             procedure, pass(self), public :: len => length
             procedure, pass(self), public :: push
@@ -58,7 +59,12 @@ module io_fortran_lib
 
     interface String                                                                      ! Submodule String_procedures
         !--------------------------------------------------------------------------------------------------------------
-        !! Constructors for type String
+        !! Function for transforming numeric or string data into a type [String](../type/string.html).
+        !!
+        !! The interface for `String` is nearly identical to that of `str` but with a return type of `String`, allowing
+        !! for elemental assignments and access to the various `String` methods for more advanced string handling.
+        !!
+        !! For a user reference, see [String](../page/Ref/string.html).
         !--------------------------------------------------------------------------------------------------------------
         pure elemental recursive type(String) module function new_Str_c128(x, locale, fmt, decimals, im) result(self)
             complex(real128), intent(in) :: x
@@ -125,26 +131,32 @@ module io_fortran_lib
 
     interface                                                                             ! Submodule String_procedures
         !--------------------------------------------------------------------------------------------------------------
-        !! Methods for type String
+        !! Methods for type `String`.
         !--------------------------------------------------------------------------------------------------------------
+        pure recursive module function val(self) result(string_slice)
+            !! Returns a copy of the string slice owned by a non-array `String`.
+            class(String), intent(in) :: self
+            character(len=:), allocatable :: string_slice
+        end function val
+
         pure elemental recursive module subroutine empty(self)
-            !! Sets component s to the empty string '' elementally.
+            !! Sets the string slice to the empty string elementally.
             class(String), intent(inout) :: self
         end subroutine empty
 
         pure elemental recursive integer module function length(self) result(self_len)
-            !! Returns length of component s elementally. Unallocated components return -1.
+            !! Returns the length of the string slice elementally. Unallocated components return -1.
             class(String), intent(in) :: self
         end function length
 
         pure elemental recursive module subroutine push(self, chars)
-            !! Appends chars to component s elementally.
+            !! Appends chars to the string slice elementally.
             class(String), intent(inout) :: self
             character(len=*), intent(in) :: chars
         end subroutine push
 
         impure recursive module subroutine print_String(self)
-            !! Prints component s for non-array String
+            !! Prints the string slice for a non-array `String`.
             class(String), intent(in) :: self
         end subroutine print_String
     end interface
@@ -278,7 +290,7 @@ module io_fortran_lib
 
     interface str                                                                               ! Submodule internal_io
         !--------------------------------------------------------------------------------------------------------------
-        !! Function for representing a number as a string.
+        !! Function for representing a number as a `character` string.
         !!
         !! By default behavior, `str` will write a `real` or `complex` number using a number of significant digits
         !! required in the worst case for a lossless round-trip conversion starting with the internal model
@@ -4189,6 +4201,14 @@ submodule (io_fortran_lib) String_procedures
     module procedure new_Str_char
         self%s = chars
     end procedure new_Str_char
+
+    module procedure val
+        if ( .not. allocated(self%s) ) then
+            string_slice = ''
+        else
+            string_slice = self%s
+        end if
+    end procedure val
 
     module procedure empty
         self%s = ''

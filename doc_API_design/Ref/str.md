@@ -34,6 +34,8 @@ result = str(x, locale, fmt, decimals, im)
 * `decimals` is `optional` and of type `integer`
 * `im` is `optional` and of type `character(len=*)`
 
+@note The return value of `str` is of type `character`. As such, `str` is restricted to operate on scalars only since `character` arrays of non-identical length elements are not defined by the Fortran 2018 standard. For this functionality, see [String](string.html).
+
 ### Optional Arguments
 
 Integer formats (default is `'i'`):

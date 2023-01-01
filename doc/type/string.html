@@ -90,7 +90,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title="<p>100.0% of total for derived types.</p>Including implementation: 17 statements, 100.0% of total for derived types.">11 statements</a>
+               title="<p>100.0% of total for derived types.</p>Including implementation: 18 statements, 100.0% of total for derived types.">12 statements</a>
           </li>
 
             <li id="source-file">
@@ -155,6 +155,7 @@
       </div>
       <div id="boundprocs-0" class="panel-collapse collapse">
         <div class="list-group">
+            <a class="list-group-item" href="../type/string.html#boundprocedure-val">val</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-empty">empty</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-len">len</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-push">push</a>
@@ -174,10 +175,10 @@
     
     <div class="col-md-9" id='text'>
       <h2>type, public :: String</h2>
-    <p>Wrapper type for an allocatable string.</p>
-<p>This type is provided primarily for the purpose of standard compliance when needing to declare arrays of
-strings in which the elements may have non-identical lengths or for which the lengths of elements may need
-to vary during run-time.</p>
+    <p>Wrapper type for an allocatable <code>character</code> string.</p>
+<p>This type is provided for more advanced string handling needs and for the purpose of standard compliance
+when needing to declare arrays of <code>character</code> strings in which the elements may have non-identical lengths
+or for which the lengths of elements may need to vary during run-time.</p>
 <p>The form and function of this type was influenced by Rust's
 <a href="https://doc.rust-lang.org/std/string/struct.String.html">String</a>.</p>
     <br>
@@ -221,6 +222,7 @@ to vary during run-time.</p>
       </div>
       <div id="boundprocs-1" class="panel-collapse collapse">
         <div class="list-group">
+            <a class="list-group-item" href="../type/string.html#boundprocedure-val">val</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-empty">empty</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-len">len</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-push">push</a>
@@ -247,7 +249,10 @@ to vary during run-time.</p>
       </h3>
     </div>
       <div class="panel-body">
-        <p>Constructors for type String</p>
+        <p>Function for transforming numeric or string data into a type <a href="../type/string.html">String</a>.</p>
+<p>The interface for <code>String</code> is nearly identical to that of <code>str</code> but with a return type of <code>String</code>, allowing
+for elemental assignments and access to the various <code>String</code> methods for more advanced string handling.</p>
+<p>For a user reference, see <a href="../page/Ref/string.html">String</a>.</p>
       </div>
     <ul class="list-group">
           <li class="list-group-item">
@@ -1108,17 +1113,69 @@ to vary during run-time.</p>
       <section>
         <h2>Type-Bound Procedures</h2>
             <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-val"></span><h3>procedure, public, pass(self) :: <strong>val</strong>          
+    </h3></div>
+    <ul class="list-group">
+        <li class="list-group-item">
+              <h3>interface </h3>
+                  
+                <p>Methods for type <code>String</code>.</p>
+                  <h3>
+    private pure recursive module function val(self) result(string_slice)  
+</h3>
+  <p>Returns a copy of the string slice owned by a non-array <code>String</code>.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>self</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>character(len=:), allocatable</small>
+    </h4>
+    
+
+        </li>
+    </ul>
+  </div>
+
+            <div class="panel panel-default">
     <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-empty"></span><h3>procedure, public, pass(self) :: <strong>empty</strong>          
     </h3></div>
     <ul class="list-group">
         <li class="list-group-item">
               <h3>interface </h3>
                   
-                <p>Methods for type String</p>
+                <p>Methods for type <code>String</code>.</p>
                   <h3>
     private pure elemental recursive module subroutine empty(self)  
 </h3>
-  <p>Sets component s to the empty string '' elementally.</p>
+  <p>Sets the string slice to the empty string elementally.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1161,11 +1218,11 @@ to vary during run-time.</p>
         <li class="list-group-item">
               <h3>interface </h3>
                   
-                <p>Methods for type String</p>
+                <p>Methods for type <code>String</code>.</p>
                   <h3>
     private pure elemental recursive module function length(self) result(self_len)  
 </h3>
-  <p>Returns length of component s elementally. Unallocated components return -1.</p>
+  <p>Returns the length of the string slice elementally. Unallocated components return -1.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1213,11 +1270,11 @@ to vary during run-time.</p>
         <li class="list-group-item">
               <h3>interface </h3>
                   
-                <p>Methods for type String</p>
+                <p>Methods for type <code>String</code>.</p>
                   <h3>
     private pure elemental recursive module subroutine push(self, chars)  
 </h3>
-  <p>Appends chars to component s elementally.</p>
+  <p>Appends chars to the string slice elementally.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1275,11 +1332,11 @@ to vary during run-time.</p>
         <li class="list-group-item">
               <h3>interface </h3>
                   
-                <p>Methods for type String</p>
+                <p>Methods for type <code>String</code>.</p>
                   <h3>
     private impure recursive module subroutine print_String(self)  
 </h3>
-  <p>Prints component s for non-array String</p>
+  <p>Prints the string slice for a non-array <code>String</code>.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1414,14 +1471,14 @@ to vary during run-time.</p>
     <footer>
       <div class="container">
       <div class="row">
-        <div class="col-xs-6 col-md-6"><p>IO-Fortran-Library was developed by Austin C Bullock<br>&copy; 2022 <a rel="license" href="https://opensource.org/licenses/MIT">MIT</a>
+        <div class="col-xs-6 col-md-6"><p>IO-Fortran-Library was developed by Austin C Bullock<br>&copy; 2023 <a rel="license" href="https://opensource.org/licenses/MIT">MIT</a>
 </p>
         </div>
         <div class="col-xs-6 col-md-6">
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2022-12-31 17:29            </p>
+ on 2023-01-01 04:57            </p>
         </div>
       </div>
       <br>
