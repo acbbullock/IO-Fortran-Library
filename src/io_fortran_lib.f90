@@ -43,7 +43,7 @@ module io_fortran_lib
         !! to vary during run-time.
         !!
         !! The form and function of this type was influenced by Rust's
-        !! [String](https://doc.rust-lang.org/std/string/struct.String.html)
+        !! [String](https://doc.rust-lang.org/std/string/struct.String.html).
         !--------------------------------------------------------------------------------------------------------------
         private
         character(len=:), allocatable :: s

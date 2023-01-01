@@ -8,7 +8,7 @@
     <meta name="author" content="Austin C Bullock" >
     <link rel="icon" href="../favicon.png">
 
-    <title>String &ndash; IO-Fortran-Library </title>
+    <title>String &ndash; IO-Fortran-Library</title>
 
     <link href="../css/bootstrap.min.css" rel="stylesheet">
     <link href="../css/pygments.css" rel="stylesheet">
@@ -78,7 +78,7 @@
     <div class="container">
   <div class="row">
     <h1>String
-      <small>Derived Type</small>
+      <small>Interface</small>
       
     </h1>
       <div class="row" id="info-bar">
@@ -90,7 +90,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title="<p>100.0% of total for derived types.</p>Including implementation: 17 statements, 100.0% of total for derived types.">11 statements</a>
+               title="<p> 3.3% of total for procedures.</p>Including implementation: 60 statements,  3.3% of total for procedures.">60 statements</a>
           </li>
 
             <li id="source-file">
@@ -116,29 +116,11 @@
   
   <div class="row">
     <div class="col-md-3 hidden-xs hidden-sm visible-md visible-lg">
-      <div id="sidebar">
+        <div id="sidebar">
       <h3>Contents</h3>
   
   
   
-      <div class="panel panel-primary">
-      <div class="panel-heading text-left">
-        <h3 class="panel-title">
-          <a data-toggle="collapse" href="#cons-0">Constructor</a>
-        </h3>
-      </div>
-      <div id="cons-0" class="panel-collapse collapse">
-        <div class="list-group">
-            <a class="list-group-item" href="../type/string.html#interface-string">String</a>
-        </div>
-      </div>
-    </div>
-
-  
-  
-  
-  
-  
   
   
   
@@ -150,21 +132,32 @@
       <div class="panel panel-primary">
       <div class="panel-heading text-left">
         <h3 class="panel-title">
-          <a data-toggle="collapse" href="#boundprocs-0">Type-Bound Procedures</a>
+          <a data-toggle="collapse" href="#funcs-0">Functions</a>
         </h3>
       </div>
-      <div id="boundprocs-0" class="panel-collapse collapse">
+      <div id="funcs-0" class="panel-collapse collapse">
         <div class="list-group">
-            <a class="list-group-item" href="../type/string.html#boundprocedure-empty">empty</a>
-            <a class="list-group-item" href="../type/string.html#boundprocedure-len">len</a>
-            <a class="list-group-item" href="../type/string.html#boundprocedure-push">push</a>
-            <a class="list-group-item" href="../type/string.html#boundprocedure-print">print</a>
-            <a class="list-group-item" href="../type/string.html#boundprocedure-aprint_2dstring">aprint_2dString</a>
-            <a class="list-group-item" href="../type/string.html#boundprocedure-aprint">aprint</a>
+            <a class="list-group-item" href="../interface/string.html#proc-new_str_c128">new_Str_c128</a>
+            <a class="list-group-item" href="../interface/string.html#proc-new_str_c64">new_Str_c64</a>
+            <a class="list-group-item" href="../interface/string.html#proc-new_str_c32">new_Str_c32</a>
+            <a class="list-group-item" href="../interface/string.html#proc-new_str_r128">new_Str_r128</a>
+            <a class="list-group-item" href="../interface/string.html#proc-new_str_r64">new_Str_r64</a>
+            <a class="list-group-item" href="../interface/string.html#proc-new_str_r32">new_Str_r32</a>
+            <a class="list-group-item" href="../interface/string.html#proc-new_str_i64">new_Str_i64</a>
+            <a class="list-group-item" href="../interface/string.html#proc-new_str_i32">new_Str_i32</a>
+            <a class="list-group-item" href="../interface/string.html#proc-new_str_i16">new_Str_i16</a>
+            <a class="list-group-item" href="../interface/string.html#proc-new_str_i8">new_Str_i8</a>
+            <a class="list-group-item" href="../interface/string.html#proc-new_str_char">new_Str_char</a>
         </div>
       </div>
     </div>
 
+  
+  
+  
+  
+  
+  
   
 
 
@@ -173,35 +166,11 @@
     </div>
     
     <div class="col-md-9" id='text'>
-      <h2>type, public :: String</h2>
-    <p>Wrapper type for an allocatable string.</p>
-<p>This type is provided primarily for the purpose of standard compliance when needing to declare arrays of
-strings in which the elements may have non-identical lengths or for which the lengths of elements may need
-to vary during run-time.</p>
-<p>The form and function of this type was influenced by Rust's
-<a href="https://doc.rust-lang.org/std/string/struct.String.html">String</a>.</p>
-    <br>
-
-    <section class="visible-xs visible-sm hidden-md">
-        <h3>Contents</h3>
-  
-  
-  
-      <div class="panel panel-primary">
-      <div class="panel-heading text-left">
-        <h3 class="panel-title">
-          <a data-toggle="collapse" href="#cons-1">Constructor</a>
-        </h3>
-      </div>
-      <div id="cons-1" class="panel-collapse collapse">
-        <div class="list-group">
-            <a class="list-group-item" href="../type/string.html#interface-string">String</a>
-        </div>
-      </div>
-    </div>
-
-  
-  
+      <h2>public interface String</h2>
+   <p>Constructors for type String</p>
+<br>
+     <section class="visible-xs visible-sm hidden-md">
+         <h3>Contents</h3>
   
   
   
@@ -216,46 +185,44 @@ to vary during run-time.</p>
       <div class="panel panel-primary">
       <div class="panel-heading text-left">
         <h3 class="panel-title">
-          <a data-toggle="collapse" href="#boundprocs-1">Type-Bound Procedures</a>
+          <a data-toggle="collapse" href="#funcs-1">Functions</a>
         </h3>
       </div>
-      <div id="boundprocs-1" class="panel-collapse collapse">
+      <div id="funcs-1" class="panel-collapse collapse">
         <div class="list-group">
-            <a class="list-group-item" href="../type/string.html#boundprocedure-empty">empty</a>
-            <a class="list-group-item" href="../type/string.html#boundprocedure-len">len</a>
-            <a class="list-group-item" href="../type/string.html#boundprocedure-push">push</a>
-            <a class="list-group-item" href="../type/string.html#boundprocedure-print">print</a>
-            <a class="list-group-item" href="../type/string.html#boundprocedure-aprint_2dstring">aprint_2dString</a>
-            <a class="list-group-item" href="../type/string.html#boundprocedure-aprint">aprint</a>
+            <a class="list-group-item" href="../interface/string.html#proc-new_str_c128">new_Str_c128</a>
+            <a class="list-group-item" href="../interface/string.html#proc-new_str_c64">new_Str_c64</a>
+            <a class="list-group-item" href="../interface/string.html#proc-new_str_c32">new_Str_c32</a>
+            <a class="list-group-item" href="../interface/string.html#proc-new_str_r128">new_Str_r128</a>
+            <a class="list-group-item" href="../interface/string.html#proc-new_str_r64">new_Str_r64</a>
+            <a class="list-group-item" href="../interface/string.html#proc-new_str_r32">new_Str_r32</a>
+            <a class="list-group-item" href="../interface/string.html#proc-new_str_i64">new_Str_i64</a>
+            <a class="list-group-item" href="../interface/string.html#proc-new_str_i32">new_Str_i32</a>
+            <a class="list-group-item" href="../interface/string.html#proc-new_str_i16">new_Str_i16</a>
+            <a class="list-group-item" href="../interface/string.html#proc-new_str_i8">new_Str_i8</a>
+            <a class="list-group-item" href="../interface/string.html#proc-new_str_char">new_Str_char</a>
         </div>
       </div>
     </div>
 
   
-
-
-    </section>
-    <br class="visible-xs visible-sm hidden-md">
-
-    
-      <section>
-        <h2>Constructor</h2>
-            <div class="panel panel-default">
-    <div class="panel-heading codesum">
-      <span class="anchor" id="interface-string"></span>
-      <h3>public        interface <a href='../interface/string.html'>String</a> 
-      </h3>
-    </div>
-      <div class="panel-body">
-        <p>Constructors for type String</p>
-      </div>
-    <ul class="list-group">
-          <li class="list-group-item">
-                <h3>
-    private pure elemental recursive module function new_Str_c128(x, locale, fmt, decimals, im) result(self)  
-
-    </h3>
   
+  
+  
+  
+  
+  
+
+
+     </section>
+     <br class="visible-xs visible-sm hidden-md">
+     
+   <h2>Functions</h2>
+      <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="proc-new_str_c128"></span><h3>private pure elemental recursive module function new_Str_c128(x, locale, fmt, decimals, im) result(self)  
+</h3></div>
+    <div class="panel-body">
+        
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -352,13 +319,14 @@ to vary during run-time.</p>
     </h4>
     
 
-          </li>
-          <li class="list-group-item">
-                <h3>
-    private pure elemental recursive module function new_Str_c64(x, locale, fmt, decimals, im) result(self)  
+    </div>
+  </div>
 
-    </h3>
-  
+      <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="proc-new_str_c64"></span><h3>private pure elemental recursive module function new_Str_c64(x, locale, fmt, decimals, im) result(self)  
+</h3></div>
+    <div class="panel-body">
+        
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -455,13 +423,14 @@ to vary during run-time.</p>
     </h4>
     
 
-          </li>
-          <li class="list-group-item">
-                <h3>
-    private pure elemental recursive module function new_Str_c32(x, locale, fmt, decimals, im) result(self)  
+    </div>
+  </div>
 
-    </h3>
-  
+      <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="proc-new_str_c32"></span><h3>private pure elemental recursive module function new_Str_c32(x, locale, fmt, decimals, im) result(self)  
+</h3></div>
+    <div class="panel-body">
+        
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -558,13 +527,14 @@ to vary during run-time.</p>
     </h4>
     
 
-          </li>
-          <li class="list-group-item">
-                <h3>
-    private pure elemental recursive module function new_Str_r128(x, locale, fmt, decimals) result(self)  
+    </div>
+  </div>
 
-    </h3>
-  
+      <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="proc-new_str_r128"></span><h3>private pure elemental recursive module function new_Str_r128(x, locale, fmt, decimals) result(self)  
+</h3></div>
+    <div class="panel-body">
+        
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -646,13 +616,14 @@ to vary during run-time.</p>
     </h4>
     
 
-          </li>
-          <li class="list-group-item">
-                <h3>
-    private pure elemental recursive module function new_Str_r64(x, locale, fmt, decimals) result(self)  
+    </div>
+  </div>
 
-    </h3>
-  
+      <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="proc-new_str_r64"></span><h3>private pure elemental recursive module function new_Str_r64(x, locale, fmt, decimals) result(self)  
+</h3></div>
+    <div class="panel-body">
+        
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -734,13 +705,14 @@ to vary during run-time.</p>
     </h4>
     
 
-          </li>
-          <li class="list-group-item">
-                <h3>
-    private pure elemental recursive module function new_Str_r32(x, locale, fmt, decimals) result(self)  
+    </div>
+  </div>
 
-    </h3>
-  
+      <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="proc-new_str_r32"></span><h3>private pure elemental recursive module function new_Str_r32(x, locale, fmt, decimals) result(self)  
+</h3></div>
+    <div class="panel-body">
+        
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -822,13 +794,14 @@ to vary during run-time.</p>
     </h4>
     
 
-          </li>
-          <li class="list-group-item">
-                <h3>
-    private pure elemental recursive module function new_Str_i64(x, fmt) result(self)  
+    </div>
+  </div>
 
-    </h3>
-  
+      <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="proc-new_str_i64"></span><h3>private pure elemental recursive module function new_Str_i64(x, fmt) result(self)  
+</h3></div>
+    <div class="panel-body">
+        
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -880,13 +853,14 @@ to vary during run-time.</p>
     </h4>
     
 
-          </li>
-          <li class="list-group-item">
-                <h3>
-    private pure elemental recursive module function new_Str_i32(x, fmt) result(self)  
+    </div>
+  </div>
 
-    </h3>
-  
+      <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="proc-new_str_i32"></span><h3>private pure elemental recursive module function new_Str_i32(x, fmt) result(self)  
+</h3></div>
+    <div class="panel-body">
+        
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -938,13 +912,14 @@ to vary during run-time.</p>
     </h4>
     
 
-          </li>
-          <li class="list-group-item">
-                <h3>
-    private pure elemental recursive module function new_Str_i16(x, fmt) result(self)  
+    </div>
+  </div>
 
-    </h3>
-  
+      <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="proc-new_str_i16"></span><h3>private pure elemental recursive module function new_Str_i16(x, fmt) result(self)  
+</h3></div>
+    <div class="panel-body">
+        
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -996,13 +971,14 @@ to vary during run-time.</p>
     </h4>
     
 
-          </li>
-          <li class="list-group-item">
-                <h3>
-    private pure elemental recursive module function new_Str_i8(x, fmt) result(self)  
+    </div>
+  </div>
 
-    </h3>
-  
+      <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="proc-new_str_i8"></span><h3>private pure elemental recursive module function new_Str_i8(x, fmt) result(self)  
+</h3></div>
+    <div class="panel-body">
+        
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1054,13 +1030,14 @@ to vary during run-time.</p>
     </h4>
     
 
-          </li>
-          <li class="list-group-item">
-                <h3>
-    private pure elemental recursive module function new_Str_char(chars) result(self)  
+    </div>
+  </div>
 
-    </h3>
-  
+      <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="proc-new_str_char"></span><h3>private pure elemental recursive module function new_Str_char(chars) result(self)  
+</h3></div>
+    <div class="panel-body">
+        
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1097,317 +1074,14 @@ to vary during run-time.</p>
     </h4>
     
 
-          </li>
-    </ul>
-  </div>
-
-      </section>
-      <br>
-
-
-      <section>
-        <h2>Type-Bound Procedures</h2>
-            <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-empty"></span><h3>procedure, public, pass(self) :: <strong>empty</strong>          
-    </h3></div>
-    <ul class="list-group">
-        <li class="list-group-item">
-              <h3>interface </h3>
-                  
-                <p>Methods for type String</p>
-                  <h3>
-    private pure elemental recursive module subroutine empty(self)  
-</h3>
-  <p>Sets component s to the empty string '' elementally.</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              class(<a href='../type/string.html'>String</a>),
-            </td>
-<td>intent(inout)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>self</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-
-        </li>
-    </ul>
-  </div>
-
-            <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-len"></span><h3>procedure, public, pass(self) :: <strong>len</strong>  => length         
-    </h3></div>
-    <ul class="list-group">
-        <li class="list-group-item">
-              <h3>interface </h3>
-                  
-                <p>Methods for type String</p>
-                  <h3>
-    private pure elemental recursive module function length(self) result(self_len)  
-</h3>
-  <p>Returns length of component s elementally. Unallocated components return -1.</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              class(<a href='../type/string.html'>String</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>self</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>integer</small>
-    </h4>
-    
-
-        </li>
-    </ul>
-  </div>
-
-            <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-push"></span><h3>procedure, public, pass(self) :: <strong>push</strong>          
-    </h3></div>
-    <ul class="list-group">
-        <li class="list-group-item">
-              <h3>interface </h3>
-                  
-                <p>Methods for type String</p>
-                  <h3>
-    private pure elemental recursive module subroutine push(self, chars)  
-</h3>
-  <p>Appends chars to component s elementally.</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              class(<a href='../type/string.html'>String</a>),
-            </td>
-<td>intent(inout)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>self</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              character(len=*),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>chars</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-
-        </li>
-    </ul>
-  </div>
-
-            <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-print"></span><h3>procedure, public, pass(self) :: <strong>print</strong>  => print_String         
-    </h3></div>
-    <ul class="list-group">
-        <li class="list-group-item">
-              <h3>interface </h3>
-                  
-                <p>Methods for type String</p>
-                  <h3>
-    private impure recursive module subroutine print_String(self)  
-</h3>
-  <p>Prints component s for non-array String</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              class(<a href='../type/string.html'>String</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>self</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-
-        </li>
-    </ul>
-  </div>
-
-            <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-aprint_2dstring"></span><h3>procedure, public, nopass :: <strong>aprint_2dString</strong>          
-    </h3></div>
-    <ul class="list-group">
-        <li class="list-group-item">
-                  <h3>
-    private impure recursive module subroutine aprint_2dString(x)  
-</h3>
-  
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              class(<a href='../type/string.html'>String</a>),
-            </td>
-<td>intent(in),</td>
-              <td></td>            <td>
-              dimension(:,:)
-            </td>
-            <td>::</td>
-            <td><strong>x</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-
-        </li>
-    </ul>
-  </div>
-
-            <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-aprint"></span><h3>procedure, public, nopass :: <strong>aprint</strong>  => aprint_1dString         
-    </h3></div>
-    <ul class="list-group">
-        <li class="list-group-item">
-                  <h3>
-    private impure recursive module subroutine aprint_1dString(x)  
-</h3>
-  
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              class(<a href='../type/string.html'>String</a>),
-            </td>
-<td>intent(in),</td>
-              <td></td>            <td>
-              dimension(:)
-            </td>
-            <td>::</td>
-            <td><strong>x</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-
-        </li>
-    </ul>
-  </div>
-
-      </section>
-
-    
     </div>
   </div>
+
+
+
+
+ </div>
+</div>
 
     <hr>    
     </div> <!-- /container -->
