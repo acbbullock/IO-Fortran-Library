@@ -15,7 +15,7 @@ module io_fortran_lib
     public :: str, echo                                                                                    ! String I/O
     public :: String                                                                                          ! Classes
     public :: nl                                                                                            ! Constants
-    public :: operator(//)                                                                                  ! Operators
+    public :: operator(//), operator(+), operator(-), operator(**)                                          ! Operators
 
     ! Definitions and Interfaces ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     character(len=1), parameter :: nl = new_line('a')
@@ -50,8 +50,6 @@ module io_fortran_lib
         character(len=:), allocatable :: s                                               !! Component is a string slice
         contains
             private
-            procedure, nopass :: string_concatenation
-            procedure, nopass, public :: aprint => aprint_1dString, aprint_2dString
             procedure, pass(self), public :: as_str
             procedure, pass(self), public :: echo => echo_String
             procedure, pass(self), public :: empty
@@ -142,15 +140,6 @@ module io_fortran_lib
         end function new_Str_empty
     end interface
 
-    interface operator(//)                                                                ! Submodule String_procedures
-        !--------------------------------------------------------------------------------------------------------------
-        !! Concatenation operator for the `String` type lifted from `character`.
-        !--------------------------------------------------------------------------------------------------------------
-        pure elemental recursive type(String) module function string_concatenation(Stringl, Stringr) result(new)
-            class(String), intent(in) :: Stringl, Stringr
-        end function string_concatenation
-    end interface
-
     interface                                                                             ! Submodule String_procedures
         !--------------------------------------------------------------------------------------------------------------
         !! Methods for the `String` type.
@@ -160,6 +149,13 @@ module io_fortran_lib
             class(String), intent(in) :: self
             character(len=:), allocatable :: string_slice
         end function as_str
+
+        impure recursive module subroutine echo_String(self, file_name, append)
+            !! Writes the string slice component to an external text file.
+            class(String), intent(in) :: self
+            character(len=*), intent(in) :: file_name
+            logical, optional, intent(in) :: append
+        end subroutine echo_String
 
         pure elemental recursive module subroutine empty(self)
             !! Sets the string slice component to the empty string elementally.
@@ -221,6 +217,92 @@ module io_fortran_lib
             !! Removes any leading or trailing whitespace of each string slice component of a `String` elementally.
             class(String), intent(inout) :: self
         end subroutine trim_inplace
+    end interface
+
+    interface operator(//)                                                                        ! Submodule operators
+        !--------------------------------------------------------------------------------------------------------------
+        !! Concatenation operator for the `String` type lifted from `character`.
+        !--------------------------------------------------------------------------------------------------------------
+        pure elemental recursive type(String) module function string_concatenation(Stringl, Stringr) result(new)
+            class(String), intent(in) :: Stringl, Stringr
+        end function string_concatenation
+
+        pure elemental recursive type(String) module function string_char_concatenation(Stringl, charsr) result(new)
+            class(String), intent(in) :: Stringl
+            character(len=*), intent(in) :: charsr
+        end function string_char_concatenation
+
+        pure recursive module function char_string_concatenation(charsl, Stringr) result(new)
+            character(len=*), intent(in) :: charsl
+            class(String), intent(in) :: Stringr
+            character(len=:), allocatable :: new
+        end function char_string_concatenation
+    end interface
+
+    interface operator(+)                                                                         ! Submodule operators
+        !--------------------------------------------------------------------------------------------------------------
+        !! Concatenation operator for `character` and `String` (as addition).
+        !--------------------------------------------------------------------------------------------------------------
+        pure recursive module function char_concat_plus(charsl, charsr) result(new)
+            character(len=*), intent(in) :: charsl, charsr
+            character(len=:), allocatable :: new
+        end function char_concat_plus
+
+        pure elemental recursive type(String) module function string_concat_plus(Stringl, Stringr) result(new)
+            class(String), intent(in) :: Stringl, Stringr
+        end function string_concat_plus
+
+        pure elemental recursive type(String) module function string_char_concat_plus(Stringl, charsr) result(new)
+            class(String), intent(in) :: Stringl
+            character(len=*), intent(in) :: charsr
+        end function string_char_concat_plus
+
+        pure recursive module function char_string_concat_plus(charsl, Stringr) result(new)
+            character(len=*), intent(in) :: charsl
+            class(String), intent(in) :: Stringr
+            character(len=:), allocatable :: new
+        end function char_string_concat_plus
+    end interface
+
+    interface operator(-)                                                                         ! Submodule operators
+        !--------------------------------------------------------------------------------------------------------------
+        !! Excision operator for `character` and `String` (as subtraction).
+        !--------------------------------------------------------------------------------------------------------------
+        pure recursive module function char_excision(charsl, charsr) result(new)
+            character(len=*), intent(in) :: charsl, charsr
+            character(len=:), allocatable :: new
+        end function char_excision
+
+        pure elemental recursive type(String) module function string_excision(Stringl, Stringr) result(new)
+            class(String), intent(in) :: Stringl, Stringr
+        end function string_excision
+
+        pure elemental recursive type(String) module function string_char_excision(Stringl, charsr) result(new)
+            class(String), intent(in) :: Stringl
+            character(len=*), intent(in) :: charsr
+        end function string_char_excision
+
+        pure recursive module function char_string_excision(charsl, Stringr) result(new)
+            character(len=*), intent(in) :: charsl
+            class(String), intent(in) :: Stringr
+            character(len=:), allocatable :: new
+        end function char_string_excision
+    end interface
+
+    interface operator(**)                                                                        ! Submodule operators
+        !--------------------------------------------------------------------------------------------------------------
+        !! Repetition operator for `character` and `String` (as exponentiation).
+        !--------------------------------------------------------------------------------------------------------------
+        pure elemental recursive module function repeat_chars(chars, exponent) result(new)
+            character(len=*), intent(in) :: chars
+            integer, intent(in) :: exponent
+            character(len=len(chars)*exponent) :: new
+        end function repeat_chars
+
+        pure elemental recursive type(String) module function repeat_String(String_base, exponent) result(new)
+            class(String), intent(in) :: String_base
+            integer, intent(in) :: exponent
+        end function repeat_String
     end interface
 
     interface aprint                                                                         ! Submodule array_printing
@@ -2141,16 +2223,11 @@ module io_fortran_lib
         !! For a user reference, see [echo](../page/Ref/echo.html).
         !--------------------------------------------------------------------------------------------------------------
         impure recursive module subroutine echo_chars(string, file_name, append)
+            !! Writes a `character` string to an external text file.
             character(len=*), intent(in) :: string
             character(len=*), intent(in) :: file_name
             logical, optional, intent(in) :: append
         end subroutine echo_chars
-
-        impure recursive module subroutine echo_String(self, file_name, append)
-            class(String), intent(in) :: self
-            character(len=*), intent(in) :: file_name
-            logical, optional, intent(in) :: append
-        end subroutine echo_String
     end interface
 
     interface to_text                                                                               ! Submodule text_io
@@ -4274,10 +4351,6 @@ submodule (io_fortran_lib) String_procedures
         self%s = ''
     end procedure new_Str_empty
 
-    module procedure string_concatenation
-        new%s = Stringl%s//Stringr%s
-    end procedure string_concatenation
-
     module procedure as_str
         if ( .not. allocated(self%s) ) then
             string_slice = ''
@@ -4285,6 +4358,48 @@ submodule (io_fortran_lib) String_procedures
             string_slice = self%s
         end if
     end procedure as_str
+
+    module procedure echo_String
+        character(len=:), allocatable :: ext
+        logical :: exists, append_
+        integer :: file_unit
+
+        ext = ext_of(file_name)
+
+        if ( .not. any(text_ext == ext) ) then
+            write(*,'(a)')  nl//'WARNING: Skipping write to "'//file_name//'" '// &
+                                'due to unsupported file extension "'//ext//'".'// &
+                            nl//'Supported file extensions: '//to_str(text_ext, delim=' ')
+            return
+        end if
+
+        if ( .not. present(append) ) then
+            append_ = .true.
+        else
+            append_ = append
+        end if
+
+        inquire( file=file_name, exist=exists )
+
+        file_unit = output_unit
+
+        if ( .not. exists ) then
+            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
+                  action='write', access='stream', position='rewind' )
+        else
+            if ( .not. append_ ) then
+                open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
+                      action='write', access='stream', position='rewind' )
+            else
+                open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
+                      action='write', access='stream', position='append' )
+            end if
+        end if
+
+        write( unit=file_unit ) self%s//nl
+
+        close(file_unit)
+    end procedure echo_String
 
     module procedure empty
         self%s = ''
@@ -4440,12 +4555,12 @@ submodule (io_fortran_lib) String_procedures
     module procedure split
         type(String) :: temp_String
         character(len=:), allocatable :: separator_
-        integer :: i, self_len, separator_len, occurrences, l, occurrence
+        integer :: i, temp_len, separator_len, num_seps, l, current_string
 
         temp_String = self%trim()
-        self_len = temp_String%len()
+        temp_len = temp_String%len()
 
-        if ( self_len == 0 ) then
+        if ( temp_len == 0 ) then
             split_String = [ String('') ]
             return
         end if
@@ -4459,33 +4574,23 @@ submodule (io_fortran_lib) String_procedures
         separator_len = len(separator_)
 
         if ( separator_len == 0 ) then
-            allocate( split_String(self_len) )
-            do concurrent (i = 1:self_len)
+            allocate( split_String(temp_len) )
+            do concurrent (i = 1:temp_len)
                 split_String(i)%s = temp_String%s(i:i)
             end do
             return
-        else
-            continue
         end if
 
-        occurrences = 0
+        num_seps = 0
         i = 1
 
         search: do
             if ( temp_String%s(i:i) == separator_(1:1) ) then
-                if ( i+separator_len-1 > self_len ) exit search
+                if ( i+separator_len-1 > temp_len ) exit search
 
                 if ( temp_String%s(i:i+separator_len-1) == separator_ ) then
-                    if ( i == 1 ) then
-                        temp_String%s = temp_String%s(separator_len+1:)
-                        self_len = temp_String%len()
-                    else if ( i+separator_len-1 == self_len ) then
-                        temp_String%s = temp_String%s(:i-1)
-                        self_len = temp_String%len()
-                    else
-                        occurrences = occurrences + 1
-                        i = i + separator_len
-                    end if
+                    num_seps = num_seps + 1
+                    i = i + separator_len
                 else
                     i = i + 1
                 end if
@@ -4493,28 +4598,30 @@ submodule (io_fortran_lib) String_procedures
                 i = i + 1
             end if
 
-            if ( i > self_len ) exit search
+            if ( i > temp_len ) exit search
         end do search
 
-        if ( occurrences == 0 ) then
+        if ( num_seps == 0 ) then
             split_String = [ self ]
             return
         end if
 
-        allocate( split_String(occurrences + 1) )
+        allocate( split_String(num_seps + 1) )
+        call split_String%empty()
 
         i = 1
         l = 1
-        occurrence = 1
+        current_string = 1
 
-        splitting: do while ( i <= self_len )
+        splitting: do while ( i <= temp_len )
             if ( temp_String%s(i:i+separator_len-1) == separator_ ) then
-                split_String(occurrence)%s = temp_String%s(l:i-1)
-                if ( occurrence == occurrences ) then
-                    split_String(occurrences+1)%s = temp_String%s(i+separator_len:)
+                split_String(current_string)%s = temp_String%s(l:i-1)
+
+                if ( current_string == num_seps ) then
+                    split_String(current_string+1)%s = temp_String%s(i+separator_len:)
                     exit splitting
                 else
-                    occurrence = occurrence + 1
+                    current_string = current_string + 1
                 end if
                 i = i + separator_len
                 l = i
@@ -4522,6 +4629,8 @@ submodule (io_fortran_lib) String_procedures
                 i = i + 1
             end if
         end do splitting
+
+        call split_String%trim_inplace()
     end procedure split
 
     module procedure trim_copy
@@ -4540,6 +4649,238 @@ submodule (io_fortran_lib) String_procedures
         end if
     end procedure trim_inplace
 end submodule String_procedures
+
+submodule (io_fortran_lib) operators
+    !! This submodule provides module procedure implementations for the **public interface** `operator(//)`,
+    !! `operator(+)`, and `operator(-)`
+    contains
+    module procedure string_concatenation
+        if ( .not. allocated(Stringl%s) ) then
+            if ( .not. allocated(Stringr%s) ) then
+                new%s = ''
+            else
+                new%s = Stringr%s
+            end if
+            return
+        end if
+
+        if ( .not. allocated(Stringr%s) ) then
+            new%s = Stringl%s
+            return
+        end if
+
+        new%s = Stringl%s//Stringr%s
+    end procedure string_concatenation
+
+    module procedure string_char_concatenation
+        if ( Stringl%len() < 1 ) then
+            if ( len(charsr) < 1 ) then
+                new%s = ''
+            else
+                new%s = charsr
+            end if
+            return
+        end if
+
+        if ( len(charsr) < 1 ) then
+            new%s = Stringl%s
+            return
+        end if
+
+        new%s = Stringl%s//charsr
+    end procedure string_char_concatenation
+
+    module procedure char_string_concatenation
+        if ( len(charsl) < 1 ) then
+            if ( Stringr%len() < 1 ) then
+                new = ''
+            else
+                new = Stringr%s
+            end if
+            return
+        end if
+
+        if ( Stringr%len() < 1 ) then
+            new = charsl
+            return
+        end if
+
+        new = charsl//Stringr%s
+    end procedure char_string_concatenation
+
+    module procedure char_concat_plus
+        new = charsl//charsr
+    end procedure char_concat_plus
+
+    module procedure string_concat_plus
+        if ( Stringl%len() < 1 ) then
+            if ( Stringr%len() < 1 ) then
+                new%s = ''
+            else
+                new%s = Stringr%s
+            end if
+            return
+        end if
+
+        if ( Stringr%len() < 1 ) then
+            new%s = Stringl%s
+            return
+        end if
+
+        new%s = Stringl%s//Stringr%s
+    end procedure string_concat_plus
+
+    module procedure string_char_concat_plus
+        if ( Stringl%len() < 1 ) then
+            if ( len(charsr) < 1 ) then
+                new%s = ''
+            else
+                new%s = charsr
+            end if
+            return
+        end if
+
+        if ( len(charsr) < 1 ) then
+            new%s = Stringl%s
+            return
+        end if
+
+        new%s = Stringl%s//charsr
+    end procedure string_char_concat_plus
+
+    module procedure char_string_concat_plus
+        if ( len(charsl) < 1 ) then
+            if ( Stringr%len() < 1 ) then
+                new = ''
+            else
+                new = Stringr%s
+            end if
+            return
+        end if
+
+        if ( Stringr%len() < 1 ) then
+            new = charsl
+            return
+        end if
+
+        new = charsl//Stringr%s
+    end procedure char_string_concat_plus
+
+    module procedure char_excision
+        integer :: i, charsl_len, charsr_len, diff_len
+
+        charsl_len = len(charsl)
+        charsr_len = len(charsr)
+
+        if ( charsl_len < 1 ) then
+            new = ''
+            return
+        end if
+
+        if ( (charsr_len == 0) .or. (charsr_len > charsl_len) ) then
+            new = charsl
+            return
+        end if
+
+        new = charsl
+        diff_len = 0
+        i = 1
+        
+        search_and_replace: do while ( i <= charsl_len )
+            if ( charsl(i:i) == charsr(1:1) ) then
+                if ( i+charsr_len-1 > charsl_len ) exit search_and_replace
+
+                if ( charsl(i:i+charsr_len-1) == charsr ) then
+                    new = new(:i-1+diff_len)//new(i+charsr_len+diff_len:)
+                    diff_len = diff_len - charsr_len
+                    i = i + charsr_len
+                else
+                    i = i + 1
+                end if
+            else
+                i = i + 1
+            end if
+        end do search_and_replace
+    end procedure char_excision
+
+    module procedure string_excision
+        if ( Stringl%len() < 1 ) then
+            new%s = ''
+            return
+        end if
+
+        if ( Stringr%len() < 1 ) then
+            new%s = Stringl%s
+            return
+        end if
+
+        new = Stringl%replace(search_for=Stringr%s, replace_with='')
+    end procedure string_excision
+
+    module procedure string_char_excision
+        if ( Stringl%len() < 1 ) then
+            new%s = ''
+            return
+        end if
+
+        if ( len(charsr) < 1 ) then
+            new%s = Stringl%s
+            return
+        end if
+
+        new = Stringl%replace(search_for=charsr, replace_with='')
+    end procedure string_char_excision
+
+    module procedure char_string_excision
+        integer :: i, charsl_len, Stringr_len, diff_len
+
+        charsl_len = len(charsl)
+        Stringr_len = Stringr%len()
+
+        if ( charsl_len < 1 ) then
+            new = ''
+            return
+        end if
+
+        if ( (Stringr_len < 1) .or. (Stringr_len > charsl_len) ) then
+            new = charsl
+            return
+        end if
+
+        new = charsl
+        diff_len = 0
+        i = 1
+        
+        search_and_replace: do while ( i <= charsl_len )
+            if ( charsl(i:i) == Stringr%s(1:1) ) then
+                if ( i+Stringr_len-1 > charsl_len ) exit search_and_replace
+
+                if ( charsl(i:i+Stringr_len-1) == Stringr%s ) then
+                    new = new(:i-1+diff_len)//new(i+Stringr_len+diff_len:)
+                    diff_len = diff_len - Stringr_len
+                    i = i + Stringr_len
+                else
+                    i = i + 1
+                end if
+            else
+                i = i + 1
+            end if
+        end do search_and_replace
+    end procedure char_string_excision
+
+    module procedure repeat_chars
+        new = repeat(chars, ncopies=exponent)
+    end procedure repeat_chars
+
+    module procedure repeat_String
+        if ( String_base%len() < 1 ) then
+            new%s = ''
+            return
+        end if
+
+        new%s = repeat(String_base%s, ncopies=exponent)
+    end procedure repeat_String
+end submodule operators
 
 submodule (io_fortran_lib) array_printing
     !! This submodule provides module procedure implementations for the **public interface** `aprint`.
@@ -14958,48 +15299,6 @@ submodule (io_fortran_lib) text_io
 
         close(file_unit)
     end procedure echo_chars
-
-    module procedure echo_String
-        character(len=:), allocatable :: ext
-        logical :: exists, append_
-        integer :: file_unit
-
-        ext = ext_of(file_name)
-
-        if ( .not. any(text_ext == ext) ) then
-            write(*,'(a)')  nl//'WARNING: Skipping write to "'//file_name//'" '// &
-                                'due to unsupported file extension "'//ext//'".'// &
-                            nl//'Supported file extensions: '//to_str(text_ext, delim=' ')
-            return
-        end if
-
-        if ( .not. present(append) ) then
-            append_ = .true.
-        else
-            append_ = append
-        end if
-
-        inquire( file=file_name, exist=exists )
-
-        file_unit = output_unit
-
-        if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream', position='rewind' )
-        else
-            if ( .not. append_ ) then
-                open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                      action='write', access='stream', position='rewind' )
-            else
-                open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                      action='write', access='stream', position='append' )
-            end if
-        end if
-
-        write( unit=file_unit ) self%s//nl
-
-        close(file_unit)
-    end procedure echo_String
 
     module procedure to_text_1dc128
         type(String), allocatable, dimension(:) :: string_arr
