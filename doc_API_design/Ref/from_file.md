@@ -5,7 +5,7 @@ author: Austin C Bullock
 
 ## [interface from_file](../../interface/from_file.html)
 
-For reading textual data into array `into` of rank `1` or `2` and of type `integer`:
+For reading textual data into an array `into` of rank `1` or `2` and of type `integer`:
 
 ```fortran
 call from_file(file_name, into, header, fmt)
@@ -15,7 +15,7 @@ call from_file(file_name, into, header, fmt)
 * `header` is `optional` and of type `logical`
 * `fmt` is `optional`, may be one of `int_fmts`
 
-For reading textual data into array `into` of rank `1` or `2` and of type `real`:
+For reading textual data into an array `into` of rank `1` or `2` and of type `real`:
 
 ```fortran
 call from_file(file_name, into, header, locale, fmt)
@@ -26,7 +26,7 @@ call from_file(file_name, into, header, locale, fmt)
 * `locale` is `optional`, may be one of `locales`
 * `fmt` is `optional`, may be one of `real_fmts`
 
-For reading textual data into array `into` of rank `1` or `2` and of type `complex`:
+For reading textual data into an array `into` of rank `1` or `2` and of type `complex`:
 
 ```fortran
 call from_file(file_name, into, header, locale, fmt, im)
@@ -38,7 +38,7 @@ call from_file(file_name, into, header, locale, fmt, im)
 * `fmt` is `optional`, may be one of `real_fmts`
 * `im` is `optional` and of type `character(len=*)`
 
-For reading binary data into array `into` of any rank `1`-`15` and of type `integer`, `real`, `complex`:
+For reading binary data into an array `into` of any rank `1`-`15` and of type `integer`, `real`, `complex`:
 
 ```fortran
 call from_file(file_name, into, data_shape)

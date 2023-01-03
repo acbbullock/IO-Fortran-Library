@@ -15,7 +15,7 @@ module io_fortran_lib
     public :: str, echo                                                                                    ! String I/O
     public :: String                                                                                          ! Classes
     public :: nl                                                                                            ! Constants
-    public :: operator(//), operator(+), operator(-), operator(**), operator(==), assignment(=)             ! Operators
+    public :: operator(//), operator(+), operator(-), operator(**), operator(==)                            ! Operators
 
     ! Definitions and Interfaces ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     character(len=1), parameter :: nl = new_line('a')
@@ -45,6 +45,9 @@ module io_fortran_lib
         !!
         !! The form and function of this type was influenced by Rust's
         !! [String](https://doc.rust-lang.org/std/string/struct.String.html).
+        !!
+        !! For a user reference, see [String](../page/Ref/string.html), 
+        !! [String methods](../page/Ref/string-methods.html), and [Operators](../page/Ref/operators.html).
         !--------------------------------------------------------------------------------------------------------------
         private
         character(len=:), allocatable :: s                                               !! Component is a string slice
@@ -72,7 +75,8 @@ module io_fortran_lib
         !! The interface for `String` is nearly identical to that of `str` but with a return type of `String`, allowing
         !! for elemental assignments and access to the various `String` methods for more advanced character handling.
         !!
-        !! For a user reference, see [String](../page/Ref/string.html).
+        !! For a user reference, see [String](../page/Ref/string.html), 
+        !! [String methods](../page/Ref/string-methods.html), and [Operators](../page/Ref/operators.html).
         !--------------------------------------------------------------------------------------------------------------
         pure elemental recursive type(String) module function new_Str_c128(x, locale, fmt, decimals, im) result(self)
             complex(real128), intent(in) :: x
@@ -146,88 +150,143 @@ module io_fortran_lib
         !! Methods for the `String` type.
         !--------------------------------------------------------------------------------------------------------------
         pure recursive module function as_str(self) result(string_slice)
-            !! Returns a copy of the string slice component of a non-array `String`.
+            !----------------------------------------------------------------------------------------------------------
+            !! Returns a copy of the string slice component of a scalar `String`.
+            !!
+            !! See [as_str](../page/Ref/string-methods.html#as_str).
+            !----------------------------------------------------------------------------------------------------------
             class(String), intent(in) :: self
             character(len=:), allocatable :: string_slice
         end function as_str
 
         impure recursive module subroutine echo_String(self, file_name, append)
+            !----------------------------------------------------------------------------------------------------------
             !! Writes the string slice component to an external text file.
+            !!
+            !! See [echo](../page/Ref/string-methods.html#echo).
+            !----------------------------------------------------------------------------------------------------------
             class(String), intent(in) :: self
             character(len=*), intent(in) :: file_name
             logical, optional, intent(in) :: append
         end subroutine echo_String
 
         pure elemental recursive module subroutine empty(self)
+            !----------------------------------------------------------------------------------------------------------
             !! Sets the string slice component to the empty string elementally.
+            !!
+            !! See [empty](../page/Ref/string-methods.html#empty).
+            !----------------------------------------------------------------------------------------------------------
             class(String), intent(inout) :: self
         end subroutine empty
 
         pure recursive module subroutine glue(self, tokens, separator)
-            !! Glues `String` array `tokens` into `self` with given `separator`.
+            !----------------------------------------------------------------------------------------------------------
+            !! Glues a string array into `self` with given separator. Default separator is SPACE.
+            !!
+            !! See [glue](../page/Ref/string-methods.html#glue).
+            !----------------------------------------------------------------------------------------------------------
             class(String), intent(inout) :: self
             type(String), dimension(:), intent(in) :: tokens
             character(len=*), intent(in), optional :: separator
         end subroutine glue
 
         pure elemental recursive integer module function length(self) result(self_len)
+            !----------------------------------------------------------------------------------------------------------
             !! Returns the length of the string slice component elementally. Unallocated components return -1.
+            !!
+            !! See [len](../page/Ref/string-methods.html#len).
+            !----------------------------------------------------------------------------------------------------------
             class(String), intent(in) :: self
         end function length
 
         impure recursive module subroutine print_String(self)
-            !! Prints the string slice component for a non-array `String`.
+            !----------------------------------------------------------------------------------------------------------
+            !! Prints the string slice component for a scalar `String`.
+            !!
+            !! See [print](../page/Ref/string-methods.html#print).
+            !----------------------------------------------------------------------------------------------------------
             class(String), intent(in) :: self
         end subroutine print_String
 
         pure elemental recursive module subroutine push(self, chars)
-            !! Appends chars to the string slice component elementally.
+            !----------------------------------------------------------------------------------------------------------
+            !! Appends characters to the string slice component elementally.
+            !!
+            !! See [push](../page/Ref/string-methods.html#push).
+            !----------------------------------------------------------------------------------------------------------
             class(String), intent(inout) :: self
             character(len=*), intent(in) :: chars
         end subroutine push
 
         impure elemental recursive module subroutine read_file(self, file_name)
+            !----------------------------------------------------------------------------------------------------------
             !! Stream reads an entire text file into a `String` elementally. The string slice component will be
             !! replaced if already allocated.
+            !!
+            !! See [read_file](../page/Ref/string-methods.html#read_file).
+            !----------------------------------------------------------------------------------------------------------
             class(String), intent(inout) :: self
             character(len=*), intent(in) :: file_name
         end subroutine read_file
 
         pure elemental recursive type(String) module function replace_copy(self, search_for, replace_with) result(new)
+            !----------------------------------------------------------------------------------------------------------
             !! Returns a copy of a `String` elementally in which each string slice component has had a substring
             !! searched and replaced.
+            !!
+            !! See [replace](../page/Ref/string-methods.html#replace).
+            !----------------------------------------------------------------------------------------------------------
             class(String), intent(in) :: self
             character(len=*), intent(in) :: search_for, replace_with
         end function replace_copy
 
         pure elemental recursive module subroutine replace_inplace(self, search_for, replace_with)
-            !! Searches and replaces substring elementally in place.
+            !----------------------------------------------------------------------------------------------------------
+            !! Searches and replaces a substring elementally in place.
+            !!
+            !! See [replace_inplace](../page/Ref/string-methods.html#replace_inplace).
+            !----------------------------------------------------------------------------------------------------------
             class(String), intent(inout) :: self
             character(len=*), intent(in) :: search_for, replace_with
         end subroutine replace_inplace
 
         pure recursive module function split(self, separator) result(tokens)
-            !! Returns array of `String`s from a non-array `String` divided by `separator`. Default separator is SPACE.
+            !----------------------------------------------------------------------------------------------------------
+            !! Splits a string array into `tokens` with given separator. Default separator is SPACE.
+            !!
+            !! See [split](../page/Ref/string-methods.html#split).
+            !----------------------------------------------------------------------------------------------------------
             class(String), intent(in) :: self
             character(len=*), intent(in), optional :: separator
             type(String), allocatable, dimension(:) :: tokens
         end function split
 
         pure elemental recursive type(String) module function trim_copy(self) result(new)
+            !----------------------------------------------------------------------------------------------------------
             !! Returns a copy of a `String` elementally in which each string slice component has been trimmed of any
             !! leading or trailing whitespace.
+            !!
+            !! See [trim](../page/Ref/string-methods.html#trim).
+            !----------------------------------------------------------------------------------------------------------
             class(String), intent(in) :: self
         end function trim_copy
 
         pure elemental recursive module subroutine trim_inplace(self)
+            !----------------------------------------------------------------------------------------------------------
             !! Removes any leading or trailing whitespace of each string slice component of a `String` elementally.
+            !!
+            !! See [trim_inplace](../page/Ref/string-methods.html#trim_inplace).
+            !----------------------------------------------------------------------------------------------------------
             class(String), intent(inout) :: self
         end subroutine trim_inplace
     end interface
 
     interface operator(//)                                                                        ! Submodule operators
         !--------------------------------------------------------------------------------------------------------------
-        !! Concatenation operator for the `String` type lifted from `character`.
+        !! Concatenation operator for `character` and `String`, lifted from `character`. Mixed type concatenation of
+        !! `character` and `String` is explicitly defined.
+        !!
+        !! For a user reference, see [Concatenation](../page/Ref/operators.html#concatenation).
         !--------------------------------------------------------------------------------------------------------------
         pure elemental recursive type(String) module function string_concatenation(Stringl, Stringr) result(new)
             class(String), intent(in) :: Stringl, Stringr
@@ -238,20 +297,22 @@ module io_fortran_lib
             character(len=*), intent(in) :: charsr
         end function string_char_concatenation
 
-        pure recursive module function char_string_concatenation(charsl, Stringr) result(new)
+        pure elemental recursive type(String) module function char_string_concatenation(charsl, Stringr) result(new)
             character(len=*), intent(in) :: charsl
             class(String), intent(in) :: Stringr
-            character(len=:), allocatable :: new
         end function char_string_concatenation
     end interface
 
     interface operator(+)                                                                         ! Submodule operators
         !--------------------------------------------------------------------------------------------------------------
-        !! Concatenation operator for `character` and `String` (as addition).
+        !! Concatenation operator for `character` and `String` (as addition). Mixed type concatenation of
+        !! `character` and `String` is explicitly defined.
+        !!
+        !! For a user reference, see [Concatenation](../page/Ref/operators.html#concatenation).
         !--------------------------------------------------------------------------------------------------------------
-        pure recursive module function char_concat_plus(charsl, charsr) result(new)
+        pure elemental recursive module function char_concat_plus(charsl, charsr) result(new)
             character(len=*), intent(in) :: charsl, charsr
-            character(len=:), allocatable :: new
+            character(len=len(charsl)+len(charsr)) :: new
         end function char_concat_plus
 
         pure elemental recursive type(String) module function string_concat_plus(Stringl, Stringr) result(new)
@@ -263,20 +324,21 @@ module io_fortran_lib
             character(len=*), intent(in) :: charsr
         end function string_char_concat_plus
 
-        pure recursive module function char_string_concat_plus(charsl, Stringr) result(new)
+        pure elemental recursive type(String) module function char_string_concat_plus(charsl, Stringr) result(new)
             character(len=*), intent(in) :: charsl
             class(String), intent(in) :: Stringr
-            character(len=:), allocatable :: new
         end function char_string_concat_plus
     end interface
 
     interface operator(-)                                                                         ! Submodule operators
         !--------------------------------------------------------------------------------------------------------------
-        !! Excision operator for `character` and `String` (as subtraction).
+        !! Excision operator for `character` and `String` (as subtraction). Mixed type excision of `character` and
+        !! `String` is explicitly defined.
+        !!
+        !! For a user reference, see [Excision](../page/Ref/operators.html#excision).
         !--------------------------------------------------------------------------------------------------------------
-        pure recursive module function char_excision(charsl, charsr) result(new)
+        pure elemental recursive type(String) module function char_excision(charsl, charsr) result(new)
             character(len=*), intent(in) :: charsl, charsr
-            character(len=:), allocatable :: new
         end function char_excision
 
         pure elemental recursive type(String) module function string_excision(Stringl, Stringr) result(new)
@@ -288,16 +350,17 @@ module io_fortran_lib
             character(len=*), intent(in) :: charsr
         end function string_char_excision
 
-        pure recursive module function char_string_excision(charsl, Stringr) result(new)
+        pure elemental recursive type(String) module function char_string_excision(charsl, Stringr) result(new)
             character(len=*), intent(in) :: charsl
             class(String), intent(in) :: Stringr
-            character(len=:), allocatable :: new
         end function char_string_excision
     end interface
 
     interface operator(**)                                                                        ! Submodule operators
         !--------------------------------------------------------------------------------------------------------------
         !! Repetition operator for `character` and `String` (as exponentiation).
+        !!
+        !! For a user reference, see [Repetition](../page/Ref/operators.html#repetition).
         !--------------------------------------------------------------------------------------------------------------
         pure elemental recursive module function repeat_chars(chars, exponent) result(new)
             character(len=*), intent(in) :: chars
@@ -313,7 +376,10 @@ module io_fortran_lib
 
     interface operator(==)                                                                        ! Submodule operators
         !--------------------------------------------------------------------------------------------------------------
-        !! Equivalence operator for `character` and `String`.
+        !! Equivalence operator for `character` and `String`. Mixed type equivalence of `character` and `String` is
+        !! explicitly defined.
+        !!
+        !! For a user reference, see [Equivalence](../page/Ref/operators.html#equivalence).
         !--------------------------------------------------------------------------------------------------------------
         pure elemental recursive logical module function string_equivalence(Stringl, Stringr) result(equality)
             class(String), intent(in) :: Stringl, Stringr
@@ -328,21 +394,6 @@ module io_fortran_lib
             character(len=*), intent(in) :: charsl
             class(String), intent(in) :: Stringr
         end function char_string_equivalence
-    end interface
-
-    interface assignment(=)                                                                       ! Submodule operators
-        !--------------------------------------------------------------------------------------------------------------
-        !! Assignment operator for `character` and `String`.
-        !--------------------------------------------------------------------------------------------------------------
-        pure elemental recursive module subroutine string_char_assignment(Stringl, charsr)
-            type(String), intent(out) :: Stringl
-            character(len=*), intent(in) :: charsr
-        end subroutine string_char_assignment
-
-        pure recursive module subroutine char_string_assignment(charsl, Stringr)
-            character(len=:), allocatable, intent(out) :: charsl
-            type(String), intent(in) :: Stringr
-        end subroutine char_string_assignment
     end interface
 
     interface aprint                                                                         ! Submodule array_printing
@@ -4720,8 +4771,8 @@ submodule (io_fortran_lib) String_procedures
 end submodule String_procedures
 
 submodule (io_fortran_lib) operators
-    !! This submodule provides module procedure implementations for the **public interface** `operator(//)`,
-    !! `operator(+)`, `operator(-)`, 1operator(**)`, `operator(=)`, and `assignment(=)`.
+    !! This submodule provides module procedure implementations for the **public interfaces** `operator(//)`,
+    !! `operator(+)`, `operator(-)`, `operator(**)`, and `operator(==)`.
     contains
     module procedure string_concatenation
         if ( .not. allocated(Stringl%s) ) then
@@ -4762,19 +4813,19 @@ submodule (io_fortran_lib) operators
     module procedure char_string_concatenation
         if ( len(charsl) < 1 ) then
             if ( Stringr%len() < 1 ) then
-                new = ''
+                new%s = ''
             else
-                new = Stringr%s
+                new%s = Stringr%s
             end if
             return
         end if
 
         if ( Stringr%len() < 1 ) then
-            new = charsl
+            new%s = charsl
             return
         end if
 
-        new = charsl//Stringr%s
+        new%s = charsl//Stringr%s
     end procedure char_string_concatenation
 
     module procedure char_concat_plus
@@ -4820,56 +4871,37 @@ submodule (io_fortran_lib) operators
     module procedure char_string_concat_plus
         if ( len(charsl) < 1 ) then
             if ( Stringr%len() < 1 ) then
-                new = ''
+                new%s = ''
             else
-                new = Stringr%s
+                new%s = Stringr%s
             end if
             return
         end if
 
         if ( Stringr%len() < 1 ) then
-            new = charsl
+            new%s = charsl
             return
         end if
 
-        new = charsl//Stringr%s
+        new%s = charsl//Stringr%s
     end procedure char_string_concat_plus
 
     module procedure char_excision
-        integer :: i, charsl_len, charsr_len, diff_len
+        type(String) :: Stringl
 
-        charsl_len = len(charsl)
-        charsr_len = len(charsr)
+        Stringl%s = charsl
 
-        if ( charsl_len < 1 ) then
-            new = ''
+        if ( Stringl%len() < 1 ) then
+            new%s = ''
             return
         end if
 
-        if ( (charsr_len == 0) .or. (charsr_len > charsl_len) ) then
-            new = charsl
+        if ( len(charsr) < 1 ) then
+            new%s = Stringl%s
             return
         end if
 
-        new = charsl
-        diff_len = 0
-        i = 1
-        
-        search_and_replace: do while ( i <= charsl_len )
-            if ( charsl(i:i) == charsr(1:1) ) then
-                if ( i+charsr_len-1 > charsl_len ) exit search_and_replace
-
-                if ( charsl(i:i+charsr_len-1) == charsr ) then
-                    new = new(:i-1+diff_len)//new(i+charsr_len+diff_len:)
-                    diff_len = diff_len - charsr_len
-                    i = i + charsr_len
-                else
-                    i = i + 1
-                end if
-            else
-                i = i + 1
-            end if
-        end do search_and_replace
+        new = Stringl%replace(search_for=charsr, replace_with='')
     end procedure char_excision
 
     module procedure string_excision
@@ -4901,40 +4933,21 @@ submodule (io_fortran_lib) operators
     end procedure string_char_excision
 
     module procedure char_string_excision
-        integer :: i, charsl_len, Stringr_len, diff_len
+        type(String) :: Stringl
 
-        charsl_len = len(charsl)
-        Stringr_len = Stringr%len()
+        Stringl%s = charsl
 
-        if ( charsl_len < 1 ) then
-            new = ''
+        if ( Stringl%len() < 1 ) then
+            new%s = ''
             return
         end if
 
-        if ( (Stringr_len < 1) .or. (Stringr_len > charsl_len) ) then
-            new = charsl
+        if ( Stringr%len() < 1 ) then
+            new%s = Stringl%s
             return
         end if
 
-        new = charsl
-        diff_len = 0
-        i = 1
-        
-        search_and_replace: do while ( i <= charsl_len )
-            if ( charsl(i:i) == Stringr%s(1:1) ) then
-                if ( i+Stringr_len-1 > charsl_len ) exit search_and_replace
-
-                if ( charsl(i:i+Stringr_len-1) == Stringr%s ) then
-                    new = new(:i-1+diff_len)//new(i+Stringr_len+diff_len:)
-                    diff_len = diff_len - Stringr_len
-                    i = i + Stringr_len
-                else
-                    i = i + 1
-                end if
-            else
-                i = i + 1
-            end if
-        end do search_and_replace
+        new = Stringl%replace(search_for=Stringr%s, replace_with='')
     end procedure char_string_excision
 
     module procedure repeat_chars
@@ -5006,18 +5019,6 @@ submodule (io_fortran_lib) operators
 
         equality = ( charsl == Stringr%s )
     end procedure char_string_equivalence
-
-    module procedure string_char_assignment
-        Stringl%s = charsr
-    end procedure string_char_assignment
-
-    module procedure char_string_assignment
-        if ( Stringr%len() < 1 ) then
-            charsl = ''
-        else
-            charsl = Stringr%s
-        end if
-    end procedure char_string_assignment
 end submodule operators
 
 submodule (io_fortran_lib) array_printing

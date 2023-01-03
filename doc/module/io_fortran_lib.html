@@ -90,7 +90,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title="18.0% of total for modules and submodules.">3601 statements</a>
+               title="18.1% of total for modules and submodules.">3714 statements</a>
           </li>
 
             <li id="source-file">
@@ -146,6 +146,11 @@
       <div id="inters-0" class="panel-collapse collapse">
         <div class="list-group">
             <a class="list-group-item" href="../module/io_fortran_lib.html#interface-string">String</a>
+            <a class="list-group-item" href="../module/io_fortran_lib.html#interface-operator%28SLASHSLASH%29">operator(//)</a>
+            <a class="list-group-item" href="../module/io_fortran_lib.html#interface-operator%28%2B%29">operator(+)</a>
+            <a class="list-group-item" href="../module/io_fortran_lib.html#interface-operator%28-%29">operator(-)</a>
+            <a class="list-group-item" href="../module/io_fortran_lib.html#interface-operator%28ASTERISKASTERISK%29">operator(**)</a>
+            <a class="list-group-item" href="../module/io_fortran_lib.html#interface-operator%28%3D%3D%29">operator(==)</a>
             <a class="list-group-item" href="../module/io_fortran_lib.html#interface-aprint">aprint</a>
             <a class="list-group-item" href="../module/io_fortran_lib.html#interface-str">str</a>
             <a class="list-group-item" href="../module/io_fortran_lib.html#interface-to_file">to_file</a>
@@ -213,6 +218,7 @@ routine. This module is F2018 compliant, has no external dependencies, and has a
                 <li><a href='../module/binary_io.html'>binary_io</a></li>
                 <li><a href='../module/file_io.html'>file_io</a></li>
                 <li><a href='../module/internal_io.html'>internal_io</a></li>
+                <li><a href='../module/operators.html'>operators</a></li>
                 <li><a href='../module/string_procedures.html'>String_procedures</a></li>
                 <li><a href='../module/text_io.html'>text_io</a></li>
             </ul>
@@ -253,6 +259,11 @@ routine. This module is F2018 compliant, has no external dependencies, and has a
       <div id="inters-1" class="panel-collapse collapse">
         <div class="list-group">
             <a class="list-group-item" href="../module/io_fortran_lib.html#interface-string">String</a>
+            <a class="list-group-item" href="../module/io_fortran_lib.html#interface-operator%28SLASHSLASH%29">operator(//)</a>
+            <a class="list-group-item" href="../module/io_fortran_lib.html#interface-operator%28%2B%29">operator(+)</a>
+            <a class="list-group-item" href="../module/io_fortran_lib.html#interface-operator%28-%29">operator(-)</a>
+            <a class="list-group-item" href="../module/io_fortran_lib.html#interface-operator%28ASTERISKASTERISK%29">operator(**)</a>
+            <a class="list-group-item" href="../module/io_fortran_lib.html#interface-operator%28%3D%3D%29">operator(==)</a>
             <a class="list-group-item" href="../module/io_fortran_lib.html#interface-aprint">aprint</a>
             <a class="list-group-item" href="../module/io_fortran_lib.html#interface-str">str</a>
             <a class="list-group-item" href="../module/io_fortran_lib.html#interface-to_file">to_file</a>
@@ -336,10 +347,11 @@ needing to call the <code>new_line</code> intrinsic each time.</p>
       </h3>
     </div>
       <div class="panel-body">
-        <p>Function for transforming numeric or string data into a type <a href="../type/string.html">String</a>.</p>
+        <p>Function for transforming numeric or string data into a <a href="../type/string.html">String</a> type.</p>
 <p>The interface for <code>String</code> is nearly identical to that of <code>str</code> but with a return type of <code>String</code>, allowing
-for elemental assignments and access to the various <code>String</code> methods for more advanced string handling.</p>
-<p>For a user reference, see <a href="../page/Ref/string.html">String</a>.</p>
+for elemental assignments and access to the various <code>String</code> methods for more advanced character handling.</p>
+<p>For a user reference, see <a href="../page/Ref/string.html">String</a>, 
+<a href="../page/Ref/string-methods.html">String methods</a>, and <a href="../page/Ref/operators.html">Operators</a>.</p>
       </div>
     <ul class="list-group">
           <li class="list-group-item">
@@ -1186,6 +1198,1024 @@ for elemental assignments and access to the various <code>String</code> methods 
     <h4>
     Return Value
     <small>type(<a href='../type/string.html'>String</a>)</small>
+    </h4>
+    
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private pure elemental recursive module function new_Str_empty() result(self)  
+
+    </h3>
+  
+
+  <h4>Arguments</h4>
+    <em>None</em>
+    <h4>
+    Return Value
+    <small>type(<a href='../type/string.html'>String</a>)</small>
+    </h4>
+    
+
+          </li>
+    </ul>
+  </div>
+
+       <div class="panel panel-default">
+    <div class="panel-heading codesum">
+      <span class="anchor" id="interface-operator%28SLASHSLASH%29"></span>
+      <h3>public        interface <a href='../interface/operator%28SLASHSLASH%29.html'>operator(//)</a> 
+      </h3>
+    </div>
+      <div class="panel-body">
+        <p>Concatenation operator for <code>character</code> and <code>String</code>, lifted from <code>character</code>. Mixed type concatenation of
+<code>character</code> and <code>String</code> is explicitly defined.</p>
+<p>For a user reference, see <a href="../page/Ref/operators.html#concatenation">Concatenation</a>.</p>
+      </div>
+    <ul class="list-group">
+          <li class="list-group-item">
+                <h3>
+    private pure elemental recursive module function string_concatenation(Stringl, Stringr) result(new)  
+
+    </h3>
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>Stringl</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>Stringr</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/string.html'>String</a>)</small>
+    </h4>
+    
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private pure elemental recursive module function string_char_concatenation(Stringl, charsr) result(new)  
+
+    </h3>
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>Stringl</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>charsr</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/string.html'>String</a>)</small>
+    </h4>
+    
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private pure elemental recursive module function char_string_concatenation(charsl, Stringr) result(new)  
+
+    </h3>
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>charsl</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>Stringr</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/string.html'>String</a>)</small>
+    </h4>
+    
+
+          </li>
+    </ul>
+  </div>
+
+       <div class="panel panel-default">
+    <div class="panel-heading codesum">
+      <span class="anchor" id="interface-operator%28%2B%29"></span>
+      <h3>public        interface <a href='../interface/operator%28%2B%29.html'>operator(+)</a> 
+      </h3>
+    </div>
+      <div class="panel-body">
+        <p>Concatenation operator for <code>character</code> and <code>String</code> (as addition). Mixed type concatenation of
+<code>character</code> and <code>String</code> is explicitly defined.</p>
+<p>For a user reference, see <a href="../page/Ref/operators.html#concatenation">Concatenation</a>.</p>
+      </div>
+    <ul class="list-group">
+          <li class="list-group-item">
+                <h3>
+    private pure elemental recursive module function char_concat_plus(charsl, charsr) result(new)  
+
+    </h3>
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>charsl</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>charsr</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>character(len=len)</small>
+    </h4>
+    
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private pure elemental recursive module function string_concat_plus(Stringl, Stringr) result(new)  
+
+    </h3>
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>Stringl</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>Stringr</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/string.html'>String</a>)</small>
+    </h4>
+    
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private pure elemental recursive module function string_char_concat_plus(Stringl, charsr) result(new)  
+
+    </h3>
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>Stringl</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>charsr</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/string.html'>String</a>)</small>
+    </h4>
+    
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private pure elemental recursive module function char_string_concat_plus(charsl, Stringr) result(new)  
+
+    </h3>
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>charsl</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>Stringr</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/string.html'>String</a>)</small>
+    </h4>
+    
+
+          </li>
+    </ul>
+  </div>
+
+       <div class="panel panel-default">
+    <div class="panel-heading codesum">
+      <span class="anchor" id="interface-operator%28-%29"></span>
+      <h3>public        interface <a href='../interface/operator%28-%29.html'>operator(-)</a> 
+      </h3>
+    </div>
+      <div class="panel-body">
+        <p>Excision operator for <code>character</code> and <code>String</code> (as subtraction). Mixed type excision of <code>character</code> and
+<code>String</code> is explicitly defined.</p>
+<p>For a user reference, see <a href="../page/Ref/operators.html#excision">Excision</a>.</p>
+      </div>
+    <ul class="list-group">
+          <li class="list-group-item">
+                <h3>
+    private pure elemental recursive module function char_excision(charsl, charsr) result(new)  
+
+    </h3>
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>charsl</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>charsr</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/string.html'>String</a>)</small>
+    </h4>
+    
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private pure elemental recursive module function string_excision(Stringl, Stringr) result(new)  
+
+    </h3>
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>Stringl</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>Stringr</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/string.html'>String</a>)</small>
+    </h4>
+    
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private pure elemental recursive module function string_char_excision(Stringl, charsr) result(new)  
+
+    </h3>
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>Stringl</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>charsr</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/string.html'>String</a>)</small>
+    </h4>
+    
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private pure elemental recursive module function char_string_excision(charsl, Stringr) result(new)  
+
+    </h3>
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>charsl</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>Stringr</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/string.html'>String</a>)</small>
+    </h4>
+    
+
+          </li>
+    </ul>
+  </div>
+
+       <div class="panel panel-default">
+    <div class="panel-heading codesum">
+      <span class="anchor" id="interface-operator%28ASTERISKASTERISK%29"></span>
+      <h3>public        interface <a href='../interface/operator%28ASTERISKASTERISK%29.html'>operator(**)</a> 
+      </h3>
+    </div>
+      <div class="panel-body">
+        <p>Repetition operator for <code>character</code> and <code>String</code> (as exponentiation).</p>
+<p>For a user reference, see <a href="../page/Ref/operators.html#repetition">Repetition</a>.</p>
+      </div>
+    <ul class="list-group">
+          <li class="list-group-item">
+                <h3>
+    private pure elemental recursive module function repeat_chars(chars, exponent) result(new)  
+
+    </h3>
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>chars</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>exponent</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>character(len=len)</small>
+    </h4>
+    
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private pure elemental recursive module function repeat_String(String_base, exponent) result(new)  
+
+    </h3>
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>String_base</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>exponent</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/string.html'>String</a>)</small>
+    </h4>
+    
+
+          </li>
+    </ul>
+  </div>
+
+       <div class="panel panel-default">
+    <div class="panel-heading codesum">
+      <span class="anchor" id="interface-operator%28%3D%3D%29"></span>
+      <h3>public        interface <a href='../interface/operator%28%3D%3D%29.html'>operator(==)</a> 
+      </h3>
+    </div>
+      <div class="panel-body">
+        <p>Equivalence operator for <code>character</code> and <code>String</code>. Mixed type equivalence of <code>character</code> and <code>String</code> is
+explicitly defined.</p>
+<p>For a user reference, see <a href="../page/Ref/operators.html#equivalence">Equivalence</a>.</p>
+      </div>
+    <ul class="list-group">
+          <li class="list-group-item">
+                <h3>
+    private pure elemental recursive module function string_equivalence(Stringl, Stringr) result(equality)  
+
+    </h3>
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>Stringl</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>Stringr</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>logical</small>
+    </h4>
+    
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private pure elemental recursive module function string_char_equivalence(Stringl, charsr) result(equality)  
+
+    </h3>
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>Stringl</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>charsr</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>logical</small>
+    </h4>
+    
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private pure elemental recursive module function char_string_equivalence(charsl, Stringr) result(equality)  
+
+    </h3>
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>charsl</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>Stringr</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>logical</small>
     </h4>
     
 
@@ -25134,18 +26164,18 @@ read.</p>
       </h3>
     </div>
       <div class="panel-body">
-        <p>Subroutine for writing a string to an external file.</p>
+        <p>Subroutine for writing text to an external file.</p>
 <p>The file <code>file_name</code> will be created if it does not already exist and will be overwritten if <code>append</code> is
-<code>.false.</code> (if it already exists), with a new line always being inserted at the end of <code>string</code>.</p>
+<code>.false.</code> (if it already exists), with a new line always being inserted at the end of the input string.</p>
 <p>For a user reference, see <a href="../page/Ref/echo.html">echo</a>.</p>
       </div>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private impure recursive module subroutine echo_string(string, file_name, append)  
+    private impure recursive module subroutine echo_chars(string, file_name, append)  
 
     </h3>
-  
+  <p>Writes a <code>character</code> string to an external text file.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -25227,11 +26257,11 @@ read.</p>
       </h3>
     </div>
     <div class="panel-body">
-      <p>Wrapper type for an allocatable <code>character</code> string.</p><a href="../type/string.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+      <p>A growable string type for advanced character handling.</p><a href="../type/string.html" class="pull-right"><emph>Read more&hellip;</emph></a>
 
 
         <h4>Constructor</h4>
-          <p>Function for transforming numeric or string data into a type <a href="../type/string.html">String</a>.</p><a href="../interface/string.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+          <p>Function for transforming numeric or string data into a <a href="../type/string.html">String</a> type.</p><a href="../interface/string.html" class="pull-right"><emph>Read more&hellip;</emph></a>
         <table class="table table-striped varlist">
           <tbody>
                 <tr>
@@ -25355,6 +26385,17 @@ read.</p>
                   </td>
                   <td></td>
                 </tr>
+                <tr>
+                  <td>
+                        private
+
+                    pure, elemental, recursive, module
+                    function
+                    <strong>new_Str_empty</strong>
+                    ()
+                  </td>
+                  <td></td>
+                </tr>
           </tbody>
         </table>
 
@@ -25366,7 +26407,17 @@ read.</p>
                 <td>
                     procedure
                     ,                  public
-, pass(self)                  :: <strong><a href='../type/string.html#boundprocedure-val'>val</a></strong>
+, pass(self)                  :: <strong><a href='../type/string.html#boundprocedure-as_str'>as_str</a></strong>
+<small>Interface</small>                </td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>
+                    procedure
+                    ,                  public
+, pass(self)                  :: <strong><a href='../type/string.html#boundprocedure-echo'>echo</a></strong>
+ =>
+                    echo_String
 <small>Interface</small>                </td>
                 <td></td>
               </tr>
@@ -25375,6 +26426,14 @@ read.</p>
                     procedure
                     ,                  public
 , pass(self)                  :: <strong><a href='../type/string.html#boundprocedure-empty'>empty</a></strong>
+<small>Interface</small>                </td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>
+                    procedure
+                    ,                  public
+, pass(self)                  :: <strong><a href='../type/string.html#boundprocedure-glue'>glue</a></strong>
 <small>Interface</small>                </td>
                 <td></td>
               </tr>
@@ -25392,14 +26451,6 @@ read.</p>
                 <td>
                     procedure
                     ,                  public
-, pass(self)                  :: <strong><a href='../type/string.html#boundprocedure-push'>push</a></strong>
-<small>Interface</small>                </td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>
-                    procedure
-                    ,                  public
 , pass(self)                  :: <strong><a href='../type/string.html#boundprocedure-print'>print</a></strong>
  =>
                     print_String
@@ -25410,18 +26461,60 @@ read.</p>
                 <td>
                     procedure
                     ,                  public
-, nopass                  :: <strong><a href='../type/string.html#boundprocedure-aprint_2dstring'>aprint_2dString</a></strong>
-<small>Subroutine</small>                </td>
+, pass(self)                  :: <strong><a href='../type/string.html#boundprocedure-push'>push</a></strong>
+<small>Interface</small>                </td>
                 <td></td>
               </tr>
               <tr>
                 <td>
                     procedure
                     ,                  public
-, nopass                  :: <strong><a href='../type/string.html#boundprocedure-aprint'>aprint</a></strong>
+, pass(self)                  :: <strong><a href='../type/string.html#boundprocedure-read_file'>read_file</a></strong>
+<small>Interface</small>                </td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>
+                    procedure
+                    ,                  public
+, pass(self)                  :: <strong><a href='../type/string.html#boundprocedure-replace'>replace</a></strong>
  =>
-                    aprint_1dString
-<small>Subroutine</small>                </td>
+                    replace_copy
+<small>Interface</small>                </td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>
+                    procedure
+                    ,                  public
+, pass(self)                  :: <strong><a href='../type/string.html#boundprocedure-replace_inplace'>replace_inplace</a></strong>
+<small>Interface</small>                </td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>
+                    procedure
+                    ,                  public
+, pass(self)                  :: <strong><a href='../type/string.html#boundprocedure-split'>split</a></strong>
+<small>Interface</small>                </td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>
+                    procedure
+                    ,                  public
+, pass(self)                  :: <strong><a href='../type/string.html#boundprocedure-trim'>trim</a></strong>
+ =>
+                    trim_copy
+<small>Interface</small>                </td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>
+                    procedure
+                    ,                  public
+, pass(self)                  :: <strong><a href='../type/string.html#boundprocedure-trim_inplace'>trim_inplace</a></strong>
+<small>Interface</small>                </td>
                 <td></td>
               </tr>
           </tbody>
@@ -25451,7 +26544,7 @@ read.</p>
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-01-01 04:57            </p>
+ on 2023-01-03 05:34            </p>
         </div>
       </div>
       <br>

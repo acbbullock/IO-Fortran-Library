@@ -5,13 +5,13 @@ author: Austin C Bullock
 
 ## [interface aprint](../../interface/aprint.html)
 
-For `x` of rank `1` or `2` and of type `character`, `String`:
+For `x` an array of rank `1` or `2` and of type `character`, `String`:
 
 ```fortran
 call aprint(x)
 ```
 
-For `x` of rank `1` or `2` and of type `integer`:
+For `x` an array of rank `1` or `2` and of type `integer`:
 
 ```fortran
 call aprint(x, fmt)
@@ -19,7 +19,7 @@ call aprint(x, fmt)
 
 * `fmt` is `optional`, may be one of `int_fmts`
 
-For `x` of rank `1` or `2` and of type `real`:
+For `x` an array of rank `1` or `2` and of type `real`:
 
 ```fortran
 call aprint(x, fmt, decimals)
@@ -28,7 +28,7 @@ call aprint(x, fmt, decimals)
 * `fmt` is `optional`, may be one of `real_fmts`
 * `decimals` is `optional` and of type `integer`
 
-For `x` of rank `1` or `2` and of type `complex`:
+For `x` an array of rank `1` or `2` and of type `complex`:
 
 ```fortran
 call aprint(x, fmt, decimals, im)
@@ -56,4 +56,4 @@ Decimals (default is `2`): `decimals` specifies the number of digits on the rhs 
 
 Imaginary unit (default is `'j'`): `im` specifies the form of a complex number.
 
-@note The optional arguments for `aprint` are different than for `str` and `to_file`, and better suited for easy viewing of array sections.
+@note The optional arguments for `aprint` are different than elsewhere, and better suited for easy viewing of array sections.

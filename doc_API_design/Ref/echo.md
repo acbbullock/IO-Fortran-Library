@@ -5,6 +5,8 @@ author: Austin C Bullock
 
 ## [interface echo](../../interface/echo.html)
 
+For writing a `character` string to an external file:
+
 ```fortran
 call echo(string, file_name, append)
 ```
@@ -14,6 +16,8 @@ call echo(string, file_name, append)
 * `append` is `optional` and of type `logical`
 
 @warning `file_name` may be a relative path, but absolute paths are not guaranteed to work on every platform.
+
+@note For the `String` counterpart of `echo`, see [echo](string-methods.html#echo).
 
 ### Optional Arguments
 

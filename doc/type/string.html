@@ -90,7 +90,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title="<p>100.0% of total for derived types.</p>Including implementation: 18 statements, 100.0% of total for derived types.">12 statements</a>
+               title="<p>100.0% of total for derived types.</p>Including implementation: 19 statements, 100.0% of total for derived types.">19 statements</a>
           </li>
 
             <li id="source-file">
@@ -155,13 +155,19 @@
       </div>
       <div id="boundprocs-0" class="panel-collapse collapse">
         <div class="list-group">
-            <a class="list-group-item" href="../type/string.html#boundprocedure-val">val</a>
+            <a class="list-group-item" href="../type/string.html#boundprocedure-as_str">as_str</a>
+            <a class="list-group-item" href="../type/string.html#boundprocedure-echo">echo</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-empty">empty</a>
+            <a class="list-group-item" href="../type/string.html#boundprocedure-glue">glue</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-len">len</a>
-            <a class="list-group-item" href="../type/string.html#boundprocedure-push">push</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-print">print</a>
-            <a class="list-group-item" href="../type/string.html#boundprocedure-aprint_2dstring">aprint_2dString</a>
-            <a class="list-group-item" href="../type/string.html#boundprocedure-aprint">aprint</a>
+            <a class="list-group-item" href="../type/string.html#boundprocedure-push">push</a>
+            <a class="list-group-item" href="../type/string.html#boundprocedure-read_file">read_file</a>
+            <a class="list-group-item" href="../type/string.html#boundprocedure-replace">replace</a>
+            <a class="list-group-item" href="../type/string.html#boundprocedure-replace_inplace">replace_inplace</a>
+            <a class="list-group-item" href="../type/string.html#boundprocedure-split">split</a>
+            <a class="list-group-item" href="../type/string.html#boundprocedure-trim">trim</a>
+            <a class="list-group-item" href="../type/string.html#boundprocedure-trim_inplace">trim_inplace</a>
         </div>
       </div>
     </div>
@@ -175,12 +181,14 @@
     
     <div class="col-md-9" id='text'>
       <h2>type, public :: String</h2>
-    <p>Wrapper type for an allocatable <code>character</code> string.</p>
-<p>This type is provided for more advanced string handling needs and for the purpose of standard compliance
+    <p>A growable string type for advanced character handling.</p>
+<p>This type is provided for more advanced character handling needs and for the purpose of standard compliance
 when needing to declare arrays of <code>character</code> strings in which the elements may have non-identical lengths
 or for which the lengths of elements may need to vary during run-time.</p>
 <p>The form and function of this type was influenced by Rust's
 <a href="https://doc.rust-lang.org/std/string/struct.String.html">String</a>.</p>
+<p>For a user reference, see <a href="../page/Ref/string.html">String</a>, 
+<a href="../page/Ref/string-methods.html">String methods</a>, and <a href="../page/Ref/operators.html">Operators</a>.</p>
     <br>
 
     <section class="visible-xs visible-sm hidden-md">
@@ -222,13 +230,19 @@ or for which the lengths of elements may need to vary during run-time.</p>
       </div>
       <div id="boundprocs-1" class="panel-collapse collapse">
         <div class="list-group">
-            <a class="list-group-item" href="../type/string.html#boundprocedure-val">val</a>
+            <a class="list-group-item" href="../type/string.html#boundprocedure-as_str">as_str</a>
+            <a class="list-group-item" href="../type/string.html#boundprocedure-echo">echo</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-empty">empty</a>
+            <a class="list-group-item" href="../type/string.html#boundprocedure-glue">glue</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-len">len</a>
-            <a class="list-group-item" href="../type/string.html#boundprocedure-push">push</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-print">print</a>
-            <a class="list-group-item" href="../type/string.html#boundprocedure-aprint_2dstring">aprint_2dString</a>
-            <a class="list-group-item" href="../type/string.html#boundprocedure-aprint">aprint</a>
+            <a class="list-group-item" href="../type/string.html#boundprocedure-push">push</a>
+            <a class="list-group-item" href="../type/string.html#boundprocedure-read_file">read_file</a>
+            <a class="list-group-item" href="../type/string.html#boundprocedure-replace">replace</a>
+            <a class="list-group-item" href="../type/string.html#boundprocedure-replace_inplace">replace_inplace</a>
+            <a class="list-group-item" href="../type/string.html#boundprocedure-split">split</a>
+            <a class="list-group-item" href="../type/string.html#boundprocedure-trim">trim</a>
+            <a class="list-group-item" href="../type/string.html#boundprocedure-trim_inplace">trim_inplace</a>
         </div>
       </div>
     </div>
@@ -249,10 +263,11 @@ or for which the lengths of elements may need to vary during run-time.</p>
       </h3>
     </div>
       <div class="panel-body">
-        <p>Function for transforming numeric or string data into a type <a href="../type/string.html">String</a>.</p>
+        <p>Function for transforming numeric or string data into a <a href="../type/string.html">String</a> type.</p>
 <p>The interface for <code>String</code> is nearly identical to that of <code>str</code> but with a return type of <code>String</code>, allowing
-for elemental assignments and access to the various <code>String</code> methods for more advanced string handling.</p>
-<p>For a user reference, see <a href="../page/Ref/string.html">String</a>.</p>
+for elemental assignments and access to the various <code>String</code> methods for more advanced character handling.</p>
+<p>For a user reference, see <a href="../page/Ref/string.html">String</a>, 
+<a href="../page/Ref/string-methods.html">String methods</a>, and <a href="../page/Ref/operators.html">Operators</a>.</p>
       </div>
     <ul class="list-group">
           <li class="list-group-item">
@@ -1103,6 +1118,22 @@ for elemental assignments and access to the various <code>String</code> methods 
     
 
           </li>
+          <li class="list-group-item">
+                <h3>
+    private pure elemental recursive module function new_Str_empty() result(self)  
+
+    </h3>
+  
+
+  <h4>Arguments</h4>
+    <em>None</em>
+    <h4>
+    Return Value
+    <small>type(<a href='../type/string.html'>String</a>)</small>
+    </h4>
+    
+
+          </li>
     </ul>
   </div>
 
@@ -1113,17 +1144,18 @@ for elemental assignments and access to the various <code>String</code> methods 
       <section>
         <h2>Type-Bound Procedures</h2>
             <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-val"></span><h3>procedure, public, pass(self) :: <strong>val</strong>          
+    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-as_str"></span><h3>procedure, public, pass(self) :: <strong>as_str</strong>          
     </h3></div>
     <ul class="list-group">
         <li class="list-group-item">
               <h3>interface </h3>
                   
-                <p>Methods for type <code>String</code>.</p>
+                <p>Methods for the <code>String</code> type.</p>
                   <h3>
-    private pure recursive module function val(self) result(string_slice)  
+    private pure recursive module function as_str(self) result(string_slice)  
 </h3>
-  <p>Returns a copy of the string slice owned by a non-array <code>String</code>.</p>
+  <p>Returns a copy of the string slice component of a scalar <code>String</code>.</p>
+<p>See <a href="../page/Ref/string-methods.html#as_str">as_str</a>.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1165,17 +1197,96 @@ for elemental assignments and access to the various <code>String</code> methods 
   </div>
 
             <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-echo"></span><h3>procedure, public, pass(self) :: <strong>echo</strong>  => echo_String         
+    </h3></div>
+    <ul class="list-group">
+        <li class="list-group-item">
+              <h3>interface </h3>
+                  
+                <p>Methods for the <code>String</code> type.</p>
+                  <h3>
+    private impure recursive module subroutine echo_String(self, file_name, append)  
+</h3>
+  <p>Writes the string slice component to an external text file.</p>
+<p>See <a href="../page/Ref/string-methods.html#echo">echo</a>.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>self</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>file_name</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              logical,
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>append</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+        </li>
+    </ul>
+  </div>
+
+            <div class="panel panel-default">
     <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-empty"></span><h3>procedure, public, pass(self) :: <strong>empty</strong>          
     </h3></div>
     <ul class="list-group">
         <li class="list-group-item">
               <h3>interface </h3>
                   
-                <p>Methods for type <code>String</code>.</p>
+                <p>Methods for the <code>String</code> type.</p>
                   <h3>
     private pure elemental recursive module subroutine empty(self)  
 </h3>
-  <p>Sets the string slice to the empty string elementally.</p>
+  <p>Sets the string slice component to the empty string elementally.</p>
+<p>See <a href="../page/Ref/string-methods.html#empty">empty</a>.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1212,17 +1323,96 @@ for elemental assignments and access to the various <code>String</code> methods 
   </div>
 
             <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-glue"></span><h3>procedure, public, pass(self) :: <strong>glue</strong>          
+    </h3></div>
+    <ul class="list-group">
+        <li class="list-group-item">
+              <h3>interface </h3>
+                  
+                <p>Methods for the <code>String</code> type.</p>
+                  <h3>
+    private pure recursive module subroutine glue(self, tokens, separator)  
+</h3>
+  <p>Glues a string array into <code>self</code> with given separator. Default separator is SPACE.</p>
+<p>See <a href="../page/Ref/string-methods.html#glue">glue</a>.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>self</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(in),</td>
+              <td></td>            <td>
+              dimension(:)
+            </td>
+            <td>::</td>
+            <td><strong>tokens</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>separator</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+        </li>
+    </ul>
+  </div>
+
+            <div class="panel panel-default">
     <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-len"></span><h3>procedure, public, pass(self) :: <strong>len</strong>  => length         
     </h3></div>
     <ul class="list-group">
         <li class="list-group-item">
               <h3>interface </h3>
                   
-                <p>Methods for type <code>String</code>.</p>
+                <p>Methods for the <code>String</code> type.</p>
                   <h3>
     private pure elemental recursive module function length(self) result(self_len)  
 </h3>
-  <p>Returns the length of the string slice elementally. Unallocated components return -1.</p>
+  <p>Returns the length of the string slice component elementally. Unallocated components return -1.</p>
+<p>See <a href="../page/Ref/string-methods.html#len">len</a>.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1264,17 +1454,66 @@ for elemental assignments and access to the various <code>String</code> methods 
   </div>
 
             <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-print"></span><h3>procedure, public, pass(self) :: <strong>print</strong>  => print_String         
+    </h3></div>
+    <ul class="list-group">
+        <li class="list-group-item">
+              <h3>interface </h3>
+                  
+                <p>Methods for the <code>String</code> type.</p>
+                  <h3>
+    private impure recursive module subroutine print_String(self)  
+</h3>
+  <p>Prints the string slice component for a scalar <code>String</code>.</p>
+<p>See <a href="../page/Ref/string-methods.html#print">print</a>.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>self</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+        </li>
+    </ul>
+  </div>
+
+            <div class="panel panel-default">
     <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-push"></span><h3>procedure, public, pass(self) :: <strong>push</strong>          
     </h3></div>
     <ul class="list-group">
         <li class="list-group-item">
               <h3>interface </h3>
                   
-                <p>Methods for type <code>String</code>.</p>
+                <p>Methods for the <code>String</code> type.</p>
                   <h3>
     private pure elemental recursive module subroutine push(self, chars)  
 </h3>
-  <p>Appends chars to the string slice elementally.</p>
+  <p>Appends characters to the string slice component elementally.</p>
+<p>See <a href="../page/Ref/string-methods.html#push">push</a>.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1326,17 +1565,313 @@ for elemental assignments and access to the various <code>String</code> methods 
   </div>
 
             <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-print"></span><h3>procedure, public, pass(self) :: <strong>print</strong>  => print_String         
+    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-read_file"></span><h3>procedure, public, pass(self) :: <strong>read_file</strong>          
     </h3></div>
     <ul class="list-group">
         <li class="list-group-item">
               <h3>interface </h3>
                   
-                <p>Methods for type <code>String</code>.</p>
+                <p>Methods for the <code>String</code> type.</p>
                   <h3>
-    private impure recursive module subroutine print_String(self)  
+    private impure elemental recursive module subroutine read_file(self, file_name)  
 </h3>
-  <p>Prints the string slice for a non-array <code>String</code>.</p>
+  <p>Stream reads an entire text file into a <code>String</code> elementally. The string slice component will be
+replaced if already allocated.</p>
+<p>See <a href="../page/Ref/string-methods.html#read_file">read_file</a>.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>self</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>file_name</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+        </li>
+    </ul>
+  </div>
+
+            <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-replace"></span><h3>procedure, public, pass(self) :: <strong>replace</strong>  => replace_copy         
+    </h3></div>
+    <ul class="list-group">
+        <li class="list-group-item">
+              <h3>interface </h3>
+                  
+                <p>Methods for the <code>String</code> type.</p>
+                  <h3>
+    private pure elemental recursive module function replace_copy(self, search_for, replace_with) result(new)  
+</h3>
+  <p>Returns a copy of a <code>String</code> elementally in which each string slice component has had a substring
+searched and replaced.</p>
+<p>See <a href="../page/Ref/string-methods.html#replace">replace</a>.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>self</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>search_for</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>replace_with</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/string.html'>String</a>)</small>
+    </h4>
+    
+
+        </li>
+    </ul>
+  </div>
+
+            <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-replace_inplace"></span><h3>procedure, public, pass(self) :: <strong>replace_inplace</strong>          
+    </h3></div>
+    <ul class="list-group">
+        <li class="list-group-item">
+              <h3>interface </h3>
+                  
+                <p>Methods for the <code>String</code> type.</p>
+                  <h3>
+    private pure elemental recursive module subroutine replace_inplace(self, search_for, replace_with)  
+</h3>
+  <p>Searches and replaces a substring elementally in place.</p>
+<p>See <a href="../page/Ref/string-methods.html#replace_inplace">replace_inplace</a>.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>self</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>search_for</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>replace_with</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+        </li>
+    </ul>
+  </div>
+
+            <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-split"></span><h3>procedure, public, pass(self) :: <strong>split</strong>          
+    </h3></div>
+    <ul class="list-group">
+        <li class="list-group-item">
+              <h3>interface </h3>
+                  
+                <p>Methods for the <code>String</code> type.</p>
+                  <h3>
+    private pure recursive module function split(self, separator) result(tokens)  
+</h3>
+  <p>Splits a string array into <code>tokens</code> with given separator. Default separator is SPACE.</p>
+<p>See <a href="../page/Ref/string-methods.html#split">split</a>.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>self</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>separator</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/string.html'>String</a>), allocatable, dimension(:)</small>
+    </h4>
+    
+
+        </li>
+    </ul>
+  </div>
+
+            <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-trim"></span><h3>procedure, public, pass(self) :: <strong>trim</strong>  => trim_copy         
+    </h3></div>
+    <ul class="list-group">
+        <li class="list-group-item">
+              <h3>interface </h3>
+                  
+                <p>Methods for the <code>String</code> type.</p>
+                  <h3>
+    private pure elemental recursive module function trim_copy(self) result(new)  
+</h3>
+  <p>Returns a copy of a <code>String</code> elementally in which each string slice component has been trimmed of any
+leading or trailing whitespace.</p>
+<p>See <a href="../page/Ref/string-methods.html#trim">trim</a>.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1367,20 +1902,29 @@ for elemental assignments and access to the various <code>String</code> methods 
     </tbody>
   </table>
 
+    <h4>
+    Return Value
+    <small>type(<a href='../type/string.html'>String</a>)</small>
+    </h4>
+    
 
         </li>
     </ul>
   </div>
 
             <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-aprint_2dstring"></span><h3>procedure, public, nopass :: <strong>aprint_2dString</strong>          
+    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-trim_inplace"></span><h3>procedure, public, pass(self) :: <strong>trim_inplace</strong>          
     </h3></div>
     <ul class="list-group">
         <li class="list-group-item">
+              <h3>interface </h3>
+                  
+                <p>Methods for the <code>String</code> type.</p>
                   <h3>
-    private impure recursive module subroutine aprint_2dString(x)  
+    private pure elemental recursive module subroutine trim_inplace(self)  
 </h3>
-  
+  <p>Removes any leading or trailing whitespace of each string slice component of a <code>String</code> elementally.</p>
+<p>See <a href="../page/Ref/string-methods.html#trim_inplace">trim_inplace</a>.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1398,56 +1942,12 @@ for elemental assignments and access to the various <code>String</code> methods 
               <span class="anchor" ></span>
               class(<a href='../type/string.html'>String</a>),
             </td>
-<td>intent(in),</td>
+<td>intent(inout)</td>
               <td></td>            <td>
-              dimension(:,:)
+              
             </td>
             <td>::</td>
-            <td><strong>x</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-
-        </li>
-    </ul>
-  </div>
-
-            <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-aprint"></span><h3>procedure, public, nopass :: <strong>aprint</strong>  => aprint_1dString         
-    </h3></div>
-    <ul class="list-group">
-        <li class="list-group-item">
-                  <h3>
-    private impure recursive module subroutine aprint_1dString(x)  
-</h3>
-  
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              class(<a href='../type/string.html'>String</a>),
-            </td>
-<td>intent(in),</td>
-              <td></td>            <td>
-              dimension(:)
-            </td>
-            <td>::</td>
-            <td><strong>x</strong></td>
+            <td><strong>self</strong></td>
             <td>
                 
             </td>
@@ -1478,7 +1978,7 @@ for elemental assignments and access to the various <code>String</code> methods 
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-01-01 04:57            </p>
+ on 2023-01-03 05:34            </p>
         </div>
       </div>
       <br>

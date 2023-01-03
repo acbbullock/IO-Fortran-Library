@@ -3,7 +3,7 @@ title: Numeric text formats
 author: Austin C Bullock
 ---
 
-When writing `integer` data as strings with [str](../Ref/str.html) or [to_file](../Ref/to_file.html), any of the following text formats may be used:
+When writing `integer` data as strings with [str](../Ref/str.html), [String](../Ref/string.html), or [to_file](../Ref/to_file.html), any of the following text formats may be used:
 
 ```fortran
 int_fmts = [ 'i', 'z' ]
@@ -12,7 +12,7 @@ int_fmts = [ 'i', 'z' ]
 * `'i'`: integer format (default), e.g. `123456`
 * `'z'`: hexadecimal format, e.g. `1E240`
 
-When writing floating point numbers of type `real` or `complex` as strings with [str](../Ref/str.html) or [to_file](../Ref/to_file.html), any of the following text formats may be used:
+When writing floating point numbers of type `real` or `complex` as strings with [str](../Ref/str.html), [String](../Ref/string.html), or [to_file](../Ref/to_file.html), any of the following text formats may be used:
 
 ```fortran
 real_fmts = [ 'e', 'f', 'z' ]

@@ -3,11 +3,11 @@ title: fizzbuzz
 author: Austin C Bullock
 ---
 
-The following program demonstrates the use of [aprint](../Ref/aprint.html) for printing an array of type [String](../../type/string.html) containing values of the first 100 [FizzBuzz](https://en.wikipedia.org/wiki/Fizz_buzz) numbers, supplemented with the use of [str](../Ref/str.html):
+The following program demonstrates the use of [aprint](../Ref/aprint.html) for printing an array of [Strings](../../type/string.html) containing values of the first 100 [FizzBuzz](https://en.wikipedia.org/wiki/Fizz_buzz) numbers:
 
 ```fortran
 program main
-    use io_fortran_lib, only: String, aprint, str
+    use io_fortran_lib, only: String, aprint
     implicit none (type,external)
 
     integer, allocatable, dimension(:) :: nums
@@ -23,7 +23,7 @@ program main
 
         if ( mod(number,5) /= 0 ) then
             if ( mod(number,3) /= 0 ) then
-                res = String(str(number))
+                res = String(number)
             else
                 res = String('fizz')
             end if

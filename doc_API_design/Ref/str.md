@@ -5,7 +5,7 @@ author: Austin C Bullock
 
 ## [interface str](../../interface/str.html)
 
-For `x` of type `integer`:
+For `x` a scalar of type `integer`:
 
 ```fortran
 result = str(x, fmt)
@@ -13,7 +13,7 @@ result = str(x, fmt)
 
 * `fmt` is `optional`, may be one of `int_fmts`
 
-For `x` of type `real`:
+For `x` a scalar of type `real`:
 
 ```fortran
 result = str(x, locale, fmt, decimals)
@@ -23,7 +23,7 @@ result = str(x, locale, fmt, decimals)
 * `fmt` is `optional`, may be one of `real_fmts`
 * `decimals` is `optional` and of type `integer`
 
-For `x` of type `complex`:
+For `x` a scalar of type `complex`:
 
 ```fortran
 result = str(x, locale, fmt, decimals, im)
@@ -34,7 +34,7 @@ result = str(x, locale, fmt, decimals, im)
 * `decimals` is `optional` and of type `integer`
 * `im` is `optional` and of type `character(len=*)`
 
-@note The return value of `str` is of type `character`. As such, `str` is restricted to operate on scalars only since `character` arrays of non-identical length elements are not defined by the Fortran 2018 standard. For this functionality, see [String](string.html).
+@note Note that `str` is restricted to operate on scalars only since `character` arrays of non-identical length elements are not defined by the Fortran 2018 standard. For this functionality, see [String](string.html).
 
 ### Optional Arguments
 

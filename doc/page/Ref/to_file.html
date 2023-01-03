@@ -99,7 +99,7 @@
   <div class="row">
     <div class="col-md-9 col-md-push-3" id='text'>
       <h2 id="interface-to_file"><a href="../../interface/to_file.html">interface to_file</a></h2>
-<p>For <code>x</code> of type <code>integer</code> and of rank <code>1</code>, <code>2</code>:</p>
+<p>For <code>x</code> an array of rank <code>1</code>, <code>2</code> and of type <code>integer</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">to_file</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">file_name</span><span class="p">,</span><span class="w"> </span><span class="n">header</span><span class="p">,</span><span class="w"> </span><span class="nb">dim</span><span class="p">,</span><span class="w"> </span><span class="n">delim</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 
@@ -113,7 +113,7 @@
 <li><code>delim</code> is <code>optional</code> and of type <code>character(len=*)</code></li>
 <li><code>fmt</code> is <code>optional</code>, may be one of <code>int_fmts</code></li>
 </ul>
-<p>For <code>x</code> of type <code>real</code> and of rank <code>1</code>, <code>2</code>:</p>
+<p>For <code>x</code> an array of rank <code>1</code>, <code>2</code> and of type <code>real</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">to_file</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">file_name</span><span class="p">,</span><span class="w"> </span><span class="n">header</span><span class="p">,</span><span class="w"> </span><span class="nb">dim</span><span class="p">,</span><span class="w"> </span><span class="n">locale</span><span class="p">,</span><span class="w"> </span><span class="n">delim</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">,</span><span class="w"> </span><span class="n">decimals</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 
@@ -129,7 +129,7 @@
 <li><code>fmt</code> is <code>optional</code>, may be one of <code>real_fmts</code></li>
 <li><code>decimals</code> is <code>optional</code> and of type <code>integer</code></li>
 </ul>
-<p>For <code>x</code> of type <code>complex</code> and of rank <code>1</code>, <code>2</code>:</p>
+<p>For <code>x</code> an array of rank <code>1</code>, <code>2</code> and of type of type <code>complex</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">to_file</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">file_name</span><span class="p">,</span><span class="w"> </span><span class="n">header</span><span class="p">,</span><span class="w"> </span><span class="nb">dim</span><span class="p">,</span><span class="w"> </span><span class="n">locale</span><span class="p">,</span><span class="w"> </span><span class="n">delim</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">,</span><span class="w"> </span><span class="n">decimals</span><span class="p">,</span><span class="w"> </span><span class="n">im</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 
@@ -146,7 +146,7 @@
 <li><code>decimals</code> is <code>optional</code> and of type <code>integer</code></li>
 <li><code>im</code> is <code>optional</code> and of type <code>character(len=*)</code></li>
 </ul>
-<p>For <code>x</code> of any rank <code>3</code>-<code>15</code> and of type <code>integer</code>, <code>real</code>, <code>complex</code>:</p>
+<p>For <code>x</code> an array of any rank <code>3</code>-<code>15</code> and of type <code>integer</code>, <code>real</code>, <code>complex</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">to_file</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">file_name</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 
@@ -185,16 +185,16 @@
             <a href='../../page/UserInfo/index.html'>Important User Information</a>
             <ul class="nav nav-stacked nav-pills">
                           <li role="presentation">
-            <a href='../../page/UserInfo/text-fmts.html'>Numeric text formats</a>
-            </li>
-            <li role="presentation">
-            <a href='../../page/UserInfo/locale-fmts.html'>Locales</a>
+            <a href='../../page/UserInfo/compilers.html'>Compiler-dependent behavior</a>
             </li>
             <li role="presentation">
             <a href='../../page/UserInfo/file-ext.html'>File extensions</a>
             </li>
             <li role="presentation">
-            <a href='../../page/UserInfo/compilers.html'>Compiler-dependent behavior</a>
+            <a href='../../page/UserInfo/locale-fmts.html'>Locales</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/UserInfo/text-fmts.html'>Numeric text formats</a>
             </li>
             <li role="presentation">
             <a href='../../page/UserInfo/thread-safety.html'>Thread safety</a>
@@ -206,22 +206,28 @@
             <a href='../../page/Ref/index.html'>Reference Guide</a>
             <ul class="nav nav-stacked nav-pills">
                           <li role="presentation">
+            <a href='../../page/Ref/aprint.html'>aprint</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Ref/echo.html'>echo</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Ref/from_file.html'>from_file</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Ref/operators.html'>Operators</a>
+            </li>
+            <li role="presentation">
             <a href='../../page/Ref/str.html'>str</a>
             </li>
             <li role="presentation">
             <a href='../../page/Ref/String.html'>String</a>
             </li>
             <li role="presentation">
-            <a href='../../page/Ref/echo.html'>echo</a>
+            <a href='../../page/Ref/String-methods.html'>String methods</a>
             </li>
             <li role="presentation" class="disabled">
             <a href='../../page/Ref/to_file.html'>to_file</a>
-            </li>
-            <li role="presentation">
-            <a href='../../page/Ref/from_file.html'>from_file</a>
-            </li>
-            <li role="presentation">
-            <a href='../../page/Ref/aprint.html'>aprint</a>
             </li>
 
             </ul>
@@ -230,16 +236,16 @@
             <a href='../../page/Examples/index.html'>Tutorials</a>
             <ul class="nav nav-stacked nav-pills">
                           <li role="presentation">
-            <a href='../../page/Examples/csv.html'>csv file I/O</a>
-            </li>
-            <li role="presentation">
             <a href='../../page/Examples/binary.html'>binary file I/O</a>
             </li>
             <li role="presentation">
-            <a href='../../page/Examples/logging.html'>log file output</a>
+            <a href='../../page/Examples/csv.html'>csv file I/O</a>
             </li>
             <li role="presentation">
             <a href='../../page/Examples/fizzbuzz.html'>fizzbuzz</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Examples/logging.html'>log file output</a>
             </li>
 
             </ul>
@@ -260,7 +266,7 @@
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-01-01 04:57            </p>
+ on 2023-01-03 05:34            </p>
         </div>
       </div>
       <br>

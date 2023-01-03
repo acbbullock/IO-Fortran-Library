@@ -99,18 +99,18 @@
   <div class="row">
     <div class="col-md-9 col-md-push-3" id='text'>
       <h2 id="interface-aprint"><a href="../../interface/aprint.html">interface aprint</a></h2>
-<p>For <code>x</code> of rank <code>1</code> or <code>2</code> and of type <code>character</code>, <code>String</code>:</p>
+<p>For <code>x</code> an array of rank <code>1</code> or <code>2</code> and of type <code>character</code>, <code>String</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">aprint</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 
-<p>For <code>x</code> of rank <code>1</code> or <code>2</code> and of type <code>integer</code>:</p>
+<p>For <code>x</code> an array of rank <code>1</code> or <code>2</code> and of type <code>integer</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">aprint</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 
 <ul>
 <li><code>fmt</code> is <code>optional</code>, may be one of <code>int_fmts</code></li>
 </ul>
-<p>For <code>x</code> of rank <code>1</code> or <code>2</code> and of type <code>real</code>:</p>
+<p>For <code>x</code> an array of rank <code>1</code> or <code>2</code> and of type <code>real</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">aprint</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">,</span><span class="w"> </span><span class="n">decimals</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 
@@ -118,7 +118,7 @@
 <li><code>fmt</code> is <code>optional</code>, may be one of <code>real_fmts</code></li>
 <li><code>decimals</code> is <code>optional</code> and of type <code>integer</code></li>
 </ul>
-<p>For <code>x</code> of rank <code>1</code> or <code>2</code> and of type <code>complex</code>:</p>
+<p>For <code>x</code> an array of rank <code>1</code> or <code>2</code> and of type <code>complex</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">aprint</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">,</span><span class="w"> </span><span class="n">decimals</span><span class="p">,</span><span class="w"> </span><span class="n">im</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 
@@ -138,7 +138,7 @@
 
 <p>Decimals (default is <code>2</code>): <code>decimals</code> specifies the number of digits on the rhs of the radix point.</p>
 <p>Imaginary unit (default is <code>'j'</code>): <code>im</code> specifies the form of a complex number.</p>
-<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>The optional arguments for <code>aprint</code> are different than for <code>str</code> and <code>to_file</code>, and better suited for easy viewing of array sections.</p></div>
+<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>The optional arguments for <code>aprint</code> are different than elsewhere, and better suited for easy viewing of array sections.</p></div>
     </div>
     <div class="col-md-3 col-md-pull-9">
       <hr class="visible-xs visible-sm">
@@ -152,16 +152,16 @@
             <a href='../../page/UserInfo/index.html'>Important User Information</a>
             <ul class="nav nav-stacked nav-pills">
                           <li role="presentation">
-            <a href='../../page/UserInfo/text-fmts.html'>Numeric text formats</a>
-            </li>
-            <li role="presentation">
-            <a href='../../page/UserInfo/locale-fmts.html'>Locales</a>
+            <a href='../../page/UserInfo/compilers.html'>Compiler-dependent behavior</a>
             </li>
             <li role="presentation">
             <a href='../../page/UserInfo/file-ext.html'>File extensions</a>
             </li>
             <li role="presentation">
-            <a href='../../page/UserInfo/compilers.html'>Compiler-dependent behavior</a>
+            <a href='../../page/UserInfo/locale-fmts.html'>Locales</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/UserInfo/text-fmts.html'>Numeric text formats</a>
             </li>
             <li role="presentation">
             <a href='../../page/UserInfo/thread-safety.html'>Thread safety</a>
@@ -172,23 +172,29 @@
             <li role="presentation">
             <a href='../../page/Ref/index.html'>Reference Guide</a>
             <ul class="nav nav-stacked nav-pills">
-                          <li role="presentation">
+                          <li role="presentation" class="disabled">
+            <a href='../../page/Ref/aprint.html'>aprint</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Ref/echo.html'>echo</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Ref/from_file.html'>from_file</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Ref/operators.html'>Operators</a>
+            </li>
+            <li role="presentation">
             <a href='../../page/Ref/str.html'>str</a>
             </li>
             <li role="presentation">
             <a href='../../page/Ref/String.html'>String</a>
             </li>
             <li role="presentation">
-            <a href='../../page/Ref/echo.html'>echo</a>
+            <a href='../../page/Ref/String-methods.html'>String methods</a>
             </li>
             <li role="presentation">
             <a href='../../page/Ref/to_file.html'>to_file</a>
-            </li>
-            <li role="presentation">
-            <a href='../../page/Ref/from_file.html'>from_file</a>
-            </li>
-            <li role="presentation" class="disabled">
-            <a href='../../page/Ref/aprint.html'>aprint</a>
             </li>
 
             </ul>
@@ -197,16 +203,16 @@
             <a href='../../page/Examples/index.html'>Tutorials</a>
             <ul class="nav nav-stacked nav-pills">
                           <li role="presentation">
-            <a href='../../page/Examples/csv.html'>csv file I/O</a>
-            </li>
-            <li role="presentation">
             <a href='../../page/Examples/binary.html'>binary file I/O</a>
             </li>
             <li role="presentation">
-            <a href='../../page/Examples/logging.html'>log file output</a>
+            <a href='../../page/Examples/csv.html'>csv file I/O</a>
             </li>
             <li role="presentation">
             <a href='../../page/Examples/fizzbuzz.html'>fizzbuzz</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Examples/logging.html'>log file output</a>
             </li>
 
             </ul>
@@ -227,7 +233,7 @@
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-01-01 04:57            </p>
+ on 2023-01-03 05:34            </p>
         </div>
       </div>
       <br>

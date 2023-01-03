@@ -3,7 +3,7 @@ title: File extensions
 author: Austin C Bullock
 ---
 
-When writing to file or reading from file with [echo](../Ref/echo.html), [to_file](../Ref/to_file.html), or [from_file](../Ref/from_file.html), a valid file extension must be present.
+When writing to file or reading from file with [echo](../Ref/echo.html), [to_file](../Ref/to_file.html), [from_file](../Ref/from_file.html), or [read_file](../Ref/string-methods.html#read_file), a valid file extension must be present.
 
 The following are valid text file extensions:
 

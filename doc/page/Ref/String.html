@@ -99,6 +99,55 @@
   <div class="row">
     <div class="col-md-9 col-md-push-3" id='text'>
       <h2 id="interface-string"><a href="../../interface/string.html">interface String</a></h2>
+<p>To return the empty <code>String</code>, use no arguments:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">String</span><span class="p">()</span><span class="w"></span>
+</code></pre></div>
+
+<p>For <code>chars</code> a scalar or array of any rank and of type <code>character</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">String</span><span class="p">(</span><span class="n">chars</span><span class="p">)</span><span class="w"></span>
+</code></pre></div>
+
+<p>For <code>x</code> a scalar or array of any rank and of type <code>integer</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">String</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">)</span><span class="w"></span>
+</code></pre></div>
+
+<ul>
+<li><code>fmt</code> is <code>optional</code>, may be one of <code>int_fmts</code></li>
+</ul>
+<p>For <code>x</code> a scalar or array of any rank and of type <code>real</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">String</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">locale</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">,</span><span class="w"> </span><span class="n">decimals</span><span class="p">)</span><span class="w"></span>
+</code></pre></div>
+
+<ul>
+<li><code>locale</code> is <code>optional</code>, may be one of <code>locales</code></li>
+<li><code>fmt</code> is <code>optional</code>, may be one of <code>real_fmts</code></li>
+<li><code>decimals</code> is <code>optional</code> and of type <code>integer</code></li>
+</ul>
+<p>For <code>x</code> a scalar or array of any rank and of type <code>complex</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">String</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">locale</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">,</span><span class="w"> </span><span class="n">decimals</span><span class="p">,</span><span class="w"> </span><span class="n">im</span><span class="p">)</span><span class="w"></span>
+</code></pre></div>
+
+<ul>
+<li><code>locale</code> is <code>optional</code>, may be one of <code>locales</code></li>
+<li><code>fmt</code> is <code>optional</code>, may be one of <code>real_fmts</code></li>
+<li><code>decimals</code> is <code>optional</code> and of type <code>integer</code></li>
+<li><code>im</code> is <code>optional</code> and of type <code>character(len=*)</code></li>
+</ul>
+<h3 id="optional-arguments">Optional Arguments</h3>
+<p>Integer formats (default is <code>'i'</code>):</p>
+<div class="codehilite"><pre><span></span><code><span class="n">int_fmts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s1">&#39;i&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;z&#39;</span><span class="w"> </span><span class="p">]</span><span class="w"></span>
+</code></pre></div>
+
+<p>Real formats (default is <code>'e'</code>):</p>
+<div class="codehilite"><pre><span></span><code><span class="n">real_fmts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s1">&#39;e&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;f&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;z&#39;</span><span class="w"> </span><span class="p">]</span><span class="w"></span>
+</code></pre></div>
+
+<p>Locales (default is <code>'US'</code>):</p>
+<div class="codehilite"><pre><span></span><code><span class="n">locales</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s1">&#39;US&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;EU&#39;</span><span class="w"> </span><span class="p">]</span><span class="w"></span>
+</code></pre></div>
+
+<p>Decimals: <code>decimals</code> specifies the number of digits on the rhs of the radix point, with a default determined internally based on the <a href="../UserInfo/text-fmts.html">text format</a> and precision.</p>
+<p>Imaginary unit: <code>im</code> specifies the form of a complex number. By default, <code>complex</code> numbers will be written as ordered pairs, e.g. <code>(2.45,3.45)</code>. If <code>im</code> is specified, then the number will be written as a sum with the specified imaginary unit, e.g. <code>2.45+3.45j</code> for <code>im='j'</code> or <code>2.45+3.45*1i</code> for <code>im='*1i'</code>.</p>
     </div>
     <div class="col-md-3 col-md-pull-9">
       <hr class="visible-xs visible-sm">
@@ -112,16 +161,16 @@
             <a href='../../page/UserInfo/index.html'>Important User Information</a>
             <ul class="nav nav-stacked nav-pills">
                           <li role="presentation">
-            <a href='../../page/UserInfo/text-fmts.html'>Numeric text formats</a>
-            </li>
-            <li role="presentation">
-            <a href='../../page/UserInfo/locale-fmts.html'>Locales</a>
+            <a href='../../page/UserInfo/compilers.html'>Compiler-dependent behavior</a>
             </li>
             <li role="presentation">
             <a href='../../page/UserInfo/file-ext.html'>File extensions</a>
             </li>
             <li role="presentation">
-            <a href='../../page/UserInfo/compilers.html'>Compiler-dependent behavior</a>
+            <a href='../../page/UserInfo/locale-fmts.html'>Locales</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/UserInfo/text-fmts.html'>Numeric text formats</a>
             </li>
             <li role="presentation">
             <a href='../../page/UserInfo/thread-safety.html'>Thread safety</a>
@@ -133,22 +182,28 @@
             <a href='../../page/Ref/index.html'>Reference Guide</a>
             <ul class="nav nav-stacked nav-pills">
                           <li role="presentation">
+            <a href='../../page/Ref/aprint.html'>aprint</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Ref/echo.html'>echo</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Ref/from_file.html'>from_file</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Ref/operators.html'>Operators</a>
+            </li>
+            <li role="presentation">
             <a href='../../page/Ref/str.html'>str</a>
             </li>
             <li role="presentation" class="disabled">
             <a href='../../page/Ref/String.html'>String</a>
             </li>
             <li role="presentation">
-            <a href='../../page/Ref/echo.html'>echo</a>
+            <a href='../../page/Ref/String-methods.html'>String methods</a>
             </li>
             <li role="presentation">
             <a href='../../page/Ref/to_file.html'>to_file</a>
-            </li>
-            <li role="presentation">
-            <a href='../../page/Ref/from_file.html'>from_file</a>
-            </li>
-            <li role="presentation">
-            <a href='../../page/Ref/aprint.html'>aprint</a>
             </li>
 
             </ul>
@@ -157,16 +212,16 @@
             <a href='../../page/Examples/index.html'>Tutorials</a>
             <ul class="nav nav-stacked nav-pills">
                           <li role="presentation">
-            <a href='../../page/Examples/csv.html'>csv file I/O</a>
-            </li>
-            <li role="presentation">
             <a href='../../page/Examples/binary.html'>binary file I/O</a>
             </li>
             <li role="presentation">
-            <a href='../../page/Examples/logging.html'>log file output</a>
+            <a href='../../page/Examples/csv.html'>csv file I/O</a>
             </li>
             <li role="presentation">
             <a href='../../page/Examples/fizzbuzz.html'>fizzbuzz</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Examples/logging.html'>log file output</a>
             </li>
 
             </ul>
@@ -187,7 +242,7 @@
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-01-01 04:57            </p>
+ on 2023-01-03 05:34            </p>
         </div>
       </div>
       <br>

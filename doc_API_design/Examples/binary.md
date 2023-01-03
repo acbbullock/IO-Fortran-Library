@@ -23,6 +23,8 @@ program main
 end program main
 ```
 
+@warning It's crucial that the kind of the array read into has the same kind as the array that was written, or else the data will appear as garbage.
+
 @note Tip: The `shape` of an array may be written to file as a `.csv` so that the value of `data_shape` can be read into the program before reading in the main array with the corresponding value.
 
 The following program demonstrates the above tip:

@@ -98,9 +98,9 @@
   
   <div class="row">
     <div class="col-md-9 col-md-push-3" id='text'>
-      <p>The following program demonstrates the use of <a href="../Ref/aprint.html">aprint</a> for printing an array of type <a href="../../type/string.html">String</a> containing values of the first 100 <a href="https://en.wikipedia.org/wiki/Fizz_buzz">FizzBuzz</a> numbers, supplemented with the use of <a href="../Ref/str.html">str</a>:</p>
+      <p>The following program demonstrates the use of <a href="../Ref/aprint.html">aprint</a> for printing an array of <a href="../../type/string.html">Strings</a> containing values of the first 100 <a href="https://en.wikipedia.org/wiki/Fizz_buzz">FizzBuzz</a> numbers:</p>
 <div class="codehilite"><pre><span></span><code><span class="k">program </span><span class="n">main</span><span class="w"></span>
-<span class="w">    </span><span class="k">use </span><span class="n">io_fortran_lib</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="p">:</span><span class="w"> </span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">aprint</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="w"></span>
+<span class="w">    </span><span class="k">use </span><span class="n">io_fortran_lib</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="p">:</span><span class="w"> </span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">aprint</span><span class="w"></span>
 <span class="w">    </span><span class="k">implicit none</span><span class="w"> </span><span class="p">(</span><span class="k">type</span><span class="p">,</span><span class="k">external</span><span class="p">)</span><span class="w"></span>
 
 <span class="w">    </span><span class="kt">integer</span><span class="p">,</span><span class="w"> </span><span class="k">allocatable</span><span class="p">,</span><span class="w"> </span><span class="k">dimension</span><span class="p">(:)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nums</span><span class="w"></span>
@@ -116,7 +116,7 @@
 
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="nb">mod</span><span class="p">(</span><span class="n">number</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
 <span class="k">            if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="nb">mod</span><span class="p">(</span><span class="n">number</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
-<span class="k">                </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">String</span><span class="p">(</span><span class="n">str</span><span class="p">(</span><span class="n">number</span><span class="p">))</span><span class="w"></span>
+<span class="k">                </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">String</span><span class="p">(</span><span class="n">number</span><span class="p">)</span><span class="w"></span>
 <span class="w">            </span><span class="k">else</span>
 <span class="k">                </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">String</span><span class="p">(</span><span class="s1">&#39;fizz&#39;</span><span class="p">)</span><span class="w"></span>
 <span class="w">            </span><span class="k">end if</span>
@@ -143,16 +143,16 @@
             <a href='../../page/UserInfo/index.html'>Important User Information</a>
             <ul class="nav nav-stacked nav-pills">
                           <li role="presentation">
-            <a href='../../page/UserInfo/text-fmts.html'>Numeric text formats</a>
-            </li>
-            <li role="presentation">
-            <a href='../../page/UserInfo/locale-fmts.html'>Locales</a>
+            <a href='../../page/UserInfo/compilers.html'>Compiler-dependent behavior</a>
             </li>
             <li role="presentation">
             <a href='../../page/UserInfo/file-ext.html'>File extensions</a>
             </li>
             <li role="presentation">
-            <a href='../../page/UserInfo/compilers.html'>Compiler-dependent behavior</a>
+            <a href='../../page/UserInfo/locale-fmts.html'>Locales</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/UserInfo/text-fmts.html'>Numeric text formats</a>
             </li>
             <li role="presentation">
             <a href='../../page/UserInfo/thread-safety.html'>Thread safety</a>
@@ -164,22 +164,28 @@
             <a href='../../page/Ref/index.html'>Reference Guide</a>
             <ul class="nav nav-stacked nav-pills">
                           <li role="presentation">
+            <a href='../../page/Ref/aprint.html'>aprint</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Ref/echo.html'>echo</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Ref/from_file.html'>from_file</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Ref/operators.html'>Operators</a>
+            </li>
+            <li role="presentation">
             <a href='../../page/Ref/str.html'>str</a>
             </li>
             <li role="presentation">
             <a href='../../page/Ref/String.html'>String</a>
             </li>
             <li role="presentation">
-            <a href='../../page/Ref/echo.html'>echo</a>
+            <a href='../../page/Ref/String-methods.html'>String methods</a>
             </li>
             <li role="presentation">
             <a href='../../page/Ref/to_file.html'>to_file</a>
-            </li>
-            <li role="presentation">
-            <a href='../../page/Ref/from_file.html'>from_file</a>
-            </li>
-            <li role="presentation">
-            <a href='../../page/Ref/aprint.html'>aprint</a>
             </li>
 
             </ul>
@@ -188,16 +194,16 @@
             <a href='../../page/Examples/index.html'>Tutorials</a>
             <ul class="nav nav-stacked nav-pills">
                           <li role="presentation">
-            <a href='../../page/Examples/csv.html'>csv file I/O</a>
-            </li>
-            <li role="presentation">
             <a href='../../page/Examples/binary.html'>binary file I/O</a>
             </li>
             <li role="presentation">
-            <a href='../../page/Examples/logging.html'>log file output</a>
+            <a href='../../page/Examples/csv.html'>csv file I/O</a>
             </li>
             <li role="presentation" class="disabled">
             <a href='../../page/Examples/fizzbuzz.html'>fizzbuzz</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Examples/logging.html'>log file output</a>
             </li>
 
             </ul>
@@ -218,7 +224,7 @@
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-01-01 04:57            </p>
+ on 2023-01-03 05:34            </p>
         </div>
       </div>
       <br>

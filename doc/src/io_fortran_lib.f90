@@ -15,6 +15,7 @@ module io_fortran_lib
     public :: str, echo                                                                                    ! String I/O
     public :: String                                                                                          ! Classes
     public :: nl                                                                                            ! Constants
+    public :: operator(//), operator(+), operator(-), operator(**), operator(==)                            ! Operators
 
     ! Definitions and Interfaces ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     character(len=1), parameter :: nl = new_line('a')
@@ -36,35 +37,46 @@ module io_fortran_lib
 
     type String                                                                                   ! String wrapper type
         !--------------------------------------------------------------------------------------------------------------
-        !! Wrapper type for an allocatable `character` string.
+        !! A growable string type for advanced character handling.
         !!
-        !! This type is provided for more advanced string handling needs and for the purpose of standard compliance
+        !! This type is provided for more advanced character handling needs and for the purpose of standard compliance
         !! when needing to declare arrays of `character` strings in which the elements may have non-identical lengths
         !! or for which the lengths of elements may need to vary during run-time.
         !!
         !! The form and function of this type was influenced by Rust's
         !! [String](https://doc.rust-lang.org/std/string/struct.String.html).
+        !!
+        !! For a user reference, see [String](../page/Ref/string.html), 
+        !! [String methods](../page/Ref/string-methods.html), and [Operators](../page/Ref/operators.html).
         !--------------------------------------------------------------------------------------------------------------
         private
         character(len=:), allocatable :: s                                               !! Component is a string slice
         contains
             private
-            procedure, pass(self), public :: val
+            procedure, pass(self), public :: as_str
+            procedure, pass(self), public :: echo => echo_String
             procedure, pass(self), public :: empty
+            procedure, pass(self), public :: glue
             procedure, pass(self), public :: len => length
-            procedure, pass(self), public :: push
             procedure, pass(self), public :: print => print_String
-            procedure, nopass, public :: aprint => aprint_1dString, aprint_2dString
+            procedure, pass(self), public :: push
+            procedure, pass(self), public :: read_file
+            procedure, pass(self), public :: replace => replace_copy
+            procedure, pass(self), public :: replace_inplace
+            procedure, pass(self), public :: split
+            procedure, pass(self), public :: trim => trim_copy
+            procedure, pass(self), public :: trim_inplace
     end type String
 
     interface String                                                                      ! Submodule String_procedures
         !--------------------------------------------------------------------------------------------------------------
-        !! Function for transforming numeric or string data into a type [String](../type/string.html).
+        !! Function for transforming numeric or string data into a [String](../type/string.html) type.
         !!
         !! The interface for `String` is nearly identical to that of `str` but with a return type of `String`, allowing
-        !! for elemental assignments and access to the various `String` methods for more advanced string handling.
+        !! for elemental assignments and access to the various `String` methods for more advanced character handling.
         !!
-        !! For a user reference, see [String](../page/Ref/string.html).
+        !! For a user reference, see [String](../page/Ref/string.html), 
+        !! [String methods](../page/Ref/string-methods.html), and [Operators](../page/Ref/operators.html).
         !--------------------------------------------------------------------------------------------------------------
         pure elemental recursive type(String) module function new_Str_c128(x, locale, fmt, decimals, im) result(self)
             complex(real128), intent(in) :: x
@@ -127,38 +139,261 @@ module io_fortran_lib
         pure elemental recursive type(String) module function new_Str_char(chars) result(self)
             character(len=*), intent(in) :: chars
         end function new_Str_char
+
+        pure elemental recursive type(String) module function new_Str_empty() result(self)
+            ! No arguments
+        end function new_Str_empty
     end interface
 
     interface                                                                             ! Submodule String_procedures
         !--------------------------------------------------------------------------------------------------------------
-        !! Methods for type `String`.
+        !! Methods for the `String` type.
         !--------------------------------------------------------------------------------------------------------------
-        pure recursive module function val(self) result(string_slice)
-            !! Returns a copy of the string slice owned by a non-array `String`.
+        pure recursive module function as_str(self) result(string_slice)
+            !----------------------------------------------------------------------------------------------------------
+            !! Returns a copy of the string slice component of a scalar `String`.
+            !!
+            !! See [as_str](../page/Ref/string-methods.html#as_str).
+            !----------------------------------------------------------------------------------------------------------
             class(String), intent(in) :: self
             character(len=:), allocatable :: string_slice
-        end function val
+        end function as_str
+
+        impure recursive module subroutine echo_String(self, file_name, append)
+            !----------------------------------------------------------------------------------------------------------
+            !! Writes the string slice component to an external text file.
+            !!
+            !! See [echo](../page/Ref/string-methods.html#echo).
+            !----------------------------------------------------------------------------------------------------------
+            class(String), intent(in) :: self
+            character(len=*), intent(in) :: file_name
+            logical, optional, intent(in) :: append
+        end subroutine echo_String
 
         pure elemental recursive module subroutine empty(self)
-            !! Sets the string slice to the empty string elementally.
+            !----------------------------------------------------------------------------------------------------------
+            !! Sets the string slice component to the empty string elementally.
+            !!
+            !! See [empty](../page/Ref/string-methods.html#empty).
+            !----------------------------------------------------------------------------------------------------------
             class(String), intent(inout) :: self
         end subroutine empty
 
+        pure recursive module subroutine glue(self, tokens, separator)
+            !----------------------------------------------------------------------------------------------------------
+            !! Glues a string array into `self` with given separator. Default separator is SPACE.
+            !!
+            !! See [glue](../page/Ref/string-methods.html#glue).
+            !----------------------------------------------------------------------------------------------------------
+            class(String), intent(inout) :: self
+            type(String), dimension(:), intent(in) :: tokens
+            character(len=*), intent(in), optional :: separator
+        end subroutine glue
+
         pure elemental recursive integer module function length(self) result(self_len)
-            !! Returns the length of the string slice elementally. Unallocated components return -1.
+            !----------------------------------------------------------------------------------------------------------
+            !! Returns the length of the string slice component elementally. Unallocated components return -1.
+            !!
+            !! See [len](../page/Ref/string-methods.html#len).
+            !----------------------------------------------------------------------------------------------------------
             class(String), intent(in) :: self
         end function length
 
+        impure recursive module subroutine print_String(self)
+            !----------------------------------------------------------------------------------------------------------
+            !! Prints the string slice component for a scalar `String`.
+            !!
+            !! See [print](../page/Ref/string-methods.html#print).
+            !----------------------------------------------------------------------------------------------------------
+            class(String), intent(in) :: self
+        end subroutine print_String
+
         pure elemental recursive module subroutine push(self, chars)
-            !! Appends chars to the string slice elementally.
+            !----------------------------------------------------------------------------------------------------------
+            !! Appends characters to the string slice component elementally.
+            !!
+            !! See [push](../page/Ref/string-methods.html#push).
+            !----------------------------------------------------------------------------------------------------------
             class(String), intent(inout) :: self
             character(len=*), intent(in) :: chars
         end subroutine push
 
-        impure recursive module subroutine print_String(self)
-            !! Prints the string slice for a non-array `String`.
+        impure elemental recursive module subroutine read_file(self, file_name)
+            !----------------------------------------------------------------------------------------------------------
+            !! Stream reads an entire text file into a `String` elementally. The string slice component will be
+            !! replaced if already allocated.
+            !!
+            !! See [read_file](../page/Ref/string-methods.html#read_file).
+            !----------------------------------------------------------------------------------------------------------
+            class(String), intent(inout) :: self
+            character(len=*), intent(in) :: file_name
+        end subroutine read_file
+
+        pure elemental recursive type(String) module function replace_copy(self, search_for, replace_with) result(new)
+            !----------------------------------------------------------------------------------------------------------
+            !! Returns a copy of a `String` elementally in which each string slice component has had a substring
+            !! searched and replaced.
+            !!
+            !! See [replace](../page/Ref/string-methods.html#replace).
+            !----------------------------------------------------------------------------------------------------------
             class(String), intent(in) :: self
-        end subroutine print_String
+            character(len=*), intent(in) :: search_for, replace_with
+        end function replace_copy
+
+        pure elemental recursive module subroutine replace_inplace(self, search_for, replace_with)
+            !----------------------------------------------------------------------------------------------------------
+            !! Searches and replaces a substring elementally in place.
+            !!
+            !! See [replace_inplace](../page/Ref/string-methods.html#replace_inplace).
+            !----------------------------------------------------------------------------------------------------------
+            class(String), intent(inout) :: self
+            character(len=*), intent(in) :: search_for, replace_with
+        end subroutine replace_inplace
+
+        pure recursive module function split(self, separator) result(tokens)
+            !----------------------------------------------------------------------------------------------------------
+            !! Splits a string array into `tokens` with given separator. Default separator is SPACE.
+            !!
+            !! See [split](../page/Ref/string-methods.html#split).
+            !----------------------------------------------------------------------------------------------------------
+            class(String), intent(in) :: self
+            character(len=*), intent(in), optional :: separator
+            type(String), allocatable, dimension(:) :: tokens
+        end function split
+
+        pure elemental recursive type(String) module function trim_copy(self) result(new)
+            !----------------------------------------------------------------------------------------------------------
+            !! Returns a copy of a `String` elementally in which each string slice component has been trimmed of any
+            !! leading or trailing whitespace.
+            !!
+            !! See [trim](../page/Ref/string-methods.html#trim).
+            !----------------------------------------------------------------------------------------------------------
+            class(String), intent(in) :: self
+        end function trim_copy
+
+        pure elemental recursive module subroutine trim_inplace(self)
+            !----------------------------------------------------------------------------------------------------------
+            !! Removes any leading or trailing whitespace of each string slice component of a `String` elementally.
+            !!
+            !! See [trim_inplace](../page/Ref/string-methods.html#trim_inplace).
+            !----------------------------------------------------------------------------------------------------------
+            class(String), intent(inout) :: self
+        end subroutine trim_inplace
+    end interface
+
+    interface operator(//)                                                                        ! Submodule operators
+        !--------------------------------------------------------------------------------------------------------------
+        !! Concatenation operator for `character` and `String`, lifted from `character`. Mixed type concatenation of
+        !! `character` and `String` is explicitly defined.
+        !!
+        !! For a user reference, see [Concatenation](../page/Ref/operators.html#concatenation).
+        !--------------------------------------------------------------------------------------------------------------
+        pure elemental recursive type(String) module function string_concatenation(Stringl, Stringr) result(new)
+            class(String), intent(in) :: Stringl, Stringr
+        end function string_concatenation
+
+        pure elemental recursive type(String) module function string_char_concatenation(Stringl, charsr) result(new)
+            class(String), intent(in) :: Stringl
+            character(len=*), intent(in) :: charsr
+        end function string_char_concatenation
+
+        pure elemental recursive type(String) module function char_string_concatenation(charsl, Stringr) result(new)
+            character(len=*), intent(in) :: charsl
+            class(String), intent(in) :: Stringr
+        end function char_string_concatenation
+    end interface
+
+    interface operator(+)                                                                         ! Submodule operators
+        !--------------------------------------------------------------------------------------------------------------
+        !! Concatenation operator for `character` and `String` (as addition). Mixed type concatenation of
+        !! `character` and `String` is explicitly defined.
+        !!
+        !! For a user reference, see [Concatenation](../page/Ref/operators.html#concatenation).
+        !--------------------------------------------------------------------------------------------------------------
+        pure elemental recursive module function char_concat_plus(charsl, charsr) result(new)
+            character(len=*), intent(in) :: charsl, charsr
+            character(len=len(charsl)+len(charsr)) :: new
+        end function char_concat_plus
+
+        pure elemental recursive type(String) module function string_concat_plus(Stringl, Stringr) result(new)
+            class(String), intent(in) :: Stringl, Stringr
+        end function string_concat_plus
+
+        pure elemental recursive type(String) module function string_char_concat_plus(Stringl, charsr) result(new)
+            class(String), intent(in) :: Stringl
+            character(len=*), intent(in) :: charsr
+        end function string_char_concat_plus
+
+        pure elemental recursive type(String) module function char_string_concat_plus(charsl, Stringr) result(new)
+            character(len=*), intent(in) :: charsl
+            class(String), intent(in) :: Stringr
+        end function char_string_concat_plus
+    end interface
+
+    interface operator(-)                                                                         ! Submodule operators
+        !--------------------------------------------------------------------------------------------------------------
+        !! Excision operator for `character` and `String` (as subtraction). Mixed type excision of `character` and
+        !! `String` is explicitly defined.
+        !!
+        !! For a user reference, see [Excision](../page/Ref/operators.html#excision).
+        !--------------------------------------------------------------------------------------------------------------
+        pure elemental recursive type(String) module function char_excision(charsl, charsr) result(new)
+            character(len=*), intent(in) :: charsl, charsr
+        end function char_excision
+
+        pure elemental recursive type(String) module function string_excision(Stringl, Stringr) result(new)
+            class(String), intent(in) :: Stringl, Stringr
+        end function string_excision
+
+        pure elemental recursive type(String) module function string_char_excision(Stringl, charsr) result(new)
+            class(String), intent(in) :: Stringl
+            character(len=*), intent(in) :: charsr
+        end function string_char_excision
+
+        pure elemental recursive type(String) module function char_string_excision(charsl, Stringr) result(new)
+            character(len=*), intent(in) :: charsl
+            class(String), intent(in) :: Stringr
+        end function char_string_excision
+    end interface
+
+    interface operator(**)                                                                        ! Submodule operators
+        !--------------------------------------------------------------------------------------------------------------
+        !! Repetition operator for `character` and `String` (as exponentiation).
+        !!
+        !! For a user reference, see [Repetition](../page/Ref/operators.html#repetition).
+        !--------------------------------------------------------------------------------------------------------------
+        pure elemental recursive module function repeat_chars(chars, exponent) result(new)
+            character(len=*), intent(in) :: chars
+            integer, intent(in) :: exponent
+            character(len=len(chars)*exponent) :: new
+        end function repeat_chars
+
+        pure elemental recursive type(String) module function repeat_String(String_base, exponent) result(new)
+            class(String), intent(in) :: String_base
+            integer, intent(in) :: exponent
+        end function repeat_String
+    end interface
+
+    interface operator(==)                                                                        ! Submodule operators
+        !--------------------------------------------------------------------------------------------------------------
+        !! Equivalence operator for `character` and `String`. Mixed type equivalence of `character` and `String` is
+        !! explicitly defined.
+        !!
+        !! For a user reference, see [Equivalence](../page/Ref/operators.html#equivalence).
+        !--------------------------------------------------------------------------------------------------------------
+        pure elemental recursive logical module function string_equivalence(Stringl, Stringr) result(equality)
+            class(String), intent(in) :: Stringl, Stringr
+        end function string_equivalence
+
+        pure elemental recursive logical module function string_char_equivalence(Stringl, charsr) result(equality)
+            class(String), intent(in) :: Stringl
+            character(len=*), intent(in) :: charsr
+        end function string_char_equivalence
+
+        pure elemental recursive logical module function char_string_equivalence(charsl, Stringr) result(equality)
+            character(len=*), intent(in) :: charsl
+            class(String), intent(in) :: Stringr
+        end function char_string_equivalence
     end interface
 
     interface aprint                                                                         ! Submodule array_printing
@@ -2071,18 +2306,19 @@ module io_fortran_lib
 
     interface echo                                                                                  ! Submodule text_io
         !--------------------------------------------------------------------------------------------------------------
-        !! Subroutine for writing a string to an external file.
+        !! Subroutine for writing text to an external file.
         !!
         !! The file `file_name` will be created if it does not already exist and will be overwritten if `append` is
-        !! `.false.` (if it already exists), with a new line always being inserted at the end of `string`.
+        !! `.false.` (if it already exists), with a new line always being inserted at the end of the input string.
         !!
         !! For a user reference, see [echo](../page/Ref/echo.html).
         !--------------------------------------------------------------------------------------------------------------
-        impure recursive module subroutine echo_string(string, file_name, append)
+        impure recursive module subroutine echo_chars(string, file_name, append)
+            !! Writes a `character` string to an external text file.
             character(len=*), intent(in) :: string
             character(len=*), intent(in) :: file_name
             logical, optional, intent(in) :: append
-        end subroutine echo_string
+        end subroutine echo_chars
     end interface
 
     interface to_text                                                                               ! Submodule text_io
@@ -4202,17 +4438,92 @@ submodule (io_fortran_lib) String_procedures
         self%s = chars
     end procedure new_Str_char
 
-    module procedure val
+    module procedure new_Str_empty
+        self%s = ''
+    end procedure new_Str_empty
+
+    module procedure as_str
         if ( .not. allocated(self%s) ) then
             string_slice = ''
         else
             string_slice = self%s
         end if
-    end procedure val
+    end procedure as_str
+
+    module procedure echo_String
+        character(len=:), allocatable :: ext
+        logical :: exists, append_
+        integer :: file_unit
+
+        ext = ext_of(file_name)
+
+        if ( .not. any(text_ext == ext) ) then
+            write(*,'(a)')  nl//'WARNING: Skipping write to "'//file_name//'" '// &
+                                'due to unsupported file extension "'//ext//'".'// &
+                            nl//'Supported file extensions: '//to_str(text_ext, delim=' ')
+            return
+        end if
+
+        if ( .not. present(append) ) then
+            append_ = .true.
+        else
+            append_ = append
+        end if
+
+        inquire( file=file_name, exist=exists )
+
+        file_unit = output_unit
+
+        if ( .not. exists ) then
+            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
+                  action='write', access='stream', position='rewind' )
+        else
+            if ( .not. append_ ) then
+                open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
+                      action='write', access='stream', position='rewind' )
+            else
+                open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
+                      action='write', access='stream', position='append' )
+            end if
+        end if
+
+        write( unit=file_unit ) self%s//nl
+
+        close(file_unit)
+    end procedure echo_String
 
     module procedure empty
         self%s = ''
     end procedure empty
+
+    module procedure glue
+        character(len=:), allocatable :: separator_
+        integer, allocatable, dimension(:) :: lengths
+        integer :: i
+
+        if ( .not. present(separator) ) then
+            separator_ = ' '
+        else
+            separator_ = separator
+        end if
+
+        lengths = tokens%len()
+
+        self%s = ''
+        do i = 1, size(tokens)-1
+            if ( lengths(i) < 1 ) then
+                self%s = self%s//separator_
+            else
+                self%s = self%s//tokens(i)%s//separator_
+            end if
+        end do
+
+        if ( lengths(size(tokens)) < 1 ) then
+            return
+        else
+            self%s = self%s//tokens(size(tokens))%s
+        end if
+    end procedure glue
 
     module procedure length
         if ( .not. allocated(self%s) ) then
@@ -4222,6 +4533,14 @@ submodule (io_fortran_lib) String_procedures
         end if
     end procedure length
 
+    module procedure print_String
+        if ( .not. allocated(self%s) ) then
+            write(*,'(a)') ''
+        else
+            write(*,'(a)') self%s
+        end if
+    end procedure print_String
+
     module procedure push
         if ( .not. allocated(self%s) ) then
             self%s = chars
@@ -4230,14 +4549,477 @@ submodule (io_fortran_lib) String_procedures
         end if
     end procedure push
 
-    module procedure print_String
-        if ( .not. allocated(self%s) ) then
-            write(*,'(a)') ''
+    module procedure read_file
+        character(len=:), allocatable :: ext
+        integer :: file_unit, file_length, iostat
+        logical :: exists
+
+        ext = ext_of(file_name)
+
+        if ( any(text_ext == ext) ) then
+            inquire( file=file_name, exist=exists )
+
+            file_unit = input_unit
+
+            if ( exists ) then
+                open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
+                      action='read', access='stream', position='rewind' )
+            else
+                error stop nl//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+                return
+            end if
+
+            inquire( file=file_name, size=file_length )
+
+            if ( file_length == 0 ) then
+                error stop nl//'FATAL: Error reading file "'//file_name//'". File is empty.'
+                return
+            end if
+
+            if ( allocated(self%s) ) deallocate(self%s)
+
+            allocate( character(len=file_length) :: self%s )
+            read(unit=file_unit, iostat=iostat) self%s
+            close(file_unit)
+
+            if ( iostat > 0 ) then
+                error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+                return
+            end if
         else
-            write(*,'(a)') self%s
+            if ( any(binary_ext == ext) ) then
+                error stop nl//'FATAL: Error reading file "'//file_name//'", binary data cannot be read into a String.'
+            else
+                error stop nl//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
+                           nl//'Supported file extensions: '//to_str(text_ext, delim=' ')
+            end if
         end if
-    end procedure print_String
+    end procedure read_file
+
+    module procedure replace_copy
+        integer :: i, self_len, search_len, replace_len, diff_len
+
+        self_len = self%len()
+        search_len = len(search_for)
+        replace_len = len(replace_with)
+
+        if ( self_len < 1 ) then
+            new%s = ''
+            return
+        end if
+
+        if ( (search_len == 0) .or. (search_len > self_len) ) then
+            new%s = self%s
+            return
+        end if
+
+        new%s = self%s
+        diff_len = 0
+        i = 1
+        
+        search_and_replace: do while ( i <= self_len )
+            if ( self%s(i:i) == search_for(1:1) ) then
+                if ( i+search_len-1 > self_len ) exit search_and_replace
+
+                if ( self%s(i:i+search_len-1) == search_for ) then
+                    new%s = new%s(:i-1+diff_len)//replace_with//new%s(i+search_len+diff_len:)
+                    diff_len = diff_len + ( replace_len - search_len )
+                    i = i + search_len
+                else
+                    i = i + 1
+                end if
+            else
+                i = i + 1
+            end if
+        end do search_and_replace
+    end procedure replace_copy
+
+    module procedure replace_inplace
+        type(String) :: new
+        integer :: i, self_len, search_len, replace_len, diff_len
+
+        self_len = self%len()
+        search_len = len(search_for)
+        replace_len = len(replace_with)
+
+        if ( self_len < 1 ) then
+            self%s = ''
+            return
+        end if
+
+        if ( (search_len == 0) .or. (search_len > self_len) ) return
+
+        new%s = self%s
+        diff_len = 0
+        i = 1
+        
+        search_and_replace: do while ( i <= self_len )
+            if ( self%s(i:i) == search_for(1:1) ) then
+                if ( i+search_len-1 > self_len ) exit search_and_replace
+
+                if ( self%s(i:i+search_len-1) == search_for ) then
+                    new%s = new%s(:i-1+diff_len)//replace_with//new%s(i+search_len+diff_len:)
+                    diff_len = diff_len + ( replace_len - search_len )
+                    i = i + search_len
+                else
+                    i = i + 1
+                end if
+            else
+                i = i + 1
+            end if
+        end do search_and_replace
+
+        self%s = new%s
+    end procedure replace_inplace
+
+    module procedure split
+        type(String) :: temp_String
+        character(len=:), allocatable :: separator_
+        integer :: i, temp_len, separator_len, num_seps, l, current_string
+
+        temp_String = self%trim()
+        temp_len = temp_String%len()
+
+        if ( temp_len == 0 ) then
+            tokens = [ String('') ]
+            return
+        end if
+
+        if ( .not. present(separator) ) then
+            separator_ = ' '
+        else
+            separator_ = separator
+        end if
+
+        separator_len = len(separator_)
+
+        if ( separator_len == 0 ) then
+            allocate( tokens(temp_len) )
+            do concurrent (i = 1:temp_len)
+                tokens(i)%s = temp_String%s(i:i)
+            end do
+            return
+        end if
+
+        num_seps = 0
+        i = 1
+
+        search: do
+            if ( temp_String%s(i:i) == separator_(1:1) ) then
+                if ( i+separator_len-1 > temp_len ) exit search
+
+                if ( temp_String%s(i:i+separator_len-1) == separator_ ) then
+                    num_seps = num_seps + 1
+                    i = i + separator_len
+                else
+                    i = i + 1
+                end if
+            else
+                i = i + 1
+            end if
+
+            if ( i > temp_len ) exit search
+        end do search
+
+        if ( num_seps == 0 ) then
+            tokens = [ self ]
+            return
+        end if
+
+        allocate( tokens(num_seps + 1) )
+        call tokens%empty()
+
+        i = 1
+        l = 1
+        current_string = 1
+
+        splitting: do while ( i <= temp_len )
+            if ( temp_String%s(i:i+separator_len-1) == separator_ ) then
+                tokens(current_string)%s = temp_String%s(l:i-1)
+
+                if ( current_string == num_seps ) then
+                    tokens(current_string+1)%s = temp_String%s(i+separator_len:)
+                    exit splitting
+                else
+                    current_string = current_string + 1
+                end if
+                i = i + separator_len
+                l = i
+            else
+                i = i + 1
+            end if
+        end do splitting
+
+        call tokens%trim_inplace()
+    end procedure split
+
+    module procedure trim_copy
+        if ( .not. allocated(self%s) ) then
+            new%s = ''
+        else
+            new%s = trim(adjustl(self%s))
+        end if
+    end procedure trim_copy
+
+    module procedure trim_inplace
+        if ( .not. allocated(self%s) ) then
+            self%s = ''
+        else
+            self%s = trim(adjustl(self%s))
+        end if
+    end procedure trim_inplace
 end submodule String_procedures
+
+submodule (io_fortran_lib) operators
+    !! This submodule provides module procedure implementations for the **public interfaces** `operator(//)`,
+    !! `operator(+)`, `operator(-)`, `operator(**)`, and `operator(==)`.
+    contains
+    module procedure string_concatenation
+        if ( .not. allocated(Stringl%s) ) then
+            if ( .not. allocated(Stringr%s) ) then
+                new%s = ''
+            else
+                new%s = Stringr%s
+            end if
+            return
+        end if
+
+        if ( .not. allocated(Stringr%s) ) then
+            new%s = Stringl%s
+            return
+        end if
+
+        new%s = Stringl%s//Stringr%s
+    end procedure string_concatenation
+
+    module procedure string_char_concatenation
+        if ( Stringl%len() < 1 ) then
+            if ( len(charsr) < 1 ) then
+                new%s = ''
+            else
+                new%s = charsr
+            end if
+            return
+        end if
+
+        if ( len(charsr) < 1 ) then
+            new%s = Stringl%s
+            return
+        end if
+
+        new%s = Stringl%s//charsr
+    end procedure string_char_concatenation
+
+    module procedure char_string_concatenation
+        if ( len(charsl) < 1 ) then
+            if ( Stringr%len() < 1 ) then
+                new%s = ''
+            else
+                new%s = Stringr%s
+            end if
+            return
+        end if
+
+        if ( Stringr%len() < 1 ) then
+            new%s = charsl
+            return
+        end if
+
+        new%s = charsl//Stringr%s
+    end procedure char_string_concatenation
+
+    module procedure char_concat_plus
+        new = charsl//charsr
+    end procedure char_concat_plus
+
+    module procedure string_concat_plus
+        if ( Stringl%len() < 1 ) then
+            if ( Stringr%len() < 1 ) then
+                new%s = ''
+            else
+                new%s = Stringr%s
+            end if
+            return
+        end if
+
+        if ( Stringr%len() < 1 ) then
+            new%s = Stringl%s
+            return
+        end if
+
+        new%s = Stringl%s//Stringr%s
+    end procedure string_concat_plus
+
+    module procedure string_char_concat_plus
+        if ( Stringl%len() < 1 ) then
+            if ( len(charsr) < 1 ) then
+                new%s = ''
+            else
+                new%s = charsr
+            end if
+            return
+        end if
+
+        if ( len(charsr) < 1 ) then
+            new%s = Stringl%s
+            return
+        end if
+
+        new%s = Stringl%s//charsr
+    end procedure string_char_concat_plus
+
+    module procedure char_string_concat_plus
+        if ( len(charsl) < 1 ) then
+            if ( Stringr%len() < 1 ) then
+                new%s = ''
+            else
+                new%s = Stringr%s
+            end if
+            return
+        end if
+
+        if ( Stringr%len() < 1 ) then
+            new%s = charsl
+            return
+        end if
+
+        new%s = charsl//Stringr%s
+    end procedure char_string_concat_plus
+
+    module procedure char_excision
+        type(String) :: Stringl
+
+        Stringl%s = charsl
+
+        if ( Stringl%len() < 1 ) then
+            new%s = ''
+            return
+        end if
+
+        if ( len(charsr) < 1 ) then
+            new%s = Stringl%s
+            return
+        end if
+
+        new = Stringl%replace(search_for=charsr, replace_with='')
+    end procedure char_excision
+
+    module procedure string_excision
+        if ( Stringl%len() < 1 ) then
+            new%s = ''
+            return
+        end if
+
+        if ( Stringr%len() < 1 ) then
+            new%s = Stringl%s
+            return
+        end if
+
+        new = Stringl%replace(search_for=Stringr%s, replace_with='')
+    end procedure string_excision
+
+    module procedure string_char_excision
+        if ( Stringl%len() < 1 ) then
+            new%s = ''
+            return
+        end if
+
+        if ( len(charsr) < 1 ) then
+            new%s = Stringl%s
+            return
+        end if
+
+        new = Stringl%replace(search_for=charsr, replace_with='')
+    end procedure string_char_excision
+
+    module procedure char_string_excision
+        type(String) :: Stringl
+
+        Stringl%s = charsl
+
+        if ( Stringl%len() < 1 ) then
+            new%s = ''
+            return
+        end if
+
+        if ( Stringr%len() < 1 ) then
+            new%s = Stringl%s
+            return
+        end if
+
+        new = Stringl%replace(search_for=Stringr%s, replace_with='')
+    end procedure char_string_excision
+
+    module procedure repeat_chars
+        new = repeat(chars, ncopies=exponent)
+    end procedure repeat_chars
+
+    module procedure repeat_String
+        if ( String_base%len() < 1 ) then
+            new%s = ''
+            return
+        end if
+
+        new%s = repeat(String_base%s, ncopies=exponent)
+    end procedure repeat_String
+
+    module procedure string_equivalence
+        integer :: Stringl_len, Stringr_len
+
+        Stringl_len = Stringl%len()
+        Stringr_len = Stringr%len()
+
+        if ( Stringl_len /= Stringr_len ) then
+            equality = .false.
+            return
+        end if
+
+        if ( Stringl_len < 1 ) then
+            equality = .true.
+            return
+        end if
+
+        equality = ( Stringl%s == Stringr%s )
+    end procedure string_equivalence
+
+    module procedure string_char_equivalence
+        integer :: Stringl_len, charsr_len
+
+        Stringl_len = Stringl%len()
+        charsr_len = len(charsr)
+
+        if ( Stringl_len /= charsr_len ) then
+            equality = .false.
+            return
+        end if
+
+        if ( Stringl_len < 1 ) then
+            equality = .true.
+            return
+        end if
+
+        equality = ( Stringl%s == charsr )
+    end procedure string_char_equivalence
+
+    module procedure char_string_equivalence
+        integer :: charsl_len, Stringr_len
+
+        charsl_len = len(charsl)
+        Stringr_len = Stringr%len()
+
+        if ( charsl_len /= Stringr_len ) then
+            equality = .false.
+            return
+        end if
+
+        if ( charsl_len < 1 ) then
+            equality = .true.
+            return
+        end if
+
+        equality = ( charsl == Stringr%s )
+    end procedure char_string_equivalence
+end submodule operators
 
 submodule (io_fortran_lib) array_printing
     !! This submodule provides module procedure implementations for the **public interface** `aprint`.
@@ -14615,7 +15397,7 @@ submodule (io_fortran_lib) text_io
     !! interfaces** `to_text` and `from_text`.
     contains
     ! Writing Procedures ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    module procedure echo_string
+    module procedure echo_chars
         character(len=:), allocatable :: ext
         logical :: exists, append_
         integer :: file_unit
@@ -14655,7 +15437,7 @@ submodule (io_fortran_lib) text_io
         write( unit=file_unit ) string//nl
 
         close(file_unit)
-    end procedure echo_string
+    end procedure echo_chars
 
     module procedure to_text_1dc128
         type(String), allocatable, dimension(:) :: string_arr
@@ -15740,7 +16522,7 @@ submodule (io_fortran_lib) text_io
         close(file_unit)
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -15966,7 +16748,7 @@ submodule (io_fortran_lib) text_io
         close(file_unit)
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -16192,7 +16974,7 @@ submodule (io_fortran_lib) text_io
         close(file_unit)
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -16420,7 +17202,7 @@ submodule (io_fortran_lib) text_io
         close(file_unit)
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -16660,7 +17442,7 @@ submodule (io_fortran_lib) text_io
         close(file_unit)
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -16900,7 +17682,7 @@ submodule (io_fortran_lib) text_io
         close(file_unit)
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -17139,7 +17921,7 @@ submodule (io_fortran_lib) text_io
         close(file_unit)
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -17279,7 +18061,7 @@ submodule (io_fortran_lib) text_io
         close(file_unit)
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -17419,7 +18201,7 @@ submodule (io_fortran_lib) text_io
         close(file_unit)
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -17561,7 +18343,7 @@ submodule (io_fortran_lib) text_io
         close(file_unit)
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -17715,7 +18497,7 @@ submodule (io_fortran_lib) text_io
         close(file_unit)
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -17869,7 +18651,7 @@ submodule (io_fortran_lib) text_io
         close(file_unit)
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -18023,7 +18805,7 @@ submodule (io_fortran_lib) text_io
         close(file_unit)
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -18157,7 +18939,7 @@ submodule (io_fortran_lib) text_io
         close(file_unit)
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -18291,7 +19073,7 @@ submodule (io_fortran_lib) text_io
         close(file_unit)
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -18425,7 +19207,7 @@ submodule (io_fortran_lib) text_io
         close(file_unit)
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -18561,7 +19343,7 @@ submodule (io_fortran_lib) text_io
         close(file_unit)
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -18709,7 +19491,7 @@ submodule (io_fortran_lib) text_io
         close(file_unit)
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -18857,7 +19639,7 @@ submodule (io_fortran_lib) text_io
         close(file_unit)
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -19005,7 +19787,7 @@ submodule (io_fortran_lib) text_io
         close(file_unit)
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -22190,7 +22972,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -22216,7 +22998,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -22242,7 +23024,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -22269,7 +23051,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -22295,7 +23077,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -22321,7 +23103,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -22348,7 +23130,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -22374,7 +23156,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -22400,7 +23182,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -22427,7 +23209,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -22453,7 +23235,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -22479,7 +23261,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -22506,7 +23288,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -22532,7 +23314,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -22558,7 +23340,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -22585,7 +23367,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -22611,7 +23393,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -22637,7 +23419,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -22665,7 +23447,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -22692,7 +23474,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -22719,7 +23501,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -22747,7 +23529,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -22774,7 +23556,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -22801,7 +23583,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -22829,7 +23611,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -22856,7 +23638,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -22883,7 +23665,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -22911,7 +23693,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -22938,7 +23720,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -22965,7 +23747,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -22993,7 +23775,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -23020,7 +23802,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -23047,7 +23829,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -23075,7 +23857,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -23102,7 +23884,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -23129,7 +23911,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -23158,7 +23940,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -23186,7 +23968,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -23214,7 +23996,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -23243,7 +24025,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -23271,7 +24053,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -23299,7 +24081,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -23328,7 +24110,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -23356,7 +24138,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -23384,7 +24166,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -23411,7 +24193,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -23437,7 +24219,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -23463,7 +24245,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -23490,7 +24272,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -23516,7 +24298,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -23542,7 +24324,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -23569,7 +24351,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -23595,7 +24377,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -23621,7 +24403,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -23648,7 +24430,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -23674,7 +24456,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -23700,7 +24482,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -23727,7 +24509,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -23753,7 +24535,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -23779,7 +24561,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -23806,7 +24588,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -23832,7 +24614,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -23858,7 +24640,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -23886,7 +24668,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -23913,7 +24695,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -23940,7 +24722,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -23968,7 +24750,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -23995,7 +24777,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -24022,7 +24804,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -24050,7 +24832,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -24077,7 +24859,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -24104,7 +24886,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -24132,7 +24914,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -24159,7 +24941,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -24186,7 +24968,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -24214,7 +24996,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -24241,7 +25023,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -24268,7 +25050,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -24296,7 +25078,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -24323,7 +25105,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -24350,7 +25132,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -24379,7 +25161,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -24407,7 +25189,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -24435,7 +25217,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -24464,7 +25246,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -24492,7 +25274,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -24520,7 +25302,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -24549,7 +25331,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -24577,7 +25359,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -24605,7 +25387,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -24632,7 +25414,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -24658,7 +25440,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -24684,7 +25466,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -24710,7 +25492,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -24737,7 +25519,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -24763,7 +25545,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -24789,7 +25571,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -24815,7 +25597,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -24842,7 +25624,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -24868,7 +25650,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -24894,7 +25676,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -24920,7 +25702,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -24947,7 +25729,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -24973,7 +25755,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -24999,7 +25781,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -25025,7 +25807,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -25052,7 +25834,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -25078,7 +25860,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -25104,7 +25886,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -25130,7 +25912,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -25157,7 +25939,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -25183,7 +25965,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -25209,7 +25991,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -25235,7 +26017,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -25263,7 +26045,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -25290,7 +26072,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -25317,7 +26099,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -25344,7 +26126,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -25372,7 +26154,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -25399,7 +26181,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -25426,7 +26208,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -25453,7 +26235,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -25481,7 +26263,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -25508,7 +26290,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -25535,7 +26317,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -25562,7 +26344,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -25590,7 +26372,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -25617,7 +26399,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -25644,7 +26426,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -25671,7 +26453,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -25699,7 +26481,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -25726,7 +26508,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -25753,7 +26535,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -25780,7 +26562,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -25808,7 +26590,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -25835,7 +26617,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -25862,7 +26644,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -25889,7 +26671,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -25918,7 +26700,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -25946,7 +26728,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -25974,7 +26756,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -26002,7 +26784,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -26031,7 +26813,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -26059,7 +26841,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -26087,7 +26869,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -26115,7 +26897,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -26144,7 +26926,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -26172,7 +26954,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -26200,7 +26982,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 
@@ -26228,7 +27010,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop nl//'FATAL: Error reading file "'//file_name//'".'
+            error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
             return
         end if
 

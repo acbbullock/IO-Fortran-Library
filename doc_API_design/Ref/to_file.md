@@ -5,7 +5,7 @@ author: Austin C Bullock
 
 ## [interface to_file](../../interface/to_file.html)
 
-For `x` of type `integer` and of rank `1`, `2`:
+For `x` an array of rank `1`, `2` and of type `integer`:
 
 ```fortran
 call to_file(x, file_name, header, dim, delim, fmt)
@@ -21,7 +21,7 @@ call to_file(x, file_name, header, delim, fmt)
 * `delim` is `optional` and of type `character(len=*)`
 * `fmt` is `optional`, may be one of `int_fmts`
 
-For `x` of type `real` and of rank `1`, `2`:
+For `x` an array of rank `1`, `2` and of type `real`:
 
 ```fortran
 call to_file(x, file_name, header, dim, locale, delim, fmt, decimals)
@@ -39,7 +39,7 @@ call to_file(x, file_name, header, locale, delim, fmt, decimals)
 * `fmt` is `optional`, may be one of `real_fmts`
 * `decimals` is `optional` and of type `integer`
 
-For `x` of type `complex` and of rank `1`, `2`:
+For `x` an array of rank `1`, `2` and of type of type `complex`:
 
 ```fortran
 call to_file(x, file_name, header, dim, locale, delim, fmt, decimals, im)
@@ -58,7 +58,7 @@ call to_file(x, file_name, header, locale, delim, fmt, decimals, im)
 * `decimals` is `optional` and of type `integer`
 * `im` is `optional` and of type `character(len=*)`
 
-For `x` of any rank `3`-`15` and of type `integer`, `real`, `complex`:
+For `x` an array of any rank `3`-`15` and of type `integer`, `real`, `complex`:
 
 ```fortran
 call to_file(x, file_name)

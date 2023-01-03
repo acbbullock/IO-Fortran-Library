@@ -98,7 +98,7 @@
   
   <div class="row">
     <div class="col-md-9 col-md-push-3" id='text'>
-      <p>As of Fortran 2018, all functions and subroutines are recursive by default without having to specify the <code>recursive</code> keyword. However, at the time of writing, the implementation of this behavior remains unfinished by major compilers, and this may result in catastrophic race conditions when multiple threads attempt to write to the same file in a parallel region. The <a href="../../index.html">IO Fortran Library</a> avoids this by explicitly enforcing recursion with the <code>recursive</code> keyword on all functions and subroutines, private and public. However, even with recursion enforced, some programs may not operate as expected when performing I/O in parallel regions. For instance, inspect the output of the following program with multiple coarray images:</p>
+      <p>As of Fortran 2018, all functions and subroutines are recursive by default without having to specify the <code>recursive</code> keyword. However, at the time of writing, the implementation of this behavior remains unfinished by major compilers, and this may result in catastrophic race conditions when multiple threads attempt to write to the same file in a parallel region. The <a href="../../index.html">IO Fortran Library</a> avoids this by explicitly enforcing recursion with the <code>recursive</code> keyword on all module procedures. However, even with recursion enforced, some programs may not operate as expected when performing I/O in parallel regions. For instance, inspect the output of the following program with multiple coarray images:</p>
 <div class="codehilite"><pre><span></span><code><span class="k">program </span><span class="n">main</span><span class="w"></span>
 <span class="w">    </span><span class="k">use </span><span class="n">io_fortran_lib</span><span class="w"></span>
 <span class="w">    </span><span class="k">implicit none</span><span class="w"> </span><span class="p">(</span><span class="k">type</span><span class="p">,</span><span class="k">external</span><span class="p">)</span><span class="w"></span>
@@ -142,16 +142,16 @@
             <a href='../../page/UserInfo/index.html'>Important User Information</a>
             <ul class="nav nav-stacked nav-pills">
                           <li role="presentation">
-            <a href='../../page/UserInfo/text-fmts.html'>Numeric text formats</a>
-            </li>
-            <li role="presentation">
-            <a href='../../page/UserInfo/locale-fmts.html'>Locales</a>
+            <a href='../../page/UserInfo/compilers.html'>Compiler-dependent behavior</a>
             </li>
             <li role="presentation">
             <a href='../../page/UserInfo/file-ext.html'>File extensions</a>
             </li>
             <li role="presentation">
-            <a href='../../page/UserInfo/compilers.html'>Compiler-dependent behavior</a>
+            <a href='../../page/UserInfo/locale-fmts.html'>Locales</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/UserInfo/text-fmts.html'>Numeric text formats</a>
             </li>
             <li role="presentation" class="disabled">
             <a href='../../page/UserInfo/thread-safety.html'>Thread safety</a>
@@ -163,22 +163,28 @@
             <a href='../../page/Ref/index.html'>Reference Guide</a>
             <ul class="nav nav-stacked nav-pills">
                           <li role="presentation">
+            <a href='../../page/Ref/aprint.html'>aprint</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Ref/echo.html'>echo</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Ref/from_file.html'>from_file</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Ref/operators.html'>Operators</a>
+            </li>
+            <li role="presentation">
             <a href='../../page/Ref/str.html'>str</a>
             </li>
             <li role="presentation">
             <a href='../../page/Ref/String.html'>String</a>
             </li>
             <li role="presentation">
-            <a href='../../page/Ref/echo.html'>echo</a>
+            <a href='../../page/Ref/String-methods.html'>String methods</a>
             </li>
             <li role="presentation">
             <a href='../../page/Ref/to_file.html'>to_file</a>
-            </li>
-            <li role="presentation">
-            <a href='../../page/Ref/from_file.html'>from_file</a>
-            </li>
-            <li role="presentation">
-            <a href='../../page/Ref/aprint.html'>aprint</a>
             </li>
 
             </ul>
@@ -187,16 +193,16 @@
             <a href='../../page/Examples/index.html'>Tutorials</a>
             <ul class="nav nav-stacked nav-pills">
                           <li role="presentation">
-            <a href='../../page/Examples/csv.html'>csv file I/O</a>
-            </li>
-            <li role="presentation">
             <a href='../../page/Examples/binary.html'>binary file I/O</a>
             </li>
             <li role="presentation">
-            <a href='../../page/Examples/logging.html'>log file output</a>
+            <a href='../../page/Examples/csv.html'>csv file I/O</a>
             </li>
             <li role="presentation">
             <a href='../../page/Examples/fizzbuzz.html'>fizzbuzz</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Examples/logging.html'>log file output</a>
             </li>
 
             </ul>
@@ -217,7 +223,7 @@
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-01-01 04:57            </p>
+ on 2023-01-03 05:34            </p>
         </div>
       </div>
       <br>

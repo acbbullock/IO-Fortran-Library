@@ -99,14 +99,14 @@
   <div class="row">
     <div class="col-md-9 col-md-push-3" id='text'>
       <h2 id="interface-str"><a href="../../interface/str.html">interface str</a></h2>
-<p>For <code>x</code> of type <code>integer</code>:</p>
+<p>For <code>x</code> a scalar of type <code>integer</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="k">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">str</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 
 <ul>
 <li><code>fmt</code> is <code>optional</code>, may be one of <code>int_fmts</code></li>
 </ul>
-<p>For <code>x</code> of type <code>real</code>:</p>
+<p>For <code>x</code> a scalar of type <code>real</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="k">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">str</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">locale</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">,</span><span class="w"> </span><span class="n">decimals</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 
@@ -115,7 +115,7 @@
 <li><code>fmt</code> is <code>optional</code>, may be one of <code>real_fmts</code></li>
 <li><code>decimals</code> is <code>optional</code> and of type <code>integer</code></li>
 </ul>
-<p>For <code>x</code> of type <code>complex</code>:</p>
+<p>For <code>x</code> a scalar of type <code>complex</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="k">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">str</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">locale</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">,</span><span class="w"> </span><span class="n">decimals</span><span class="p">,</span><span class="w"> </span><span class="n">im</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 
@@ -125,7 +125,7 @@
 <li><code>decimals</code> is <code>optional</code> and of type <code>integer</code></li>
 <li><code>im</code> is <code>optional</code> and of type <code>character(len=*)</code></li>
 </ul>
-<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>The return value of <code>str</code> is of type <code>character</code>. As such, <code>str</code> is restricted to operate on scalars only since <code>character</code> arrays of non-identical length elements are not defined by the Fortran 2018 standard. For this functionality, see <a href="string.html">String</a>.</p></div>
+<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>Note that <code>str</code> is restricted to operate on scalars only since <code>character</code> arrays of non-identical length elements are not defined by the Fortran 2018 standard. For this functionality, see <a href="string.html">String</a>.</p></div>
 <h3 id="optional-arguments">Optional Arguments</h3>
 <p>Integer formats (default is <code>'i'</code>):</p>
 <div class="codehilite"><pre><span></span><code><span class="n">int_fmts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s1">&#39;i&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;z&#39;</span><span class="w"> </span><span class="p">]</span><span class="w"></span>
@@ -154,16 +154,16 @@
             <a href='../../page/UserInfo/index.html'>Important User Information</a>
             <ul class="nav nav-stacked nav-pills">
                           <li role="presentation">
-            <a href='../../page/UserInfo/text-fmts.html'>Numeric text formats</a>
-            </li>
-            <li role="presentation">
-            <a href='../../page/UserInfo/locale-fmts.html'>Locales</a>
+            <a href='../../page/UserInfo/compilers.html'>Compiler-dependent behavior</a>
             </li>
             <li role="presentation">
             <a href='../../page/UserInfo/file-ext.html'>File extensions</a>
             </li>
             <li role="presentation">
-            <a href='../../page/UserInfo/compilers.html'>Compiler-dependent behavior</a>
+            <a href='../../page/UserInfo/locale-fmts.html'>Locales</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/UserInfo/text-fmts.html'>Numeric text formats</a>
             </li>
             <li role="presentation">
             <a href='../../page/UserInfo/thread-safety.html'>Thread safety</a>
@@ -174,23 +174,29 @@
             <li role="presentation">
             <a href='../../page/Ref/index.html'>Reference Guide</a>
             <ul class="nav nav-stacked nav-pills">
-                          <li role="presentation" class="disabled">
+                          <li role="presentation">
+            <a href='../../page/Ref/aprint.html'>aprint</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Ref/echo.html'>echo</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Ref/from_file.html'>from_file</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Ref/operators.html'>Operators</a>
+            </li>
+            <li role="presentation" class="disabled">
             <a href='../../page/Ref/str.html'>str</a>
             </li>
             <li role="presentation">
             <a href='../../page/Ref/String.html'>String</a>
             </li>
             <li role="presentation">
-            <a href='../../page/Ref/echo.html'>echo</a>
+            <a href='../../page/Ref/String-methods.html'>String methods</a>
             </li>
             <li role="presentation">
             <a href='../../page/Ref/to_file.html'>to_file</a>
-            </li>
-            <li role="presentation">
-            <a href='../../page/Ref/from_file.html'>from_file</a>
-            </li>
-            <li role="presentation">
-            <a href='../../page/Ref/aprint.html'>aprint</a>
             </li>
 
             </ul>
@@ -199,16 +205,16 @@
             <a href='../../page/Examples/index.html'>Tutorials</a>
             <ul class="nav nav-stacked nav-pills">
                           <li role="presentation">
-            <a href='../../page/Examples/csv.html'>csv file I/O</a>
-            </li>
-            <li role="presentation">
             <a href='../../page/Examples/binary.html'>binary file I/O</a>
             </li>
             <li role="presentation">
-            <a href='../../page/Examples/logging.html'>log file output</a>
+            <a href='../../page/Examples/csv.html'>csv file I/O</a>
             </li>
             <li role="presentation">
             <a href='../../page/Examples/fizzbuzz.html'>fizzbuzz</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Examples/logging.html'>log file output</a>
             </li>
 
             </ul>
@@ -229,7 +235,7 @@
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-01-01 04:57            </p>
+ on 2023-01-03 05:34            </p>
         </div>
       </div>
       <br>
