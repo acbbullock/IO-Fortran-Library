@@ -15,7 +15,7 @@ module io_fortran_lib
     public :: str, echo                                                                                    ! String I/O
     public :: String                                                                                          ! Classes
     public :: nl                                                                                            ! Constants
-    public :: operator(//), operator(+), operator(-), operator(**)                                          ! Operators
+    public :: operator(//), operator(+), operator(-), operator(**), operator(==), assignment(=)             ! Operators
 
     ! Definitions and Interfaces ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     character(len=1), parameter :: nl = new_line('a')
@@ -53,6 +53,7 @@ module io_fortran_lib
             procedure, pass(self), public :: as_str
             procedure, pass(self), public :: echo => echo_String
             procedure, pass(self), public :: empty
+            procedure, pass(self), public :: glue
             procedure, pass(self), public :: len => length
             procedure, pass(self), public :: print => print_String
             procedure, pass(self), public :: push
@@ -162,6 +163,13 @@ module io_fortran_lib
             class(String), intent(inout) :: self
         end subroutine empty
 
+        pure recursive module subroutine glue(self, tokens, separator)
+            !! Glues `String` array `tokens` into `self` with given `separator`.
+            class(String), intent(inout) :: self
+            type(String), dimension(:), intent(in) :: tokens
+            character(len=*), intent(in), optional :: separator
+        end subroutine glue
+
         pure elemental recursive integer module function length(self) result(self_len)
             !! Returns the length of the string slice component elementally. Unallocated components return -1.
             class(String), intent(in) :: self
@@ -198,16 +206,14 @@ module io_fortran_lib
             character(len=*), intent(in) :: search_for, replace_with
         end subroutine replace_inplace
 
-        pure recursive module function split(self, separator) result(split_String)
-            !! Returns array of `String`s from a non-array `String` divided by `separator`. If no `separator` is
-            !! specified, every `character` in the string slice component will be returned as an element of the
-            !! output array. All leading and trailing blanks will be omitted in the output.
+        pure recursive module function split(self, separator) result(tokens)
+            !! Returns array of `String`s from a non-array `String` divided by `separator`. Default separator is SPACE.
             class(String), intent(in) :: self
             character(len=*), intent(in), optional :: separator
-            type(String), allocatable, dimension(:) :: split_String
+            type(String), allocatable, dimension(:) :: tokens
         end function split
 
-        pure elemental recursive type(String) module function trim_copy(self) result(trimmed_copy)
+        pure elemental recursive type(String) module function trim_copy(self) result(new)
             !! Returns a copy of a `String` elementally in which each string slice component has been trimmed of any
             !! leading or trailing whitespace.
             class(String), intent(in) :: self
@@ -303,6 +309,40 @@ module io_fortran_lib
             class(String), intent(in) :: String_base
             integer, intent(in) :: exponent
         end function repeat_String
+    end interface
+
+    interface operator(==)                                                                        ! Submodule operators
+        !--------------------------------------------------------------------------------------------------------------
+        !! Equivalence operator for `character` and `String`.
+        !--------------------------------------------------------------------------------------------------------------
+        pure elemental recursive logical module function string_equivalence(Stringl, Stringr) result(equality)
+            class(String), intent(in) :: Stringl, Stringr
+        end function string_equivalence
+
+        pure elemental recursive logical module function string_char_equivalence(Stringl, charsr) result(equality)
+            class(String), intent(in) :: Stringl
+            character(len=*), intent(in) :: charsr
+        end function string_char_equivalence
+
+        pure elemental recursive logical module function char_string_equivalence(charsl, Stringr) result(equality)
+            character(len=*), intent(in) :: charsl
+            class(String), intent(in) :: Stringr
+        end function char_string_equivalence
+    end interface
+
+    interface assignment(=)                                                                       ! Submodule operators
+        !--------------------------------------------------------------------------------------------------------------
+        !! Assignment operator for `character` and `String`.
+        !--------------------------------------------------------------------------------------------------------------
+        pure elemental recursive module subroutine string_char_assignment(Stringl, charsr)
+            type(String), intent(out) :: Stringl
+            character(len=*), intent(in) :: charsr
+        end subroutine string_char_assignment
+
+        pure recursive module subroutine char_string_assignment(charsl, Stringr)
+            character(len=:), allocatable, intent(out) :: charsl
+            type(String), intent(in) :: Stringr
+        end subroutine char_string_assignment
     end interface
 
     interface aprint                                                                         ! Submodule array_printing
@@ -4405,6 +4445,35 @@ submodule (io_fortran_lib) String_procedures
         self%s = ''
     end procedure empty
 
+    module procedure glue
+        character(len=:), allocatable :: separator_
+        integer, allocatable, dimension(:) :: lengths
+        integer :: i
+
+        if ( .not. present(separator) ) then
+            separator_ = ' '
+        else
+            separator_ = separator
+        end if
+
+        lengths = tokens%len()
+
+        self%s = ''
+        do i = 1, size(tokens)-1
+            if ( lengths(i) < 1 ) then
+                self%s = self%s//separator_
+            else
+                self%s = self%s//tokens(i)%s//separator_
+            end if
+        end do
+
+        if ( lengths(size(tokens)) < 1 ) then
+            return
+        else
+            self%s = self%s//tokens(size(tokens))%s
+        end if
+    end procedure glue
+
     module procedure length
         if ( .not. allocated(self%s) ) then
             self_len = -1
@@ -4561,7 +4630,7 @@ submodule (io_fortran_lib) String_procedures
         temp_len = temp_String%len()
 
         if ( temp_len == 0 ) then
-            split_String = [ String('') ]
+            tokens = [ String('') ]
             return
         end if
 
@@ -4574,9 +4643,9 @@ submodule (io_fortran_lib) String_procedures
         separator_len = len(separator_)
 
         if ( separator_len == 0 ) then
-            allocate( split_String(temp_len) )
+            allocate( tokens(temp_len) )
             do concurrent (i = 1:temp_len)
-                split_String(i)%s = temp_String%s(i:i)
+                tokens(i)%s = temp_String%s(i:i)
             end do
             return
         end if
@@ -4602,12 +4671,12 @@ submodule (io_fortran_lib) String_procedures
         end do search
 
         if ( num_seps == 0 ) then
-            split_String = [ self ]
+            tokens = [ self ]
             return
         end if
 
-        allocate( split_String(num_seps + 1) )
-        call split_String%empty()
+        allocate( tokens(num_seps + 1) )
+        call tokens%empty()
 
         i = 1
         l = 1
@@ -4615,10 +4684,10 @@ submodule (io_fortran_lib) String_procedures
 
         splitting: do while ( i <= temp_len )
             if ( temp_String%s(i:i+separator_len-1) == separator_ ) then
-                split_String(current_string)%s = temp_String%s(l:i-1)
+                tokens(current_string)%s = temp_String%s(l:i-1)
 
                 if ( current_string == num_seps ) then
-                    split_String(current_string+1)%s = temp_String%s(i+separator_len:)
+                    tokens(current_string+1)%s = temp_String%s(i+separator_len:)
                     exit splitting
                 else
                     current_string = current_string + 1
@@ -4630,14 +4699,14 @@ submodule (io_fortran_lib) String_procedures
             end if
         end do splitting
 
-        call split_String%trim_inplace()
+        call tokens%trim_inplace()
     end procedure split
 
     module procedure trim_copy
         if ( .not. allocated(self%s) ) then
-            trimmed_copy%s = ''
+            new%s = ''
         else
-            trimmed_copy%s = trim(adjustl(self%s))
+            new%s = trim(adjustl(self%s))
         end if
     end procedure trim_copy
 
@@ -4652,7 +4721,7 @@ end submodule String_procedures
 
 submodule (io_fortran_lib) operators
     !! This submodule provides module procedure implementations for the **public interface** `operator(//)`,
-    !! `operator(+)`, and `operator(-)`
+    !! `operator(+)`, `operator(-)`, 1operator(**)`, `operator(=)`, and `assignment(=)`.
     contains
     module procedure string_concatenation
         if ( .not. allocated(Stringl%s) ) then
@@ -4880,6 +4949,75 @@ submodule (io_fortran_lib) operators
 
         new%s = repeat(String_base%s, ncopies=exponent)
     end procedure repeat_String
+
+    module procedure string_equivalence
+        integer :: Stringl_len, Stringr_len
+
+        Stringl_len = Stringl%len()
+        Stringr_len = Stringr%len()
+
+        if ( Stringl_len /= Stringr_len ) then
+            equality = .false.
+            return
+        end if
+
+        if ( Stringl_len < 1 ) then
+            equality = .true.
+            return
+        end if
+
+        equality = ( Stringl%s == Stringr%s )
+    end procedure string_equivalence
+
+    module procedure string_char_equivalence
+        integer :: Stringl_len, charsr_len
+
+        Stringl_len = Stringl%len()
+        charsr_len = len(charsr)
+
+        if ( Stringl_len /= charsr_len ) then
+            equality = .false.
+            return
+        end if
+
+        if ( Stringl_len < 1 ) then
+            equality = .true.
+            return
+        end if
+
+        equality = ( Stringl%s == charsr )
+    end procedure string_char_equivalence
+
+    module procedure char_string_equivalence
+        integer :: charsl_len, Stringr_len
+
+        charsl_len = len(charsl)
+        Stringr_len = Stringr%len()
+
+        if ( charsl_len /= Stringr_len ) then
+            equality = .false.
+            return
+        end if
+
+        if ( charsl_len < 1 ) then
+            equality = .true.
+            return
+        end if
+
+        equality = ( charsl == Stringr%s )
+    end procedure char_string_equivalence
+
+    module procedure string_char_assignment
+        Stringl%s = charsr
+    end procedure string_char_assignment
+
+    module procedure char_string_assignment
+        if ( Stringr%len() < 1 ) then
+            charsl = ''
+        else
+            charsl = Stringr%s
+        end if
+    end procedure char_string_assignment
 end submodule operators
 
 submodule (io_fortran_lib) array_printing
