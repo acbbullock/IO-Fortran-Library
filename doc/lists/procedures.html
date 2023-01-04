@@ -84,8 +84,8 @@
 			 <thead><tr><th>Procedure</th><th>Location</th><th>Procedure Type</th><th>Description</th></tr></thead>
 			 <tbody>
 			   <tr><td><a href='../interface/aprint.html'>aprint</a></td><td><a href='../module/io_fortran_lib.html'>io_fortran_lib</a></td><td>Interface</td><td><p>Subroutine for printing arrays and array sections to stdout.</p><a href="../interface/aprint.html" class="pull-right"><emph>Read more&hellip;</emph></a></td></tr>
-			   <tr><td><a href='../interface/echo.html'>echo</a></td><td><a href='../module/io_fortran_lib.html'>io_fortran_lib</a></td><td>Interface</td><td><p>Subroutine for writing text to an external file.</p><a href="../interface/echo.html" class="pull-right"><emph>Read more&hellip;</emph></a></td></tr>
-			   <tr><td><a href='../interface/from_file.html'>from_file</a></td><td><a href='../module/io_fortran_lib.html'>io_fortran_lib</a></td><td>Interface</td><td><p>Subroutine for reading an external file into an array.</p><a href="../interface/from_file.html" class="pull-right"><emph>Read more&hellip;</emph></a></td></tr>
+			   <tr><td><a href='../interface/echo.html'>echo</a></td><td><a href='../module/io_fortran_lib.html'>io_fortran_lib</a></td><td>Interface</td><td><p>Subroutine for streaming scalar <code>character</code> data to an external text file.</p><a href="../interface/echo.html" class="pull-right"><emph>Read more&hellip;</emph></a></td></tr>
+			   <tr><td><a href='../interface/from_file.html'>from_file</a></td><td><a href='../module/io_fortran_lib.html'>io_fortran_lib</a></td><td>Interface</td><td><p>Subroutine for reading an external file of uniform data type into an array.</p><a href="../interface/from_file.html" class="pull-right"><emph>Read more&hellip;</emph></a></td></tr>
 			   <tr><td><a href='../interface/operator%28ASTERISKASTERISK%29.html'>operator(**)</a></td><td><a href='../module/io_fortran_lib.html'>io_fortran_lib</a></td><td>Interface</td><td><p>Repetition operator for <code>character</code> and <code>String</code> (as exponentiation).</p><a href="../interface/operator%28ASTERISKASTERISK%29.html" class="pull-right"><emph>Read more&hellip;</emph></a></td></tr>
 			   <tr><td><a href='../interface/operator%28%2B%29.html'>operator(+)</a></td><td><a href='../module/io_fortran_lib.html'>io_fortran_lib</a></td><td>Interface</td><td><p>Concatenation operator for <code>character</code> and <code>String</code> (as addition). Mixed type concatenation of
 <code>character</code> and <code>String</code> is explicitly defined.</p><a href="../interface/operator%28%2B%29.html" class="pull-right"><emph>Read more&hellip;</emph></a></td></tr>
@@ -93,11 +93,13 @@
 <code>String</code> is explicitly defined.</p><a href="../interface/operator%28-%29.html" class="pull-right"><emph>Read more&hellip;</emph></a></td></tr>
 			   <tr><td><a href='../interface/operator%28SLASHSLASH%29.html'>operator(//)</a></td><td><a href='../module/io_fortran_lib.html'>io_fortran_lib</a></td><td>Interface</td><td><p>Concatenation operator for <code>character</code> and <code>String</code>, lifted from <code>character</code>. Mixed type concatenation of
 <code>character</code> and <code>String</code> is explicitly defined.</p><a href="../interface/operator%28SLASHSLASH%29.html" class="pull-right"><emph>Read more&hellip;</emph></a></td></tr>
+			   <tr><td><a href='../interface/operator%28SLASH%3D%29.html'>operator(/=)</a></td><td><a href='../module/io_fortran_lib.html'>io_fortran_lib</a></td><td>Interface</td><td><p>Non-equivalence operator for <code>character</code> and <code>String</code>. Mixed type non-equivalence of <code>character</code> and
+<code>String</code> is explicitly defined.</p><a href="../interface/operator%28SLASH%3D%29.html" class="pull-right"><emph>Read more&hellip;</emph></a></td></tr>
 			   <tr><td><a href='../interface/operator%28%3D%3D%29.html'>operator(==)</a></td><td><a href='../module/io_fortran_lib.html'>io_fortran_lib</a></td><td>Interface</td><td><p>Equivalence operator for <code>character</code> and <code>String</code>. Mixed type equivalence of <code>character</code> and <code>String</code> is
 explicitly defined.</p><a href="../interface/operator%28%3D%3D%29.html" class="pull-right"><emph>Read more&hellip;</emph></a></td></tr>
-			   <tr><td><a href='../interface/str.html'>str</a></td><td><a href='../module/io_fortran_lib.html'>io_fortran_lib</a></td><td>Interface</td><td><p>Function for representing a number as a <code>character</code> string.</p><a href="../interface/str.html" class="pull-right"><emph>Read more&hellip;</emph></a></td></tr>
+			   <tr><td><a href='../interface/str.html'>str</a></td><td><a href='../module/io_fortran_lib.html'>io_fortran_lib</a></td><td>Interface</td><td><p>Function for representing a scalar number as a <code>character</code> string.</p><a href="../interface/str.html" class="pull-right"><emph>Read more&hellip;</emph></a></td></tr>
 			   <tr><td><a href='../interface/string.html'>String</a></td><td><a href='../module/io_fortran_lib.html'>io_fortran_lib</a></td><td>Interface</td><td><p>Function for transforming numeric or string data into a <a href="../type/string.html">String</a> type.</p><a href="../interface/string.html" class="pull-right"><emph>Read more&hellip;</emph></a></td></tr>
-			   <tr><td><a href='../interface/to_file.html'>to_file</a></td><td><a href='../module/io_fortran_lib.html'>io_fortran_lib</a></td><td>Interface</td><td><p>Subroutine for writing an array to an external file.</p><a href="../interface/to_file.html" class="pull-right"><emph>Read more&hellip;</emph></a></td></tr>
+			   <tr><td><a href='../interface/to_file.html'>to_file</a></td><td><a href='../module/io_fortran_lib.html'>io_fortran_lib</a></td><td>Interface</td><td><p>Subroutine for writing an array of uniform data type to an external file.</p><a href="../interface/to_file.html" class="pull-right"><emph>Read more&hellip;</emph></a></td></tr>
 			 </tbody></table>
              
         </div>
@@ -114,7 +116,7 @@ explicitly defined.</p><a href="../interface/operator%28%3D%3D%29.html" class="p
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-01-03 05:34            </p>
+ on 2023-01-04 02:45            </p>
         </div>
       </div>
       <br>

@@ -90,7 +90,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title="<p>100.0% of total for derived types.</p>Including implementation: 19 statements, 100.0% of total for derived types.">19 statements</a>
+               title="<p>100.0% of total for derived types.</p>Including implementation: 21 statements, 100.0% of total for derived types.">21 statements</a>
           </li>
 
             <li id="source-file">
@@ -155,12 +155,12 @@
       </div>
       <div id="boundprocs-0" class="panel-collapse collapse">
         <div class="list-group">
+            <a class="list-group-item" href="../type/string.html#boundprocedure-write%28formatted%29">write(formatted)</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-as_str">as_str</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-echo">echo</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-empty">empty</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-glue">glue</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-len">len</a>
-            <a class="list-group-item" href="../type/string.html#boundprocedure-print">print</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-push">push</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-read_file">read_file</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-replace">replace</a>
@@ -168,6 +168,7 @@
             <a class="list-group-item" href="../type/string.html#boundprocedure-split">split</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-trim">trim</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-trim_inplace">trim_inplace</a>
+            <a class="list-group-item" href="../type/string.html#boundprocedure-write_file">write_file</a>
         </div>
       </div>
     </div>
@@ -181,12 +182,17 @@
     
     <div class="col-md-9" id='text'>
       <h2>type, public :: String</h2>
-    <p>A growable string type for advanced character handling.</p>
-<p>This type is provided for more advanced character handling needs and for the purpose of standard compliance
-when needing to declare arrays of <code>character</code> strings in which the elements may have non-identical lengths
-or for which the lengths of elements may need to vary during run-time.</p>
-<p>The form and function of this type was influenced by Rust's
-<a href="https://doc.rust-lang.org/std/string/struct.String.html">String</a>.</p>
+    <p>A derived type with a single (private) component:</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="p">:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">s</span><span class="w"></span>
+</code></pre></div>
+
+<p>This type is provided for flexible and advanced character handling when the intrinsic <code>character</code> type is
+insufficient. For instance, a <code>String</code> may be used in array contexts for which the user requires arrays of
+strings which may have non-identical lengths, whose lengths may not be known, or whose lengths may need to
+vary during run time. One may also use the <code>String</code> type as an interface to read/write external text files,
+in particular for cases in which <code>.csv</code> data contains data of mixed type. For reading/writing data of
+uniform type, it is simpler to use the routines <a href="../page/Ref/to_file.html">to_file</a> and
+<a href="../page/Ref/from_file.html">from_file</a>.</p>
 <p>For a user reference, see <a href="../page/Ref/string.html">String</a>, 
 <a href="../page/Ref/string-methods.html">String methods</a>, and <a href="../page/Ref/operators.html">Operators</a>.</p>
     <br>
@@ -230,12 +236,12 @@ or for which the lengths of elements may need to vary during run-time.</p>
       </div>
       <div id="boundprocs-1" class="panel-collapse collapse">
         <div class="list-group">
+            <a class="list-group-item" href="../type/string.html#boundprocedure-write%28formatted%29">write(formatted)</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-as_str">as_str</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-echo">echo</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-empty">empty</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-glue">glue</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-len">len</a>
-            <a class="list-group-item" href="../type/string.html#boundprocedure-print">print</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-push">push</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-read_file">read_file</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-replace">replace</a>
@@ -243,6 +249,7 @@ or for which the lengths of elements may need to vary during run-time.</p>
             <a class="list-group-item" href="../type/string.html#boundprocedure-split">split</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-trim">trim</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-trim_inplace">trim_inplace</a>
+            <a class="list-group-item" href="../type/string.html#boundprocedure-write_file">write_file</a>
         </div>
       </div>
     </div>
@@ -1144,6 +1151,23 @@ for elemental assignments and access to the various <code>String</code> methods 
       <section>
         <h2>Type-Bound Procedures</h2>
             <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-write%28formatted%29"></span><h3>generic, public :: <strong>write(formatted)</strong>  => write_string         
+    </h3></div>
+    <ul class="list-group">
+        <li class="list-group-item">
+                  <h3>
+    private  interface write_string()  
+</h3>
+  <p>Methods for the <code>String</code> type.</p>
+
+  <h4>Arguments</h4>
+    <em>None</em>
+
+        </li>
+    </ul>
+  </div>
+
+            <div class="panel panel-default">
     <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-as_str"></span><h3>procedure, public, pass(self) :: <strong>as_str</strong>          
     </h3></div>
     <ul class="list-group">
@@ -1155,7 +1179,7 @@ for elemental assignments and access to the various <code>String</code> methods 
     private pure recursive module function as_str(self) result(string_slice)  
 </h3>
   <p>Returns a copy of the string slice component of a scalar <code>String</code>.</p>
-<p>See <a href="../page/Ref/string-methods.html#as_str">as_str</a>.</p>
+<p>For a user reference, see <a href="../page/Ref/string-methods.html#as_str">as_str</a>.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1197,7 +1221,7 @@ for elemental assignments and access to the various <code>String</code> methods 
   </div>
 
             <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-echo"></span><h3>procedure, public, pass(self) :: <strong>echo</strong>  => echo_String         
+    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-echo"></span><h3>procedure, public, pass(self) :: <strong>echo</strong>  => echo_string         
     </h3></div>
     <ul class="list-group">
         <li class="list-group-item">
@@ -1205,10 +1229,11 @@ for elemental assignments and access to the various <code>String</code> methods 
                   
                 <p>Methods for the <code>String</code> type.</p>
                   <h3>
-    private impure recursive module subroutine echo_String(self, file_name, append)  
+    private impure recursive module subroutine echo_string(self, file_name, append)  
 </h3>
-  <p>Writes the string slice component to an external text file.</p>
-<p>See <a href="../page/Ref/string-methods.html#echo">echo</a>.</p>
+  <p>Streams the content of a <code>String</code> to an external text file. This method is identical in function to the
+routine <a href="../page/Ref/echo.html">echo</a> for <code>character</code> strings.</p>
+<p>For a user reference, see <a href="../page/Ref/string-methods.html#echo">echo</a>.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1286,7 +1311,7 @@ for elemental assignments and access to the various <code>String</code> methods 
     private pure elemental recursive module subroutine empty(self)  
 </h3>
   <p>Sets the string slice component to the empty string elementally.</p>
-<p>See <a href="../page/Ref/string-methods.html#empty">empty</a>.</p>
+<p>For a user reference, see <a href="../page/Ref/string-methods.html#empty">empty</a>.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1333,8 +1358,9 @@ for elemental assignments and access to the various <code>String</code> methods 
                   <h3>
     private pure recursive module subroutine glue(self, tokens, separator)  
 </h3>
-  <p>Glues a string array into <code>self</code> with given separator. Default separator is SPACE.</p>
-<p>See <a href="../page/Ref/string-methods.html#glue">glue</a>.</p>
+  <p>Glues a string vector into <code>self</code> with given separator. Default separator is SPACE. The string slice
+component will be replaced if already allocated.</p>
+<p>For a user reference, see <a href="../page/Ref/string-methods.html#glue">glue</a>.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1412,7 +1438,7 @@ for elemental assignments and access to the various <code>String</code> methods 
     private pure elemental recursive module function length(self) result(self_len)  
 </h3>
   <p>Returns the length of the string slice component elementally. Unallocated components return -1.</p>
-<p>See <a href="../page/Ref/string-methods.html#len">len</a>.</p>
+<p>For a user reference, see <a href="../page/Ref/string-methods.html#len">len</a>.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1454,54 +1480,6 @@ for elemental assignments and access to the various <code>String</code> methods 
   </div>
 
             <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-print"></span><h3>procedure, public, pass(self) :: <strong>print</strong>  => print_String         
-    </h3></div>
-    <ul class="list-group">
-        <li class="list-group-item">
-              <h3>interface </h3>
-                  
-                <p>Methods for the <code>String</code> type.</p>
-                  <h3>
-    private impure recursive module subroutine print_String(self)  
-</h3>
-  <p>Prints the string slice component for a scalar <code>String</code>.</p>
-<p>See <a href="../page/Ref/string-methods.html#print">print</a>.</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              class(<a href='../type/string.html'>String</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>self</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-
-        </li>
-    </ul>
-  </div>
-
-            <div class="panel panel-default">
     <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-push"></span><h3>procedure, public, pass(self) :: <strong>push</strong>          
     </h3></div>
     <ul class="list-group">
@@ -1512,8 +1490,10 @@ for elemental assignments and access to the various <code>String</code> methods 
                   <h3>
     private pure elemental recursive module subroutine push(self, chars)  
 </h3>
-  <p>Appends characters to the string slice component elementally.</p>
-<p>See <a href="../page/Ref/string-methods.html#push">push</a>.</p>
+  <p>Appends characters to the string slice component elementally. This procedure is identical in function to
+the <a href="../page/Ref/operators.html#concatenation">concatenation operators</a> <code>self // chars</code> and
+<code>self + chars</code>.</p>
+<p>For a user reference, see <a href="../page/Ref/string-methods.html#push">push</a>.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1573,11 +1553,18 @@ for elemental assignments and access to the various <code>String</code> methods 
                   
                 <p>Methods for the <code>String</code> type.</p>
                   <h3>
-    private impure elemental recursive module subroutine read_file(self, file_name)  
+    private impure recursive module subroutine read_file(self, file_name, cell_array, row_separator, column_separator)  
 </h3>
-  <p>Stream reads an entire text file into a <code>String</code> elementally. The string slice component will be
-replaced if already allocated.</p>
-<p>See <a href="../page/Ref/string-methods.html#read_file">read_file</a>.</p>
+  <p>Stream reads an entire text file into a <code>String</code>. The string slice component will be replaced if
+already allocated.</p>
+<p>This method is provided primarily for the purpose of reading in <code>.csv</code> files containing data of
+<strong>mixed type</strong>, which cannot be handled with a simple call to <a href="../page/Ref/from_file.html">from_file</a>
+(which assumes data of uniform type). The file's entire contents are populated into <code>self</code>, and one may
+manually parse and manipulate the file's contents using the other type-bound procedures. Optionally,
+one may provide a rank <code>2</code> allocatable array <code>cell_array</code> of type <code>String</code>, which will be populated with
+the cells of the given file using the designated <code>row_separator</code> and <code>column_separator</code> whose default
+values are NEW_LINE and <code>','</code> respectively.</p>
+<p>For a user reference, see <a href="../page/Ref/string-methods.html#read_file">read_file</a>.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1620,6 +1607,51 @@ replaced if already allocated.</p>
                 
             </td>
         </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(out),</td>
+              <td>optional,</td>            <td>
+              allocatable, dimension(:,:)
+            </td>
+            <td>::</td>
+            <td><strong>cell_array</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>row_separator</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>column_separator</strong></td>
+            <td>
+                
+            </td>
+        </tr>
     </tbody>
   </table>
 
@@ -1641,7 +1673,7 @@ replaced if already allocated.</p>
 </h3>
   <p>Returns a copy of a <code>String</code> elementally in which each string slice component has had a substring
 searched and replaced.</p>
-<p>See <a href="../page/Ref/string-methods.html#replace">replace</a>.</p>
+<p>For a user reference, see <a href="../page/Ref/string-methods.html#replace">replace</a>.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1724,7 +1756,7 @@ searched and replaced.</p>
     private pure elemental recursive module subroutine replace_inplace(self, search_for, replace_with)  
 </h3>
   <p>Searches and replaces a substring elementally in place.</p>
-<p>See <a href="../page/Ref/string-methods.html#replace_inplace">replace_inplace</a>.</p>
+<p>For a user reference, see <a href="../page/Ref/string-methods.html#replace_inplace">replace_inplace</a>.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1801,8 +1833,8 @@ searched and replaced.</p>
                   <h3>
     private pure recursive module function split(self, separator) result(tokens)  
 </h3>
-  <p>Splits a string array into <code>tokens</code> with given separator. Default separator is SPACE.</p>
-<p>See <a href="../page/Ref/string-methods.html#split">split</a>.</p>
+  <p>Splits a string into a vector of <code>tokens</code> with given separator. Default separator is SPACE.</p>
+<p>For a user reference, see <a href="../page/Ref/string-methods.html#split">split</a>.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1871,7 +1903,7 @@ searched and replaced.</p>
 </h3>
   <p>Returns a copy of a <code>String</code> elementally in which each string slice component has been trimmed of any
 leading or trailing whitespace.</p>
-<p>See <a href="../page/Ref/string-methods.html#trim">trim</a>.</p>
+<p>For a user reference, see <a href="../page/Ref/string-methods.html#trim">trim</a>.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1923,8 +1955,9 @@ leading or trailing whitespace.</p>
                   <h3>
     private pure elemental recursive module subroutine trim_inplace(self)  
 </h3>
-  <p>Removes any leading or trailing whitespace of each string slice component of a <code>String</code> elementally.</p>
-<p>See <a href="../page/Ref/string-methods.html#trim_inplace">trim_inplace</a>.</p>
+  <p>Removes any leading or trailing whitespace of the string slice component of a <code>String</code> elementally and
+in place.</p>
+<p>For a user reference, see <a href="../page/Ref/string-methods.html#trim_inplace">trim_inplace</a>.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1960,6 +1993,120 @@ leading or trailing whitespace.</p>
     </ul>
   </div>
 
+            <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-write_file"></span><h3>procedure, public, pass(self) :: <strong>write_file</strong>          
+    </h3></div>
+    <ul class="list-group">
+        <li class="list-group-item">
+              <h3>interface </h3>
+                  
+                <p>Methods for the <code>String</code> type.</p>
+                  <h3>
+    private impure recursive module subroutine write_file(self, cell_array, file_name, row_separator, column_separator)  
+</h3>
+  <p>Streams a cell array to an external text file. The string slice component will be replaced if already
+allocated.</p>
+<p>This method is provided primarily for the purpose of writing <code>.csv</code> files containing data of
+<strong>mixed type</strong>, which cannot be handled with a simple call to <a href="../page/Ref/to_file.html">to_file</a>
+(which accepts numeric arrays of uniform type). The cell array's entire contents are populated into
+<code>self</code> and then streamed to an external text file using the designated <code>row_separator</code> and
+<code>column_separator</code> whose default values are NEW_LINE and <code>','</code> respectively.</p>
+<p>For a user reference, see <a href="../page/Ref/string-methods.html#write_file">write_file</a>.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>self</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(in),</td>
+              <td></td>            <td>
+              dimension(:,:)
+            </td>
+            <td>::</td>
+            <td><strong>cell_array</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>file_name</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>row_separator</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>column_separator</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+        </li>
+    </ul>
+  </div>
+
       </section>
 
     
@@ -1978,7 +2125,7 @@ leading or trailing whitespace.</p>
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-01-03 05:34            </p>
+ on 2023-01-04 02:45            </p>
         </div>
       </div>
       <br>

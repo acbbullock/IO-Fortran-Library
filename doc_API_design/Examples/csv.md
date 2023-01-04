@@ -31,4 +31,6 @@ end program main
 
 @warning Default text format for writing and reading is `'e'` for data of type `real` or `complex`, and `'i'` for data of type `integer`. Attempting to read data with a format that does not correspond to the format in the file will result in an I/O syntax error.
 
+@warning Always read into arrays of the same `kind` as the array that was written.
+
 @warning Default value for `header` when reading is `.false.`. If a header is actually present, the output array will have an extra row with default initialized values.

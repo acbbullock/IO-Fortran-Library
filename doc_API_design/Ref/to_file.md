@@ -5,6 +5,8 @@ author: Austin C Bullock
 
 ## [interface to_file](../../interface/to_file.html)
 
+*Description*: Subroutine for writing an array of uniform data type to an external file.
+
 For `x` an array of rank `1`, `2` and of type `integer`:
 
 ```fortran

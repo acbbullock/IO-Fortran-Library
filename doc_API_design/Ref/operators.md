@@ -5,6 +5,8 @@ author: Austin C Bullock
 
 ## [Operator interfaces](../../lists/procedures.html)
 
+*Description*: Extended operators for convenient string manipulations.
+
 ### Concatenation ([//](../../interface/operator%28SLASHSLASH%29.html) and [+](../../interface/operator%28%2B%29.html))
 
 For `x` and `y` scalars or arrays of any compatible rank, and of any combination of type `character`, `String`:
@@ -27,19 +29,27 @@ For `x` and `y` scalars or arrays of any compatible rank, and of any combination
 result = x - y
 ```
 
-@note Excision always returns a `String` even when both arguments are of type `character`.
+@note Excision always returns a `String` even when both arguments are of type `character`. This ensures that excision can be performed elementally even for values of type `character`.
+
+@note
+String arithmetic is not associative, commutative, or distributive in general:
+
+* (Associative) `(x + y) + z == x + (y + z)` and `x + (y - z) /= (x + y) - z` are both `.true.` in general.
+* (Commutative) `x + y /= y + x` and `x + y - z /= x - z + y` are both `.true.` in general.
+* (Distributive) `x - (y + z) /= x - y - z` is `.true.` in general.
+@endnote
 
 ### Repetition ([**](../../interface/operator%28ASTERISKASTERISK%29.html))
 
 For `x` a scalar or array of any rank, and of type `character`, `String`:
 
 ```fortran
-result = x**exponent
+result = x**ncopies
 ```
 
-* `exponent` is of type `integer`
+* `ncopies` is of type `integer`
 
-@note The `**` operator is a wrapper for the [repeat](https://gcc.gnu.org/onlinedocs/gfortran/REPEAT.html) intrinsic.
+@note The `**` operator is a wrapper for the [repeat](https://gcc.gnu.org/onlinedocs/gfortran/REPEAT.html) intrinsic, and extended for type `String`.
 
 ### Equivalence ([==](../../interface/operator%28%3D%3D%29.html))
 
@@ -47,4 +57,20 @@ For `x` and `y` scalars or arrays of any compatible rank, and of any combination
 
 ```fortran
 result = (x == y)
+```
+
+```fortran
+result = (x .eq. y)
+```
+
+### Non-equivalence ([/=](../../interface/operator%28SLASH%3D%29.html))
+
+For `x` and `y` scalars or arrays of any compatible rank, and of any combination of type `character`, `String`:
+
+```fortran
+result = (x /= y)
+```
+
+```fortran
+result = (x .ne. y)
 ```

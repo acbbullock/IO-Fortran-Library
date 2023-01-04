@@ -13,9 +13,9 @@ module io_fortran_lib
     ! Public API list ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     public :: aprint, to_file, from_file                                                                    ! Array I/O
     public :: str, echo                                                                                    ! String I/O
-    public :: String                                                                                          ! Classes
+    public :: String                                                                                            ! Types
     public :: nl                                                                                            ! Constants
-    public :: operator(//), operator(+), operator(-), operator(**), operator(==)                            ! Operators
+    public :: operator(//), operator(+), operator(-), operator(**), operator(==), operator(/=)              ! Operators
 
     ! Definitions and Interfaces ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     character(len=1), parameter :: nl = new_line('a')
@@ -35,16 +35,21 @@ module io_fortran_lib
 
     character(len=*), dimension(*), parameter :: locales    = [ 'US', 'EU' ]                ! Allowed locale specifiers
 
-    type String                                                                                   ! String wrapper type
+    type String
         !--------------------------------------------------------------------------------------------------------------
-        !! A growable string type for advanced character handling.
+        !! A derived type with a single (private) component:
         !!
-        !! This type is provided for more advanced character handling needs and for the purpose of standard compliance
-        !! when needing to declare arrays of `character` strings in which the elements may have non-identical lengths
-        !! or for which the lengths of elements may need to vary during run-time.
+        !! ```fortran
+        !! character(len=:), allocatable :: s
+        !! ```
         !!
-        !! The form and function of this type was influenced by Rust's
-        !! [String](https://doc.rust-lang.org/std/string/struct.String.html).
+        !! This type is provided for flexible and advanced character handling when the intrinsic `character` type is
+        !! insufficient. For instance, a `String` may be used in array contexts for which the user requires arrays of
+        !! strings which may have non-identical lengths, whose lengths may not be known, or whose lengths may need to
+        !! vary during run time. One may also use the `String` type as an interface to read/write external text files,
+        !! in particular for cases in which `.csv` data contains data of mixed type. For reading/writing data of
+        !! uniform type, it is simpler to use the routines [to_file](../page/Ref/to_file.html) and
+        !! [from_file](../page/Ref/from_file.html).
         !!
         !! For a user reference, see [String](../page/Ref/string.html), 
         !! [String methods](../page/Ref/string-methods.html), and [Operators](../page/Ref/operators.html).
@@ -53,12 +58,12 @@ module io_fortran_lib
         character(len=:), allocatable :: s                                               !! Component is a string slice
         contains
             private
+            generic, public :: write(formatted) => write_string
             procedure, pass(self), public :: as_str
-            procedure, pass(self), public :: echo => echo_String
+            procedure, pass(self), public :: echo => echo_string
             procedure, pass(self), public :: empty
             procedure, pass(self), public :: glue
             procedure, pass(self), public :: len => length
-            procedure, pass(self), public :: print => print_String
             procedure, pass(self), public :: push
             procedure, pass(self), public :: read_file
             procedure, pass(self), public :: replace => replace_copy
@@ -66,6 +71,8 @@ module io_fortran_lib
             procedure, pass(self), public :: split
             procedure, pass(self), public :: trim => trim_copy
             procedure, pass(self), public :: trim_inplace
+            procedure, pass(self), public :: write_file
+            procedure, pass(self)         :: write_string
     end type String
 
     interface String                                                                      ! Submodule String_procedures
@@ -153,37 +160,39 @@ module io_fortran_lib
             !----------------------------------------------------------------------------------------------------------
             !! Returns a copy of the string slice component of a scalar `String`.
             !!
-            !! See [as_str](../page/Ref/string-methods.html#as_str).
+            !! For a user reference, see [as_str](../page/Ref/string-methods.html#as_str).
             !----------------------------------------------------------------------------------------------------------
             class(String), intent(in) :: self
             character(len=:), allocatable :: string_slice
         end function as_str
 
-        impure recursive module subroutine echo_String(self, file_name, append)
+        impure recursive module subroutine echo_string(self, file_name, append)
             !----------------------------------------------------------------------------------------------------------
-            !! Writes the string slice component to an external text file.
+            !! Streams the content of a `String` to an external text file. This method is identical in function to the
+            !! routine [echo](../page/Ref/echo.html) for `character` strings.
             !!
-            !! See [echo](../page/Ref/string-methods.html#echo).
+            !! For a user reference, see [echo](../page/Ref/string-methods.html#echo).
             !----------------------------------------------------------------------------------------------------------
             class(String), intent(in) :: self
             character(len=*), intent(in) :: file_name
             logical, optional, intent(in) :: append
-        end subroutine echo_String
+        end subroutine echo_string
 
         pure elemental recursive module subroutine empty(self)
             !----------------------------------------------------------------------------------------------------------
             !! Sets the string slice component to the empty string elementally.
             !!
-            !! See [empty](../page/Ref/string-methods.html#empty).
+            !! For a user reference, see [empty](../page/Ref/string-methods.html#empty).
             !----------------------------------------------------------------------------------------------------------
             class(String), intent(inout) :: self
         end subroutine empty
 
         pure recursive module subroutine glue(self, tokens, separator)
             !----------------------------------------------------------------------------------------------------------
-            !! Glues a string array into `self` with given separator. Default separator is SPACE.
+            !! Glues a string vector into `self` with given separator. Default separator is SPACE. The string slice
+            !! component will be replaced if already allocated.
             !!
-            !! See [glue](../page/Ref/string-methods.html#glue).
+            !! For a user reference, see [glue](../page/Ref/string-methods.html#glue).
             !----------------------------------------------------------------------------------------------------------
             class(String), intent(inout) :: self
             type(String), dimension(:), intent(in) :: tokens
@@ -194,39 +203,42 @@ module io_fortran_lib
             !----------------------------------------------------------------------------------------------------------
             !! Returns the length of the string slice component elementally. Unallocated components return -1.
             !!
-            !! See [len](../page/Ref/string-methods.html#len).
+            !! For a user reference, see [len](../page/Ref/string-methods.html#len).
             !----------------------------------------------------------------------------------------------------------
             class(String), intent(in) :: self
         end function length
 
-        impure recursive module subroutine print_String(self)
-            !----------------------------------------------------------------------------------------------------------
-            !! Prints the string slice component for a scalar `String`.
-            !!
-            !! See [print](../page/Ref/string-methods.html#print).
-            !----------------------------------------------------------------------------------------------------------
-            class(String), intent(in) :: self
-        end subroutine print_String
-
         pure elemental recursive module subroutine push(self, chars)
             !----------------------------------------------------------------------------------------------------------
-            !! Appends characters to the string slice component elementally.
+            !! Appends characters to the string slice component elementally. This procedure is identical in function to
+            !! the [concatenation operators](../page/Ref/operators.html#concatenation) `self // chars` and
+            !! `self + chars`.
             !!
-            !! See [push](../page/Ref/string-methods.html#push).
+            !! For a user reference, see [push](../page/Ref/string-methods.html#push).
             !----------------------------------------------------------------------------------------------------------
             class(String), intent(inout) :: self
             character(len=*), intent(in) :: chars
         end subroutine push
 
-        impure elemental recursive module subroutine read_file(self, file_name)
+        impure recursive module subroutine read_file(self, file_name, cell_array, row_separator, column_separator)
             !----------------------------------------------------------------------------------------------------------
-            !! Stream reads an entire text file into a `String` elementally. The string slice component will be
-            !! replaced if already allocated.
+            !! Stream reads an entire text file into a `String`. The string slice component will be replaced if
+            !! already allocated.
             !!
-            !! See [read_file](../page/Ref/string-methods.html#read_file).
+            !! This method is provided primarily for the purpose of reading in `.csv` files containing data of
+            !! **mixed type**, which cannot be handled with a simple call to [from_file](../page/Ref/from_file.html)
+            !! (which assumes data of uniform type). The file's entire contents are populated into `self`, and one may
+            !! manually parse and manipulate the file's contents using the other type-bound procedures. Optionally,
+            !! one may provide a rank `2` allocatable array `cell_array` of type `String`, which will be populated with
+            !! the cells of the given file using the designated `row_separator` and `column_separator` whose default
+            !! values are NEW_LINE and `','` respectively.
+            !!
+            !! For a user reference, see [read_file](../page/Ref/string-methods.html#read_file).
             !----------------------------------------------------------------------------------------------------------
             class(String), intent(inout) :: self
             character(len=*), intent(in) :: file_name
+            type(String), allocatable, dimension(:,:), intent(out), optional :: cell_array
+            character(len=*), intent(in), optional :: row_separator, column_separator
         end subroutine read_file
 
         pure elemental recursive type(String) module function replace_copy(self, search_for, replace_with) result(new)
@@ -234,7 +246,7 @@ module io_fortran_lib
             !! Returns a copy of a `String` elementally in which each string slice component has had a substring
             !! searched and replaced.
             !!
-            !! See [replace](../page/Ref/string-methods.html#replace).
+            !! For a user reference, see [replace](../page/Ref/string-methods.html#replace).
             !----------------------------------------------------------------------------------------------------------
             class(String), intent(in) :: self
             character(len=*), intent(in) :: search_for, replace_with
@@ -244,7 +256,7 @@ module io_fortran_lib
             !----------------------------------------------------------------------------------------------------------
             !! Searches and replaces a substring elementally in place.
             !!
-            !! See [replace_inplace](../page/Ref/string-methods.html#replace_inplace).
+            !! For a user reference, see [replace_inplace](../page/Ref/string-methods.html#replace_inplace).
             !----------------------------------------------------------------------------------------------------------
             class(String), intent(inout) :: self
             character(len=*), intent(in) :: search_for, replace_with
@@ -252,9 +264,9 @@ module io_fortran_lib
 
         pure recursive module function split(self, separator) result(tokens)
             !----------------------------------------------------------------------------------------------------------
-            !! Splits a string array into `tokens` with given separator. Default separator is SPACE.
+            !! Splits a string into a vector of `tokens` with given separator. Default separator is SPACE.
             !!
-            !! See [split](../page/Ref/string-methods.html#split).
+            !! For a user reference, see [split](../page/Ref/string-methods.html#split).
             !----------------------------------------------------------------------------------------------------------
             class(String), intent(in) :: self
             character(len=*), intent(in), optional :: separator
@@ -266,19 +278,51 @@ module io_fortran_lib
             !! Returns a copy of a `String` elementally in which each string slice component has been trimmed of any
             !! leading or trailing whitespace.
             !!
-            !! See [trim](../page/Ref/string-methods.html#trim).
+            !! For a user reference, see [trim](../page/Ref/string-methods.html#trim).
             !----------------------------------------------------------------------------------------------------------
             class(String), intent(in) :: self
         end function trim_copy
 
         pure elemental recursive module subroutine trim_inplace(self)
             !----------------------------------------------------------------------------------------------------------
-            !! Removes any leading or trailing whitespace of each string slice component of a `String` elementally.
+            !! Removes any leading or trailing whitespace of the string slice component of a `String` elementally and
+            !! in place.
             !!
-            !! See [trim_inplace](../page/Ref/string-methods.html#trim_inplace).
+            !! For a user reference, see [trim_inplace](../page/Ref/string-methods.html#trim_inplace).
             !----------------------------------------------------------------------------------------------------------
             class(String), intent(inout) :: self
         end subroutine trim_inplace
+
+        impure recursive module subroutine write_file(self, cell_array, file_name, row_separator, column_separator)
+            !----------------------------------------------------------------------------------------------------------
+            !! Streams a cell array to an external text file. The string slice component will be replaced if already
+            !! allocated.
+            !!
+            !! This method is provided primarily for the purpose of writing `.csv` files containing data of
+            !! **mixed type**, which cannot be handled with a simple call to [to_file](../page/Ref/to_file.html)
+            !! (which accepts numeric arrays of uniform type). The cell array's entire contents are populated into
+            !! `self` and then streamed to an external text file using the designated `row_separator` and
+            !! `column_separator` whose default values are NEW_LINE and `','` respectively.
+            !!
+            !! For a user reference, see [write_file](../page/Ref/string-methods.html#write_file).
+            !----------------------------------------------------------------------------------------------------------
+            class(String), intent(inout) :: self
+            type(String), dimension(:,:), intent(in) :: cell_array
+            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in), optional :: row_separator, column_separator
+        end subroutine write_file
+
+        impure recursive module subroutine write_string(self, unit, iotype, v_list, iostat, iomsg)
+            !----------------------------------------------------------------------------------------------------------
+            !! Formatted write DTIO procedure for type `String`.
+            !----------------------------------------------------------------------------------------------------------
+            class(String), intent(in) :: self
+            integer, intent(in) :: unit
+            character(len=*), intent(in) :: iotype
+            integer, dimension(:), intent(in) :: v_list
+            integer, intent(out) :: iostat
+            character(len=*), intent(inout) :: iomsg
+        end subroutine write_string
     end interface
 
     interface operator(//)                                                                        ! Submodule operators
@@ -362,15 +406,15 @@ module io_fortran_lib
         !!
         !! For a user reference, see [Repetition](../page/Ref/operators.html#repetition).
         !--------------------------------------------------------------------------------------------------------------
-        pure elemental recursive module function repeat_chars(chars, exponent) result(new)
+        pure elemental recursive module function repeat_chars(chars, ncopies) result(new)
             character(len=*), intent(in) :: chars
-            integer, intent(in) :: exponent
-            character(len=len(chars)*exponent) :: new
+            integer, intent(in) :: ncopies
+            character(len=len(chars)*ncopies) :: new
         end function repeat_chars
 
-        pure elemental recursive type(String) module function repeat_String(String_base, exponent) result(new)
+        pure elemental recursive type(String) module function repeat_String(String_base, ncopies) result(new)
             class(String), intent(in) :: String_base
-            integer, intent(in) :: exponent
+            integer, intent(in) :: ncopies
         end function repeat_String
     end interface
 
@@ -380,20 +424,46 @@ module io_fortran_lib
         !! explicitly defined.
         !!
         !! For a user reference, see [Equivalence](../page/Ref/operators.html#equivalence).
+        !!
+        !! @note The equivalence operator `==` is interchangeable with `.eq.`.
         !--------------------------------------------------------------------------------------------------------------
-        pure elemental recursive logical module function string_equivalence(Stringl, Stringr) result(equality)
+        pure elemental recursive logical module function string_equivalence(Stringl, Stringr) result(equal)
             class(String), intent(in) :: Stringl, Stringr
         end function string_equivalence
 
-        pure elemental recursive logical module function string_char_equivalence(Stringl, charsr) result(equality)
+        pure elemental recursive logical module function string_char_equivalence(Stringl, charsr) result(equal)
             class(String), intent(in) :: Stringl
             character(len=*), intent(in) :: charsr
         end function string_char_equivalence
 
-        pure elemental recursive logical module function char_string_equivalence(charsl, Stringr) result(equality)
+        pure elemental recursive logical module function char_string_equivalence(charsl, Stringr) result(equal)
             character(len=*), intent(in) :: charsl
             class(String), intent(in) :: Stringr
         end function char_string_equivalence
+    end interface
+
+    interface operator(/=)                                                                        ! Submodule operators
+        !--------------------------------------------------------------------------------------------------------------
+        !! Non-equivalence operator for `character` and `String`. Mixed type non-equivalence of `character` and
+        !! `String` is explicitly defined.
+        !!
+        !! For a user reference, see [Non-equivalence](../page/Ref/operators.html#non-equivalence).
+        !!
+        !! @note The non-equivalence operator `/=` is interchangeable with `.ne.`.
+        !--------------------------------------------------------------------------------------------------------------
+        pure elemental recursive logical module function string_nonequivalence(Stringl, Stringr) result(unequal)
+            class(String), intent(in) :: Stringl, Stringr
+        end function string_nonequivalence
+
+        pure elemental recursive logical module function string_char_nonequivalence(Stringl, charsr) result(unequal)
+            class(String), intent(in) :: Stringl
+            character(len=*), intent(in) :: charsr
+        end function string_char_nonequivalence
+
+        pure elemental recursive logical module function char_string_nonequivalence(charsl, Stringr) result(unequal)
+            character(len=*), intent(in) :: charsl
+            class(String), intent(in) :: Stringr
+        end function char_string_nonequivalence
     end interface
 
     interface aprint                                                                         ! Submodule array_printing
@@ -525,7 +595,7 @@ module io_fortran_lib
 
     interface str                                                                               ! Submodule internal_io
         !--------------------------------------------------------------------------------------------------------------
-        !! Function for representing a number as a `character` string.
+        !! Function for representing a scalar number as a `character` string.
         !!
         !! By default behavior, `str` will write a `real` or `complex` number using a number of significant digits
         !! required in the worst case for a lossless round-trip conversion starting with the internal model
@@ -604,7 +674,7 @@ module io_fortran_lib
 
     interface to_file                                                                               ! Submodule file_io
         !--------------------------------------------------------------------------------------------------------------
-        !! Subroutine for writing an array to an external file.
+        !! Subroutine for writing an array of uniform data type to an external file.
         !!
         !! The file `file_name` will be created if it does not already exist and will be overwritten if it does exist.
         !! Writing to text is allowed for arrays of rank `1` or `2`, and writing to binary is allowed for arrays of any
@@ -1361,7 +1431,7 @@ module io_fortran_lib
 
     interface from_file                                                                             ! Submodule file_io
         !--------------------------------------------------------------------------------------------------------------
-        !! Subroutine for reading an external file into an array.
+        !! Subroutine for reading an external file of uniform data type into an array.
         !!
         !! In the event that any actual arguments provided to `from_file` are invalid, the subprogram will not allow
         !! progression of execution of the caller and will issue an `error stop`. This is due to the critical nature of
@@ -2306,7 +2376,7 @@ module io_fortran_lib
 
     interface echo                                                                                  ! Submodule text_io
         !--------------------------------------------------------------------------------------------------------------
-        !! Subroutine for writing text to an external file.
+        !! Subroutine for streaming scalar `character` data to an external text file.
         !!
         !! The file `file_name` will be created if it does not already exist and will be overwritten if `append` is
         !! `.false.` (if it already exists), with a new line always being inserted at the end of the input string.
@@ -4443,14 +4513,14 @@ submodule (io_fortran_lib) String_procedures
     end procedure new_Str_empty
 
     module procedure as_str
-        if ( .not. allocated(self%s) ) then
+        if ( self%len() < 1 ) then
             string_slice = ''
         else
             string_slice = self%s
         end if
     end procedure as_str
 
-    module procedure echo_String
+    module procedure echo_string
         character(len=:), allocatable :: ext
         logical :: exists, append_
         integer :: file_unit
@@ -4487,10 +4557,14 @@ submodule (io_fortran_lib) String_procedures
             end if
         end if
 
-        write( unit=file_unit ) self%s//nl
+        if ( self%len() < 1 ) then
+            write( unit=file_unit ) nl
+        else
+            write( unit=file_unit ) self%s//nl
+        end if
 
         close(file_unit)
-    end procedure echo_String
+    end procedure echo_string
 
     module procedure empty
         self%s = ''
@@ -4533,16 +4607,8 @@ submodule (io_fortran_lib) String_procedures
         end if
     end procedure length
 
-    module procedure print_String
-        if ( .not. allocated(self%s) ) then
-            write(*,'(a)') ''
-        else
-            write(*,'(a)') self%s
-        end if
-    end procedure print_String
-
     module procedure push
-        if ( .not. allocated(self%s) ) then
+        if ( self%len() < 1 ) then
             self%s = chars
         else
             self%s = self%s//chars
@@ -4586,6 +4652,66 @@ submodule (io_fortran_lib) String_procedures
                 error stop nl//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
                 return
             end if
+
+            cell_block: block
+                type(String), allocatable, dimension(:) :: rows, columns
+                character(len=:), allocatable :: row_separator_, column_separator_
+                integer :: n_rows, n_columns, i
+
+                if ( .not. present(cell_array) ) then
+                    if ( present(row_separator) ) then
+                        write(*,'(a)') nl//'Row separator was specified in read of file "'//file_name//'" '// & 
+                                           'without a cell array output. To use this option, provide an actual '// &
+                                           'argument to cell_array.'
+                    end if
+
+                    if ( present(column_separator) ) then
+                        write(*,'(a)') nl//'Column separator was specified in read of file "'//file_name//'" '// & 
+                                           'without a cell array output. To use this option, provide an actual '// &
+                                           'argument to cell_array.'
+                    end if
+
+                    exit cell_block
+                end if
+
+                if ( .not. present(row_separator) ) then
+                    row_separator_ = nl
+                else
+                    row_separator_ = row_separator
+                end if
+
+                if ( .not. present(column_separator) ) then
+                    column_separator_ = ','
+                else
+                    column_separator_ = column_separator
+                end if
+
+                rows = self%split(separator=row_separator_)
+
+                if ( row_separator_ == self%s(file_length-len(row_separator_)+1:) ) then
+                    n_rows = size(rows) - 1
+                else
+                    n_rows = size(rows)
+                end if
+
+                call process_quotes(rows, row_separator=row_separator_, column_separator=column_separator_)
+
+                columns = rows(1)%split(separator=column_separator_)
+                n_columns = size(columns)
+
+                allocate( cell_array(n_rows, n_columns) )
+
+                cell_array(1,:) = columns
+                deallocate(columns)
+
+                if ( n_rows > 1 ) then
+                    do concurrent (i = 2:n_rows)
+                        cell_array(i,:) = rows(i)%split(separator=column_separator_)
+                    end do
+                end if
+
+                call cell_array%replace_inplace(search_for=row_separator_, replace_with=column_separator_)
+            end block cell_block
         else
             if ( any(binary_ext == ext) ) then
                 error stop nl//'FATAL: Error reading file "'//file_name//'", binary data cannot be read into a String.'
@@ -4594,6 +4720,37 @@ submodule (io_fortran_lib) String_procedures
                            nl//'Supported file extensions: '//to_str(text_ext, delim=' ')
             end if
         end if
+
+        contains
+        pure elemental recursive subroutine process_quotes(row, row_separator, column_separator)
+            type(String), intent(inout) :: row
+            character(len=*), intent(in) :: row_separator, column_separator
+
+            integer :: row_len, sep_len, i
+            logical :: in_quote
+
+            row_len = row%len()
+            sep_len = len(column_separator)
+
+            if ( row_len < 1 ) return
+
+            in_quote = .false.
+
+            replace_sep: do i = 1, row_len
+                if ( row%s(i:i) == '"' ) then
+                    in_quote = ( .not. in_quote )
+                    cycle replace_sep
+                end if
+
+                if ( in_quote ) then
+                    if ( row%s(i:i+sep_len-1) == column_separator ) then
+                        row%s = row%s(:i-1)//row_separator//row%s(i+sep_len:)
+                    end if
+                end if
+            end do replace_sep
+
+            call row%replace_inplace(search_for='"', replace_with='')
+        end subroutine process_quotes
     end procedure read_file
 
     module procedure replace_copy
@@ -4754,7 +4911,7 @@ submodule (io_fortran_lib) String_procedures
     end procedure split
 
     module procedure trim_copy
-        if ( .not. allocated(self%s) ) then
+        if ( self%len() < 1 ) then
             new%s = ''
         else
             new%s = trim(adjustl(self%s))
@@ -4762,17 +4919,66 @@ submodule (io_fortran_lib) String_procedures
     end procedure trim_copy
 
     module procedure trim_inplace
-        if ( .not. allocated(self%s) ) then
+        if ( self%len() < 1 ) then
             self%s = ''
         else
             self%s = trim(adjustl(self%s))
         end if
     end procedure trim_inplace
+
+    module procedure write_file
+        type(string), allocatable, dimension(:) :: rows
+        character(len=:), allocatable :: ext, row_separator_, column_separator_
+        integer :: n_rows, i
+
+        ext = ext_of(file_name)
+
+        if ( .not. any(text_ext == ext) ) then
+            write(*,'(a)')  nl//'WARNING: Skipping write to "'//file_name//'" '// &
+                                'due to unsupported file extension "'//ext//'".'// &
+                            nl//'Supported file extensions: '//to_str(text_ext, delim=' ')
+            return
+        end if
+
+        if ( .not. present(row_separator) ) then
+            row_separator_ = nl
+        else
+            row_separator_ = row_separator
+        end if
+
+        if ( .not. present(column_separator) ) then
+            column_separator_ = ','
+        else
+            column_separator_ = column_separator
+        end if
+
+        n_rows = size(cell_array, dim=1)
+
+        allocate( rows(n_rows) )
+
+        do concurrent (i = 1:n_rows)
+            call rows(i)%glue(tokens=cell_array(i,:), separator=column_separator_)
+        end do
+
+        call rows(1:n_rows-1)%push(row_separator_)
+
+        call self%glue(tokens=rows, separator='')
+
+        call self%echo(file_name=file_name, append=.false.)
+    end procedure write_file
+
+    module procedure write_string
+        if ( self%len() < 1 ) then
+            write(unit=unit, fmt=*, iostat=iostat, iomsg=iomsg) ''
+        else
+            write(unit=unit, fmt=*, iostat=iostat, iomsg=iomsg) self%s
+        end if
+    end procedure write_string
 end submodule String_procedures
 
 submodule (io_fortran_lib) operators
     !! This submodule provides module procedure implementations for the **public interfaces** `operator(//)`,
-    !! `operator(+)`, `operator(-)`, `operator(**)`, and `operator(==)`.
+    !! `operator(+)`, `operator(-)`, `operator(**)`, `operator(==)`, and `operator(/=)`.
     contains
     module procedure string_concatenation
         if ( .not. allocated(Stringl%s) ) then
@@ -4951,7 +5157,7 @@ submodule (io_fortran_lib) operators
     end procedure char_string_excision
 
     module procedure repeat_chars
-        new = repeat(chars, ncopies=exponent)
+        new = repeat(chars, ncopies=ncopies)
     end procedure repeat_chars
 
     module procedure repeat_String
@@ -4960,7 +5166,7 @@ submodule (io_fortran_lib) operators
             return
         end if
 
-        new%s = repeat(String_base%s, ncopies=exponent)
+        new%s = repeat(String_base%s, ncopies=ncopies)
     end procedure repeat_String
 
     module procedure string_equivalence
@@ -4970,16 +5176,16 @@ submodule (io_fortran_lib) operators
         Stringr_len = Stringr%len()
 
         if ( Stringl_len /= Stringr_len ) then
-            equality = .false.
+            equal = .false.
             return
         end if
 
         if ( Stringl_len < 1 ) then
-            equality = .true.
+            equal = .true.
             return
         end if
 
-        equality = ( Stringl%s == Stringr%s )
+        equal = ( Stringl%s == Stringr%s )
     end procedure string_equivalence
 
     module procedure string_char_equivalence
@@ -4989,16 +5195,16 @@ submodule (io_fortran_lib) operators
         charsr_len = len(charsr)
 
         if ( Stringl_len /= charsr_len ) then
-            equality = .false.
+            equal = .false.
             return
         end if
 
         if ( Stringl_len < 1 ) then
-            equality = .true.
+            equal = .true.
             return
         end if
 
-        equality = ( Stringl%s == charsr )
+        equal = ( Stringl%s == charsr )
     end procedure string_char_equivalence
 
     module procedure char_string_equivalence
@@ -5008,17 +5214,74 @@ submodule (io_fortran_lib) operators
         Stringr_len = Stringr%len()
 
         if ( charsl_len /= Stringr_len ) then
-            equality = .false.
+            equal = .false.
             return
         end if
 
         if ( charsl_len < 1 ) then
-            equality = .true.
+            equal = .true.
             return
         end if
 
-        equality = ( charsl == Stringr%s )
+        equal = ( charsl == Stringr%s )
     end procedure char_string_equivalence
+
+    module procedure string_nonequivalence
+        integer :: Stringl_len, Stringr_len
+
+        Stringl_len = Stringl%len()
+        Stringr_len = Stringr%len()
+
+        if ( Stringl_len /= Stringr_len ) then
+            unequal = .true.
+            return
+        end if
+
+        if ( Stringl_len < 1 ) then
+            unequal = .false.
+            return
+        end if
+
+        unequal = ( Stringl%s /= Stringr%s )
+    end procedure string_nonequivalence
+
+    module procedure string_char_nonequivalence
+        integer :: Stringl_len, charsr_len
+
+        Stringl_len = Stringl%len()
+        charsr_len = len(charsr)
+
+        if ( Stringl_len /= charsr_len ) then
+            unequal = .true.
+            return
+        end if
+
+        if ( Stringl_len < 1 ) then
+            unequal = .false.
+            return
+        end if
+
+        unequal = ( Stringl%s /= charsr )
+    end procedure string_char_nonequivalence
+
+    module procedure char_string_nonequivalence
+        integer :: charsl_len, Stringr_len
+
+        charsl_len = len(charsl)
+        Stringr_len = Stringr%len()
+
+        if ( charsl_len /= Stringr_len ) then
+            unequal = .true.
+            return
+        end if
+
+        if ( charsl_len < 1 ) then
+            unequal = .false.
+            return
+        end if
+
+        unequal = ( charsl /= Stringr%s )
+    end procedure char_string_nonequivalence
 end submodule operators
 
 submodule (io_fortran_lib) array_printing
@@ -5903,33 +6166,33 @@ submodule (io_fortran_lib) array_printing
     module procedure aprint_1dchar
         integer :: i
 
-        write(unit=*, fmt='(a)') nl//'   ┣ '//adjustr(x(lbound(x, dim=1)))//' ┫'
+        write(unit=*, fmt='(a)') nl//'     '//adjustr(x(lbound(x, dim=1)))
 
         if ( size(x) == 1 ) return
 
         if ( size(x) > 2 ) then
             do i = lbound(x, dim=1) + 1, ubound(x, dim=1) - 1
-                write(unit=*, fmt='(a)') '   ┃ '//adjustr(x(i))//' ┃'
+                write(unit=*, fmt='(a)') '     '//adjustr(x(i))
             end do
         end if
         
-        write(unit=*, fmt='(a)') '   ┣ '//adjustr(x(ubound(x, dim=1)))//' ┫'//nl
+        write(unit=*, fmt='(a)') '     '//adjustr(x(ubound(x, dim=1)))//nl
     end procedure aprint_1dchar
-    
+
     module procedure aprint_2dchar
         integer :: i
 
-        write(unit=*, fmt='(a)') nl//'   ┣ '//to_str(x(lbound(x, dim=1),:), delim=' ', trimstring=.false.)//' ┫'
+        write(unit=*, fmt='(a)') nl//'    '//to_str(x(lbound(x, dim=1),:), delim=' ', trimstring=.false.)
 
         if ( size(x, dim=1) == 1 ) return
 
         if ( size(x, dim=1) > 2 ) then
             do i = lbound(x, dim=1) + 1, ubound(x, dim=1) - 1
-                write(unit=*, fmt='(a)') '   ┃ '//to_str(x(i,:), delim=' ', trimstring=.false.)//' ┃'
+                write(unit=*, fmt='(a)') '    '//to_str(x(i,:), delim=' ', trimstring=.false.)
             end do
         end if
         
-        write(unit=*, fmt='(a)') '   ┣ '//to_str(x(ubound(x, dim=1),:), delim=' ', trimstring=.false.)//' ┫'//nl
+        write(unit=*, fmt='(a)') '    '//to_str(x(ubound(x, dim=1),:), delim=' ', trimstring=.false.)//nl
     end procedure aprint_2dchar
 
     module procedure aprint_1dString
@@ -5943,7 +6206,7 @@ submodule (io_fortran_lib) array_printing
         allocate( character(len=max_length) :: char_arr(lbound(x, dim=1):ubound(x, dim=1)) )
 
         do concurrent (i = lbound(x, dim=1):ubound(x, dim=1))
-            if ( lengths(i) < 0 ) then
+            if ( lengths(i) < 1 ) then
                 char_arr(i) = ''
             else
                 char_arr(i) = x(i)%s
@@ -5965,7 +6228,7 @@ submodule (io_fortran_lib) array_printing
                   char_arr(lbound(x, dim=1):ubound(x, dim=1), lbound(x, dim=2):ubound(x, dim=2)) )
 
         do concurrent (j = lbound(x, dim=2):ubound(x, dim=2), i = lbound(x, dim=1):ubound(x, dim=1))
-            if ( lengths(i,j) < 0 ) then
+            if ( lengths(i,j) < 1 ) then
                 char_arr(i,j) = ''
             else
                 char_arr(i,j) = x(i,j)%s

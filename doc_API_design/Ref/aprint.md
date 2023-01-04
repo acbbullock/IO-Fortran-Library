@@ -5,6 +5,8 @@ author: Austin C Bullock
 
 ## [interface aprint](../../interface/aprint.html)
 
+*Description*: Subroutine for printing arrays and array sections to stdout.
+
 For `x` an array of rank `1` or `2` and of type `character`, `String`:
 
 ```fortran

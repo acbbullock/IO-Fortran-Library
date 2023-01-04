@@ -8,7 +8,7 @@
     <meta name="author" content="Austin C Bullock" >
     <link rel="icon" href="../favicon.png">
 
-    <title>echo &ndash; IO-Fortran-Library</title>
+    <title>operator(/=) &ndash; IO-Fortran-Library</title>
 
     <link href="../css/bootstrap.min.css" rel="stylesheet">
     <link href="../css/pygments.css" rel="stylesheet">
@@ -77,7 +77,7 @@
 
     <div class="container">
   <div class="row">
-    <h1>echo
+    <h1>operator(/=)
       <small>Interface</small>
       
     </h1>
@@ -90,7 +90,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title="<p> 0.4% of total for procedures.</p>Including implementation: 7 statements,  0.4% of total for procedures.">7 statements</a>
+               title="<p> 0.7% of total for procedures.</p>Including implementation: 13 statements,  0.7% of total for procedures.">13 statements</a>
           </li>
 
             <li id="source-file">
@@ -101,7 +101,7 @@
         <ol class="breadcrumb in-well text-right">
               <li><a href='../sourcefile/io_fortran_lib.f90.html'>io_fortran_lib.f90</a></li>
               <li><a href='../module/io_fortran_lib.html'>io_fortran_lib</a></li>
-          <li class="active">echo</li>
+          <li class="active">operator(/=)</li>
         </ol>
       </div>
     </div>
@@ -129,20 +129,22 @@
   
   
   
-  
       <div class="panel panel-primary">
       <div class="panel-heading text-left">
         <h3 class="panel-title">
-          <a data-toggle="collapse" href="#subs-0">Subroutines</a>
+          <a data-toggle="collapse" href="#funcs-0">Functions</a>
         </h3>
       </div>
-      <div id="subs-0" class="panel-collapse collapse">
+      <div id="funcs-0" class="panel-collapse collapse">
         <div class="list-group">
-            <a class="list-group-item" href="../interface/echo.html#proc-echo_chars">echo_chars</a>
+            <a class="list-group-item" href="../interface/operator%28SLASH%3D%29.html#proc-string_nonequivalence">string_nonequivalence</a>
+            <a class="list-group-item" href="../interface/operator%28SLASH%3D%29.html#proc-string_char_nonequivalence">string_char_nonequivalence</a>
+            <a class="list-group-item" href="../interface/operator%28SLASH%3D%29.html#proc-char_string_nonequivalence">char_string_nonequivalence</a>
         </div>
       </div>
     </div>
 
+  
   
   
   
@@ -156,11 +158,11 @@
     </div>
     
     <div class="col-md-9" id='text'>
-      <h2>public interface echo</h2>
-   <p>Subroutine for streaming scalar <code>character</code> data to an external text file.</p>
-<p>The file <code>file_name</code> will be created if it does not already exist and will be overwritten if <code>append</code> is
-<code>.false.</code> (if it already exists), with a new line always being inserted at the end of the input string.</p>
-<p>For a user reference, see <a href="../page/Ref/echo.html">echo</a>.</p>
+      <h2>public interface operator(/=)</h2>
+   <p>Non-equivalence operator for <code>character</code> and <code>String</code>. Mixed type non-equivalence of <code>character</code> and
+<code>String</code> is explicitly defined.</p>
+<p>For a user reference, see <a href="../page/Ref/operators.html#non-equivalence">Non-equivalence</a>.</p>
+<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>The non-equivalence operator <code>/=</code> is interchangeable with <code>.ne.</code>.</p></div>
 <br>
      <section class="visible-xs visible-sm hidden-md">
          <h3>Contents</h3>
@@ -175,20 +177,22 @@
   
   
   
-  
       <div class="panel panel-primary">
       <div class="panel-heading text-left">
         <h3 class="panel-title">
-          <a data-toggle="collapse" href="#subs-1">Subroutines</a>
+          <a data-toggle="collapse" href="#funcs-1">Functions</a>
         </h3>
       </div>
-      <div id="subs-1" class="panel-collapse collapse">
+      <div id="funcs-1" class="panel-collapse collapse">
         <div class="list-group">
-            <a class="list-group-item" href="../interface/echo.html#proc-echo_chars">echo_chars</a>
+            <a class="list-group-item" href="../interface/operator%28SLASH%3D%29.html#proc-string_nonequivalence">string_nonequivalence</a>
+            <a class="list-group-item" href="../interface/operator%28SLASH%3D%29.html#proc-string_char_nonequivalence">string_char_nonequivalence</a>
+            <a class="list-group-item" href="../interface/operator%28SLASH%3D%29.html#proc-char_string_nonequivalence">char_string_nonequivalence</a>
         </div>
       </div>
     </div>
 
+  
   
   
   
@@ -200,13 +204,130 @@
      </section>
      <br class="visible-xs visible-sm hidden-md">
      
-
-   <h2>Subroutines</h2>
+   <h2>Functions</h2>
       <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-echo_chars"></span><h3>private impure recursive module subroutine echo_chars(string, file_name, append)  
+    <div class="panel-heading codesum"><span class="anchor" id="proc-string_nonequivalence"></span><h3>private pure elemental recursive module function string_nonequivalence(Stringl, Stringr) result(unequal)  
 </h3></div>
     <div class="panel-body">
-        <p>Writes a <code>character</code> string to an external text file.</p>
+        
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>Stringl</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>Stringr</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>logical</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+      <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="proc-string_char_nonequivalence"></span><h3>private pure elemental recursive module function string_char_nonequivalence(Stringl, charsr) result(unequal)  
+</h3></div>
+    <div class="panel-body">
+        
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>Stringl</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>charsr</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>logical</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+      <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="proc-char_string_nonequivalence"></span><h3>private pure elemental recursive module function char_string_nonequivalence(charsl, Stringr) result(unequal)  
+</h3></div>
+    <div class="panel-body">
+        
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -229,7 +350,7 @@
               
             </td>
             <td>::</td>
-            <td><strong>string</strong></td>
+            <td><strong>charsl</strong></td>
             <td>
                 
             </td>
@@ -237,29 +358,14 @@
         <tr>
             <td>
               <span class="anchor" ></span>
-              character(len=*),
+              class(<a href='../type/string.html'>String</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
-            <td><strong>file_name</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              logical,
-            </td>
-<td>intent(in),</td>
-              <td>optional</td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>append</strong></td>
+            <td><strong>Stringr</strong></td>
             <td>
                 
             </td>
@@ -267,9 +373,15 @@
     </tbody>
   </table>
 
+    <h4>
+    Return Value
+    <small>logical</small>
+    </h4>
+    
 
     </div>
   </div>
+
 
 
 

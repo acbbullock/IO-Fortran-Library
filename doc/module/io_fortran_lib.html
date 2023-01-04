@@ -90,7 +90,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title="18.1% of total for modules and submodules.">3714 statements</a>
+               title="18.1% of total for modules and submodules.">3742 statements</a>
           </li>
 
             <li id="source-file">
@@ -151,6 +151,7 @@
             <a class="list-group-item" href="../module/io_fortran_lib.html#interface-operator%28-%29">operator(-)</a>
             <a class="list-group-item" href="../module/io_fortran_lib.html#interface-operator%28ASTERISKASTERISK%29">operator(**)</a>
             <a class="list-group-item" href="../module/io_fortran_lib.html#interface-operator%28%3D%3D%29">operator(==)</a>
+            <a class="list-group-item" href="../module/io_fortran_lib.html#interface-operator%28SLASH%3D%29">operator(/=)</a>
             <a class="list-group-item" href="../module/io_fortran_lib.html#interface-aprint">aprint</a>
             <a class="list-group-item" href="../module/io_fortran_lib.html#interface-str">str</a>
             <a class="list-group-item" href="../module/io_fortran_lib.html#interface-to_file">to_file</a>
@@ -264,6 +265,7 @@ routine. This module is F2018 compliant, has no external dependencies, and has a
             <a class="list-group-item" href="../module/io_fortran_lib.html#interface-operator%28-%29">operator(-)</a>
             <a class="list-group-item" href="../module/io_fortran_lib.html#interface-operator%28ASTERISKASTERISK%29">operator(**)</a>
             <a class="list-group-item" href="../module/io_fortran_lib.html#interface-operator%28%3D%3D%29">operator(==)</a>
+            <a class="list-group-item" href="../module/io_fortran_lib.html#interface-operator%28SLASH%3D%29">operator(/=)</a>
             <a class="list-group-item" href="../module/io_fortran_lib.html#interface-aprint">aprint</a>
             <a class="list-group-item" href="../module/io_fortran_lib.html#interface-str">str</a>
             <a class="list-group-item" href="../module/io_fortran_lib.html#interface-to_file">to_file</a>
@@ -1917,7 +1919,7 @@ for elemental assignments and access to the various <code>String</code> methods 
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function repeat_chars(chars, exponent) result(new)  
+    private pure elemental recursive module function repeat_chars(chars, ncopies) result(new)  
 
     </h3>
   
@@ -1958,7 +1960,7 @@ for elemental assignments and access to the various <code>String</code> methods 
               
             </td>
             <td>::</td>
-            <td><strong>exponent</strong></td>
+            <td><strong>ncopies</strong></td>
             <td>
                 
             </td>
@@ -1975,7 +1977,7 @@ for elemental assignments and access to the various <code>String</code> methods 
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function repeat_String(String_base, exponent) result(new)  
+    private pure elemental recursive module function repeat_String(String_base, ncopies) result(new)  
 
     </h3>
   
@@ -2016,7 +2018,7 @@ for elemental assignments and access to the various <code>String</code> methods 
               
             </td>
             <td>::</td>
-            <td><strong>exponent</strong></td>
+            <td><strong>ncopies</strong></td>
             <td>
                 
             </td>
@@ -2044,11 +2046,12 @@ for elemental assignments and access to the various <code>String</code> methods 
         <p>Equivalence operator for <code>character</code> and <code>String</code>. Mixed type equivalence of <code>character</code> and <code>String</code> is
 explicitly defined.</p>
 <p>For a user reference, see <a href="../page/Ref/operators.html#equivalence">Equivalence</a>.</p>
+<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>The equivalence operator <code>==</code> is interchangeable with <code>.eq.</code>.</p></div>
       </div>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function string_equivalence(Stringl, Stringr) result(equality)  
+    private pure elemental recursive module function string_equivalence(Stringl, Stringr) result(equal)  
 
     </h3>
   
@@ -2106,7 +2109,7 @@ explicitly defined.</p>
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function string_char_equivalence(Stringl, charsr) result(equality)  
+    private pure elemental recursive module function string_char_equivalence(Stringl, charsr) result(equal)  
 
     </h3>
   
@@ -2164,7 +2167,197 @@ explicitly defined.</p>
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function char_string_equivalence(charsl, Stringr) result(equality)  
+    private pure elemental recursive module function char_string_equivalence(charsl, Stringr) result(equal)  
+
+    </h3>
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>charsl</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>Stringr</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>logical</small>
+    </h4>
+    
+
+          </li>
+    </ul>
+  </div>
+
+       <div class="panel panel-default">
+    <div class="panel-heading codesum">
+      <span class="anchor" id="interface-operator%28SLASH%3D%29"></span>
+      <h3>public        interface <a href='../interface/operator%28SLASH%3D%29.html'>operator(/=)</a> 
+      </h3>
+    </div>
+      <div class="panel-body">
+        <p>Non-equivalence operator for <code>character</code> and <code>String</code>. Mixed type non-equivalence of <code>character</code> and
+<code>String</code> is explicitly defined.</p>
+<p>For a user reference, see <a href="../page/Ref/operators.html#non-equivalence">Non-equivalence</a>.</p>
+<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>The non-equivalence operator <code>/=</code> is interchangeable with <code>.ne.</code>.</p></div>
+      </div>
+    <ul class="list-group">
+          <li class="list-group-item">
+                <h3>
+    private pure elemental recursive module function string_nonequivalence(Stringl, Stringr) result(unequal)  
+
+    </h3>
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>Stringl</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>Stringr</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>logical</small>
+    </h4>
+    
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private pure elemental recursive module function string_char_nonequivalence(Stringl, charsr) result(unequal)  
+
+    </h3>
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>Stringl</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>charsr</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>logical</small>
+    </h4>
+    
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private pure elemental recursive module function char_string_nonequivalence(charsl, Stringr) result(unequal)  
 
     </h3>
   
@@ -3726,7 +3919,7 @@ explicitly defined.</p>
       </h3>
     </div>
       <div class="panel-body">
-        <p>Function for representing a number as a <code>character</code> string.</p>
+        <p>Function for representing a scalar number as a <code>character</code> string.</p>
 <p>By default behavior, <code>str</code> will write a <code>real</code> or <code>complex</code> number using a number of significant digits
 required in the worst case for a lossless round-trip conversion starting with the internal model
 representation of <code>x</code>.</p>
@@ -4548,7 +4741,7 @@ representation of <code>x</code>.</p>
       </h3>
     </div>
       <div class="panel-body">
-        <p>Subroutine for writing an array to an external file.</p>
+        <p>Subroutine for writing an array of uniform data type to an external file.</p>
 <p>The file <code>file_name</code> will be created if it does not already exist and will be overwritten if it does exist.
 Writing to text is allowed for arrays of rank <code>1</code> or <code>2</code>, and writing to binary is allowed for arrays of any
 rank <code>1</code>-<code>15</code>. Any invalid actual arguments will be ignored, defaults will be assumed, and a warning message
@@ -14016,7 +14209,7 @@ will be issued on stdout.</p>
       </h3>
     </div>
       <div class="panel-body">
-        <p>Subroutine for reading an external file into an array.</p>
+        <p>Subroutine for reading an external file of uniform data type into an array.</p>
 <p>In the event that any actual arguments provided to <code>from_file</code> are invalid, the subprogram will not allow
 progression of execution of the caller and will issue an <code>error stop</code>. This is due to the critical nature of
 reads and the fact that the procedure may not be able to make the proper assumptions about the data being
@@ -26164,7 +26357,7 @@ read.</p>
       </h3>
     </div>
       <div class="panel-body">
-        <p>Subroutine for writing text to an external file.</p>
+        <p>Subroutine for streaming scalar <code>character</code> data to an external text file.</p>
 <p>The file <code>file_name</code> will be created if it does not already exist and will be overwritten if <code>append</code> is
 <code>.false.</code> (if it already exists), with a new line always being inserted at the end of the input string.</p>
 <p>For a user reference, see <a href="../page/Ref/echo.html">echo</a>.</p>
@@ -26257,7 +26450,7 @@ read.</p>
       </h3>
     </div>
     <div class="panel-body">
-      <p>A growable string type for advanced character handling.</p><a href="../type/string.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+      <p>A derived type with a single (private) component:</p><a href="../type/string.html" class="pull-right"><emph>Read more&hellip;</emph></a>
 
 
         <h4>Constructor</h4>
@@ -26405,6 +26598,16 @@ read.</p>
           <tbody>
               <tr>
                 <td>
+generic,
+                  public
+                  :: <strong><a href='../type/string.html#boundprocedure-write%28formatted%29'>write(formatted)</a></strong>
+ =>
+                    write_string
+<small></small>                </td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>
                     procedure
                     ,                  public
 , pass(self)                  :: <strong><a href='../type/string.html#boundprocedure-as_str'>as_str</a></strong>
@@ -26417,7 +26620,7 @@ read.</p>
                     ,                  public
 , pass(self)                  :: <strong><a href='../type/string.html#boundprocedure-echo'>echo</a></strong>
  =>
-                    echo_String
+                    echo_string
 <small>Interface</small>                </td>
                 <td></td>
               </tr>
@@ -26444,16 +26647,6 @@ read.</p>
 , pass(self)                  :: <strong><a href='../type/string.html#boundprocedure-len'>len</a></strong>
  =>
                     length
-<small>Interface</small>                </td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>
-                    procedure
-                    ,                  public
-, pass(self)                  :: <strong><a href='../type/string.html#boundprocedure-print'>print</a></strong>
- =>
-                    print_String
 <small>Interface</small>                </td>
                 <td></td>
               </tr>
@@ -26517,6 +26710,14 @@ read.</p>
 <small>Interface</small>                </td>
                 <td></td>
               </tr>
+              <tr>
+                <td>
+                    procedure
+                    ,                  public
+, pass(self)                  :: <strong><a href='../type/string.html#boundprocedure-write_file'>write_file</a></strong>
+<small>Interface</small>                </td>
+                <td></td>
+              </tr>
           </tbody>
         </table>
     </div>
@@ -26544,7 +26745,7 @@ read.</p>
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-01-03 05:34            </p>
+ on 2023-01-04 02:45            </p>
         </div>
       </div>
       <br>

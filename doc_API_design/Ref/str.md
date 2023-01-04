@@ -5,6 +5,8 @@ author: Austin C Bullock
 
 ## [interface str](../../interface/str.html)
 
+*Description*: Function for representing a scalar number as a `character` string.
+
 For `x` a scalar of type `integer`:
 
 ```fortran
@@ -34,7 +36,7 @@ result = str(x, locale, fmt, decimals, im)
 * `decimals` is `optional` and of type `integer`
 * `im` is `optional` and of type `character(len=*)`
 
-@note Note that `str` is restricted to operate on scalars only since `character` arrays of non-identical length elements are not defined by the Fortran 2018 standard. For this functionality, see [String](string.html).
+@note Note that `str` operates on scalars only since functions with an `allocatable` result cannot be `elemental`. For this functionality, see [String](string.html).
 
 ### Optional Arguments
 

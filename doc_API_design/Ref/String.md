@@ -5,6 +5,8 @@ author: Austin C Bullock
 
 ## [interface String](../../interface/string.html)
 
+*Description*: Function for transforming numeric or `character` data into a [String](../../type/string.html) type.
+
 To return the empty `String`, use no arguments:
 
 ```fortran
@@ -45,6 +47,8 @@ result = String(x, locale, fmt, decimals, im)
 * `fmt` is `optional`, may be one of `real_fmts`
 * `decimals` is `optional` and of type `integer`
 * `im` is `optional` and of type `character(len=*)`
+
+@note Unlike [str](str.html), which takes scalar arguments only and returns a `character` value, `String` operates elementally and returns a [String](../../type/string.html) value.
 
 ### Optional Arguments
 

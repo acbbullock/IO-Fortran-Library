@@ -99,6 +99,7 @@
   <div class="row">
     <div class="col-md-9 col-md-push-3" id='text'>
       <h2 id="operator-interfaces"><a href="../../lists/procedures.html">Operator interfaces</a></h2>
+<p><em>Description</em>: Extended operators for convenient string manipulations.</p>
 <h3 id="concatenation-and">Concatenation (<a href="../../interface/operator%28SLASHSLASH%29.html">//</a> and <a href="../../interface/operator%28%2B%29.html">+</a>)</h3>
 <p>For <code>x</code> and <code>y</code> scalars or arrays of any compatible rank, and of any combination of type <code>character</code>, <code>String</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="k">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="n">y</span><span class="w"></span>
@@ -113,19 +114,38 @@
 <div class="codehilite"><pre><span></span><code><span class="k">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">y</span><span class="w"></span>
 </code></pre></div>
 
-<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>Excision always returns a <code>String</code> even when both arguments are of type <code>character</code>.</p></div>
+<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>Excision always returns a <code>String</code> even when both arguments are of type <code>character</code>. This ensures that excision can be performed elementally even for values of type <code>character</code>.</p></div>
+<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>String arithmetic is not associative, commutative, or distributive in general:</p>
+<ul>
+<li>(Associative) <code>(x + y) + z == x + (y + z)</code> and <code>x + (y - z) /= (x + y) - z</code> are both <code>.true.</code> in general.</li>
+<li>(Commutative) <code>x + y /= y + x</code> and <code>x + y - z /= x - z + y</code> are both <code>.true.</code> in general.</li>
+<li>(Distributive) <code>x - (y + z) /= x - y - z</code> is <code>.true.</code> in general.
+</p></div>
+<p></li>
+</ul>
 <h3 id="repetition">Repetition (<a href="../../interface/operator%28ASTERISKASTERISK%29.html">**</a>)</h3>
 <p>For <code>x</code> a scalar or array of any rank, and of type <code>character</code>, <code>String</code>:</p>
-<div class="codehilite"><pre><span></span><code><span class="k">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="o">**</span><span class="nb">exponent</span><span class="w"></span>
+<div class="codehilite"><pre><span></span><code><span class="k">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="o">**</span><span class="n">ncopies</span><span class="w"></span>
 </code></pre></div>
 
 <ul>
-<li><code>exponent</code> is of type <code>integer</code></li>
+<li><code>ncopies</code> is of type <code>integer</code></li>
 </ul>
-<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>The <code>**</code> operator is a wrapper for the <a href="https://gcc.gnu.org/onlinedocs/gfortran/REPEAT.html">repeat</a> intrinsic.</p></div>
+<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>The <code>**</code> operator is a wrapper for the <a href="https://gcc.gnu.org/onlinedocs/gfortran/REPEAT.html">repeat</a> intrinsic, and extended for type <code>String</code>.</p></div>
 <h3 id="equivalence">Equivalence (<a href="../../interface/operator%28%3D%3D%29.html">==</a>)</h3>
 <p>For <code>x</code> and <code>y</code> scalars or arrays of any compatible rank, and of any combination of type <code>character</code>, <code>String</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="k">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"></span>
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="k">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="p">.</span><span class="n">eq</span><span class="p">.</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"></span>
+</code></pre></div>
+
+<h3 id="non-equivalence">Non-equivalence (<a href="../../interface/operator%28SLASH%3D%29.html">/=</a>)</h3>
+<p>For <code>x</code> and <code>y</code> scalars or arrays of any compatible rank, and of any combination of type <code>character</code>, <code>String</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"></span>
+</code></pre></div>
+
+<div class="codehilite"><pre><span></span><code><span class="k">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="p">.</span><span class="n">ne</span><span class="p">.</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
     </div>
     <div class="col-md-3 col-md-pull-9">
@@ -221,7 +241,7 @@
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-01-03 05:34            </p>
+ on 2023-01-04 02:45            </p>
         </div>
       </div>
       <br>
