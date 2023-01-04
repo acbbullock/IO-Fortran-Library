@@ -55,7 +55,7 @@ module io_fortran_lib
             private
             generic, public :: write(formatted) => write_string
             procedure, pass(self), public :: as_str
-            procedure, pass(self), public :: echo => echo_String
+            procedure, pass(self), public :: echo => echo_string
             procedure, pass(self), public :: empty
             procedure, pass(self), public :: glue
             procedure, pass(self), public :: len => length
@@ -160,7 +160,7 @@ module io_fortran_lib
             character(len=:), allocatable :: string_slice
         end function as_str
 
-        impure recursive module subroutine echo_String(self, file_name, append)
+        impure recursive module subroutine echo_string(self, file_name, append)
             !----------------------------------------------------------------------------------------------------------
             !! Writes the string slice component to an external text file.
             !!
@@ -169,7 +169,7 @@ module io_fortran_lib
             class(String), intent(in) :: self
             character(len=*), intent(in) :: file_name
             logical, optional, intent(in) :: append
-        end subroutine echo_String
+        end subroutine echo_string
 
         pure elemental recursive module subroutine empty(self)
             !----------------------------------------------------------------------------------------------------------
@@ -4475,14 +4475,14 @@ submodule (io_fortran_lib) String_procedures
     end procedure new_Str_empty
 
     module procedure as_str
-        if ( .not. allocated(self%s) ) then
+        if ( self%len() < 1 ) then
             string_slice = ''
         else
             string_slice = self%s
         end if
     end procedure as_str
 
-    module procedure echo_String
+    module procedure echo_string
         character(len=:), allocatable :: ext
         logical :: exists, append_
         integer :: file_unit
@@ -4519,10 +4519,14 @@ submodule (io_fortran_lib) String_procedures
             end if
         end if
 
-        write( unit=file_unit ) self%s//nl
+        if ( self%len() < 1 ) then
+            write( unit=file_unit ) nl
+        else
+            write( unit=file_unit ) self%s//nl
+        end if
 
         close(file_unit)
-    end procedure echo_String
+    end procedure echo_string
 
     module procedure empty
         self%s = ''
@@ -4566,7 +4570,7 @@ submodule (io_fortran_lib) String_procedures
     end procedure length
 
     module procedure push
-        if ( .not. allocated(self%s) ) then
+        if ( self%len() < 1 ) then
             self%s = chars
         else
             self%s = self%s//chars
@@ -4778,7 +4782,7 @@ submodule (io_fortran_lib) String_procedures
     end procedure split
 
     module procedure trim_copy
-        if ( .not. allocated(self%s) ) then
+        if ( self%len() < 1 ) then
             new%s = ''
         else
             new%s = trim(adjustl(self%s))
@@ -4786,7 +4790,7 @@ submodule (io_fortran_lib) String_procedures
     end procedure trim_copy
 
     module procedure trim_inplace
-        if ( .not. allocated(self%s) ) then
+        if ( self%len() < 1 ) then
             self%s = ''
         else
             self%s = trim(adjustl(self%s))
