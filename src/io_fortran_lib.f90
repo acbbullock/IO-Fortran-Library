@@ -4694,6 +4694,8 @@ submodule (io_fortran_lib) String_procedures
                     n_rows = size(rows)
                 end if
 
+                call process_quotes(rows, row_separator=row_separator_, column_separator=column_separator_)
+
                 columns = rows(1)%split(separator=column_separator_)
                 n_columns = size(columns)
 
@@ -4707,6 +4709,8 @@ submodule (io_fortran_lib) String_procedures
                         cell_array(i,:) = rows(i)%split(separator=column_separator_)
                     end do
                 end if
+
+                call cell_array%replace_inplace(search_for=row_separator_, replace_with=column_separator_)
             end block cell_block
         else
             if ( any(binary_ext == ext) ) then
@@ -4716,6 +4720,37 @@ submodule (io_fortran_lib) String_procedures
                            nl//'Supported file extensions: '//to_str(text_ext, delim=' ')
             end if
         end if
+
+        contains
+        pure elemental recursive subroutine process_quotes(row, row_separator, column_separator)
+            type(String), intent(inout) :: row
+            character(len=*), intent(in) :: row_separator, column_separator
+
+            integer :: row_len, sep_len, i
+            logical :: in_quote
+
+            row_len = row%len()
+            sep_len = len(column_separator)
+
+            if ( row_len < 1 ) return
+
+            in_quote = .false.
+
+            replace_sep: do i = 1, row_len
+                if ( row%s(i:i) == '"' ) then
+                    in_quote = ( .not. in_quote )
+                    cycle replace_sep
+                end if
+
+                if ( in_quote ) then
+                    if ( row%s(i:i+sep_len-1) == column_separator ) then
+                        row%s = row%s(:i-1)//row_separator//row%s(i+sep_len:)
+                    end if
+                end if
+            end do replace_sep
+
+            call row%replace_inplace(search_for='"', replace_with='')
+        end subroutine process_quotes
     end procedure read_file
 
     module procedure replace_copy
@@ -6131,33 +6166,33 @@ submodule (io_fortran_lib) array_printing
     module procedure aprint_1dchar
         integer :: i
 
-        write(unit=*, fmt='(a)') nl//'   ┣ '//adjustr(x(lbound(x, dim=1)))//' ┫'
+        write(unit=*, fmt='(a)') nl//'     '//adjustr(x(lbound(x, dim=1)))
 
         if ( size(x) == 1 ) return
 
         if ( size(x) > 2 ) then
             do i = lbound(x, dim=1) + 1, ubound(x, dim=1) - 1
-                write(unit=*, fmt='(a)') '   ┃ '//adjustr(x(i))//' ┃'
+                write(unit=*, fmt='(a)') '     '//adjustr(x(i))
             end do
         end if
         
-        write(unit=*, fmt='(a)') '   ┣ '//adjustr(x(ubound(x, dim=1)))//' ┫'//nl
+        write(unit=*, fmt='(a)') '     '//adjustr(x(ubound(x, dim=1)))//nl
     end procedure aprint_1dchar
-    
+
     module procedure aprint_2dchar
         integer :: i
 
-        write(unit=*, fmt='(a)') nl//'   ┣ '//to_str(x(lbound(x, dim=1),:), delim=' ', trimstring=.false.)//' ┫'
+        write(unit=*, fmt='(a)') nl//'    '//to_str(x(lbound(x, dim=1),:), delim=' ', trimstring=.false.)
 
         if ( size(x, dim=1) == 1 ) return
 
         if ( size(x, dim=1) > 2 ) then
             do i = lbound(x, dim=1) + 1, ubound(x, dim=1) - 1
-                write(unit=*, fmt='(a)') '   ┃ '//to_str(x(i,:), delim=' ', trimstring=.false.)//' ┃'
+                write(unit=*, fmt='(a)') '    '//to_str(x(i,:), delim=' ', trimstring=.false.)
             end do
         end if
         
-        write(unit=*, fmt='(a)') '   ┣ '//to_str(x(ubound(x, dim=1),:), delim=' ', trimstring=.false.)//' ┫'//nl
+        write(unit=*, fmt='(a)') '    '//to_str(x(ubound(x, dim=1),:), delim=' ', trimstring=.false.)//nl
     end procedure aprint_2dchar
 
     module procedure aprint_1dString
@@ -6171,7 +6206,7 @@ submodule (io_fortran_lib) array_printing
         allocate( character(len=max_length) :: char_arr(lbound(x, dim=1):ubound(x, dim=1)) )
 
         do concurrent (i = lbound(x, dim=1):ubound(x, dim=1))
-            if ( lengths(i) < 0 ) then
+            if ( lengths(i) < 1 ) then
                 char_arr(i) = ''
             else
                 char_arr(i) = x(i)%s
@@ -6193,7 +6228,7 @@ submodule (io_fortran_lib) array_printing
                   char_arr(lbound(x, dim=1):ubound(x, dim=1), lbound(x, dim=2):ubound(x, dim=2)) )
 
         do concurrent (j = lbound(x, dim=2):ubound(x, dim=2), i = lbound(x, dim=1):ubound(x, dim=1))
-            if ( lengths(i,j) < 0 ) then
+            if ( lengths(i,j) < 1 ) then
                 char_arr(i,j) = ''
             else
                 char_arr(i,j) = x(i,j)%s
