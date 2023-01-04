@@ -13,9 +13,9 @@ module io_fortran_lib
     ! Public API list ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     public :: aprint, to_file, from_file                                                                    ! Array I/O
     public :: str, echo                                                                                    ! String I/O
-    public :: String                                                                                          ! Classes
+    public :: String                                                                                            ! Types
     public :: nl                                                                                            ! Constants
-    public :: operator(//), operator(+), operator(-), operator(**), operator(==)                            ! Operators
+    public :: operator(//), operator(+), operator(-), operator(**), operator(==), operator(/=)              ! Operators
 
     ! Definitions and Interfaces ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     character(len=1), parameter :: nl = new_line('a')
@@ -35,7 +35,7 @@ module io_fortran_lib
 
     character(len=*), dimension(*), parameter :: locales    = [ 'US', 'EU' ]                ! Allowed locale specifiers
 
-    type String                                                                                   ! String wrapper type
+    type String
         !--------------------------------------------------------------------------------------------------------------
         !! A growable string type for advanced character handling.
         !!
@@ -53,12 +53,12 @@ module io_fortran_lib
         character(len=:), allocatable :: s                                               !! Component is a string slice
         contains
             private
+            generic, public :: write(formatted) => write_string
             procedure, pass(self), public :: as_str
             procedure, pass(self), public :: echo => echo_String
             procedure, pass(self), public :: empty
             procedure, pass(self), public :: glue
             procedure, pass(self), public :: len => length
-            procedure, pass(self), public :: print => print_String
             procedure, pass(self), public :: push
             procedure, pass(self), public :: read_file
             procedure, pass(self), public :: replace => replace_copy
@@ -66,6 +66,7 @@ module io_fortran_lib
             procedure, pass(self), public :: split
             procedure, pass(self), public :: trim => trim_copy
             procedure, pass(self), public :: trim_inplace
+            procedure, pass(self)         :: write_string
     end type String
 
     interface String                                                                      ! Submodule String_procedures
@@ -199,18 +200,11 @@ module io_fortran_lib
             class(String), intent(in) :: self
         end function length
 
-        impure recursive module subroutine print_String(self)
-            !----------------------------------------------------------------------------------------------------------
-            !! Prints the string slice component for a scalar `String`.
-            !!
-            !! See [print](../page/Ref/string-methods.html#print).
-            !----------------------------------------------------------------------------------------------------------
-            class(String), intent(in) :: self
-        end subroutine print_String
-
         pure elemental recursive module subroutine push(self, chars)
             !----------------------------------------------------------------------------------------------------------
-            !! Appends characters to the string slice component elementally.
+            !! Appends characters to the string slice component elementally. This procedure is identical in function to
+            !! the [concatenation operators](../page/Ref/operators.html#concatenation) `self // chars` and
+            !! `self + chars`.
             !!
             !! See [push](../page/Ref/string-methods.html#push).
             !----------------------------------------------------------------------------------------------------------
@@ -279,6 +273,18 @@ module io_fortran_lib
             !----------------------------------------------------------------------------------------------------------
             class(String), intent(inout) :: self
         end subroutine trim_inplace
+
+        impure recursive module subroutine write_string(self, unit, iotype, v_list, iostat, iomsg)
+            !----------------------------------------------------------------------------------------------------------
+            !! Formatted write DTIO procedure for type `String`.
+            !----------------------------------------------------------------------------------------------------------
+            class(String), intent(in) :: self
+            integer, intent(in) :: unit
+            character(len=*), intent(in) :: iotype
+            integer, dimension(:), intent(in) :: v_list
+            integer, intent(out) :: iostat
+            character(len=*), intent(inout) :: iomsg
+        end subroutine write_string
     end interface
 
     interface operator(//)                                                                        ! Submodule operators
@@ -362,15 +368,15 @@ module io_fortran_lib
         !!
         !! For a user reference, see [Repetition](../page/Ref/operators.html#repetition).
         !--------------------------------------------------------------------------------------------------------------
-        pure elemental recursive module function repeat_chars(chars, exponent) result(new)
+        pure elemental recursive module function repeat_chars(chars, ncopies) result(new)
             character(len=*), intent(in) :: chars
-            integer, intent(in) :: exponent
-            character(len=len(chars)*exponent) :: new
+            integer, intent(in) :: ncopies
+            character(len=len(chars)*ncopies) :: new
         end function repeat_chars
 
-        pure elemental recursive type(String) module function repeat_String(String_base, exponent) result(new)
+        pure elemental recursive type(String) module function repeat_String(String_base, ncopies) result(new)
             class(String), intent(in) :: String_base
-            integer, intent(in) :: exponent
+            integer, intent(in) :: ncopies
         end function repeat_String
     end interface
 
@@ -380,20 +386,46 @@ module io_fortran_lib
         !! explicitly defined.
         !!
         !! For a user reference, see [Equivalence](../page/Ref/operators.html#equivalence).
+        !!
+        !! @note The equivalence operator `==` is interchangeable with `.eq.`.
         !--------------------------------------------------------------------------------------------------------------
-        pure elemental recursive logical module function string_equivalence(Stringl, Stringr) result(equality)
+        pure elemental recursive logical module function string_equivalence(Stringl, Stringr) result(equal)
             class(String), intent(in) :: Stringl, Stringr
         end function string_equivalence
 
-        pure elemental recursive logical module function string_char_equivalence(Stringl, charsr) result(equality)
+        pure elemental recursive logical module function string_char_equivalence(Stringl, charsr) result(equal)
             class(String), intent(in) :: Stringl
             character(len=*), intent(in) :: charsr
         end function string_char_equivalence
 
-        pure elemental recursive logical module function char_string_equivalence(charsl, Stringr) result(equality)
+        pure elemental recursive logical module function char_string_equivalence(charsl, Stringr) result(equal)
             character(len=*), intent(in) :: charsl
             class(String), intent(in) :: Stringr
         end function char_string_equivalence
+    end interface
+
+    interface operator(/=)                                                                        ! Submodule operators
+        !--------------------------------------------------------------------------------------------------------------
+        !! Non-equivalence operator for `character` and `String`. Mixed type non-equivalence of `character` and
+        !! `String` is explicitly defined.
+        !!
+        !! For a user reference, see [Non-equivalence](../page/Ref/operators.html#non-equivalence).
+        !!
+        !! @note The non-equivalence operator `/=` is interchangeable with `.ne.`.
+        !--------------------------------------------------------------------------------------------------------------
+        pure elemental recursive logical module function string_nonequivalence(Stringl, Stringr) result(unequal)
+            class(String), intent(in) :: Stringl, Stringr
+        end function string_nonequivalence
+
+        pure elemental recursive logical module function string_char_nonequivalence(Stringl, charsr) result(unequal)
+            class(String), intent(in) :: Stringl
+            character(len=*), intent(in) :: charsr
+        end function string_char_nonequivalence
+
+        pure elemental recursive logical module function char_string_nonequivalence(charsl, Stringr) result(unequal)
+            character(len=*), intent(in) :: charsl
+            class(String), intent(in) :: Stringr
+        end function char_string_nonequivalence
     end interface
 
     interface aprint                                                                         ! Submodule array_printing
@@ -4533,14 +4565,6 @@ submodule (io_fortran_lib) String_procedures
         end if
     end procedure length
 
-    module procedure print_String
-        if ( .not. allocated(self%s) ) then
-            write(*,'(a)') ''
-        else
-            write(*,'(a)') self%s
-        end if
-    end procedure print_String
-
     module procedure push
         if ( .not. allocated(self%s) ) then
             self%s = chars
@@ -4768,11 +4792,19 @@ submodule (io_fortran_lib) String_procedures
             self%s = trim(adjustl(self%s))
         end if
     end procedure trim_inplace
+
+    module procedure write_string
+        if ( self%len() < 1 ) then
+            write(unit=unit, fmt=*, iostat=iostat, iomsg=iomsg) ''
+        else
+            write(unit=unit, fmt=*, iostat=iostat, iomsg=iomsg) self%s
+        end if
+    end procedure write_string
 end submodule String_procedures
 
 submodule (io_fortran_lib) operators
     !! This submodule provides module procedure implementations for the **public interfaces** `operator(//)`,
-    !! `operator(+)`, `operator(-)`, `operator(**)`, and `operator(==)`.
+    !! `operator(+)`, `operator(-)`, `operator(**)`, `operator(==)`, and `operator(/=)`.
     contains
     module procedure string_concatenation
         if ( .not. allocated(Stringl%s) ) then
@@ -4951,7 +4983,7 @@ submodule (io_fortran_lib) operators
     end procedure char_string_excision
 
     module procedure repeat_chars
-        new = repeat(chars, ncopies=exponent)
+        new = repeat(chars, ncopies=ncopies)
     end procedure repeat_chars
 
     module procedure repeat_String
@@ -4960,7 +4992,7 @@ submodule (io_fortran_lib) operators
             return
         end if
 
-        new%s = repeat(String_base%s, ncopies=exponent)
+        new%s = repeat(String_base%s, ncopies=ncopies)
     end procedure repeat_String
 
     module procedure string_equivalence
@@ -4970,16 +5002,16 @@ submodule (io_fortran_lib) operators
         Stringr_len = Stringr%len()
 
         if ( Stringl_len /= Stringr_len ) then
-            equality = .false.
+            equal = .false.
             return
         end if
 
         if ( Stringl_len < 1 ) then
-            equality = .true.
+            equal = .true.
             return
         end if
 
-        equality = ( Stringl%s == Stringr%s )
+        equal = ( Stringl%s == Stringr%s )
     end procedure string_equivalence
 
     module procedure string_char_equivalence
@@ -4989,16 +5021,16 @@ submodule (io_fortran_lib) operators
         charsr_len = len(charsr)
 
         if ( Stringl_len /= charsr_len ) then
-            equality = .false.
+            equal = .false.
             return
         end if
 
         if ( Stringl_len < 1 ) then
-            equality = .true.
+            equal = .true.
             return
         end if
 
-        equality = ( Stringl%s == charsr )
+        equal = ( Stringl%s == charsr )
     end procedure string_char_equivalence
 
     module procedure char_string_equivalence
@@ -5008,17 +5040,74 @@ submodule (io_fortran_lib) operators
         Stringr_len = Stringr%len()
 
         if ( charsl_len /= Stringr_len ) then
-            equality = .false.
+            equal = .false.
             return
         end if
 
         if ( charsl_len < 1 ) then
-            equality = .true.
+            equal = .true.
             return
         end if
 
-        equality = ( charsl == Stringr%s )
+        equal = ( charsl == Stringr%s )
     end procedure char_string_equivalence
+
+    module procedure string_nonequivalence
+        integer :: Stringl_len, Stringr_len
+
+        Stringl_len = Stringl%len()
+        Stringr_len = Stringr%len()
+
+        if ( Stringl_len /= Stringr_len ) then
+            unequal = .true.
+            return
+        end if
+
+        if ( Stringl_len < 1 ) then
+            unequal = .false.
+            return
+        end if
+
+        unequal = ( Stringl%s /= Stringr%s )
+    end procedure string_nonequivalence
+
+    module procedure string_char_nonequivalence
+        integer :: Stringl_len, charsr_len
+
+        Stringl_len = Stringl%len()
+        charsr_len = len(charsr)
+
+        if ( Stringl_len /= charsr_len ) then
+            unequal = .true.
+            return
+        end if
+
+        if ( Stringl_len < 1 ) then
+            unequal = .false.
+            return
+        end if
+
+        unequal = ( Stringl%s /= charsr )
+    end procedure string_char_nonequivalence
+
+    module procedure char_string_nonequivalence
+        integer :: charsl_len, Stringr_len
+
+        charsl_len = len(charsl)
+        Stringr_len = Stringr%len()
+
+        if ( charsl_len /= Stringr_len ) then
+            unequal = .true.
+            return
+        end if
+
+        if ( charsl_len < 1 ) then
+            unequal = .false.
+            return
+        end if
+
+        unequal = ( charsl /= Stringr%s )
+    end procedure char_string_nonequivalence
 end submodule operators
 
 submodule (io_fortran_lib) array_printing
