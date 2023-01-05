@@ -11,3 +11,5 @@ LOCALES = [ 'US', 'EU' ]
 
 * `'US'`: US decimal with default comma delimiter (default), e.g. `1.23456789,0.12345678`
 * `'EU'`: EU decimal with default semicolon delimiter, e.g. `1,23456789;0,12345678`
+
+When moving data in the opposite direction with the complementary procedures [cast](../Ref/cast.html), [cast_string](../Ref/cast_string.html), or [from_file](../Ref/from_file.html), the same `locale` is required to properly read the decimals. Specifying a `locale` that is different from what is actually present may result in an I/O syntax error.

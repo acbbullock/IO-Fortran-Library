@@ -24,18 +24,14 @@ module io_fortran_lib
     character(len=1), parameter :: NUL = char(0)                                                 !! The null character.
     character(len=1), parameter :: CNUL = c_null_char           !! The C null character re-exported from iso_c_binding.
 
-    character(len=*), dimension(*), parameter :: TEXT_EXT   = [ 'csv', 'txt', 'ods', &        ! Allowed text extensions
-                                                                'odf', 'odm', 'odt', &
-                                                                'xls', 'doc', 'log', &
-                                                                'rtf', 'org', 'dbf' ]
-
-    character(len=*), dimension(*), parameter :: BINARY_EXT = [ 'dat', 'bin' ]              ! Allowed binary extensions
-
-    character(len=*), dimension(*), parameter :: REAL_FMTS  = [ 'e', 'f', 'z' ]            ! Allowed formats for floats
-
     character(len=*), dimension(*), parameter :: INT_FMTS   = [ 'i', 'z' ]               ! Allowed formats for integers
-
+    character(len=*), dimension(*), parameter :: REAL_FMTS  = [ 'e', 'f', 'z' ]            ! Allowed formats for floats
     character(len=*), dimension(*), parameter :: LOCALES    = [ 'US', 'EU' ]                ! Allowed locale specifiers
+    character(len=*), dimension(*), parameter :: BINARY_EXT = [ 'dat', 'bin' ]              ! Allowed binary extensions
+    character(len=*), dimension(*), parameter :: TEXT_EXT   = [ 'csv', 'txt', 'log', &        ! Allowed text extensions
+                                                                'rtf', 'odm', 'odt', &
+                                                                'ods', 'odf', 'xls', &
+                                                                'doc', 'org', 'dbf' ]
 
     type String
         !--------------------------------------------------------------------------------------------------------------
@@ -4498,104 +4494,106 @@ submodule (io_fortran_lib) String_procedures
 
         ext = ext_of(file_name)
 
-        if ( any(TEXT_EXT == ext) ) then
-            inquire( file=file_name, exist=exists )
-
-            file_unit = input_unit
-
-            if ( exists ) then
-                open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                      action='read', access='stream', position='rewind' )
-            else
-                error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
-                return
-            end if
-
-            inquire( file=file_name, size=file_length )
-
-            if ( file_length == 0 ) then
-                error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
-                return
-            end if
-
-            if ( allocated(self%s) ) deallocate(self%s)
-
-            allocate( character(len=file_length) :: self%s )
-            read(unit=file_unit, iostat=iostat) self%s
-            close(file_unit)
-
-            if ( iostat > 0 ) then
-                error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
-                return
-            end if
-
-            cell_block: block
-                type(String), allocatable, dimension(:) :: rows, columns
-                character(len=:), allocatable :: row_separator_, column_separator_
-                integer :: n_rows, n_columns, i
-
-                if ( .not. present(cell_array) ) then
-                    if ( present(row_separator) ) then
-                        write(*,'(a)') LF//'Row separator was specified in read of file "'//file_name//'" '// & 
-                                           'without a cell array output. To use this option, provide an actual '// &
-                                           'argument to cell_array.'
-                    end if
-
-                    if ( present(column_separator) ) then
-                        write(*,'(a)') LF//'Column separator was specified in read of file "'//file_name//'" '// & 
-                                           'without a cell array output. To use this option, provide an actual '// &
-                                           'argument to cell_array.'
-                    end if
-
-                    exit cell_block
-                end if
-
-                if ( .not. present(row_separator) ) then
-                    row_separator_ = LF
-                else
-                    row_separator_ = row_separator
-                end if
-
-                if ( .not. present(column_separator) ) then
-                    column_separator_ = ','
-                else
-                    column_separator_ = column_separator
-                end if
-
-                rows = self%split(separator=row_separator_)
-
-                if ( row_separator_ == self%s(file_length-len(row_separator_)+1:) ) then
-                    n_rows = size(rows) - 1
-                else
-                    n_rows = size(rows)
-                end if
-
-                call process_quotes(rows, row_separator=row_separator_, column_separator=column_separator_)
-
-                columns = rows(1)%split(separator=column_separator_)
-                n_columns = size(columns)
-
-                allocate( cell_array(n_rows, n_columns) )
-
-                cell_array(1,:) = columns
-                deallocate(columns)
-
-                if ( n_rows > 1 ) then
-                    do concurrent (i = 2:n_rows)
-                        cell_array(i,:) = rows(i)%split(separator=column_separator_)
-                    end do
-                end if
-
-                call cell_array%replace_inplace(search_for=row_separator_, replace_with=column_separator_)
-            end block cell_block
-        else
+        if ( .not. any(TEXT_EXT == ext) ) then
             if ( any(BINARY_EXT == ext) ) then
-                error stop LF//'FATAL: Error reading file "'//file_name//'", binary data cannot be read into a String.'
+                error stop LF//'FATAL: Error reading file "'//file_name//'" in method READ_FILE. Binary data '// &
+                               'cannot be read into a String.'
             else
-                error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
+                error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'" in '// &
+                               'method READ_FILE.'// &
                            LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')
             end if
         end if
+
+        inquire( file=file_name, exist=exists )
+
+        file_unit = input_unit
+
+        if ( exists ) then
+            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
+                    action='read', access='stream', position='rewind' )
+        else
+            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            return
+        end if
+
+        inquire( file=file_name, size=file_length )
+
+        if ( file_length == 0 ) then
+            error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
+            return
+        end if
+
+        if ( allocated(self%s) ) deallocate(self%s)
+
+        allocate( character(len=file_length) :: self%s )
+        read(unit=file_unit, iostat=iostat) self%s
+        close(file_unit)
+
+        if ( iostat > 0 ) then
+            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            return
+        end if
+
+        cell_block: block
+            type(String), allocatable, dimension(:) :: rows, columns
+            character(len=:), allocatable :: row_separator_, column_separator_
+            integer :: n_rows, n_columns, i
+
+            if ( .not. present(cell_array) ) then
+                if ( present(row_separator) ) then
+                    write(*,'(a)') LF//'Row separator was specified in method READ_FILE for file "'// & 
+                                       file_name//'" without a cell array output. To use this option, '// &
+                                       'provide an actual argument to cell_array.'
+                end if
+
+                if ( present(column_separator) ) then
+                    write(*,'(a)') LF//'Column separator was specified in method READ_FILE for file "'// & 
+                                       file_name//'" without a cell array output. To use this option, '// &
+                                       'provide an actual argument to cell_array.'
+                end if
+
+                exit cell_block
+            end if
+
+            if ( .not. present(row_separator) ) then
+                row_separator_ = LF
+            else
+                row_separator_ = row_separator
+            end if
+
+            if ( .not. present(column_separator) ) then
+                column_separator_ = ','
+            else
+                column_separator_ = column_separator
+            end if
+
+            rows = self%split(separator=row_separator_)
+
+            if ( row_separator_ == self%s(file_length-len(row_separator_)+1:) ) then
+                n_rows = size(rows) - 1
+            else
+                n_rows = size(rows)
+            end if
+
+            call process_quotes(rows, row_separator=row_separator_, column_separator=column_separator_)
+
+            columns = rows(1)%split(separator=column_separator_)
+            n_columns = size(columns)
+
+            allocate( cell_array(n_rows, n_columns) )
+
+            cell_array(1,:) = columns
+            deallocate(columns)
+
+            if ( n_rows > 1 ) then
+                do concurrent (i = 2:n_rows)
+                    cell_array(i,:) = rows(i)%split(separator=column_separator_)
+                end do
+            end if
+
+            call cell_array%replace_inplace(search_for=row_separator_, replace_with=column_separator_)
+        end block cell_block
 
         contains
         pure elemental recursive subroutine process_quotes(row, row_separator, column_separator)
@@ -4810,7 +4808,7 @@ submodule (io_fortran_lib) String_procedures
         ext = ext_of(file_name)
 
         if ( .not. any(TEXT_EXT == ext) ) then
-            write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
+            write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" in method WRITE_FILE'// &
                                 'due to unsupported file extension "'//ext//'".'// &
                             LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')
             return
