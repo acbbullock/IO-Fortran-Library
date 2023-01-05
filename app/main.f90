@@ -19,9 +19,9 @@ program main
     call date_and_time(date=date, time=time)
 
     logmsg = 'RUNNING TESTS - date: '//trim(adjustl(date))//' | time: '//time
-    call echo(string=logmsg//nl//repeat('-', ncopies=len(logmsg))//nl, file_name=logfile)
+    call echo(string=logmsg//LF//repeat('-', ncopies=len(logmsg))//LF, file_name=logfile)
 
-    logmsg = '    Integer kind is: '//str(ik)//nl//'    Real kind is: '//str(rk)//nl
+    logmsg = '    Integer kind is: '//str(ik)//LF//'    Real kind is: '//str(rk)//LF
     call echo(logmsg, logfile)
 
     all_passing = .true.
@@ -140,11 +140,11 @@ program main
     end block test_complex
 
     if ( all_passing ) then
-        logmsg = nl//'All tests are passing with compiler "'//compiler_version()//'" '// &
-                     'using compiler options "'//compiler_options()//'".'//nl
+        logmsg = LF//'All tests are passing with compiler "'//compiler_version()//'" '// &
+                     'using compiler options "'//compiler_options()//'".'//LF
     else
-        logmsg = nl//'Some tests are failing with compiler "'//compiler_version()//'" '// &
-                     'using compiler options "'//compiler_options()//'".'//nl
+        logmsg = LF//'Some tests are failing with compiler "'//compiler_version()//'" '// &
+                     'using compiler options "'//compiler_options()//'".'//LF
     end if
 
     call echo(logmsg, logfile)

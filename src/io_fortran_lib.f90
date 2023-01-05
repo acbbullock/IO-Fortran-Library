@@ -5,19 +5,24 @@ module io_fortran_lib
     !------------------------------------------------------------------------------------------------------------------
     use, intrinsic :: iso_fortran_env, only: real128, real64, real32, int64, int32, int16, int8, &     ! Standard kinds
                                              input_unit, output_unit                  ! Standard input and output units
+    use, intrinsic :: iso_c_binding, only: c_null_char                                           ! The C null character
     implicit none (type,external)                                                     ! No implicit types or interfaces
     private
 
     ! Public API list ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     public :: aprint, to_file, from_file                                                                    ! Array I/O
     public :: str, cast, String, cast_string, echo                                                         ! String I/O
-    public :: LF, CR                                                                                        ! Constants
+    public :: CR, LF, NL, VT, FF, NUL, CNUL                                                                 ! Constants
     public :: operator(//), operator(+), operator(-), operator(**), operator(==), operator(/=)              ! Operators
 
     ! Definitions and Interfaces ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    character(len=1), parameter :: LF = new_line('a')           !! This is the new line character constant (line feed).
-
-    character(len=1), parameter :: CR = char(13)                     !! This is the carriage return character constant.
+    character(len=1), parameter :: CR = char(13)                             !! The carriage return character constant.
+    character(len=1), parameter :: LF = new_line('a')                   !! The new line character constant (line feed).
+    character(len=1), parameter :: NL = new_line('a')   !! The new line character constant (line feed), alternate name.
+    character(len=1), parameter :: VT = char(11)                                !! The vertical tab character constant.
+    character(len=1), parameter :: FF = char(12)                                   !! The form feed character constant.
+    character(len=1), parameter :: NUL = char(0)                                        !! The null character constant.
+    character(len=1), parameter :: CNUL = c_null_char                                 !! The C null character constant.
 
     character(len=*), dimension(*), parameter :: TEXT_EXT   = [ 'csv', 'txt', 'ods', &        ! Allowed text extensions
                                                                 'odf', 'odm', 'odt', &
@@ -4523,9 +4528,6 @@ submodule (io_fortran_lib) String_procedures
                 error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
                 return
             end if
-
-            call self%replace_inplace(search_for=CR, replace_with='')
-            file_length = self%len()
 
             cell_block: block
                 type(String), allocatable, dimension(:) :: rows, columns
