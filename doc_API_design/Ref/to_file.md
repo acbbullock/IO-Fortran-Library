@@ -21,7 +21,7 @@ call to_file(x, file_name, header, delim, fmt)
 * `header` is `optional` and of type `character(len=*), dimension(:)`
 * `dim` is `optional` and of type `integer`
 * `delim` is `optional` and of type `character(len=*)`
-* `fmt` is `optional`, may be one of `int_fmts`
+* `fmt` is `optional`, may be one of `INT_FMTS`
 
 For `x` an array of rank `1`, `2` and of type `real`:
 
@@ -36,9 +36,9 @@ call to_file(x, file_name, header, locale, delim, fmt, decimals)
 * `file_name` is of type `character(len=*)`
 * `header` is `optional` and of type `character(len=*), dimension(:)`
 * `dim` is `optional` and of type `integer`
-* `locale` is `optional`, may be one of `locales`
+* `locale` is `optional`, may be one of `LOCALES`
 * `delim` is `optional` and of type `character(len=*)`
-* `fmt` is `optional`, may be one of `real_fmts`
+* `fmt` is `optional`, may be one of `REAL_FMTS`
 * `decimals` is `optional` and of type `integer`
 
 For `x` an array of rank `1`, `2` and of type of type `complex`:
@@ -54,9 +54,9 @@ call to_file(x, file_name, header, locale, delim, fmt, decimals, im)
 * `file_name` is of type `character(len=*)`
 * `header` is `optional` and of type `character(len=*), dimension(:)`
 * `dim` is `optional` and of type `integer`
-* `locale` is `optional`, may be one of `locales`
+* `locale` is `optional`, may be one of `LOCALES`
 * `delim` is `optional` and of type `character(len=*)`
-* `fmt` is `optional`, may be one of `real_fmts`
+* `fmt` is `optional`, may be one of `REAL_FMTS`
 * `decimals` is `optional` and of type `integer`
 * `im` is `optional` and of type `character(len=*)`
 
@@ -79,7 +79,7 @@ Dimension: `dim` specifies whether to write along the rows (`dim=1`) or along th
 Locales (default is `'US'`):
 
 ```fortran
-locales = [ 'US', 'EU' ]
+LOCALES = [ 'US', 'EU' ]
 ```
 
 Delimiter (default is `','`): data separator. Default is `','` for `'US'` locale and `';'` for `'EU'` locale. It is always recommended to omit the delimiter argument for default unless a custom delimiter is really necessary.
@@ -87,13 +87,13 @@ Delimiter (default is `','`): data separator. Default is `','` for `'US'` locale
 Integer formats (default is `'i'`):
 
 ```fortran
-int_fmts = [ 'i', 'z' ]
+INT_FMTS = [ 'i', 'z' ]
 ```
 
 Real formats (default is `'e'`):
 
 ```fortran
-real_fmts = [ 'e', 'f', 'z' ]
+REAL_FMTS = [ 'e', 'f', 'z' ]
 ```
 
 Decimals: `decimals` specifies the number of digits on the rhs of the radix point, with a default determined internally based on the [text format](../UserInfo/text-fmts.html) and precision.

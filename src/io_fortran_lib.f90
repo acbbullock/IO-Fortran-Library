@@ -16,13 +16,13 @@ module io_fortran_lib
     public :: operator(//), operator(+), operator(-), operator(**), operator(==), operator(/=)              ! Operators
 
     ! Definitions and Interfaces ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    character(len=1), parameter :: CR = char(13)                             !! The carriage return character constant.
-    character(len=1), parameter :: LF = new_line('a')                   !! The new line character constant (line feed).
-    character(len=1), parameter :: NL = new_line('a')   !! The new line character constant (line feed), alternate name.
-    character(len=1), parameter :: VT = char(11)                                !! The vertical tab character constant.
-    character(len=1), parameter :: FF = char(12)                                   !! The form feed character constant.
-    character(len=1), parameter :: NUL = char(0)                                        !! The null character constant.
-    character(len=1), parameter :: CNUL = c_null_char                                 !! The C null character constant.
+    character(len=1), parameter :: CR = char(13)                                      !! The carriage return character.
+    character(len=1), parameter :: LF = new_line('a')                            !! The new line character (line feed).
+    character(len=1), parameter :: NL = new_line('a')            !! The new line character (line feed), alternate name.
+    character(len=1), parameter :: VT = char(11)                                         !! The vertical tab character.
+    character(len=1), parameter :: FF = char(12)                                            !! The form feed character.
+    character(len=1), parameter :: NUL = char(0)                                                 !! The null character.
+    character(len=1), parameter :: CNUL = c_null_char           !! The C null character re-exported from iso_c_binding.
 
     character(len=*), dimension(*), parameter :: TEXT_EXT   = [ 'csv', 'txt', 'ods', &        ! Allowed text extensions
                                                                 'odf', 'odm', 'odt', &
@@ -56,9 +56,9 @@ module io_fortran_lib
         !! For a user reference, see [String](../page/Ref/string.html), 
         !! [String methods](../page/Ref/string-methods.html), and [Operators](../page/Ref/operators.html).
         !!
-        !! @note The `String` type is memory safe. The user is forbidden from attempting to access memory that may
-        !! be unallocated due to the `private` attribute of the component and the exceptions put into place in the
-        !! type-bound procedures.
+        !! @note The `String` type is memory safe. The user is forbidden from attempting to access unallocated memory
+        !! due to the `private` attribute of the component and the exceptions put into place in the type-bound
+        !! procedures.
         !--------------------------------------------------------------------------------------------------------------
         private
         character(len=:), allocatable :: s                                               !! Component is a string slice

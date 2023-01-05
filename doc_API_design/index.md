@@ -14,10 +14,8 @@ use io_fortran_lib
 
 which may be placed at the start of any compilation unit, immediately following the `program`, `module`, `function`, or `subroutine` statement, and before any `implicit` statement.
 
-The functionality provided by the API is distributed via a handful of [generic interfaces](../lists/procedures.html) and a derived type [String](../type/string.html). The corresponding routines operate on numeric and character data, and take a minimal number of arguments with optional arguments to customize output for particular use cases. This ensures ease of use and flexibility for the end-user, without the need for any specific knowledge regarding the internal implementations. For advanced character handling, the `String` type provides extensive functionality for internal character manipulations through [type-bound procedures](Ref/string-methods.html).
+The functionality provided by the API is distributed via a handful of [generic interfaces](../lists/procedures.html) and a derived type [String](../type/string.html). The corresponding routines operate on numeric and character data, and take a minimal number of arguments with optional arguments to customize output for particular use cases. This ensures ease of use and flexibility for the end-user, without the need for any specific knowledge regarding the internal implementations. For advanced character handling, the `String` type provides extensive functionality for internal character manipulations through [type-bound procedures](Ref/string-methods.html). For convenience, a short list of [constants](../module/io_fortran_lib.html#variable-cr) are also provided.
 
-For convenience, a constant `parameter` is also provided:
-
-* [nl](../module/io_fortran_lib.html#variable-nl)
+The design approach taken for [[io_fortran_lib]] is dualistic in nature. That is, for each operation represented by an interface, there exists a transpose operation with a corresponding interface, such as `str <-> cast`, `String <-> cast_string`, `to_file <-> from_file`, `read_file <-> write_file`, `glue <-> split`, and so on. Each pair of interfaces are designed to mirror each other in their arguments and assumptions of optional arguments.
 
 @note All external I/O (both text and binary) is conducted as unformatted, stream-access reads and writes as introduced in Fortran 2003, which is much more flexible and typically must faster than record-based I/O.

@@ -100,11 +100,11 @@
     <div class="col-md-9 col-md-push-3" id='text'>
       <p>When writing to file or reading from file, a valid file extension must be present.</p>
 <p>The following are valid text file extensions:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">text_ext</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s1">&#39;csv&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;txt&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;ods&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;odf&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;odm&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;odt&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;xls&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;doc&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;log&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;rtf&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;org&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;dbf&#39;</span><span class="w"> </span><span class="p">]</span><span class="w"></span>
+<div class="codehilite"><pre><span></span><code><span class="n">TEXT_EXT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s1">&#39;csv&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;txt&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;ods&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;odf&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;odm&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;odt&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;xls&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;doc&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;log&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;rtf&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;org&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;dbf&#39;</span><span class="w"> </span><span class="p">]</span><span class="w"></span>
 </code></pre></div>
 
 <p>The following are valid binary file extensions:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">binary_ext</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s1">&#39;dat&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;bin&#39;</span><span class="w"> </span><span class="p">]</span><span class="w"></span>
+<div class="codehilite"><pre><span></span><code><span class="n">BINARY_EXT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s1">&#39;dat&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;bin&#39;</span><span class="w"> </span><span class="p">]</span><span class="w"></span>
 </code></pre></div>
 
 <p>The routines <a href="../Ref/to_file.html">to_file</a> and <a href="../Ref/from_file.html">from_file</a> will detect the file extension used and direct whether to write/read a text file or a binary file.</p>
@@ -142,28 +142,34 @@
             <a href='../../page/Ref/index.html'>Reference Guide</a>
             <ul class="nav nav-stacked nav-pills">
                           <li role="presentation">
-            <a href='../../page/Ref/aprint.html'>aprint</a>
-            </li>
-            <li role="presentation">
-            <a href='../../page/Ref/echo.html'>echo</a>
-            </li>
-            <li role="presentation">
-            <a href='../../page/Ref/from_file.html'>from_file</a>
-            </li>
-            <li role="presentation">
-            <a href='../../page/Ref/operators.html'>Operators</a>
-            </li>
-            <li role="presentation">
             <a href='../../page/Ref/str.html'>str</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Ref/cast.html'>cast</a>
             </li>
             <li role="presentation">
             <a href='../../page/Ref/String.html'>String</a>
             </li>
             <li role="presentation">
-            <a href='../../page/Ref/String-methods.html'>String methods</a>
+            <a href='../../page/Ref/cast_string.html'>cast_string</a>
             </li>
             <li role="presentation">
             <a href='../../page/Ref/to_file.html'>to_file</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Ref/from_file.html'>from_file</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Ref/echo.html'>echo</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Ref/aprint.html'>aprint</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Ref/String-methods.html'>String methods</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Ref/operators.html'>Operators</a>
             </li>
 
             </ul>
@@ -172,16 +178,16 @@
             <a href='../../page/Examples/index.html'>Tutorials</a>
             <ul class="nav nav-stacked nav-pills">
                           <li role="presentation">
-            <a href='../../page/Examples/binary.html'>binary file I/O</a>
-            </li>
-            <li role="presentation">
             <a href='../../page/Examples/csv.html'>csv file I/O</a>
             </li>
             <li role="presentation">
-            <a href='../../page/Examples/fizzbuzz.html'>fizzbuzz</a>
+            <a href='../../page/Examples/binary.html'>binary file I/O</a>
             </li>
             <li role="presentation">
             <a href='../../page/Examples/logging.html'>log file output</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Examples/fizzbuzz.html'>fizzbuzz</a>
             </li>
 
             </ul>
@@ -202,7 +208,7 @@
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-01-04 02:45            </p>
+ on 2023-01-05 05:03            </p>
         </div>
       </div>
       <br>

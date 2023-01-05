@@ -25,7 +25,7 @@ For `x` a scalar or array of any rank and of type `integer`:
 result = String(x, fmt)
 ```
 
-* `fmt` is `optional`, may be one of `int_fmts`
+* `fmt` is `optional`, may be one of `INT_FMTS`
 
 For `x` a scalar or array of any rank and of type `real`:
 
@@ -33,8 +33,8 @@ For `x` a scalar or array of any rank and of type `real`:
 result = String(x, locale, fmt, decimals)
 ```
 
-* `locale` is `optional`, may be one of `locales`
-* `fmt` is `optional`, may be one of `real_fmts`
+* `locale` is `optional`, may be one of `LOCALES`
+* `fmt` is `optional`, may be one of `REAL_FMTS`
 * `decimals` is `optional` and of type `integer`
 
 For `x` a scalar or array of any rank and of type `complex`:
@@ -43,8 +43,8 @@ For `x` a scalar or array of any rank and of type `complex`:
 result = String(x, locale, fmt, decimals, im)
 ```
 
-* `locale` is `optional`, may be one of `locales`
-* `fmt` is `optional`, may be one of `real_fmts`
+* `locale` is `optional`, may be one of `LOCALES`
+* `fmt` is `optional`, may be one of `REAL_FMTS`
 * `decimals` is `optional` and of type `integer`
 * `im` is `optional` and of type `character(len=*)`
 
@@ -55,19 +55,19 @@ result = String(x, locale, fmt, decimals, im)
 Integer formats (default is `'i'`):
 
 ```fortran
-int_fmts = [ 'i', 'z' ]
+INT_FMTS = [ 'i', 'z' ]
 ```
 
 Real formats (default is `'e'`):
 
 ```fortran
-real_fmts = [ 'e', 'f', 'z' ]
+REAL_FMTS = [ 'e', 'f', 'z' ]
 ```
 
 Locales (default is `'US'`):
 
 ```fortran
-locales = [ 'US', 'EU' ]
+LOCALES = [ 'US', 'EU' ]
 ```
 
 Decimals: `decimals` specifies the number of digits on the rhs of the radix point, with a default determined internally based on the [text format](../UserInfo/text-fmts.html) and precision.

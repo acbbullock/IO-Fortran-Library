@@ -15,7 +15,7 @@ call from_file(file_name, into, header, fmt)
 
 * `file_name` is of type `character(len=*)`
 * `header` is `optional` and of type `logical`
-* `fmt` is `optional`, may be one of `int_fmts`
+* `fmt` is `optional`, may be one of `INT_FMTS`
 
 For reading textual data into an array `into` of rank `1` or `2` and of type `real`:
 
@@ -25,8 +25,8 @@ call from_file(file_name, into, header, locale, fmt)
 
 * `file_name` is of type `character(len=*)`
 * `header` is `optional` and of type `logical`
-* `locale` is `optional`, may be one of `locales`
-* `fmt` is `optional`, may be one of `real_fmts`
+* `locale` is `optional`, may be one of `LOCALES`
+* `fmt` is `optional`, may be one of `REAL_FMTS`
 
 For reading textual data into an array `into` of rank `1` or `2` and of type `complex`:
 
@@ -36,8 +36,8 @@ call from_file(file_name, into, header, locale, fmt, im)
 
 * `file_name` is of type `character(len=*)`
 * `header` is `optional` and of type `logical`
-* `locale` is `optional`, may be one of `locales`
-* `fmt` is `optional`, may be one of `real_fmts`
+* `locale` is `optional`, may be one of `LOCALES`
+* `fmt` is `optional`, may be one of `REAL_FMTS`
 * `im` is `optional` and of type `character(len=*)`
 
 For reading binary data into an array `into` of any rank `1`-`15` and of type `integer`, `real`, `complex`:
@@ -62,19 +62,19 @@ Header (default is `.false.`): specifies whether a header line is present.
 Locales (default is `'US'`):
 
 ```fortran
-locales = [ 'US', 'EU' ]
+LOCALES = [ 'US', 'EU' ]
 ```
 
 Integer formats (default is `'i'`):
 
 ```fortran
-int_fmts = [ 'i', 'z' ]
+INT_FMTS = [ 'i', 'z' ]
 ```
 
 Real formats (default is `'e'`):
 
 ```fortran
-real_fmts = [ 'e', 'f', 'z' ]
+REAL_FMTS = [ 'e', 'f', 'z' ]
 ```
 
 Imaginary unit: `im` specifies the form of a complex number. If not present, `complex` numbers will be assumed to be written as ordered pairs, e.g. `(2.45,3.45)`.

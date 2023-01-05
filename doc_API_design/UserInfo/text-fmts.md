@@ -6,7 +6,7 @@ author: Austin C Bullock
 When writing `integer` data as strings with [str](../Ref/str.html), [String](../Ref/string.html), or [to_file](../Ref/to_file.html), any of the following text formats may be used:
 
 ```fortran
-int_fmts = [ 'i', 'z' ]
+INT_FMTS = [ 'i', 'z' ]
 ```
 
 * `'i'`: integer format (default), e.g. `123456`
@@ -15,7 +15,7 @@ int_fmts = [ 'i', 'z' ]
 When writing floating point numbers of type `real` or `complex` as strings with [str](../Ref/str.html), [String](../Ref/string.html), or [to_file](../Ref/to_file.html), any of the following text formats may be used:
 
 ```fortran
-real_fmts = [ 'e', 'f', 'z' ]
+REAL_FMTS = [ 'e', 'f', 'z' ]
 ```
 
 * `'e'`: normalized exponential format (default), e.g. `1.2345678901234567E+005`

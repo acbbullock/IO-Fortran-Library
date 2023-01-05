@@ -13,7 +13,7 @@ For `x` a scalar of type `integer`:
 result = str(x, fmt)
 ```
 
-* `fmt` is `optional`, may be one of `int_fmts`
+* `fmt` is `optional`, may be one of `INT_FMTS`
 
 For `x` a scalar of type `real`:
 
@@ -21,8 +21,8 @@ For `x` a scalar of type `real`:
 result = str(x, locale, fmt, decimals)
 ```
 
-* `locale` is `optional`, may be one of `locales`
-* `fmt` is `optional`, may be one of `real_fmts`
+* `locale` is `optional`, may be one of `LOCALES`
+* `fmt` is `optional`, may be one of `REAL_FMTS`
 * `decimals` is `optional` and of type `integer`
 
 For `x` a scalar of type `complex`:
@@ -31,31 +31,31 @@ For `x` a scalar of type `complex`:
 result = str(x, locale, fmt, decimals, im)
 ```
 
-* `locale` is `optional`, may be one of `locales`
-* `fmt` is `optional`, may be one of `real_fmts`
+* `locale` is `optional`, may be one of `LOCALES`
+* `fmt` is `optional`, may be one of `REAL_FMTS`
 * `decimals` is `optional` and of type `integer`
 * `im` is `optional` and of type `character(len=*)`
 
-@note Note that `str` operates on scalars only since functions with an `allocatable` result cannot be `elemental`. For this functionality, see [String](string.html).
+@note Note that `str` operates on scalars only due to the restriction that `elemental` functions cannot have `allocatable` result values. For elemental functionality, see [String](string.html).
 
 ### Optional Arguments
 
 Integer formats (default is `'i'`):
 
 ```fortran
-int_fmts = [ 'i', 'z' ]
+INT_FMTS = [ 'i', 'z' ]
 ```
 
 Real formats (default is `'e'`):
 
 ```fortran
-real_fmts = [ 'e', 'f', 'z' ]
+REAL_FMTS = [ 'e', 'f', 'z' ]
 ```
 
 Locales (default is `'US'`):
 
 ```fortran
-locales = [ 'US', 'EU' ]
+LOCALES = [ 'US', 'EU' ]
 ```
 
 Decimals: `decimals` specifies the number of digits on the rhs of the radix point, with a default determined internally based on the [text format](../UserInfo/text-fmts.html) and precision.

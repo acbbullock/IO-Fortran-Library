@@ -13,6 +13,8 @@ character(len=:), allocatable :: s
 
 This type is provided for flexible and advanced character handling when the intrinsic `character` type is insufficient. For instance, a `String` may be used in array contexts for which the user requires arrays of strings which may have non-identical lengths, whose lengths may not be known, or whose lengths may need to vary during run time. One may also use the `String` type as an interface to read/write external text files, in particular for cases in which `.csv` data contains data of mixed type. For reading/writing data of uniform type, it is simpler to use the routines [to_file](to_file.html) and [from_file](from_file.html).
 
+@note The `String` type is memory safe. The user is forbidden from attempting to access unallocated memory due to the `private` attribute of the component and the exceptions put into place in the type-bound procedures.
+
 ## Type-bound procedures
 
 ### [as_str](../../type/string.html#boundprocedure-as_str)
@@ -24,6 +26,10 @@ For `self` a scalar of type `String`:
 ```
 
 *Description*: Returns a copy of the string slice component of a scalar `String`.
+
+### [cast](../../type/string.html#boundprocedure-cast)
+
+*Description*: A generic binding for the interface [cast_string](cast_string.html).
 
 ### [echo](../../type/string.html#boundprocedure-echo)
 

@@ -107,7 +107,7 @@
 <ul>
 <li><code>file_name</code> is of type <code>character(len=*)</code></li>
 <li><code>header</code> is <code>optional</code> and of type <code>logical</code></li>
-<li><code>fmt</code> is <code>optional</code>, may be one of <code>int_fmts</code></li>
+<li><code>fmt</code> is <code>optional</code>, may be one of <code>INT_FMTS</code></li>
 </ul>
 <p>For reading textual data into an array <code>into</code> of rank <code>1</code> or <code>2</code> and of type <code>real</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">from_file</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span><span class="w"> </span><span class="n">into</span><span class="p">,</span><span class="w"> </span><span class="n">header</span><span class="p">,</span><span class="w"> </span><span class="n">locale</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">)</span><span class="w"></span>
@@ -116,8 +116,8 @@
 <ul>
 <li><code>file_name</code> is of type <code>character(len=*)</code></li>
 <li><code>header</code> is <code>optional</code> and of type <code>logical</code></li>
-<li><code>locale</code> is <code>optional</code>, may be one of <code>locales</code></li>
-<li><code>fmt</code> is <code>optional</code>, may be one of <code>real_fmts</code></li>
+<li><code>locale</code> is <code>optional</code>, may be one of <code>LOCALES</code></li>
+<li><code>fmt</code> is <code>optional</code>, may be one of <code>REAL_FMTS</code></li>
 </ul>
 <p>For reading textual data into an array <code>into</code> of rank <code>1</code> or <code>2</code> and of type <code>complex</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">from_file</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span><span class="w"> </span><span class="n">into</span><span class="p">,</span><span class="w"> </span><span class="n">header</span><span class="p">,</span><span class="w"> </span><span class="n">locale</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">,</span><span class="w"> </span><span class="n">im</span><span class="p">)</span><span class="w"></span>
@@ -126,8 +126,8 @@
 <ul>
 <li><code>file_name</code> is of type <code>character(len=*)</code></li>
 <li><code>header</code> is <code>optional</code> and of type <code>logical</code></li>
-<li><code>locale</code> is <code>optional</code>, may be one of <code>locales</code></li>
-<li><code>fmt</code> is <code>optional</code>, may be one of <code>real_fmts</code></li>
+<li><code>locale</code> is <code>optional</code>, may be one of <code>LOCALES</code></li>
+<li><code>fmt</code> is <code>optional</code>, may be one of <code>REAL_FMTS</code></li>
 <li><code>im</code> is <code>optional</code> and of type <code>character(len=*)</code></li>
 </ul>
 <p>For reading binary data into an array <code>into</code> of any rank <code>1</code>-<code>15</code> and of type <code>integer</code>, <code>real</code>, <code>complex</code>:</p>
@@ -144,15 +144,15 @@
 <h3 id="optional-arguments">Optional Arguments</h3>
 <p>Header (default is <code>.false.</code>): specifies whether a header line is present.</p>
 <p>Locales (default is <code>'US'</code>):</p>
-<div class="codehilite"><pre><span></span><code><span class="n">locales</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s1">&#39;US&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;EU&#39;</span><span class="w"> </span><span class="p">]</span><span class="w"></span>
+<div class="codehilite"><pre><span></span><code><span class="n">LOCALES</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s1">&#39;US&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;EU&#39;</span><span class="w"> </span><span class="p">]</span><span class="w"></span>
 </code></pre></div>
 
 <p>Integer formats (default is <code>'i'</code>):</p>
-<div class="codehilite"><pre><span></span><code><span class="n">int_fmts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s1">&#39;i&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;z&#39;</span><span class="w"> </span><span class="p">]</span><span class="w"></span>
+<div class="codehilite"><pre><span></span><code><span class="n">INT_FMTS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s1">&#39;i&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;z&#39;</span><span class="w"> </span><span class="p">]</span><span class="w"></span>
 </code></pre></div>
 
 <p>Real formats (default is <code>'e'</code>):</p>
-<div class="codehilite"><pre><span></span><code><span class="n">real_fmts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s1">&#39;e&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;f&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;z&#39;</span><span class="w"> </span><span class="p">]</span><span class="w"></span>
+<div class="codehilite"><pre><span></span><code><span class="n">REAL_FMTS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s1">&#39;e&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;f&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;z&#39;</span><span class="w"> </span><span class="p">]</span><span class="w"></span>
 </code></pre></div>
 
 <p>Imaginary unit: <code>im</code> specifies the form of a complex number. If not present, <code>complex</code> numbers will be assumed to be written as ordered pairs, e.g. <code>(2.45,3.45)</code>.</p>
@@ -190,28 +190,34 @@
             <a href='../../page/Ref/index.html'>Reference Guide</a>
             <ul class="nav nav-stacked nav-pills">
                           <li role="presentation">
-            <a href='../../page/Ref/aprint.html'>aprint</a>
-            </li>
-            <li role="presentation">
-            <a href='../../page/Ref/echo.html'>echo</a>
-            </li>
-            <li role="presentation" class="disabled">
-            <a href='../../page/Ref/from_file.html'>from_file</a>
-            </li>
-            <li role="presentation">
-            <a href='../../page/Ref/operators.html'>Operators</a>
-            </li>
-            <li role="presentation">
             <a href='../../page/Ref/str.html'>str</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Ref/cast.html'>cast</a>
             </li>
             <li role="presentation">
             <a href='../../page/Ref/String.html'>String</a>
             </li>
             <li role="presentation">
-            <a href='../../page/Ref/String-methods.html'>String methods</a>
+            <a href='../../page/Ref/cast_string.html'>cast_string</a>
             </li>
             <li role="presentation">
             <a href='../../page/Ref/to_file.html'>to_file</a>
+            </li>
+            <li role="presentation" class="disabled">
+            <a href='../../page/Ref/from_file.html'>from_file</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Ref/echo.html'>echo</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Ref/aprint.html'>aprint</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Ref/String-methods.html'>String methods</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Ref/operators.html'>Operators</a>
             </li>
 
             </ul>
@@ -220,16 +226,16 @@
             <a href='../../page/Examples/index.html'>Tutorials</a>
             <ul class="nav nav-stacked nav-pills">
                           <li role="presentation">
-            <a href='../../page/Examples/binary.html'>binary file I/O</a>
-            </li>
-            <li role="presentation">
             <a href='../../page/Examples/csv.html'>csv file I/O</a>
             </li>
             <li role="presentation">
-            <a href='../../page/Examples/fizzbuzz.html'>fizzbuzz</a>
+            <a href='../../page/Examples/binary.html'>binary file I/O</a>
             </li>
             <li role="presentation">
             <a href='../../page/Examples/logging.html'>log file output</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Examples/fizzbuzz.html'>fizzbuzz</a>
             </li>
 
             </ul>
@@ -250,7 +256,7 @@
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-01-04 02:45            </p>
+ on 2023-01-05 05:03            </p>
         </div>
       </div>
       <br>
