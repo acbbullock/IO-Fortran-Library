@@ -41,7 +41,7 @@ For `self` a scalar of type `String`:
 
 * `file_name` is of type `character(len=*)`
 * `append` is `optional` and of type `logical` (default is `.true.`)
-* `terminator` is `optional` and of type `character(len=1)` (default is `LF`)
+* `terminator` is `optional` and of type `character(len=*)` (default is `LF`)
 
 *Description*: Streams the content of a `String` to an external text file. This method is identical in function to the routine [echo](echo.html) for `character` strings.
 

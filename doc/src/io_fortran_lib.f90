@@ -107,7 +107,7 @@ module io_fortran_lib
             class(String), intent(in) :: self
             character(len=*), intent(in) :: file_name
             logical, intent(in), optional :: append
-            character(len=1), intent(in), optional :: terminator
+            character(len=*), intent(in), optional :: terminator
         end subroutine echo_string
 
         pure elemental recursive module subroutine empty(self)
@@ -159,11 +159,11 @@ module io_fortran_lib
             !!
             !! This method is provided primarily for the purpose of reading in `.csv` files containing data of
             !! **mixed type**, which cannot be handled with a simple call to [from_file](../page/Ref/from_file.html)
-            !! (which assumes data of uniform type). The file's entire contents are populated into `self`, and one may
-            !! manually parse and manipulate the file's contents using the other type-bound procedures. Optionally,
-            !! one may provide a rank `2` allocatable array `cell_array` of type `String`, which will be populated with
-            !! the cells of the given file using the designated `row_separator` and `column_separator` whose default
-            !! values are NEW_LINE and `','` respectively.
+            !! (which assumes data of uniform type and format). The file's entire contents are populated into `self`,
+            !! and one may manually parse and manipulate the file's contents using the other type-bound procedures.
+            !! Optionally, one may provide a rank `2` allocatable array `cell_array` of type `String`, which will be
+            !! populated with the cells of the given file using the designated `row_separator` and `column_separator`
+            !! whose default values are NEW_LINE and `','` respectively.
             !!
             !! For a user reference, see [read_file](../page/Ref/string-methods.html#read_file).
             !----------------------------------------------------------------------------------------------------------
@@ -2543,7 +2543,7 @@ module io_fortran_lib
             character(len=*), intent(in) :: string
             character(len=*), intent(in) :: file_name
             logical, intent(in), optional :: append
-            character(len=1), intent(in), optional :: terminator
+            character(len=*), intent(in), optional :: terminator
         end subroutine echo_chars
     end interface
 
@@ -4395,8 +4395,7 @@ submodule (io_fortran_lib) String_procedures
     end procedure as_str
 
     module procedure echo_string
-        character(len=:), allocatable :: ext
-        character(len=1) :: terminator_
+        character(len=:), allocatable :: ext, terminator_
         logical :: exists, append_
         integer :: file_unit
 
@@ -6140,8 +6139,8 @@ submodule (io_fortran_lib) array_printing
 end submodule array_printing
 
 submodule (io_fortran_lib) internal_io
-    !! This submodule provides module procedure implementations for the **public interfaces** `String`, `cast_string`,
-    !! `str` and `cast`.
+    !! This submodule provides module procedure implementations for the **public interfaces** `str`, `cast`,
+    !! `String`, and `cast_string`.
     contains
     module procedure new_Str_c128
         character(len=:), allocatable :: locale_, fmt_, im_
@@ -16717,8 +16716,7 @@ submodule (io_fortran_lib) text_io
     contains
     ! Writing Procedures ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     module procedure echo_chars
-        character(len=:), allocatable :: ext
-        character(len=1) :: terminator_
+        character(len=:), allocatable :: ext, terminator_
         logical :: exists, append_
         integer :: file_unit
 
