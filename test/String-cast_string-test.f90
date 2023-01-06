@@ -1,4 +1,4 @@
-program String_cast_string_test
+program main
     use, intrinsic :: iso_fortran_env, only: ik=>int64, rk=>real128, compiler_version, compiler_options
     use io_fortran_lib
     implicit none (type,external)
@@ -323,5 +323,4 @@ program String_cast_string_test
     end if
 
     call logmsg%echo(logfile)
-    
-end program String_cast_string_test
+end program main
