@@ -97,7 +97,7 @@ module io_fortran_lib
             character(len=:), allocatable :: string_slice
         end function as_str
 
-        impure recursive module subroutine echo_string(self, file_name, append)
+        impure recursive module subroutine echo_string(self, file_name, append, terminator)
             !----------------------------------------------------------------------------------------------------------
             !! Streams the content of a `String` to an external text file. This method is identical in function to the
             !! routine [echo](../page/Ref/echo.html) for `character` strings.
@@ -106,7 +106,8 @@ module io_fortran_lib
             !----------------------------------------------------------------------------------------------------------
             class(String), intent(in) :: self
             character(len=*), intent(in) :: file_name
-            logical, optional, intent(in) :: append
+            logical, intent(in), optional :: append
+            character(len=1), intent(in), optional :: terminator
         end subroutine echo_string
 
         pure elemental recursive module subroutine empty(self)
@@ -2530,18 +2531,19 @@ module io_fortran_lib
 
     interface echo                                                                                  ! Submodule text_io
         !--------------------------------------------------------------------------------------------------------------
-        !! Subroutine for streaming scalar `character` data to an external text file.
+        !! Subroutine for streaming a scalar `character` string to an external text file.
         !!
         !! The file `file_name` will be created if it does not already exist and will be overwritten if `append` is
-        !! `.false.` (if it already exists), with a new line always being inserted at the end of the input string.
+        !! `.false.` (if it already exists). The default terminator is `LF` (line feed).
         !!
         !! For a user reference, see [echo](../page/Ref/echo.html).
         !--------------------------------------------------------------------------------------------------------------
-        impure recursive module subroutine echo_chars(string, file_name, append)
+        impure recursive module subroutine echo_chars(string, file_name, append, terminator)
             !! Writes a `character` string to an external text file.
             character(len=*), intent(in) :: string
             character(len=*), intent(in) :: file_name
-            logical, optional, intent(in) :: append
+            logical, intent(in), optional :: append
+            character(len=1), intent(in), optional :: terminator
         end subroutine echo_chars
     end interface
 
@@ -4394,6 +4396,7 @@ submodule (io_fortran_lib) String_procedures
 
     module procedure echo_string
         character(len=:), allocatable :: ext
+        character(len=1) :: terminator_
         logical :: exists, append_
         integer :: file_unit
 
@@ -4406,10 +4409,22 @@ submodule (io_fortran_lib) String_procedures
             return
         end if
 
+        if ( self%len() < 1 ) then
+            write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". '// &
+                                'String to write is empty.'
+            return
+        end if
+
         if ( .not. present(append) ) then
             append_ = .true.
         else
             append_ = append
+        end if
+
+        if ( .not. present(terminator) ) then
+            terminator_ = LF
+        else
+            terminator_ = terminator
         end if
 
         inquire( file=file_name, exist=exists )
@@ -4429,11 +4444,7 @@ submodule (io_fortran_lib) String_procedures
             end if
         end if
 
-        if ( self%len() < 1 ) then
-            write( unit=file_unit ) LF
-        else
-            write( unit=file_unit ) self%s//LF
-        end if
+        write( unit=file_unit ) self%s//terminator_
 
         close(file_unit)
     end procedure echo_string
@@ -4511,7 +4522,7 @@ submodule (io_fortran_lib) String_procedures
 
         if ( exists ) then
             open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                    action='read', access='stream', position='rewind' )
+                  action='read', access='stream', position='rewind' )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -4803,7 +4814,8 @@ submodule (io_fortran_lib) String_procedures
     module procedure write_file
         type(string), allocatable, dimension(:) :: rows
         character(len=:), allocatable :: ext, row_separator_, column_separator_
-        integer :: n_rows, i
+        integer :: n_rows, i, file_unit
+        logical :: exists
 
         ext = ext_of(file_name)
 
@@ -4834,11 +4846,25 @@ submodule (io_fortran_lib) String_procedures
             call rows(i)%glue(tokens=cell_array(i,:), separator=column_separator_)
         end do
 
-        call rows(1:n_rows-1)%push(row_separator_)
+        call rows%push(row_separator_)
 
         call self%glue(tokens=rows, separator='')
 
-        call self%echo(file_name=file_name, append=.false.)
+        inquire( file=file_name, exist=exists )
+
+        file_unit = output_unit
+
+        if ( .not. exists ) then
+            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
+                  action='write', access='stream' )
+        else
+            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
+                  action='write', access='stream' )
+        end if
+
+        write( unit=file_unit ) self%s
+
+        close(file_unit)
     end procedure write_file
 
     module procedure write_string
@@ -16692,6 +16718,7 @@ submodule (io_fortran_lib) text_io
     ! Writing Procedures ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     module procedure echo_chars
         character(len=:), allocatable :: ext
+        character(len=1) :: terminator_
         logical :: exists, append_
         integer :: file_unit
 
@@ -16704,10 +16731,22 @@ submodule (io_fortran_lib) text_io
             return
         end if
 
+        if ( len(string) == 0 ) then
+            write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". '// &
+                                'String to write is empty.'
+            return
+        end if
+
         if ( .not. present(append) ) then
             append_ = .true.
         else
             append_ = append
+        end if
+
+        if ( .not. present(terminator) ) then
+            terminator_ = LF
+        else
+            terminator_ = terminator
         end if
 
         inquire( file=file_name, exist=exists )
@@ -16727,7 +16766,7 @@ submodule (io_fortran_lib) text_io
             end if
         end if
 
-        write( unit=file_unit ) string//LF
+        write( unit=file_unit ) string//terminator_
 
         close(file_unit)
     end procedure echo_chars
@@ -17216,148 +17255,112 @@ submodule (io_fortran_lib) text_io
     end procedure to_text_1dr32
 
     module procedure to_text_2dr128
-        type(String), allocatable, dimension(:,:) :: string_arr
+        type(String) :: text_file
+        type(String), allocatable, dimension(:,:) :: cells
         character(len=:), allocatable :: label
-        integer :: file_unit, i, j
-        logical :: exists
+        integer :: nrows, ncols, j
+        logical :: header_present
 
-        inquire( file=file_name, exist=exists )
+        nrows = size(x, dim=1)
+        ncols = size(x, dim=2)
+        header_present = .false.
 
-        file_unit = output_unit
-
-        if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream', position='rewind' )
-        else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream', position='rewind' )
-        end if
-
-        if ( all(header == '') ) then
-            continue
-        else if ( size(header) == 1 ) then
-            label = trim(adjustl(header(1)))
-            do j = lbound(x, dim=2), ubound(x, dim=2) - 1
-                write( unit=file_unit ) label//str(j)//delim
-            end do
-            write( unit=file_unit ) label//str(ubound(x, dim=2))//LF
-        else if ( size(header) == size(x, dim=2) ) then
-            write( unit=file_unit ) to_str(header, delim=delim)//LF
-        end if
-
-        allocate( string_arr(size(x, dim=1), size(x, dim=2)) )
-
-        do concurrent (j = 1:size(x, dim=2), i = 1:size(x, dim=1))
-            if ( j /= size(x, dim=2) ) then
-                string_arr(i,j)%s = str(x(i,j), locale=locale, fmt=fmt, decimals=decimals)//delim
+        if ( size(header) == 1 ) then
+            if ( all(header == '') ) then
+                allocate( cells(nrows,ncols) )
             else
-                string_arr(i,j)%s = str(x(i,j), locale=locale, fmt=fmt, decimals=decimals)//LF
+                header_present = .true.
+                allocate( cells(nrows+1,ncols) )
+                label = trim(adjustl(header(1)))
+                do concurrent (j = lbound(x, dim=2):ubound(x, dim=2))
+                    cells(1,j) = String(label//str(j))
+                end do
             end if
-        end do
+        else
+            header_present = .true.
+            allocate( cells(nrows+1,ncols) )
+            cells(1,:) = String(header)
+        end if
 
-        do i = 1, size(x, dim=1)
-            do j = 1, size(x, dim=2)
-                write( unit=file_unit ) string_arr(i,j)%s
-            end do
-        end do
-
-        close(file_unit)
+        if ( header_present ) then
+            cells(2:,:) = String(x, locale=locale, fmt=fmt, decimals=decimals)
+        else
+            cells = String(x, locale=locale, fmt=fmt, decimals=decimals)
+        end if
+        
+        call text_file%write_file(cells, file_name=file_name, row_separator=LF, column_separator=delim)
     end procedure to_text_2dr128
     module procedure to_text_2dr64
-        type(String), allocatable, dimension(:,:) :: string_arr
+        type(String) :: text_file
+        type(String), allocatable, dimension(:,:) :: cells
         character(len=:), allocatable :: label
-        integer :: file_unit, i, j
-        logical :: exists
+        integer :: nrows, ncols, j
+        logical :: header_present
 
-        inquire( file=file_name, exist=exists )
+        nrows = size(x, dim=1)
+        ncols = size(x, dim=2)
+        header_present = .false.
 
-        file_unit = output_unit
-
-        if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream', position='rewind' )
-        else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream', position='rewind' )
-        end if
-
-        if ( all(header == '') ) then
-            continue
-        else if ( size(header) == 1 ) then
-            label = trim(adjustl(header(1)))
-            do j = lbound(x, dim=2), ubound(x, dim=2) - 1
-                write( unit=file_unit ) label//str(j)//delim
-            end do
-            write( unit=file_unit ) label//str(ubound(x, dim=2))//LF
-        else if ( size(header) == size(x, dim=2) ) then
-            write( unit=file_unit ) to_str(header, delim=delim)//LF
-        end if
-
-        allocate( string_arr(size(x, dim=1), size(x, dim=2)) )
-
-        do concurrent (j = 1:size(x, dim=2), i = 1:size(x, dim=1))
-            if ( j /= size(x, dim=2) ) then
-                string_arr(i,j)%s = str(x(i,j), locale=locale, fmt=fmt, decimals=decimals)//delim
+        if ( size(header) == 1 ) then
+            if ( all(header == '') ) then
+                allocate( cells(nrows,ncols) )
             else
-                string_arr(i,j)%s = str(x(i,j), locale=locale, fmt=fmt, decimals=decimals)//LF
+                header_present = .true.
+                allocate( cells(nrows+1,ncols) )
+                label = trim(adjustl(header(1)))
+                do concurrent (j = lbound(x, dim=2):ubound(x, dim=2))
+                    cells(1,j) = String(label//str(j))
+                end do
             end if
-        end do
+        else
+            header_present = .true.
+            allocate( cells(nrows+1,ncols) )
+            cells(1,:) = String(header)
+        end if
 
-        do i = 1, size(x, dim=1)
-            do j = 1, size(x, dim=2)
-                write( unit=file_unit ) string_arr(i,j)%s
-            end do
-        end do
-
-        close(file_unit)
+        if ( header_present ) then
+            cells(2:,:) = String(x, locale=locale, fmt=fmt, decimals=decimals)
+        else
+            cells = String(x, locale=locale, fmt=fmt, decimals=decimals)
+        end if
+        
+        call text_file%write_file(cells, file_name=file_name, row_separator=LF, column_separator=delim)
     end procedure to_text_2dr64
     module procedure to_text_2dr32
-        type(String), allocatable, dimension(:,:) :: string_arr
+        type(String) :: text_file
+        type(String), allocatable, dimension(:,:) :: cells
         character(len=:), allocatable :: label
-        integer :: file_unit, i, j
-        logical :: exists
+        integer :: nrows, ncols, j
+        logical :: header_present
 
-        inquire( file=file_name, exist=exists )
+        nrows = size(x, dim=1)
+        ncols = size(x, dim=2)
+        header_present = .false.
 
-        file_unit = output_unit
-
-        if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream', position='rewind' )
-        else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream', position='rewind' )
-        end if
-
-        if ( all(header == '') ) then
-            continue
-        else if ( size(header) == 1 ) then
-            label = trim(adjustl(header(1)))
-            do j = lbound(x, dim=2), ubound(x, dim=2) - 1
-                write( unit=file_unit ) label//str(j)//delim
-            end do
-            write( unit=file_unit ) label//str(ubound(x, dim=2))//LF
-        else if ( size(header) == size(x, dim=2) ) then
-            write( unit=file_unit ) to_str(header, delim=delim)//LF
-        end if
-
-        allocate( string_arr(size(x, dim=1), size(x, dim=2)) )
-
-        do concurrent (j = 1:size(x, dim=2), i = 1:size(x, dim=1))
-            if ( j /= size(x, dim=2) ) then
-                string_arr(i,j)%s = str(x(i,j), locale=locale, fmt=fmt, decimals=decimals)//delim
+        if ( size(header) == 1 ) then
+            if ( all(header == '') ) then
+                allocate( cells(nrows,ncols) )
             else
-                string_arr(i,j)%s = str(x(i,j), locale=locale, fmt=fmt, decimals=decimals)//LF
+                header_present = .true.
+                allocate( cells(nrows+1,ncols) )
+                label = trim(adjustl(header(1)))
+                do concurrent (j = lbound(x, dim=2):ubound(x, dim=2))
+                    cells(1,j) = String(label//str(j))
+                end do
             end if
-        end do
+        else
+            header_present = .true.
+            allocate( cells(nrows+1,ncols) )
+            cells(1,:) = String(header)
+        end if
 
-        do i = 1, size(x, dim=1)
-            do j = 1, size(x, dim=2)
-                write( unit=file_unit ) string_arr(i,j)%s
-            end do
-        end do
-
-        close(file_unit)
+        if ( header_present ) then
+            cells(2:,:) = String(x, locale=locale, fmt=fmt, decimals=decimals)
+        else
+            cells = String(x, locale=locale, fmt=fmt, decimals=decimals)
+        end if
+        
+        call text_file%write_file(cells, file_name=file_name, row_separator=LF, column_separator=delim)
     end procedure to_text_2dr32
 
     module procedure to_text_1di64
