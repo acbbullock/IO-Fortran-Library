@@ -16770,172 +16770,160 @@ submodule (io_fortran_lib) text_io
     end procedure echo_chars
 
     module procedure to_text_1dc128
-        type(String), allocatable, dimension(:) :: string_arr
+        type(String) :: text_file
+        type(String), allocatable, dimension(:,:) :: cells
         character(len=:), allocatable :: label
-        integer :: file_unit, i
-        logical :: exists
+        integer :: nx, j
+        logical :: header_present
 
-        inquire( file=file_name, exist=exists )
+        nx = size(x)
+        header_present = .false.
 
-        file_unit = output_unit
-
-        if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream', position='rewind' )
-        else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream', position='rewind' )
-        end if
-
-        if ( all(header == '') ) then
-            continue
-        else if ( size(header) == 1 ) then
-            if ( dim == 1 ) then
-                write( unit=file_unit ) trim(adjustl(header(1)))//LF
-            else if ( dim == 2 ) then
-                label = trim(adjustl(header(1)))
-                do i = lbound(x, dim=1), ubound(x, dim=1) - 1
-                    write( unit=file_unit ) label//str(i)//delim
-                end do
-                write( unit=file_unit ) label//str(ubound(x, dim=1))//LF
-            end if
-        else if ( size(header) == size(x) ) then
-            write( unit=file_unit ) to_str(header, delim=delim)//LF
-        end if
-
-        allocate( string_arr(size(x)) )
-
-        if ( dim == 1 ) then
-            do concurrent (i = 1:size(x))
-                string_arr(i)%s = str(x(i), locale=locale, fmt=fmt, decimals=decimals, im=im)//LF
-            end do
-        else if ( dim == 2 ) then
-            do concurrent (i = 1:size(x))
-                if ( i /= size(x) ) then
-                    string_arr(i)%s = str(x(i), locale=locale, fmt=fmt, decimals=decimals, im=im)//delim
+        if ( size(header) == 1 ) then
+            if ( all(header == '') ) then
+                if ( dim == 1 ) then
+                    allocate( cells(nx,1) )
                 else
-                    string_arr(i)%s = str(x(i), locale=locale, fmt=fmt, decimals=decimals, im=im)//LF
+                    allocate( cells(1,nx) )
                 end if
-            end do
+            else
+                header_present = .true.
+                if ( dim == 1 ) then
+                    allocate( cells(nx+1,1) )
+                    cells(1,1) = String( trim(adjustl(header(1))) )
+                else
+                    allocate( cells(2,nx) )
+                    label = trim(adjustl(header(1)))
+                    do concurrent (j = lbound(x, dim=1):ubound(x, dim=1))
+                        cells(1,j) = String(label//str(j))
+                    end do
+                end if
+            end if
+        else
+            header_present = .true.
+            allocate( cells(2,nx) )
+            cells(1,:) = String(header)
         end if
 
-        do i = 1, size(x)
-            write( unit=file_unit ) string_arr(i)%s
-        end do
-
-        close(file_unit)
+        if ( header_present ) then
+            if ( dim == 1 ) then
+                cells(2:,1) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
+            else
+                cells(2,:) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
+            end if
+        else
+            if ( dim == 1 ) then
+                cells(:,1) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
+            else
+                cells(1,:) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
+            end if
+        end if
+        
+        call text_file%write_file(cells, file_name=file_name, row_separator=LF, column_separator=delim)
     end procedure to_text_1dc128
     module procedure to_text_1dc64
-        type(String), allocatable, dimension(:) :: string_arr
+        type(String) :: text_file
+        type(String), allocatable, dimension(:,:) :: cells
         character(len=:), allocatable :: label
-        integer :: file_unit, i
-        logical :: exists
+        integer :: nx, j
+        logical :: header_present
 
-        inquire( file=file_name, exist=exists )
+        nx = size(x)
+        header_present = .false.
 
-        file_unit = output_unit
-
-        if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream', position='rewind' )
-        else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream', position='rewind' )
-        end if
-
-        if ( all(header == '') ) then
-            continue
-        else if ( size(header) == 1 ) then
-            if ( dim == 1 ) then
-                write( unit=file_unit ) trim(adjustl(header(1)))//LF
-            else if ( dim == 2 ) then
-                label = trim(adjustl(header(1)))
-                do i = lbound(x, dim=1), ubound(x, dim=1) - 1
-                    write( unit=file_unit ) label//str(i)//delim
-                end do
-                write( unit=file_unit ) label//str(ubound(x, dim=1))//LF
-            end if
-        else if ( size(header) == size(x) ) then
-            write( unit=file_unit ) to_str(header, delim=delim)//LF
-        end if
-
-        allocate( string_arr(size(x)) )
-
-        if ( dim == 1 ) then
-            do concurrent (i = 1:size(x))
-                string_arr(i)%s = str(x(i), locale=locale, fmt=fmt, decimals=decimals, im=im)//LF
-            end do
-        else if ( dim == 2 ) then
-            do concurrent (i = 1:size(x))
-                if ( i /= size(x) ) then
-                    string_arr(i)%s = str(x(i), locale=locale, fmt=fmt, decimals=decimals, im=im)//delim
+        if ( size(header) == 1 ) then
+            if ( all(header == '') ) then
+                if ( dim == 1 ) then
+                    allocate( cells(nx,1) )
                 else
-                    string_arr(i)%s = str(x(i), locale=locale, fmt=fmt, decimals=decimals, im=im)//LF
+                    allocate( cells(1,nx) )
                 end if
-            end do
+            else
+                header_present = .true.
+                if ( dim == 1 ) then
+                    allocate( cells(nx+1,1) )
+                    cells(1,1) = String( trim(adjustl(header(1))) )
+                else
+                    allocate( cells(2,nx) )
+                    label = trim(adjustl(header(1)))
+                    do concurrent (j = lbound(x, dim=1):ubound(x, dim=1))
+                        cells(1,j) = String(label//str(j))
+                    end do
+                end if
+            end if
+        else
+            header_present = .true.
+            allocate( cells(2,nx) )
+            cells(1,:) = String(header)
         end if
 
-        do i = 1, size(x)
-            write( unit=file_unit ) string_arr(i)%s
-        end do
-
-        close(file_unit)
+        if ( header_present ) then
+            if ( dim == 1 ) then
+                cells(2:,1) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
+            else
+                cells(2,:) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
+            end if
+        else
+            if ( dim == 1 ) then
+                cells(:,1) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
+            else
+                cells(1,:) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
+            end if
+        end if
+        
+        call text_file%write_file(cells, file_name=file_name, row_separator=LF, column_separator=delim)
     end procedure to_text_1dc64
     module procedure to_text_1dc32
-        type(String), allocatable, dimension(:) :: string_arr
+        type(String) :: text_file
+        type(String), allocatable, dimension(:,:) :: cells
         character(len=:), allocatable :: label
-        integer :: file_unit, i
-        logical :: exists
+        integer :: nx, j
+        logical :: header_present
 
-        inquire( file=file_name, exist=exists )
+        nx = size(x)
+        header_present = .false.
 
-        file_unit = output_unit
-
-        if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream', position='rewind' )
-        else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream', position='rewind' )
-        end if
-
-        if ( all(header == '') ) then
-            continue
-        else if ( size(header) == 1 ) then
-            if ( dim == 1 ) then
-                write( unit=file_unit ) trim(adjustl(header(1)))//LF
-            else if ( dim == 2 ) then
-                label = trim(adjustl(header(1)))
-                do i = lbound(x, dim=1), ubound(x, dim=1) - 1
-                    write( unit=file_unit ) label//str(i)//delim
-                end do
-                write( unit=file_unit ) label//str(ubound(x, dim=1))//LF
-            end if
-        else if ( size(header) == size(x) ) then
-            write( unit=file_unit ) to_str(header, delim=delim)//LF
-        end if
-
-        allocate( string_arr(size(x)) )
-
-        if ( dim == 1 ) then
-            do concurrent (i = 1:size(x))
-                string_arr(i)%s = str(x(i), locale=locale, fmt=fmt, decimals=decimals, im=im)//LF
-            end do
-        else if ( dim == 2 ) then
-            do concurrent (i = 1:size(x))
-                if ( i /= size(x) ) then
-                    string_arr(i)%s = str(x(i), locale=locale, fmt=fmt, decimals=decimals, im=im)//delim
+        if ( size(header) == 1 ) then
+            if ( all(header == '') ) then
+                if ( dim == 1 ) then
+                    allocate( cells(nx,1) )
                 else
-                    string_arr(i)%s = str(x(i), locale=locale, fmt=fmt, decimals=decimals, im=im)//LF
+                    allocate( cells(1,nx) )
                 end if
-            end do
+            else
+                header_present = .true.
+                if ( dim == 1 ) then
+                    allocate( cells(nx+1,1) )
+                    cells(1,1) = String( trim(adjustl(header(1))) )
+                else
+                    allocate( cells(2,nx) )
+                    label = trim(adjustl(header(1)))
+                    do concurrent (j = lbound(x, dim=1):ubound(x, dim=1))
+                        cells(1,j) = String(label//str(j))
+                    end do
+                end if
+            end if
+        else
+            header_present = .true.
+            allocate( cells(2,nx) )
+            cells(1,:) = String(header)
         end if
 
-        do i = 1, size(x)
-            write( unit=file_unit ) string_arr(i)%s
-        end do
-
-        close(file_unit)
+        if ( header_present ) then
+            if ( dim == 1 ) then
+                cells(2:,1) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
+            else
+                cells(2,:) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
+            end if
+        else
+            if ( dim == 1 ) then
+                cells(:,1) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
+            else
+                cells(1,:) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
+            end if
+        end if
+        
+        call text_file%write_file(cells, file_name=file_name, row_separator=LF, column_separator=delim)
     end procedure to_text_1dc32
 
     module procedure to_text_2dc128
@@ -17048,172 +17036,160 @@ submodule (io_fortran_lib) text_io
     end procedure to_text_2dc32
 
     module procedure to_text_1dr128
-        type(String), allocatable, dimension(:) :: string_arr
+        type(String) :: text_file
+        type(String), allocatable, dimension(:,:) :: cells
         character(len=:), allocatable :: label
-        integer :: file_unit, i
-        logical :: exists
+        integer :: nx, j
+        logical :: header_present
 
-        inquire( file=file_name, exist=exists )
+        nx = size(x)
+        header_present = .false.
 
-        file_unit = output_unit
-
-        if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream', position='rewind' )
-        else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream', position='rewind' )
-        end if
-
-        if ( all(header == '') ) then
-            continue
-        else if ( size(header) == 1 ) then
-            if ( dim == 1 ) then
-                write( unit=file_unit ) trim(adjustl(header(1)))//LF
-            else if ( dim == 2 ) then
-                label = trim(adjustl(header(1)))
-                do i = lbound(x, dim=1), ubound(x, dim=1) - 1
-                    write( unit=file_unit ) label//str(i)//delim
-                end do
-                write( unit=file_unit ) label//str(ubound(x, dim=1))//LF
-            end if
-        else if ( size(header) == size(x) ) then
-            write( unit=file_unit ) to_str(header, delim=delim)//LF
-        end if
-
-        allocate( string_arr(size(x)) )
-
-        if ( dim == 1 ) then
-            do concurrent (i = 1:size(x))
-                string_arr(i)%s = str(x(i), locale=locale, fmt=fmt, decimals=decimals)//LF
-            end do
-        else if ( dim == 2 ) then
-            do concurrent (i = 1:size(x))
-                if ( i /= size(x) ) then
-                    string_arr(i)%s = str(x(i), locale=locale, fmt=fmt, decimals=decimals)//delim
+        if ( size(header) == 1 ) then
+            if ( all(header == '') ) then
+                if ( dim == 1 ) then
+                    allocate( cells(nx,1) )
                 else
-                    string_arr(i)%s = str(x(i), locale=locale, fmt=fmt, decimals=decimals)//LF
+                    allocate( cells(1,nx) )
                 end if
-            end do
+            else
+                header_present = .true.
+                if ( dim == 1 ) then
+                    allocate( cells(nx+1,1) )
+                    cells(1,1) = String( trim(adjustl(header(1))) )
+                else
+                    allocate( cells(2,nx) )
+                    label = trim(adjustl(header(1)))
+                    do concurrent (j = lbound(x, dim=1):ubound(x, dim=1))
+                        cells(1,j) = String(label//str(j))
+                    end do
+                end if
+            end if
+        else
+            header_present = .true.
+            allocate( cells(2,nx) )
+            cells(1,:) = String(header)
         end if
 
-        do i = 1, size(x)
-            write( unit=file_unit ) string_arr(i)%s
-        end do
-
-        close(file_unit)
+        if ( header_present ) then
+            if ( dim == 1 ) then
+                cells(2:,1) = String(x, locale=locale, fmt=fmt, decimals=decimals)
+            else
+                cells(2,:) = String(x, locale=locale, fmt=fmt, decimals=decimals)
+            end if
+        else
+            if ( dim == 1 ) then
+                cells(:,1) = String(x, locale=locale, fmt=fmt, decimals=decimals)
+            else
+                cells(1,:) = String(x, locale=locale, fmt=fmt, decimals=decimals)
+            end if
+        end if
+        
+        call text_file%write_file(cells, file_name=file_name, row_separator=LF, column_separator=delim)
     end procedure to_text_1dr128
     module procedure to_text_1dr64
-        type(String), allocatable, dimension(:) :: string_arr
+        type(String) :: text_file
+        type(String), allocatable, dimension(:,:) :: cells
         character(len=:), allocatable :: label
-        integer :: file_unit, i
-        logical :: exists
+        integer :: nx, j
+        logical :: header_present
 
-        inquire( file=file_name, exist=exists )
+        nx = size(x)
+        header_present = .false.
 
-        file_unit = output_unit
-
-        if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream', position='rewind' )
-        else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream', position='rewind' )
-        end if
-
-        if ( all(header == '') ) then
-            continue
-        else if ( size(header) == 1 ) then
-            if ( dim == 1 ) then
-                write( unit=file_unit ) trim(adjustl(header(1)))//LF
-            else if ( dim == 2 ) then
-                label = trim(adjustl(header(1)))
-                do i = lbound(x, dim=1), ubound(x, dim=1) - 1
-                    write( unit=file_unit ) label//str(i)//delim
-                end do
-                write( unit=file_unit ) label//str(ubound(x, dim=1))//LF
-            end if
-        else if ( size(header) == size(x) ) then
-            write( unit=file_unit ) to_str(header, delim=delim)//LF
-        end if
-
-        allocate( string_arr(size(x)) )
-
-        if ( dim == 1 ) then
-            do concurrent (i = 1:size(x))
-                string_arr(i)%s = str(x(i), locale=locale, fmt=fmt, decimals=decimals)//LF
-            end do
-        else if ( dim == 2 ) then
-            do concurrent (i = 1:size(x))
-                if ( i /= size(x) ) then
-                    string_arr(i)%s = str(x(i), locale=locale, fmt=fmt, decimals=decimals)//delim
+        if ( size(header) == 1 ) then
+            if ( all(header == '') ) then
+                if ( dim == 1 ) then
+                    allocate( cells(nx,1) )
                 else
-                    string_arr(i)%s = str(x(i), locale=locale, fmt=fmt, decimals=decimals)//LF
+                    allocate( cells(1,nx) )
                 end if
-            end do
+            else
+                header_present = .true.
+                if ( dim == 1 ) then
+                    allocate( cells(nx+1,1) )
+                    cells(1,1) = String( trim(adjustl(header(1))) )
+                else
+                    allocate( cells(2,nx) )
+                    label = trim(adjustl(header(1)))
+                    do concurrent (j = lbound(x, dim=1):ubound(x, dim=1))
+                        cells(1,j) = String(label//str(j))
+                    end do
+                end if
+            end if
+        else
+            header_present = .true.
+            allocate( cells(2,nx) )
+            cells(1,:) = String(header)
         end if
 
-        do i = 1, size(x)
-            write( unit=file_unit ) string_arr(i)%s
-        end do
-
-        close(file_unit)
+        if ( header_present ) then
+            if ( dim == 1 ) then
+                cells(2:,1) = String(x, locale=locale, fmt=fmt, decimals=decimals)
+            else
+                cells(2,:) = String(x, locale=locale, fmt=fmt, decimals=decimals)
+            end if
+        else
+            if ( dim == 1 ) then
+                cells(:,1) = String(x, locale=locale, fmt=fmt, decimals=decimals)
+            else
+                cells(1,:) = String(x, locale=locale, fmt=fmt, decimals=decimals)
+            end if
+        end if
+        
+        call text_file%write_file(cells, file_name=file_name, row_separator=LF, column_separator=delim)
     end procedure to_text_1dr64
     module procedure to_text_1dr32
-        type(String), allocatable, dimension(:) :: string_arr
+        type(String) :: text_file
+        type(String), allocatable, dimension(:,:) :: cells
         character(len=:), allocatable :: label
-        integer :: file_unit, i
-        logical :: exists
+        integer :: nx, j
+        logical :: header_present
 
-        inquire( file=file_name, exist=exists )
+        nx = size(x)
+        header_present = .false.
 
-        file_unit = output_unit
-
-        if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream', position='rewind' )
-        else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream', position='rewind' )
-        end if
-
-        if ( all(header == '') ) then
-            continue
-        else if ( size(header) == 1 ) then
-            if ( dim == 1 ) then
-                write( unit=file_unit ) trim(adjustl(header(1)))//LF
-            else if ( dim == 2 ) then
-                label = trim(adjustl(header(1)))
-                do i = lbound(x, dim=1), ubound(x, dim=1) - 1
-                    write( unit=file_unit ) label//str(i)//delim
-                end do
-                write( unit=file_unit ) label//str(ubound(x, dim=1))//LF
-            end if
-        else if ( size(header) == size(x) ) then
-            write( unit=file_unit ) to_str(header, delim=delim)//LF
-        end if
-
-        allocate( string_arr(size(x)) )
-
-        if ( dim == 1 ) then
-            do concurrent (i = 1:size(x))
-                string_arr(i)%s = str(x(i), locale=locale, fmt=fmt, decimals=decimals)//LF
-            end do
-        else if ( dim == 2 ) then
-            do concurrent (i = 1:size(x))
-                if ( i /= size(x) ) then
-                    string_arr(i)%s = str(x(i), locale=locale, fmt=fmt, decimals=decimals)//delim
+        if ( size(header) == 1 ) then
+            if ( all(header == '') ) then
+                if ( dim == 1 ) then
+                    allocate( cells(nx,1) )
                 else
-                    string_arr(i)%s = str(x(i), locale=locale, fmt=fmt, decimals=decimals)//LF
+                    allocate( cells(1,nx) )
                 end if
-            end do
+            else
+                header_present = .true.
+                if ( dim == 1 ) then
+                    allocate( cells(nx+1,1) )
+                    cells(1,1) = String( trim(adjustl(header(1))) )
+                else
+                    allocate( cells(2,nx) )
+                    label = trim(adjustl(header(1)))
+                    do concurrent (j = lbound(x, dim=1):ubound(x, dim=1))
+                        cells(1,j) = String(label//str(j))
+                    end do
+                end if
+            end if
+        else
+            header_present = .true.
+            allocate( cells(2,nx) )
+            cells(1,:) = String(header)
         end if
 
-        do i = 1, size(x)
-            write( unit=file_unit ) string_arr(i)%s
-        end do
-
-        close(file_unit)
+        if ( header_present ) then
+            if ( dim == 1 ) then
+                cells(2:,1) = String(x, locale=locale, fmt=fmt, decimals=decimals)
+            else
+                cells(2,:) = String(x, locale=locale, fmt=fmt, decimals=decimals)
+            end if
+        else
+            if ( dim == 1 ) then
+                cells(:,1) = String(x, locale=locale, fmt=fmt, decimals=decimals)
+            else
+                cells(1,:) = String(x, locale=locale, fmt=fmt, decimals=decimals)
+            end if
+        end if
+        
+        call text_file%write_file(cells, file_name=file_name, row_separator=LF, column_separator=delim)
     end procedure to_text_1dr32
 
     module procedure to_text_2dr128
@@ -17326,228 +17302,212 @@ submodule (io_fortran_lib) text_io
     end procedure to_text_2dr32
 
     module procedure to_text_1di64
-        type(String), allocatable, dimension(:) :: string_arr
+        type(String) :: text_file
+        type(String), allocatable, dimension(:,:) :: cells
         character(len=:), allocatable :: label
-        integer :: file_unit, i
-        logical :: exists
+        integer :: nx, j
+        logical :: header_present
 
-        inquire( file=file_name, exist=exists )
+        nx = size(x)
+        header_present = .false.
 
-        file_unit = output_unit
-
-        if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream', position='rewind' )
-        else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream', position='rewind' )
-        end if
-
-        if ( all(header == '') ) then
-            continue
-        else if ( size(header) == 1 ) then
-            if ( dim == 1 ) then
-                write( unit=file_unit ) trim(adjustl(header(1)))//LF
-            else if ( dim == 2 ) then
-                label = trim(adjustl(header(1)))
-                do i = lbound(x, dim=1), ubound(x, dim=1) - 1
-                    write( unit=file_unit ) label//str(i)//delim
-                end do
-                write( unit=file_unit ) label//str(ubound(x, dim=1))//LF
-            end if
-        else if ( size(header) == size(x) ) then
-            write( unit=file_unit ) to_str(header, delim=delim)//LF
-        end if
-
-        allocate( string_arr(size(x)) )
-
-        if ( dim == 1 ) then
-            do concurrent (i = 1:size(x))
-                string_arr(i)%s = str(x(i), fmt=fmt)//LF
-            end do
-        else if ( dim == 2 ) then
-            do concurrent (i = 1:size(x))
-                if ( i /= size(x) ) then
-                    string_arr(i)%s = str(x(i), fmt=fmt)//delim
+        if ( size(header) == 1 ) then
+            if ( all(header == '') ) then
+                if ( dim == 1 ) then
+                    allocate( cells(nx,1) )
                 else
-                    string_arr(i)%s = str(x(i), fmt=fmt)//LF
+                    allocate( cells(1,nx) )
                 end if
-            end do
+            else
+                header_present = .true.
+                if ( dim == 1 ) then
+                    allocate( cells(nx+1,1) )
+                    cells(1,1) = String( trim(adjustl(header(1))) )
+                else
+                    allocate( cells(2,nx) )
+                    label = trim(adjustl(header(1)))
+                    do concurrent (j = lbound(x, dim=1):ubound(x, dim=1))
+                        cells(1,j) = String(label//str(j))
+                    end do
+                end if
+            end if
+        else
+            header_present = .true.
+            allocate( cells(2,nx) )
+            cells(1,:) = String(header)
         end if
 
-        do i = 1, size(x)
-            write( unit=file_unit ) string_arr(i)%s
-        end do
-
-        close(file_unit)
+        if ( header_present ) then
+            if ( dim == 1 ) then
+                cells(2:,1) = String(x, fmt=fmt)
+            else
+                cells(2,:) = String(x, fmt=fmt)
+            end if
+        else
+            if ( dim == 1 ) then
+                cells(:,1) = String(x, fmt=fmt)
+            else
+                cells(1,:) = String(x, fmt=fmt)
+            end if
+        end if
+        
+        call text_file%write_file(cells, file_name=file_name, row_separator=LF, column_separator=delim)
     end procedure to_text_1di64
     module procedure to_text_1di32
-        type(String), allocatable, dimension(:) :: string_arr
+        type(String) :: text_file
+        type(String), allocatable, dimension(:,:) :: cells
         character(len=:), allocatable :: label
-        integer :: file_unit, i
-        logical :: exists
+        integer :: nx, j
+        logical :: header_present
 
-        inquire( file=file_name, exist=exists )
+        nx = size(x)
+        header_present = .false.
 
-        file_unit = output_unit
-
-        if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream', position='rewind' )
-        else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream', position='rewind' )
-        end if
-
-        if ( all(header == '') ) then
-            continue
-        else if ( size(header) == 1 ) then
-            if ( dim == 1 ) then
-                write( unit=file_unit ) trim(adjustl(header(1)))//LF
-            else if ( dim == 2 ) then
-                label = trim(adjustl(header(1)))
-                do i = lbound(x, dim=1), ubound(x, dim=1) - 1
-                    write( unit=file_unit ) label//str(i)//delim
-                end do
-                write( unit=file_unit ) label//str(ubound(x, dim=1))//LF
-            end if
-        else if ( size(header) == size(x) ) then
-            write( unit=file_unit ) to_str(header, delim=delim)//LF
-        end if
-
-        allocate( string_arr(size(x)) )
-
-        if ( dim == 1 ) then
-            do concurrent (i = 1:size(x))
-                string_arr(i)%s = str(x(i), fmt=fmt)//LF
-            end do
-        else if ( dim == 2 ) then
-            do concurrent (i = 1:size(x))
-                if ( i /= size(x) ) then
-                    string_arr(i)%s = str(x(i), fmt=fmt)//delim
+        if ( size(header) == 1 ) then
+            if ( all(header == '') ) then
+                if ( dim == 1 ) then
+                    allocate( cells(nx,1) )
                 else
-                    string_arr(i)%s = str(x(i), fmt=fmt)//LF
+                    allocate( cells(1,nx) )
                 end if
-            end do
+            else
+                header_present = .true.
+                if ( dim == 1 ) then
+                    allocate( cells(nx+1,1) )
+                    cells(1,1) = String( trim(adjustl(header(1))) )
+                else
+                    allocate( cells(2,nx) )
+                    label = trim(adjustl(header(1)))
+                    do concurrent (j = lbound(x, dim=1):ubound(x, dim=1))
+                        cells(1,j) = String(label//str(j))
+                    end do
+                end if
+            end if
+        else
+            header_present = .true.
+            allocate( cells(2,nx) )
+            cells(1,:) = String(header)
         end if
 
-        do i = 1, size(x)
-            write( unit=file_unit ) string_arr(i)%s
-        end do
-
-        close(file_unit)
+        if ( header_present ) then
+            if ( dim == 1 ) then
+                cells(2:,1) = String(x, fmt=fmt)
+            else
+                cells(2,:) = String(x, fmt=fmt)
+            end if
+        else
+            if ( dim == 1 ) then
+                cells(:,1) = String(x, fmt=fmt)
+            else
+                cells(1,:) = String(x, fmt=fmt)
+            end if
+        end if
+        
+        call text_file%write_file(cells, file_name=file_name, row_separator=LF, column_separator=delim)
     end procedure to_text_1di32
     module procedure to_text_1di16
-        type(String), allocatable, dimension(:) :: string_arr
+        type(String) :: text_file
+        type(String), allocatable, dimension(:,:) :: cells
         character(len=:), allocatable :: label
-        integer :: file_unit, i
-        logical :: exists
+        integer :: nx, j
+        logical :: header_present
 
-        inquire( file=file_name, exist=exists )
+        nx = size(x)
+        header_present = .false.
 
-        file_unit = output_unit
-
-        if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream', position='rewind' )
-        else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream', position='rewind' )
-        end if
-
-        if ( all(header == '') ) then
-            continue
-        else if ( size(header) == 1 ) then
-            if ( dim == 1 ) then
-                write( unit=file_unit ) trim(adjustl(header(1)))//LF
-            else if ( dim == 2 ) then
-                label = trim(adjustl(header(1)))
-                do i = lbound(x, dim=1), ubound(x, dim=1) - 1
-                    write( unit=file_unit ) label//str(i)//delim
-                end do
-                write( unit=file_unit ) label//str(ubound(x, dim=1))//LF
-            end if
-        else if ( size(header) == size(x) ) then
-            write( unit=file_unit ) to_str(header, delim=delim)//LF
-        end if
-
-        allocate( string_arr(size(x)) )
-
-        if ( dim == 1 ) then
-            do concurrent (i = 1:size(x))
-                string_arr(i)%s = str(x(i), fmt=fmt)//LF
-            end do
-        else if ( dim == 2 ) then
-            do concurrent (i = 1:size(x))
-                if ( i /= size(x) ) then
-                    string_arr(i)%s = str(x(i), fmt=fmt)//delim
+        if ( size(header) == 1 ) then
+            if ( all(header == '') ) then
+                if ( dim == 1 ) then
+                    allocate( cells(nx,1) )
                 else
-                    string_arr(i)%s = str(x(i), fmt=fmt)//LF
+                    allocate( cells(1,nx) )
                 end if
-            end do
+            else
+                header_present = .true.
+                if ( dim == 1 ) then
+                    allocate( cells(nx+1,1) )
+                    cells(1,1) = String( trim(adjustl(header(1))) )
+                else
+                    allocate( cells(2,nx) )
+                    label = trim(adjustl(header(1)))
+                    do concurrent (j = lbound(x, dim=1):ubound(x, dim=1))
+                        cells(1,j) = String(label//str(j))
+                    end do
+                end if
+            end if
+        else
+            header_present = .true.
+            allocate( cells(2,nx) )
+            cells(1,:) = String(header)
         end if
 
-        do i = 1, size(x)
-            write( unit=file_unit ) string_arr(i)%s
-        end do
-
-        close(file_unit)
+        if ( header_present ) then
+            if ( dim == 1 ) then
+                cells(2:,1) = String(x, fmt=fmt)
+            else
+                cells(2,:) = String(x, fmt=fmt)
+            end if
+        else
+            if ( dim == 1 ) then
+                cells(:,1) = String(x, fmt=fmt)
+            else
+                cells(1,:) = String(x, fmt=fmt)
+            end if
+        end if
+        
+        call text_file%write_file(cells, file_name=file_name, row_separator=LF, column_separator=delim)
     end procedure to_text_1di16
     module procedure to_text_1di8
-        type(String), allocatable, dimension(:) :: string_arr
+        type(String) :: text_file
+        type(String), allocatable, dimension(:,:) :: cells
         character(len=:), allocatable :: label
-        integer :: file_unit, i
-        logical :: exists
+        integer :: nx, j
+        logical :: header_present
 
-        inquire( file=file_name, exist=exists )
+        nx = size(x)
+        header_present = .false.
 
-        file_unit = output_unit
-
-        if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream', position='rewind' )
-        else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream', position='rewind' )
-        end if
-
-        if ( all(header == '') ) then
-            continue
-        else if ( size(header) == 1 ) then
-            if ( dim == 1 ) then
-                write( unit=file_unit ) trim(adjustl(header(1)))//LF
-            else if ( dim == 2 ) then
-                label = trim(adjustl(header(1)))
-                do i = lbound(x, dim=1), ubound(x, dim=1) - 1
-                    write( unit=file_unit ) label//str(i)//delim
-                end do
-                write( unit=file_unit ) label//str(ubound(x, dim=1))//LF
-            end if
-        else if ( size(header) == size(x) ) then
-            write( unit=file_unit ) to_str(header, delim=delim)//LF
-        end if
-
-        allocate( string_arr(size(x)) )
-
-        if ( dim == 1 ) then
-            do concurrent (i = 1:size(x))
-                string_arr(i)%s = str(x(i), fmt=fmt)//LF
-            end do
-        else if ( dim == 2 ) then
-            do concurrent (i = 1:size(x))
-                if ( i /= size(x) ) then
-                    string_arr(i)%s = str(x(i), fmt=fmt)//delim
+        if ( size(header) == 1 ) then
+            if ( all(header == '') ) then
+                if ( dim == 1 ) then
+                    allocate( cells(nx,1) )
                 else
-                    string_arr(i)%s = str(x(i), fmt=fmt)//LF
+                    allocate( cells(1,nx) )
                 end if
-            end do
+            else
+                header_present = .true.
+                if ( dim == 1 ) then
+                    allocate( cells(nx+1,1) )
+                    cells(1,1) = String( trim(adjustl(header(1))) )
+                else
+                    allocate( cells(2,nx) )
+                    label = trim(adjustl(header(1)))
+                    do concurrent (j = lbound(x, dim=1):ubound(x, dim=1))
+                        cells(1,j) = String(label//str(j))
+                    end do
+                end if
+            end if
+        else
+            header_present = .true.
+            allocate( cells(2,nx) )
+            cells(1,:) = String(header)
         end if
 
-        do i = 1, size(x)
-            write( unit=file_unit ) string_arr(i)%s
-        end do
-
-        close(file_unit)
+        if ( header_present ) then
+            if ( dim == 1 ) then
+                cells(2:,1) = String(x, fmt=fmt)
+            else
+                cells(2,:) = String(x, fmt=fmt)
+            end if
+        else
+            if ( dim == 1 ) then
+                cells(:,1) = String(x, fmt=fmt)
+            else
+                cells(1,:) = String(x, fmt=fmt)
+            end if
+        end if
+        
+        call text_file%write_file(cells, file_name=file_name, row_separator=LF, column_separator=delim)
     end procedure to_text_1di8
 
     module procedure to_text_2di64
