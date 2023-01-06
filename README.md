@@ -22,7 +22,7 @@ The following links to the documentation provide user instructions for each of t
 * [String](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/string.html): Function for transforming numeric or `character` data into a [String](https://acbbullock.github.io/IO-Fortran-Library/doc/type/string.html) type.
 * [cast_string](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/cast_string.html): Subroutine for casting a `String` type into a number.
 * [to_file](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/to_file.html): Subroutine for writing an array of uniform data type to an external file.
-* [from_file](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/from_file.html): Subroutine for reading an external file of uniform data type into an array.
+* [from_file](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/from_file.html): Subroutine for reading an external file of uniform numeric data type **and** format into an array.
 * [echo](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/echo.html): Subroutine for streaming scalar `character` data to an external text file.
 * [aprint](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/aprint.html): Subroutine for printing arrays and array sections to stdout.
 * [String methods](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/string-methods.html): Type-bound procedures for [String](https://acbbullock.github.io/IO-Fortran-Library/doc/type/string.html).

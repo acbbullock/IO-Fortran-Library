@@ -1,5 +1,5 @@
 ---
-title: fizzbuzz
+title: FizzBuzz
 author: Austin C Bullock
 ---
 

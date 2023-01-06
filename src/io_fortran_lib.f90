@@ -18,7 +18,7 @@ module io_fortran_lib
     ! Definitions and Interfaces ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     character(len=1), parameter :: CR = char(13)                                      !! The carriage return character.
     character(len=1), parameter :: LF = new_line('a')                            !! The new line character (line feed).
-    character(len=1), parameter :: NL = new_line('a')            !! The new line character (line feed), alternate name.
+    character(len=1), parameter :: NL = new_line('a')            !! The new line character (line feed, alternate name).
     character(len=1), parameter :: VT = char(11)                                         !! The vertical tab character.
     character(len=1), parameter :: FF = char(12)                                            !! The form feed character.
     character(len=1), parameter :: NUL = char(0)                                                 !! The null character.
@@ -1586,7 +1586,7 @@ module io_fortran_lib
 
     interface from_file                                                                             ! Submodule file_io
         !--------------------------------------------------------------------------------------------------------------
-        !! Subroutine for reading an external file of uniform data type and format into an array.
+        !! Subroutine for reading an external file of uniform numeric data type **and** format into an array.
         !!
         !! In the event that any actual arguments provided to `from_file` are invalid, the subprogram will not allow
         !! progression of execution of the caller and will issue an `error stop`. This is due to the critical nature of

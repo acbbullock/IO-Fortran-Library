@@ -1,5 +1,5 @@
 ---
-title: binary file I/O
+title: dat file I/O
 author: Austin C Bullock
 ---
 

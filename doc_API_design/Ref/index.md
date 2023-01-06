@@ -1,6 +1,7 @@
 ---
 title: Reference Guide
 author: Austin C Bullock
+ordered_subpage: constants.md
 ordered_subpage: str.md
 ordered_subpage: cast.md
 ordered_subpage: String.md
@@ -20,7 +21,7 @@ The following subsections provide user instructions for each of the publicly acc
 * [String](string.html): Function for transforming numeric or `character` data into a [String](../../type/string.html) type.
 * [cast_string](cast_string.html): Subroutine for casting a `String` type into a number.
 * [to_file](to_file.html): Subroutine for writing an array of uniform data type to an external file.
-* [from_file](from_file.html): Subroutine for reading an external file of uniform data type into an array.
+* [from_file](from_file.html): Subroutine for reading an external file of uniform numeric data type **and** format into an array.
 * [echo](echo.html): Subroutine for streaming scalar `character` data to an external text file.
 * [aprint](aprint.html): Subroutine for printing arrays and array sections to stdout.
 * [String methods](string-methods.html): Type-bound procedures for [String](../../type/string.html).

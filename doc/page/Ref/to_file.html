@@ -39,7 +39,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="../../index.html">IO-Fortran-Library <small>1.1.3</small></a>
+          <a class="navbar-brand" href="../../index.html">IO-Fortran-Library <small>1.2.0</small></a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
@@ -110,7 +110,7 @@
 <ul>
 <li><code>file_name</code> is of type <code>character(len=*)</code></li>
 <li><code>header</code> is <code>optional</code> and of type <code>character(len=*), dimension(:)</code></li>
-<li><code>dim</code> is <code>optional</code> and of type <code>integer</code></li>
+<li><code>dim</code> is <code>optional</code> and of type <code>integer</code> (available only if <code>x</code> has rank <code>1</code>)</li>
 <li><code>delim</code> is <code>optional</code> and of type <code>character(len=*)</code></li>
 <li><code>fmt</code> is <code>optional</code>, may be one of <code>INT_FMTS</code></li>
 </ul>
@@ -124,7 +124,7 @@
 <ul>
 <li><code>file_name</code> is of type <code>character(len=*)</code></li>
 <li><code>header</code> is <code>optional</code> and of type <code>character(len=*), dimension(:)</code></li>
-<li><code>dim</code> is <code>optional</code> and of type <code>integer</code></li>
+<li><code>dim</code> is <code>optional</code> and of type <code>integer</code> (available only if <code>x</code> has rank <code>1</code>)</li>
 <li><code>locale</code> is <code>optional</code>, may be one of <code>LOCALES</code></li>
 <li><code>delim</code> is <code>optional</code> and of type <code>character(len=*)</code></li>
 <li><code>fmt</code> is <code>optional</code>, may be one of <code>REAL_FMTS</code></li>
@@ -140,7 +140,7 @@
 <ul>
 <li><code>file_name</code> is of type <code>character(len=*)</code></li>
 <li><code>header</code> is <code>optional</code> and of type <code>character(len=*), dimension(:)</code></li>
-<li><code>dim</code> is <code>optional</code> and of type <code>integer</code></li>
+<li><code>dim</code> is <code>optional</code> and of type <code>integer</code> (available only if <code>x</code> has rank <code>1</code>)</li>
 <li><code>locale</code> is <code>optional</code>, may be one of <code>LOCALES</code></li>
 <li><code>delim</code> is <code>optional</code> and of type <code>character(len=*)</code></li>
 <li><code>fmt</code> is <code>optional</code>, may be one of <code>REAL_FMTS</code></li>
@@ -157,7 +157,7 @@
 <p></p><div class="alert alert-warning" role="alert"><h4>Warning</h4><p><code>file_name</code> may be a relative path, but absolute paths are not guaranteed to work on every platform.</p></div>
 <h3 id="optional-arguments">Optional Arguments</h3>
 <p>Header (default is none): <code>header</code> is a <a href="../UserInfo/compilers.html">character array literal</a>. For <code>x</code> of rank <code>1</code>, <code>header</code> may be of size <code>1</code> or <code>size(x)</code>. For <code>x</code> of rank <code>2</code>, <code>header</code> may be of size <code>1</code> or <code>size(x, dim=2)</code>.</p>
-<p>Dimension: <code>dim</code> specifies whether to write along the rows (<code>dim=1</code>) or along the columns (<code>dim=2</code>), choosing the former by default unless <code>size(header)</code> is <code>size(x)</code>.</p>
+<p>Dimension: <code>dim</code> specifies whether to write along the rows (<code>dim=1</code>) or along the columns (<code>dim=2</code>), choosing the former by default unless <code>size(header)</code> is <code>size(x)</code>. This option is available only if <code>x</code> has rank <code>1</code>.</p>
 <p>Locales (default is <code>'US'</code>):</p>
 <div class="codehilite"><pre><span></span><code><span class="n">LOCALES</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s1">&#39;US&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;EU&#39;</span><span class="w"> </span><span class="p">]</span><span class="w"></span>
 </code></pre></div>
@@ -207,6 +207,9 @@
             <a href='../../page/Ref/index.html'>Reference Guide</a>
             <ul class="nav nav-stacked nav-pills">
                           <li role="presentation">
+            <a href='../../page/Ref/constants.html'>CONSTANTS</a>
+            </li>
+            <li role="presentation">
             <a href='../../page/Ref/str.html'>str</a>
             </li>
             <li role="presentation">
@@ -246,13 +249,16 @@
             <a href='../../page/Examples/csv.html'>csv file I/O</a>
             </li>
             <li role="presentation">
-            <a href='../../page/Examples/binary.html'>binary file I/O</a>
+            <a href='../../page/Examples/binary.html'>dat file I/O</a>
             </li>
             <li role="presentation">
             <a href='../../page/Examples/logging.html'>log file output</a>
             </li>
             <li role="presentation">
-            <a href='../../page/Examples/fizzbuzz.html'>fizzbuzz</a>
+            <a href='../../page/Examples/timestamp.html'>String manipulation</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Examples/fizzbuzz.html'>FizzBuzz</a>
             </li>
 
             </ul>
@@ -273,7 +279,7 @@
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-01-05 19:14            </p>
+ on 2023-01-06 03:07            </p>
         </div>
       </div>
       <br>

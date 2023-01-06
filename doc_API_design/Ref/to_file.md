@@ -19,7 +19,7 @@ call to_file(x, file_name, header, delim, fmt)
 
 * `file_name` is of type `character(len=*)`
 * `header` is `optional` and of type `character(len=*), dimension(:)`
-* `dim` is `optional` and of type `integer`
+* `dim` is `optional` and of type `integer` (available only if `x` has rank `1`)
 * `delim` is `optional` and of type `character(len=*)`
 * `fmt` is `optional`, may be one of `INT_FMTS`
 
@@ -35,7 +35,7 @@ call to_file(x, file_name, header, locale, delim, fmt, decimals)
 
 * `file_name` is of type `character(len=*)`
 * `header` is `optional` and of type `character(len=*), dimension(:)`
-* `dim` is `optional` and of type `integer`
+* `dim` is `optional` and of type `integer` (available only if `x` has rank `1`)
 * `locale` is `optional`, may be one of `LOCALES`
 * `delim` is `optional` and of type `character(len=*)`
 * `fmt` is `optional`, may be one of `REAL_FMTS`
@@ -53,7 +53,7 @@ call to_file(x, file_name, header, locale, delim, fmt, decimals, im)
 
 * `file_name` is of type `character(len=*)`
 * `header` is `optional` and of type `character(len=*), dimension(:)`
-* `dim` is `optional` and of type `integer`
+* `dim` is `optional` and of type `integer` (available only if `x` has rank `1`)
 * `locale` is `optional`, may be one of `LOCALES`
 * `delim` is `optional` and of type `character(len=*)`
 * `fmt` is `optional`, may be one of `REAL_FMTS`
@@ -74,7 +74,7 @@ call to_file(x, file_name)
 
 Header (default is none): `header` is a [character array literal](../UserInfo/compilers.html). For `x` of rank `1`, `header` may be of size `1` or `size(x)`. For `x` of rank `2`, `header` may be of size `1` or `size(x, dim=2)`.
 
-Dimension: `dim` specifies whether to write along the rows (`dim=1`) or along the columns (`dim=2`), choosing the former by default unless `size(header)` is `size(x)`.
+Dimension: `dim` specifies whether to write along the rows (`dim=1`) or along the columns (`dim=2`), choosing the former by default unless `size(header)` is `size(x)`. This option is available only if `x` has rank `1`.
 
 Locales (default is `'US'`):
 
