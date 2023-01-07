@@ -1,7 +1,8 @@
 module io_fortran_lib
     !------------------------------------------------------------------------------------------------------------------
-    !!  This module provides common I/O routines for arrays of `complex`, `real`, `integer`, and `character` type.
-    !!  This module is F2018 compliant, has no external dependencies, and has a max line length of 120.
+    !! This module provides common I/O routines for data of `integer`, `real`, `complex`, and `character` type, and
+    !! a derived type `String` for more advanced file I/O and character manipulations. This module is F2018 compliant,
+    !! has no external dependencies, and has a max line length of 120.
     !------------------------------------------------------------------------------------------------------------------
     use, intrinsic :: iso_fortran_env, only: real128, real64, real32, int64, int32, int16, int8, &     ! Standard kinds
                                              input_unit, output_unit                  ! Standard input and output units
@@ -16,11 +17,11 @@ module io_fortran_lib
     public :: operator(//), operator(+), operator(-), operator(**), operator(==), operator(/=)              ! Operators
 
     ! Definitions and Interfaces ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    character(len=1), parameter :: CR   = char(13)                                    !! The carriage return character.
     character(len=1), parameter :: LF   = new_line('a')                          !! The new line character (line feed).
     character(len=1), parameter :: NL   = new_line('a')          !! The new line character (line feed, alternate name).
-    character(len=1), parameter :: VT   = char(11)                                       !! The vertical tab character.
+    character(len=1), parameter :: CR   = char(13)                                    !! The carriage return character.
     character(len=1), parameter :: FF   = char(12)                                          !! The form feed character.
+    character(len=1), parameter :: VT   = char(11)                                       !! The vertical tab character.
     character(len=1), parameter :: NUL  = char(0)                                                !! The null character.
     character(len=1), parameter :: CNUL = c_null_char           !! The C null character re-exported from iso_c_binding.
 

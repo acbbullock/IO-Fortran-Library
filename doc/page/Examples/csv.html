@@ -168,8 +168,8 @@
 </code></pre></div>
 
 <p>and then construct the remainder of the cell array <code>cells</code> with an elemental assignment <code>cells(2:,:) = String(x, fmt)</code> before writing the array to a <code>.csv</code> file. We then read the files back into <code>csv</code> and output the cells into <code>cells</code> (which is reallocated internally). Note that when casting the cell data into numeric arrays, we must pre-allocate the output arrays due to the restriction that <code>intent(out)</code> arguments of <code>elemental</code> procedures may not be <code>allocatable</code>.</p>
-<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>One may optionally specify the arguments of <code>row_separator</code> and <code>column_separator</code> when writing and reading text files with <a href="../Ref/string-methods.html#write_file">write_file</a> and <a href="../Ref/string-methods.html#read_file">read_file</a>. The default <code>row_separator</code> is the <a href="../../module/io_fortran_lib.html#variable-LF">line feed</a>, and the default <code>column_separator</code> is a comma <code>','</code>. To specify <a href="https://en.wikipedia.org/wiki/Newline#Representation">CRLF</a> line endings, import <code>CR</code> and <code>LF</code> from <code>io_fortran_lib</code> and specify <code>row_separator=CR//LF</code>.</p></div>
-<p></p><div class="alert alert-warning" role="alert"><h4>Warning</h4><p>When reading <code>.csv</code> data with <code>CRLF</code> line endings, be sure to import <code>CR</code> and <code>LF</code> from <code>io_fortran_lib</code> and specify <code>row_separator=CR//LF</code> or pre-process the file to <code>LF</code>. Trying to cast data with a hidden <code>CR</code> character may result in an I/O syntax error.</p></div>
+<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>One may optionally specify the arguments of <code>row_separator</code> and <code>column_separator</code> when writing and reading text files with <a href="../Ref/string-methods.html#write_file">write_file</a> and <a href="../Ref/string-methods.html#read_file">read_file</a>. The default <code>row_separator</code> is <code>LF</code>, and the default <code>column_separator</code> is <code>','</code>.</p></div>
+<p></p><div class="alert alert-warning" role="alert"><h4>Warning</h4><p>When reading files with <code>CRLF</code> line endings, be sure to specify <code>row_separator=CR//LF</code> or pre-process the file to <code>LF</code>. Trying to cast data with a hidden <code>CR</code> character may result in an I/O syntax error.</p></div>
 <p>For a slightly more advanced example, consider the following program to read in and cast the data of mixed type contained in the example data <code>/data/ancestry_comp.csv</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="k">program </span><span class="n">main</span><span class="w"></span>
 <span class="w">    </span><span class="k">use</span><span class="p">,</span><span class="w"> </span><span class="k">intrinsic</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">iso_fortran_env</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="p">:</span><span class="w"> </span><span class="n">int8</span><span class="p">,</span><span class="w"> </span><span class="n">int64</span><span class="w"></span>
@@ -197,7 +197,7 @@
 <span class="k">end program </span><span class="n">main</span><span class="w"></span>
 </code></pre></div>
 
-<p>Here, <code>file_name</code> is a relative path, and we use the extended operator <code>+</code> for <a href="../Ref/operators.html#concatenation">concatenation</a> in the <code>character</code> expression <code>CR+LF</code>. We then allocate data arrays and cast each column into respective arrays. Note that the type-bound procedure <a href="../Ref/string-methods.html#cast">cast</a> is a generic binding for the interface <a href="../Ref/cast_string.html">cast_string</a>. In the program above, we must use <code>cast_string</code> as a standalone subroutine to accept the <code>String</code> expression</p>
+<p>Here, <code>file_name</code> is a relative path, and we use the extended operator <code>+</code> for <a href="../Ref/operators.html#concatenation">concatenation</a> in the <code>character</code> expression <code>CR+LF</code>. We then allocate data arrays and cast each column into respective arrays. Note that the type-bound procedure <a href="../Ref/string-methods.html#cast">cast</a> is a generic binding for the interface <a href="../Ref/cast_string.html">cast_string</a>. In the program above, we must use <code>cast_string</code> as a standalone subroutine to accept the <code>String</code>-valued expression</p>
 <div class="codehilite"><pre><span></span><code><span class="n">cells</span><span class="p">(</span><span class="mi">2</span><span class="p">:,</span><span class="mi">3</span><span class="p">)%</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">,</span><span class="s1">&#39;0&#39;</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="s1">&#39;chr&#39;</span><span class="w"></span>
 </code></pre></div>
 
@@ -308,7 +308,7 @@
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-01-06 19:48            </p>
+ on 2023-01-07 01:05            </p>
         </div>
       </div>
       <br>

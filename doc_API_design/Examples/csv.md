@@ -87,9 +87,9 @@ cells(1,:) = [(String('x'//str(i)), i = 1, 20)]
 
 and then construct the remainder of the cell array `cells` with an elemental assignment `cells(2:,:) = String(x, fmt)` before writing the array to a `.csv` file. We then read the files back into `csv` and output the cells into `cells` (which is reallocated internally). Note that when casting the cell data into numeric arrays, we must pre-allocate the output arrays due to the restriction that `intent(out)` arguments of `elemental` procedures may not be `allocatable`.
 
-@note One may optionally specify the arguments of `row_separator` and `column_separator` when writing and reading text files with [write_file](../Ref/string-methods.html#write_file) and [read_file](../Ref/string-methods.html#read_file). The default `row_separator` is the [line feed](../../module/io_fortran_lib.html#variable-LF), and the default `column_separator` is a comma `','`. To specify [CRLF](https://en.wikipedia.org/wiki/Newline#Representation) line endings, import `CR` and `LF` from `io_fortran_lib` and specify `row_separator=CR//LF`.
+@note One may optionally specify the arguments of `row_separator` and `column_separator` when writing and reading text files with [write_file](../Ref/string-methods.html#write_file) and [read_file](../Ref/string-methods.html#read_file). The default `row_separator` is `LF`, and the default `column_separator` is `','`.
 
-@warning When reading `.csv` data with `CRLF` line endings, be sure to import `CR` and `LF` from `io_fortran_lib` and specify `row_separator=CR//LF` or pre-process the file to `LF`. Trying to cast data with a hidden `CR` character may result in an I/O syntax error.
+@warning When reading files with `CRLF` line endings, be sure to specify `row_separator=CR//LF` or pre-process the file to `LF`. Trying to cast data with a hidden `CR` character may result in an I/O syntax error.
 
 For a slightly more advanced example, consider the following program to read in and cast the data of mixed type contained in the example data `/data/ancestry_comp.csv`:
 
@@ -120,7 +120,7 @@ program main
 end program main
 ```
 
-Here, `file_name` is a relative path, and we use the extended operator `+` for [concatenation](../Ref/operators.html#concatenation) in the `character` expression `CR+LF`. We then allocate data arrays and cast each column into respective arrays. Note that the type-bound procedure [cast](../Ref/string-methods.html#cast) is a generic binding for the interface [cast_string](../Ref/cast_string.html). In the program above, we must use `cast_string` as a standalone subroutine to accept the `String` expression
+Here, `file_name` is a relative path, and we use the extended operator `+` for [concatenation](../Ref/operators.html#concatenation) in the `character` expression `CR+LF`. We then allocate data arrays and cast each column into respective arrays. Note that the type-bound procedure [cast](../Ref/string-methods.html#cast) is a generic binding for the interface [cast_string](../Ref/cast_string.html). In the program above, we must use `cast_string` as a standalone subroutine to accept the `String`-valued expression
 
 ```fortran
 cells(2:,3)%replace('X','0') - 'chr'

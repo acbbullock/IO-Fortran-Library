@@ -126,11 +126,11 @@
       </div>
       <div id="vars-0" class="panel-collapse collapse">
         <div class="list-group">
-            <a class="list-group-item" href="../module/io_fortran_lib.html#variable-cr">CR</a>
             <a class="list-group-item" href="../module/io_fortran_lib.html#variable-lf">LF</a>
             <a class="list-group-item" href="../module/io_fortran_lib.html#variable-nl">NL</a>
-            <a class="list-group-item" href="../module/io_fortran_lib.html#variable-vt">VT</a>
+            <a class="list-group-item" href="../module/io_fortran_lib.html#variable-cr">CR</a>
             <a class="list-group-item" href="../module/io_fortran_lib.html#variable-ff">FF</a>
+            <a class="list-group-item" href="../module/io_fortran_lib.html#variable-vt">VT</a>
             <a class="list-group-item" href="../module/io_fortran_lib.html#variable-nul">NUL</a>
             <a class="list-group-item" href="../module/io_fortran_lib.html#variable-cnul">CNUL</a>
         </div>
@@ -198,8 +198,9 @@
     </div>
     
     <div class="col-md-9" id='text'>
-    <p>This module provides common I/O routines for arrays of <code>complex</code>, <code>real</code>, <code>integer</code>, and <code>character</code> type.
-This module is F2018 compliant, has no external dependencies, and has a max line length of 120.</p>
+    <p>This module provides common I/O routines for data of <code>integer</code>, <code>real</code>, <code>complex</code>, and <code>character</code> type, and
+a derived type <code>String</code> for more advanced file I/O and character manipulations. This module is F2018 compliant,
+has no external dependencies, and has a max line length of 120.</p>
 <br>        <div class="panel panel-default">
       <div class="panel-heading">
         <h3 class="panel-title">Uses</h3>
@@ -247,11 +248,11 @@ This module is F2018 compliant, has no external dependencies, and has a max line
       </div>
       <div id="vars-1" class="panel-collapse collapse">
         <div class="list-group">
-            <a class="list-group-item" href="../module/io_fortran_lib.html#variable-cr">CR</a>
             <a class="list-group-item" href="../module/io_fortran_lib.html#variable-lf">LF</a>
             <a class="list-group-item" href="../module/io_fortran_lib.html#variable-nl">NL</a>
-            <a class="list-group-item" href="../module/io_fortran_lib.html#variable-vt">VT</a>
+            <a class="list-group-item" href="../module/io_fortran_lib.html#variable-cr">CR</a>
             <a class="list-group-item" href="../module/io_fortran_lib.html#variable-ff">FF</a>
+            <a class="list-group-item" href="../module/io_fortran_lib.html#variable-vt">VT</a>
             <a class="list-group-item" href="../module/io_fortran_lib.html#variable-nul">NUL</a>
             <a class="list-group-item" href="../module/io_fortran_lib.html#variable-cnul">CNUL</a>
         </div>
@@ -332,23 +333,6 @@ This module is F2018 compliant, has no external dependencies, and has a max line
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-cr"></span>
-              character(len=1),
-            </td>
-              <td>public,</td>
-            <td>
-parameter               
-            </td>
-            <td>::</td>
-            <td><strong>CR</strong></td>
-<td> =</td>
-                <td>char(13)</td>
-            <td>
-                <p>The carriage return character.</p>
-            </td>
-        </tr>
-        <tr>
-            <td>
               <span class="anchor" id="variable-lf"></span>
               character(len=1),
             </td>
@@ -383,7 +367,7 @@ parameter
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-vt"></span>
+              <span class="anchor" id="variable-cr"></span>
               character(len=1),
             </td>
               <td>public,</td>
@@ -391,11 +375,11 @@ parameter
 parameter               
             </td>
             <td>::</td>
-            <td><strong>VT</strong></td>
+            <td><strong>CR</strong></td>
 <td> =</td>
-                <td>char(11)</td>
+                <td>char(13)</td>
             <td>
-                <p>The vertical tab character.</p>
+                <p>The carriage return character.</p>
             </td>
         </tr>
         <tr>
@@ -413,6 +397,23 @@ parameter
                 <td>char(12)</td>
             <td>
                 <p>The form feed character.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-vt"></span>
+              character(len=1),
+            </td>
+              <td>public,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>VT</strong></td>
+<td> =</td>
+                <td>char(11)</td>
+            <td>
+                <p>The vertical tab character.</p>
             </td>
         </tr>
         <tr>
@@ -28550,7 +28551,7 @@ generic,
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-01-06 19:48            </p>
+ on 2023-01-07 01:05            </p>
         </div>
       </div>
       <br>
