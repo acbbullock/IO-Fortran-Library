@@ -9,7 +9,7 @@ To use `io_fortran_lib` with your [fpm](https://github.com/fortran-lang/fpm) pro
 IO-Fortran-Library = { git="https://github.com/acbbullock/IO-Fortran-Library", branch="main" }
 ```
 
-The module is fully self-contained, with no external dependencies, and is written to be portable and compliant to the Fortran 2018 standard such that no special extensions or compiler options should be required. All interfaces which operate on numeric data support all of the intrinsic data types (`integer`, `real`, and `complex`) and all standard kinds provided by the intrinsic `iso_fortran_env` module, including `int8`, `int16`, `int32`, `int64`, `real32`, `real64`, and `real128`. All array-based routines additionally support up to rank 15.
+The module is fully self-contained, with no external dependencies, and is written to be portable and compliant to the Fortran 2018 standard such that no special extensions or compiler options should be required. The public interfaces accept all intrinsic numeric types (`integer`, `real`, and `complex`) and all standard kinds provided by the intrinsic `iso_fortran_env` module (`int8`, `int16`, `int32`, `int64`, `real32`, `real64`, and `real128`). All array-based routines additionally support up to rank 15.
 
 ## Documentation
 
