@@ -48,6 +48,8 @@ See the [important user information](https://acbbullock.github.io/IO-Fortran-Lib
   * Intel Fortran Compiler v2023.0.0 on Linux
   * Intel Fortran Compiler Classic v2021.8.0 on Linux
   * GNU Fortran Compiler v11.2.0 on Windows 11
+  * Intel Fortran Compiler v2023.0.0 on Windows 11
+  * Intel Fortran Compiler Classic v2021.8.0 on Windows 11
 
 ### Improved
 
