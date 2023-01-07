@@ -68,7 +68,7 @@ For `self` a scalar of type `String`:
 * `tokens` is of type `type(String), dimension(:)`
 * `separator` is `optional` and of type `character(len=*)` (default is SPACE)
 
-*Description*: Glues a string vector into `self` with given separator. Default separator is SPACE. The string slice component will be replaced if already allocated.
+*Description*: Glues a `String` vector into `self` with given separator. Default separator is SPACE. The string slice component will be replaced if already allocated.
 
 ### [len](../../type/string.html#boundprocedure-len)
 
@@ -78,7 +78,7 @@ For `self` a scalar or array of any rank and of type `String`:
     result = self%len()
 ```
 
-*Description*: Returns the length of the string slice component elementally. Unallocated components return -1.
+*Description*: Returns the length of the string slice component elementally. Unallocated components return `-1`.
 
 ### [push](../../type/string.html#boundprocedure-push)
 
@@ -90,7 +90,7 @@ For `self` a scalar or array of any rank and of type `String`:
 
 * `chars` is of type `character(len=*)`
 
-*Description*: Appends characters to the string slice component elementally. This procedure is identical in function to the [concatenation operators](operators.html#concatenation) `self // chars` and `self + chars`.
+*Description*: Appends characters to the string slice component elementally in place. This procedure is identical in function to the [concatenation operators](operators.html#concatenation) with self assignment: `self = self // chars` and `self = self + chars`.
 
 ### [read_file](../../type/string.html#boundprocedure-read_file)
 
@@ -102,10 +102,10 @@ For `self` a scalar of type `String`:
 
 * `file_name` is of type `character(len=*)`
 * `cell_array` is `optional` and of type `type(String), allocatable, dimension(:,:)`
-* `row_separator` is `optional` and of type `character(len=*)` (default is NEW_LINE)
+* `row_separator` is `optional` and of type `character(len=*)` (default is `LF`)
 * `column_separator` is `optional` and of type `character(len=*)` (default is `','`)
 
-*Description*: The `read_file` method is provided primarily for the purpose of reading in `.csv` files containing data of **mixed type**, which cannot be handled with a simple call to [from_file](from_file.html) (which assumes data of uniform type). The file's entire contents are populated into `self`, and one may manually parse and manipulate the file's contents using the methods referenced on this page. Optionally, one may provide a rank `2` allocatable array `cell_array` of type `String`, which will be populated with the cells of the given file using the designated `row_separator` and `column_separator` whose default values are NEW_LINE and `','` respectively.
+*Description*: The `read_file` method is provided primarily for the purpose of reading in `.csv` files containing data of **mixed type**, which cannot be handled with a simple call to [from_file](from_file.html) (which assumes data of uniform type and format). The file's entire contents are populated into `self`, and one may manually parse and manipulate the file's contents using the methods referenced on this page. Optionally, one may provide a rank `2` allocatable array `cell_array` of type `String`, which will be populated with the cells of the given file using the designated `row_separator` and `column_separator` whose default values are `LF` and `','` respectively.
 
 @note The file extension of `file_name` must correspond to one of the valid [text file extensions](../UserInfo/file-ext.html).
 
@@ -179,10 +179,10 @@ For `self` a scalar of type `String`:
 
 * `cell_array` is of type `type(String), dimension(:,:)`
 * `file_name` is of type `character(len=*)`
-* `row_separator` is `optional` and of type `character(len=*)` (default is NEW_LINE)
+* `row_separator` is `optional` and of type `character(len=*)` (default is `LF`)
 * `column_separator` is `optional` and of type `character(len=*)` (default is `','`)
 
-*Description*: The `write_file` method is provided primarily for the purpose of writing `.csv` files containing data of **mixed type**, which cannot be handled with a simple call to [to_file](to_file.html) (which accepts numeric arrays of uniform type). The cell array's entire contents are populated into `self` and then streamed to an external text file using the designated `row_separator` and `column_separator` whose default values are NEW_LINE and `','` respectively.
+*Description*: The `write_file` method is provided primarily for the purpose of writing `.csv` files containing data of **mixed type**, which cannot be handled with a simple call to [to_file](to_file.html) (which accepts numeric arrays of uniform type). The cell array's entire contents are populated into `self` and then streamed to an external text file using the designated `row_separator` and `column_separator` whose default values are `LF` and `','` respectively.
 
 @note The file extension of `file_name` must correspond to one of the valid [text file extensions](../UserInfo/file-ext.html). Additionally, `file_name` will be created if it does not already exist and will be overwritten if it does exist.
 

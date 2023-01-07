@@ -98,9 +98,9 @@
   
   <div class="row">
     <div class="col-md-9 col-md-push-3" id='text'>
-      <p>The following program demonstrates the use of <a href="../Ref/echo.html">echo</a> for writing messages to a <code>.log</code> file, supplemented with the use of <a href="../../module/io_fortran_lib.html#variable-lf">LF</a> and <a href="../Ref/str.html">str</a>:</p>
+      <p>The following program demonstrates a simple use of <a href="../Ref/echo.html">echo</a> for writing messages to a <code>.log</code> file, supplemented with the use of <a href="../../module/io_fortran_lib.html#variable-lf">LF</a> and <a href="../Ref/str.html">str</a>:</p>
 <div class="codehilite"><pre><span></span><code><span class="k">program </span><span class="n">main</span><span class="w"></span>
-<span class="w">    </span><span class="k">use </span><span class="n">io_fortran_lib</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="p">:</span><span class="w"> </span><span class="n">echo</span><span class="p">,</span><span class="w"> </span><span class="n">LF</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="w"></span>
+<span class="w">    </span><span class="k">use </span><span class="n">io_fortran_lib</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="p">:</span><span class="w"> </span><span class="n">echo</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">LF</span><span class="w"></span>
 <span class="w">    </span><span class="k">implicit none</span><span class="w"> </span><span class="p">(</span><span class="k">type</span><span class="p">,</span><span class="k">external</span><span class="p">)</span><span class="w"></span>
 
 <span class="w">    </span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="p">:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">logfile</span><span class="p">,</span><span class="w"> </span><span class="n">logmsg</span><span class="w"></span>
@@ -110,18 +110,61 @@
 <span class="w">    </span><span class="k">call </span><span class="nb">date_and_time</span><span class="p">(</span><span class="n">date</span><span class="o">=</span><span class="n">date</span><span class="p">,</span><span class="w"> </span><span class="nb">time</span><span class="o">=</span><span class="nb">time</span><span class="p">)</span><span class="w"></span>
 <span class="w">    </span><span class="n">logfile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;logfile_main_&#39;</span><span class="o">//</span><span class="nb">trim</span><span class="p">(</span><span class="nb">adjustl</span><span class="p">(</span><span class="n">date</span><span class="p">))</span><span class="o">//</span><span class="s1">&#39;_&#39;</span><span class="o">//</span><span class="nb">time</span><span class="o">//</span><span class="s1">&#39;.log&#39;</span><span class="w"></span>
 
-<span class="w">    </span><span class="n">logmsg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;PROGRAM MAIN - BEGINNING EXECUTION&#39;</span><span class="w"></span>
-<span class="w">    </span><span class="k">call </span><span class="n">echo</span><span class="p">(</span><span class="n">string</span><span class="o">=</span><span class="n">logmsg</span><span class="o">//</span><span class="n">LF</span><span class="o">//</span><span class="nb">repeat</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">ncopies</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">logmsg</span><span class="p">))</span><span class="o">//</span><span class="n">LF</span><span class="p">,</span><span class="w"> </span><span class="n">file_name</span><span class="o">=</span><span class="n">logfile</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">logmsg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;PROGRAM MAIN - BEGINNING EXECUTION&#39;</span><span class="o">//</span><span class="n">LF</span><span class="w"></span>
+<span class="w">    </span><span class="k">call </span><span class="n">echo</span><span class="p">(</span><span class="n">string</span><span class="o">=</span><span class="n">logmsg</span><span class="o">//</span><span class="nb">repeat</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">ncopies</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">logmsg</span><span class="p">)),</span><span class="w"> </span><span class="n">file_name</span><span class="o">=</span><span class="n">logfile</span><span class="p">)</span><span class="w"></span>
 
-<span class="w">    </span><span class="n">errstat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="w">    </span><span class="c">! ...</span>
+
+<span class="w">    </span><span class="n">logmsg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;All is good so far...&#39;</span><span class="w"></span>
+<span class="w">    </span><span class="k">call </span><span class="n">echo</span><span class="p">(</span><span class="n">logmsg</span><span class="p">,</span><span class="w"> </span><span class="n">logfile</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">read</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="n">errstat</span><span class="w"></span>
 
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">errstat</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
 <span class="k">        </span><span class="n">logmsg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;Process has non-zero exit status: &#39;</span><span class="o">//</span><span class="n">str</span><span class="p">(</span><span class="n">errstat</span><span class="p">)</span><span class="o">//</span><span class="n">LF</span><span class="o">//</span><span class="s1">&#39;Stopping...&#39;</span><span class="w"></span>
 <span class="w">        </span><span class="k">call </span><span class="n">echo</span><span class="p">(</span><span class="n">logmsg</span><span class="p">,</span><span class="w"> </span><span class="n">logfile</span><span class="p">)</span><span class="w"></span>
 <span class="w">        </span><span class="k">error stop </span><span class="n">logmsg</span><span class="w"></span>
 <span class="w">    </span><span class="k">end if</span>
+
+<span class="k">    </span><span class="n">logmsg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;All processes have executed successfully.&#39;</span><span class="w"></span>
+<span class="w">    </span><span class="k">call </span><span class="n">echo</span><span class="p">(</span><span class="n">logmsg</span><span class="p">,</span><span class="w"> </span><span class="n">logfile</span><span class="p">)</span><span class="w"></span>
 <span class="k">end program </span><span class="n">main</span><span class="w"></span>
 </code></pre></div>
+
+<p>Depending on style, one may wish to accumulate log messages into a <code>String</code> and then <code>echo</code> conditionally:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">program </span><span class="n">main</span><span class="w"></span>
+<span class="w">    </span><span class="k">use </span><span class="n">io_fortran_lib</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="p">:</span><span class="w"> </span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">LF</span><span class="p">,</span><span class="w"> </span><span class="n">operator</span><span class="p">(</span><span class="o">+</span><span class="p">),</span><span class="w"> </span><span class="n">operator</span><span class="p">(</span><span class="o">**</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">implicit none</span><span class="w"> </span><span class="p">(</span><span class="k">type</span><span class="p">,</span><span class="k">external</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="n">String</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">logmsg</span><span class="w"></span>
+<span class="w">    </span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="p">:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">logfile</span><span class="w"></span>
+<span class="w">    </span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">date</span><span class="p">,</span><span class="w"> </span><span class="nb">time</span>
+<span class="nb">    </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">errstat</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">call </span><span class="nb">date_and_time</span><span class="p">(</span><span class="n">date</span><span class="o">=</span><span class="n">date</span><span class="p">,</span><span class="w"> </span><span class="nb">time</span><span class="o">=</span><span class="nb">time</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">logfile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;logfile_main_&#39;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nb">trim</span><span class="p">(</span><span class="nb">adjustl</span><span class="p">(</span><span class="n">date</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s1">&#39;_&#39;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nb">time</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s1">&#39;.log&#39;</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">logmsg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">String</span><span class="p">(</span><span class="s1">&#39;PROGRAM MAIN - BEGINNING EXECUTION&#39;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">LF</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">call </span><span class="n">logmsg</span><span class="p">%</span><span class="n">push</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="o">**</span><span class="n">logmsg</span><span class="p">%</span><span class="nb">len</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">LF</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">    </span><span class="c">! ...</span>
+
+<span class="w">    </span><span class="k">call </span><span class="n">logmsg</span><span class="p">%</span><span class="n">push</span><span class="p">(</span><span class="s1">&#39;All is good so far...&#39;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">LF</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">read</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="n">errstat</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">errstat</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">        call </span><span class="n">logmsg</span><span class="p">%</span><span class="n">push</span><span class="p">(</span><span class="s1">&#39;Process has non-zero exit status: &#39;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">str</span><span class="p">(</span><span class="n">errstat</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">LF</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s1">&#39;Stopping...&#39;</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="k">call </span><span class="n">logmsg</span><span class="p">%</span><span class="n">echo</span><span class="p">(</span><span class="n">file_name</span><span class="o">=</span><span class="n">logfile</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="k">error stop </span><span class="n">logmsg</span><span class="p">%</span><span class="n">as_str</span><span class="p">()</span><span class="w"></span>
+<span class="w">    </span><span class="k">end if</span>
+
+<span class="k">    call </span><span class="n">logmsg</span><span class="p">%</span><span class="n">push</span><span class="p">(</span><span class="s1">&#39;All processes have executed successfully.&#39;</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">call </span><span class="n">logmsg</span><span class="p">%</span><span class="n">echo</span><span class="p">(</span><span class="n">file_name</span><span class="o">=</span><span class="n">logfile</span><span class="p">)</span><span class="w"></span>
+<span class="k">end program </span><span class="n">main</span><span class="w"></span>
+</code></pre></div>
+
+<p>Here, the <code>error stop</code> will dump the entire contents of <code>logmsg</code> to stdout. We also take advantage of the <a href="../Ref/operators.html">operators</a> <code>+</code> and <code>**</code> for concatenation and repetition.</p>
     </div>
     <div class="col-md-3 col-md-pull-9">
       <hr class="visible-xs visible-sm">
@@ -228,7 +271,7 @@
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-01-06 03:07            </p>
+ on 2023-01-06 16:56            </p>
         </div>
       </div>
       <br>

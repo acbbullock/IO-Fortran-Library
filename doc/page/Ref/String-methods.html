@@ -141,13 +141,13 @@
 <li><code>tokens</code> is of type <code>type(String), dimension(:)</code></li>
 <li><code>separator</code> is <code>optional</code> and of type <code>character(len=*)</code> (default is SPACE)</li>
 </ul>
-<p><em>Description</em>: Glues a string vector into <code>self</code> with given separator. Default separator is SPACE. The string slice component will be replaced if already allocated.</p>
+<p><em>Description</em>: Glues a <code>String</code> vector into <code>self</code> with given separator. Default separator is SPACE. The string slice component will be replaced if already allocated.</p>
 <h3 id="len"><a href="../../type/string.html#boundprocedure-len">len</a></h3>
 <p>For <code>self</code> a scalar or array of any rank and of type <code>String</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="k">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="nb">len</span><span class="p">()</span><span class="w"></span>
 </code></pre></div>
 
-<p><em>Description</em>: Returns the length of the string slice component elementally. Unallocated components return -1.</p>
+<p><em>Description</em>: Returns the length of the string slice component elementally. Unallocated components return <code>-1</code>.</p>
 <h3 id="push"><a href="../../type/string.html#boundprocedure-push">push</a></h3>
 <p>For <code>self</code> a scalar or array of any rank and of type <code>String</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">push</span><span class="p">(</span><span class="n">chars</span><span class="p">)</span><span class="w"></span>
@@ -156,7 +156,7 @@
 <ul>
 <li><code>chars</code> is of type <code>character(len=*)</code></li>
 </ul>
-<p><em>Description</em>: Appends characters to the string slice component elementally. This procedure is identical in function to the <a href="operators.html#concatenation">concatenation operators</a> <code>self // chars</code> and <code>self + chars</code>.</p>
+<p><em>Description</em>: Appends characters to the string slice component elementally in place. This procedure is identical in function to the <a href="operators.html#concatenation">concatenation operators</a> with self assignment: <code>self = self // chars</code> and <code>self = self + chars</code>.</p>
 <h3 id="read_file"><a href="../../type/string.html#boundprocedure-read_file">read_file</a></h3>
 <p>For <code>self</code> a scalar of type <code>String</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">read_file</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span><span class="w"> </span><span class="n">cell_array</span><span class="p">,</span><span class="w"> </span><span class="n">row_separator</span><span class="p">,</span><span class="w"> </span><span class="n">column_separator</span><span class="p">)</span><span class="w"></span>
@@ -165,10 +165,10 @@
 <ul>
 <li><code>file_name</code> is of type <code>character(len=*)</code></li>
 <li><code>cell_array</code> is <code>optional</code> and of type <code>type(String), allocatable, dimension(:,:)</code></li>
-<li><code>row_separator</code> is <code>optional</code> and of type <code>character(len=*)</code> (default is NEW_LINE)</li>
+<li><code>row_separator</code> is <code>optional</code> and of type <code>character(len=*)</code> (default is <code>LF</code>)</li>
 <li><code>column_separator</code> is <code>optional</code> and of type <code>character(len=*)</code> (default is <code>','</code>)</li>
 </ul>
-<p><em>Description</em>: The <code>read_file</code> method is provided primarily for the purpose of reading in <code>.csv</code> files containing data of <strong>mixed type</strong>, which cannot be handled with a simple call to <a href="from_file.html">from_file</a> (which assumes data of uniform type). The file's entire contents are populated into <code>self</code>, and one may manually parse and manipulate the file's contents using the methods referenced on this page. Optionally, one may provide a rank <code>2</code> allocatable array <code>cell_array</code> of type <code>String</code>, which will be populated with the cells of the given file using the designated <code>row_separator</code> and <code>column_separator</code> whose default values are NEW_LINE and <code>','</code> respectively.</p>
+<p><em>Description</em>: The <code>read_file</code> method is provided primarily for the purpose of reading in <code>.csv</code> files containing data of <strong>mixed type</strong>, which cannot be handled with a simple call to <a href="from_file.html">from_file</a> (which assumes data of uniform type and format). The file's entire contents are populated into <code>self</code>, and one may manually parse and manipulate the file's contents using the methods referenced on this page. Optionally, one may provide a rank <code>2</code> allocatable array <code>cell_array</code> of type <code>String</code>, which will be populated with the cells of the given file using the designated <code>row_separator</code> and <code>column_separator</code> whose default values are <code>LF</code> and <code>','</code> respectively.</p>
 <p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>The file extension of <code>file_name</code> must correspond to one of the valid <a href="../UserInfo/file-ext.html">text file extensions</a>.</p></div>
 <p></p><div class="alert alert-warning" role="alert"><h4>Warning</h4><p><code>file_name</code> may be a relative path, but absolute paths are not guaranteed to work on every platform.</p></div>
 <h3 id="replace"><a href="../../type/string.html#boundprocedure-replace">replace</a></h3>
@@ -220,10 +220,10 @@
 <ul>
 <li><code>cell_array</code> is of type <code>type(String), dimension(:,:)</code></li>
 <li><code>file_name</code> is of type <code>character(len=*)</code></li>
-<li><code>row_separator</code> is <code>optional</code> and of type <code>character(len=*)</code> (default is NEW_LINE)</li>
+<li><code>row_separator</code> is <code>optional</code> and of type <code>character(len=*)</code> (default is <code>LF</code>)</li>
 <li><code>column_separator</code> is <code>optional</code> and of type <code>character(len=*)</code> (default is <code>','</code>)</li>
 </ul>
-<p><em>Description</em>: The <code>write_file</code> method is provided primarily for the purpose of writing <code>.csv</code> files containing data of <strong>mixed type</strong>, which cannot be handled with a simple call to <a href="to_file.html">to_file</a> (which accepts numeric arrays of uniform type). The cell array's entire contents are populated into <code>self</code> and then streamed to an external text file using the designated <code>row_separator</code> and <code>column_separator</code> whose default values are NEW_LINE and <code>','</code> respectively.</p>
+<p><em>Description</em>: The <code>write_file</code> method is provided primarily for the purpose of writing <code>.csv</code> files containing data of <strong>mixed type</strong>, which cannot be handled with a simple call to <a href="to_file.html">to_file</a> (which accepts numeric arrays of uniform type). The cell array's entire contents are populated into <code>self</code> and then streamed to an external text file using the designated <code>row_separator</code> and <code>column_separator</code> whose default values are <code>LF</code> and <code>','</code> respectively.</p>
 <p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>The file extension of <code>file_name</code> must correspond to one of the valid <a href="../UserInfo/file-ext.html">text file extensions</a>. Additionally, <code>file_name</code> will be created if it does not already exist and will be overwritten if it does exist.</p></div>
 <p></p><div class="alert alert-warning" role="alert"><h4>Warning</h4><p><code>file_name</code> may be a relative path, but absolute paths are not guaranteed to work on every platform.</p></div>
 <h3 id="writeformatted"><a href="../../type/string.html#boundprocedure-write%28formatted%29">write(formatted)</a></h3>
@@ -342,7 +342,7 @@
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-01-06 03:07            </p>
+ on 2023-01-06 16:56            </p>
         </div>
       </div>
       <br>

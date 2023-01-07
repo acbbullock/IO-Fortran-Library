@@ -98,13 +98,13 @@
   
   <div class="row">
     <div class="col-md-9 col-md-push-3" id='text'>
-      <p>The following program demonstrates the use of <a href="../Ref/to_file.html">to_file</a> and <a href="../Ref/from_file.html">from_file</a> for writing <code>real</code> data to a <code>.dat</code> file, reading the file back into the program, and testing for exact equality to ensure that there has been no loss in precision:</p>
+      <p>The following program demonstrates the use of <a href="../Ref/to_file.html">to_file</a> and <a href="../Ref/from_file.html">from_file</a> for writing <code>real</code> data of rank <code>5</code> to a <code>.dat</code> file, reading the file back into the program, and testing for exact equality to ensure that there has been no loss in precision:</p>
 <div class="codehilite"><pre><span></span><code><span class="k">program </span><span class="n">main</span><span class="w"></span>
 <span class="w">    </span><span class="k">use </span><span class="n">io_fortran_lib</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="p">:</span><span class="w"> </span><span class="n">to_file</span><span class="p">,</span><span class="w"> </span><span class="n">from_file</span><span class="w"></span>
 <span class="w">    </span><span class="k">implicit none</span><span class="w"> </span><span class="p">(</span><span class="k">type</span><span class="p">,</span><span class="k">external</span><span class="p">)</span><span class="w"></span>
 
-<span class="w">    </span><span class="kt">real</span><span class="p">,</span><span class="w"> </span><span class="k">dimension</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span><span class="mi">20</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">x</span><span class="w"></span>
-<span class="w">    </span><span class="kt">real</span><span class="p">,</span><span class="w"> </span><span class="k">allocatable</span><span class="p">,</span><span class="w"> </span><span class="k">dimension</span><span class="p">(:,:)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">x_dat</span><span class="w"></span>
+<span class="w">    </span><span class="kt">real</span><span class="p">,</span><span class="w"> </span><span class="k">dimension</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">20</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">x</span><span class="w"></span>
+<span class="w">    </span><span class="kt">real</span><span class="p">,</span><span class="w"> </span><span class="k">allocatable</span><span class="p">,</span><span class="w"> </span><span class="k">dimension</span><span class="p">(:,:,:,:,:)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">x_dat</span><span class="w"></span>
 
 <span class="w">    </span><span class="k">call </span><span class="nb">random_number</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"></span>
 
@@ -116,15 +116,14 @@
 <span class="k">end program </span><span class="n">main</span><span class="w"></span>
 </code></pre></div>
 
-<p></p><div class="alert alert-warning" role="alert"><h4>Warning</h4><p>It's crucial that the kind of the array read into has the same <code>kind</code> as the array that was written, or else the data will appear as garbage.</p></div>
-<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>Tip: The <code>shape</code> of an array may be written to file as a <code>.csv</code> so that the value of <code>data_shape</code> can be read into the program before reading in the main array with the corresponding value.</p></div>
-<p>The following program demonstrates the above tip:</p>
+<p></p><div class="alert alert-warning" role="alert"><h4>Warning</h4><p>Reading into arrays of a different <code>kind</code> than the array that was written will invalidate the data. Always make sure the <code>kind</code> is matching.</p></div>
+<p>Tip: The <code>shape</code> of an array may be written to file as a <code>.csv</code> so that the value of <code>data_shape</code> can be read into the program before reading in the main array with the corresponding value. The following program demonstrates the above tip:</p>
 <div class="codehilite"><pre><span></span><code><span class="k">program </span><span class="n">main</span><span class="w"></span>
 <span class="w">    </span><span class="k">use </span><span class="n">io_fortran_lib</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="p">:</span><span class="w"> </span><span class="n">to_file</span><span class="p">,</span><span class="w"> </span><span class="n">from_file</span><span class="w"></span>
 <span class="w">    </span><span class="k">implicit none</span><span class="w"> </span><span class="p">(</span><span class="k">type</span><span class="p">,</span><span class="k">external</span><span class="p">)</span><span class="w"></span>
 
-<span class="w">    </span><span class="kt">real</span><span class="p">,</span><span class="w"> </span><span class="k">dimension</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span><span class="mi">20</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">x</span><span class="w"></span>
-<span class="w">    </span><span class="kt">real</span><span class="p">,</span><span class="w"> </span><span class="k">allocatable</span><span class="p">,</span><span class="w"> </span><span class="k">dimension</span><span class="p">(:,:)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">x_dat</span><span class="w"></span>
+<span class="w">    </span><span class="kt">real</span><span class="p">,</span><span class="w"> </span><span class="k">dimension</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">20</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">x</span><span class="w"></span>
+<span class="w">    </span><span class="kt">real</span><span class="p">,</span><span class="w"> </span><span class="k">allocatable</span><span class="p">,</span><span class="w"> </span><span class="k">dimension</span><span class="p">(:,:,:,:,:)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">x_dat</span><span class="w"></span>
 <span class="w">    </span><span class="kt">integer</span><span class="p">,</span><span class="w"> </span><span class="k">allocatable</span><span class="p">,</span><span class="w"> </span><span class="k">dimension</span><span class="p">(:)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">x_shape</span><span class="w"></span>
 
 <span class="w">    </span><span class="k">call </span><span class="nb">random_number</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"></span>
@@ -244,7 +243,7 @@
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-01-06 03:07            </p>
+ on 2023-01-06 16:56            </p>
         </div>
       </div>
       <br>

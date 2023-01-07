@@ -16,12 +16,12 @@ module io_fortran_lib
     public :: operator(//), operator(+), operator(-), operator(**), operator(==), operator(/=)              ! Operators
 
     ! Definitions and Interfaces ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    character(len=1), parameter :: CR = char(13)                                      !! The carriage return character.
-    character(len=1), parameter :: LF = new_line('a')                            !! The new line character (line feed).
-    character(len=1), parameter :: NL = new_line('a')            !! The new line character (line feed, alternate name).
-    character(len=1), parameter :: VT = char(11)                                         !! The vertical tab character.
-    character(len=1), parameter :: FF = char(12)                                            !! The form feed character.
-    character(len=1), parameter :: NUL = char(0)                                                 !! The null character.
+    character(len=1), parameter :: CR   = char(13)                                    !! The carriage return character.
+    character(len=1), parameter :: LF   = new_line('a')                          !! The new line character (line feed).
+    character(len=1), parameter :: NL   = new_line('a')          !! The new line character (line feed, alternate name).
+    character(len=1), parameter :: VT   = char(11)                                       !! The vertical tab character.
+    character(len=1), parameter :: FF   = char(12)                                          !! The form feed character.
+    character(len=1), parameter :: NUL  = char(0)                                                !! The null character.
     character(len=1), parameter :: CNUL = c_null_char           !! The C null character re-exported from iso_c_binding.
 
     character(len=*), dimension(*), parameter :: INT_FMTS   = [ 'i', 'z' ]               ! Allowed formats for integers
@@ -121,7 +121,7 @@ module io_fortran_lib
 
         pure recursive module subroutine glue(self, tokens, separator)
             !----------------------------------------------------------------------------------------------------------
-            !! Glues a string vector into `self` with given separator. Default separator is SPACE. The string slice
+            !! Glues a `String` vector into `self` with given separator. Default separator is SPACE. The string slice
             !! component will be replaced if already allocated.
             !!
             !! For a user reference, see [glue](../page/Ref/string-methods.html#glue).
@@ -133,7 +133,7 @@ module io_fortran_lib
 
         pure elemental recursive integer module function length(self) result(self_len)
             !----------------------------------------------------------------------------------------------------------
-            !! Returns the length of the string slice component elementally. Unallocated components return -1.
+            !! Returns the length of the string slice component elementally. Unallocated components return `-1`.
             !!
             !! For a user reference, see [len](../page/Ref/string-methods.html#len).
             !----------------------------------------------------------------------------------------------------------
@@ -142,9 +142,9 @@ module io_fortran_lib
 
         pure elemental recursive module subroutine push(self, chars)
             !----------------------------------------------------------------------------------------------------------
-            !! Appends characters to the string slice component elementally. This procedure is identical in function to
-            !! the [concatenation operators](../page/Ref/operators.html#concatenation) `self // chars` and
-            !! `self + chars`.
+            !! Appends characters to the string slice component elementally in place. This procedure is identical in
+            !! function to the [concatenation operators](../page/Ref/operators.html#concatenation) with self
+            !! assignment: `self = self // chars` and `self = self + chars`.
             !!
             !! For a user reference, see [push](../page/Ref/string-methods.html#push).
             !----------------------------------------------------------------------------------------------------------
@@ -163,7 +163,7 @@ module io_fortran_lib
             !! and one may manually parse and manipulate the file's contents using the other type-bound procedures.
             !! Optionally, one may provide a rank `2` allocatable array `cell_array` of type `String`, which will be
             !! populated with the cells of the given file using the designated `row_separator` and `column_separator`
-            !! whose default values are NEW_LINE and `','` respectively.
+            !! whose default values are `LF` and `','` respectively.
             !!
             !! For a user reference, see [read_file](../page/Ref/string-methods.html#read_file).
             !----------------------------------------------------------------------------------------------------------
@@ -234,7 +234,7 @@ module io_fortran_lib
             !! **mixed type**, which cannot be handled with a simple call to [to_file](../page/Ref/to_file.html)
             !! (which accepts numeric arrays of uniform type). The cell array's entire contents are populated into
             !! `self` and then streamed to an external text file using the designated `row_separator` and
-            !! `column_separator` whose default values are NEW_LINE and `','` respectively.
+            !! `column_separator` whose default values are `LF` and `','` respectively.
             !!
             !! For a user reference, see [write_file](../page/Ref/string-methods.html#write_file).
             !----------------------------------------------------------------------------------------------------------
@@ -4331,7 +4331,7 @@ module io_fortran_lib
 
     contains
     pure recursive function ext_of(file_name) result(ext)
-        !! Function for parsing a file name for an extension
+        ! Function for parsing a file name for an extension
         character(len=*), intent(in) :: file_name
         character(len=:), allocatable :: ext
 
@@ -4351,7 +4351,7 @@ module io_fortran_lib
     end function ext_of
 
     pure recursive function to_str(x, delim, trimstring) result(x_str)
-        !! Function for accumulating vector of strings into a single string with specified delimiter
+        ! Function for accumulating vector of strings into a single string with specified delimiter
         character(len=*), dimension(:), intent(in) :: x
         character(len=*), intent(in) :: delim
         logical, intent(in), optional :: trimstring
@@ -4880,8 +4880,8 @@ submodule (io_fortran_lib) operators
     !! `operator(+)`, `operator(-)`, `operator(**)`, `operator(==)`, and `operator(/=)`.
     contains
     module procedure string_concatenation
-        if ( .not. allocated(Stringl%s) ) then
-            if ( .not. allocated(Stringr%s) ) then
+        if ( Stringl%len() < 1 ) then
+            if ( Stringr%len() < 1 ) then
                 new%s = ''
             else
                 new%s = Stringr%s
@@ -4889,7 +4889,7 @@ submodule (io_fortran_lib) operators
             return
         end if
 
-        if ( .not. allocated(Stringr%s) ) then
+        if ( Stringr%len() < 1 ) then
             new%s = Stringl%s
             return
         end if

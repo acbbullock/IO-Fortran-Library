@@ -10,9 +10,10 @@ program main
     use io_fortran_lib, only: String, LF, operator(+), operator(-)
     implicit none (type,external)
 
-    character(len=10) :: date, time
     type(String) :: time_stamp, new_time_stamp
     type(String), allocatable, dimension(:) :: tokens
+    
+    character(len=10) :: date, time
 
     call date_and_time(date=date, time=time)
 

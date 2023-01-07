@@ -126,4 +126,4 @@ Here, `file_name` is a relative path, and we use the extended operator `+` for [
 cells(2:,3)%replace('X','0') - 'chr'
 ```
 
-which first calls [replace](../Ref/string-methods.html#replace) to return an elemental copy of the given cells in which all instances of `X` have been replaced with `0`, and then calls the [excision operator](../Ref/operators.html#excision) `-` to remove all instances of `chr`. The output of the `String` expression contains numeric characters only, which are then casted to the array `chromosome`.
+which first calls [replace](../Ref/string-methods.html#replace) to return an elemental copy of the given cells in which all instances of `X` have been replaced with `0`, and then calls the [excision operator](../Ref/operators.html#excision) `-` to remove all instances of `'chr'` elementally. The output of the `String` expression contains numeric characters only, which are then casted to the array `chromosome`.
