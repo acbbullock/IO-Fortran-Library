@@ -3,7 +3,7 @@ program main
     use io_fortran_lib
     implicit none (type,external)
 
-    integer, parameter :: rows = 1000
+    integer, parameter :: rows = 100
     integer, parameter :: cols = 20
 
     type(String) :: logmsg
@@ -23,9 +23,11 @@ program main
     write(*,'(a)') logmsg%as_str()
 
     test_int: block
-        real(rk) :: u(rows), x(rows,cols)
-        integer(ik) :: i(rows), k(rows,cols)
+        real(rk), allocatable :: u(:), x(:,:)
+        integer(ik), allocatable :: i(:), k(:,:)
         integer(ik), allocatable :: j(:), l(:,:)
+
+        allocate( u(rows), x(rows,cols), i(rows), k(rows,cols) )
 
         call random_number(u); i = floor(2147483647*u, ik) + 1_ik
         call to_file(i, file_name='./data/i.csv', header=['i'], fmt='i')
@@ -69,8 +71,10 @@ program main
     end block test_int
 
     test_real: block
-        real(rk) :: u(rows), x(rows,cols)
+        real(rk), allocatable :: u(:), x(:,:)
         real(rk), allocatable :: v(:), y(:,:)
+
+        allocate( u(rows), x(rows,cols) )
 
         call random_number(u)
         call to_file(u, file_name='./data/u_e.csv', header=['u'], fmt='e')
@@ -134,9 +138,10 @@ program main
     end block test_real
 
     test_complex: block
-        real(rk) :: u(rows), v(rows), x(rows,cols), y(rows,cols)
-        complex(rk) :: a(rows), c(rows,cols)
-        complex(rk), allocatable :: b(:), d(:,:)
+        real(rk), allocatable :: u(:), v(:), x(:,:), y(:,:)
+        complex(rk), allocatable :: a(:), b(:), c(:,:), d(:,:)
+
+        allocate( u(rows), v(rows), x(rows,cols), y(rows,cols) )
 
         call random_number(u); call random_number(v); a = cmplx(u,v,rk)
         call to_file(a, file_name='./data/a_e.csv', header=['a'], fmt='e', im='j')
