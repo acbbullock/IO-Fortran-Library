@@ -13,7 +13,7 @@ module io_fortran_lib
     ! Public API list ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     public :: aprint, to_file, from_file                                                                    ! Array I/O
     public :: str, cast, String, cast_string, echo                                                         ! String I/O
-    public :: CR, LF, NL, VT, FF, NUL, CNUL                                                                 ! Constants
+    public :: LF, NL, CR, FF, VT, TAB, HT, NUL, CNUL                                                        ! Constants
     public :: operator(//), operator(+), operator(-), operator(**), operator(==), operator(/=)              ! Operators
 
     ! Definitions and Interfaces ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -22,6 +22,8 @@ module io_fortran_lib
     character(len=1), parameter :: CR   = char(13)                                    !! The carriage return character.
     character(len=1), parameter :: FF   = char(12)                                          !! The form feed character.
     character(len=1), parameter :: VT   = char(11)                                       !! The vertical tab character.
+    character(len=1), parameter :: TAB  = char(9)                                      !! The horizontal tab character.
+    character(len=1), parameter :: HT   = char(9)                     !! The horizontal tab character (alternate name).
     character(len=1), parameter :: NUL  = char(0)                                                !! The null character.
     character(len=1), parameter :: CNUL = c_null_char           !! The C null character re-exported from iso_c_binding.
 
@@ -32,7 +34,7 @@ module io_fortran_lib
     character(len=*), dimension(*), parameter :: TEXT_EXT   = [ 'csv', 'txt', 'log', &        ! Allowed text extensions
                                                                 'rtf', 'odm', 'odt', &
                                                                 'ods', 'odf', 'xls', &
-                                                                'doc', 'org', 'dbf' ]
+                                                                'doc', 'org', 'dbf', 'bed' ]
 
     type String
         !--------------------------------------------------------------------------------------------------------------
@@ -65,15 +67,18 @@ module io_fortran_lib
             generic, public :: cast => cast_string_c128, cast_string_c64, cast_string_c32, &
                                        cast_string_r128, cast_string_r64, cast_string_r32, &
                                        cast_string_i64, cast_string_i32, cast_string_i16, cast_string_i8
+            generic, public :: count => count_substring_chars, count_substring_string
+            generic, public :: push => push_chars, push_string
             procedure, pass(self), public :: as_str
             procedure, pass(self)         :: cast_string_c128, cast_string_c64, cast_string_c32, &
                                              cast_string_r128, cast_string_r64, cast_string_r32, &
                                              cast_string_i64, cast_string_i32, cast_string_i16, cast_string_i8
+            procedure, pass(self)         :: count_substring_chars, count_substring_string
             procedure, pass(self), public :: echo => echo_string
             procedure, pass(self), public :: empty
             procedure, pass(self), public :: glue
             procedure, pass(self), public :: len => length
-            procedure, pass(self), public :: push
+            procedure, pass(self)         :: push_chars, push_string
             procedure, pass(self), public :: read_file
             procedure, pass(self), public :: replace => replace_copy
             procedure, pass(self), public :: replace_inplace
@@ -97,6 +102,22 @@ module io_fortran_lib
             class(String), intent(in) :: self
             character(len=:), allocatable :: string_slice
         end function as_str
+
+        pure elemental recursive integer module function count_substring_chars(self, substring) result(occurrences)
+            !----------------------------------------------------------------------------------------------------------
+            !! Returns number of non-overlapping occurrences of a substring elementally.
+            !----------------------------------------------------------------------------------------------------------
+            class(String), intent(in) :: self
+            character(len=*), intent(in) :: substring
+        end function count_substring_chars
+
+        pure elemental recursive integer module function count_substring_string(self, substring) result(occurrences)
+            !----------------------------------------------------------------------------------------------------------
+            !! Returns number of non-overlapping occurrences of a substring elementally.
+            !----------------------------------------------------------------------------------------------------------
+            class(String), intent(in) :: self
+            type(String), intent(in) :: substring
+        end function count_substring_string
 
         impure recursive module subroutine echo_string(self, file_name, append, terminator)
             !----------------------------------------------------------------------------------------------------------
@@ -141,17 +162,21 @@ module io_fortran_lib
             class(String), intent(in) :: self
         end function length
 
-        pure elemental recursive module subroutine push(self, chars)
+        pure elemental recursive module subroutine push_chars(self, chars)
             !----------------------------------------------------------------------------------------------------------
-            !! Appends characters to the string slice component elementally in place. This procedure is identical in
-            !! function to the [concatenation operators](../page/Ref/operators.html#concatenation) with self
-            !! assignment: `self = self // chars` and `self = self + chars`.
-            !!
-            !! For a user reference, see [push](../page/Ref/string-methods.html#push).
+            !! Appends characters to the string slice component elementally in place.
             !----------------------------------------------------------------------------------------------------------
             class(String), intent(inout) :: self
             character(len=*), intent(in) :: chars
-        end subroutine push
+        end subroutine push_chars
+
+        pure elemental recursive module subroutine push_string(self, chars)
+            !----------------------------------------------------------------------------------------------------------
+            !! Appends string to the string slice component elementally in place.
+            !----------------------------------------------------------------------------------------------------------
+            class(String), intent(inout) :: self
+            type(String), intent(in) :: chars
+        end subroutine push_string
 
         impure recursive module subroutine read_file(self, file_name, cell_array, row_separator, column_separator)
             !----------------------------------------------------------------------------------------------------------
@@ -4395,6 +4420,84 @@ submodule (io_fortran_lib) String_procedures
         end if
     end procedure as_str
 
+    module procedure count_substring_chars
+        integer :: self_len, substring_len, i
+
+        self_len = self%len()
+        substring_len = len(substring)
+
+        if ( self_len < 1 ) then
+            if ( self_len == substring_len ) then
+                occurrences = 1; return
+            else
+                occurrences = 0; return
+            end if
+        end if
+
+        if ( (substring_len == 0) .or. (substring_len > self_len) ) then
+            occurrences = 0; return
+        end if
+
+        i = 1
+        occurrences = 0
+
+        counting: do while ( i <= self_len )
+            if ( self%s(i:i) == substring(1:1) ) then
+                if ( i+substring_len-1 > self_len ) exit counting
+
+                if ( self%s(i:i+substring_len-1) == substring ) then
+                    occurrences = occurrences + 1
+                    i = i + substring_len; cycle counting
+                else
+                    i = i + 1; cycle counting
+                end if
+            else
+                i = i + 1; cycle counting
+            end if
+        end do counting
+    end procedure count_substring_chars
+
+    module procedure count_substring_string
+        integer :: self_len, substring_len, i
+
+        self_len = self%len()
+        substring_len = substring%len()
+
+        if ( self_len < 1 ) then
+            if ( self_len == substring_len ) then
+                if ( self_len == 0 ) then
+                    occurrences = 1; return
+                else
+                    occurrences = 0; return
+                end if
+            else
+                occurrences = 0; return
+            end if
+        end if
+
+        if ( (substring_len < 1) .or. (substring_len > self_len) ) then
+            occurrences = 0; return
+        end if
+
+        i = 1
+        occurrences = 0
+
+        counting: do while ( i <= self_len )
+            if ( self%s(i:i) == substring%s(1:1) ) then
+                if ( i+substring_len-1 > self_len ) exit counting
+
+                if ( self%s(i:i+substring_len-1) == substring%s ) then
+                    occurrences = occurrences + 1
+                    i = i + substring_len; cycle counting
+                else
+                    i = i + 1; cycle counting
+                end if
+            else
+                i = i + 1; cycle counting
+            end if
+        end do counting
+    end procedure count_substring_string
+
     module procedure echo_string
         character(len=:), allocatable :: ext, terminator_
         logical :: exists, append_
@@ -4490,13 +4593,29 @@ submodule (io_fortran_lib) String_procedures
         end if
     end procedure length
 
-    module procedure push
+    module procedure push_chars
         if ( self%len() < 1 ) then
             self%s = chars
         else
             self%s = self%s//chars
         end if
-    end procedure push
+    end procedure push_chars
+
+    module procedure push_string
+        if ( self%len() < 1 ) then
+            if ( chars%len() < 1 ) then
+                self%s = ''
+            else
+                self%s = chars%s
+            end if
+        else
+            if ( chars%len() < 1 ) then
+                return
+            else
+                self%s = self%s//chars%s
+            end if
+        end if
+    end procedure push_string
 
     module procedure read_file
         character(len=:), allocatable :: ext
@@ -4611,7 +4730,8 @@ submodule (io_fortran_lib) String_procedures
             type(String), intent(inout) :: row
             character(len=*), intent(in) :: row_separator, column_separator
 
-            integer :: row_len, sep_len, i
+            type(String) :: new_row
+            integer :: row_len, sep_len, diff_len, i
             logical :: in_quote
 
             row_len = row%len()
@@ -4621,20 +4741,36 @@ submodule (io_fortran_lib) String_procedures
 
             in_quote = .false.
 
-            replace_sep: do i = 1, row_len
+            new_row%s = row%s
+            diff_len = 0
+            i = 1
+
+            replace_sep: do while ( i <= row_len )
                 if ( row%s(i:i) == '"' ) then
                     in_quote = ( .not. in_quote )
-                    cycle replace_sep
+                    i = i + 1; cycle replace_sep
                 end if
 
                 if ( in_quote ) then
-                    if ( row%s(i:i+sep_len-1) == column_separator ) then
-                        row%s = row%s(:i-1)//row_separator//row%s(i+sep_len:)
+                    if ( row%s(i:i) == column_separator(1:1) ) then
+                        if ( i+sep_len-1 > row_len ) exit replace_sep
+
+                        if ( row%s(i:i+sep_len-1) == column_separator ) then
+                            new_row%s = new_row%s(:i-1+diff_len)//row_separator//new_row%s(i+sep_len+diff_len:)
+                            diff_len = diff_len + ( len(row_separator) - sep_len )
+                            i = i + sep_len; cycle replace_sep
+                        else
+                            i = i + 1; cycle replace_sep
+                        end if
+                    else
+                        i = i + 1; cycle replace_sep
                     end if
+                else
+                    i = i + 1; cycle replace_sep
                 end if
             end do replace_sep
 
-            call row%replace_inplace(search_for='"', replace_with='')
+            row = new_row%replace(search_for='"', replace_with='')
         end subroutine process_quotes
     end procedure read_file
 
@@ -4646,13 +4782,11 @@ submodule (io_fortran_lib) String_procedures
         replace_len = len(replace_with)
 
         if ( self_len < 1 ) then
-            new%s = ''
-            return
+            new%s = ''; return
         end if
 
         if ( (search_len == 0) .or. (search_len > self_len) ) then
-            new%s = self%s
-            return
+            new%s = self%s; return
         end if
 
         new%s = self%s
@@ -4666,12 +4800,12 @@ submodule (io_fortran_lib) String_procedures
                 if ( self%s(i:i+search_len-1) == search_for ) then
                     new%s = new%s(:i-1+diff_len)//replace_with//new%s(i+search_len+diff_len:)
                     diff_len = diff_len + ( replace_len - search_len )
-                    i = i + search_len
+                    i = i + search_len; cycle search_and_replace
                 else
-                    i = i + 1
+                    i = i + 1; cycle search_and_replace
                 end if
             else
-                i = i + 1
+                i = i + 1; cycle search_and_replace
             end if
         end do search_and_replace
     end procedure replace_copy
@@ -4685,8 +4819,7 @@ submodule (io_fortran_lib) String_procedures
         replace_len = len(replace_with)
 
         if ( self_len < 1 ) then
-            self%s = ''
-            return
+            self%s = ''; return
         end if
 
         if ( (search_len == 0) .or. (search_len > self_len) ) return
@@ -4702,12 +4835,12 @@ submodule (io_fortran_lib) String_procedures
                 if ( self%s(i:i+search_len-1) == search_for ) then
                     new%s = new%s(:i-1+diff_len)//replace_with//new%s(i+search_len+diff_len:)
                     diff_len = diff_len + ( replace_len - search_len )
-                    i = i + search_len
+                    i = i + search_len; cycle search_and_replace
                 else
-                    i = i + 1
+                    i = i + 1; cycle search_and_replace
                 end if
             else
-                i = i + 1
+                i = i + 1; cycle search_and_replace
             end if
         end do search_and_replace
 
@@ -4723,8 +4856,7 @@ submodule (io_fortran_lib) String_procedures
         temp_len = temp_String%len()
 
         if ( temp_len == 0 ) then
-            tokens = [ String('') ]
-            return
+            tokens = [ String('') ]; return
         end if
 
         if ( .not. present(separator) ) then
@@ -4764,8 +4896,7 @@ submodule (io_fortran_lib) String_procedures
         end do search
 
         if ( num_seps == 0 ) then
-            tokens = [ self ]
-            return
+            tokens = [ self ]; return
         end if
 
         allocate( tokens(num_seps + 1) )
