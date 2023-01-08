@@ -204,7 +204,7 @@ module io_fortran_lib
 			character(len=*), intent(in), optional :: row_separator, column_separator
 		end subroutine read_file
 
-		pure elemental recursive type(String) module function replace_copy(self, match, substring) result(new)
+		pure elemental recursive type(String) module function replace_copy(self, match, substring, back) result(new)
 			!----------------------------------------------------------------------------------------------------------
 			!! Matches and replaces all occurrences of a substring elementally.
 			!!
@@ -212,9 +212,10 @@ module io_fortran_lib
 			!----------------------------------------------------------------------------------------------------------
 			class(String), intent(in) :: self
 			character(len=*), intent(in) :: match, substring
+			logical, intent(in), optional :: back
 		end function replace_copy
 
-		pure elemental recursive module subroutine replace_inplace(self, match, substring)
+		pure elemental recursive module subroutine replace_inplace(self, match, substring, back)
 			!----------------------------------------------------------------------------------------------------------
 			!! Matches and replaces all occurrences of a substring elementally in place.
 			!!
@@ -222,6 +223,7 @@ module io_fortran_lib
 			!----------------------------------------------------------------------------------------------------------
 			class(String), intent(inout) :: self
 			character(len=*), intent(in) :: match, substring
+			logical, intent(in), optional :: back
 		end subroutine replace_inplace
 
 		pure recursive module function split(self, separator) result(tokens)
@@ -4779,6 +4781,7 @@ submodule (io_fortran_lib) String_procedures
 
 	module procedure replace_copy
 		integer :: i, self_len, match_len, substring_len, diff_len
+		logical :: back_
 
 		self_len = self%len()
 		match_len = len(match)
@@ -4792,30 +4795,54 @@ submodule (io_fortran_lib) String_procedures
 			new%s = self%s; return
 		end if
 
+		if ( .not. present(back) ) then
+			back_ = .false.
+		else
+			back_ = back
+		end if
+
 		new%s = self%s
-		diff_len = 0
-		i = 1
 
-		search_and_replace: do while ( i <= self_len )
-			if ( self%s(i:i) == match(1:1) ) then
-				if ( i+match_len-1 > self_len ) exit search_and_replace
+		if ( .not. back_ ) then
+			i = 1; diff_len = 0
+			match_and_replace_forward: do while ( i <= self_len )
+				if ( self%s(i:i) == match(1:1) ) then
+					if ( i+match_len-1 > self_len ) exit match_and_replace_forward
 
-				if ( self%s(i:i+match_len-1) == match ) then
-					new%s = new%s(:i-1+diff_len)//substring//new%s(i+match_len+diff_len:)
-					diff_len = diff_len + ( substring_len - match_len )
-					i = i + match_len; cycle search_and_replace
+					if ( self%s(i:i+match_len-1) == match ) then
+						new%s = new%s(:i-1+diff_len)//substring//new%s(i+match_len+diff_len:)
+						diff_len = diff_len + ( substring_len - match_len )
+						i = i + match_len; cycle match_and_replace_forward
+					else
+						i = i + 1; cycle match_and_replace_forward
+					end if
 				else
-					i = i + 1; cycle search_and_replace
+					i = i + 1; cycle match_and_replace_forward
 				end if
-			else
-				i = i + 1; cycle search_and_replace
-			end if
-		end do search_and_replace
+			end do match_and_replace_forward
+		else
+			i = self_len
+			match_and_replace_backward: do while ( i > 0 )
+				if ( self%s(i:i) == match(match_len:match_len) ) then
+					if ( i-match_len+1 < 1 ) exit match_and_replace_backward
+
+					if ( self%s(i-match_len+1:i) == match ) then
+						new%s = new%s(:i-match_len)//substring//new%s(i+1:)
+						i = i - match_len; cycle match_and_replace_backward
+					else
+						i = i - 1; cycle match_and_replace_backward
+					end if
+				else
+					i = i - 1; cycle match_and_replace_backward
+				end if
+			end do match_and_replace_backward
+		end if
 	end procedure replace_copy
 
 	module procedure replace_inplace
 		type(String) :: new
 		integer :: i, self_len, match_len, substring_len, diff_len
+		logical :: back_
 
 		self_len = self%len()
 		match_len = len(match)
@@ -4827,25 +4854,48 @@ submodule (io_fortran_lib) String_procedures
 
 		if ( (match_len == 0) .or. (match_len > self_len) ) return
 
+		if ( .not. present(back) ) then
+			back_ = .false.
+		else
+			back_ = back
+		end if
+
 		new%s = self%s
-		diff_len = 0
-		i = 1
+		
+		if ( .not. back_ ) then
+			i = 1; diff_len = 0
+			match_and_replace_forward: do while ( i <= self_len )
+				if ( self%s(i:i) == match(1:1) ) then
+					if ( i+match_len-1 > self_len ) exit match_and_replace_forward
 
-		search_and_replace: do while ( i <= self_len )
-			if ( self%s(i:i) == match(1:1) ) then
-				if ( i+match_len-1 > self_len ) exit search_and_replace
-
-				if ( self%s(i:i+match_len-1) == match ) then
-					new%s = new%s(:i-1+diff_len)//substring//new%s(i+match_len+diff_len:)
-					diff_len = diff_len + ( substring_len - match_len )
-					i = i + match_len; cycle search_and_replace
+					if ( self%s(i:i+match_len-1) == match ) then
+						new%s = new%s(:i-1+diff_len)//substring//new%s(i+match_len+diff_len:)
+						diff_len = diff_len + ( substring_len - match_len )
+						i = i + match_len; cycle match_and_replace_forward
+					else
+						i = i + 1; cycle match_and_replace_forward
+					end if
 				else
-					i = i + 1; cycle search_and_replace
+					i = i + 1; cycle match_and_replace_forward
 				end if
-			else
-				i = i + 1; cycle search_and_replace
-			end if
-		end do search_and_replace
+			end do match_and_replace_forward
+		else
+			i = self_len
+			match_and_replace_backward: do while ( i > 0 )
+				if ( self%s(i:i) == match(match_len:match_len) ) then
+					if ( i-match_len+1 < 1 ) exit match_and_replace_backward
+
+					if ( self%s(i-match_len+1:i) == match ) then
+						new%s = new%s(:i-match_len)//substring//new%s(i+1:)
+						i = i - match_len; cycle match_and_replace_backward
+					else
+						i = i - 1; cycle match_and_replace_backward
+					end if
+				else
+					i = i - 1; cycle match_and_replace_backward
+				end if
+			end do match_and_replace_backward
+		end if
 
 		self%s = new%s
 	end procedure replace_inplace
