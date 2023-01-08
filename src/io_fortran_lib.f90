@@ -4,38 +4,38 @@ module io_fortran_lib
 	!! a derived type `String` for more advanced file I/O and character manipulations. This module is F2018 compliant,
 	!! has no external dependencies, and has a max line length of 120.
 	!------------------------------------------------------------------------------------------------------------------
-	use, intrinsic :: iso_fortran_env, only: real128, real64, real32, int64, int32, int16, int8, &     ! Standard kinds
-											 input_unit, output_unit                  ! Standard input and output units
-	use, intrinsic :: iso_c_binding, only: c_null_char                                           ! The C null character
-	implicit none (type,external)                                                     ! No implicit types or interfaces
+	use, intrinsic :: iso_fortran_env, only: real128, real64, real32, int64, int32, int16, int8, &	   ! Standard kinds
+											 input_unit, output_unit				  ! Standard input and output units
+	use, intrinsic :: iso_c_binding, only: c_null_char											 ! The C null character
+	implicit none (type,external)													  ! No implicit types or interfaces
 	private
 
 	! Public API list ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	public :: aprint, to_file, from_file                                                                    ! Array I/O
-	public :: str, cast, String, cast_string, echo                                                         ! String I/O
-	public :: LF, NL, SPACE, CR, FF, VT, TAB, HT, NUL, CNUL, EMPTY_STRING                                   ! Constants
-	public :: operator(//), operator(+), operator(-), operator(**), operator(==), operator(/=)              ! Operators
+	public :: aprint, to_file, from_file																	! Array I/O
+	public :: str, cast, String, cast_string, echo														   ! String I/O
+	public :: LF, NL, SPACE, CR, FF, VT, TAB, HT, NUL, CNUL, EMPTY_STR										! Constants
+	public :: operator(//), operator(+), operator(-), operator(**), operator(==), operator(/=)				! Operators
 
 	! Definitions and Interfaces ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	character(len=1), parameter :: LF    = new_line('a')						 !! The new line character (line feed).
-	character(len=1), parameter :: NL    = new_line('a')		 !! The new line character (line feed, alternate name).
-	character(len=1), parameter :: SPACE = char(32)												!! The space character.
-	character(len=1), parameter :: CR    = char(13)									  !! The carriage return character.
-	character(len=1), parameter :: FF    = char(12)											!! The form feed character.
-	character(len=1), parameter :: VT    = char(11)										 !! The vertical tab character.
-	character(len=1), parameter :: TAB   = char(9)									   !! The horizontal tab character.
-	character(len=1), parameter :: HT    = char(9)					  !! The horizontal tab character (alternate name).
-	character(len=1), parameter :: NUL   = char(0)												 !! The null character.
-	character(len=1), parameter :: CNUL  = c_null_char			!! The C null character re-exported from iso_c_binding.
-	character(len=0), parameter :: EMPTY_STRING = ''											   !! The empty string.
+	character(len=1), parameter :: LF		 = new_line('a')								!! The line feed character.
+	character(len=1), parameter :: NL		 = new_line('a')		 	   !! The line feed character (alternate name).
+	character(len=1), parameter :: SPACE	 = char(32)											!! The space character.
+	character(len=1), parameter :: CR		 = char(13)								  !! The carriage return character.
+	character(len=1), parameter :: FF		 = char(12)										!! The form feed character.
+	character(len=1), parameter :: VT		 = char(11)									 !! The vertical tab character.
+	character(len=1), parameter :: TAB		 = char(9)								   !! The horizontal tab character.
+	character(len=1), parameter :: HT		 = char(9)				  !! The horizontal tab character (alternate name).
+	character(len=1), parameter :: NUL		 = char(0)											 !! The null character.
+	character(len=1), parameter :: CNUL		 = c_null_char		!! The C null character re-exported from iso_c_binding.
+	character(len=0), parameter :: EMPTY_STR = ''												   !! The empty string.
 
+	character(len=1),				parameter :: QQUOTE		= char(34)									 ! Double quote
 	character(len=*), dimension(*), parameter :: INT_FMTS   = [ 'i', 'z' ]				 ! Allowed formats for integers
 	character(len=*), dimension(*), parameter :: REAL_FMTS  = [ 'e', 'f', 'z' ]			   ! Allowed formats for floats
 	character(len=*), dimension(*), parameter :: LOCALES    = [ 'US', 'EU' ]				! Allowed locale specifiers
 	character(len=*), dimension(*), parameter :: BINARY_EXT = [ 'dat', 'bin' ]				! Allowed binary extensions
-	character(len=*), dimension(*), parameter :: TEXT_EXT   = [ 'csv', 'txt', 'log', &		  ! Allowed text extensions
-																'rtf', 'odm', 'odt', &
-																'ods', 'odf', 'xls', &
+	character(len=*), dimension(*), parameter :: TEXT_EXT   = [ 'csv', 'txt', 'log', 'rtf', & ! Allowed text extensions
+																'odm', 'odt', 'ods', 'odf', 'xls', &
 																'doc', 'org', 'dbf', 'bed' ]
 
 	type String
@@ -65,12 +65,15 @@ module io_fortran_lib
 		character(len=:), allocatable :: s                                               !! Component is a string slice
 		contains
 			private
-			generic, public :: write(formatted) => write_string
-			generic, public :: cast =>	cast_string_c128, cast_string_c64, cast_string_c32, &
+			! Generics ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+			generic, public :: cast  =>	cast_string_c128, cast_string_c64, cast_string_c32, &
 										cast_string_r128, cast_string_r64, cast_string_r32, &
 										cast_string_i64, cast_string_i32, cast_string_i16, cast_string_i8
 			generic, public :: count =>	count_substring_chars, count_substring_string
-			generic, public :: push =>	push_chars, push_string
+			generic, public :: push  =>	push_chars, push_string
+			generic, public :: write(formatted) => write_string
+
+			! Specifics ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 			procedure, pass(self), public :: as_str
 			procedure, pass(self)         :: cast_string_c128, cast_string_c64, cast_string_c32, &
 											 cast_string_r128, cast_string_r64, cast_string_r32, &
@@ -105,20 +108,20 @@ module io_fortran_lib
 			character(len=:), allocatable :: string_slice
 		end function as_str
 
-		pure elemental recursive integer module function count_substring_chars(self, substring) result(occurrences)
+		pure elemental recursive integer module function count_substring_chars(self, match) result(occurrences)
 			!----------------------------------------------------------------------------------------------------------
 			!! Returns number of non-overlapping occurrences of a substring elementally.
 			!----------------------------------------------------------------------------------------------------------
 			class(String), intent(in) :: self
-			character(len=*), intent(in) :: substring
+			character(len=*), intent(in) :: match
 		end function count_substring_chars
 
-		pure elemental recursive integer module function count_substring_string(self, substring) result(occurrences)
+		pure elemental recursive integer module function count_substring_string(self, match) result(occurrences)
 			!----------------------------------------------------------------------------------------------------------
 			!! Returns number of non-overlapping occurrences of a substring elementally.
 			!----------------------------------------------------------------------------------------------------------
 			class(String), intent(in) :: self
-			type(String), intent(in) :: substring
+			type(String), intent(in) :: match
 		end function count_substring_string
 
 		impure recursive module subroutine echo_string(self, file_name, append, terminator)
@@ -201,25 +204,24 @@ module io_fortran_lib
 			character(len=*), intent(in), optional :: row_separator, column_separator
 		end subroutine read_file
 
-		pure elemental recursive type(String) module function replace_copy(self, search_for, replace_with) result(new)
+		pure elemental recursive type(String) module function replace_copy(self, match, substring) result(new)
 			!----------------------------------------------------------------------------------------------------------
-			!! Returns a copy of a `String` elementally in which each string slice component has had a substring
-			!! searched and replaced.
+			!! Matches and replaces all occurrences of a substring elementally.
 			!!
 			!! For a user reference, see [replace](../page/Ref/string-methods.html#replace).
 			!----------------------------------------------------------------------------------------------------------
 			class(String), intent(in) :: self
-			character(len=*), intent(in) :: search_for, replace_with
+			character(len=*), intent(in) :: match, substring
 		end function replace_copy
 
-		pure elemental recursive module subroutine replace_inplace(self, search_for, replace_with)
+		pure elemental recursive module subroutine replace_inplace(self, match, substring)
 			!----------------------------------------------------------------------------------------------------------
-			!! Searches and replaces a substring elementally in place.
+			!! Matches and replaces all occurrences of a substring elementally in place.
 			!!
 			!! For a user reference, see [replace_inplace](../page/Ref/string-methods.html#replace_inplace).
 			!----------------------------------------------------------------------------------------------------------
 			class(String), intent(inout) :: self
-			character(len=*), intent(in) :: search_for, replace_with
+			character(len=*), intent(in) :: match, substring
 		end subroutine replace_inplace
 
 		pure recursive module function split(self, separator) result(tokens)
@@ -4374,7 +4376,7 @@ module io_fortran_lib
 		if ( i > 0 ) then
 			ext = trim(adjustl(file_name(i+1:l)))
 		else
-			ext = ''
+			ext = EMPTY_STR
 		end if
 	end function ext_of
 
@@ -4394,14 +4396,13 @@ module io_fortran_lib
 			trimstring_ = trimstring
 		end if
 
+		x_str = EMPTY_STR
 		if ( trimstring_ ) then
-			x_str = ''
 			do i = 1, size(x)-1
 				x_str = x_str//trim(adjustl(x(i)))//delim
 			end do
 			x_str = x_str//trim(adjustl(x(size(x))))
 		else
-			x_str = ''
 			do i = 1, size(x)-1
 				x_str = x_str//adjustr(x(i))//delim
 			end do
@@ -4416,27 +4417,27 @@ submodule (io_fortran_lib) String_procedures
 	contains
 	module procedure as_str
 		if ( self%len() < 1 ) then
-			string_slice = ''
+			string_slice = EMPTY_STR
 		else
 			string_slice = self%s
 		end if
 	end procedure as_str
 
 	module procedure count_substring_chars
-		integer :: self_len, substring_len, i
+		integer :: self_len, match_len, i
 
 		self_len = self%len()
-		substring_len = len(substring)
+		match_len = len(match)
 
 		if ( self_len < 1 ) then
-			if ( self_len == substring_len ) then
+			if ( self_len == match_len ) then
 				occurrences = 1; return
 			else
 				occurrences = 0; return
 			end if
 		end if
 
-		if ( (substring_len == 0) .or. (substring_len > self_len) ) then
+		if ( (match_len == 0) .or. (match_len > self_len) ) then
 			occurrences = 0; return
 		end if
 
@@ -4444,12 +4445,12 @@ submodule (io_fortran_lib) String_procedures
 		occurrences = 0
 
 		counting: do while ( i <= self_len )
-			if ( self%s(i:i) == substring(1:1) ) then
-				if ( i+substring_len-1 > self_len ) exit counting
+			if ( self%s(i:i) == match(1:1) ) then
+				if ( i+match_len-1 > self_len ) exit counting
 
-				if ( self%s(i:i+substring_len-1) == substring ) then
+				if ( self%s(i:i+match_len-1) == match ) then
 					occurrences = occurrences + 1
-					i = i + substring_len; cycle counting
+					i = i + match_len; cycle counting
 				else
 					i = i + 1; cycle counting
 				end if
@@ -4460,13 +4461,13 @@ submodule (io_fortran_lib) String_procedures
 	end procedure count_substring_chars
 
 	module procedure count_substring_string
-		integer :: self_len, substring_len, i
+		integer :: self_len, match_len, i
 
 		self_len = self%len()
-		substring_len = substring%len()
+		match_len = match%len()
 
 		if ( self_len < 1 ) then
-			if ( self_len == substring_len ) then
+			if ( self_len == match_len ) then
 				if ( self_len == 0 ) then
 					occurrences = 1; return
 				else
@@ -4477,7 +4478,7 @@ submodule (io_fortran_lib) String_procedures
 			end if
 		end if
 
-		if ( (substring_len < 1) .or. (substring_len > self_len) ) then
+		if ( (match_len < 1) .or. (match_len > self_len) ) then
 			occurrences = 0; return
 		end if
 
@@ -4485,12 +4486,12 @@ submodule (io_fortran_lib) String_procedures
 		occurrences = 0
 
 		counting: do while ( i <= self_len )
-			if ( self%s(i:i) == substring%s(1:1) ) then
-				if ( i+substring_len-1 > self_len ) exit counting
+			if ( self%s(i:i) == match%s(1:1) ) then
+				if ( i+match_len-1 > self_len ) exit counting
 
-				if ( self%s(i:i+substring_len-1) == substring%s ) then
+				if ( self%s(i:i+match_len-1) == match%s ) then
 					occurrences = occurrences + 1
-					i = i + substring_len; cycle counting
+					i = i + match_len; cycle counting
 				else
 					i = i + 1; cycle counting
 				end if
@@ -4510,7 +4511,7 @@ submodule (io_fortran_lib) String_procedures
 		if ( .not. any(TEXT_EXT == ext) ) then
 			write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 								'due to unsupported file extension "'//ext//'".'// &
-							LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')
+							LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)
 			return
 		end if
 
@@ -4555,7 +4556,7 @@ submodule (io_fortran_lib) String_procedures
 	end procedure echo_string
 
 	module procedure empty
-		self%s = ''
+		self%s = EMPTY_STR
 	end procedure empty
 
 	module procedure glue
@@ -4564,14 +4565,14 @@ submodule (io_fortran_lib) String_procedures
 		integer :: i
 
 		if ( .not. present(separator) ) then
-			separator_ = ' '
+			separator_ = SPACE
 		else
 			separator_ = separator
 		end if
 
 		lengths = tokens%len()
 
-		self%s = ''
+		self%s = EMPTY_STR
 		do i = 1, size(tokens)-1
 			if ( lengths(i) < 1 ) then
 				self%s = self%s//separator_
@@ -4606,7 +4607,7 @@ submodule (io_fortran_lib) String_procedures
 	module procedure push_string
 		if ( self%len() < 1 ) then
 			if ( chars%len() < 1 ) then
-				self%s = ''
+				self%s = EMPTY_STR
 			else
 				self%s = chars%s
 			end if
@@ -4633,7 +4634,7 @@ submodule (io_fortran_lib) String_procedures
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'" in '// &
 							   'method READ_FILE.'// &
-						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)
 			end if
 		end if
 
@@ -4724,7 +4725,7 @@ submodule (io_fortran_lib) String_procedures
 				end do
 			end if
 
-			call cell_array%replace_inplace(search_for=row_separator_, replace_with=column_separator_)
+			call cell_array%replace_inplace(match=row_separator_, substring=column_separator_)
 		end block cell_block
 
 		contains
@@ -4748,7 +4749,7 @@ submodule (io_fortran_lib) String_procedures
 			i = 1
 
 			replace_sep: do while ( i <= row_len )
-				if ( row%s(i:i) == '"' ) then
+				if ( row%s(i:i) == QQUOTE ) then
 					in_quote = ( .not. in_quote )
 					i = i + 1; cycle replace_sep
 				end if
@@ -4772,22 +4773,22 @@ submodule (io_fortran_lib) String_procedures
 				end if
 			end do replace_sep
 
-			row = new_row%replace(search_for='"', replace_with='')
+			row = new_row%replace(match=QQUOTE, substring=EMPTY_STR)
 		end subroutine process_quotes
 	end procedure read_file
 
 	module procedure replace_copy
-		integer :: i, self_len, search_len, replace_len, diff_len
+		integer :: i, self_len, match_len, substring_len, diff_len
 
 		self_len = self%len()
-		search_len = len(search_for)
-		replace_len = len(replace_with)
+		match_len = len(match)
+		substring_len = len(substring)
 
 		if ( self_len < 1 ) then
-			new%s = ''; return
+			new%s = EMPTY_STR; return
 		end if
 
-		if ( (search_len == 0) .or. (search_len > self_len) ) then
+		if ( (match_len == 0) .or. (match_len > self_len) ) then
 			new%s = self%s; return
 		end if
 
@@ -4796,13 +4797,13 @@ submodule (io_fortran_lib) String_procedures
 		i = 1
 
 		search_and_replace: do while ( i <= self_len )
-			if ( self%s(i:i) == search_for(1:1) ) then
-				if ( i+search_len-1 > self_len ) exit search_and_replace
+			if ( self%s(i:i) == match(1:1) ) then
+				if ( i+match_len-1 > self_len ) exit search_and_replace
 
-				if ( self%s(i:i+search_len-1) == search_for ) then
-					new%s = new%s(:i-1+diff_len)//replace_with//new%s(i+search_len+diff_len:)
-					diff_len = diff_len + ( replace_len - search_len )
-					i = i + search_len; cycle search_and_replace
+				if ( self%s(i:i+match_len-1) == match ) then
+					new%s = new%s(:i-1+diff_len)//substring//new%s(i+match_len+diff_len:)
+					diff_len = diff_len + ( substring_len - match_len )
+					i = i + match_len; cycle search_and_replace
 				else
 					i = i + 1; cycle search_and_replace
 				end if
@@ -4814,30 +4815,30 @@ submodule (io_fortran_lib) String_procedures
 
 	module procedure replace_inplace
 		type(String) :: new
-		integer :: i, self_len, search_len, replace_len, diff_len
+		integer :: i, self_len, match_len, substring_len, diff_len
 
 		self_len = self%len()
-		search_len = len(search_for)
-		replace_len = len(replace_with)
+		match_len = len(match)
+		substring_len = len(substring)
 
 		if ( self_len < 1 ) then
-			self%s = ''; return
+			self%s = EMPTY_STR; return
 		end if
 
-		if ( (search_len == 0) .or. (search_len > self_len) ) return
+		if ( (match_len == 0) .or. (match_len > self_len) ) return
 
 		new%s = self%s
 		diff_len = 0
 		i = 1
 
 		search_and_replace: do while ( i <= self_len )
-			if ( self%s(i:i) == search_for(1:1) ) then
-				if ( i+search_len-1 > self_len ) exit search_and_replace
+			if ( self%s(i:i) == match(1:1) ) then
+				if ( i+match_len-1 > self_len ) exit search_and_replace
 
-				if ( self%s(i:i+search_len-1) == search_for ) then
-					new%s = new%s(:i-1+diff_len)//replace_with//new%s(i+search_len+diff_len:)
-					diff_len = diff_len + ( replace_len - search_len )
-					i = i + search_len; cycle search_and_replace
+				if ( self%s(i:i+match_len-1) == match ) then
+					new%s = new%s(:i-1+diff_len)//substring//new%s(i+match_len+diff_len:)
+					diff_len = diff_len + ( substring_len - match_len )
+					i = i + match_len; cycle search_and_replace
 				else
 					i = i + 1; cycle search_and_replace
 				end if
@@ -4852,24 +4853,24 @@ submodule (io_fortran_lib) String_procedures
 	module procedure split
 		type(String) :: temp_String
 		character(len=:), allocatable :: separator_
-		integer :: i, temp_len, separator_len, num_seps, l, current_string
+		integer :: i, temp_len, sep_len, num_seps, l, current_sep
 
 		temp_String = self%trim()
 		temp_len = temp_String%len()
 
-		if ( temp_len == 0 ) then
-			tokens = [ String('') ]; return
+		if ( temp_len < 1 ) then
+			tokens = [ String(EMPTY_STR) ]; return
 		end if
 
 		if ( .not. present(separator) ) then
-			separator_ = ' '
+			separator_ = SPACE
 		else
 			separator_ = separator
 		end if
 
-		separator_len = len(separator_)
+		sep_len = len(separator_)
 
-		if ( separator_len == 0 ) then
+		if ( sep_len == 0 ) then
 			allocate( tokens(temp_len) )
 			do concurrent (i = 1:temp_len)
 				tokens(i)%s = temp_String%s(i:i)
@@ -4880,13 +4881,13 @@ submodule (io_fortran_lib) String_procedures
 		num_seps = 0
 		i = 1
 
-		search: do
+		count_seps: do
 			if ( temp_String%s(i:i) == separator_(1:1) ) then
-				if ( i+separator_len-1 > temp_len ) exit search
+				if ( i+sep_len-1 > temp_len ) exit count_seps
 
-				if ( temp_String%s(i:i+separator_len-1) == separator_ ) then
+				if ( temp_String%s(i:i+sep_len-1) == separator_ ) then
 					num_seps = num_seps + 1
-					i = i + separator_len
+					i = i + sep_len
 				else
 					i = i + 1
 				end if
@@ -4894,8 +4895,8 @@ submodule (io_fortran_lib) String_procedures
 				i = i + 1
 			end if
 
-			if ( i > temp_len ) exit search
-		end do search
+			if ( i > temp_len ) exit count_seps
+		end do count_seps
 
 		if ( num_seps == 0 ) then
 			tokens = [ self ]; return
@@ -4906,19 +4907,19 @@ submodule (io_fortran_lib) String_procedures
 
 		i = 1
 		l = 1
-		current_string = 1
+		current_sep = 1
 
 		splitting: do while ( i <= temp_len )
-			if ( temp_String%s(i:i+separator_len-1) == separator_ ) then
-				tokens(current_string)%s = temp_String%s(l:i-1)
+			if ( temp_String%s(i:i+sep_len-1) == separator_ ) then
+				tokens(current_sep)%s = temp_String%s(l:i-1)
 
-				if ( current_string == num_seps ) then
-					tokens(current_string+1)%s = temp_String%s(i+separator_len:)
+				if ( current_sep == num_seps ) then
+					tokens(current_sep+1)%s = temp_String%s(i+sep_len:)
 					exit splitting
 				else
-					current_string = current_string + 1
+					current_sep = current_sep + 1
 				end if
-				i = i + separator_len
+				i = i + sep_len
 				l = i
 			else
 				i = i + 1
@@ -4930,7 +4931,7 @@ submodule (io_fortran_lib) String_procedures
 
 	module procedure trim_copy
 		if ( self%len() < 1 ) then
-			new%s = ''
+			new%s = EMPTY_STR
 		else
 			new%s = trim(adjustl(self%s))
 		end if
@@ -4938,7 +4939,7 @@ submodule (io_fortran_lib) String_procedures
 
 	module procedure trim_inplace
 		if ( self%len() < 1 ) then
-			self%s = ''
+			self%s = EMPTY_STR
 		else
 			self%s = trim(adjustl(self%s))
 		end if
@@ -4955,7 +4956,7 @@ submodule (io_fortran_lib) String_procedures
 		if ( .not. any(TEXT_EXT == ext) ) then
 			write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" in method WRITE_FILE'// &
 								'due to unsupported file extension "'//ext//'".'// &
-							LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')
+							LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)
 			return
 		end if
 
@@ -4981,7 +4982,7 @@ submodule (io_fortran_lib) String_procedures
 
 		call rows%push(row_separator_)
 
-		call self%glue(tokens=rows, separator='')
+		call self%glue(tokens=rows, separator=EMPTY_STR)
 
 		inquire( file=file_name, exist=exists )
 
@@ -5002,7 +5003,7 @@ submodule (io_fortran_lib) String_procedures
 
 	module procedure write_string
 		if ( self%len() < 1 ) then
-			write(unit=unit, fmt='(a)', iostat=iostat, iomsg=iomsg) ''
+			write(unit=unit, fmt='(a)', iostat=iostat, iomsg=iomsg) EMPTY_STR
 		else
 			write(unit=unit, fmt='(a)', iostat=iostat, iomsg=iomsg) self%s
 		end if
@@ -5016,16 +5017,14 @@ submodule (io_fortran_lib) operators
 	module procedure string_concatenation
 		if ( Stringl%len() < 1 ) then
 			if ( Stringr%len() < 1 ) then
-				new%s = ''
+				new%s = EMPTY_STR; return
 			else
-				new%s = Stringr%s
+				new%s = Stringr%s; return
 			end if
-			return
 		end if
 
 		if ( Stringr%len() < 1 ) then
-			new%s = Stringl%s
-			return
+			new%s = Stringl%s; return
 		end if
 
 		new%s = Stringl%s//Stringr%s
@@ -5034,16 +5033,14 @@ submodule (io_fortran_lib) operators
 	module procedure string_char_concatenation
 		if ( Stringl%len() < 1 ) then
 			if ( len(charsr) < 1 ) then
-				new%s = ''
+				new%s = EMPTY_STR; return
 			else
-				new%s = charsr
+				new%s = charsr; return
 			end if
-			return
 		end if
 
 		if ( len(charsr) < 1 ) then
-			new%s = Stringl%s
-			return
+			new%s = Stringl%s; return
 		end if
 
 		new%s = Stringl%s//charsr
@@ -5052,16 +5049,14 @@ submodule (io_fortran_lib) operators
 	module procedure char_string_concatenation
 		if ( len(charsl) < 1 ) then
 			if ( Stringr%len() < 1 ) then
-				new%s = ''
+				new%s = EMPTY_STR; return
 			else
-				new%s = Stringr%s
+				new%s = Stringr%s; return
 			end if
-			return
 		end if
 
 		if ( Stringr%len() < 1 ) then
-			new%s = charsl
-			return
+			new%s = charsl; return
 		end if
 
 		new%s = charsl//Stringr%s
@@ -5074,16 +5069,14 @@ submodule (io_fortran_lib) operators
 	module procedure string_concat_plus
 		if ( Stringl%len() < 1 ) then
 			if ( Stringr%len() < 1 ) then
-				new%s = ''
+				new%s = EMPTY_STR; return
 			else
-				new%s = Stringr%s
+				new%s = Stringr%s; return
 			end if
-			return
 		end if
 
 		if ( Stringr%len() < 1 ) then
-			new%s = Stringl%s
-			return
+			new%s = Stringl%s; return
 		end if
 
 		new%s = Stringl%s//Stringr%s
@@ -5092,16 +5085,14 @@ submodule (io_fortran_lib) operators
 	module procedure string_char_concat_plus
 		if ( Stringl%len() < 1 ) then
 			if ( len(charsr) < 1 ) then
-				new%s = ''
+				new%s = EMPTY_STR; return
 			else
-				new%s = charsr
+				new%s = charsr; return
 			end if
-			return
 		end if
 
 		if ( len(charsr) < 1 ) then
-			new%s = Stringl%s
-			return
+			new%s = Stringl%s; return
 		end if
 
 		new%s = Stringl%s//charsr
@@ -5110,16 +5101,14 @@ submodule (io_fortran_lib) operators
 	module procedure char_string_concat_plus
 		if ( len(charsl) < 1 ) then
 			if ( Stringr%len() < 1 ) then
-				new%s = ''
+				new%s = EMPTY_STR; return
 			else
-				new%s = Stringr%s
+				new%s = Stringr%s; return
 			end if
-			return
 		end if
 
 		if ( Stringr%len() < 1 ) then
-			new%s = charsl
-			return
+			new%s = charsl; return
 		end if
 
 		new%s = charsl//Stringr%s
@@ -5131,44 +5120,38 @@ submodule (io_fortran_lib) operators
 		Stringl%s = charsl
 
 		if ( Stringl%len() < 1 ) then
-			new%s = ''
-			return
+			new%s = EMPTY_STR; return
 		end if
 
 		if ( len(charsr) < 1 ) then
-			new%s = Stringl%s
-			return
+			new%s = Stringl%s; return
 		end if
 
-		new = Stringl%replace(search_for=charsr, replace_with='')
+		new = Stringl%replace(match=charsr, substring=EMPTY_STR)
 	end procedure char_excision
 
 	module procedure string_excision
 		if ( Stringl%len() < 1 ) then
-			new%s = ''
-			return
+			new%s = EMPTY_STR; return
 		end if
 
 		if ( Stringr%len() < 1 ) then
-			new%s = Stringl%s
-			return
+			new%s = Stringl%s; return
 		end if
 
-		new = Stringl%replace(search_for=Stringr%s, replace_with='')
+		new = Stringl%replace(match=Stringr%s, substring=EMPTY_STR)
 	end procedure string_excision
 
 	module procedure string_char_excision
 		if ( Stringl%len() < 1 ) then
-			new%s = ''
-			return
+			new%s = EMPTY_STR; return
 		end if
 
 		if ( len(charsr) < 1 ) then
-			new%s = Stringl%s
-			return
+			new%s = Stringl%s; return
 		end if
 
-		new = Stringl%replace(search_for=charsr, replace_with='')
+		new = Stringl%replace(match=charsr, substring=EMPTY_STR)
 	end procedure string_char_excision
 
 	module procedure char_string_excision
@@ -5177,16 +5160,14 @@ submodule (io_fortran_lib) operators
 		Stringl%s = charsl
 
 		if ( Stringl%len() < 1 ) then
-			new%s = ''
-			return
+			new%s = EMPTY_STR; return
 		end if
 
 		if ( Stringr%len() < 1 ) then
-			new%s = Stringl%s
-			return
+			new%s = Stringl%s; return
 		end if
 
-		new = Stringl%replace(search_for=Stringr%s, replace_with='')
+		new = Stringl%replace(match=Stringr%s, substring=EMPTY_STR)
 	end procedure char_string_excision
 
 	module procedure repeat_chars
@@ -5195,8 +5176,7 @@ submodule (io_fortran_lib) operators
 
 	module procedure repeat_String
 		if ( String_base%len() < 1 ) then
-			new%s = ''
-			return
+			new%s = EMPTY_STR; return
 		end if
 
 		new%s = repeat(String_base%s, ncopies=ncopies)
@@ -5209,13 +5189,11 @@ submodule (io_fortran_lib) operators
 		Stringr_len = Stringr%len()
 
 		if ( Stringl_len /= Stringr_len ) then
-			equal = .false.
-			return
+			equal = .false.; return
 		end if
 
 		if ( Stringl_len < 1 ) then
-			equal = .true.
-			return
+			equal = .true.; return
 		end if
 
 		equal = ( Stringl%s == Stringr%s )
@@ -5228,13 +5206,11 @@ submodule (io_fortran_lib) operators
 		charsr_len = len(charsr)
 
 		if ( Stringl_len /= charsr_len ) then
-			equal = .false.
-			return
+			equal = .false.; return
 		end if
 
 		if ( Stringl_len < 1 ) then
-			equal = .true.
-			return
+			equal = .true.; return
 		end if
 
 		equal = ( Stringl%s == charsr )
@@ -5247,13 +5223,11 @@ submodule (io_fortran_lib) operators
 		Stringr_len = Stringr%len()
 
 		if ( charsl_len /= Stringr_len ) then
-			equal = .false.
-			return
+			equal = .false.; return
 		end if
 
 		if ( charsl_len < 1 ) then
-			equal = .true.
-			return
+			equal = .true.; return
 		end if
 
 		equal = ( charsl == Stringr%s )
@@ -5266,13 +5240,11 @@ submodule (io_fortran_lib) operators
 		Stringr_len = Stringr%len()
 
 		if ( Stringl_len /= Stringr_len ) then
-			unequal = .true.
-			return
+			unequal = .true.; return
 		end if
 
 		if ( Stringl_len < 1 ) then
-			unequal = .false.
-			return
+			unequal = .false.; return
 		end if
 
 		unequal = ( Stringl%s /= Stringr%s )
@@ -5285,13 +5257,11 @@ submodule (io_fortran_lib) operators
 		charsr_len = len(charsr)
 
 		if ( Stringl_len /= charsr_len ) then
-			unequal = .true.
-			return
+			unequal = .true.; return
 		end if
 
 		if ( Stringl_len < 1 ) then
-			unequal = .false.
-			return
+			unequal = .false.; return
 		end if
 
 		unequal = ( Stringl%s /= charsr )
@@ -5304,13 +5274,11 @@ submodule (io_fortran_lib) operators
 		Stringr_len = Stringr%len()
 
 		if ( charsl_len /= Stringr_len ) then
-			unequal = .true.
-			return
+			unequal = .true.; return
 		end if
 
 		if ( charsl_len < 1 ) then
-			unequal = .false.
-			return
+			unequal = .false.; return
 		end if
 
 		unequal = ( charsl /= Stringr%s )
@@ -6215,17 +6183,17 @@ submodule (io_fortran_lib) array_printing
 	module procedure aprint_2dchar
 		integer :: i
 
-		write(unit=*, fmt='(a)') LF//'    '//to_str(x(lbound(x, dim=1),:), delim=' ', trimstring=.false.)
+		write(unit=*, fmt='(a)') LF//'    '//to_str(x(lbound(x, dim=1),:), delim=SPACE, trimstring=.false.)
 
 		if ( size(x, dim=1) == 1 ) return
 
 		if ( size(x, dim=1) > 2 ) then
 			do i = lbound(x, dim=1) + 1, ubound(x, dim=1) - 1
-				write(unit=*, fmt='(a)') '    '//to_str(x(i,:), delim=' ', trimstring=.false.)
+				write(unit=*, fmt='(a)') '    '//to_str(x(i,:), delim=SPACE, trimstring=.false.)
 			end do
 		end if
 
-		write(unit=*, fmt='(a)') '    '//to_str(x(ubound(x, dim=1),:), delim=' ', trimstring=.false.)//LF
+		write(unit=*, fmt='(a)') '    '//to_str(x(ubound(x, dim=1),:), delim=SPACE, trimstring=.false.)//LF
 	end procedure aprint_2dchar
 
 	module procedure aprint_1dString
@@ -6240,7 +6208,7 @@ submodule (io_fortran_lib) array_printing
 
 		do concurrent (i = lbound(x, dim=1):ubound(x, dim=1))
 			if ( lengths(i) < 1 ) then
-				char_arr(i) = ''
+				char_arr(i) = EMPTY_STR
 			else
 				char_arr(i) = x(i)%s
 			end if
@@ -6262,7 +6230,7 @@ submodule (io_fortran_lib) array_printing
 
 		do concurrent (j = lbound(x, dim=2):ubound(x, dim=2), i = lbound(x, dim=1):ubound(x, dim=1))
 			if ( lengths(i,j) < 1 ) then
-				char_arr(i,j) = ''
+				char_arr(i,j) = EMPTY_STR
 			else
 				char_arr(i,j) = x(i,j)%s
 			end if
@@ -6307,7 +6275,7 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if ( .not. present(im) ) then
-			im_ = ''
+			im_ = EMPTY_STR
 		else
 			im_ = trim(adjustl(im))
 		end if
@@ -6345,7 +6313,7 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if ( .not. present(im) ) then
-			im_ = ''
+			im_ = EMPTY_STR
 		else
 			im_ = trim(adjustl(im))
 		end if
@@ -6383,7 +6351,7 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if ( .not. present(im) ) then
-			im_ = ''
+			im_ = EMPTY_STR
 		else
 			im_ = trim(adjustl(im))
 		end if
@@ -6554,7 +6522,7 @@ submodule (io_fortran_lib) internal_io
 	end procedure new_Str_char
 
 	module procedure new_Str_empty
-		self%s = ''
+		self%s = EMPTY_STR
 	end procedure new_Str_empty
 
 	module procedure cast_string_c128
@@ -6588,7 +6556,7 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if ( .not. present(im) ) then
-			im_ = ''
+			im_ = EMPTY_STR
 		else
 			im_ = trim(adjustl(im))
 		end if
@@ -6627,7 +6595,7 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if ( .not. present(im) ) then
-			im_ = ''
+			im_ = EMPTY_STR
 		else
 			im_ = trim(adjustl(im))
 		end if
@@ -6666,7 +6634,7 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if ( .not. present(im) ) then
-			im_ = ''
+			im_ = EMPTY_STR
 		else
 			im_ = trim(adjustl(im))
 		end if
@@ -6874,7 +6842,7 @@ submodule (io_fortran_lib) internal_io
 			if ( any(LOCALES == locale) ) then
 				locale_ = locale
 			else
-				x_str = ''
+				x_str = EMPTY_STR
 				return
 			end if
 		end if
@@ -6885,7 +6853,7 @@ submodule (io_fortran_lib) internal_io
 			if ( any(REAL_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				x_str = ''
+				x_str = EMPTY_STR
 				return
 			end if
 		end if
@@ -6897,12 +6865,12 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if ( .not. present(im) ) then
-			im_ = ''
+			im_ = EMPTY_STR
 		else
 			im_ = trim(adjustl(im))
 		end if
 
-		if ( im_ == '' ) then
+		if ( im_ == EMPTY_STR ) then
 			if ( locale_ == 'US' ) then
 				sep = ','
 			else
@@ -6935,7 +6903,7 @@ submodule (io_fortran_lib) internal_io
 			if ( any(LOCALES == locale) ) then
 				locale_ = locale
 			else
-				x_str = ''
+				x_str = EMPTY_STR
 				return
 			end if
 		end if
@@ -6946,7 +6914,7 @@ submodule (io_fortran_lib) internal_io
 			if ( any(REAL_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				x_str = ''
+				x_str = EMPTY_STR
 				return
 			end if
 		end if
@@ -6958,12 +6926,12 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if ( .not. present(im) ) then
-			im_ = ''
+			im_ = EMPTY_STR
 		else
 			im_ = trim(adjustl(im))
 		end if
 
-		if ( im_ == '' ) then
+		if ( im_ == EMPTY_STR ) then
 			if ( locale_ == 'US' ) then
 				sep = ','
 			else
@@ -6996,7 +6964,7 @@ submodule (io_fortran_lib) internal_io
 			if ( any(LOCALES == locale) ) then
 				locale_ = locale
 			else
-				x_str = ''
+				x_str = EMPTY_STR
 				return
 			end if
 		end if
@@ -7007,7 +6975,7 @@ submodule (io_fortran_lib) internal_io
 			if ( any(REAL_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				x_str = ''
+				x_str = EMPTY_STR
 				return
 			end if
 		end if
@@ -7019,12 +6987,12 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if ( .not. present(im) ) then
-			im_ = ''
+			im_ = EMPTY_STR
 		else
 			im_ = trim(adjustl(im))
 		end if
 
-		if ( im_ == '' ) then
+		if ( im_ == EMPTY_STR ) then
 			if ( locale_ == 'US' ) then
 				sep = ','
 			else
@@ -7060,7 +7028,7 @@ submodule (io_fortran_lib) internal_io
 			else if ( locale == 'EU' ) then
 				decimal = 'COMMA'
 			else
-				x_str = ''
+				x_str = EMPTY_STR
 				return
 			end if
 		end if
@@ -7071,7 +7039,7 @@ submodule (io_fortran_lib) internal_io
 			if ( any(REAL_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				x_str = ''
+				x_str = EMPTY_STR
 				return
 			end if
 		end if
@@ -7173,7 +7141,7 @@ submodule (io_fortran_lib) internal_io
 			else if ( locale == 'EU' ) then
 				decimal = 'COMMA'
 			else
-				x_str = ''
+				x_str = EMPTY_STR
 				return
 			end if
 		end if
@@ -7184,7 +7152,7 @@ submodule (io_fortran_lib) internal_io
 			if ( any(REAL_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				x_str = ''
+				x_str = EMPTY_STR
 				return
 			end if
 		end if
@@ -7286,7 +7254,7 @@ submodule (io_fortran_lib) internal_io
 			else if ( locale == 'EU' ) then
 				decimal = 'COMMA'
 			else
-				x_str = ''
+				x_str = EMPTY_STR
 				return
 			end if
 		end if
@@ -7297,7 +7265,7 @@ submodule (io_fortran_lib) internal_io
 			if ( any(REAL_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				x_str = ''
+				x_str = EMPTY_STR
 				return
 			end if
 		end if
@@ -7398,7 +7366,7 @@ submodule (io_fortran_lib) internal_io
 			if ( any(INT_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				x_str = ''
+				x_str = EMPTY_STR
 				return
 			end if
 		end if
@@ -7421,7 +7389,7 @@ submodule (io_fortran_lib) internal_io
 			if ( any(INT_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				x_str = ''
+				x_str = EMPTY_STR
 				return
 			end if
 		end if
@@ -7444,7 +7412,7 @@ submodule (io_fortran_lib) internal_io
 			if ( any(INT_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				x_str = ''
+				x_str = EMPTY_STR
 				return
 			end if
 		end if
@@ -7467,7 +7435,7 @@ submodule (io_fortran_lib) internal_io
 			if ( any(INT_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				x_str = ''
+				x_str = EMPTY_STR
 				return
 			end if
 		end if
@@ -7517,7 +7485,7 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if ( .not. present(im) ) then
-			im_ = ''
+			im_ = EMPTY_STR
 		else
 			im_ = trim(adjustl(im))
 			e_chars = ['e', 'E']
@@ -7538,7 +7506,7 @@ submodule (io_fortran_lib) internal_io
 
 		chars_ = trim(adjustl(chars))
 
-		if ( im_ == '' ) then
+		if ( im_ == EMPTY_STR ) then
 			if ( chars_(1:1) /= '(' ) then
 				into = (0.0_real128,0.0_real128)
 				return
@@ -7625,7 +7593,7 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if ( .not. present(im) ) then
-			im_ = ''
+			im_ = EMPTY_STR
 		else
 			im_ = trim(adjustl(im))
 			e_chars = ['e', 'E']
@@ -7646,7 +7614,7 @@ submodule (io_fortran_lib) internal_io
 
 		chars_ = trim(adjustl(chars))
 
-		if ( im_ == '' ) then
+		if ( im_ == EMPTY_STR ) then
 			if ( chars_(1:1) /= '(' ) then
 				into = (0.0_real64,0.0_real64)
 				return
@@ -7733,7 +7701,7 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if ( .not. present(im) ) then
-			im_ = ''
+			im_ = EMPTY_STR
 		else
 			im_ = trim(adjustl(im))
 			e_chars = ['e', 'E']
@@ -7754,7 +7722,7 @@ submodule (io_fortran_lib) internal_io
 
 		chars_ = trim(adjustl(chars))
 
-		if ( im_ == '' ) then
+		if ( im_ == EMPTY_STR ) then
 			if ( chars_(1:1) /= '(' ) then
 				into = (0.0_real32,0.0_real32)
 				return
@@ -8063,11 +8031,11 @@ submodule (io_fortran_lib) file_io
 
 		if ( any(TEXT_EXT == ext) ) then
 			if ( .not. present(header) ) then
-				header_ = ['']
+				header_ = [ EMPTY_STR ]
 				hstat = 0
 			else
 				if ( (size(header) /= 1) .and. (size(header) /= size(x)) ) then
-					header_ = ['']
+					header_ = [ EMPTY_STR ]
 					hstat = -1
 					write(*,'(a)') LF//'WARNING: Invalid header for file "'//file_name//'".'// &
 								   LF//'Header for this data must have size (1) or '// &
@@ -8117,13 +8085,13 @@ submodule (io_fortran_lib) file_io
 					locale_ = 'US'
 					write(*,'(a)') LF//'WARNING: Invalid locale "'//locale//'" for file "'//file_name//'". '// &
 									   'Defaulting to US format.'// &
-								   LF//'Locale must be one of: '//to_str(LOCALES, delim=' ')
+								   LF//'Locale must be one of: '//to_str(LOCALES, delim=SPACE)
 				end if
 			end if
 
 			if ( .not. present(delim) ) then
 				if ( dim_ == 1 ) then
-					delim_ = ''
+					delim_ = EMPTY_STR
 				else
 					if ( locale_ == 'US' ) then
 						delim_ = ','
@@ -8133,7 +8101,7 @@ submodule (io_fortran_lib) file_io
 				end if
 			else
 				if ( dim_ == 1 ) then
-					delim_ = ''
+					delim_ = EMPTY_STR
 				else
 					delim_ = delim
 				end if
@@ -8148,7 +8116,7 @@ submodule (io_fortran_lib) file_io
 					fmt_ = 'e'
 					write(*,'(a)') LF//'WARNING: Invalid format "'//fmt//'" for file "'//file_name//'". '// &
 									   'Defaulting to exponential format.'// &
-								   LF//'Format must be one of: '//to_str(REAL_FMTS, delim=' ')
+								   LF//'Format must be one of: '//to_str(REAL_FMTS, delim=SPACE)
 				end if
 			end if
 
@@ -8159,7 +8127,7 @@ submodule (io_fortran_lib) file_io
 			end if
 
 			if ( .not. present(im) ) then
-				im_ = ''
+				im_ = EMPTY_STR
 			else
 				im_ = trim(adjustl(im))
 			end if
@@ -8179,8 +8147,8 @@ submodule (io_fortran_lib) file_io
 		else
 			write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 								'due to unsupported file extension "'//ext//'".'// &
-							LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-								to_str(BINARY_EXT, delim=' ')
+							LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+								to_str(BINARY_EXT, delim=SPACE)
 		end if
 	end procedure to_file_1dc128
 	module procedure to_file_1dc64
@@ -8192,11 +8160,11 @@ submodule (io_fortran_lib) file_io
 
 		if ( any(TEXT_EXT == ext) ) then
 			if ( .not. present(header) ) then
-				header_ = ['']
+				header_ = [ EMPTY_STR ]
 				hstat = 0
 			else
 				if ( (size(header) /= 1) .and. (size(header) /= size(x)) ) then
-					header_ = ['']
+					header_ = [ EMPTY_STR ]
 					hstat = -1
 					write(*,'(a)') LF//'WARNING: Invalid header for file "'//file_name//'".'// &
 								   LF//'Header for this data must have size (1) or '// &
@@ -8246,13 +8214,13 @@ submodule (io_fortran_lib) file_io
 					locale_ = 'US'
 					write(*,'(a)') LF//'WARNING: Invalid locale "'//locale//'" for file "'//file_name//'". '// &
 									   'Defaulting to US format.'// &
-								   LF//'Locale must be one of: '//to_str(LOCALES, delim=' ')
+								   LF//'Locale must be one of: '//to_str(LOCALES, delim=SPACE)
 				end if
 			end if
 
 			if ( .not. present(delim) ) then
 				if ( dim_ == 1 ) then
-					delim_ = ''
+					delim_ = EMPTY_STR
 				else
 					if ( locale_ == 'US' ) then
 						delim_ = ','
@@ -8262,7 +8230,7 @@ submodule (io_fortran_lib) file_io
 				end if
 			else
 				if ( dim_ == 1 ) then
-					delim_ = ''
+					delim_ = EMPTY_STR
 				else
 					delim_ = delim
 				end if
@@ -8277,7 +8245,7 @@ submodule (io_fortran_lib) file_io
 					fmt_ = 'e'
 					write(*,'(a)') LF//'WARNING: Invalid format "'//fmt//'" for file "'//file_name//'". '// &
 									   'Defaulting to exponential format.'// &
-								   LF//'Format must be one of: '//to_str(REAL_FMTS, delim=' ')
+								   LF//'Format must be one of: '//to_str(REAL_FMTS, delim=SPACE)
 				end if
 			end if
 
@@ -8288,7 +8256,7 @@ submodule (io_fortran_lib) file_io
 			end if
 
 			if ( .not. present(im) ) then
-				im_ = ''
+				im_ = EMPTY_STR
 			else
 				im_ = trim(adjustl(im))
 			end if
@@ -8308,8 +8276,8 @@ submodule (io_fortran_lib) file_io
 		else
 			write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 								'due to unsupported file extension "'//ext//'".'// &
-							LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-								to_str(BINARY_EXT, delim=' ')
+							LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+								to_str(BINARY_EXT, delim=SPACE)
 		end if
 	end procedure to_file_1dc64
 	module procedure to_file_1dc32
@@ -8321,11 +8289,11 @@ submodule (io_fortran_lib) file_io
 
 		if ( any(TEXT_EXT == ext) ) then
 			if ( .not. present(header) ) then
-				header_ = ['']
+				header_ = [ EMPTY_STR ]
 				hstat = 0
 			else
 				if ( (size(header) /= 1) .and. (size(header) /= size(x)) ) then
-					header_ = ['']
+					header_ = [ EMPTY_STR ]
 					hstat = -1
 					write(*,'(a)') LF//'WARNING: Invalid header for file "'//file_name//'".'// &
 								   LF//'Header for this data must have size (1) or '// &
@@ -8375,13 +8343,13 @@ submodule (io_fortran_lib) file_io
 					locale_ = 'US'
 					write(*,'(a)') LF//'WARNING: Invalid locale "'//locale//'" for file "'//file_name//'". '// &
 									   'Defaulting to US format.'// &
-								   LF//'Locale must be one of: '//to_str(LOCALES, delim=' ')
+								   LF//'Locale must be one of: '//to_str(LOCALES, delim=SPACE)
 				end if
 			end if
 
 			if ( .not. present(delim) ) then
 				if ( dim_ == 1 ) then
-					delim_ = ''
+					delim_ = EMPTY_STR
 				else
 					if ( locale_ == 'US' ) then
 						delim_ = ','
@@ -8391,7 +8359,7 @@ submodule (io_fortran_lib) file_io
 				end if
 			else
 				if ( dim_ == 1 ) then
-					delim_ = ''
+					delim_ = EMPTY_STR
 				else
 					delim_ = delim
 				end if
@@ -8406,7 +8374,7 @@ submodule (io_fortran_lib) file_io
 					fmt_ = 'e'
 					write(*,'(a)') LF//'WARNING: Invalid format "'//fmt//'" for file "'//file_name//'". '// &
 									   'Defaulting to exponential format.'// &
-								   LF//'Format must be one of: '//to_str(REAL_FMTS, delim=' ')
+								   LF//'Format must be one of: '//to_str(REAL_FMTS, delim=SPACE)
 				end if
 			end if
 
@@ -8417,7 +8385,7 @@ submodule (io_fortran_lib) file_io
 			end if
 
 			if ( .not. present(im) ) then
-				im_ = ''
+				im_ = EMPTY_STR
 			else
 				im_ = trim(adjustl(im))
 			end if
@@ -8437,8 +8405,8 @@ submodule (io_fortran_lib) file_io
 		else
 			write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 								'due to unsupported file extension "'//ext//'".'// &
-							LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-								to_str(BINARY_EXT, delim=' ')
+							LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+								to_str(BINARY_EXT, delim=SPACE)
 		end if
 	end procedure to_file_1dc32
 
@@ -8451,10 +8419,10 @@ submodule (io_fortran_lib) file_io
 
 		if ( any(TEXT_EXT == ext) ) then
 			if ( .not. present(header) ) then
-				header_ = ['']
+				header_ = [ EMPTY_STR ]
 			else
 				if ( (size(header) /= 1) .and. (size(header) /= size(x, dim=2)) ) then
-					header_ = ['']
+					header_ = [ EMPTY_STR ]
 					write(*,'(a)') LF//'WARNING: Invalid header for file "'//file_name//'".'// &
 								   LF//'Header for this data must have size (1) or '// &
 									   '('//str(size(x, dim=2))//').'
@@ -8472,7 +8440,7 @@ submodule (io_fortran_lib) file_io
 					locale_ = 'US'
 					write(*,'(a)') LF//'WARNING: Invalid locale "'//locale//'" for file "'//file_name//'". '// &
 									   'Defaulting to US format.'// &
-								   LF//'Locale must be one of: '//to_str(LOCALES, delim=' ')
+								   LF//'Locale must be one of: '//to_str(LOCALES, delim=SPACE)
 				end if
 			end if
 
@@ -8495,7 +8463,7 @@ submodule (io_fortran_lib) file_io
 					fmt_ = 'e'
 					write(*,'(a)') LF//'WARNING: Invalid format "'//fmt//'" for file "'//file_name//'". '// &
 									   'Defaulting to exponential format.'// &
-								   LF//'Format must be one of: '//to_str(REAL_FMTS, delim=' ')
+								   LF//'Format must be one of: '//to_str(REAL_FMTS, delim=SPACE)
 				end if
 			end if
 
@@ -8506,7 +8474,7 @@ submodule (io_fortran_lib) file_io
 			end if
 
 			if ( .not. present(im) ) then
-				im_ = ''
+				im_ = EMPTY_STR
 			else
 				im_ = trim(adjustl(im))
 			end if
@@ -8525,8 +8493,8 @@ submodule (io_fortran_lib) file_io
 		else
 			write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 								'due to unsupported file extension "'//ext//'".'// &
-							LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-								to_str(BINARY_EXT, delim=' ')
+							LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+								to_str(BINARY_EXT, delim=SPACE)
 		end if
 	end procedure to_file_2dc128
 	module procedure to_file_2dc64
@@ -8538,10 +8506,10 @@ submodule (io_fortran_lib) file_io
 
 		if ( any(TEXT_EXT == ext) ) then
 			if ( .not. present(header) ) then
-				header_ = ['']
+				header_ = [ EMPTY_STR ]
 			else
 				if ( (size(header) /= 1) .and. (size(header) /= size(x, dim=2)) ) then
-					header_ = ['']
+					header_ = [ EMPTY_STR ]
 					write(*,'(a)') LF//'WARNING: Invalid header for file "'//file_name//'".'// &
 								   LF//'Header for this data must have size (1) or '// &
 									   '('//str(size(x, dim=2))//').'
@@ -8559,7 +8527,7 @@ submodule (io_fortran_lib) file_io
 					locale_ = 'US'
 					write(*,'(a)') LF//'WARNING: Invalid locale "'//locale//'" for file "'//file_name//'". '// &
 									   'Defaulting to US format.'// &
-								   LF//'Locale must be one of: '//to_str(LOCALES, delim=' ')
+								   LF//'Locale must be one of: '//to_str(LOCALES, delim=SPACE)
 				end if
 			end if
 
@@ -8582,7 +8550,7 @@ submodule (io_fortran_lib) file_io
 					fmt_ = 'e'
 					write(*,'(a)') LF//'WARNING: Invalid format "'//fmt//'" for file "'//file_name//'". '// &
 									   'Defaulting to exponential format.'// &
-								   LF//'Format must be one of: '//to_str(REAL_FMTS, delim=' ')
+								   LF//'Format must be one of: '//to_str(REAL_FMTS, delim=SPACE)
 				end if
 			end if
 
@@ -8593,7 +8561,7 @@ submodule (io_fortran_lib) file_io
 			end if
 
 			if ( .not. present(im) ) then
-				im_ = ''
+				im_ = EMPTY_STR
 			else
 				im_ = trim(adjustl(im))
 			end if
@@ -8612,8 +8580,8 @@ submodule (io_fortran_lib) file_io
 		else
 			write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 								'due to unsupported file extension "'//ext//'".'// &
-							LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-								to_str(BINARY_EXT, delim=' ')
+							LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+								to_str(BINARY_EXT, delim=SPACE)
 		end if
 	end procedure to_file_2dc64
 	module procedure to_file_2dc32
@@ -8625,10 +8593,10 @@ submodule (io_fortran_lib) file_io
 
 		if ( any(TEXT_EXT == ext) ) then
 			if ( .not. present(header) ) then
-				header_ = ['']
+				header_ = [ EMPTY_STR ]
 			else
 				if ( (size(header) /= 1) .and. (size(header) /= size(x, dim=2)) ) then
-					header_ = ['']
+					header_ = [ EMPTY_STR ]
 					write(*,'(a)') LF//'WARNING: Invalid header for file "'//file_name//'".'// &
 								   LF//'Header for this data must have size (1) or '// &
 									   '('//str(size(x, dim=2))//').'
@@ -8646,7 +8614,7 @@ submodule (io_fortran_lib) file_io
 					locale_ = 'US'
 					write(*,'(a)') LF//'WARNING: Invalid locale "'//locale//'" for file "'//file_name//'". '// &
 									   'Defaulting to US format.'// &
-								   LF//'Locale must be one of: '//to_str(LOCALES, delim=' ')
+								   LF//'Locale must be one of: '//to_str(LOCALES, delim=SPACE)
 				end if
 			end if
 
@@ -8669,7 +8637,7 @@ submodule (io_fortran_lib) file_io
 					fmt_ = 'e'
 					write(*,'(a)') LF//'WARNING: Invalid format "'//fmt//'" for file "'//file_name//'". '// &
 									   'Defaulting to exponential format.'// &
-								   LF//'Format must be one of: '//to_str(REAL_FMTS, delim=' ')
+								   LF//'Format must be one of: '//to_str(REAL_FMTS, delim=SPACE)
 				end if
 			end if
 
@@ -8680,7 +8648,7 @@ submodule (io_fortran_lib) file_io
 			end if
 
 			if ( .not. present(im) ) then
-				im_ = ''
+				im_ = EMPTY_STR
 			else
 				im_ = trim(adjustl(im))
 			end if
@@ -8699,8 +8667,8 @@ submodule (io_fortran_lib) file_io
 		else
 			write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 								'due to unsupported file extension "'//ext//'".'// &
-							LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-								to_str(BINARY_EXT, delim=' ')
+							LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+								to_str(BINARY_EXT, delim=SPACE)
 		end if
 	end procedure to_file_2dc32
 
@@ -8715,11 +8683,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_3dc128
@@ -8734,11 +8702,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_3dc64
@@ -8753,11 +8721,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_3dc32
@@ -8773,11 +8741,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_4dc128
@@ -8792,11 +8760,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_4dc64
@@ -8811,11 +8779,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_4dc32
@@ -8831,11 +8799,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_5dc128
@@ -8850,11 +8818,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_5dc64
@@ -8869,11 +8837,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_5dc32
@@ -8889,11 +8857,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_6dc128
@@ -8908,11 +8876,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_6dc64
@@ -8927,11 +8895,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_6dc32
@@ -8947,11 +8915,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_7dc128
@@ -8966,11 +8934,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_7dc64
@@ -8985,11 +8953,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_7dc32
@@ -9005,11 +8973,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_8dc128
@@ -9024,11 +8992,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_8dc64
@@ -9043,11 +9011,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_8dc32
@@ -9063,11 +9031,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_9dc128
@@ -9082,11 +9050,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_9dc64
@@ -9101,11 +9069,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_9dc32
@@ -9121,11 +9089,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_10dc128
@@ -9140,11 +9108,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_10dc64
@@ -9159,11 +9127,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_10dc32
@@ -9179,11 +9147,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_11dc128
@@ -9198,11 +9166,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_11dc64
@@ -9217,11 +9185,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_11dc32
@@ -9237,11 +9205,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_12dc128
@@ -9256,11 +9224,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_12dc64
@@ -9275,11 +9243,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_12dc32
@@ -9295,11 +9263,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_13dc128
@@ -9314,11 +9282,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_13dc64
@@ -9333,11 +9301,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_13dc32
@@ -9353,11 +9321,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_14dc128
@@ -9372,11 +9340,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_14dc64
@@ -9391,11 +9359,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_14dc32
@@ -9411,11 +9379,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_15dc128
@@ -9430,11 +9398,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_15dc64
@@ -9449,11 +9417,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_15dc32
@@ -9467,11 +9435,11 @@ submodule (io_fortran_lib) file_io
 
 		if ( any(TEXT_EXT == ext) ) then
 			if ( .not. present(header) ) then
-				header_ = ['']
+				header_ = [ EMPTY_STR ]
 				hstat = 0
 			else
 				if ( (size(header) /= 1) .and. (size(header) /= size(x)) ) then
-					header_ = ['']
+					header_ = [ EMPTY_STR ]
 					hstat = -1
 					write(*,'(a)') LF//'WARNING: Invalid header for file "'//file_name//'".'// &
 								   LF//'Header for this data must have size (1) or '// &
@@ -9521,13 +9489,13 @@ submodule (io_fortran_lib) file_io
 					locale_ = 'US'
 					write(*,'(a)') LF//'WARNING: Invalid locale "'//locale//'" for file "'//file_name//'". '// &
 									   'Defaulting to US format.'// &
-								   LF//'Locale must be one of: '//to_str(LOCALES, delim=' ')
+								   LF//'Locale must be one of: '//to_str(LOCALES, delim=SPACE)
 				end if
 			end if
 
 			if ( .not. present(delim) ) then
 				if ( dim_ == 1 ) then
-					delim_ = ''
+					delim_ = EMPTY_STR
 				else
 					if ( locale_ == 'US' ) then
 						delim_ = ','
@@ -9537,7 +9505,7 @@ submodule (io_fortran_lib) file_io
 				end if
 			else
 				if ( dim_ == 1 ) then
-					delim_ = ''
+					delim_ = EMPTY_STR
 				else
 					delim_ = delim
 				end if
@@ -9552,7 +9520,7 @@ submodule (io_fortran_lib) file_io
 					fmt_ = 'e'
 					write(*,'(a)') LF//'WARNING: Invalid format "'//fmt//'" for file "'//file_name//'". '// &
 									   'Defaulting to exponential format.'// &
-								   LF//'Format must be one of: '//to_str(REAL_FMTS, delim=' ')
+								   LF//'Format must be one of: '//to_str(REAL_FMTS, delim=SPACE)
 				end if
 			end if
 
@@ -9576,8 +9544,8 @@ submodule (io_fortran_lib) file_io
 		else
 			write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 								'due to unsupported file extension "'//ext//'".'// &
-							LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-								to_str(BINARY_EXT, delim=' ')
+							LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+								to_str(BINARY_EXT, delim=SPACE)
 		end if
 	end procedure to_file_1dr128
 	module procedure to_file_1dr64
@@ -9589,11 +9557,11 @@ submodule (io_fortran_lib) file_io
 
 		if ( any(TEXT_EXT == ext) ) then
 			if ( .not. present(header) ) then
-				header_ = ['']
+				header_ = [ EMPTY_STR ]
 				hstat = 0
 			else
 				if ( (size(header) /= 1) .and. (size(header) /= size(x)) ) then
-					header_ = ['']
+					header_ = [ EMPTY_STR ]
 					hstat = -1
 					write(*,'(a)') LF//'WARNING: Invalid header for file "'//file_name//'".'// &
 								   LF//'Header for this data must have size (1) or '// &
@@ -9643,13 +9611,13 @@ submodule (io_fortran_lib) file_io
 					locale_ = 'US'
 					write(*,'(a)') LF//'WARNING: Invalid locale "'//locale//'" for file "'//file_name//'". '// &
 									   'Defaulting to US format.'// &
-								   LF//'Locale must be one of: '//to_str(LOCALES, delim=' ')
+								   LF//'Locale must be one of: '//to_str(LOCALES, delim=SPACE)
 				end if
 			end if
 
 			if ( .not. present(delim) ) then
 				if ( dim_ == 1 ) then
-					delim_ = ''
+					delim_ = EMPTY_STR
 				else
 					if ( locale_ == 'US' ) then
 						delim_ = ','
@@ -9659,7 +9627,7 @@ submodule (io_fortran_lib) file_io
 				end if
 			else
 				if ( dim_ == 1 ) then
-					delim_ = ''
+					delim_ = EMPTY_STR
 				else
 					delim_ = delim
 				end if
@@ -9674,7 +9642,7 @@ submodule (io_fortran_lib) file_io
 					fmt_ = 'e'
 					write(*,'(a)') LF//'WARNING: Invalid format "'//fmt//'" for file "'//file_name//'". '// &
 									   'Defaulting to exponential format.'// &
-								   LF//'Format must be one of: '//to_str(REAL_FMTS, delim=' ')
+								   LF//'Format must be one of: '//to_str(REAL_FMTS, delim=SPACE)
 				end if
 			end if
 
@@ -9698,8 +9666,8 @@ submodule (io_fortran_lib) file_io
 		else
 			write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 								'due to unsupported file extension "'//ext//'".'// &
-							LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-								to_str(BINARY_EXT, delim=' ')
+							LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+								to_str(BINARY_EXT, delim=SPACE)
 		end if
 	end procedure to_file_1dr64
 	module procedure to_file_1dr32
@@ -9711,11 +9679,11 @@ submodule (io_fortran_lib) file_io
 
 		if ( any(TEXT_EXT == ext) ) then
 			if ( .not. present(header) ) then
-				header_ = ['']
+				header_ = [ EMPTY_STR ]
 				hstat = 0
 			else
 				if ( (size(header) /= 1) .and. (size(header) /= size(x)) ) then
-					header_ = ['']
+					header_ = [ EMPTY_STR ]
 					hstat = -1
 					write(*,'(a)') LF//'WARNING: Invalid header for file "'//file_name//'".'// &
 								   LF//'Header for this data must have size (1) or '// &
@@ -9765,13 +9733,13 @@ submodule (io_fortran_lib) file_io
 					locale_ = 'US'
 					write(*,'(a)') LF//'WARNING: Invalid locale "'//locale//'" for file "'//file_name//'". '// &
 									   'Defaulting to US format.'// &
-								   LF//'Locale must be one of: '//to_str(LOCALES, delim=' ')
+								   LF//'Locale must be one of: '//to_str(LOCALES, delim=SPACE)
 				end if
 			end if
 
 			if ( .not. present(delim) ) then
 				if ( dim_ == 1 ) then
-					delim_ = ''
+					delim_ = EMPTY_STR
 				else
 					if ( locale_ == 'US' ) then
 						delim_ = ','
@@ -9781,7 +9749,7 @@ submodule (io_fortran_lib) file_io
 				end if
 			else
 				if ( dim_ == 1 ) then
-					delim_ = ''
+					delim_ = EMPTY_STR
 				else
 					delim_ = delim
 				end if
@@ -9796,7 +9764,7 @@ submodule (io_fortran_lib) file_io
 					fmt_ = 'e'
 					write(*,'(a)') LF//'WARNING: Invalid format "'//fmt//'" for file "'//file_name//'". '// &
 									   'Defaulting to exponential format.'// &
-								   LF//'Format must be one of: '//to_str(REAL_FMTS, delim=' ')
+								   LF//'Format must be one of: '//to_str(REAL_FMTS, delim=SPACE)
 				end if
 			end if
 
@@ -9820,8 +9788,8 @@ submodule (io_fortran_lib) file_io
 		else
 			write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 								'due to unsupported file extension "'//ext//'".'// &
-							LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-								to_str(BINARY_EXT, delim=' ')
+							LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+								to_str(BINARY_EXT, delim=SPACE)
 		end if
 	end procedure to_file_1dr32
 
@@ -9834,10 +9802,10 @@ submodule (io_fortran_lib) file_io
 
 		if ( any(TEXT_EXT == ext) ) then
 			if ( .not. present(header) ) then
-				header_ = ['']
+				header_ = [ EMPTY_STR ]
 			else
 				if ( (size(header) /= 1) .and. (size(header) /= size(x, dim=2)) ) then
-					header_ = ['']
+					header_ = [ EMPTY_STR ]
 					write(*,'(a)') LF//'WARNING: Invalid header for file "'//file_name//'".'// &
 								   LF//'Header for this data must have size (1) or '// &
 									   '('//str(size(x, dim=2))//').'
@@ -9855,7 +9823,7 @@ submodule (io_fortran_lib) file_io
 					locale_ = 'US'
 					write(*,'(a)') LF//'WARNING: Invalid locale "'//locale//'" for file "'//file_name//'". '// &
 									   'Defaulting to US format.'// &
-								   LF//'Locale must be one of: '//to_str(LOCALES, delim=' ')
+								   LF//'Locale must be one of: '//to_str(LOCALES, delim=SPACE)
 				end if
 			end if
 
@@ -9878,7 +9846,7 @@ submodule (io_fortran_lib) file_io
 					fmt_ = 'e'
 					write(*,'(a)') LF//'WARNING: Invalid format "'//fmt//'" for file "'//file_name//'". '// &
 									   'Defaulting to exponential format.'// &
-								   LF//'Format must be one of: '//to_str(REAL_FMTS, delim=' ')
+								   LF//'Format must be one of: '//to_str(REAL_FMTS, delim=SPACE)
 				end if
 			end if
 
@@ -9901,8 +9869,8 @@ submodule (io_fortran_lib) file_io
 		else
 			write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 								'due to unsupported file extension "'//ext//'".'// &
-							LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-								to_str(BINARY_EXT, delim=' ')
+							LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+								to_str(BINARY_EXT, delim=SPACE)
 		end if
 	end procedure to_file_2dr128
 	module procedure to_file_2dr64
@@ -9914,10 +9882,10 @@ submodule (io_fortran_lib) file_io
 
 		if ( any(TEXT_EXT == ext) ) then
 			if ( .not. present(header) ) then
-				header_ = ['']
+				header_ = [ EMPTY_STR ]
 			else
 				if ( (size(header) /= 1) .and. (size(header) /= size(x, dim=2)) ) then
-					header_ = ['']
+					header_ = [ EMPTY_STR ]
 					write(*,'(a)') LF//'WARNING: Invalid header for file "'//file_name//'".'// &
 								   LF//'Header for this data must have size (1) or '// &
 									   '('//str(size(x, dim=2))//').'
@@ -9935,7 +9903,7 @@ submodule (io_fortran_lib) file_io
 					locale_ = 'US'
 					write(*,'(a)') LF//'WARNING: Invalid locale "'//locale//'" for file "'//file_name//'". '// &
 									   'Defaulting to US format.'// &
-								   LF//'Locale must be one of: '//to_str(LOCALES, delim=' ')
+								   LF//'Locale must be one of: '//to_str(LOCALES, delim=SPACE)
 				end if
 			end if
 
@@ -9958,7 +9926,7 @@ submodule (io_fortran_lib) file_io
 					fmt_ = 'e'
 					write(*,'(a)') LF//'WARNING: Invalid format "'//fmt//'" for file "'//file_name//'". '// &
 									   'Defaulting to exponential format.'// &
-								   LF//'Format must be one of: '//to_str(REAL_FMTS, delim=' ')
+								   LF//'Format must be one of: '//to_str(REAL_FMTS, delim=SPACE)
 				end if
 			end if
 
@@ -9981,8 +9949,8 @@ submodule (io_fortran_lib) file_io
 		else
 			write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 								'due to unsupported file extension "'//ext//'".'// &
-							LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-								to_str(BINARY_EXT, delim=' ')
+							LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+								to_str(BINARY_EXT, delim=SPACE)
 		end if
 	end procedure to_file_2dr64
 	module procedure to_file_2dr32
@@ -9994,10 +9962,10 @@ submodule (io_fortran_lib) file_io
 
 		if ( any(TEXT_EXT == ext) ) then
 			if ( .not. present(header) ) then
-				header_ = ['']
+				header_ = [ EMPTY_STR ]
 			else
 				if ( (size(header) /= 1) .and. (size(header) /= size(x, dim=2)) ) then
-					header_ = ['']
+					header_ = [ EMPTY_STR ]
 					write(*,'(a)') LF//'WARNING: Invalid header for file "'//file_name//'".'// &
 								   LF//'Header for this data must have size (1) or '// &
 									   '('//str(size(x, dim=2))//').'
@@ -10015,7 +9983,7 @@ submodule (io_fortran_lib) file_io
 					locale_ = 'US'
 					write(*,'(a)') LF//'WARNING: Invalid locale "'//locale//'" for file "'//file_name//'". '// &
 									   'Defaulting to US format.'// &
-								   LF//'Locale must be one of: '//to_str(LOCALES, delim=' ')
+								   LF//'Locale must be one of: '//to_str(LOCALES, delim=SPACE)
 				end if
 			end if
 
@@ -10038,7 +10006,7 @@ submodule (io_fortran_lib) file_io
 					fmt_ = 'e'
 					write(*,'(a)') LF//'WARNING: Invalid format "'//fmt//'" for file "'//file_name//'". '// &
 									   'Defaulting to exponential format.'// &
-								   LF//'Format must be one of: '//to_str(REAL_FMTS, delim=' ')
+								   LF//'Format must be one of: '//to_str(REAL_FMTS, delim=SPACE)
 				end if
 			end if
 
@@ -10061,8 +10029,8 @@ submodule (io_fortran_lib) file_io
 		else
 			write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 								'due to unsupported file extension "'//ext//'".'// &
-							LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-								to_str(BINARY_EXT, delim=' ')
+							LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+								to_str(BINARY_EXT, delim=SPACE)
 		end if
 	end procedure to_file_2dr32
 
@@ -10077,11 +10045,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_3dr128
@@ -10096,11 +10064,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_3dr64
@@ -10115,11 +10083,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_3dr32
@@ -10135,11 +10103,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_4dr128
@@ -10154,11 +10122,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_4dr64
@@ -10173,11 +10141,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_4dr32
@@ -10193,11 +10161,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_5dr128
@@ -10212,11 +10180,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_5dr64
@@ -10231,11 +10199,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_5dr32
@@ -10251,11 +10219,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_6dr128
@@ -10270,11 +10238,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_6dr64
@@ -10289,11 +10257,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_6dr32
@@ -10309,11 +10277,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_7dr128
@@ -10328,11 +10296,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_7dr64
@@ -10347,11 +10315,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_7dr32
@@ -10367,11 +10335,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_8dr128
@@ -10386,11 +10354,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_8dr64
@@ -10405,11 +10373,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_8dr32
@@ -10425,11 +10393,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_9dr128
@@ -10444,11 +10412,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_9dr64
@@ -10463,11 +10431,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_9dr32
@@ -10483,11 +10451,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_10dr128
@@ -10502,11 +10470,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_10dr64
@@ -10521,11 +10489,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_10dr32
@@ -10541,11 +10509,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_11dr128
@@ -10560,11 +10528,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_11dr64
@@ -10579,11 +10547,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_11dr32
@@ -10599,11 +10567,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_12dr128
@@ -10618,11 +10586,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_12dr64
@@ -10637,11 +10605,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_12dr32
@@ -10657,11 +10625,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_13dr128
@@ -10676,11 +10644,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_13dr64
@@ -10695,11 +10663,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_13dr32
@@ -10715,11 +10683,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_14dr128
@@ -10734,11 +10702,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_14dr64
@@ -10753,11 +10721,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_14dr32
@@ -10773,11 +10741,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_15dr128
@@ -10792,11 +10760,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_15dr64
@@ -10811,11 +10779,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_15dr32
@@ -10829,11 +10797,11 @@ submodule (io_fortran_lib) file_io
 
 		if ( any(TEXT_EXT == ext) ) then
 			if ( .not. present(header) ) then
-				header_ = ['']
+				header_ = [ EMPTY_STR ]
 				hstat = 0
 			else
 				if ( (size(header) /= 1) .and. (size(header) /= size(x)) ) then
-					header_ = ['']
+					header_ = [ EMPTY_STR ]
 					hstat = -1
 					write(*,'(a)') LF//'WARNING: Invalid header for file "'//file_name//'".'// &
 								   LF//'Header for this data must have size (1) or '// &
@@ -10876,13 +10844,13 @@ submodule (io_fortran_lib) file_io
 
 			if ( .not. present(delim) ) then
 				if ( dim_ == 1 ) then
-					delim_ = ''
+					delim_ = EMPTY_STR
 				else
 					delim_ = ','
 				end if
 			else
 				if ( dim_ == 1 ) then
-					delim_ = ''
+					delim_ = EMPTY_STR
 				else
 					delim_ = delim
 				end if
@@ -10897,7 +10865,7 @@ submodule (io_fortran_lib) file_io
 					fmt_ = 'i'
 					write(*,'(a)') LF//'WARNING: Invalid format "'//fmt//'" for file "'//file_name//'". '// &
 									   'Defaulting to integer format.'// &
-								   LF//'Format must be one of: '//to_str(INT_FMTS, delim=' ')
+								   LF//'Format must be one of: '//to_str(INT_FMTS, delim=SPACE)
 				end if
 			end if
 
@@ -10912,8 +10880,8 @@ submodule (io_fortran_lib) file_io
 		else
 			write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 								'due to unsupported file extension "'//ext//'".'// &
-							LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-								to_str(BINARY_EXT, delim=' ')
+							LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+								to_str(BINARY_EXT, delim=SPACE)
 		end if
 	end procedure to_file_1di64
 	module procedure to_file_1di32
@@ -10925,11 +10893,11 @@ submodule (io_fortran_lib) file_io
 
 		if ( any(TEXT_EXT == ext) ) then
 			if ( .not. present(header) ) then
-				header_ = ['']
+				header_ = [ EMPTY_STR ]
 				hstat = 0
 			else
 				if ( (size(header) /= 1) .and. (size(header) /= size(x)) ) then
-					header_ = ['']
+					header_ = [ EMPTY_STR ]
 					hstat = -1
 					write(*,'(a)') LF//'WARNING: Invalid header for file "'//file_name//'".'// &
 								   LF//'Header for this data must have size (1) or '// &
@@ -10972,13 +10940,13 @@ submodule (io_fortran_lib) file_io
 
 			if ( .not. present(delim) ) then
 				if ( dim_ == 1 ) then
-					delim_ = ''
+					delim_ = EMPTY_STR
 				else
 					delim_ = ','
 				end if
 			else
 				if ( dim_ == 1 ) then
-					delim_ = ''
+					delim_ = EMPTY_STR
 				else
 					delim_ = delim
 				end if
@@ -10993,7 +10961,7 @@ submodule (io_fortran_lib) file_io
 					fmt_ = 'i'
 					write(*,'(a)') LF//'WARNING: Invalid format "'//fmt//'" for file "'//file_name//'". '// &
 									   'Defaulting to integer format.'// &
-								   LF//'Format must be one of: '//to_str(INT_FMTS, delim=' ')
+								   LF//'Format must be one of: '//to_str(INT_FMTS, delim=SPACE)
 				end if
 			end if
 
@@ -11008,8 +10976,8 @@ submodule (io_fortran_lib) file_io
 		else
 			write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 								'due to unsupported file extension "'//ext//'".'// &
-							LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-								to_str(BINARY_EXT, delim=' ')
+							LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+								to_str(BINARY_EXT, delim=SPACE)
 		end if
 	end procedure to_file_1di32
 	module procedure to_file_1di16
@@ -11021,11 +10989,11 @@ submodule (io_fortran_lib) file_io
 
 		if ( any(TEXT_EXT == ext) ) then
 			if ( .not. present(header) ) then
-				header_ = ['']
+				header_ = [ EMPTY_STR ]
 				hstat = 0
 			else
 				if ( (size(header) /= 1) .and. (size(header) /= size(x)) ) then
-					header_ = ['']
+					header_ = [ EMPTY_STR ]
 					hstat = -1
 					write(*,'(a)') LF//'WARNING: Invalid header for file "'//file_name//'".'// &
 								   LF//'Header for this data must have size (1) or '// &
@@ -11068,13 +11036,13 @@ submodule (io_fortran_lib) file_io
 
 			if ( .not. present(delim) ) then
 				if ( dim_ == 1 ) then
-					delim_ = ''
+					delim_ = EMPTY_STR
 				else
 					delim_ = ','
 				end if
 			else
 				if ( dim_ == 1 ) then
-					delim_ = ''
+					delim_ = EMPTY_STR
 				else
 					delim_ = delim
 				end if
@@ -11089,7 +11057,7 @@ submodule (io_fortran_lib) file_io
 					fmt_ = 'i'
 					write(*,'(a)') LF//'WARNING: Invalid format "'//fmt//'" for file "'//file_name//'". '// &
 									   'Defaulting to integer format.'// &
-								   LF//'Format must be one of: '//to_str(INT_FMTS, delim=' ')
+								   LF//'Format must be one of: '//to_str(INT_FMTS, delim=SPACE)
 				end if
 			end if
 
@@ -11104,8 +11072,8 @@ submodule (io_fortran_lib) file_io
 		else
 			write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 								'due to unsupported file extension "'//ext//'".'// &
-							LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-								to_str(BINARY_EXT, delim=' ')
+							LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+								to_str(BINARY_EXT, delim=SPACE)
 		end if
 	end procedure to_file_1di16
 	module procedure to_file_1di8
@@ -11117,11 +11085,11 @@ submodule (io_fortran_lib) file_io
 
 		if ( any(TEXT_EXT == ext) ) then
 			if ( .not. present(header) ) then
-				header_ = ['']
+				header_ = [ EMPTY_STR ]
 				hstat = 0
 			else
 				if ( (size(header) /= 1) .and. (size(header) /= size(x)) ) then
-					header_ = ['']
+					header_ = [ EMPTY_STR ]
 					hstat = -1
 					write(*,'(a)') LF//'WARNING: Invalid header for file "'//file_name//'".'// &
 								   LF//'Header for this data must have size (1) or '// &
@@ -11164,13 +11132,13 @@ submodule (io_fortran_lib) file_io
 
 			if ( .not. present(delim) ) then
 				if ( dim_ == 1 ) then
-					delim_ = ''
+					delim_ = EMPTY_STR
 				else
 					delim_ = ','
 				end if
 			else
 				if ( dim_ == 1 ) then
-					delim_ = ''
+					delim_ = EMPTY_STR
 				else
 					delim_ = delim
 				end if
@@ -11185,7 +11153,7 @@ submodule (io_fortran_lib) file_io
 					fmt_ = 'i'
 					write(*,'(a)') LF//'WARNING: Invalid format "'//fmt//'" for file "'//file_name//'". '// &
 									   'Defaulting to integer format.'// &
-								   LF//'Format must be one of: '//to_str(INT_FMTS, delim=' ')
+								   LF//'Format must be one of: '//to_str(INT_FMTS, delim=SPACE)
 				end if
 			end if
 
@@ -11200,8 +11168,8 @@ submodule (io_fortran_lib) file_io
 		else
 			write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 								'due to unsupported file extension "'//ext//'".'// &
-							LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-								to_str(BINARY_EXT, delim=' ')
+							LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+								to_str(BINARY_EXT, delim=SPACE)
 		end if
 	end procedure to_file_1di8
 
@@ -11213,10 +11181,10 @@ submodule (io_fortran_lib) file_io
 
 		if ( any(TEXT_EXT == ext) ) then
 			if ( .not. present(header) ) then
-				header_ = ['']
+				header_ = [ EMPTY_STR ]
 			else
 				if ( (size(header) /= 1) .and. (size(header) /= size(x, dim=2)) ) then
-					header_ = ['']
+					header_ = [ EMPTY_STR ]
 					write(*,'(a)') LF//'WARNING: Invalid header for file "'//file_name//'".'// &
 								   LF//'Header for this data must have size (1) or '// &
 									   '('//str(size(x, dim=2))//').'
@@ -11240,7 +11208,7 @@ submodule (io_fortran_lib) file_io
 					fmt_ = 'i'
 					write(*,'(a)') LF//'WARNING: Invalid format "'//fmt//'" for file "'//file_name//'". '// &
 									   'Defaulting to integer format.'// &
-								   LF//'Format must be one of: '//to_str(INT_FMTS, delim=' ')
+								   LF//'Format must be one of: '//to_str(INT_FMTS, delim=SPACE)
 				end if
 			end if
 
@@ -11254,8 +11222,8 @@ submodule (io_fortran_lib) file_io
 		else
 			write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 								'due to unsupported file extension "'//ext//'".'// &
-							LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-								to_str(BINARY_EXT, delim=' ')
+							LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+								to_str(BINARY_EXT, delim=SPACE)
 		end if
 	end procedure to_file_2di64
 	module procedure to_file_2di32
@@ -11266,10 +11234,10 @@ submodule (io_fortran_lib) file_io
 
 		if ( any(TEXT_EXT == ext) ) then
 			if ( .not. present(header) ) then
-				header_ = ['']
+				header_ = [ EMPTY_STR ]
 			else
 				if ( (size(header) /= 1) .and. (size(header) /= size(x, dim=2)) ) then
-					header_ = ['']
+					header_ = [ EMPTY_STR ]
 					write(*,'(a)') LF//'WARNING: Invalid header for file "'//file_name//'".'// &
 								   LF//'Header for this data must have size (1) or '// &
 									   '('//str(size(x, dim=2))//').'
@@ -11293,7 +11261,7 @@ submodule (io_fortran_lib) file_io
 					fmt_ = 'i'
 					write(*,'(a)') LF//'WARNING: Invalid format "'//fmt//'" for file "'//file_name//'". '// &
 									   'Defaulting to integer format.'// &
-								   LF//'Format must be one of: '//to_str(INT_FMTS, delim=' ')
+								   LF//'Format must be one of: '//to_str(INT_FMTS, delim=SPACE)
 				end if
 			end if
 
@@ -11307,8 +11275,8 @@ submodule (io_fortran_lib) file_io
 		else
 			write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 								'due to unsupported file extension "'//ext//'".'// &
-							LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-								to_str(BINARY_EXT, delim=' ')
+							LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+								to_str(BINARY_EXT, delim=SPACE)
 		end if
 	end procedure to_file_2di32
 	module procedure to_file_2di16
@@ -11319,10 +11287,10 @@ submodule (io_fortran_lib) file_io
 
 		if ( any(TEXT_EXT == ext) ) then
 			if ( .not. present(header) ) then
-				header_ = ['']
+				header_ = [ EMPTY_STR ]
 			else
 				if ( (size(header) /= 1) .and. (size(header) /= size(x, dim=2)) ) then
-					header_ = ['']
+					header_ = [ EMPTY_STR ]
 					write(*,'(a)') LF//'WARNING: Invalid header for file "'//file_name//'".'// &
 								   LF//'Header for this data must have size (1) or '// &
 									   '('//str(size(x, dim=2))//').'
@@ -11346,7 +11314,7 @@ submodule (io_fortran_lib) file_io
 					fmt_ = 'i'
 					write(*,'(a)') LF//'WARNING: Invalid format "'//fmt//'" for file "'//file_name//'". '// &
 									   'Defaulting to integer format.'// &
-								   LF//'Format must be one of: '//to_str(INT_FMTS, delim=' ')
+								   LF//'Format must be one of: '//to_str(INT_FMTS, delim=SPACE)
 				end if
 			end if
 
@@ -11360,8 +11328,8 @@ submodule (io_fortran_lib) file_io
 		else
 			write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 								'due to unsupported file extension "'//ext//'".'// &
-							LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-								to_str(BINARY_EXT, delim=' ')
+							LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+								to_str(BINARY_EXT, delim=SPACE)
 		end if
 	end procedure to_file_2di16
 	module procedure to_file_2di8
@@ -11372,10 +11340,10 @@ submodule (io_fortran_lib) file_io
 
 		if ( any(TEXT_EXT == ext) ) then
 			if ( .not. present(header) ) then
-				header_ = ['']
+				header_ = [ EMPTY_STR ]
 			else
 				if ( (size(header) /= 1) .and. (size(header) /= size(x, dim=2)) ) then
-					header_ = ['']
+					header_ = [ EMPTY_STR ]
 					write(*,'(a)') LF//'WARNING: Invalid header for file "'//file_name//'".'// &
 								   LF//'Header for this data must have size (1) or '// &
 									   '('//str(size(x, dim=2))//').'
@@ -11399,7 +11367,7 @@ submodule (io_fortran_lib) file_io
 					fmt_ = 'i'
 					write(*,'(a)') LF//'WARNING: Invalid format "'//fmt//'" for file "'//file_name//'". '// &
 									   'Defaulting to integer format.'// &
-								   LF//'Format must be one of: '//to_str(INT_FMTS, delim=' ')
+								   LF//'Format must be one of: '//to_str(INT_FMTS, delim=SPACE)
 				end if
 			end if
 
@@ -11413,8 +11381,8 @@ submodule (io_fortran_lib) file_io
 		else
 			write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 								'due to unsupported file extension "'//ext//'".'// &
-							LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-								to_str(BINARY_EXT, delim=' ')
+							LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+								to_str(BINARY_EXT, delim=SPACE)
 		end if
 	end procedure to_file_2di8
 
@@ -11429,11 +11397,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_3di64
@@ -11448,11 +11416,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_3di32
@@ -11467,11 +11435,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_3di16
@@ -11486,11 +11454,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_3di8
@@ -11506,11 +11474,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_4di64
@@ -11525,11 +11493,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_4di32
@@ -11544,11 +11512,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_4di16
@@ -11563,11 +11531,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_4di8
@@ -11583,11 +11551,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_5di64
@@ -11602,11 +11570,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_5di32
@@ -11621,11 +11589,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_5di16
@@ -11640,11 +11608,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_5di8
@@ -11660,11 +11628,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_6di64
@@ -11679,11 +11647,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_6di32
@@ -11698,11 +11666,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_6di16
@@ -11717,11 +11685,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_6di8
@@ -11737,11 +11705,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_7di64
@@ -11756,11 +11724,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_7di32
@@ -11775,11 +11743,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_7di16
@@ -11794,11 +11762,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_7di8
@@ -11814,11 +11782,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_8di64
@@ -11833,11 +11801,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_8di32
@@ -11852,11 +11820,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_8di16
@@ -11871,11 +11839,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_8di8
@@ -11891,11 +11859,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_9di64
@@ -11910,11 +11878,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_9di32
@@ -11929,11 +11897,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_9di16
@@ -11948,11 +11916,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_9di8
@@ -11968,11 +11936,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_10di64
@@ -11987,11 +11955,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_10di32
@@ -12006,11 +11974,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_10di16
@@ -12025,11 +11993,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_10di8
@@ -12045,11 +12013,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_11di64
@@ -12064,11 +12032,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_11di32
@@ -12083,11 +12051,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_11di16
@@ -12102,11 +12070,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_11di8
@@ -12122,11 +12090,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_12di64
@@ -12141,11 +12109,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_12di32
@@ -12160,11 +12128,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_12di16
@@ -12179,11 +12147,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_12di8
@@ -12199,11 +12167,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_13di64
@@ -12218,11 +12186,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_13di32
@@ -12237,11 +12205,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_13di16
@@ -12256,11 +12224,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_13di8
@@ -12276,11 +12244,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_14di64
@@ -12295,11 +12263,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_14di32
@@ -12314,11 +12282,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_14di16
@@ -12333,11 +12301,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_14di8
@@ -12353,11 +12321,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_15di64
@@ -12372,11 +12340,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_15di32
@@ -12391,11 +12359,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_15di16
@@ -12410,11 +12378,11 @@ submodule (io_fortran_lib) file_io
 			if ( any(TEXT_EXT == ext) ) then
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". Cannot write array of '// &
 									'dimension ('//str(rank(x))//') to text.'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			else
 				write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 									'due to unsupported file extension "'//ext//'".'// &
-								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+								LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure to_file_15di8
@@ -12440,7 +12408,7 @@ submodule (io_fortran_lib) file_io
 					locale_ = locale
 				else
 					error stop LF//'FATAL: Invalid locale "'//locale//'" for read of file "'//file_name//'".'// &
-							   LF//'Locale must be one of: '//to_str(LOCALES, delim=' ')
+							   LF//'Locale must be one of: '//to_str(LOCALES, delim=SPACE)
 				end if
 			end if
 
@@ -12452,12 +12420,12 @@ submodule (io_fortran_lib) file_io
 				else
 					error stop LF//'FATAL: Invalid format "'//fmt//'" for read of file "'//file_name//'" '// &
 								   'into complex array.'// &
-							   LF//'Format must be one of: '//to_str(REAL_FMTS, delim=' ')
+							   LF//'Format must be one of: '//to_str(REAL_FMTS, delim=SPACE)
 				end if
 			end if
 
 			if ( .not. present(im) ) then
-				im_ = ''
+				im_ = EMPTY_STR
 			else
 				im_ = im
 			end if
@@ -12469,8 +12437,8 @@ submodule (io_fortran_lib) file_io
 							   'for binary data.'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-						   to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+						   to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_textfile_1dc128
@@ -12493,8 +12461,8 @@ submodule (io_fortran_lib) file_io
 							   'for textual data.'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-						   to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+						   to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_binaryfile_1dc128
@@ -12518,7 +12486,7 @@ submodule (io_fortran_lib) file_io
 					locale_ = locale
 				else
 					error stop LF//'FATAL: Invalid locale "'//locale//'" for read of file "'//file_name//'".'// &
-							   LF//'Locale must be one of: '//to_str(LOCALES, delim=' ')
+							   LF//'Locale must be one of: '//to_str(LOCALES, delim=SPACE)
 				end if
 			end if
 
@@ -12530,12 +12498,12 @@ submodule (io_fortran_lib) file_io
 				else
 					error stop LF//'FATAL: Invalid format "'//fmt//'" for read of file "'//file_name//'" '// &
 								   'into complex array.'// &
-							   LF//'Format must be one of: '//to_str(REAL_FMTS, delim=' ')
+							   LF//'Format must be one of: '//to_str(REAL_FMTS, delim=SPACE)
 				end if
 			end if
 
 			if ( .not. present(im) ) then
-				im_ = ''
+				im_ = EMPTY_STR
 			else
 				im_ = im
 			end if
@@ -12547,8 +12515,8 @@ submodule (io_fortran_lib) file_io
 							   'for binary data.'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-						   to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+						   to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_textfile_1dc64
@@ -12571,8 +12539,8 @@ submodule (io_fortran_lib) file_io
 							   'for textual data.'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-						   to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+						   to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_binaryfile_1dc64
@@ -12596,7 +12564,7 @@ submodule (io_fortran_lib) file_io
 					locale_ = locale
 				else
 					error stop LF//'FATAL: Invalid locale "'//locale//'" for read of file "'//file_name//'".'// &
-							   LF//'Locale must be one of: '//to_str(LOCALES, delim=' ')
+							   LF//'Locale must be one of: '//to_str(LOCALES, delim=SPACE)
 				end if
 			end if
 
@@ -12608,12 +12576,12 @@ submodule (io_fortran_lib) file_io
 				else
 					error stop LF//'FATAL: Invalid format "'//fmt//'" for read of file "'//file_name//'" '// &
 								   'into complex array.'// &
-							   LF//'Format must be one of: '//to_str(REAL_FMTS, delim=' ')
+							   LF//'Format must be one of: '//to_str(REAL_FMTS, delim=SPACE)
 				end if
 			end if
 
 			if ( .not. present(im) ) then
-				im_ = ''
+				im_ = EMPTY_STR
 			else
 				im_ = im
 			end if
@@ -12625,8 +12593,8 @@ submodule (io_fortran_lib) file_io
 							   'for binary data.'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-						   to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+						   to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_textfile_1dc32
@@ -12649,8 +12617,8 @@ submodule (io_fortran_lib) file_io
 							   'for textual data.'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-						   to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+						   to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_binaryfile_1dc32
@@ -12675,7 +12643,7 @@ submodule (io_fortran_lib) file_io
 					locale_ = locale
 				else
 					error stop LF//'FATAL: Invalid locale "'//locale//'" for read of file "'//file_name//'".'// &
-							   LF//'Locale must be one of: '//to_str(LOCALES, delim=' ')
+							   LF//'Locale must be one of: '//to_str(LOCALES, delim=SPACE)
 				end if
 			end if
 
@@ -12687,12 +12655,12 @@ submodule (io_fortran_lib) file_io
 				else
 					error stop LF//'FATAL: Invalid format "'//fmt//'" for read of file "'//file_name//'" '// &
 								   'into complex array.'// &
-							   LF//'Format must be one of: '//to_str(REAL_FMTS, delim=' ')
+							   LF//'Format must be one of: '//to_str(REAL_FMTS, delim=SPACE)
 				end if
 			end if
 
 			if ( .not. present(im) ) then
-				im_ = ''
+				im_ = EMPTY_STR
 			else
 				im_ = im
 			end if
@@ -12704,8 +12672,8 @@ submodule (io_fortran_lib) file_io
 							   'for binary data.'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-						   to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+						   to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_textfile_2dc128
@@ -12728,8 +12696,8 @@ submodule (io_fortran_lib) file_io
 							   'for textual data.'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-						   to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+						   to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_binaryfile_2dc128
@@ -12753,7 +12721,7 @@ submodule (io_fortran_lib) file_io
 					locale_ = locale
 				else
 					error stop LF//'FATAL: Invalid locale "'//locale//'" for read of file "'//file_name//'".'// &
-							   LF//'Locale must be one of: '//to_str(LOCALES, delim=' ')
+							   LF//'Locale must be one of: '//to_str(LOCALES, delim=SPACE)
 				end if
 			end if
 
@@ -12765,12 +12733,12 @@ submodule (io_fortran_lib) file_io
 				else
 					error stop LF//'FATAL: Invalid format "'//fmt//'" for read of file "'//file_name//'" '// &
 								   'into complex array.'// &
-							   LF//'Format must be one of: '//to_str(REAL_FMTS, delim=' ')
+							   LF//'Format must be one of: '//to_str(REAL_FMTS, delim=SPACE)
 				end if
 			end if
 
 			if ( .not. present(im) ) then
-				im_ = ''
+				im_ = EMPTY_STR
 			else
 				im_ = im
 			end if
@@ -12782,8 +12750,8 @@ submodule (io_fortran_lib) file_io
 							   'for binary data.'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-						   to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+						   to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_textfile_2dc64
@@ -12806,8 +12774,8 @@ submodule (io_fortran_lib) file_io
 							   'for textual data.'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-						   to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+						   to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_binaryfile_2dc64
@@ -12831,7 +12799,7 @@ submodule (io_fortran_lib) file_io
 					locale_ = locale
 				else
 					error stop LF//'FATAL: Invalid locale "'//locale//'" for read of file "'//file_name//'".'// &
-							   LF//'Locale must be one of: '//to_str(LOCALES, delim=' ')
+							   LF//'Locale must be one of: '//to_str(LOCALES, delim=SPACE)
 				end if
 			end if
 
@@ -12843,12 +12811,12 @@ submodule (io_fortran_lib) file_io
 				else
 					error stop LF//'FATAL: Invalid format "'//fmt//'" for read of file "'//file_name//'" '// &
 								   'into complex array.'// &
-							   LF//'Format must be one of: '//to_str(REAL_FMTS, delim=' ')
+							   LF//'Format must be one of: '//to_str(REAL_FMTS, delim=SPACE)
 				end if
 			end if
 
 			if ( .not. present(im) ) then
-				im_ = ''
+				im_ = EMPTY_STR
 			else
 				im_ = im
 			end if
@@ -12860,8 +12828,8 @@ submodule (io_fortran_lib) file_io
 							   'for binary data.'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-						   to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+						   to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_textfile_2dc32
@@ -12884,8 +12852,8 @@ submodule (io_fortran_lib) file_io
 							   'for textual data.'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-						   to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+						   to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_binaryfile_2dc32
@@ -12909,7 +12877,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_3dc128
@@ -12932,7 +12900,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_3dc64
@@ -12955,7 +12923,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_3dc32
@@ -12979,7 +12947,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_4dc128
@@ -13002,7 +12970,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_4dc64
@@ -13025,7 +12993,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_4dc32
@@ -13049,7 +13017,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_5dc128
@@ -13072,7 +13040,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_5dc64
@@ -13095,7 +13063,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_5dc32
@@ -13119,7 +13087,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_6dc128
@@ -13142,7 +13110,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_6dc64
@@ -13165,7 +13133,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_6dc32
@@ -13189,7 +13157,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_7dc128
@@ -13212,7 +13180,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_7dc64
@@ -13235,7 +13203,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_7dc32
@@ -13259,7 +13227,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_8dc128
@@ -13282,7 +13250,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_8dc64
@@ -13305,7 +13273,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_8dc32
@@ -13329,7 +13297,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_9dc128
@@ -13352,7 +13320,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_9dc64
@@ -13375,7 +13343,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_9dc32
@@ -13399,7 +13367,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_10dc128
@@ -13422,7 +13390,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_10dc64
@@ -13445,7 +13413,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_10dc32
@@ -13469,7 +13437,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_11dc128
@@ -13492,7 +13460,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_11dc64
@@ -13515,7 +13483,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_11dc32
@@ -13539,7 +13507,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_12dc128
@@ -13562,7 +13530,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_12dc64
@@ -13585,7 +13553,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_12dc32
@@ -13609,7 +13577,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_13dc128
@@ -13632,7 +13600,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_13dc64
@@ -13655,7 +13623,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_13dc32
@@ -13679,7 +13647,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_14dc128
@@ -13702,7 +13670,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_14dc64
@@ -13725,7 +13693,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_14dc32
@@ -13749,7 +13717,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_15dc128
@@ -13772,7 +13740,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_15dc64
@@ -13795,7 +13763,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_15dc32
@@ -13820,7 +13788,7 @@ submodule (io_fortran_lib) file_io
 					locale_ = locale
 				else
 					error stop LF//'FATAL: Invalid locale "'//locale//'" for read of file "'//file_name//'".'// &
-							   LF//'Locale must be one of: '//to_str(LOCALES, delim=' ')
+							   LF//'Locale must be one of: '//to_str(LOCALES, delim=SPACE)
 				end if
 			end if
 
@@ -13832,7 +13800,7 @@ submodule (io_fortran_lib) file_io
 				else
 					error stop LF//'FATAL: Invalid format "'//fmt//'" for read of file "'//file_name//'" '// &
 								   'into real array.'// &
-							   LF//'Format must be one of: '//to_str(REAL_FMTS, delim=' ')
+							   LF//'Format must be one of: '//to_str(REAL_FMTS, delim=SPACE)
 				end if
 			end if
 
@@ -13843,8 +13811,8 @@ submodule (io_fortran_lib) file_io
 							   'for binary data.'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-						   to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+						   to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_textfile_1dr128
@@ -13867,8 +13835,8 @@ submodule (io_fortran_lib) file_io
 							   'for textual data.'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-						   to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+						   to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_binaryfile_1dr128
@@ -13892,7 +13860,7 @@ submodule (io_fortran_lib) file_io
 					locale_ = locale
 				else
 					error stop LF//'FATAL: Invalid locale "'//locale//'" for read of file "'//file_name//'".'// &
-							   LF//'Locale must be one of: '//to_str(LOCALES, delim=' ')
+							   LF//'Locale must be one of: '//to_str(LOCALES, delim=SPACE)
 				end if
 			end if
 
@@ -13904,7 +13872,7 @@ submodule (io_fortran_lib) file_io
 				else
 					error stop LF//'FATAL: Invalid format "'//fmt//'" for read of file "'//file_name//'" '// &
 								   'into real array.'// &
-							   LF//'Format must be one of: '//to_str(REAL_FMTS, delim=' ')
+							   LF//'Format must be one of: '//to_str(REAL_FMTS, delim=SPACE)
 				end if
 			end if
 
@@ -13915,8 +13883,8 @@ submodule (io_fortran_lib) file_io
 							   'for binary data.'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-						   to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+						   to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_textfile_1dr64
@@ -13939,8 +13907,8 @@ submodule (io_fortran_lib) file_io
 							   'for textual data.'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-						   to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+						   to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_binaryfile_1dr64
@@ -13964,7 +13932,7 @@ submodule (io_fortran_lib) file_io
 					locale_ = locale
 				else
 					error stop LF//'FATAL: Invalid locale "'//locale//'" for read of file "'//file_name//'".'// &
-							   LF//'Locale must be one of: '//to_str(LOCALES, delim=' ')
+							   LF//'Locale must be one of: '//to_str(LOCALES, delim=SPACE)
 				end if
 			end if
 
@@ -13976,7 +13944,7 @@ submodule (io_fortran_lib) file_io
 				else
 					error stop LF//'FATAL: Invalid format "'//fmt//'" for read of file "'//file_name//'" '// &
 								   'into real array.'// &
-							   LF//'Format must be one of: '//to_str(REAL_FMTS, delim=' ')
+							   LF//'Format must be one of: '//to_str(REAL_FMTS, delim=SPACE)
 				end if
 			end if
 
@@ -13987,8 +13955,8 @@ submodule (io_fortran_lib) file_io
 							   'for binary data.'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-						   to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+						   to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_textfile_1dr32
@@ -14011,8 +13979,8 @@ submodule (io_fortran_lib) file_io
 							   'for textual data.'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-						   to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+						   to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_binaryfile_1dr32
@@ -14037,7 +14005,7 @@ submodule (io_fortran_lib) file_io
 					locale_ = locale
 				else
 					error stop LF//'FATAL: Invalid locale "'//locale//'" for read of file "'//file_name//'".'// &
-							   LF//'Locale must be one of: '//to_str(LOCALES, delim=' ')
+							   LF//'Locale must be one of: '//to_str(LOCALES, delim=SPACE)
 				end if
 			end if
 
@@ -14049,7 +14017,7 @@ submodule (io_fortran_lib) file_io
 				else
 					error stop LF//'FATAL: Invalid format "'//fmt//'" for read of file "'//file_name//'" '// &
 								   'into real array.'// &
-							   LF//'Format must be one of: '//to_str(REAL_FMTS, delim=' ')
+							   LF//'Format must be one of: '//to_str(REAL_FMTS, delim=SPACE)
 				end if
 			end if
 
@@ -14060,8 +14028,8 @@ submodule (io_fortran_lib) file_io
 							   'for binary data.'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-						   to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+						   to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_textfile_2dr128
@@ -14084,8 +14052,8 @@ submodule (io_fortran_lib) file_io
 							   'for textual data.'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-						   to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+						   to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_binaryfile_2dr128
@@ -14109,7 +14077,7 @@ submodule (io_fortran_lib) file_io
 					locale_ = locale
 				else
 					error stop LF//'FATAL: Invalid locale "'//locale//'" for read of file "'//file_name//'".'// &
-							   LF//'Locale must be one of: '//to_str(LOCALES, delim=' ')
+							   LF//'Locale must be one of: '//to_str(LOCALES, delim=SPACE)
 				end if
 			end if
 
@@ -14121,7 +14089,7 @@ submodule (io_fortran_lib) file_io
 				else
 					error stop LF//'FATAL: Invalid format "'//fmt//'" for read of file "'//file_name//'" '// &
 								   'into real array.'// &
-							   LF//'Format must be one of: '//to_str(REAL_FMTS, delim=' ')
+							   LF//'Format must be one of: '//to_str(REAL_FMTS, delim=SPACE)
 				end if
 			end if
 
@@ -14132,8 +14100,8 @@ submodule (io_fortran_lib) file_io
 							   'for binary data.'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-						   to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+						   to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_textfile_2dr64
@@ -14156,8 +14124,8 @@ submodule (io_fortran_lib) file_io
 							   'for textual data.'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-						   to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+						   to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_binaryfile_2dr64
@@ -14181,7 +14149,7 @@ submodule (io_fortran_lib) file_io
 					locale_ = locale
 				else
 					error stop LF//'FATAL: Invalid locale "'//locale//'" for read of file "'//file_name//'".'// &
-							   LF//'Locale must be one of: '//to_str(LOCALES, delim=' ')
+							   LF//'Locale must be one of: '//to_str(LOCALES, delim=SPACE)
 				end if
 			end if
 
@@ -14193,7 +14161,7 @@ submodule (io_fortran_lib) file_io
 				else
 					error stop LF//'FATAL: Invalid format "'//fmt//'" for read of file "'//file_name//'" '// &
 								   'into real array.'// &
-							   LF//'Format must be one of: '//to_str(REAL_FMTS, delim=' ')
+							   LF//'Format must be one of: '//to_str(REAL_FMTS, delim=SPACE)
 				end if
 			end if
 
@@ -14204,8 +14172,8 @@ submodule (io_fortran_lib) file_io
 							   'for binary data.'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-						   to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+						   to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_textfile_2dr32
@@ -14228,8 +14196,8 @@ submodule (io_fortran_lib) file_io
 							   'for textual data.'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-						   to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+						   to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_binaryfile_2dr32
@@ -14253,7 +14221,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_3dr128
@@ -14276,7 +14244,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_3dr64
@@ -14299,7 +14267,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_3dr32
@@ -14323,7 +14291,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_4dr128
@@ -14346,7 +14314,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_4dr64
@@ -14369,7 +14337,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_4dr32
@@ -14393,7 +14361,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_5dr128
@@ -14416,7 +14384,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_5dr64
@@ -14439,7 +14407,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_5dr32
@@ -14463,7 +14431,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_6dr128
@@ -14486,7 +14454,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_6dr64
@@ -14509,7 +14477,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_6dr32
@@ -14533,7 +14501,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_7dr128
@@ -14556,7 +14524,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_7dr64
@@ -14579,7 +14547,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_7dr32
@@ -14603,7 +14571,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_8dr128
@@ -14626,7 +14594,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_8dr64
@@ -14649,7 +14617,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_8dr32
@@ -14673,7 +14641,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_9dr128
@@ -14696,7 +14664,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_9dr64
@@ -14719,7 +14687,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_9dr32
@@ -14743,7 +14711,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_10dr128
@@ -14766,7 +14734,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_10dr64
@@ -14789,7 +14757,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_10dr32
@@ -14813,7 +14781,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_11dr128
@@ -14836,7 +14804,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_11dr64
@@ -14859,7 +14827,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_11dr32
@@ -14883,7 +14851,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_12dr128
@@ -14906,7 +14874,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_12dr64
@@ -14929,7 +14897,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_12dr32
@@ -14953,7 +14921,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_13dr128
@@ -14976,7 +14944,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_13dr64
@@ -14999,7 +14967,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_13dr32
@@ -15023,7 +14991,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_14dr128
@@ -15046,7 +15014,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_14dr64
@@ -15069,7 +15037,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_14dr32
@@ -15093,7 +15061,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_15dr128
@@ -15116,7 +15084,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_15dr64
@@ -15139,7 +15107,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_15dr32
@@ -15165,7 +15133,7 @@ submodule (io_fortran_lib) file_io
 				else
 					error stop LF//'FATAL: Invalid format "'//fmt//'" for read of file "'//file_name//'" '// &
 								   'into integer array.'// &
-							   LF//'Format must be one of: '//to_str(INT_FMTS, delim=' ')
+							   LF//'Format must be one of: '//to_str(INT_FMTS, delim=SPACE)
 				end if
 			end if
 
@@ -15176,8 +15144,8 @@ submodule (io_fortran_lib) file_io
 							   'for binary data.'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-						   to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+						   to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_textfile_1di64
@@ -15200,8 +15168,8 @@ submodule (io_fortran_lib) file_io
 							   'for textual data.'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-						   to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+						   to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_binaryfile_1di64
@@ -15226,7 +15194,7 @@ submodule (io_fortran_lib) file_io
 				else
 					error stop LF//'FATAL: Invalid format "'//fmt//'" for read of file "'//file_name//'" '// &
 								   'into integer array.'// &
-							   LF//'Format must be one of: '//to_str(INT_FMTS, delim=' ')
+							   LF//'Format must be one of: '//to_str(INT_FMTS, delim=SPACE)
 				end if
 			end if
 
@@ -15237,8 +15205,8 @@ submodule (io_fortran_lib) file_io
 							   'for binary data.'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-						   to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+						   to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_textfile_1di32
@@ -15261,8 +15229,8 @@ submodule (io_fortran_lib) file_io
 							   'for textual data.'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-						   to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+						   to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_binaryfile_1di32
@@ -15287,7 +15255,7 @@ submodule (io_fortran_lib) file_io
 				else
 					error stop LF//'FATAL: Invalid format "'//fmt//'" for read of file "'//file_name//'" '// &
 								   'into integer array.'// &
-							   LF//'Format must be one of: '//to_str(INT_FMTS, delim=' ')
+							   LF//'Format must be one of: '//to_str(INT_FMTS, delim=SPACE)
 				end if
 			end if
 
@@ -15298,8 +15266,8 @@ submodule (io_fortran_lib) file_io
 							   'for binary data.'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-						   to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+						   to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_textfile_1di16
@@ -15322,8 +15290,8 @@ submodule (io_fortran_lib) file_io
 							   'for textual data.'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-						   to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+						   to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_binaryfile_1di16
@@ -15348,7 +15316,7 @@ submodule (io_fortran_lib) file_io
 				else
 					error stop LF//'FATAL: Invalid format "'//fmt//'" for read of file "'//file_name//'" '// &
 								   'into integer array.'// &
-							   LF//'Format must be one of: '//to_str(INT_FMTS, delim=' ')
+							   LF//'Format must be one of: '//to_str(INT_FMTS, delim=SPACE)
 				end if
 			end if
 
@@ -15359,8 +15327,8 @@ submodule (io_fortran_lib) file_io
 							   'for binary data.'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-						   to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+						   to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_textfile_1di8
@@ -15383,8 +15351,8 @@ submodule (io_fortran_lib) file_io
 							   'for textual data.'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-						   to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+						   to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_binaryfile_1di8
@@ -15410,7 +15378,7 @@ submodule (io_fortran_lib) file_io
 				else
 					error stop LF//'FATAL: Invalid format "'//fmt//'" for read of file "'//file_name//'" '// &
 								   'into integer array.'// &
-							   LF//'Format must be one of: '//to_str(INT_FMTS, delim=' ')
+							   LF//'Format must be one of: '//to_str(INT_FMTS, delim=SPACE)
 				end if
 			end if
 
@@ -15421,8 +15389,8 @@ submodule (io_fortran_lib) file_io
 							   'for binary data.'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-						   to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+						   to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_textfile_2di64
@@ -15445,8 +15413,8 @@ submodule (io_fortran_lib) file_io
 							   'for textual data.'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-						   to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+						   to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_binaryfile_2di64
@@ -15471,7 +15439,7 @@ submodule (io_fortran_lib) file_io
 				else
 					error stop LF//'FATAL: Invalid format "'//fmt//'" for read of file "'//file_name//'" '// &
 								   'into integer array.'// &
-							   LF//'Format must be one of: '//to_str(INT_FMTS, delim=' ')
+							   LF//'Format must be one of: '//to_str(INT_FMTS, delim=SPACE)
 				end if
 			end if
 
@@ -15482,8 +15450,8 @@ submodule (io_fortran_lib) file_io
 							   'for binary data.'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-						   to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+						   to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_textfile_2di32
@@ -15506,8 +15474,8 @@ submodule (io_fortran_lib) file_io
 							   'for textual data.'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-						   to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+						   to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_binaryfile_2di32
@@ -15532,7 +15500,7 @@ submodule (io_fortran_lib) file_io
 				else
 					error stop LF//'FATAL: Invalid format "'//fmt//'" for read of file "'//file_name//'" '// &
 								   'into integer array.'// &
-							   LF//'Format must be one of: '//to_str(INT_FMTS, delim=' ')
+							   LF//'Format must be one of: '//to_str(INT_FMTS, delim=SPACE)
 				end if
 			end if
 
@@ -15543,8 +15511,8 @@ submodule (io_fortran_lib) file_io
 							   'for binary data.'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-						   to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+						   to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_textfile_2di16
@@ -15567,8 +15535,8 @@ submodule (io_fortran_lib) file_io
 							   'for textual data.'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-						   to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+						   to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_binaryfile_2di16
@@ -15593,7 +15561,7 @@ submodule (io_fortran_lib) file_io
 				else
 					error stop LF//'FATAL: Invalid format "'//fmt//'" for read of file "'//file_name//'" '// &
 								   'into integer array.'// &
-							   LF//'Format must be one of: '//to_str(INT_FMTS, delim=' ')
+							   LF//'Format must be one of: '//to_str(INT_FMTS, delim=SPACE)
 				end if
 			end if
 
@@ -15604,8 +15572,8 @@ submodule (io_fortran_lib) file_io
 							   'for binary data.'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-						   to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+						   to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_textfile_2di8
@@ -15628,8 +15596,8 @@ submodule (io_fortran_lib) file_io
 							   'for textual data.'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')//' '// &
-						   to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)//SPACE// &
+						   to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_binaryfile_2di8
@@ -15653,7 +15621,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_3di64
@@ -15676,7 +15644,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_3di32
@@ -15699,7 +15667,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_3di16
@@ -15722,7 +15690,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_3di8
@@ -15746,7 +15714,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_4di64
@@ -15769,7 +15737,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_4di32
@@ -15792,7 +15760,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_4di16
@@ -15815,7 +15783,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_4di8
@@ -15839,7 +15807,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_5di64
@@ -15862,7 +15830,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_5di32
@@ -15885,7 +15853,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_5di16
@@ -15908,7 +15876,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_5di8
@@ -15932,7 +15900,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_6di64
@@ -15955,7 +15923,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_6di32
@@ -15978,7 +15946,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_6di16
@@ -16001,7 +15969,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_6di8
@@ -16025,7 +15993,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_7di64
@@ -16048,7 +16016,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_7di32
@@ -16071,7 +16039,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_7di16
@@ -16094,7 +16062,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_7di8
@@ -16118,7 +16086,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_8di64
@@ -16141,7 +16109,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_8di32
@@ -16164,7 +16132,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_8di16
@@ -16187,7 +16155,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_8di8
@@ -16211,7 +16179,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_9di64
@@ -16234,7 +16202,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_9di32
@@ -16257,7 +16225,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_9di16
@@ -16280,7 +16248,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_9di8
@@ -16304,7 +16272,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_10di64
@@ -16327,7 +16295,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_10di32
@@ -16350,7 +16318,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_10di16
@@ -16373,7 +16341,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_10di8
@@ -16397,7 +16365,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_11di64
@@ -16420,7 +16388,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_11di32
@@ -16443,7 +16411,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_11di16
@@ -16466,7 +16434,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_11di8
@@ -16490,7 +16458,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_12di64
@@ -16513,7 +16481,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_12di32
@@ -16536,7 +16504,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_12di16
@@ -16559,7 +16527,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_12di8
@@ -16583,7 +16551,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_13di64
@@ -16606,7 +16574,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_13di32
@@ -16629,7 +16597,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_13di16
@@ -16652,7 +16620,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_13di8
@@ -16676,7 +16644,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_14di64
@@ -16699,7 +16667,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_14di32
@@ -16722,7 +16690,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_14di16
@@ -16745,7 +16713,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_14di8
@@ -16769,7 +16737,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_15di64
@@ -16792,7 +16760,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_15di32
@@ -16815,7 +16783,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_15di16
@@ -16838,7 +16806,7 @@ submodule (io_fortran_lib) file_io
 							   'arrays of dimension greater than (2).'
 			else
 				error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'".'// &
-						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=' ')
+						   LF//'Supported file extensions: '//to_str(BINARY_EXT, delim=SPACE)
 			end if
 		end if
 	end procedure from_file_15di8
@@ -16859,7 +16827,7 @@ submodule (io_fortran_lib) text_io
 		if ( .not. any(TEXT_EXT == ext) ) then
 			write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
 								'due to unsupported file extension "'//ext//'".'// &
-							LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=' ')
+							LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)
 			return
 		end if
 
@@ -16914,7 +16882,7 @@ submodule (io_fortran_lib) text_io
 		header_present = .false.
 
 		if ( size(header) == 1 ) then
-			if ( all(header == '') ) then
+			if ( all(header == EMPTY_STR) ) then
 				if ( dim == 1 ) then
 					allocate( cells(nx,1) )
 				else
@@ -16966,7 +16934,7 @@ submodule (io_fortran_lib) text_io
 		header_present = .false.
 
 		if ( size(header) == 1 ) then
-			if ( all(header == '') ) then
+			if ( all(header == EMPTY_STR) ) then
 				if ( dim == 1 ) then
 					allocate( cells(nx,1) )
 				else
@@ -17018,7 +16986,7 @@ submodule (io_fortran_lib) text_io
 		header_present = .false.
 
 		if ( size(header) == 1 ) then
-			if ( all(header == '') ) then
+			if ( all(header == EMPTY_STR) ) then
 				if ( dim == 1 ) then
 					allocate( cells(nx,1) )
 				else
@@ -17072,7 +17040,7 @@ submodule (io_fortran_lib) text_io
 		header_present = .false.
 
 		if ( size(header) == 1 ) then
-			if ( all(header == '') ) then
+			if ( all(header == EMPTY_STR) ) then
 				allocate( cells(nrows,ncols) )
 			else
 				header_present = .true.
@@ -17108,7 +17076,7 @@ submodule (io_fortran_lib) text_io
 		header_present = .false.
 
 		if ( size(header) == 1 ) then
-			if ( all(header == '') ) then
+			if ( all(header == EMPTY_STR) ) then
 				allocate( cells(nrows,ncols) )
 			else
 				header_present = .true.
@@ -17144,7 +17112,7 @@ submodule (io_fortran_lib) text_io
 		header_present = .false.
 
 		if ( size(header) == 1 ) then
-			if ( all(header == '') ) then
+			if ( all(header == EMPTY_STR) ) then
 				allocate( cells(nrows,ncols) )
 			else
 				header_present = .true.
@@ -17180,7 +17148,7 @@ submodule (io_fortran_lib) text_io
 		header_present = .false.
 
 		if ( size(header) == 1 ) then
-			if ( all(header == '') ) then
+			if ( all(header == EMPTY_STR) ) then
 				if ( dim == 1 ) then
 					allocate( cells(nx,1) )
 				else
@@ -17232,7 +17200,7 @@ submodule (io_fortran_lib) text_io
 		header_present = .false.
 
 		if ( size(header) == 1 ) then
-			if ( all(header == '') ) then
+			if ( all(header == EMPTY_STR) ) then
 				if ( dim == 1 ) then
 					allocate( cells(nx,1) )
 				else
@@ -17284,7 +17252,7 @@ submodule (io_fortran_lib) text_io
 		header_present = .false.
 
 		if ( size(header) == 1 ) then
-			if ( all(header == '') ) then
+			if ( all(header == EMPTY_STR) ) then
 				if ( dim == 1 ) then
 					allocate( cells(nx,1) )
 				else
@@ -17338,7 +17306,7 @@ submodule (io_fortran_lib) text_io
 		header_present = .false.
 
 		if ( size(header) == 1 ) then
-			if ( all(header == '') ) then
+			if ( all(header == EMPTY_STR) ) then
 				allocate( cells(nrows,ncols) )
 			else
 				header_present = .true.
@@ -17374,7 +17342,7 @@ submodule (io_fortran_lib) text_io
 		header_present = .false.
 
 		if ( size(header) == 1 ) then
-			if ( all(header == '') ) then
+			if ( all(header == EMPTY_STR) ) then
 				allocate( cells(nrows,ncols) )
 			else
 				header_present = .true.
@@ -17410,7 +17378,7 @@ submodule (io_fortran_lib) text_io
 		header_present = .false.
 
 		if ( size(header) == 1 ) then
-			if ( all(header == '') ) then
+			if ( all(header == EMPTY_STR) ) then
 				allocate( cells(nrows,ncols) )
 			else
 				header_present = .true.
@@ -17446,7 +17414,7 @@ submodule (io_fortran_lib) text_io
 		header_present = .false.
 
 		if ( size(header) == 1 ) then
-			if ( all(header == '') ) then
+			if ( all(header == EMPTY_STR) ) then
 				if ( dim == 1 ) then
 					allocate( cells(nx,1) )
 				else
@@ -17498,7 +17466,7 @@ submodule (io_fortran_lib) text_io
 		header_present = .false.
 
 		if ( size(header) == 1 ) then
-			if ( all(header == '') ) then
+			if ( all(header == EMPTY_STR) ) then
 				if ( dim == 1 ) then
 					allocate( cells(nx,1) )
 				else
@@ -17550,7 +17518,7 @@ submodule (io_fortran_lib) text_io
 		header_present = .false.
 
 		if ( size(header) == 1 ) then
-			if ( all(header == '') ) then
+			if ( all(header == EMPTY_STR) ) then
 				if ( dim == 1 ) then
 					allocate( cells(nx,1) )
 				else
@@ -17602,7 +17570,7 @@ submodule (io_fortran_lib) text_io
 		header_present = .false.
 
 		if ( size(header) == 1 ) then
-			if ( all(header == '') ) then
+			if ( all(header == EMPTY_STR) ) then
 				if ( dim == 1 ) then
 					allocate( cells(nx,1) )
 				else
@@ -17656,7 +17624,7 @@ submodule (io_fortran_lib) text_io
 		header_present = .false.
 
 		if ( size(header) == 1 ) then
-			if ( all(header == '') ) then
+			if ( all(header == EMPTY_STR) ) then
 				allocate( cells(nrows,ncols) )
 			else
 				header_present = .true.
@@ -17692,7 +17660,7 @@ submodule (io_fortran_lib) text_io
 		header_present = .false.
 
 		if ( size(header) == 1 ) then
-			if ( all(header == '') ) then
+			if ( all(header == EMPTY_STR) ) then
 				allocate( cells(nrows,ncols) )
 			else
 				header_present = .true.
@@ -17728,7 +17696,7 @@ submodule (io_fortran_lib) text_io
 		header_present = .false.
 
 		if ( size(header) == 1 ) then
-			if ( all(header == '') ) then
+			if ( all(header == EMPTY_STR) ) then
 				allocate( cells(nrows,ncols) )
 			else
 				header_present = .true.
@@ -17764,7 +17732,7 @@ submodule (io_fortran_lib) text_io
 		header_present = .false.
 
 		if ( size(header) == 1 ) then
-			if ( all(header == '') ) then
+			if ( all(header == EMPTY_STR) ) then
 				allocate( cells(nrows,ncols) )
 			else
 				header_present = .true.
@@ -17868,7 +17836,7 @@ submodule (io_fortran_lib) text_io
 				im_chars(i) = im(i:i)
 			end do
 		else
-			im_chars = ['']
+			im_chars = [ EMPTY_STR ]
 		end if
 
 		if ( fmt == 'z' ) then
@@ -18094,7 +18062,7 @@ submodule (io_fortran_lib) text_io
 				im_chars(i) = im(i:i)
 			end do
 		else
-			im_chars = ['']
+			im_chars = [ EMPTY_STR ]
 		end if
 
 		if ( fmt == 'z' ) then
@@ -18320,7 +18288,7 @@ submodule (io_fortran_lib) text_io
 				im_chars(i) = im(i:i)
 			end do
 		else
-			im_chars = ['']
+			im_chars = [ EMPTY_STR ]
 		end if
 
 		if ( fmt == 'z' ) then
@@ -18548,7 +18516,7 @@ submodule (io_fortran_lib) text_io
 				im_chars(i) = im(i:i)
 			end do
 		else
-			im_chars = ['']
+			im_chars = [ EMPTY_STR ]
 		end if
 
 		if ( fmt == 'z' ) then
@@ -18788,7 +18756,7 @@ submodule (io_fortran_lib) text_io
 				im_chars(i) = im(i:i)
 			end do
 		else
-			im_chars = ['']
+			im_chars = [ EMPTY_STR ]
 		end if
 
 		if ( fmt == 'z' ) then
@@ -19028,7 +18996,7 @@ submodule (io_fortran_lib) text_io
 				im_chars(i) = im(i:i)
 			end do
 		else
-			im_chars = ['']
+			im_chars = [ EMPTY_STR ]
 		end if
 
 		if ( fmt == 'z' ) then
