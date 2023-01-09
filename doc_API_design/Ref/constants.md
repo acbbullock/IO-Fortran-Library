@@ -3,7 +3,7 @@ title: CONSTANTS
 author: Austin C Bullock
 ---
 
-The [[io_fortran_lib]] module provides access to a handful of `parameter` [constants](../../module/io_fortran_lib.html#variable-nl) for use as string terminators and separators:
+The [[io_fortran_lib]] module provides access to a handful of `parameter` [constants](../../module/io_fortran_lib.html#variable-nl) for general use:
 
 * `NL`: The newline character (system agnostic).
 * `SPACE`: The space character.

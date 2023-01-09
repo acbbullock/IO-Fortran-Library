@@ -46,17 +46,14 @@ module io_fortran_lib
 		!--------------------------------------------------------------------------------------------------------------
 		!! A growable string type for advanced character manipulations and text file I/O.
 		!!
-		!! @note Aside from the functionality provided through type-bound procedures, the `String` type may be useful
-		!! in array contexts for which the user requires arrays of strings which may have non-identical lengths, whose
-		!! lengths may not be known, whose lengths may need to vary during run time, or in any other context in which
-		!! the intrinsic `character` type is insufficient.
-		!!
 		!! For a user reference, see [String](../page/Ref/string.html),
 		!! [String methods](../page/Ref/string-methods.html), and [Operators](../page/Ref/operators.html).
 		!!
-		!! @note The `String` type is memory safe. The user is forbidden from attempting to access invalid memory
-		!! due to the `private` attribute of the component and the exceptions put into place in the type-bound
-		!! procedures.
+		!! @note TECHNICAL NOTE: The `String` type is memory safe. The user will never need to be concerned about
+		!! accessing invalid memory when using the `String` type. Any operation defined in this documentation for the
+		!! `String` type which may involve a `String` with an unallocated component, or arrays of `String`s in which
+		!! some of the elements may have unallocated components, is well-defined. In all such cases, the component is
+		!! treated as the [empty string](../module/io_fortran_lib.html#variable-empty_str).
 		!--------------------------------------------------------------------------------------------------------------
 		private
 		character(len=:), allocatable :: s                                               !! Component is a string slice

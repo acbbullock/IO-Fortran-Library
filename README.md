@@ -43,7 +43,7 @@ See the [important user information](https://acbbullock.github.io/IO-Fortran-Lib
 ### Added
 
 * [echo](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/echo.html) now accepts an additional `optional` argument `terminator`: a `character` value which is used to terminate the input string. The default terminator is the line feed character `LF`, which is identical to previous behavior.
-* Test programs have been added in `/test`, which are all passing in the following configurations with lowest *and* highest optimizations:
+* Test programs have been added in `/test`, which are all passing in the following configurations with lowest and highest optimizations enabled:
   * GNU Fortran Compiler v11.3.0 on Linux
   * Intel Fortran Compiler v2023.0.0 on Linux
   * Intel Fortran Compiler Classic v2021.8.0 on Linux

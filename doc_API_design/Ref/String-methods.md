@@ -7,9 +7,7 @@ author: Austin C Bullock
 
 *Description*: A growable string type for advanced character manipulations and text file I/O.
 
-@note Aside from the functionality provided through type-bound procedures, the `String` type may be useful in array contexts for which the user requires arrays of strings which may have non-identical lengths, whose lengths may not be known, whose lengths may need to vary during run time, or in any other context in which the intrinsic `character` type is insufficient.
-
-@note The `String` type is memory safe. The user is forbidden from attempting to access invalid memory due to the `private` attribute of the component and the exceptions put into place in the type-bound procedures.
+@note In addition to the functionality provided through type-bound procedures, the `String` type may be useful in array contexts for which the user requires arrays of strings which may have non-identical lengths, whose lengths may not be known, whose lengths may need to vary during run time, or in any other context in which the intrinsic `character` type is insufficient.
 
 ## Type-bound procedures
 
