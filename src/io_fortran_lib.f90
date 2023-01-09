@@ -5392,20 +5392,21 @@ submodule (io_fortran_lib) String_procedures
 		l = 1
 		current_sep = 1
 
-		splitting: do while ( i <= temp_len )
+		splitting: do while ( i <= temp_len-sep_len+1 )
 			if ( temp_String%s(i:i+sep_len-1) == separator_ ) then
 				tokens(current_sep)%s = temp_String%s(l:i-1)
 
 				if ( current_sep == num_seps ) then
-					tokens(current_sep+1)%s = temp_String%s(i+sep_len:)
-					exit splitting
-				else
-					current_sep = current_sep + 1
+					if ( i+sep_len > temp_len ) then
+						tokens(num_seps+1)%s = EMPTY_STR; exit splitting
+					else
+						tokens(num_seps+1)%s = temp_String%s(i+sep_len:); exit splitting
+					end if
 				end if
-				i = i + sep_len
-				l = i
+
+				current_sep = current_sep + 1; i = i + sep_len; l = i; cycle splitting
 			else
-				i = i + 1
+				i = i + 1; cycle splitting
 			end if
 		end do splitting
 
