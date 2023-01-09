@@ -29,6 +29,9 @@ module io_fortran_lib
 	character(len=1), parameter :: CNUL		 = c_null_char		!! The C null character re-exported from iso_c_binding.
 	character(len=0), parameter :: EMPTY_STR = ''												   !! The empty string.
 
+	character(len=1), 				parameter :: SEMICOLON	= char(59)										! Semicolon
+	character(len=1), 				parameter :: POINT		= char(46)										! Full stop
+	character(len=1), 				parameter :: COMMA		= char(44)											! Comma
 	character(len=1),				parameter :: QQUOTE		= char(34)									 ! Double quote
 	character(len=*), dimension(*), parameter :: INT_FMTS   = [ 'i', 'z' ]				 ! Allowed formats for integers
 	character(len=*), dimension(*), parameter :: REAL_FMTS  = [ 'e', 'f', 'z' ]			   ! Allowed formats for floats
@@ -40,19 +43,12 @@ module io_fortran_lib
 
 	type String
 		!--------------------------------------------------------------------------------------------------------------
-		!! A derived type with a single (private) component:
+		!! A growable string type for advanced character manipulations and text file I/O.
 		!!
-		!! ```fortran
-		!! character(len=:), allocatable :: s
-		!! ```
-		!!
-		!! This type is provided for flexible and advanced character handling when the intrinsic `character` type is
-		!! insufficient. For instance, a `String` may be used in array contexts for which the user requires arrays of
-		!! strings which may have non-identical lengths, whose lengths may not be known, or whose lengths may need to
-		!! vary during run time. One may also use the `String` type as an interface to read/write external text files,
-		!! in particular for cases in which `.csv` data contains data of mixed type. For reading/writing data of
-		!! uniform type and format, it is simpler to use the routines [to_file](../page/Ref/to_file.html) and
-		!! [from_file](../page/Ref/from_file.html).
+		!! @note Aside from the functionality provided through type-bound procedures, the `String` type may be useful
+		!! in array contexts for which the user requires arrays of strings which may have non-identical lengths, whose
+		!! lengths may not be known, whose lengths may need to vary during run time, or in any other context in which
+		!! the intrinsic `character` type is insufficient.
 		!!
 		!! For a user reference, see [String](../page/Ref/string.html),
 		!! [String methods](../page/Ref/string-methods.html), and [Operators](../page/Ref/operators.html).
@@ -66,32 +62,37 @@ module io_fortran_lib
 		contains
 			private
 			! Generics ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-			generic, public :: cast  =>	cast_string_c128, cast_string_c64, cast_string_c32, &
-										cast_string_r128, cast_string_r64, cast_string_r32, &
-										cast_string_i64, cast_string_i32, cast_string_i16, cast_string_i8
-			generic, public :: count =>	count_substring_chars, count_substring_string
-			generic, public :: push  =>	push_chars, push_string
-			generic, public :: write(formatted) => write_string
+			generic, public :: cast  			=>	cast_string_c128, cast_string_c64, cast_string_c32, &
+													cast_string_r128, cast_string_r64, cast_string_r32, &
+													cast_string_i64, cast_string_i32, cast_string_i16, cast_string_i8
+			generic, public :: count 			=>	count_substring_chars, count_substring_string
+			generic, public :: push  			=>	push_chars, push_string
+			generic, public :: replace 			=>	replace_ch_copy, replace_st_copy, replace_chst_copy, &
+													replace_stch_copy
+			generic, public :: replace_inplace 	=>	replace_ch_inplace, replace_st_inplace, replace_chst_inplace, &
+													replace_stch_inplace
+			generic, public :: write(formatted) =>	write_string
 
 			! Specifics ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-			procedure, pass(self), public :: as_str
-			procedure, pass(self)         :: cast_string_c128, cast_string_c64, cast_string_c32, &
-											 cast_string_r128, cast_string_r64, cast_string_r32, &
-											 cast_string_i64, cast_string_i32, cast_string_i16, cast_string_i8
-			procedure, pass(self)         :: count_substring_chars, count_substring_string
-			procedure, pass(self), public :: echo => echo_string
-			procedure, pass(self), public :: empty
-			procedure, pass(self), public :: glue
-			procedure, pass(self), public :: len => length
-			procedure, pass(self)         :: push_chars, push_string
-			procedure, pass(self), public :: read_file
-			procedure, pass(self), public :: replace => replace_copy
-			procedure, pass(self), public :: replace_inplace
-			procedure, pass(self), public :: split
-			procedure, pass(self), public :: trim => trim_copy
-			procedure, pass(self), public :: trim_inplace
-			procedure, pass(self), public :: write_file
-			procedure, pass(self)         :: write_string
+			procedure, pass(self), public	::	as_str
+			procedure, pass(self)			::	cast_string_c128, cast_string_c64, cast_string_c32, &
+												cast_string_r128, cast_string_r64, cast_string_r32, &
+												cast_string_i64, cast_string_i32, cast_string_i16, cast_string_i8
+			procedure, pass(self)			::	count_substring_chars, count_substring_string
+			procedure, pass(self), public	::	echo => echo_string
+			procedure, pass(self), public	::	empty
+			procedure, pass(self), public	::	glue
+			procedure, pass(self), public	::	len => length
+			procedure, pass(self)			::	push_chars, push_string
+			procedure, pass(self), public	::	read_file
+			procedure, pass(self)			::	replace_ch_copy, replace_st_copy, replace_chst_copy, &
+												replace_stch_copy, replace_ch_inplace, replace_st_inplace, &
+												replace_chst_inplace, replace_stch_inplace
+			procedure, pass(self), public	::	split
+			procedure, pass(self), public	::	trim => trim_copy
+			procedure, pass(self), public	::	trim_inplace
+			procedure, pass(self), public	::	write_file
+			procedure, pass(self)			::	write_string
 	end type String
 
 	interface                                                                             ! Submodule String_procedures
@@ -185,16 +186,8 @@ module io_fortran_lib
 
 		impure recursive module subroutine read_file(self, file_name, cell_array, row_separator, column_separator)
 			!----------------------------------------------------------------------------------------------------------
-			!! Stream reads an entire text file into a `String`. The string slice component will be replaced if
-			!! already allocated.
-			!!
-			!! This method is provided primarily for the purpose of reading in `.csv` files containing data of
-			!! **mixed type**, which cannot be handled with a simple call to [from_file](../page/Ref/from_file.html)
-			!! (which assumes data of uniform type and format). The file's entire contents are populated into `self`,
-			!! and one may manually parse and manipulate the file's contents using the other type-bound procedures.
-			!! Optionally, one may provide a rank `2` allocatable array `cell_array` of type `String`, which will be
-			!! populated with the cells of the given file using the designated `row_separator` and `column_separator`
-			!! whose default values are `LF` and `','` respectively.
+			!! Reads an external text file into `self` and optionally populates a cell array using the designated
+			!! `row_separator` and `column_separator` whose default values are `LF` and `COMMA` respectively.
 			!!
 			!! For a user reference, see [read_file](../page/Ref/string-methods.html#read_file).
 			!----------------------------------------------------------------------------------------------------------
@@ -204,27 +197,81 @@ module io_fortran_lib
 			character(len=*), intent(in), optional :: row_separator, column_separator
 		end subroutine read_file
 
-		pure elemental recursive type(String) module function replace_copy(self, match, substring, back) result(new)
+		pure elemental recursive type(String) module function replace_ch_copy(self, match, substring, back) result(new)
 			!----------------------------------------------------------------------------------------------------------
 			!! Matches and replaces all occurrences of a substring elementally.
-			!!
-			!! For a user reference, see [replace](../page/Ref/string-methods.html#replace).
 			!----------------------------------------------------------------------------------------------------------
 			class(String), intent(in) :: self
 			character(len=*), intent(in) :: match, substring
 			logical, intent(in), optional :: back
-		end function replace_copy
+		end function replace_ch_copy
 
-		pure elemental recursive module subroutine replace_inplace(self, match, substring, back)
+		pure elemental recursive type(String) module function replace_st_copy(self, match, substring, back) result(new)
+			!----------------------------------------------------------------------------------------------------------
+			!! Matches and replaces all occurrences of a substring elementally.
+			!----------------------------------------------------------------------------------------------------------
+			class(String), intent(in) :: self
+			type(String), intent(in) :: match, substring
+			logical, intent(in), optional :: back
+		end function replace_st_copy
+
+		pure elemental recursive type(String) module function replace_chst_copy(self, match,substring,back) result(new)
+			!----------------------------------------------------------------------------------------------------------
+			!! Matches and replaces all occurrences of a substring elementally.
+			!----------------------------------------------------------------------------------------------------------
+			class(String), intent(in) :: self
+			character(len=*), intent(in) :: match
+			type(String), intent(in) :: substring
+			logical, intent(in), optional :: back
+		end function replace_chst_copy
+
+		pure elemental recursive type(String) module function replace_stch_copy(self, match,substring,back) result(new)
+			!----------------------------------------------------------------------------------------------------------
+			!! Matches and replaces all occurrences of a substring elementally.
+			!----------------------------------------------------------------------------------------------------------
+			class(String), intent(in) :: self
+			type(String), intent(in) :: match
+			character(len=*), intent(in) :: substring
+			logical, intent(in), optional :: back
+		end function replace_stch_copy
+
+		pure elemental recursive module subroutine replace_ch_inplace(self, match, substring, back)
 			!----------------------------------------------------------------------------------------------------------
 			!! Matches and replaces all occurrences of a substring elementally in place.
-			!!
-			!! For a user reference, see [replace_inplace](../page/Ref/string-methods.html#replace_inplace).
 			!----------------------------------------------------------------------------------------------------------
 			class(String), intent(inout) :: self
 			character(len=*), intent(in) :: match, substring
 			logical, intent(in), optional :: back
-		end subroutine replace_inplace
+		end subroutine replace_ch_inplace
+
+		pure elemental recursive module subroutine replace_st_inplace(self, match, substring, back)
+			!----------------------------------------------------------------------------------------------------------
+			!! Matches and replaces all occurrences of a substring elementally in place.
+			!----------------------------------------------------------------------------------------------------------
+			class(String), intent(inout) :: self
+			type(String), intent(in) :: match, substring
+			logical, intent(in), optional :: back
+		end subroutine replace_st_inplace
+
+		pure elemental recursive module subroutine replace_chst_inplace(self, match, substring, back)
+			!----------------------------------------------------------------------------------------------------------
+			!! Matches and replaces all occurrences of a substring elementally in place.
+			!----------------------------------------------------------------------------------------------------------
+			class(String), intent(inout) :: self
+			character(len=*), intent(in) :: match
+			type(String), intent(in) :: substring
+			logical, intent(in), optional :: back
+		end subroutine replace_chst_inplace
+
+		pure elemental recursive module subroutine replace_stch_inplace(self, match, substring, back)
+			!----------------------------------------------------------------------------------------------------------
+			!! Matches and replaces all occurrences of a substring elementally in place.
+			!----------------------------------------------------------------------------------------------------------
+			class(String), intent(inout) :: self
+			type(String), intent(in) :: match
+			character(len=*), intent(in) :: substring
+			logical, intent(in), optional :: back
+		end subroutine replace_stch_inplace
 
 		pure recursive module function split(self, separator) result(tokens)
 			!----------------------------------------------------------------------------------------------------------
@@ -259,14 +306,9 @@ module io_fortran_lib
 
 		impure recursive module subroutine write_file(self, cell_array, file_name, row_separator, column_separator)
 			!----------------------------------------------------------------------------------------------------------
-			!! Streams a cell array to an external text file. The string slice component will be replaced if already
-			!! allocated.
-			!!
-			!! This method is provided primarily for the purpose of writing `.csv` files containing data of
-			!! **mixed type**, which cannot be handled with a simple call to [to_file](../page/Ref/to_file.html)
-			!! (which accepts numeric arrays of uniform type). The cell array's entire contents are populated into
+			!! Writes the content of a cell array to a text file. The cell array's entire contents are populated into
 			!! `self` and then streamed to an external text file using the designated `row_separator` and
-			!! `column_separator` whose default values are `LF` and `','` respectively.
+			!! `column_separator` whose default values are `LF` and `COMMA` respectively.
 			!!
 			!! For a user reference, see [write_file](../page/Ref/string-methods.html#write_file).
 			!----------------------------------------------------------------------------------------------------------
@@ -4372,7 +4414,7 @@ module io_fortran_lib
 		l = len_trim(file_name)
 
 		do i = l, 1, -1
-			if ( file_name(i:i) == '.' ) exit
+			if ( file_name(i:i) == POINT ) exit
 		end do
 
 		if ( i > 0 ) then
@@ -4698,7 +4740,7 @@ submodule (io_fortran_lib) String_procedures
 			end if
 
 			if ( .not. present(column_separator) ) then
-				column_separator_ = ','
+				column_separator_ = COMMA
 			else
 				column_separator_ = column_separator
 			end if
@@ -4779,7 +4821,7 @@ submodule (io_fortran_lib) String_procedures
 		end subroutine process_quotes
 	end procedure read_file
 
-	module procedure replace_copy
+	module procedure replace_ch_copy
 		integer :: i, self_len, match_len, substring_len, diff_len
 		logical :: back_
 
@@ -4791,7 +4833,7 @@ submodule (io_fortran_lib) String_procedures
 			new%s = EMPTY_STR; return
 		end if
 
-		if ( (match_len == 0) .or. (match_len > self_len) ) then
+		if ( (match_len < 1) .or. (match_len > self_len) ) then
 			new%s = self%s; return
 		end if
 
@@ -4837,9 +4879,203 @@ submodule (io_fortran_lib) String_procedures
 				end if
 			end do match_and_replace_backward
 		end if
-	end procedure replace_copy
+	end procedure replace_ch_copy
 
-	module procedure replace_inplace
+	module procedure replace_st_copy
+		character(len=:), allocatable :: substring_
+		integer :: i, self_len, match_len, substring_len, diff_len
+		logical :: back_
+
+		self_len = self%len()
+		match_len = match%len()
+		substring_len = substring%len()
+
+		if ( self_len < 1 ) then
+			new%s = EMPTY_STR; return
+		end if
+
+		if ( (match_len < 1) .or. (match_len > self_len) ) then
+			new%s = self%s; return
+		end if
+
+		if ( substring_len < 1 ) then
+			substring_ = EMPTY_STR
+		else
+			substring_ = substring%s
+		end if
+
+		if ( .not. present(back) ) then
+			back_ = .false.
+		else
+			back_ = back
+		end if
+
+		new%s = self%s
+
+		if ( .not. back_ ) then
+			i = 1; diff_len = 0
+			match_and_replace_forward: do while ( i <= self_len )
+				if ( self%s(i:i) == match%s(1:1) ) then
+					if ( i+match_len-1 > self_len ) exit match_and_replace_forward
+
+					if ( self%s(i:i+match_len-1) == match%s ) then
+						new%s = new%s(:i-1+diff_len)//substring_//new%s(i+match_len+diff_len:)
+						diff_len = diff_len + ( substring_len - match_len )
+						i = i + match_len; cycle match_and_replace_forward
+					else
+						i = i + 1; cycle match_and_replace_forward
+					end if
+				else
+					i = i + 1; cycle match_and_replace_forward
+				end if
+			end do match_and_replace_forward
+		else
+			i = self_len
+			match_and_replace_backward: do while ( i > 0 )
+				if ( self%s(i:i) == match%s(match_len:match_len) ) then
+					if ( i-match_len+1 < 1 ) exit match_and_replace_backward
+
+					if ( self%s(i-match_len+1:i) == match%s ) then
+						new%s = new%s(:i-match_len)//substring_//new%s(i+1:)
+						i = i - match_len; cycle match_and_replace_backward
+					else
+						i = i - 1; cycle match_and_replace_backward
+					end if
+				else
+					i = i - 1; cycle match_and_replace_backward
+				end if
+			end do match_and_replace_backward
+		end if
+	end procedure replace_st_copy
+
+	module procedure replace_chst_copy
+		character(len=:), allocatable :: substring_
+		integer :: i, self_len, match_len, substring_len, diff_len
+		logical :: back_
+
+		self_len = self%len()
+		match_len = len(match)
+		substring_len = substring%len()
+
+		if ( self_len < 1 ) then
+			new%s = EMPTY_STR; return
+		end if
+
+		if ( (match_len < 1) .or. (match_len > self_len) ) then
+			new%s = self%s; return
+		end if
+
+		if ( substring_len < 1 ) then
+			substring_ = EMPTY_STR
+		else
+			substring_ = substring%s
+		end if
+
+		if ( .not. present(back) ) then
+			back_ = .false.
+		else
+			back_ = back
+		end if
+
+		new%s = self%s
+
+		if ( .not. back_ ) then
+			i = 1; diff_len = 0
+			match_and_replace_forward: do while ( i <= self_len )
+				if ( self%s(i:i) == match(1:1) ) then
+					if ( i+match_len-1 > self_len ) exit match_and_replace_forward
+
+					if ( self%s(i:i+match_len-1) == match ) then
+						new%s = new%s(:i-1+diff_len)//substring_//new%s(i+match_len+diff_len:)
+						diff_len = diff_len + ( substring_len - match_len )
+						i = i + match_len; cycle match_and_replace_forward
+					else
+						i = i + 1; cycle match_and_replace_forward
+					end if
+				else
+					i = i + 1; cycle match_and_replace_forward
+				end if
+			end do match_and_replace_forward
+		else
+			i = self_len
+			match_and_replace_backward: do while ( i > 0 )
+				if ( self%s(i:i) == match(match_len:match_len) ) then
+					if ( i-match_len+1 < 1 ) exit match_and_replace_backward
+
+					if ( self%s(i-match_len+1:i) == match ) then
+						new%s = new%s(:i-match_len)//substring_//new%s(i+1:)
+						i = i - match_len; cycle match_and_replace_backward
+					else
+						i = i - 1; cycle match_and_replace_backward
+					end if
+				else
+					i = i - 1; cycle match_and_replace_backward
+				end if
+			end do match_and_replace_backward
+		end if
+	end procedure replace_chst_copy
+
+	module procedure replace_stch_copy
+		integer :: i, self_len, match_len, substring_len, diff_len
+		logical :: back_
+
+		self_len = self%len()
+		match_len = match%len()
+		substring_len = len(substring)
+
+		if ( self_len < 1 ) then
+			new%s = EMPTY_STR; return
+		end if
+
+		if ( (match_len < 1) .or. (match_len > self_len) ) then
+			new%s = self%s; return
+		end if
+
+		if ( .not. present(back) ) then
+			back_ = .false.
+		else
+			back_ = back
+		end if
+
+		new%s = self%s
+
+		if ( .not. back_ ) then
+			i = 1; diff_len = 0
+			match_and_replace_forward: do while ( i <= self_len )
+				if ( self%s(i:i) == match%s(1:1) ) then
+					if ( i+match_len-1 > self_len ) exit match_and_replace_forward
+
+					if ( self%s(i:i+match_len-1) == match%s ) then
+						new%s = new%s(:i-1+diff_len)//substring//new%s(i+match_len+diff_len:)
+						diff_len = diff_len + ( substring_len - match_len )
+						i = i + match_len; cycle match_and_replace_forward
+					else
+						i = i + 1; cycle match_and_replace_forward
+					end if
+				else
+					i = i + 1; cycle match_and_replace_forward
+				end if
+			end do match_and_replace_forward
+		else
+			i = self_len
+			match_and_replace_backward: do while ( i > 0 )
+				if ( self%s(i:i) == match%s(match_len:match_len) ) then
+					if ( i-match_len+1 < 1 ) exit match_and_replace_backward
+
+					if ( self%s(i-match_len+1:i) == match%s ) then
+						new%s = new%s(:i-match_len)//substring//new%s(i+1:)
+						i = i - match_len; cycle match_and_replace_backward
+					else
+						i = i - 1; cycle match_and_replace_backward
+					end if
+				else
+					i = i - 1; cycle match_and_replace_backward
+				end if
+			end do match_and_replace_backward
+		end if
+	end procedure replace_stch_copy
+
+	module procedure replace_ch_inplace
 		type(String) :: new
 		integer :: i, self_len, match_len, substring_len, diff_len
 		logical :: back_
@@ -4852,7 +5088,7 @@ submodule (io_fortran_lib) String_procedures
 			self%s = EMPTY_STR; return
 		end if
 
-		if ( (match_len == 0) .or. (match_len > self_len) ) return
+		if ( (match_len < 1) .or. (match_len > self_len) ) return
 
 		if ( .not. present(back) ) then
 			back_ = .false.
@@ -4898,7 +5134,204 @@ submodule (io_fortran_lib) String_procedures
 		end if
 
 		self%s = new%s
-	end procedure replace_inplace
+	end procedure replace_ch_inplace
+
+	module procedure replace_st_inplace
+		type(String) :: new
+		character(len=:), allocatable :: substring_
+		integer :: i, self_len, match_len, substring_len, diff_len
+		logical :: back_
+
+		self_len = self%len()
+		match_len = match%len()
+		substring_len = substring%len()
+
+		if ( self_len < 1 ) then
+			self%s = EMPTY_STR; return
+		end if
+
+		if ( (match_len < 1) .or. (match_len > self_len) ) return
+
+		if ( substring_len < 1 ) then
+			substring_ = EMPTY_STR
+		else
+			substring_ = substring%s
+		end if
+
+		if ( .not. present(back) ) then
+			back_ = .false.
+		else
+			back_ = back
+		end if
+
+		new%s = self%s
+		
+		if ( .not. back_ ) then
+			i = 1; diff_len = 0
+			match_and_replace_forward: do while ( i <= self_len )
+				if ( self%s(i:i) == match%s(1:1) ) then
+					if ( i+match_len-1 > self_len ) exit match_and_replace_forward
+
+					if ( self%s(i:i+match_len-1) == match%s ) then
+						new%s = new%s(:i-1+diff_len)//substring_//new%s(i+match_len+diff_len:)
+						diff_len = diff_len + ( substring_len - match_len )
+						i = i + match_len; cycle match_and_replace_forward
+					else
+						i = i + 1; cycle match_and_replace_forward
+					end if
+				else
+					i = i + 1; cycle match_and_replace_forward
+				end if
+			end do match_and_replace_forward
+		else
+			i = self_len
+			match_and_replace_backward: do while ( i > 0 )
+				if ( self%s(i:i) == match%s(match_len:match_len) ) then
+					if ( i-match_len+1 < 1 ) exit match_and_replace_backward
+
+					if ( self%s(i-match_len+1:i) == match%s ) then
+						new%s = new%s(:i-match_len)//substring_//new%s(i+1:)
+						i = i - match_len; cycle match_and_replace_backward
+					else
+						i = i - 1; cycle match_and_replace_backward
+					end if
+				else
+					i = i - 1; cycle match_and_replace_backward
+				end if
+			end do match_and_replace_backward
+		end if
+
+		self%s = new%s
+	end procedure replace_st_inplace
+
+	module procedure replace_chst_inplace
+		type(String) :: new
+		character(len=:), allocatable :: substring_
+		integer :: i, self_len, match_len, substring_len, diff_len
+		logical :: back_
+
+		self_len = self%len()
+		match_len = len(match)
+		substring_len = substring%len()
+
+		if ( self_len < 1 ) then
+			self%s = EMPTY_STR; return
+		end if
+
+		if ( (match_len < 1) .or. (match_len > self_len) ) return
+
+		if ( substring_len < 1 ) then
+			substring_ = EMPTY_STR
+		else
+			substring_ = substring%s
+		end if
+
+		if ( .not. present(back) ) then
+			back_ = .false.
+		else
+			back_ = back
+		end if
+
+		new%s = self%s
+		
+		if ( .not. back_ ) then
+			i = 1; diff_len = 0
+			match_and_replace_forward: do while ( i <= self_len )
+				if ( self%s(i:i) == match(1:1) ) then
+					if ( i+match_len-1 > self_len ) exit match_and_replace_forward
+
+					if ( self%s(i:i+match_len-1) == match ) then
+						new%s = new%s(:i-1+diff_len)//substring_//new%s(i+match_len+diff_len:)
+						diff_len = diff_len + ( substring_len - match_len )
+						i = i + match_len; cycle match_and_replace_forward
+					else
+						i = i + 1; cycle match_and_replace_forward
+					end if
+				else
+					i = i + 1; cycle match_and_replace_forward
+				end if
+			end do match_and_replace_forward
+		else
+			i = self_len
+			match_and_replace_backward: do while ( i > 0 )
+				if ( self%s(i:i) == match(match_len:match_len) ) then
+					if ( i-match_len+1 < 1 ) exit match_and_replace_backward
+
+					if ( self%s(i-match_len+1:i) == match ) then
+						new%s = new%s(:i-match_len)//substring_//new%s(i+1:)
+						i = i - match_len; cycle match_and_replace_backward
+					else
+						i = i - 1; cycle match_and_replace_backward
+					end if
+				else
+					i = i - 1; cycle match_and_replace_backward
+				end if
+			end do match_and_replace_backward
+		end if
+
+		self%s = new%s
+	end procedure replace_chst_inplace
+
+	module procedure replace_stch_inplace
+		type(String) :: new
+		integer :: i, self_len, match_len, substring_len, diff_len
+		logical :: back_
+
+		self_len = self%len()
+		match_len = match%len()
+		substring_len = len(substring)
+
+		if ( self_len < 1 ) then
+			self%s = EMPTY_STR; return
+		end if
+
+		if ( (match_len < 1) .or. (match_len > self_len) ) return
+
+		if ( .not. present(back) ) then
+			back_ = .false.
+		else
+			back_ = back
+		end if
+
+		new%s = self%s
+		
+		if ( .not. back_ ) then
+			i = 1; diff_len = 0
+			match_and_replace_forward: do while ( i <= self_len )
+				if ( self%s(i:i) == match%s(1:1) ) then
+					if ( i+match_len-1 > self_len ) exit match_and_replace_forward
+
+					if ( self%s(i:i+match_len-1) == match%s ) then
+						new%s = new%s(:i-1+diff_len)//substring//new%s(i+match_len+diff_len:)
+						diff_len = diff_len + ( substring_len - match_len )
+						i = i + match_len; cycle match_and_replace_forward
+					else
+						i = i + 1; cycle match_and_replace_forward
+					end if
+				else
+					i = i + 1; cycle match_and_replace_forward
+				end if
+			end do match_and_replace_forward
+		else
+			i = self_len
+			match_and_replace_backward: do while ( i > 0 )
+				if ( self%s(i:i) == match%s(match_len:match_len) ) then
+					if ( i-match_len+1 < 1 ) exit match_and_replace_backward
+
+					if ( self%s(i-match_len+1:i) == match%s ) then
+						new%s = new%s(:i-match_len)//substring//new%s(i+1:)
+						i = i - match_len; cycle match_and_replace_backward
+					else
+						i = i - 1; cycle match_and_replace_backward
+					end if
+				else
+					i = i - 1; cycle match_and_replace_backward
+				end if
+			end do match_and_replace_backward
+		end if
+
+		self%s = new%s
+	end procedure replace_stch_inplace
 
 	module procedure split
 		type(String) :: temp_String
@@ -5017,7 +5450,7 @@ submodule (io_fortran_lib) String_procedures
 		end if
 
 		if ( .not. present(column_separator) ) then
-			column_separator_ = ','
+			column_separator_ = COMMA
 		else
 			column_separator_ = column_separator
 		end if
@@ -6922,9 +7355,9 @@ submodule (io_fortran_lib) internal_io
 
 		if ( im_ == EMPTY_STR ) then
 			if ( locale_ == 'US' ) then
-				sep = ','
+				sep = COMMA
 			else
-				sep = ';'
+				sep = SEMICOLON
 			end if
 			x_str = '('//str(x%re, locale=locale_, fmt=fmt_, decimals=decimals_)//sep// &
 						 str(x%im, locale=locale_, fmt=fmt_, decimals=decimals_)//')'
@@ -6983,9 +7416,9 @@ submodule (io_fortran_lib) internal_io
 
 		if ( im_ == EMPTY_STR ) then
 			if ( locale_ == 'US' ) then
-				sep = ','
+				sep = COMMA
 			else
-				sep = ';'
+				sep = SEMICOLON
 			end if
 			x_str = '('//str(x%re, locale=locale_, fmt=fmt_, decimals=decimals_)//sep// &
 						 str(x%im, locale=locale_, fmt=fmt_, decimals=decimals_)//')'
@@ -7044,9 +7477,9 @@ submodule (io_fortran_lib) internal_io
 
 		if ( im_ == EMPTY_STR ) then
 			if ( locale_ == 'US' ) then
-				sep = ','
+				sep = COMMA
 			else
-				sep = ';'
+				sep = SEMICOLON
 			end if
 			x_str = '('//str(x%re, locale=locale_, fmt=fmt_, decimals=decimals_)//sep// &
 						 str(x%im, locale=locale_, fmt=fmt_, decimals=decimals_)//')'
@@ -8144,9 +8577,9 @@ submodule (io_fortran_lib) file_io
 					delim_ = EMPTY_STR
 				else
 					if ( locale_ == 'US' ) then
-						delim_ = ','
+						delim_ = COMMA
 					else
-						delim_ = ';'
+						delim_ = SEMICOLON
 					end if
 				end if
 			else
@@ -8273,9 +8706,9 @@ submodule (io_fortran_lib) file_io
 					delim_ = EMPTY_STR
 				else
 					if ( locale_ == 'US' ) then
-						delim_ = ','
+						delim_ = COMMA
 					else
-						delim_ = ';'
+						delim_ = SEMICOLON
 					end if
 				end if
 			else
@@ -8402,9 +8835,9 @@ submodule (io_fortran_lib) file_io
 					delim_ = EMPTY_STR
 				else
 					if ( locale_ == 'US' ) then
-						delim_ = ','
+						delim_ = COMMA
 					else
-						delim_ = ';'
+						delim_ = SEMICOLON
 					end if
 				end if
 			else
@@ -8496,9 +8929,9 @@ submodule (io_fortran_lib) file_io
 
 			if ( .not. present(delim) ) then
 				if ( locale_ == 'US' ) then
-					delim_ = ','
+					delim_ = COMMA
 				else
-					delim_ = ';'
+					delim_ = SEMICOLON
 				end if
 			else
 				delim_ = delim
@@ -8583,9 +9016,9 @@ submodule (io_fortran_lib) file_io
 
 			if ( .not. present(delim) ) then
 				if ( locale_ == 'US' ) then
-					delim_ = ','
+					delim_ = COMMA
 				else
-					delim_ = ';'
+					delim_ = SEMICOLON
 				end if
 			else
 				delim_ = delim
@@ -8670,9 +9103,9 @@ submodule (io_fortran_lib) file_io
 
 			if ( .not. present(delim) ) then
 				if ( locale_ == 'US' ) then
-					delim_ = ','
+					delim_ = COMMA
 				else
-					delim_ = ';'
+					delim_ = SEMICOLON
 				end if
 			else
 				delim_ = delim
@@ -9548,9 +9981,9 @@ submodule (io_fortran_lib) file_io
 					delim_ = EMPTY_STR
 				else
 					if ( locale_ == 'US' ) then
-						delim_ = ','
+						delim_ = COMMA
 					else
-						delim_ = ';'
+						delim_ = SEMICOLON
 					end if
 				end if
 			else
@@ -9670,9 +10103,9 @@ submodule (io_fortran_lib) file_io
 					delim_ = EMPTY_STR
 				else
 					if ( locale_ == 'US' ) then
-						delim_ = ','
+						delim_ = COMMA
 					else
-						delim_ = ';'
+						delim_ = SEMICOLON
 					end if
 				end if
 			else
@@ -9792,9 +10225,9 @@ submodule (io_fortran_lib) file_io
 					delim_ = EMPTY_STR
 				else
 					if ( locale_ == 'US' ) then
-						delim_ = ','
+						delim_ = COMMA
 					else
-						delim_ = ';'
+						delim_ = SEMICOLON
 					end if
 				end if
 			else
@@ -9879,9 +10312,9 @@ submodule (io_fortran_lib) file_io
 
 			if ( .not. present(delim) ) then
 				if ( locale_ == 'US' ) then
-					delim_ = ','
+					delim_ = COMMA
 				else
-					delim_ = ';'
+					delim_ = SEMICOLON
 				end if
 			else
 				delim_ = delim
@@ -9959,9 +10392,9 @@ submodule (io_fortran_lib) file_io
 
 			if ( .not. present(delim) ) then
 				if ( locale_ == 'US' ) then
-					delim_ = ','
+					delim_ = COMMA
 				else
-					delim_ = ';'
+					delim_ = SEMICOLON
 				end if
 			else
 				delim_ = delim
@@ -10039,9 +10472,9 @@ submodule (io_fortran_lib) file_io
 
 			if ( .not. present(delim) ) then
 				if ( locale_ == 'US' ) then
-					delim_ = ','
+					delim_ = COMMA
 				else
-					delim_ = ';'
+					delim_ = SEMICOLON
 				end if
 			else
 				delim_ = delim
@@ -10896,7 +11329,7 @@ submodule (io_fortran_lib) file_io
 				if ( dim_ == 1 ) then
 					delim_ = EMPTY_STR
 				else
-					delim_ = ','
+					delim_ = COMMA
 				end if
 			else
 				if ( dim_ == 1 ) then
@@ -10992,7 +11425,7 @@ submodule (io_fortran_lib) file_io
 				if ( dim_ == 1 ) then
 					delim_ = EMPTY_STR
 				else
-					delim_ = ','
+					delim_ = COMMA
 				end if
 			else
 				if ( dim_ == 1 ) then
@@ -11088,7 +11521,7 @@ submodule (io_fortran_lib) file_io
 				if ( dim_ == 1 ) then
 					delim_ = EMPTY_STR
 				else
-					delim_ = ','
+					delim_ = COMMA
 				end if
 			else
 				if ( dim_ == 1 ) then
@@ -11184,7 +11617,7 @@ submodule (io_fortran_lib) file_io
 				if ( dim_ == 1 ) then
 					delim_ = EMPTY_STR
 				else
-					delim_ = ','
+					delim_ = COMMA
 				end if
 			else
 				if ( dim_ == 1 ) then
@@ -11244,7 +11677,7 @@ submodule (io_fortran_lib) file_io
 			end if
 
 			if ( .not. present(delim) ) then
-				delim_ = ','
+				delim_ = COMMA
 			else
 				delim_ = delim
 			end if
@@ -11297,7 +11730,7 @@ submodule (io_fortran_lib) file_io
 			end if
 
 			if ( .not. present(delim) ) then
-				delim_ = ','
+				delim_ = COMMA
 			else
 				delim_ = delim
 			end if
@@ -11350,7 +11783,7 @@ submodule (io_fortran_lib) file_io
 			end if
 
 			if ( .not. present(delim) ) then
-				delim_ = ','
+				delim_ = COMMA
 			else
 				delim_ = delim
 			end if
@@ -11403,7 +11836,7 @@ submodule (io_fortran_lib) file_io
 			end if
 
 			if ( .not. present(delim) ) then
-				delim_ = ','
+				delim_ = COMMA
 			else
 				delim_ = delim
 			end if
@@ -17905,9 +18338,9 @@ submodule (io_fortran_lib) text_io
 		end if
 
 		if ( locale == 'US' ) then
-			sep = ','
+			sep = COMMA
 		else if ( locale == 'EU' ) then
-			sep = ';'
+			sep = SEMICOLON
 		end if
 
 		ignore_sep = .false.
@@ -18131,9 +18564,9 @@ submodule (io_fortran_lib) text_io
 		end if
 
 		if ( locale == 'US' ) then
-			sep = ','
+			sep = COMMA
 		else if ( locale == 'EU' ) then
-			sep = ';'
+			sep = SEMICOLON
 		end if
 
 		ignore_sep = .false.
@@ -18357,9 +18790,9 @@ submodule (io_fortran_lib) text_io
 		end if
 
 		if ( locale == 'US' ) then
-			sep = ','
+			sep = COMMA
 		else if ( locale == 'EU' ) then
-			sep = ';'
+			sep = SEMICOLON
 		end if
 
 		ignore_sep = .false.
@@ -18585,9 +19018,9 @@ submodule (io_fortran_lib) text_io
 		end if
 
 		if ( locale == 'US' ) then
-			sep = ','
+			sep = COMMA
 		else if ( locale == 'EU' ) then
-			sep = ';'
+			sep = SEMICOLON
 		end if
 
 		ignore_sep = .false.
@@ -18825,9 +19258,9 @@ submodule (io_fortran_lib) text_io
 		end if
 
 		if ( locale == 'US' ) then
-			sep = ','
+			sep = COMMA
 		else if ( locale == 'EU' ) then
-			sep = ';'
+			sep = SEMICOLON
 		end if
 
 		ignore_sep = .false.
@@ -19065,9 +19498,9 @@ submodule (io_fortran_lib) text_io
 		end if
 
 		if ( locale == 'US' ) then
-			sep = ','
+			sep = COMMA
 		else if ( locale == 'EU' ) then
-			sep = ';'
+			sep = SEMICOLON
 		end if
 
 		ignore_sep = .false.
