@@ -3,7 +3,7 @@ title: Thread safety
 author: Austin C Bullock
 ---
 
-As of Fortran 2018, all functions and subroutines are recursive by default without having to specify the `recursive` keyword. However, at the time of writing, the implementation of this behavior remains unfinished by major compilers, and this may result in catastrophic race conditions when multiple threads attempt to access the same file in a parallel region. The [IO Fortran Library](../../index.html) avoids this by explicitly enforcing recursion with the `recursive` keyword on all module procedures. However, even with recursion enforced, some programs may not operate as expected when performing I/O in parallel regions. For instance, inspect the output of the following program with multiple coarray images:
+As of Fortran 2018, all functions and subroutines are recursive by default without having to specify the `recursive` keyword. However, at the time of writing, the implementation of this behavior remains unfinished by major compilers, and this may result in catastrophic race conditions when multiple threads attempt to access the same file in a parallel region. The IO-Fortran-Library avoids this by explicitly enforcing recursion with the `recursive` keyword on all module procedures. However, even with recursion enforced, some programs may not operate as expected when performing I/O in parallel regions. For instance, inspect the output of the following program with multiple coarray images:
 
 ```fortran
 program main
