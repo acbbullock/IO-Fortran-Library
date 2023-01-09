@@ -22,7 +22,7 @@ program main
     write(*,'(a)') 'ORIGINAL TIME STAMP:' + LF + time_stamp%as_str() + LF
 
     tokens = time_stamp%split(separator=LF) - 'Date : ' - 'Time : ' + [' : Date', ' : Time']
-    call new_time_stamp%glue(tokens=tokens, separator=' | ')
+    call new_time_stamp%glue(tokens, separator=' | ')
 
     write(*,'(a)') 'RECONSTRUCTED TIME STAMP:' + LF + new_time_stamp%as_str()
 end program main

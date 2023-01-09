@@ -68,7 +68,7 @@ call to_file(x, file_name)
 
 * `file_name` is of type `character(len=*)`
 
-@warning `file_name` may be a relative path, but absolute paths are not guaranteed to work on every platform.
+@note `file_name` may be a relative path, but absolute paths are not guaranteed to work on every platform.
 
 ### Optional Arguments
 

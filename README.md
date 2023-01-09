@@ -1,6 +1,6 @@
 # IO Fortran Library
 
-The IO Fortran Library is a Fortran module `io_fortran_lib` which provides high level routines for doing internal and external I/O. In particular, the module provides a handful of generic interfaces and a simple derived type for string-based and array-based I/O that are useful for recording program data, reading data into programs, and for writing formatted logs and output. For instance, one may read and write data from/to `.csv` and `.dat` files, represent numbers as strings inside of a string expression, efficiently stream text data to a `.log` file, and perform advanced character manipulations with a `String` type.
+The IO Fortran Library is a Fortran module `io_fortran_lib` which provides high level routines for doing internal and external I/O. In particular, the module provides a handful of generic interfaces and a simple derived type for doing string-based and array-based I/O that are useful for recording program data, reading data into programs, writing formatted logs and output, and for doing advanced character manipulations. For instance, one may read and write data from/to `.csv` and `.dat` files, represent numbers as strings inside of a string expression, efficiently stream text data to a `.log` file, and dynamically manipulate strings with a `String` type (including casting between numeric and character data).
 
 To use `io_fortran_lib` with your [fpm](https://github.com/fortran-lang/fpm) project, add the following lines to your `fpm.toml` file and `use` the module in your program units to access the routines:
 
@@ -35,15 +35,15 @@ See the [important user information](https://acbbullock.github.io/IO-Fortran-Lib
 ### New features
 
 * The `String` type has been greatly extended and can now serve as an interface for advanced I/O and character manipulations. See the references for [type-bound procedures](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/string-methods.html) and the [tutorials](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Examples/index.html) for more information.
-* New constants have been added for public use to facilitate file I/O on a variety of platforms.
+* New constants have been added for public use to facilitate file I/O consistently on a variety of platforms.
 * New interface [String](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/string.html) for an `elemental` version of `str` with a return type of `String`.
 * New interfaces [cast](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/cast.html) and [cast_string](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/cast_string.html) for casting `character` and `String` data into numeric variables.
 * New [operator interfaces](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/operators.html) for advanced internal character manipulations involving the intrinsic `character` data type and the derived-type `String`.
 
 ### Added
 
-* [echo](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/echo.html) now accepts an additional `optional` argument `terminator`: a `character` value of any length which is used to terminate the input string. The default terminator is the line feed character `LF`, which is identical to previous behavior.
-* Test programs have been added in `/test`, which are all passing with the following configurations:
+* [echo](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/echo.html) now accepts an additional `optional` argument `terminator`: a `character` value which is used to terminate the input string. The default terminator is the line feed character `LF`, which is identical to previous behavior.
+* Test programs have been added in `/test`, which are all passing in the following configurations with lowest *and* highest optimizations:
   * GNU Fortran Compiler v11.3.0 on Linux
   * Intel Fortran Compiler v2023.0.0 on Linux
   * Intel Fortran Compiler Classic v2021.8.0 on Linux

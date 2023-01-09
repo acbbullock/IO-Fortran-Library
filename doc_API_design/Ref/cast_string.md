@@ -48,6 +48,8 @@ call self%cast(into, locale, fmt, im)
 
 @note The type-bound procedure access of the form `call self%cast()` is valid when `self` is a `String` variable. To cast a `String` expression, the expression must be passed to `cast_string` by the form `call cast_string()`.
 
+@warning In all cases, `into` must be pre-allocated prior to calling `cast_string` due to the restriction that `intent(out)` arguments of `elemental` procedures may not be `allocatable`.
+
 ### Optional Arguments
 
 Integer formats (default is `'i'`):

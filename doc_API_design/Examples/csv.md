@@ -120,7 +120,7 @@ program main
 end program main
 ```
 
-Here, `file_name` is a relative path, and we use the extended operator `+` for [concatenation](../Ref/operators.html#concatenation) in the `character` expression `CR+LF`. We then allocate data arrays and cast each column into respective arrays. Note that the type-bound procedure [cast](../Ref/string-methods.html#cast) is a generic binding for the interface [cast_string](../Ref/cast_string.html). In the program above, we must use `cast_string` as a standalone subroutine to accept the `String`-valued expression
+Here, `file_name` is a relative path, and we use the extended operator `+` for [concatenation](../Ref/operators.html#concatenation) in the `character` expression `CR+LF`. We then allocate data arrays and cast each column into respective arrays. Note that the type-bound procedure [cast](../Ref/string-methods.html#cast) is a generic binding for the interface [cast_string](../Ref/cast_string.html), and we must use `cast_string` as a standalone subroutine to accept the `String`-valued expression
 
 ```fortran
 cells(2:,3)%replace('X','0') - 'chr'

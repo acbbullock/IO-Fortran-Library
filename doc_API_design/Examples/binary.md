@@ -7,7 +7,7 @@ The following program demonstrates the use of [to_file](../Ref/to_file.html) and
 
 ```fortran
 program main
-    use io_fortran_lib, only: to_file, from_file
+ use io_fortran_lib, only: to_file, from_file
     implicit none (type,external)
 
     real, dimension(20,20,20,20,20) :: x

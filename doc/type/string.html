@@ -90,7 +90,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title="<p>100.0% of total for derived types.</p>Including implementation: 141 statements, 100.0% of total for derived types.">23 statements</a>
+               title="<p>100.0% of total for derived types.</p>Including implementation: 145 statements, 100.0% of total for derived types.">27 statements</a>
           </li>
 
             <li id="source-file">
@@ -155,17 +155,18 @@
       </div>
       <div id="boundprocs-0" class="panel-collapse collapse">
         <div class="list-group">
-            <a class="list-group-item" href="../type/string.html#boundprocedure-write%28formatted%29">write(formatted)</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-cast">cast</a>
+            <a class="list-group-item" href="../type/string.html#boundprocedure-count">count</a>
+            <a class="list-group-item" href="../type/string.html#boundprocedure-push">push</a>
+            <a class="list-group-item" href="../type/string.html#boundprocedure-replace">replace</a>
+            <a class="list-group-item" href="../type/string.html#boundprocedure-replace_inplace">replace_inplace</a>
+            <a class="list-group-item" href="../type/string.html#boundprocedure-write%28formatted%29">write(formatted)</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-as_str">as_str</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-echo">echo</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-empty">empty</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-glue">glue</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-len">len</a>
-            <a class="list-group-item" href="../type/string.html#boundprocedure-push">push</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-read_file">read_file</a>
-            <a class="list-group-item" href="../type/string.html#boundprocedure-replace">replace</a>
-            <a class="list-group-item" href="../type/string.html#boundprocedure-replace_inplace">replace_inplace</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-split">split</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-trim">trim</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-trim_inplace">trim_inplace</a>
@@ -183,20 +184,14 @@
     
     <div class="col-md-9" id='text'>
       <h2>type, public :: String</h2>
-    <p>A derived type with a single (private) component:</p>
-<div class="codehilite"><pre><span></span><code><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="p">:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">s</span><span class="w"></span>
-</code></pre></div>
-
-<p>This type is provided for flexible and advanced character handling when the intrinsic <code>character</code> type is
-insufficient. For instance, a <code>String</code> may be used in array contexts for which the user requires arrays of
-strings which may have non-identical lengths, whose lengths may not be known, or whose lengths may need to
-vary during run time. One may also use the <code>String</code> type as an interface to read/write external text files,
-in particular for cases in which <code>.csv</code> data contains data of mixed type. For reading/writing data of
-uniform type and format, it is simpler to use the routines <a href="../page/Ref/to_file.html">to_file</a> and
-<a href="../page/Ref/from_file.html">from_file</a>.</p>
-<p>For a user reference, see <a href="../page/Ref/string.html">String</a>, 
+    <p>A growable string type for advanced character manipulations and text file I/O.</p>
+<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>Aside from the functionality provided through type-bound procedures, the <code>String</code> type may be useful
+in array contexts for which the user requires arrays of strings which may have non-identical lengths, whose
+lengths may not be known, whose lengths may need to vary during run time, or in any other context in which
+the intrinsic <code>character</code> type is insufficient.</p></div>
+<p>For a user reference, see <a href="../page/Ref/string.html">String</a>,
 <a href="../page/Ref/string-methods.html">String methods</a>, and <a href="../page/Ref/operators.html">Operators</a>.</p>
-<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>The <code>String</code> type is memory safe. The user is forbidden from attempting to access unallocated memory
+<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>The <code>String</code> type is memory safe. The user is forbidden from attempting to access invalid memory
 due to the <code>private</code> attribute of the component and the exceptions put into place in the type-bound
 procedures.</p></div>
     <br>
@@ -240,17 +235,18 @@ procedures.</p></div>
       </div>
       <div id="boundprocs-1" class="panel-collapse collapse">
         <div class="list-group">
-            <a class="list-group-item" href="../type/string.html#boundprocedure-write%28formatted%29">write(formatted)</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-cast">cast</a>
+            <a class="list-group-item" href="../type/string.html#boundprocedure-count">count</a>
+            <a class="list-group-item" href="../type/string.html#boundprocedure-push">push</a>
+            <a class="list-group-item" href="../type/string.html#boundprocedure-replace">replace</a>
+            <a class="list-group-item" href="../type/string.html#boundprocedure-replace_inplace">replace_inplace</a>
+            <a class="list-group-item" href="../type/string.html#boundprocedure-write%28formatted%29">write(formatted)</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-as_str">as_str</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-echo">echo</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-empty">empty</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-glue">glue</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-len">len</a>
-            <a class="list-group-item" href="../type/string.html#boundprocedure-push">push</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-read_file">read_file</a>
-            <a class="list-group-item" href="../type/string.html#boundprocedure-replace">replace</a>
-            <a class="list-group-item" href="../type/string.html#boundprocedure-replace_inplace">replace_inplace</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-split">split</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-trim">trim</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-trim_inplace">trim_inplace</a>
@@ -279,7 +275,7 @@ procedures.</p></div>
 <p>The interface for <code>String</code> is nearly identical to that of <code>str</code> but with a return type of <code>String</code>, allowing
 for elemental assignments and access to the various <code>String</code> methods for more advanced character handling.
 For the complement of <code>String</code>, see <a href="../page/Ref/cast_string.html">cast_string</a>.</p>
-<p>For a user reference, see <a href="../page/Ref/string.html">String</a>, 
+<p>For a user reference, see <a href="../page/Ref/string.html">String</a>,
 <a href="../page/Ref/string-methods.html">String methods</a>, and <a href="../page/Ref/operators.html">Operators</a>.</p>
       </div>
     <ul class="list-group">
@@ -1157,23 +1153,6 @@ For the complement of <code>String</code>, see <a href="../page/Ref/cast_string.
       <section>
         <h2>Type-Bound Procedures</h2>
             <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-write%28formatted%29"></span><h3>generic, public :: <strong>write(formatted)</strong>  => write_string         
-    </h3></div>
-    <ul class="list-group">
-        <li class="list-group-item">
-                  <h3>
-    private  interface write_string()  
-</h3>
-  <p>Methods for the <code>String</code> type.</p>
-
-  <h4>Arguments</h4>
-    <em>None</em>
-
-        </li>
-    </ul>
-  </div>
-
-            <div class="panel panel-default">
     <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-cast"></span><h3>generic, public :: <strong>cast</strong>  => cast_string_c128, cast_string_c64, cast_string_c32, cast_string_r128, cast_string_r64, cast_string_r32, cast_string_i64, cast_string_i32, cast_string_i16, cast_string_i8         
     </h3></div>
     <ul class="list-group">
@@ -1986,6 +1965,171 @@ For the complement of <code>String</code>, see <a href="../page/Ref/cast_string.
   </div>
 
             <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-count"></span><h3>generic, public :: <strong>count</strong>  => count_substring_chars, count_substring_string         
+    </h3></div>
+    <ul class="list-group">
+        <li class="list-group-item">
+                  <h3>
+    private  interface count_substring_chars()  
+</h3>
+  <p>Methods for the <code>String</code> type.</p>
+
+  <h4>Arguments</h4>
+    <em>None</em>
+
+        </li>
+        <li class="list-group-item">
+                  <h3>
+    private  interface count_substring_string()  
+</h3>
+  <p>Methods for the <code>String</code> type.</p>
+
+  <h4>Arguments</h4>
+    <em>None</em>
+
+        </li>
+    </ul>
+  </div>
+
+            <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-push"></span><h3>generic, public :: <strong>push</strong>  => push_chars, push_string         
+    </h3></div>
+    <ul class="list-group">
+        <li class="list-group-item">
+                  <h3>
+    private  interface push_chars()  
+</h3>
+  <p>Methods for the <code>String</code> type.</p>
+
+  <h4>Arguments</h4>
+    <em>None</em>
+
+        </li>
+        <li class="list-group-item">
+                  <h3>
+    private  interface push_string()  
+</h3>
+  <p>Methods for the <code>String</code> type.</p>
+
+  <h4>Arguments</h4>
+    <em>None</em>
+
+        </li>
+    </ul>
+  </div>
+
+            <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-replace"></span><h3>generic, public :: <strong>replace</strong>  => replace_ch_copy, replace_st_copy, replace_chst_copy, replace_stch_copy         
+    </h3></div>
+    <ul class="list-group">
+        <li class="list-group-item">
+                  <h3>
+    private  interface replace_ch_copy()  
+</h3>
+  <p>Methods for the <code>String</code> type.</p>
+
+  <h4>Arguments</h4>
+    <em>None</em>
+
+        </li>
+        <li class="list-group-item">
+                  <h3>
+    private  interface replace_st_copy()  
+</h3>
+  <p>Methods for the <code>String</code> type.</p>
+
+  <h4>Arguments</h4>
+    <em>None</em>
+
+        </li>
+        <li class="list-group-item">
+                  <h3>
+    private  interface replace_chst_copy()  
+</h3>
+  <p>Methods for the <code>String</code> type.</p>
+
+  <h4>Arguments</h4>
+    <em>None</em>
+
+        </li>
+        <li class="list-group-item">
+                  <h3>
+    private  interface replace_stch_copy()  
+</h3>
+  <p>Methods for the <code>String</code> type.</p>
+
+  <h4>Arguments</h4>
+    <em>None</em>
+
+        </li>
+    </ul>
+  </div>
+
+            <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-replace_inplace"></span><h3>generic, public :: <strong>replace_inplace</strong>  => replace_ch_inplace, replace_st_inplace, replace_chst_inplace, replace_stch_inplace         
+    </h3></div>
+    <ul class="list-group">
+        <li class="list-group-item">
+                  <h3>
+    private  interface replace_ch_inplace()  
+</h3>
+  <p>Methods for the <code>String</code> type.</p>
+
+  <h4>Arguments</h4>
+    <em>None</em>
+
+        </li>
+        <li class="list-group-item">
+                  <h3>
+    private  interface replace_st_inplace()  
+</h3>
+  <p>Methods for the <code>String</code> type.</p>
+
+  <h4>Arguments</h4>
+    <em>None</em>
+
+        </li>
+        <li class="list-group-item">
+                  <h3>
+    private  interface replace_chst_inplace()  
+</h3>
+  <p>Methods for the <code>String</code> type.</p>
+
+  <h4>Arguments</h4>
+    <em>None</em>
+
+        </li>
+        <li class="list-group-item">
+                  <h3>
+    private  interface replace_stch_inplace()  
+</h3>
+  <p>Methods for the <code>String</code> type.</p>
+
+  <h4>Arguments</h4>
+    <em>None</em>
+
+        </li>
+    </ul>
+  </div>
+
+            <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-write%28formatted%29"></span><h3>generic, public :: <strong>write(formatted)</strong>  => write_string         
+    </h3></div>
+    <ul class="list-group">
+        <li class="list-group-item">
+                  <h3>
+    private  interface write_string()  
+</h3>
+  <p>Methods for the <code>String</code> type.</p>
+
+  <h4>Arguments</h4>
+    <em>None</em>
+
+        </li>
+    </ul>
+  </div>
+
+            <div class="panel panel-default">
     <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-as_str"></span><h3>procedure, public, pass(self) :: <strong>as_str</strong>          
     </h3></div>
     <ul class="list-group">
@@ -2313,71 +2457,6 @@ component will be replaced if already allocated.</p>
   </div>
 
             <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-push"></span><h3>procedure, public, pass(self) :: <strong>push</strong>          
-    </h3></div>
-    <ul class="list-group">
-        <li class="list-group-item">
-              <h3>interface </h3>
-                  
-                <p>Methods for the <code>String</code> type.</p>
-                  <h3>
-    private pure elemental recursive module subroutine push(self, chars)  
-</h3>
-  <p>Appends characters to the string slice component elementally in place. This procedure is identical in
-function to the <a href="../page/Ref/operators.html#concatenation">concatenation operators</a> with self
-assignment: <code>self = self // chars</code> and <code>self = self + chars</code>.</p>
-<p>For a user reference, see <a href="../page/Ref/string-methods.html#push">push</a>.</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              class(<a href='../type/string.html'>String</a>),
-            </td>
-<td>intent(inout)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>self</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              character(len=*),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>chars</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-
-        </li>
-    </ul>
-  </div>
-
-            <div class="panel panel-default">
     <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-read_file"></span><h3>procedure, public, pass(self) :: <strong>read_file</strong>          
     </h3></div>
     <ul class="list-group">
@@ -2388,15 +2467,8 @@ assignment: <code>self = self // chars</code> and <code>self = self + chars</cod
                   <h3>
     private impure recursive module subroutine read_file(self, file_name, cell_array, row_separator, column_separator)  
 </h3>
-  <p>Stream reads an entire text file into a <code>String</code>. The string slice component will be replaced if
-already allocated.</p>
-<p>This method is provided primarily for the purpose of reading in <code>.csv</code> files containing data of
-<strong>mixed type</strong>, which cannot be handled with a simple call to <a href="../page/Ref/from_file.html">from_file</a>
-(which assumes data of uniform type and format). The file's entire contents are populated into <code>self</code>,
-and one may manually parse and manipulate the file's contents using the other type-bound procedures.
-Optionally, one may provide a rank <code>2</code> allocatable array <code>cell_array</code> of type <code>String</code>, which will be
-populated with the cells of the given file using the designated <code>row_separator</code> and <code>column_separator</code>
-whose default values are <code>LF</code> and <code>','</code> respectively.</p>
+  <p>Reads an external text file into <code>self</code> and optionally populates a cell array using the designated
+<code>row_separator</code> and <code>column_separator</code> whose default values are <code>LF</code> and <code>COMMA</code> respectively.</p>
 <p>For a user reference, see <a href="../page/Ref/string-methods.html#read_file">read_file</a>.</p>
 
   <h4>Arguments</h4>
@@ -2481,168 +2553,6 @@ whose default values are <code>LF</code> and <code>','</code> respectively.</p>
             </td>
             <td>::</td>
             <td><strong>column_separator</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-
-        </li>
-    </ul>
-  </div>
-
-            <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-replace"></span><h3>procedure, public, pass(self) :: <strong>replace</strong>  => replace_copy         
-    </h3></div>
-    <ul class="list-group">
-        <li class="list-group-item">
-              <h3>interface </h3>
-                  
-                <p>Methods for the <code>String</code> type.</p>
-                  <h3>
-    private pure elemental recursive module function replace_copy(self, search_for, replace_with) result(new)  
-</h3>
-  <p>Returns a copy of a <code>String</code> elementally in which each string slice component has had a substring
-searched and replaced.</p>
-<p>For a user reference, see <a href="../page/Ref/string-methods.html#replace">replace</a>.</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              class(<a href='../type/string.html'>String</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>self</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              character(len=*),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>search_for</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              character(len=*),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>replace_with</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>type(<a href='../type/string.html'>String</a>)</small>
-    </h4>
-    
-
-        </li>
-    </ul>
-  </div>
-
-            <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-replace_inplace"></span><h3>procedure, public, pass(self) :: <strong>replace_inplace</strong>          
-    </h3></div>
-    <ul class="list-group">
-        <li class="list-group-item">
-              <h3>interface </h3>
-                  
-                <p>Methods for the <code>String</code> type.</p>
-                  <h3>
-    private pure elemental recursive module subroutine replace_inplace(self, search_for, replace_with)  
-</h3>
-  <p>Searches and replaces a substring elementally in place.</p>
-<p>For a user reference, see <a href="../page/Ref/string-methods.html#replace_inplace">replace_inplace</a>.</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              class(<a href='../type/string.html'>String</a>),
-            </td>
-<td>intent(inout)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>self</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              character(len=*),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>search_for</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              character(len=*),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>replace_with</strong></td>
             <td>
                 
             </td>
@@ -2837,13 +2747,9 @@ in place.</p>
                   <h3>
     private impure recursive module subroutine write_file(self, cell_array, file_name, row_separator, column_separator)  
 </h3>
-  <p>Streams a cell array to an external text file. The string slice component will be replaced if already
-allocated.</p>
-<p>This method is provided primarily for the purpose of writing <code>.csv</code> files containing data of
-<strong>mixed type</strong>, which cannot be handled with a simple call to <a href="../page/Ref/to_file.html">to_file</a>
-(which accepts numeric arrays of uniform type). The cell array's entire contents are populated into
+  <p>Writes the content of a cell array to a text file. The cell array's entire contents are populated into
 <code>self</code> and then streamed to an external text file using the designated <code>row_separator</code> and
-<code>column_separator</code> whose default values are <code>LF</code> and <code>','</code> respectively.</p>
+<code>column_separator</code> whose default values are <code>LF</code> and <code>COMMA</code> respectively.</p>
 <p>For a user reference, see <a href="../page/Ref/string-methods.html#write_file">write_file</a>.</p>
 
   <h4>Arguments</h4>
@@ -2958,7 +2864,7 @@ allocated.</p>
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-01-07 01:05            </p>
+ on 2023-01-09 00:20            </p>
         </div>
       </div>
       <br>

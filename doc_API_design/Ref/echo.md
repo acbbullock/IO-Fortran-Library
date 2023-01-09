@@ -18,9 +18,9 @@ call echo(string, file_name, append, terminator)
 * `append` is `optional` and of type `logical`
 * `terminator` is `optional` and of type `character(len=*)`
 
-@warning `file_name` may be a relative path, but absolute paths are not guaranteed to work on every platform.
+@note `file_name` may be a relative path, but absolute paths are not guaranteed to work on every platform.
 
-@note For the `String` counterpart of `echo`, see [echo](string-methods.html#echo).
+For the `String` counterpart of `echo`, see [echo](string-methods.html#echo).
 
 ### Optional Arguments
 

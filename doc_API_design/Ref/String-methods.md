@@ -5,15 +5,11 @@ author: Austin C Bullock
 
 ## [type String](../../type/string.html)
 
-*Description*: A derived type with a single (private) component:
+*Description*: A growable string type for advanced character manipulations and text file I/O.
 
-```fortran
-character(len=:), allocatable :: s
-```
+@note Aside from the functionality provided through type-bound procedures, the `String` type may be useful in array contexts for which the user requires arrays of strings which may have non-identical lengths, whose lengths may not be known, whose lengths may need to vary during run time, or in any other context in which the intrinsic `character` type is insufficient.
 
-This type is provided for flexible and advanced character handling when the intrinsic `character` type is insufficient. For instance, a `String` may be used in array contexts for which the user requires arrays of strings which may have non-identical lengths, whose lengths may not be known, or whose lengths may need to vary during run time. One may also use the `String` type as an interface to read/write external text files, in particular for cases in which `.csv` data contains data of mixed type. For reading/writing data of uniform type, it is simpler to use the routines [to_file](to_file.html) and [from_file](from_file.html).
-
-@note The `String` type is memory safe. The user is forbidden from attempting to access unallocated memory due to the `private` attribute of the component and the exceptions put into place in the type-bound procedures.
+@note The `String` type is memory safe. The user is forbidden from attempting to access invalid memory due to the `private` attribute of the component and the exceptions put into place in the type-bound procedures.
 
 ## Type-bound procedures
 
@@ -31,6 +27,18 @@ For `self` a scalar of type `String`:
 
 *Description*: A generic binding for the interface [cast_string](cast_string.html).
 
+### [count](../../type/string.html#boundprocedure-count)
+
+For `self` of type `String` and `match` of type `character` or `String` both scalars or arrays of any compatible rank:
+
+```fortran
+    result = self%count(match)
+```
+
+* `match` is of type `character(len=*)` or `String`
+
+*Description*: Returns number of non-overlapping occurrences of a substring elementally.
+
 ### [echo](../../type/string.html#boundprocedure-echo)
 
 For `self` a scalar of type `String`:
@@ -44,8 +52,6 @@ For `self` a scalar of type `String`:
 * `terminator` is `optional` and of type `character(len=*)` (default is `LF`)
 
 *Description*: Streams the content of a `String` to an external text file. This method is identical in function to the routine [echo](echo.html) for `character` strings.
-
-@note `echo` is identical in function to [echo](echo.html) for strings of type `character`.
 
 ### [empty](../../type/string.html#boundprocedure-empty)
 
@@ -66,9 +72,9 @@ For `self` a scalar of type `String`:
 ```
 
 * `tokens` is of type `type(String), dimension(:)`
-* `separator` is `optional` and of type `character(len=*)` (default is SPACE)
+* `separator` is `optional` and of type `character(len=*)` (default is `SPACE`)
 
-*Description*: Glues a `String` vector into `self` with given separator. Default separator is SPACE. The string slice component will be replaced if already allocated.
+*Description*: Glues a `String` vector into `self` with given separator. Default separator is `SPACE`. The string slice component will be replaced if already allocated.
 
 ### [len](../../type/string.html#boundprocedure-len)
 
@@ -82,13 +88,13 @@ For `self` a scalar or array of any rank and of type `String`:
 
 ### [push](../../type/string.html#boundprocedure-push)
 
-For `self` a scalar or array of any rank and of type `String`:
+For `self` of type `String` and `chars` of type `character` or `String` both scalars or arrays of any compatible rank:
 
 ```fortran
     call self%push(chars)
 ```
 
-* `chars` is of type `character(len=*)`
+* `chars` is of type `character(len=*)` or `String`
 
 *Description*: Appends characters to the string slice component elementally in place. This procedure is identical in function to the [concatenation operators](operators.html#concatenation) with self assignment: `self = self // chars` and `self = self + chars`.
 
@@ -105,37 +111,43 @@ For `self` a scalar of type `String`:
 * `row_separator` is `optional` and of type `character(len=*)` (default is `LF`)
 * `column_separator` is `optional` and of type `character(len=*)` (default is `','`)
 
-*Description*: The `read_file` method is provided primarily for the purpose of reading in `.csv` files containing data of **mixed type**, which cannot be handled with a simple call to [from_file](from_file.html) (which assumes data of uniform type and format). The file's entire contents are populated into `self`, and one may manually parse and manipulate the file's contents using the methods referenced on this page. Optionally, one may provide a rank `2` allocatable array `cell_array` of type `String`, which will be populated with the cells of the given file using the designated `row_separator` and `column_separator` whose default values are `LF` and `','` respectively.
+*Description*: Reads an external text file into `self` and optionally populates a cell array using the designated `row_separator` and `column_separator` whose default values are `LF` and `','` respectively.
 
-@note The file extension of `file_name` must correspond to one of the valid [text file extensions](../UserInfo/file-ext.html).
+@note `file_name` may be a relative path, but absolute paths are not guaranteed to work on every platform.
 
-@warning `file_name` may be a relative path, but absolute paths are not guaranteed to work on every platform.
+@note The `cell_array` must be `allocatable` and will be re-allocated internally (if already allocated).
 
 ### [replace](../../type/string.html#boundprocedure-replace)
 
 For `self` a scalar or array of any rank and of type `String`:
 
 ```fortran
-    result = self%replace(search_for, replace_with)
+    result = self%replace(match, substring, back)
 ```
 
-* `search_for` is of type `character(len=*)`
-* `replace_with` is of type `character(len=*)`
+* `match` is of type `character(len=*)` or `String`
+* `substring` is of type `character(len=*)` or `String`
+* `back` is `optional` and of type `logical` (default is `.false.`)
 
-*Description*: Returns a copy of a `String` elementally in which each string slice component has had a substring searched and replaced.
+*Description*: Matches and replaces all occurrences of a substring elementally. If `back` is `.true.`, then `self` is scanned from back to front, which may result in a different outcome in the case that `match` is overlapping itself.
+
+@note `match` and `substring` may be any combination of `character` or `String` and may be of any rank compatible with each other and with `self`.
 
 ### [replace_inplace](../../type/string.html#boundprocedure-replace_inplace)
 
 For `self` a scalar or array of any rank and of type `String`:
 
 ```fortran
-    call self%replace_inplace(search_for, replace_with)
+    call self%replace_inplace(match, substring, back)
 ```
 
-* `search_for` is of type `character(len=*)`
-* `replace_with` is of type `character(len=*)`
+* `match` is of type `character(len=*)` or `String`
+* `substring` is of type `character(len=*)` or `String`
+* `back` is `optional` and of type `logical` (default is `.false.`)
 
-*Description*: Searches and replaces a substring elementally in place.
+*Description*: Matches and replaces all occurrences of a substring elementally in place. If `back` is `.true.`, then `self` is scanned from back to front, which may result in a different outcome in the case that `match` is overlapping itself.
+
+@note `match` and `substring` may be any combination of `character` or `String` and may be of any rank compatible with each other and with `self`.
 
 ### [split](../../type/string.html#boundprocedure-split)
 
@@ -145,9 +157,9 @@ For `self` a scalar of type `String`:
     result = self%split(separator)
 ```
 
-* `separator` is `optional` and of type `character(len=*)` (default is SPACE)
+* `separator` is `optional` and of type `character(len=*)` (default is `SPACE`)
 
-*Description*: Splits a string into a vector of `tokens` with given separator. Default separator is SPACE.
+*Description*: Splits a string into a vector of `tokens` with given separator. Default separator is `SPACE`.
 
 ### [trim](../../type/string.html#boundprocedure-trim)
 
@@ -182,11 +194,9 @@ For `self` a scalar of type `String`:
 * `row_separator` is `optional` and of type `character(len=*)` (default is `LF`)
 * `column_separator` is `optional` and of type `character(len=*)` (default is `','`)
 
-*Description*: The `write_file` method is provided primarily for the purpose of writing `.csv` files containing data of **mixed type**, which cannot be handled with a simple call to [to_file](to_file.html) (which accepts numeric arrays of uniform type). The cell array's entire contents are populated into `self` and then streamed to an external text file using the designated `row_separator` and `column_separator` whose default values are `LF` and `','` respectively.
+*Description*: Writes the content of a cell array to a text file. The cell array's entire contents are populated into `self` and then streamed to an external text file using the designated `row_separator` and `column_separator` whose default values are `LF` and `','` respectively.
 
-@note The file extension of `file_name` must correspond to one of the valid [text file extensions](../UserInfo/file-ext.html). Additionally, `file_name` will be created if it does not already exist and will be overwritten if it does exist.
-
-@warning `file_name` may be a relative path, but absolute paths are not guaranteed to work on every platform.
+@note `file_name` may be a relative path, but absolute paths are not guaranteed to work on every platform. Additionally, the file will be created if it does not already exist and will be overwritten if it does exist.
 
 ### [write(formatted)](../../type/string.html#boundprocedure-write%28formatted%29)
 

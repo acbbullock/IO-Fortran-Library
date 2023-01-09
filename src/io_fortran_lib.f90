@@ -17,17 +17,17 @@ module io_fortran_lib
 	public :: operator(//), operator(+), operator(-), operator(**), operator(==), operator(/=)				! Operators
 
 	! Definitions and Interfaces ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	character(len=1), parameter :: NL		 = new_line('a')				!! The newline character (system agnostic).
-	character(len=1), parameter :: SPACE	 = achar(32)										!! The space character.
-	character(len=1), parameter :: CR		 = achar(13)							  !! The carriage return character.
-	character(len=1), parameter :: FF		 = achar(12)									!! The form feed character.
-	character(len=1), parameter :: VT		 = achar(11)								 !! The vertical tab character.
-	character(len=1), parameter :: LF		 = achar(10)									!! The line feed character.
-	character(len=1), parameter :: TAB		 = achar(9)								   !! The horizontal tab character.
-	character(len=1), parameter :: HT		 = achar(9)				  !! The horizontal tab character (alternate name).
-	character(len=1), parameter :: BELL		 = achar(7)									   !! The bell/alert character.
-	character(len=1), parameter :: NUL		 = achar(0)											 !! The null character.
-	character(len=1), parameter :: CNUL		 = c_null_char		!! The C null character re-exported from iso_c_binding.
+	character(len=1), parameter :: NL    = new_line('a')					!! The newline character (system agnostic).
+	character(len=1), parameter :: SPACE = achar(32)											!! The space character.
+	character(len=1), parameter :: CR    = achar(13)								  !! The carriage return character.
+	character(len=1), parameter :: FF    = achar(12)										!! The form feed character.
+	character(len=1), parameter :: VT    = achar(11)									 !! The vertical tab character.
+	character(len=1), parameter :: LF    = achar(10)										!! The line feed character.
+	character(len=1), parameter :: TAB   = achar(9)									   !! The horizontal tab character.
+	character(len=1), parameter :: HT    = achar(9)					  !! The horizontal tab character (alternate name).
+	character(len=1), parameter :: BELL  = achar(7)										   !! The bell/alert character.
+	character(len=1), parameter :: NUL   = achar(0)												 !! The null character.
+	character(len=1), parameter :: CNUL  = c_null_char			!! The C null character re-exported from iso_c_binding.
 	character(len=0), parameter :: EMPTY_STR = ''												   !! The empty string.
 
 	character(len=1), 				parameter :: SEMICOLON	= achar(59)										! Semicolon
@@ -54,7 +54,7 @@ module io_fortran_lib
 		!! For a user reference, see [String](../page/Ref/string.html),
 		!! [String methods](../page/Ref/string-methods.html), and [Operators](../page/Ref/operators.html).
 		!!
-		!! @note The `String` type is memory safe. The user is forbidden from attempting to access unallocated memory
+		!! @note The `String` type is memory safe. The user is forbidden from attempting to access invalid memory
 		!! due to the `private` attribute of the component and the exceptions put into place in the type-bound
 		!! procedures.
 		!--------------------------------------------------------------------------------------------------------------
