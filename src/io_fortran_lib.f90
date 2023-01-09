@@ -13,26 +13,27 @@ module io_fortran_lib
 	! Public API list ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	public :: aprint, to_file, from_file																	! Array I/O
 	public :: str, cast, String, cast_string, echo														   ! String I/O
-	public :: LF, NL, SPACE, CR, FF, VT, TAB, HT, NUL, CNUL, EMPTY_STR										! Constants
+	public :: NL, SPACE, CR, FF, VT, LF, TAB, HT, BELL, NUL, CNUL, EMPTY_STR								! Constants
 	public :: operator(//), operator(+), operator(-), operator(**), operator(==), operator(/=)				! Operators
 
 	! Definitions and Interfaces ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	character(len=1), parameter :: LF		 = new_line('a')								!! The line feed character.
-	character(len=1), parameter :: NL		 = new_line('a')		 	   !! The line feed character (alternate name).
-	character(len=1), parameter :: SPACE	 = char(32)											!! The space character.
-	character(len=1), parameter :: CR		 = char(13)								  !! The carriage return character.
-	character(len=1), parameter :: FF		 = char(12)										!! The form feed character.
-	character(len=1), parameter :: VT		 = char(11)									 !! The vertical tab character.
-	character(len=1), parameter :: TAB		 = char(9)								   !! The horizontal tab character.
-	character(len=1), parameter :: HT		 = char(9)				  !! The horizontal tab character (alternate name).
-	character(len=1), parameter :: NUL		 = char(0)											 !! The null character.
+	character(len=1), parameter :: NL		 = new_line('a')				!! The newline character (system agnostic).
+	character(len=1), parameter :: SPACE	 = achar(32)										!! The space character.
+	character(len=1), parameter :: CR		 = achar(13)							  !! The carriage return character.
+	character(len=1), parameter :: FF		 = achar(12)									!! The form feed character.
+	character(len=1), parameter :: VT		 = achar(11)								 !! The vertical tab character.
+	character(len=1), parameter :: LF		 = achar(10)									!! The line feed character.
+	character(len=1), parameter :: TAB		 = achar(9)								   !! The horizontal tab character.
+	character(len=1), parameter :: HT		 = achar(9)				  !! The horizontal tab character (alternate name).
+	character(len=1), parameter :: BELL		 = achar(7)									   !! The bell/alert character.
+	character(len=1), parameter :: NUL		 = achar(0)											 !! The null character.
 	character(len=1), parameter :: CNUL		 = c_null_char		!! The C null character re-exported from iso_c_binding.
 	character(len=0), parameter :: EMPTY_STR = ''												   !! The empty string.
 
-	character(len=1), 				parameter :: SEMICOLON	= char(59)										! Semicolon
-	character(len=1), 				parameter :: POINT		= char(46)										! Full stop
-	character(len=1), 				parameter :: COMMA		= char(44)											! Comma
-	character(len=1),				parameter :: QQUOTE		= char(34)									 ! Double quote
+	character(len=1), 				parameter :: SEMICOLON	= achar(59)										! Semicolon
+	character(len=1), 				parameter :: POINT		= achar(46)										! Full stop
+	character(len=1), 				parameter :: COMMA		= achar(44)											! Comma
+	character(len=1),				parameter :: QQUOTE		= achar(34)									 ! Double quote
 	character(len=*), dimension(*), parameter :: INT_FMTS   = [ 'i', 'z' ]				 ! Allowed formats for integers
 	character(len=*), dimension(*), parameter :: REAL_FMTS  = [ 'e', 'f', 'z' ]			   ! Allowed formats for floats
 	character(len=*), dimension(*), parameter :: LOCALES    = [ 'US', 'EU' ]				! Allowed locale specifiers
@@ -17405,7 +17406,7 @@ submodule (io_fortran_lib) text_io
 			end if
 		end if
 
-		call text_file%write_file(cells, file_name=file_name, row_separator=LF, column_separator=delim)
+		call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
 	end procedure to_text_1dc128
 	module procedure to_text_1dc64
 		type(String) :: text_file
@@ -17457,7 +17458,7 @@ submodule (io_fortran_lib) text_io
 			end if
 		end if
 
-		call text_file%write_file(cells, file_name=file_name, row_separator=LF, column_separator=delim)
+		call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
 	end procedure to_text_1dc64
 	module procedure to_text_1dc32
 		type(String) :: text_file
@@ -17509,7 +17510,7 @@ submodule (io_fortran_lib) text_io
 			end if
 		end if
 
-		call text_file%write_file(cells, file_name=file_name, row_separator=LF, column_separator=delim)
+		call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
 	end procedure to_text_1dc32
 
 	module procedure to_text_2dc128
@@ -17546,7 +17547,7 @@ submodule (io_fortran_lib) text_io
 			cells = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
 		end if
 
-		call text_file%write_file(cells, file_name=file_name, row_separator=LF, column_separator=delim)
+		call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
 	end procedure to_text_2dc128
 	module procedure to_text_2dc64
 		type(String) :: text_file
@@ -17582,7 +17583,7 @@ submodule (io_fortran_lib) text_io
 			cells = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
 		end if
 
-		call text_file%write_file(cells, file_name=file_name, row_separator=LF, column_separator=delim)
+		call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
 	end procedure to_text_2dc64
 	module procedure to_text_2dc32
 		type(String) :: text_file
@@ -17618,7 +17619,7 @@ submodule (io_fortran_lib) text_io
 			cells = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
 		end if
 
-		call text_file%write_file(cells, file_name=file_name, row_separator=LF, column_separator=delim)
+		call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
 	end procedure to_text_2dc32
 
 	module procedure to_text_1dr128
@@ -17671,7 +17672,7 @@ submodule (io_fortran_lib) text_io
 			end if
 		end if
 
-		call text_file%write_file(cells, file_name=file_name, row_separator=LF, column_separator=delim)
+		call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
 	end procedure to_text_1dr128
 	module procedure to_text_1dr64
 		type(String) :: text_file
@@ -17723,7 +17724,7 @@ submodule (io_fortran_lib) text_io
 			end if
 		end if
 
-		call text_file%write_file(cells, file_name=file_name, row_separator=LF, column_separator=delim)
+		call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
 	end procedure to_text_1dr64
 	module procedure to_text_1dr32
 		type(String) :: text_file
@@ -17775,7 +17776,7 @@ submodule (io_fortran_lib) text_io
 			end if
 		end if
 
-		call text_file%write_file(cells, file_name=file_name, row_separator=LF, column_separator=delim)
+		call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
 	end procedure to_text_1dr32
 
 	module procedure to_text_2dr128
@@ -17812,7 +17813,7 @@ submodule (io_fortran_lib) text_io
 			cells = String(x, locale=locale, fmt=fmt, decimals=decimals)
 		end if
 
-		call text_file%write_file(cells, file_name=file_name, row_separator=LF, column_separator=delim)
+		call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
 	end procedure to_text_2dr128
 	module procedure to_text_2dr64
 		type(String) :: text_file
@@ -17848,7 +17849,7 @@ submodule (io_fortran_lib) text_io
 			cells = String(x, locale=locale, fmt=fmt, decimals=decimals)
 		end if
 
-		call text_file%write_file(cells, file_name=file_name, row_separator=LF, column_separator=delim)
+		call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
 	end procedure to_text_2dr64
 	module procedure to_text_2dr32
 		type(String) :: text_file
@@ -17884,7 +17885,7 @@ submodule (io_fortran_lib) text_io
 			cells = String(x, locale=locale, fmt=fmt, decimals=decimals)
 		end if
 
-		call text_file%write_file(cells, file_name=file_name, row_separator=LF, column_separator=delim)
+		call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
 	end procedure to_text_2dr32
 
 	module procedure to_text_1di64
@@ -17937,7 +17938,7 @@ submodule (io_fortran_lib) text_io
 			end if
 		end if
 
-		call text_file%write_file(cells, file_name=file_name, row_separator=LF, column_separator=delim)
+		call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
 	end procedure to_text_1di64
 	module procedure to_text_1di32
 		type(String) :: text_file
@@ -17989,7 +17990,7 @@ submodule (io_fortran_lib) text_io
 			end if
 		end if
 
-		call text_file%write_file(cells, file_name=file_name, row_separator=LF, column_separator=delim)
+		call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
 	end procedure to_text_1di32
 	module procedure to_text_1di16
 		type(String) :: text_file
@@ -18041,7 +18042,7 @@ submodule (io_fortran_lib) text_io
 			end if
 		end if
 
-		call text_file%write_file(cells, file_name=file_name, row_separator=LF, column_separator=delim)
+		call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
 	end procedure to_text_1di16
 	module procedure to_text_1di8
 		type(String) :: text_file
@@ -18093,7 +18094,7 @@ submodule (io_fortran_lib) text_io
 			end if
 		end if
 
-		call text_file%write_file(cells, file_name=file_name, row_separator=LF, column_separator=delim)
+		call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
 	end procedure to_text_1di8
 
 	module procedure to_text_2di64
@@ -18130,7 +18131,7 @@ submodule (io_fortran_lib) text_io
 			cells = String(x, fmt=fmt)
 		end if
 
-		call text_file%write_file(cells, file_name=file_name, row_separator=LF, column_separator=delim)
+		call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
 	end procedure to_text_2di64
 	module procedure to_text_2di32
 		type(String) :: text_file
@@ -18166,7 +18167,7 @@ submodule (io_fortran_lib) text_io
 			cells = String(x, fmt=fmt)
 		end if
 
-		call text_file%write_file(cells, file_name=file_name, row_separator=LF, column_separator=delim)
+		call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
 	end procedure to_text_2di32
 	module procedure to_text_2di16
 		type(String) :: text_file
@@ -18202,7 +18203,7 @@ submodule (io_fortran_lib) text_io
 			cells = String(x, fmt=fmt)
 		end if
 
-		call text_file%write_file(cells, file_name=file_name, row_separator=LF, column_separator=delim)
+		call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
 	end procedure to_text_2di16
 	module procedure to_text_2di8
 		type(String) :: text_file
@@ -18238,7 +18239,7 @@ submodule (io_fortran_lib) text_io
 			cells = String(x, fmt=fmt)
 		end if
 
-		call text_file%write_file(cells, file_name=file_name, row_separator=LF, column_separator=delim)
+		call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
 	end procedure to_text_2di8
 
 	! Reading Procedures ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -18284,7 +18285,7 @@ submodule (io_fortran_lib) text_io
 
 		if ( header ) then
 			do i = 1, file_length
-				if ( file(i:i) == LF ) then
+				if ( file(i:i) == NL ) then
 					file = file(i+1:)
 					file_length = len(file)
 					exit
@@ -18305,7 +18306,7 @@ submodule (io_fortran_lib) text_io
 		n_rows = 0
 
 		do i = 1, file_length
-			if ( file(i:i) == LF ) then
+			if ( file(i:i) == NL ) then
 				n_rows = n_rows + 1
 			else if ( i == file_length ) then
 				file = file//LF
@@ -18372,7 +18373,7 @@ submodule (io_fortran_lib) text_io
 				end if
 			end if
 
-			if ( current_char == LF ) exit
+			if ( current_char == NL ) exit
 		end do
 
 		if ( (n_rows > 1) .and. (n_columns > 1) ) then
@@ -18510,7 +18511,7 @@ submodule (io_fortran_lib) text_io
 
 		if ( header ) then
 			do i = 1, file_length
-				if ( file(i:i) == LF ) then
+				if ( file(i:i) == NL ) then
 					file = file(i+1:)
 					file_length = len(file)
 					exit
@@ -18531,7 +18532,7 @@ submodule (io_fortran_lib) text_io
 		n_rows = 0
 
 		do i = 1, file_length
-			if ( file(i:i) == LF ) then
+			if ( file(i:i) == NL ) then
 				n_rows = n_rows + 1
 			else if ( i == file_length ) then
 				file = file//LF
@@ -18598,7 +18599,7 @@ submodule (io_fortran_lib) text_io
 				end if
 			end if
 
-			if ( current_char == LF ) exit
+			if ( current_char == NL ) exit
 		end do
 
 		if ( (n_rows > 1) .and. (n_columns > 1) ) then
@@ -18736,7 +18737,7 @@ submodule (io_fortran_lib) text_io
 
 		if ( header ) then
 			do i = 1, file_length
-				if ( file(i:i) == LF ) then
+				if ( file(i:i) == NL ) then
 					file = file(i+1:)
 					file_length = len(file)
 					exit
@@ -18757,7 +18758,7 @@ submodule (io_fortran_lib) text_io
 		n_rows = 0
 
 		do i = 1, file_length
-			if ( file(i:i) == LF ) then
+			if ( file(i:i) == NL ) then
 				n_rows = n_rows + 1
 			else if ( i == file_length ) then
 				file = file//LF
@@ -18824,7 +18825,7 @@ submodule (io_fortran_lib) text_io
 				end if
 			end if
 
-			if ( current_char == LF ) exit
+			if ( current_char == NL ) exit
 		end do
 
 		if ( (n_rows > 1) .and. (n_columns > 1) ) then
@@ -18964,7 +18965,7 @@ submodule (io_fortran_lib) text_io
 
 		if ( header ) then
 			do i = 1, file_length
-				if ( file(i:i) == LF ) then
+				if ( file(i:i) == NL ) then
 					file = file(i+1:)
 					file_length = len(file)
 					exit
@@ -18985,7 +18986,7 @@ submodule (io_fortran_lib) text_io
 		n_rows = 0
 
 		do i = 1, file_length
-			if ( file(i:i) == LF ) then
+			if ( file(i:i) == NL ) then
 				n_rows = n_rows + 1
 			else if ( i == file_length ) then
 				file = file//LF
@@ -19052,7 +19053,7 @@ submodule (io_fortran_lib) text_io
 				end if
 			end if
 
-			if ( current_char == LF ) exit
+			if ( current_char == NL ) exit
 		end do
 
 		allocate( lines(n_rows) )
@@ -19061,7 +19062,7 @@ submodule (io_fortran_lib) text_io
 		l1 = 1
 
 		do i = 1, file_length
-			if ( file(i:i) == LF ) then
+			if ( file(i:i) == NL ) then
 				lines(row)%s = file(l1:i)
 				if ( row /= n_rows ) then
 					row = row + 1
@@ -19204,7 +19205,7 @@ submodule (io_fortran_lib) text_io
 
 		if ( header ) then
 			do i = 1, file_length
-				if ( file(i:i) == LF ) then
+				if ( file(i:i) == NL ) then
 					file = file(i+1:)
 					file_length = len(file)
 					exit
@@ -19225,7 +19226,7 @@ submodule (io_fortran_lib) text_io
 		n_rows = 0
 
 		do i = 1, file_length
-			if ( file(i:i) == LF ) then
+			if ( file(i:i) == NL ) then
 				n_rows = n_rows + 1
 			else if ( i == file_length ) then
 				file = file//LF
@@ -19292,7 +19293,7 @@ submodule (io_fortran_lib) text_io
 				end if
 			end if
 
-			if ( current_char == LF ) exit
+			if ( current_char == NL ) exit
 		end do
 
 		allocate( lines(n_rows) )
@@ -19301,7 +19302,7 @@ submodule (io_fortran_lib) text_io
 		l1 = 1
 
 		do i = 1, file_length
-			if ( file(i:i) == LF ) then
+			if ( file(i:i) == NL ) then
 				lines(row)%s = file(l1:i)
 				if ( row /= n_rows ) then
 					row = row + 1
@@ -19444,7 +19445,7 @@ submodule (io_fortran_lib) text_io
 
 		if ( header ) then
 			do i = 1, file_length
-				if ( file(i:i) == LF ) then
+				if ( file(i:i) == NL ) then
 					file = file(i+1:)
 					file_length = len(file)
 					exit
@@ -19465,7 +19466,7 @@ submodule (io_fortran_lib) text_io
 		n_rows = 0
 
 		do i = 1, file_length
-			if ( file(i:i) == LF ) then
+			if ( file(i:i) == NL ) then
 				n_rows = n_rows + 1
 			else if ( i == file_length ) then
 				file = file//LF
@@ -19532,7 +19533,7 @@ submodule (io_fortran_lib) text_io
 				end if
 			end if
 
-			if ( current_char == LF ) exit
+			if ( current_char == NL ) exit
 		end do
 
 		allocate( lines(n_rows) )
@@ -19541,7 +19542,7 @@ submodule (io_fortran_lib) text_io
 		l1 = 1
 
 		do i = 1, file_length
-			if ( file(i:i) == LF ) then
+			if ( file(i:i) == NL ) then
 				lines(row)%s = file(l1:i)
 				if ( row /= n_rows ) then
 					row = row + 1
@@ -19683,7 +19684,7 @@ submodule (io_fortran_lib) text_io
 
 		if ( header ) then
 			do i = 1, file_length
-				if ( file(i:i) == LF ) then
+				if ( file(i:i) == NL ) then
 					file = file(i+1:)
 					file_length = len(file)
 					exit
@@ -19704,7 +19705,7 @@ submodule (io_fortran_lib) text_io
 		n_rows = 0
 
 		do i = 1, file_length
-			if ( file(i:i) == LF ) then
+			if ( file(i:i) == NL ) then
 				n_rows = n_rows + 1
 			else if ( i == file_length ) then
 				file = file//LF
@@ -19743,7 +19744,7 @@ submodule (io_fortran_lib) text_io
 				end if
 			end if
 
-			if ( current_char == LF ) exit
+			if ( current_char == NL ) exit
 		end do
 
 		if ( (n_rows > 1) .and. (n_columns > 1) ) then
@@ -19823,7 +19824,7 @@ submodule (io_fortran_lib) text_io
 
 		if ( header ) then
 			do i = 1, file_length
-				if ( file(i:i) == LF ) then
+				if ( file(i:i) == NL ) then
 					file = file(i+1:)
 					file_length = len(file)
 					exit
@@ -19844,7 +19845,7 @@ submodule (io_fortran_lib) text_io
 		n_rows = 0
 
 		do i = 1, file_length
-			if ( file(i:i) == LF ) then
+			if ( file(i:i) == NL ) then
 				n_rows = n_rows + 1
 			else if ( i == file_length ) then
 				file = file//LF
@@ -19883,7 +19884,7 @@ submodule (io_fortran_lib) text_io
 				end if
 			end if
 
-			if ( current_char == LF ) exit
+			if ( current_char == NL ) exit
 		end do
 
 		if ( (n_rows > 1) .and. (n_columns > 1) ) then
@@ -19963,7 +19964,7 @@ submodule (io_fortran_lib) text_io
 
 		if ( header ) then
 			do i = 1, file_length
-				if ( file(i:i) == LF ) then
+				if ( file(i:i) == NL ) then
 					file = file(i+1:)
 					file_length = len(file)
 					exit
@@ -19984,7 +19985,7 @@ submodule (io_fortran_lib) text_io
 		n_rows = 0
 
 		do i = 1, file_length
-			if ( file(i:i) == LF ) then
+			if ( file(i:i) == NL ) then
 				n_rows = n_rows + 1
 			else if ( i == file_length ) then
 				file = file//LF
@@ -20023,7 +20024,7 @@ submodule (io_fortran_lib) text_io
 				end if
 			end if
 
-			if ( current_char == LF ) exit
+			if ( current_char == NL ) exit
 		end do
 
 		if ( (n_rows > 1) .and. (n_columns > 1) ) then
@@ -20105,7 +20106,7 @@ submodule (io_fortran_lib) text_io
 
 		if ( header ) then
 			do i = 1, file_length
-				if ( file(i:i) == LF ) then
+				if ( file(i:i) == NL ) then
 					file = file(i+1:)
 					file_length = len(file)
 					exit
@@ -20126,7 +20127,7 @@ submodule (io_fortran_lib) text_io
 		n_rows = 0
 
 		do i = 1, file_length
-			if ( file(i:i) == LF ) then
+			if ( file(i:i) == NL ) then
 				n_rows = n_rows + 1
 			else if ( i == file_length ) then
 				file = file//LF
@@ -20165,7 +20166,7 @@ submodule (io_fortran_lib) text_io
 				end if
 			end if
 
-			if ( current_char == LF ) exit
+			if ( current_char == NL ) exit
 		end do
 
 		allocate( lines(n_rows) )
@@ -20174,7 +20175,7 @@ submodule (io_fortran_lib) text_io
 		l1 = 1
 
 		do i = 1, file_length
-			if ( file(i:i) == LF ) then
+			if ( file(i:i) == NL ) then
 				lines(row)%s = file(l1:i)
 				if ( row /= n_rows ) then
 					row = row + 1
@@ -20259,7 +20260,7 @@ submodule (io_fortran_lib) text_io
 
 		if ( header ) then
 			do i = 1, file_length
-				if ( file(i:i) == LF ) then
+				if ( file(i:i) == NL ) then
 					file = file(i+1:)
 					file_length = len(file)
 					exit
@@ -20280,7 +20281,7 @@ submodule (io_fortran_lib) text_io
 		n_rows = 0
 
 		do i = 1, file_length
-			if ( file(i:i) == LF ) then
+			if ( file(i:i) == NL ) then
 				n_rows = n_rows + 1
 			else if ( i == file_length ) then
 				file = file//LF
@@ -20319,7 +20320,7 @@ submodule (io_fortran_lib) text_io
 				end if
 			end if
 
-			if ( current_char == LF ) exit
+			if ( current_char == NL ) exit
 		end do
 
 		allocate( lines(n_rows) )
@@ -20328,7 +20329,7 @@ submodule (io_fortran_lib) text_io
 		l1 = 1
 
 		do i = 1, file_length
-			if ( file(i:i) == LF ) then
+			if ( file(i:i) == NL ) then
 				lines(row)%s = file(l1:i)
 				if ( row /= n_rows ) then
 					row = row + 1
@@ -20413,7 +20414,7 @@ submodule (io_fortran_lib) text_io
 
 		if ( header ) then
 			do i = 1, file_length
-				if ( file(i:i) == LF ) then
+				if ( file(i:i) == NL ) then
 					file = file(i+1:)
 					file_length = len(file)
 					exit
@@ -20434,7 +20435,7 @@ submodule (io_fortran_lib) text_io
 		n_rows = 0
 
 		do i = 1, file_length
-			if ( file(i:i) == LF ) then
+			if ( file(i:i) == NL ) then
 				n_rows = n_rows + 1
 			else if ( i == file_length ) then
 				file = file//LF
@@ -20473,7 +20474,7 @@ submodule (io_fortran_lib) text_io
 				end if
 			end if
 
-			if ( current_char == LF ) exit
+			if ( current_char == NL ) exit
 		end do
 
 		allocate( lines(n_rows) )
@@ -20482,7 +20483,7 @@ submodule (io_fortran_lib) text_io
 		l1 = 1
 
 		do i = 1, file_length
-			if ( file(i:i) == LF ) then
+			if ( file(i:i) == NL ) then
 				lines(row)%s = file(l1:i)
 				if ( row /= n_rows ) then
 					row = row + 1
@@ -20567,7 +20568,7 @@ submodule (io_fortran_lib) text_io
 
 		if ( header ) then
 			do i = 1, file_length
-				if ( file(i:i) == LF ) then
+				if ( file(i:i) == NL ) then
 					file = file(i+1:)
 					file_length = len(file)
 					exit
@@ -20588,7 +20589,7 @@ submodule (io_fortran_lib) text_io
 		n_rows = 0
 
 		do i = 1, file_length
-			if ( file(i:i) == LF ) then
+			if ( file(i:i) == NL ) then
 				n_rows = n_rows + 1
 			else if ( i == file_length ) then
 				file = file//LF
@@ -20621,7 +20622,7 @@ submodule (io_fortran_lib) text_io
 				end if
 			end if
 
-			if ( current_char == LF ) exit
+			if ( current_char == NL ) exit
 		end do
 
 		if ( (n_rows > 1) .and. (n_columns > 1) ) then
@@ -20701,7 +20702,7 @@ submodule (io_fortran_lib) text_io
 
 		if ( header ) then
 			do i = 1, file_length
-				if ( file(i:i) == LF ) then
+				if ( file(i:i) == NL ) then
 					file = file(i+1:)
 					file_length = len(file)
 					exit
@@ -20722,7 +20723,7 @@ submodule (io_fortran_lib) text_io
 		n_rows = 0
 
 		do i = 1, file_length
-			if ( file(i:i) == LF ) then
+			if ( file(i:i) == NL ) then
 				n_rows = n_rows + 1
 			else if ( i == file_length ) then
 				file = file//LF
@@ -20755,7 +20756,7 @@ submodule (io_fortran_lib) text_io
 				end if
 			end if
 
-			if ( current_char == LF ) exit
+			if ( current_char == NL ) exit
 		end do
 
 		if ( (n_rows > 1) .and. (n_columns > 1) ) then
@@ -20835,7 +20836,7 @@ submodule (io_fortran_lib) text_io
 
 		if ( header ) then
 			do i = 1, file_length
-				if ( file(i:i) == LF ) then
+				if ( file(i:i) == NL ) then
 					file = file(i+1:)
 					file_length = len(file)
 					exit
@@ -20856,7 +20857,7 @@ submodule (io_fortran_lib) text_io
 		n_rows = 0
 
 		do i = 1, file_length
-			if ( file(i:i) == LF ) then
+			if ( file(i:i) == NL ) then
 				n_rows = n_rows + 1
 			else if ( i == file_length ) then
 				file = file//LF
@@ -20889,7 +20890,7 @@ submodule (io_fortran_lib) text_io
 				end if
 			end if
 
-			if ( current_char == LF ) exit
+			if ( current_char == NL ) exit
 		end do
 
 		if ( (n_rows > 1) .and. (n_columns > 1) ) then
@@ -20969,7 +20970,7 @@ submodule (io_fortran_lib) text_io
 
 		if ( header ) then
 			do i = 1, file_length
-				if ( file(i:i) == LF ) then
+				if ( file(i:i) == NL ) then
 					file = file(i+1:)
 					file_length = len(file)
 					exit
@@ -20990,7 +20991,7 @@ submodule (io_fortran_lib) text_io
 		n_rows = 0
 
 		do i = 1, file_length
-			if ( file(i:i) == LF ) then
+			if ( file(i:i) == NL ) then
 				n_rows = n_rows + 1
 			else if ( i == file_length ) then
 				file = file//LF
@@ -21023,7 +21024,7 @@ submodule (io_fortran_lib) text_io
 				end if
 			end if
 
-			if ( current_char == LF ) exit
+			if ( current_char == NL ) exit
 		end do
 
 		if ( (n_rows > 1) .and. (n_columns > 1) ) then
@@ -21105,7 +21106,7 @@ submodule (io_fortran_lib) text_io
 
 		if ( header ) then
 			do i = 1, file_length
-				if ( file(i:i) == LF ) then
+				if ( file(i:i) == NL ) then
 					file = file(i+1:)
 					file_length = len(file)
 					exit
@@ -21126,7 +21127,7 @@ submodule (io_fortran_lib) text_io
 		n_rows = 0
 
 		do i = 1, file_length
-			if ( file(i:i) == LF ) then
+			if ( file(i:i) == NL ) then
 				n_rows = n_rows + 1
 			else if ( i == file_length ) then
 				file = file//LF
@@ -21159,7 +21160,7 @@ submodule (io_fortran_lib) text_io
 				end if
 			end if
 
-			if ( current_char == LF ) exit
+			if ( current_char == NL ) exit
 		end do
 
 		allocate( lines(n_rows) )
@@ -21168,7 +21169,7 @@ submodule (io_fortran_lib) text_io
 		l1 = 1
 
 		do i = 1, file_length
-			if ( file(i:i) == LF ) then
+			if ( file(i:i) == NL ) then
 				lines(row)%s = file(l1:i)
 				if ( row /= n_rows ) then
 					row = row + 1
@@ -21253,7 +21254,7 @@ submodule (io_fortran_lib) text_io
 
 		if ( header ) then
 			do i = 1, file_length
-				if ( file(i:i) == LF ) then
+				if ( file(i:i) == NL ) then
 					file = file(i+1:)
 					file_length = len(file)
 					exit
@@ -21274,7 +21275,7 @@ submodule (io_fortran_lib) text_io
 		n_rows = 0
 
 		do i = 1, file_length
-			if ( file(i:i) == LF ) then
+			if ( file(i:i) == NL ) then
 				n_rows = n_rows + 1
 			else if ( i == file_length ) then
 				file = file//LF
@@ -21307,7 +21308,7 @@ submodule (io_fortran_lib) text_io
 				end if
 			end if
 
-			if ( current_char == LF ) exit
+			if ( current_char == NL ) exit
 		end do
 
 		allocate( lines(n_rows) )
@@ -21316,7 +21317,7 @@ submodule (io_fortran_lib) text_io
 		l1 = 1
 
 		do i = 1, file_length
-			if ( file(i:i) == LF ) then
+			if ( file(i:i) == NL ) then
 				lines(row)%s = file(l1:i)
 				if ( row /= n_rows ) then
 					row = row + 1
@@ -21401,7 +21402,7 @@ submodule (io_fortran_lib) text_io
 
 		if ( header ) then
 			do i = 1, file_length
-				if ( file(i:i) == LF ) then
+				if ( file(i:i) == NL ) then
 					file = file(i+1:)
 					file_length = len(file)
 					exit
@@ -21422,7 +21423,7 @@ submodule (io_fortran_lib) text_io
 		n_rows = 0
 
 		do i = 1, file_length
-			if ( file(i:i) == LF ) then
+			if ( file(i:i) == NL ) then
 				n_rows = n_rows + 1
 			else if ( i == file_length ) then
 				file = file//LF
@@ -21455,7 +21456,7 @@ submodule (io_fortran_lib) text_io
 				end if
 			end if
 
-			if ( current_char == LF ) exit
+			if ( current_char == NL ) exit
 		end do
 
 		allocate( lines(n_rows) )
@@ -21464,7 +21465,7 @@ submodule (io_fortran_lib) text_io
 		l1 = 1
 
 		do i = 1, file_length
-			if ( file(i:i) == LF ) then
+			if ( file(i:i) == NL ) then
 				lines(row)%s = file(l1:i)
 				if ( row /= n_rows ) then
 					row = row + 1
@@ -21549,7 +21550,7 @@ submodule (io_fortran_lib) text_io
 
 		if ( header ) then
 			do i = 1, file_length
-				if ( file(i:i) == LF ) then
+				if ( file(i:i) == NL ) then
 					file = file(i+1:)
 					file_length = len(file)
 					exit
@@ -21570,7 +21571,7 @@ submodule (io_fortran_lib) text_io
 		n_rows = 0
 
 		do i = 1, file_length
-			if ( file(i:i) == LF ) then
+			if ( file(i:i) == NL ) then
 				n_rows = n_rows + 1
 			else if ( i == file_length ) then
 				file = file//LF
@@ -21603,7 +21604,7 @@ submodule (io_fortran_lib) text_io
 				end if
 			end if
 
-			if ( current_char == LF ) exit
+			if ( current_char == NL ) exit
 		end do
 
 		allocate( lines(n_rows) )
@@ -21612,7 +21613,7 @@ submodule (io_fortran_lib) text_io
 		l1 = 1
 
 		do i = 1, file_length
-			if ( file(i:i) == LF ) then
+			if ( file(i:i) == NL ) then
 				lines(row)%s = file(l1:i)
 				if ( row /= n_rows ) then
 					row = row + 1
