@@ -12,7 +12,7 @@ module io_fortran_lib
 
 	! Public API list ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	public :: aprint, to_file, from_file																	! Array I/O
-	public :: str, cast, String, cast_string, echo														   ! String I/O
+	public :: String, str, cast, echo																	   ! String I/O
 	public :: NL, SPACE, CR, FF, VT, LF, TAB, HT, BELL, NUL, CNUL, EMPTY_STR								! Constants
 	public :: operator(//), operator(+), operator(-), operator(**), operator(==), operator(/=)				! Operators
 
@@ -603,7 +603,7 @@ module io_fortran_lib
 		!!
 		!! The interface for `String` is nearly identical to that of `str` but with a return type of `String`, allowing
 		!! for elemental assignments and access to the various `String` methods for more advanced character handling.
-		!! For the complement of `String`, see [cast_string](../page/Ref/cast_string.html).
+		!! For the complement of `String`, see [cast](../page/Ref/cast.html).
 		!!
 		!! For a user reference, see [String](../page/Ref/string.html),
 		!! [String methods](../page/Ref/string-methods.html), and [Operators](../page/Ref/operators.html).
@@ -673,79 +673,6 @@ module io_fortran_lib
 		pure elemental recursive type(String) module function new_Str_empty() result(self)
 			! No arguments
 		end function new_Str_empty
-	end interface
-
-	interface cast_string                                                                       ! Submodule internal_io
-		!--------------------------------------------------------------------------------------------------------------
-		!! Subroutine for casting a `String` type into a number.
-		!!
-		!! By default behavior, `cast_string` assumes all the same default formats as `String`, and is the complement
-		!! to `String` for transforming numeric or `character` data into a `String` type.
-		!! See [String](../page/Ref/string.html).
-		!!
-		!! For a user reference, see [cast_string](../page/Ref/cast_string.html).
-		!--------------------------------------------------------------------------------------------------------------
-		pure elemental recursive module subroutine cast_string_c128(self, into, locale, fmt, im)
-			class(String), intent(in) :: self
-			complex(real128), intent(out) :: into
-			character(len=*), intent(in), optional :: locale
-			character(len=*), intent(in), optional :: fmt
-			character(len=*), intent(in), optional :: im
-		end subroutine cast_string_c128
-		pure elemental recursive module subroutine cast_string_c64(self, into, locale, fmt, im)
-			class(String), intent(in) :: self
-			complex(real64), intent(out) :: into
-			character(len=*), intent(in), optional :: locale
-			character(len=*), intent(in), optional :: fmt
-			character(len=*), intent(in), optional :: im
-		end subroutine cast_string_c64
-		pure elemental recursive module subroutine cast_string_c32(self, into, locale, fmt, im)
-			class(String), intent(in) :: self
-			complex(real32), intent(out) :: into
-			character(len=*), intent(in), optional :: locale
-			character(len=*), intent(in), optional :: fmt
-			character(len=*), intent(in), optional :: im
-		end subroutine cast_string_c32
-
-		pure elemental recursive module subroutine cast_string_r128(self, into, locale, fmt)
-			class(String), intent(in) :: self
-			real(real128), intent(out) :: into
-			character(len=*), intent(in), optional :: locale
-			character(len=*), intent(in), optional :: fmt
-		end subroutine cast_string_r128
-		pure elemental recursive module subroutine cast_string_r64(self, into, locale, fmt)
-			class(String), intent(in) :: self
-			real(real64), intent(out) :: into
-			character(len=*), intent(in), optional :: locale
-			character(len=*), intent(in), optional :: fmt
-		end subroutine cast_string_r64
-		pure elemental recursive module subroutine cast_string_r32(self, into, locale, fmt)
-			class(String), intent(in) :: self
-			real(real32), intent(out) :: into
-			character(len=*), intent(in), optional :: locale
-			character(len=*), intent(in), optional :: fmt
-		end subroutine cast_string_r32
-
-		pure elemental recursive module subroutine cast_string_i64(self, into, fmt)
-			class(String), intent(in) :: self
-			integer(int64), intent(out) :: into
-			character(len=*), intent(in), optional :: fmt
-		end subroutine cast_string_i64
-		pure elemental recursive module subroutine cast_string_i32(self, into, fmt)
-			class(String), intent(in) :: self
-			integer(int32), intent(out) :: into
-			character(len=*), intent(in), optional :: fmt
-		end subroutine cast_string_i32
-		pure elemental recursive module subroutine cast_string_i16(self, into, fmt)
-			class(String), intent(in) :: self
-			integer(int16), intent(out) :: into
-			character(len=*), intent(in), optional :: fmt
-		end subroutine cast_string_i16
-		pure elemental recursive module subroutine cast_string_i8(self, into, fmt)
-			class(String), intent(in) :: self
-			integer(int8), intent(out) :: into
-			character(len=*), intent(in), optional :: fmt
-		end subroutine cast_string_i8
 	end interface
 
 	interface str                                                                               ! Submodule internal_io
@@ -829,13 +756,74 @@ module io_fortran_lib
 
 	interface cast                                                                              ! Submodule internal_io
 		!--------------------------------------------------------------------------------------------------------------
-		!! Subroutine for casting a scalar `character` string into a number.
+		!! Subroutine for casting a `String` or `character` type into a number.
 		!!
-		!! By default behavior, `cast` assumes all the same default formats as `str`, and is the complement to `str`
-		!! for writing numbers as `character` strings. See [str](../page/Ref/str.html).
+		!! For the complement of `cast`, see [String](../page/Ref/string.html) and [str](../page/Ref/str.html).
 		!!
 		!! For a user reference, see [cast](../page/Ref/cast.html).
 		!--------------------------------------------------------------------------------------------------------------
+		pure elemental recursive module subroutine cast_string_c128(self, into, locale, fmt, im)
+			class(String), intent(in) :: self
+			complex(real128), intent(out) :: into
+			character(len=*), intent(in), optional :: locale
+			character(len=*), intent(in), optional :: fmt
+			character(len=*), intent(in), optional :: im
+		end subroutine cast_string_c128
+		pure elemental recursive module subroutine cast_string_c64(self, into, locale, fmt, im)
+			class(String), intent(in) :: self
+			complex(real64), intent(out) :: into
+			character(len=*), intent(in), optional :: locale
+			character(len=*), intent(in), optional :: fmt
+			character(len=*), intent(in), optional :: im
+		end subroutine cast_string_c64
+		pure elemental recursive module subroutine cast_string_c32(self, into, locale, fmt, im)
+			class(String), intent(in) :: self
+			complex(real32), intent(out) :: into
+			character(len=*), intent(in), optional :: locale
+			character(len=*), intent(in), optional :: fmt
+			character(len=*), intent(in), optional :: im
+		end subroutine cast_string_c32
+
+		pure elemental recursive module subroutine cast_string_r128(self, into, locale, fmt)
+			class(String), intent(in) :: self
+			real(real128), intent(out) :: into
+			character(len=*), intent(in), optional :: locale
+			character(len=*), intent(in), optional :: fmt
+		end subroutine cast_string_r128
+		pure elemental recursive module subroutine cast_string_r64(self, into, locale, fmt)
+			class(String), intent(in) :: self
+			real(real64), intent(out) :: into
+			character(len=*), intent(in), optional :: locale
+			character(len=*), intent(in), optional :: fmt
+		end subroutine cast_string_r64
+		pure elemental recursive module subroutine cast_string_r32(self, into, locale, fmt)
+			class(String), intent(in) :: self
+			real(real32), intent(out) :: into
+			character(len=*), intent(in), optional :: locale
+			character(len=*), intent(in), optional :: fmt
+		end subroutine cast_string_r32
+
+		pure elemental recursive module subroutine cast_string_i64(self, into, fmt)
+			class(String), intent(in) :: self
+			integer(int64), intent(out) :: into
+			character(len=*), intent(in), optional :: fmt
+		end subroutine cast_string_i64
+		pure elemental recursive module subroutine cast_string_i32(self, into, fmt)
+			class(String), intent(in) :: self
+			integer(int32), intent(out) :: into
+			character(len=*), intent(in), optional :: fmt
+		end subroutine cast_string_i32
+		pure elemental recursive module subroutine cast_string_i16(self, into, fmt)
+			class(String), intent(in) :: self
+			integer(int16), intent(out) :: into
+			character(len=*), intent(in), optional :: fmt
+		end subroutine cast_string_i16
+		pure elemental recursive module subroutine cast_string_i8(self, into, fmt)
+			class(String), intent(in) :: self
+			integer(int8), intent(out) :: into
+			character(len=*), intent(in), optional :: fmt
+		end subroutine cast_string_i8
+
 		pure recursive module subroutine cast_c128(chars, into, locale, fmt, im)
 			character(len=*), intent(in) :: chars
 			complex(real128), intent(out) :: into
@@ -1658,7 +1646,7 @@ module io_fortran_lib
 
 	interface from_file                                                                             ! Submodule file_io
 		!--------------------------------------------------------------------------------------------------------------
-		!! Subroutine for reading an external file of uniform numeric data type **and** format into an array.
+		!! Subroutine for reading an external file of uniform numeric data type and format into an array.
 		!!
 		!! In the event that any actual arguments provided to `from_file` are invalid, the subprogram will not allow
 		!! progression of execution of the caller and will issue an `error stop`. This is due to the critical nature of
@@ -6723,8 +6711,8 @@ submodule (io_fortran_lib) array_printing
 end submodule array_printing
 
 submodule (io_fortran_lib) internal_io
-	!! This submodule provides module procedure implementations for the **public interfaces** `str`, `cast`,
-	!! `String`, and `cast_string`.
+	!! This submodule provides module procedure implementations for the **public interfaces** `String`, `str`, and
+	!! `cast`.
 	contains
 	module procedure new_Str_c128
 		character(len=:), allocatable :: locale_, fmt_, im_
