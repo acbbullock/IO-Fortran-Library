@@ -39,17 +39,7 @@ For `self` of type `String` and `match` of type `character` or `String` both sca
 
 ### [echo](../../type/string.html#boundprocedure-echo)
 
-For `self` a scalar of type `String`:
-
-```fortran
-    call self%echo(file_name, append, terminator)
-```
-
-* `file_name` is of type `character(len=*)`
-* `append` is `optional` and of type `logical` (default is `.true.`)
-* `terminator` is `optional` and of type `character(len=*)` (default is `LF`)
-
-*Description*: Streams the content of a `String` to an external text file. This method is identical in function to the routine [echo](echo.html) for `character` strings.
+*Description*: A generic binding for the interface [echo](echo.html).
 
 ### [empty](../../type/string.html#boundprocedure-empty)
 
@@ -86,15 +76,15 @@ For `self` a scalar or array of any rank and of type `String`:
 
 ### [push](../../type/string.html#boundprocedure-push)
 
-For `self` of type `String` and `chars` of type `character` or `String` both scalars or arrays of any compatible rank:
+For `self` of type `String` and `substring` of type `character` or `String` both scalars or arrays of any compatible rank:
 
 ```fortran
-    call self%push(chars)
+    call self%push(substring)
 ```
 
-* `chars` is of type `character(len=*)` or `String`
+* `substring` is of type `character(len=*)` or `String`
 
-*Description*: Appends characters to the string slice component elementally in place. This procedure is identical in function to the [concatenation operators](operators.html#concatenation) with self assignment: `self = self // chars` and `self = self + chars`.
+*Description*: Appends to the string slice component elementally in place. This procedure is identical in function to the [concatenation operators](operators.html#concatenation) with self assignment: `self = self // substring` and `self = self + substring`.
 
 ### [read_file](../../type/string.html#boundprocedure-read_file)
 

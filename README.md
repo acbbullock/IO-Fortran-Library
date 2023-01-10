@@ -22,9 +22,9 @@ For a list of available interfaces and how to call them, see the [reference guid
 ### New features
 
 * The `String` type has been greatly extended and can now serve as an interface for advanced I/O and character manipulations. See the references for [type-bound procedures](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/string-methods.html) and the [tutorials](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Examples/index.html) for more information.
-* New constants have been added for public use to facilitate file I/O consistently on a variety of platforms.
+* New [constants](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/constants.html) have been added for public use to facilitate file I/O consistently on a variety of platforms.
 * New interface [String](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/string.html) for an `elemental` version of `str` with a return type of `String`.
-* New interfaces [cast](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/cast.html) and [cast_string](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/cast_string.html) for casting `character` and `String` data into numeric variables.
+* New interface [cast](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/cast.html) for casting `String` and `character` data into numeric variables.
 * New [operator interfaces](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/operators.html) for advanced internal character manipulations involving the intrinsic `character` data type and the derived-type `String`.
 
 ### Added

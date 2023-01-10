@@ -90,7 +90,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title="<p>100.0% of total for derived types.</p>Including implementation: 145 statements, 100.0% of total for derived types.">27 statements</a>
+               title="<p>100.0% of total for derived types.</p>Including implementation: 158 statements, 100.0% of total for derived types.">28 statements</a>
           </li>
 
             <li id="source-file">
@@ -157,12 +157,12 @@
         <div class="list-group">
             <a class="list-group-item" href="../type/string.html#boundprocedure-cast">cast</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-count">count</a>
+            <a class="list-group-item" href="../type/string.html#boundprocedure-echo">echo</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-push">push</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-replace">replace</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-replace_inplace">replace_inplace</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-write%28formatted%29">write(formatted)</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-as_str">as_str</a>
-            <a class="list-group-item" href="../type/string.html#boundprocedure-echo">echo</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-empty">empty</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-glue">glue</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-len">len</a>
@@ -235,12 +235,12 @@ treated as the <a href="../module/io_fortran_lib.html#variable-empty_str">empty 
         <div class="list-group">
             <a class="list-group-item" href="../type/string.html#boundprocedure-cast">cast</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-count">count</a>
+            <a class="list-group-item" href="../type/string.html#boundprocedure-echo">echo</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-push">push</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-replace">replace</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-replace_inplace">replace_inplace</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-write%28formatted%29">write(formatted)</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-as_str">as_str</a>
-            <a class="list-group-item" href="../type/string.html#boundprocedure-echo">echo</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-empty">empty</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-glue">glue</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-len">len</a>
@@ -279,7 +279,7 @@ For the complement of <code>String</code>, see <a href="../page/Ref/cast.html">c
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_c128(x, locale, fmt, decimals, im) result(self)  
+    private pure elemental recursive module function new_Str_c128(x, locale, fmt, decimals, im) result(new)  
 
     </h3>
   
@@ -382,7 +382,7 @@ For the complement of <code>String</code>, see <a href="../page/Ref/cast.html">c
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_c64(x, locale, fmt, decimals, im) result(self)  
+    private pure elemental recursive module function new_Str_c64(x, locale, fmt, decimals, im) result(new)  
 
     </h3>
   
@@ -485,7 +485,7 @@ For the complement of <code>String</code>, see <a href="../page/Ref/cast.html">c
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_c32(x, locale, fmt, decimals, im) result(self)  
+    private pure elemental recursive module function new_Str_c32(x, locale, fmt, decimals, im) result(new)  
 
     </h3>
   
@@ -588,7 +588,7 @@ For the complement of <code>String</code>, see <a href="../page/Ref/cast.html">c
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_r128(x, locale, fmt, decimals) result(self)  
+    private pure elemental recursive module function new_Str_r128(x, locale, fmt, decimals) result(new)  
 
     </h3>
   
@@ -676,7 +676,7 @@ For the complement of <code>String</code>, see <a href="../page/Ref/cast.html">c
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_r64(x, locale, fmt, decimals) result(self)  
+    private pure elemental recursive module function new_Str_r64(x, locale, fmt, decimals) result(new)  
 
     </h3>
   
@@ -764,7 +764,7 @@ For the complement of <code>String</code>, see <a href="../page/Ref/cast.html">c
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_r32(x, locale, fmt, decimals) result(self)  
+    private pure elemental recursive module function new_Str_r32(x, locale, fmt, decimals) result(new)  
 
     </h3>
   
@@ -852,7 +852,7 @@ For the complement of <code>String</code>, see <a href="../page/Ref/cast.html">c
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_i64(x, fmt) result(self)  
+    private pure elemental recursive module function new_Str_i64(x, fmt) result(new)  
 
     </h3>
   
@@ -910,7 +910,7 @@ For the complement of <code>String</code>, see <a href="../page/Ref/cast.html">c
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_i32(x, fmt) result(self)  
+    private pure elemental recursive module function new_Str_i32(x, fmt) result(new)  
 
     </h3>
   
@@ -968,7 +968,7 @@ For the complement of <code>String</code>, see <a href="../page/Ref/cast.html">c
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_i16(x, fmt) result(self)  
+    private pure elemental recursive module function new_Str_i16(x, fmt) result(new)  
 
     </h3>
   
@@ -1026,7 +1026,7 @@ For the complement of <code>String</code>, see <a href="../page/Ref/cast.html">c
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_i8(x, fmt) result(self)  
+    private pure elemental recursive module function new_Str_i8(x, fmt) result(new)  
 
     </h3>
   
@@ -1084,7 +1084,7 @@ For the complement of <code>String</code>, see <a href="../page/Ref/cast.html">c
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_char(chars) result(self)  
+    private pure elemental recursive module function new_Str_char(x) result(new)  
 
     </h3>
   
@@ -1110,7 +1110,7 @@ For the complement of <code>String</code>, see <a href="../page/Ref/cast.html">c
               
             </td>
             <td>::</td>
-            <td><strong>chars</strong></td>
+            <td><strong>x</strong></td>
             <td>
                 
             </td>
@@ -1127,7 +1127,7 @@ For the complement of <code>String</code>, see <a href="../page/Ref/cast.html">c
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_empty() result(self)  
+    private pure elemental recursive module function new_Str_empty() result(new)  
 
     </h3>
   
@@ -1990,6 +1990,95 @@ For the complement of <code>String</code>, see <a href="../page/Ref/cast.html">c
   </div>
 
             <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-echo"></span><h3>generic, public :: <strong>echo</strong>  => echo_string         
+    </h3></div>
+    <ul class="list-group">
+        <li class="list-group-item">
+                  <h3>
+    private impure recursive module subroutine echo_string(self, file_name, append, terminator)  
+</h3>
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>self</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>file_name</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              logical,
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>append</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>terminator</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+        </li>
+    </ul>
+  </div>
+
+            <div class="panel panel-default">
     <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-push"></span><h3>generic, public :: <strong>push</strong>  => push_chars, push_string         
     </h3></div>
     <ul class="list-group">
@@ -2175,100 +2264,6 @@ For the complement of <code>String</code>, see <a href="../page/Ref/cast.html">c
     <small>character(len=:), allocatable</small>
     </h4>
     
-
-        </li>
-    </ul>
-  </div>
-
-            <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-echo"></span><h3>procedure, public, pass(self) :: <strong>echo</strong>  => echo_string         
-    </h3></div>
-    <ul class="list-group">
-        <li class="list-group-item">
-              <h3>interface </h3>
-                  
-                <p>Methods for the <code>String</code> type.</p>
-                  <h3>
-    private impure recursive module subroutine echo_string(self, file_name, append, terminator)  
-</h3>
-  <p>Streams the content of a <code>String</code> to an external text file. This method is identical in function to the
-routine <a href="../page/Ref/echo.html">echo</a> for <code>character</code> strings.</p>
-<p>For a user reference, see <a href="../page/Ref/string-methods.html#echo">echo</a>.</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              class(<a href='../type/string.html'>String</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>self</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              character(len=*),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>file_name</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              logical,
-            </td>
-<td>intent(in),</td>
-              <td>optional</td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>append</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              character(len=*),
-            </td>
-<td>intent(in),</td>
-              <td>optional</td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>terminator</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
 
         </li>
     </ul>
@@ -2862,7 +2857,7 @@ in place.</p>
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-01-09 21:01            </p>
+ on 2023-01-10 14:00            </p>
         </div>
       </div>
       <br>

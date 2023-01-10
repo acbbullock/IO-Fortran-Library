@@ -5,7 +5,7 @@ author: Austin C Bullock
 
 ## [interface to_file](../../interface/to_file.html)
 
-*Description*: Subroutine for writing an array of uniform data type to an external file.
+*Description*: Subroutine for writing an array of uniform numeric data type to an external file.
 
 For `x` an array of rank `1`, `2` and of type `integer`:
 
@@ -69,6 +69,8 @@ call to_file(x, file_name)
 * `file_name` is of type `character(len=*)`
 
 @note `file_name` may be a relative path, but absolute paths are not guaranteed to work on every platform.
+
+@note `to_file` will always use the `NL` line ending when writing text files (which on most systems equates to `LF`).
 
 ### Optional Arguments
 

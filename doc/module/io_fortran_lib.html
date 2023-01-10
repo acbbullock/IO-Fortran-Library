@@ -90,7 +90,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title="17.7% of total for modules and submodules.">3932 statements</a>
+               title="17.7% of total for modules and submodules.">3933 statements</a>
           </li>
 
             <li id="source-file">
@@ -212,8 +212,8 @@ has no external dependencies, and has a max line length of 120.</p>
       <ul class="list-group">
           <li class="list-group-item">
             <ul class="list-inline">
-                <li><a href="http://fortranwiki.org/fortran/show/iso_fortran_env">iso_fortran_env</a></li>
                 <li><a href="http://fortranwiki.org/fortran/show/iso_c_binding">iso_c_binding</a></li>
+                <li><a href="http://fortranwiki.org/fortran/show/iso_fortran_env">iso_fortran_env</a></li>
             </ul>
           </li>
       </ul>
@@ -1248,7 +1248,7 @@ parameter
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function repeat_chars(chars, ncopies) result(new)  
+    private pure elemental recursive module function repeat_chars(char_base, ncopies) result(new)  
 
     </h3>
   
@@ -1274,7 +1274,7 @@ parameter
               
             </td>
             <td>::</td>
-            <td><strong>chars</strong></td>
+            <td><strong>char_base</strong></td>
             <td>
                 
             </td>
@@ -3258,7 +3258,7 @@ For the complement of <code>String</code>, see <a href="../page/Ref/cast.html">c
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_c128(x, locale, fmt, decimals, im) result(self)  
+    private pure elemental recursive module function new_Str_c128(x, locale, fmt, decimals, im) result(new)  
 
     </h3>
   
@@ -3361,7 +3361,7 @@ For the complement of <code>String</code>, see <a href="../page/Ref/cast.html">c
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_c64(x, locale, fmt, decimals, im) result(self)  
+    private pure elemental recursive module function new_Str_c64(x, locale, fmt, decimals, im) result(new)  
 
     </h3>
   
@@ -3464,7 +3464,7 @@ For the complement of <code>String</code>, see <a href="../page/Ref/cast.html">c
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_c32(x, locale, fmt, decimals, im) result(self)  
+    private pure elemental recursive module function new_Str_c32(x, locale, fmt, decimals, im) result(new)  
 
     </h3>
   
@@ -3567,7 +3567,7 @@ For the complement of <code>String</code>, see <a href="../page/Ref/cast.html">c
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_r128(x, locale, fmt, decimals) result(self)  
+    private pure elemental recursive module function new_Str_r128(x, locale, fmt, decimals) result(new)  
 
     </h3>
   
@@ -3655,7 +3655,7 @@ For the complement of <code>String</code>, see <a href="../page/Ref/cast.html">c
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_r64(x, locale, fmt, decimals) result(self)  
+    private pure elemental recursive module function new_Str_r64(x, locale, fmt, decimals) result(new)  
 
     </h3>
   
@@ -3743,7 +3743,7 @@ For the complement of <code>String</code>, see <a href="../page/Ref/cast.html">c
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_r32(x, locale, fmt, decimals) result(self)  
+    private pure elemental recursive module function new_Str_r32(x, locale, fmt, decimals) result(new)  
 
     </h3>
   
@@ -3831,7 +3831,7 @@ For the complement of <code>String</code>, see <a href="../page/Ref/cast.html">c
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_i64(x, fmt) result(self)  
+    private pure elemental recursive module function new_Str_i64(x, fmt) result(new)  
 
     </h3>
   
@@ -3889,7 +3889,7 @@ For the complement of <code>String</code>, see <a href="../page/Ref/cast.html">c
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_i32(x, fmt) result(self)  
+    private pure elemental recursive module function new_Str_i32(x, fmt) result(new)  
 
     </h3>
   
@@ -3947,7 +3947,7 @@ For the complement of <code>String</code>, see <a href="../page/Ref/cast.html">c
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_i16(x, fmt) result(self)  
+    private pure elemental recursive module function new_Str_i16(x, fmt) result(new)  
 
     </h3>
   
@@ -4005,7 +4005,7 @@ For the complement of <code>String</code>, see <a href="../page/Ref/cast.html">c
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_i8(x, fmt) result(self)  
+    private pure elemental recursive module function new_Str_i8(x, fmt) result(new)  
 
     </h3>
   
@@ -4063,7 +4063,7 @@ For the complement of <code>String</code>, see <a href="../page/Ref/cast.html">c
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_char(chars) result(self)  
+    private pure elemental recursive module function new_Str_char(x) result(new)  
 
     </h3>
   
@@ -4089,7 +4089,7 @@ For the complement of <code>String</code>, see <a href="../page/Ref/cast.html">c
               
             </td>
             <td>::</td>
-            <td><strong>chars</strong></td>
+            <td><strong>x</strong></td>
             <td>
                 
             </td>
@@ -4106,7 +4106,7 @@ For the complement of <code>String</code>, see <a href="../page/Ref/cast.html">c
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_empty() result(self)  
+    private pure elemental recursive module function new_Str_empty() result(new)  
 
     </h3>
   
@@ -4952,7 +4952,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
       </h3>
     </div>
       <div class="panel-body">
-        <p>Subroutine for casting a <code>String</code> or <code>character</code> type into a number.</p>
+        <p>Subroutine for casting a <code>character</code> or <code>String</code> type into a number.</p>
 <p>For the complement of <code>cast</code>, see <a href="../page/Ref/string.html">String</a> and <a href="../page/Ref/str.html">str</a>.</p>
 <p>For a user reference, see <a href="../page/Ref/cast.html">cast</a>.</p>
       </div>
@@ -5774,7 +5774,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure recursive module subroutine cast_c128(chars, into, locale, fmt, im)  
+    private pure recursive module subroutine cast_c128(substring, into, locale, fmt, im)  
 
     </h3>
   
@@ -5800,7 +5800,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
               
             </td>
             <td>::</td>
-            <td><strong>chars</strong></td>
+            <td><strong>substring</strong></td>
             <td>
                 
             </td>
@@ -5872,7 +5872,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure recursive module subroutine cast_c64(chars, into, locale, fmt, im)  
+    private pure recursive module subroutine cast_c64(substring, into, locale, fmt, im)  
 
     </h3>
   
@@ -5898,7 +5898,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
               
             </td>
             <td>::</td>
-            <td><strong>chars</strong></td>
+            <td><strong>substring</strong></td>
             <td>
                 
             </td>
@@ -5970,7 +5970,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure recursive module subroutine cast_c32(chars, into, locale, fmt, im)  
+    private pure recursive module subroutine cast_c32(substring, into, locale, fmt, im)  
 
     </h3>
   
@@ -5996,7 +5996,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
               
             </td>
             <td>::</td>
-            <td><strong>chars</strong></td>
+            <td><strong>substring</strong></td>
             <td>
                 
             </td>
@@ -6068,7 +6068,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure recursive module subroutine cast_r128(chars, into, locale, fmt)  
+    private pure recursive module subroutine cast_r128(substring, into, locale, fmt)  
 
     </h3>
   
@@ -6094,7 +6094,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
               
             </td>
             <td>::</td>
-            <td><strong>chars</strong></td>
+            <td><strong>substring</strong></td>
             <td>
                 
             </td>
@@ -6151,7 +6151,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure recursive module subroutine cast_r64(chars, into, locale, fmt)  
+    private pure recursive module subroutine cast_r64(substring, into, locale, fmt)  
 
     </h3>
   
@@ -6177,7 +6177,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
               
             </td>
             <td>::</td>
-            <td><strong>chars</strong></td>
+            <td><strong>substring</strong></td>
             <td>
                 
             </td>
@@ -6234,7 +6234,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure recursive module subroutine cast_r32(chars, into, locale, fmt)  
+    private pure recursive module subroutine cast_r32(substring, into, locale, fmt)  
 
     </h3>
   
@@ -6260,7 +6260,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
               
             </td>
             <td>::</td>
-            <td><strong>chars</strong></td>
+            <td><strong>substring</strong></td>
             <td>
                 
             </td>
@@ -6317,7 +6317,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure recursive module subroutine cast_i64(chars, into, fmt)  
+    private pure recursive module subroutine cast_i64(substring, into, fmt)  
 
     </h3>
   
@@ -6343,7 +6343,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
               
             </td>
             <td>::</td>
-            <td><strong>chars</strong></td>
+            <td><strong>substring</strong></td>
             <td>
                 
             </td>
@@ -6385,7 +6385,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure recursive module subroutine cast_i32(chars, into, fmt)  
+    private pure recursive module subroutine cast_i32(substring, into, fmt)  
 
     </h3>
   
@@ -6411,7 +6411,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
               
             </td>
             <td>::</td>
-            <td><strong>chars</strong></td>
+            <td><strong>substring</strong></td>
             <td>
                 
             </td>
@@ -6453,7 +6453,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure recursive module subroutine cast_i16(chars, into, fmt)  
+    private pure recursive module subroutine cast_i16(substring, into, fmt)  
 
     </h3>
   
@@ -6479,7 +6479,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
               
             </td>
             <td>::</td>
-            <td><strong>chars</strong></td>
+            <td><strong>substring</strong></td>
             <td>
                 
             </td>
@@ -6521,7 +6521,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure recursive module subroutine cast_i8(chars, into, fmt)  
+    private pure recursive module subroutine cast_i8(substring, into, fmt)  
 
     </h3>
   
@@ -6547,7 +6547,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
               
             </td>
             <td>::</td>
-            <td><strong>chars</strong></td>
+            <td><strong>substring</strong></td>
             <td>
                 
             </td>
@@ -6597,7 +6597,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
       </h3>
     </div>
       <div class="panel-body">
-        <p>Subroutine for writing an array of uniform data type to an external file.</p>
+        <p>Subroutine for writing an array of uniform numeric data type to an external file.</p>
 <p>The file <code>file_name</code> will be created if it does not already exist and will be overwritten if it does exist.
 Writing to text is allowed for arrays of rank <code>1</code> or <code>2</code>, and writing to binary is allowed for arrays of any
 rank <code>1</code>-<code>15</code>. Any invalid actual arguments will be ignored, defaults will be assumed, and a warning message
@@ -28213,7 +28213,7 @@ read.</p>
       </h3>
     </div>
       <div class="panel-body">
-        <p>Subroutine for streaming a scalar <code>character</code> string to an external text file.</p>
+        <p>Subroutine for streaming a scalar <code>character</code> or <code>String</code> type to an external text file.</p>
 <p>The file <code>file_name</code> will be created if it does not already exist and will be overwritten if <code>append</code> is
 <code>.false.</code> (if it already exists). The default terminator is <code>LF</code> (line feed).</p>
 <p>For a user reference, see <a href="../page/Ref/echo.html">echo</a>.</p>
@@ -28221,10 +28221,10 @@ read.</p>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private impure recursive module subroutine echo_chars(string, file_name, append, terminator)  
+    private impure recursive module subroutine echo_chars(substring, file_name, append, terminator)  
 
     </h3>
-  <p>Writes a <code>character</code> string to an external text file.</p>
+  
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -28247,7 +28247,90 @@ read.</p>
               
             </td>
             <td>::</td>
-            <td><strong>string</strong></td>
+            <td><strong>substring</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>file_name</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              logical,
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>append</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>terminator</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private impure recursive module subroutine echo_string(self, file_name, append, terminator)  
+
+    </h3>
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>self</strong></td>
             <td>
                 
             </td>
@@ -28445,7 +28528,7 @@ read.</p>
                     pure, elemental, recursive, module
                     function
                     <strong>new_Str_char</strong>
-                    (chars)
+                    (x)
                   </td>
                   <td></td>
                 </tr>
@@ -28485,6 +28568,16 @@ generic,
  =>
                     count_substring_chars, count_substring_string
                 </td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>
+generic,
+                  public
+                  :: <strong><a href='../type/string.html#boundprocedure-echo'>echo</a></strong>
+ =>
+                    echo_string
+<small></small>                </td>
                 <td></td>
               </tr>
               <tr>
@@ -28532,16 +28625,6 @@ generic,
                     procedure
                     ,                  public
 , pass(self)                  :: <strong><a href='../type/string.html#boundprocedure-as_str'>as_str</a></strong>
-<small>Interface</small>                </td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>
-                    procedure
-                    ,                  public
-, pass(self)                  :: <strong><a href='../type/string.html#boundprocedure-echo'>echo</a></strong>
- =>
-                    echo_string
 <small>Interface</small>                </td>
                 <td></td>
               </tr>
@@ -28640,7 +28723,7 @@ generic,
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-01-09 21:01            </p>
+ on 2023-01-10 14:00            </p>
         </div>
       </div>
       <br>

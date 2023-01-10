@@ -5,29 +5,29 @@ author: Austin C Bullock
 
 ## [interface cast](../../interface/cast.html)
 
-*Description*: Subroutine for casting a `String` or `character` type into a number.
+*Description*: Subroutine for casting a `character` or `String` type into a number.
 
-For casting a scalar `character` string `chars` into a variable `into` of type `integer`:
+For casting a scalar `character` string `substring` into a variable `into` of type `integer`:
 
 ```fortran
-call cast(chars, into, fmt)
+call cast(substring, into, fmt)
 ```
 
 * `fmt` is `optional`, may be one of `INT_FMTS`
 
-For casting a scalar `character` string `chars` into a variable `into` of type `real`:
+For casting a scalar `character` string `substring` into a variable `into` of type `real`:
 
 ```fortran
-call cast(chars, into, locale, fmt)
+call cast(substring, into, locale, fmt)
 ```
 
 * `locale` is `optional`, may be one of `LOCALES`
 * `fmt` is `optional`, may be one of `REAL_FMTS`
 
-For casting a scalar `character` string `chars` into a variable `into` of type `complex`:
+For casting a scalar `character` string `substring` into a variable `into` of type `complex`:
 
 ```fortran
-call cast(chars, into, locale, fmt, im)
+call cast(substring, into, locale, fmt, im)
 ```
 
 * `locale` is `optional`, may be one of `LOCALES`

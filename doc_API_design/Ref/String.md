@@ -13,10 +13,10 @@ To return the empty `String`, use no arguments:
 result = String()
 ```
 
-For `chars` a scalar or array of any rank and of type `character`:
+For `x` a scalar or array of any rank and of type `character`:
 
 ```fortran
-result = String(chars)
+result = String(x)
 ```
 
 For `x` a scalar or array of any rank and of type `integer`:
