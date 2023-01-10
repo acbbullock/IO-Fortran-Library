@@ -7,6 +7,18 @@ author: Austin C Bullock
 
 *Description*: Function for representing a scalar number as a `character` string.
 
+To return the [empty string](../../module/io_fortran_lib.html#variable-empty_str), use no arguments:
+
+```fortran
+result = str()
+```
+
+For `x` a scalar of type `character` (identity function):
+
+```fortran
+result = str(x)
+```
+
 For `x` a scalar of type `integer`:
 
 ```fortran

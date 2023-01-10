@@ -1,8 +1,8 @@
 module io_fortran_lib
 	!------------------------------------------------------------------------------------------------------------------
 	!! This module provides common I/O routines for data of `integer`, `real`, `complex`, and `character` type, and
-	!! a derived type `String` for more advanced file I/O and character manipulations. This module is F2018 compliant,
-	!! has no external dependencies, and has a max line length of 120.
+	!! a derived type `String` for advanced character handling and text file I/O. This module is F2018 compliant, has
+	!! no external dependencies, and has a max line length of 120.
 	!------------------------------------------------------------------------------------------------------------------
 	use, intrinsic :: iso_fortran_env, only: real128, real64, real32, int64, int32, int16, int8, &	   ! Standard kinds
 											 input_unit, output_unit				  ! Standard input and output units
@@ -44,7 +44,7 @@ module io_fortran_lib
 
 	type String
 		!--------------------------------------------------------------------------------------------------------------
-		!! A growable string type for advanced character manipulations and text file I/O.
+		!! A growable string type for advanced character handling and text file I/O.
 		!!
 		!! For a user reference, see [String](../page/Ref/string.html),
 		!! [String methods](../page/Ref/string-methods.html), and [Operators](../page/Ref/operators.html).
@@ -589,9 +589,9 @@ module io_fortran_lib
 		!--------------------------------------------------------------------------------------------------------------
 		!! Function for transforming numeric or `character` data into a [String](../type/string.html) type.
 		!!
-		!! The interface for `String` is nearly identical to that of `str` but with a return type of `String`, allowing
-		!! for elemental assignments and access to the various `String` methods for more advanced character handling.
-		!! For the complement of `String`, see [cast](../page/Ref/cast.html).
+		!! The interface for `String` is identical to that of `str` but with a return type of `String`, allowing for
+		!! elemental assignments and access to the various `String` methods for advanced character handling. For the
+		!! complement of `String`, see [cast](../page/Ref/cast.html).
 		!!
 		!! For a user reference, see [String](../page/Ref/string.html),
 		!! [String methods](../page/Ref/string-methods.html), and [Operators](../page/Ref/operators.html).
@@ -740,6 +740,15 @@ module io_fortran_lib
 			character(len=*), intent(in), optional :: fmt
 			character(len=:), allocatable :: x_str
 		end function str_i8
+
+		pure recursive module function str_char(x) result(x_str)
+			character(len=*), intent(in) :: x
+			character(len=:), allocatable :: x_str
+		end function str_char
+
+		pure recursive module function str_empty() result(x_str)
+			character(len=:), allocatable :: x_str
+		end function str_empty
 	end interface
 
 	interface cast                                                                              ! Submodule internal_io
@@ -7816,6 +7825,14 @@ submodule (io_fortran_lib) internal_io
 
 		x_str = trim(adjustl(str_tmp))
 	end procedure str_i8
+
+	module procedure str_char
+		x_str = x
+	end procedure str_char
+
+	module procedure str_empty
+		x_str = EMPTY_STR
+	end procedure str_empty
 
 	module procedure cast_c128
 		character(len=:), allocatable :: locale_, fmt_, im_, substring_, decimal
