@@ -64,6 +64,7 @@ module io_fortran_lib
 													cast_string_r128, cast_string_r64, cast_string_r32, &
 													cast_string_i64, cast_string_i32, cast_string_i16, cast_string_i8
 			generic, public :: count 			=>	count_substring_chars, count_substring_string
+			generic, public :: echo				=>	echo_string
 			generic, public :: push  			=>	push_chars, push_string
 			generic, public :: replace 			=>	replace_ch_copy, replace_st_copy, replace_chst_copy, &
 													replace_stch_copy
@@ -77,7 +78,7 @@ module io_fortran_lib
 												cast_string_r128, cast_string_r64, cast_string_r32, &
 												cast_string_i64, cast_string_i32, cast_string_i16, cast_string_i8
 			procedure, pass(self)			::	count_substring_chars, count_substring_string
-			procedure, pass(self), public	::	echo => echo_string
+			procedure, pass(self)			::	echo_string
 			procedure, pass(self), public	::	empty
 			procedure, pass(self), public	::	glue
 			procedure, pass(self), public	::	len => length
@@ -123,19 +124,6 @@ module io_fortran_lib
 			type(String), intent(in) :: match
 		end function count_substring_string
 
-		impure recursive module subroutine echo_string(self, file_name, append, terminator)
-			!----------------------------------------------------------------------------------------------------------
-			!! Streams the content of a `String` to an external text file. This method is identical in function to the
-			!! routine [echo](../page/Ref/echo.html) for `character` strings.
-			!!
-			!! For a user reference, see [echo](../page/Ref/string-methods.html#echo).
-			!----------------------------------------------------------------------------------------------------------
-			class(String), intent(in) :: self
-			character(len=*), intent(in) :: file_name
-			logical, intent(in), optional :: append
-			character(len=*), intent(in), optional :: terminator
-		end subroutine echo_string
-
 		pure elemental recursive module subroutine empty(self)
 			!----------------------------------------------------------------------------------------------------------
 			!! Sets the string slice component to the empty string elementally.
@@ -166,20 +154,20 @@ module io_fortran_lib
 			class(String), intent(in) :: self
 		end function length
 
-		pure elemental recursive module subroutine push_chars(self, chars)
+		pure elemental recursive module subroutine push_chars(self, substring)
 			!----------------------------------------------------------------------------------------------------------
 			!! Appends characters to the string slice component elementally in place.
 			!----------------------------------------------------------------------------------------------------------
 			class(String), intent(inout) :: self
-			character(len=*), intent(in) :: chars
+			character(len=*), intent(in) :: substring
 		end subroutine push_chars
 
-		pure elemental recursive module subroutine push_string(self, chars)
+		pure elemental recursive module subroutine push_string(self, substring)
 			!----------------------------------------------------------------------------------------------------------
 			!! Appends string to the string slice component elementally in place.
 			!----------------------------------------------------------------------------------------------------------
 			class(String), intent(inout) :: self
-			type(String), intent(in) :: chars
+			type(String), intent(in) :: substring
 		end subroutine push_string
 
 		impure recursive module subroutine read_file(self, file_name, cell_array, row_separator, column_separator)
@@ -410,10 +398,10 @@ module io_fortran_lib
 		!!
 		!! For a user reference, see [Repetition](../page/Ref/operators.html#repetition).
 		!--------------------------------------------------------------------------------------------------------------
-		pure elemental recursive module function repeat_chars(chars, ncopies) result(new)
-			character(len=*), intent(in) :: chars
+		pure elemental recursive module function repeat_chars(char_base, ncopies) result(new)
+			character(len=*), intent(in) :: char_base
 			integer, intent(in) :: ncopies
-			character(len=len(chars)*ncopies) :: new
+			character(len=len(char_base)*ncopies) :: new
 		end function repeat_chars
 
 		pure elemental recursive type(String) module function repeat_String(String_base, ncopies) result(new)
@@ -608,21 +596,21 @@ module io_fortran_lib
 		!! For a user reference, see [String](../page/Ref/string.html),
 		!! [String methods](../page/Ref/string-methods.html), and [Operators](../page/Ref/operators.html).
 		!--------------------------------------------------------------------------------------------------------------
-		pure elemental recursive type(String) module function new_Str_c128(x, locale, fmt, decimals, im) result(self)
+		pure elemental recursive type(String) module function new_Str_c128(x, locale, fmt, decimals, im) result(new)
 			complex(real128), intent(in) :: x
 			character(len=*), intent(in), optional :: locale
 			character(len=*), intent(in), optional :: fmt
 			integer, intent(in), optional :: decimals
 			character(len=*), intent(in), optional :: im
 		end function new_Str_c128
-		pure elemental recursive type(String) module function new_Str_c64(x, locale, fmt, decimals, im) result(self)
+		pure elemental recursive type(String) module function new_Str_c64(x, locale, fmt, decimals, im) result(new)
 			complex(real64), intent(in) :: x
 			character(len=*), intent(in), optional :: locale
 			character(len=*), intent(in), optional :: fmt
 			integer, intent(in), optional :: decimals
 			character(len=*), intent(in), optional :: im
 		end function new_Str_c64
-		pure elemental recursive type(String) module function new_Str_c32(x, locale, fmt, decimals, im) result(self)
+		pure elemental recursive type(String) module function new_Str_c32(x, locale, fmt, decimals, im) result(new)
 			complex(real32), intent(in) :: x
 			character(len=*), intent(in), optional :: locale
 			character(len=*), intent(in), optional :: fmt
@@ -630,47 +618,47 @@ module io_fortran_lib
 			character(len=*), intent(in), optional :: im
 		end function new_Str_c32
 
-		pure elemental recursive type(String) module function new_Str_r128(x, locale, fmt, decimals) result(self)
+		pure elemental recursive type(String) module function new_Str_r128(x, locale, fmt, decimals) result(new)
 			real(real128), intent(in) :: x
 			character(len=*), intent(in), optional :: locale
 			character(len=*), intent(in), optional :: fmt
 			integer, intent(in), optional :: decimals
 		end function new_Str_r128
-		pure elemental recursive type(String) module function new_Str_r64(x, locale, fmt, decimals) result(self)
+		pure elemental recursive type(String) module function new_Str_r64(x, locale, fmt, decimals) result(new)
 			real(real64), intent(in) :: x
 			character(len=*), intent(in), optional :: locale
 			character(len=*), intent(in), optional :: fmt
 			integer, intent(in), optional :: decimals
 		end function new_Str_r64
-		pure elemental recursive type(String) module function new_Str_r32(x, locale, fmt, decimals) result(self)
+		pure elemental recursive type(String) module function new_Str_r32(x, locale, fmt, decimals) result(new)
 			real(real32), intent(in) :: x
 			character(len=*), intent(in), optional :: locale
 			character(len=*), intent(in), optional :: fmt
 			integer, intent(in), optional :: decimals
 		end function new_Str_r32
 
-		pure elemental recursive type(String) module function new_Str_i64(x, fmt) result(self)
+		pure elemental recursive type(String) module function new_Str_i64(x, fmt) result(new)
 			integer(int64), intent(in) :: x
 			character(len=*), intent(in), optional :: fmt
 		end function new_Str_i64
-		pure elemental recursive type(String) module function new_Str_i32(x, fmt) result(self)
+		pure elemental recursive type(String) module function new_Str_i32(x, fmt) result(new)
 			integer(int32), intent(in) :: x
 			character(len=*), intent(in), optional :: fmt
 		end function new_Str_i32
-		pure elemental recursive type(String) module function new_Str_i16(x, fmt) result(self)
+		pure elemental recursive type(String) module function new_Str_i16(x, fmt) result(new)
 			integer(int16), intent(in) :: x
 			character(len=*), intent(in), optional :: fmt
 		end function new_Str_i16
-		pure elemental recursive type(String) module function new_Str_i8(x, fmt) result(self)
+		pure elemental recursive type(String) module function new_Str_i8(x, fmt) result(new)
 			integer(int8), intent(in) :: x
 			character(len=*), intent(in), optional :: fmt
 		end function new_Str_i8
 
-		pure elemental recursive type(String) module function new_Str_char(chars) result(self)
-			character(len=*), intent(in) :: chars
+		pure elemental recursive type(String) module function new_Str_char(x) result(new)
+			character(len=*), intent(in) :: x
 		end function new_Str_char
 
-		pure elemental recursive type(String) module function new_Str_empty() result(self)
+		pure elemental recursive type(String) module function new_Str_empty() result(new)
 			! No arguments
 		end function new_Str_empty
 	end interface
@@ -756,7 +744,7 @@ module io_fortran_lib
 
 	interface cast                                                                              ! Submodule internal_io
 		!--------------------------------------------------------------------------------------------------------------
-		!! Subroutine for casting a `String` or `character` type into a number.
+		!! Subroutine for casting a `character` or `String` type into a number.
 		!!
 		!! For the complement of `cast`, see [String](../page/Ref/string.html) and [str](../page/Ref/str.html).
 		!!
@@ -824,64 +812,64 @@ module io_fortran_lib
 			character(len=*), intent(in), optional :: fmt
 		end subroutine cast_string_i8
 
-		pure recursive module subroutine cast_c128(chars, into, locale, fmt, im)
-			character(len=*), intent(in) :: chars
+		pure recursive module subroutine cast_c128(substring, into, locale, fmt, im)
+			character(len=*), intent(in) :: substring
 			complex(real128), intent(out) :: into
 			character(len=*), intent(in), optional :: locale
 			character(len=*), intent(in), optional :: fmt
 			character(len=*), intent(in), optional :: im
 		end subroutine cast_c128
-		pure recursive module subroutine cast_c64(chars, into, locale, fmt, im)
-			character(len=*), intent(in) :: chars
+		pure recursive module subroutine cast_c64(substring, into, locale, fmt, im)
+			character(len=*), intent(in) :: substring
 			complex(real64), intent(out) :: into
 			character(len=*), intent(in), optional :: locale
 			character(len=*), intent(in), optional :: fmt
 			character(len=*), intent(in), optional :: im
 		end subroutine cast_c64
-		pure recursive module subroutine cast_c32(chars, into, locale, fmt, im)
-			character(len=*), intent(in) :: chars
+		pure recursive module subroutine cast_c32(substring, into, locale, fmt, im)
+			character(len=*), intent(in) :: substring
 			complex(real32), intent(out) :: into
 			character(len=*), intent(in), optional :: locale
 			character(len=*), intent(in), optional :: fmt
 			character(len=*), intent(in), optional :: im
 		end subroutine cast_c32
 
-		pure recursive module subroutine cast_r128(chars, into, locale, fmt)
-			character(len=*), intent(in) :: chars
+		pure recursive module subroutine cast_r128(substring, into, locale, fmt)
+			character(len=*), intent(in) :: substring
 			real(real128), intent(out) :: into
 			character(len=*), intent(in), optional :: locale
 			character(len=*), intent(in), optional :: fmt
 		end subroutine cast_r128
-		pure recursive module subroutine cast_r64(chars, into, locale, fmt)
-			character(len=*), intent(in) :: chars
+		pure recursive module subroutine cast_r64(substring, into, locale, fmt)
+			character(len=*), intent(in) :: substring
 			real(real64), intent(out) :: into
 			character(len=*), intent(in), optional :: locale
 			character(len=*), intent(in), optional :: fmt
 		end subroutine cast_r64
-		pure recursive module subroutine cast_r32(chars, into, locale, fmt)
-			character(len=*), intent(in) :: chars
+		pure recursive module subroutine cast_r32(substring, into, locale, fmt)
+			character(len=*), intent(in) :: substring
 			real(real32), intent(out) :: into
 			character(len=*), intent(in), optional :: locale
 			character(len=*), intent(in), optional :: fmt
 		end subroutine cast_r32
 
-		pure recursive module subroutine cast_i64(chars, into, fmt)
-			character(len=*), intent(in) :: chars
+		pure recursive module subroutine cast_i64(substring, into, fmt)
+			character(len=*), intent(in) :: substring
 			integer(int64), intent(out) :: into
 			character(len=*), intent(in), optional :: fmt
 		end subroutine cast_i64
-		pure recursive module subroutine cast_i32(chars, into, fmt)
-			character(len=*), intent(in) :: chars
+		pure recursive module subroutine cast_i32(substring, into, fmt)
+			character(len=*), intent(in) :: substring
 			integer(int32), intent(out) :: into
 			character(len=*), intent(in), optional :: fmt
 		end subroutine cast_i32
-		pure recursive module subroutine cast_i16(chars, into, fmt)
-			character(len=*), intent(in) :: chars
+		pure recursive module subroutine cast_i16(substring, into, fmt)
+			character(len=*), intent(in) :: substring
 			integer(int16), intent(out) :: into
 			character(len=*), intent(in), optional :: fmt
 		end subroutine cast_i16
-		pure recursive module subroutine cast_i8(chars, into, fmt)
-			character(len=*), intent(in) :: chars
+		pure recursive module subroutine cast_i8(substring, into, fmt)
+			character(len=*), intent(in) :: substring
 			integer(int8), intent(out) :: into
 			character(len=*), intent(in), optional :: fmt
 		end subroutine cast_i8
@@ -889,7 +877,7 @@ module io_fortran_lib
 
 	interface to_file                                                                               ! Submodule file_io
 		!--------------------------------------------------------------------------------------------------------------
-		!! Subroutine for writing an array of uniform data type to an external file.
+		!! Subroutine for writing an array of uniform numeric data type to an external file.
 		!!
 		!! The file `file_name` will be created if it does not already exist and will be overwritten if it does exist.
 		!! Writing to text is allowed for arrays of rank `1` or `2`, and writing to binary is allowed for arrays of any
@@ -2591,20 +2579,26 @@ module io_fortran_lib
 
 	interface echo                                                                                  ! Submodule text_io
 		!--------------------------------------------------------------------------------------------------------------
-		!! Subroutine for streaming a scalar `character` string to an external text file.
+		!! Subroutine for streaming a scalar `character` or `String` type to an external text file.
 		!!
 		!! The file `file_name` will be created if it does not already exist and will be overwritten if `append` is
 		!! `.false.` (if it already exists). The default terminator is `LF` (line feed).
 		!!
 		!! For a user reference, see [echo](../page/Ref/echo.html).
 		!--------------------------------------------------------------------------------------------------------------
-		impure recursive module subroutine echo_chars(string, file_name, append, terminator)
-			!! Writes a `character` string to an external text file.
-			character(len=*), intent(in) :: string
+		impure recursive module subroutine echo_chars(substring, file_name, append, terminator)
+			character(len=*), intent(in) :: substring
 			character(len=*), intent(in) :: file_name
 			logical, intent(in), optional :: append
 			character(len=*), intent(in), optional :: terminator
 		end subroutine echo_chars
+
+		impure recursive module subroutine echo_string(self, file_name, append, terminator)
+			class(String), intent(in) :: self
+			character(len=*), intent(in) :: file_name
+			logical, intent(in), optional :: append
+			character(len=*), intent(in), optional :: terminator
+		end subroutine echo_string
 	end interface
 
 	interface to_text                                                                               ! Submodule text_io
@@ -4531,60 +4525,6 @@ submodule (io_fortran_lib) String_procedures
 		end do counting
 	end procedure count_substring_string
 
-	module procedure echo_string
-		character(len=:), allocatable :: ext, terminator_
-		logical :: exists, append_
-		integer :: file_unit
-
-		ext = ext_of(file_name)
-
-		if ( .not. any(TEXT_EXT == ext) ) then
-			write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
-								'due to unsupported file extension "'//ext//'".'// &
-							LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)
-			return
-		end if
-
-		if ( self%len() < 1 ) then
-			write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". '// &
-								'String to write is empty.'
-			return
-		end if
-
-		if ( .not. present(append) ) then
-			append_ = .true.
-		else
-			append_ = append
-		end if
-
-		if ( .not. present(terminator) ) then
-			terminator_ = LF
-		else
-			terminator_ = terminator
-		end if
-
-		inquire( file=file_name, exist=exists )
-
-		file_unit = output_unit
-
-		if ( .not. exists ) then
-			open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-				  action='write', access='stream', position='rewind' )
-		else
-			if ( .not. append_ ) then
-				open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-					  action='write', access='stream', position='rewind' )
-			else
-				open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-					  action='write', access='stream', position='append' )
-			end if
-		end if
-
-		write( unit=file_unit ) self%s//terminator_
-
-		close(file_unit)
-	end procedure echo_string
-
 	module procedure empty
 		self%s = EMPTY_STR
 	end procedure empty
@@ -4628,24 +4568,24 @@ submodule (io_fortran_lib) String_procedures
 
 	module procedure push_chars
 		if ( self%len() < 1 ) then
-			self%s = chars
+			self%s = substring
 		else
-			self%s = self%s//chars
+			self%s = self%s//substring
 		end if
 	end procedure push_chars
 
 	module procedure push_string
 		if ( self%len() < 1 ) then
-			if ( chars%len() < 1 ) then
+			if ( substring%len() < 1 ) then
 				self%s = EMPTY_STR
 			else
-				self%s = chars%s
+				self%s = substring%s
 			end if
 		else
-			if ( chars%len() < 1 ) then
+			if ( substring%len() < 1 ) then
 				return
 			else
-				self%s = self%s//chars%s
+				self%s = self%s//substring%s
 			end if
 		end if
 	end procedure push_string
@@ -5416,7 +5356,7 @@ submodule (io_fortran_lib) String_procedures
 	end procedure trim_inplace
 
 	module procedure write_file
-		type(string), allocatable, dimension(:) :: rows
+		type(String), allocatable, dimension(:) :: rows
 		character(len=:), allocatable :: ext, row_separator_, column_separator_
 		integer :: n_rows, i, file_unit
 		logical :: exists
@@ -5641,7 +5581,7 @@ submodule (io_fortran_lib) operators
 	end procedure char_string_excision
 
 	module procedure repeat_chars
-		new = repeat(chars, ncopies=ncopies)
+		new = repeat(char_base, ncopies=ncopies)
 	end procedure repeat_chars
 
 	module procedure repeat_String
@@ -6750,7 +6690,7 @@ submodule (io_fortran_lib) internal_io
 			im_ = trim(adjustl(im))
 		end if
 
-		self%s = str(x, locale=locale_, fmt=fmt_, decimals=decimals_, im=im_)
+		new%s = str(x, locale=locale_, fmt=fmt_, decimals=decimals_, im=im_)
 	end procedure new_Str_c128
 	module procedure new_Str_c64
 		character(len=:), allocatable :: locale_, fmt_, im_
@@ -6788,7 +6728,7 @@ submodule (io_fortran_lib) internal_io
 			im_ = trim(adjustl(im))
 		end if
 
-		self%s = str(x, locale=locale_, fmt=fmt_, decimals=decimals_, im=im_)
+		new%s = str(x, locale=locale_, fmt=fmt_, decimals=decimals_, im=im_)
 	end procedure new_Str_c64
 	module procedure new_Str_c32
 		character(len=:), allocatable :: locale_, fmt_, im_
@@ -6826,7 +6766,7 @@ submodule (io_fortran_lib) internal_io
 			im_ = trim(adjustl(im))
 		end if
 
-		self%s = str(x, locale=locale_, fmt=fmt_, decimals=decimals_, im=im_)
+		new%s = str(x, locale=locale_, fmt=fmt_, decimals=decimals_, im=im_)
 	end procedure new_Str_c32
 
 	module procedure new_Str_r128
@@ -6859,7 +6799,7 @@ submodule (io_fortran_lib) internal_io
 			decimals_ = decimals
 		end if
 
-		self%s = str(x, locale=locale_, fmt=fmt_, decimals=decimals_)
+		new%s = str(x, locale=locale_, fmt=fmt_, decimals=decimals_)
 	end procedure new_Str_r128
 	module procedure new_Str_r64
 		character(len=:), allocatable :: locale_, fmt_
@@ -6891,7 +6831,7 @@ submodule (io_fortran_lib) internal_io
 			decimals_ = decimals
 		end if
 
-		self%s = str(x, locale=locale_, fmt=fmt_, decimals=decimals_)
+		new%s = str(x, locale=locale_, fmt=fmt_, decimals=decimals_)
 	end procedure new_Str_r64
 	module procedure new_Str_r32
 		character(len=:), allocatable :: locale_, fmt_
@@ -6923,7 +6863,7 @@ submodule (io_fortran_lib) internal_io
 			decimals_ = decimals
 		end if
 
-		self%s = str(x, locale=locale_, fmt=fmt_, decimals=decimals_)
+		new%s = str(x, locale=locale_, fmt=fmt_, decimals=decimals_)
 	end procedure new_Str_r32
 
 	module procedure new_Str_i64
@@ -6939,7 +6879,7 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		self%s = str(x, fmt=fmt_)
+		new%s = str(x, fmt=fmt_)
 	end procedure new_Str_i64
 	module procedure new_Str_i32
 		character(len=:), allocatable :: fmt_
@@ -6954,7 +6894,7 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		self%s = str(x, fmt=fmt_)
+		new%s = str(x, fmt=fmt_)
 	end procedure new_Str_i32
 	module procedure new_Str_i16
 		character(len=:), allocatable :: fmt_
@@ -6969,7 +6909,7 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		self%s = str(x, fmt=fmt_)
+		new%s = str(x, fmt=fmt_)
 	end procedure new_Str_i16
 	module procedure new_Str_i8
 		character(len=:), allocatable :: fmt_
@@ -6984,23 +6924,22 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		self%s = str(x, fmt=fmt_)
+		new%s = str(x, fmt=fmt_)
 	end procedure new_Str_i8
 
 	module procedure new_Str_char
-		self%s = chars
+		new%s = x
 	end procedure new_Str_char
 
 	module procedure new_Str_empty
-		self%s = EMPTY_STR
+		new%s = EMPTY_STR
 	end procedure new_Str_empty
 
 	module procedure cast_string_c128
-		character(len=:), allocatable :: locale_, fmt_, im_, chars_
+		character(len=:), allocatable :: locale_, fmt_, im_, substring_
 
 		if ( self%len() < 1 ) then
-			into = (0.0_real128,0.0_real128)
-			return
+			into = (0.0_real128,0.0_real128); return
 		end if
 
 		if ( .not. present(locale) ) then
@@ -7009,8 +6948,7 @@ submodule (io_fortran_lib) internal_io
 			if ( any(LOCALES == locale) ) then
 				locale_ = locale
 			else
-				into = (0.0_real128,0.0_real128)
-				return
+				into = (0.0_real128,0.0_real128); return
 			end if
 		end if
 
@@ -7020,8 +6958,7 @@ submodule (io_fortran_lib) internal_io
 			if ( any(REAL_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				into = (0.0_real128,0.0_real128)
-				return
+				into = (0.0_real128,0.0_real128); return
 			end if
 		end if
 
@@ -7031,15 +6968,14 @@ submodule (io_fortran_lib) internal_io
 			im_ = trim(adjustl(im))
 		end if
 
-		chars_ = trim(adjustl(self%s))
-		call cast(chars=chars_, into=into, locale=locale_, fmt=fmt_, im=im_)
+		substring_ = trim(adjustl(self%s))
+		call cast(substring=substring_, into=into, locale=locale_, fmt=fmt_, im=im_)
 	end procedure cast_string_c128
 	module procedure cast_string_c64
-		character(len=:), allocatable :: locale_, fmt_, im_, chars_
+		character(len=:), allocatable :: locale_, fmt_, im_, substring_
 
 		if ( self%len() < 1 ) then
-			into = (0.0_real64,0.0_real64)
-			return
+			into = (0.0_real64,0.0_real64); return
 		end if
 
 		if ( .not. present(locale) ) then
@@ -7048,8 +6984,7 @@ submodule (io_fortran_lib) internal_io
 			if ( any(LOCALES == locale) ) then
 				locale_ = locale
 			else
-				into = (0.0_real64,0.0_real64)
-				return
+				into = (0.0_real64,0.0_real64); return
 			end if
 		end if
 
@@ -7059,8 +6994,7 @@ submodule (io_fortran_lib) internal_io
 			if ( any(REAL_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				into = (0.0_real64,0.0_real64)
-				return
+				into = (0.0_real64,0.0_real64); return
 			end if
 		end if
 
@@ -7070,15 +7004,14 @@ submodule (io_fortran_lib) internal_io
 			im_ = trim(adjustl(im))
 		end if
 
-		chars_ = trim(adjustl(self%s))
-		call cast(chars=chars_, into=into, locale=locale_, fmt=fmt_, im=im_)
+		substring_ = trim(adjustl(self%s))
+		call cast(substring=substring_, into=into, locale=locale_, fmt=fmt_, im=im_)
 	end procedure cast_string_c64
 	module procedure cast_string_c32
-		character(len=:), allocatable :: locale_, fmt_, im_, chars_
+		character(len=:), allocatable :: locale_, fmt_, im_, substring_
 
 		if ( self%len() < 1 ) then
-			into = (0.0_real32,0.0_real32)
-			return
+			into = (0.0_real32,0.0_real32); return
 		end if
 
 		if ( .not. present(locale) ) then
@@ -7087,8 +7020,7 @@ submodule (io_fortran_lib) internal_io
 			if ( any(LOCALES == locale) ) then
 				locale_ = locale
 			else
-				into = (0.0_real32,0.0_real32)
-				return
+				into = (0.0_real32,0.0_real32); return
 			end if
 		end if
 
@@ -7098,8 +7030,7 @@ submodule (io_fortran_lib) internal_io
 			if ( any(REAL_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				into = (0.0_real32,0.0_real32)
-				return
+				into = (0.0_real32,0.0_real32); return
 			end if
 		end if
 
@@ -7109,16 +7040,15 @@ submodule (io_fortran_lib) internal_io
 			im_ = trim(adjustl(im))
 		end if
 
-		chars_ = trim(adjustl(self%s))
-		call cast(chars=chars_, into=into, locale=locale_, fmt=fmt_, im=im_)
+		substring_ = trim(adjustl(self%s))
+		call cast(substring=substring_, into=into, locale=locale_, fmt=fmt_, im=im_)
 	end procedure cast_string_c32
 
 	module procedure cast_string_r128
-		character(len=:), allocatable :: locale_, fmt_, chars_
+		character(len=:), allocatable :: locale_, fmt_, substring_
 
 		if ( self%len() < 1 ) then
-			into = 0.0_real128
-			return
+			into = 0.0_real128; return
 		end if
 
 		if ( .not. present(locale) ) then
@@ -7127,8 +7057,7 @@ submodule (io_fortran_lib) internal_io
 			if ( any(LOCALES == locale) ) then
 				locale_ = locale
 			else
-				into = 0.0_real128
-				return
+				into = 0.0_real128; return
 			end if
 		end if
 
@@ -7138,20 +7067,18 @@ submodule (io_fortran_lib) internal_io
 			if ( any(REAL_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				into = 0.0_real128
-				return
+				into = 0.0_real128; return
 			end if
 		end if
 
-		chars_ = trim(adjustl(self%s))
-		call cast(chars=chars_, into=into, locale=locale_, fmt=fmt_)
+		substring_ = trim(adjustl(self%s))
+		call cast(substring=substring_, into=into, locale=locale_, fmt=fmt_)
 	end procedure cast_string_r128
 	module procedure cast_string_r64
-		character(len=:), allocatable :: locale_, fmt_, chars_
+		character(len=:), allocatable :: locale_, fmt_, substring_
 
 		if ( self%len() < 1 ) then
-			into = 0.0_real64
-			return
+			into = 0.0_real64; return
 		end if
 
 		if ( .not. present(locale) ) then
@@ -7160,8 +7087,7 @@ submodule (io_fortran_lib) internal_io
 			if ( any(LOCALES == locale) ) then
 				locale_ = locale
 			else
-				into = 0.0_real64
-				return
+				into = 0.0_real64; return
 			end if
 		end if
 
@@ -7171,20 +7097,18 @@ submodule (io_fortran_lib) internal_io
 			if ( any(REAL_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				into = 0.0_real64
-				return
+				into = 0.0_real64; return
 			end if
 		end if
 
-		chars_ = trim(adjustl(self%s))
-		call cast(chars=chars_, into=into, locale=locale_, fmt=fmt_)
+		substring_ = trim(adjustl(self%s))
+		call cast(substring=substring_, into=into, locale=locale_, fmt=fmt_)
 	end procedure cast_string_r64
 	module procedure cast_string_r32
-		character(len=:), allocatable :: locale_, fmt_, chars_
+		character(len=:), allocatable :: locale_, fmt_, substring_
 
 		if ( self%len() < 1 ) then
-			into = 0.0_real32
-			return
+			into = 0.0_real32; return
 		end if
 
 		if ( .not. present(locale) ) then
@@ -7193,8 +7117,7 @@ submodule (io_fortran_lib) internal_io
 			if ( any(LOCALES == locale) ) then
 				locale_ = locale
 			else
-				into = 0.0_real32
-				return
+				into = 0.0_real32; return
 			end if
 		end if
 
@@ -7204,21 +7127,19 @@ submodule (io_fortran_lib) internal_io
 			if ( any(REAL_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				into = 0.0_real32
-				return
+				into = 0.0_real32; return
 			end if
 		end if
 
-		chars_ = trim(adjustl(self%s))
-		call cast(chars=chars_, into=into, locale=locale_, fmt=fmt_)
+		substring_ = trim(adjustl(self%s))
+		call cast(substring=substring_, into=into, locale=locale_, fmt=fmt_)
 	end procedure cast_string_r32
 
 	module procedure cast_string_i64
-		character(len=:), allocatable :: fmt_, chars_
+		character(len=:), allocatable :: fmt_, substring_
 
 		if ( self%len() < 1 ) then
-			into = 0_int64
-			return
+			into = 0_int64; return
 		end if
 
 		if ( .not. present(fmt) ) then
@@ -7227,20 +7148,18 @@ submodule (io_fortran_lib) internal_io
 			if ( any(INT_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				into = 0_int64
-				return
+				into = 0_int64; return
 			end if
 		end if
 
-		chars_ = trim(adjustl(self%s))
-		call cast(chars=chars_, into=into, fmt=fmt_)
+		substring_ = trim(adjustl(self%s))
+		call cast(substring=substring_, into=into, fmt=fmt_)
 	end procedure cast_string_i64
 	module procedure cast_string_i32
-		character(len=:), allocatable :: fmt_, chars_
+		character(len=:), allocatable :: fmt_, substring_
 
 		if ( self%len() < 1 ) then
-			into = 0_int32
-			return
+			into = 0_int32; return
 		end if
 
 		if ( .not. present(fmt) ) then
@@ -7249,20 +7168,18 @@ submodule (io_fortran_lib) internal_io
 			if ( any(INT_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				into = 0_int32
-				return
+				into = 0_int32; return
 			end if
 		end if
 
-		chars_ = trim(adjustl(self%s))
-		call cast(chars=chars_, into=into, fmt=fmt_)
+		substring_ = trim(adjustl(self%s))
+		call cast(substring=substring_, into=into, fmt=fmt_)
 	end procedure cast_string_i32
 	module procedure cast_string_i16
-		character(len=:), allocatable :: fmt_, chars_
+		character(len=:), allocatable :: fmt_, substring_
 
 		if ( self%len() < 1 ) then
-			into = 0_int16
-			return
+			into = 0_int16; return
 		end if
 
 		if ( .not. present(fmt) ) then
@@ -7271,20 +7188,18 @@ submodule (io_fortran_lib) internal_io
 			if ( any(INT_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				into = 0_int16
-				return
+				into = 0_int16; return
 			end if
 		end if
 
-		chars_ = trim(adjustl(self%s))
-		call cast(chars=chars_, into=into, fmt=fmt_)
+		substring_ = trim(adjustl(self%s))
+		call cast(substring=substring_, into=into, fmt=fmt_)
 	end procedure cast_string_i16
 	module procedure cast_string_i8
-		character(len=:), allocatable :: fmt_, chars_
+		character(len=:), allocatable :: fmt_, substring_
 
 		if ( self%len() < 1 ) then
-			into = 0_int8
-			return
+			into = 0_int8; return
 		end if
 
 		if ( .not. present(fmt) ) then
@@ -7293,13 +7208,12 @@ submodule (io_fortran_lib) internal_io
 			if ( any(INT_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				into = 0_int8
-				return
+				into = 0_int8; return
 			end if
 		end if
 
-		chars_ = trim(adjustl(self%s))
-		call cast(chars=chars_, into=into, fmt=fmt_)
+		substring_ = trim(adjustl(self%s))
+		call cast(substring=substring_, into=into, fmt=fmt_)
 	end procedure cast_string_i8
 
 	module procedure str_c128
@@ -7312,8 +7226,7 @@ submodule (io_fortran_lib) internal_io
 			if ( any(LOCALES == locale) ) then
 				locale_ = locale
 			else
-				x_str = EMPTY_STR
-				return
+				x_str = EMPTY_STR; return
 			end if
 		end if
 
@@ -7323,8 +7236,7 @@ submodule (io_fortran_lib) internal_io
 			if ( any(REAL_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				x_str = EMPTY_STR
-				return
+				x_str = EMPTY_STR; return
 			end if
 		end if
 
@@ -7373,8 +7285,7 @@ submodule (io_fortran_lib) internal_io
 			if ( any(LOCALES == locale) ) then
 				locale_ = locale
 			else
-				x_str = EMPTY_STR
-				return
+				x_str = EMPTY_STR; return
 			end if
 		end if
 
@@ -7384,8 +7295,7 @@ submodule (io_fortran_lib) internal_io
 			if ( any(REAL_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				x_str = EMPTY_STR
-				return
+				x_str = EMPTY_STR; return
 			end if
 		end if
 
@@ -7434,8 +7344,7 @@ submodule (io_fortran_lib) internal_io
 			if ( any(LOCALES == locale) ) then
 				locale_ = locale
 			else
-				x_str = EMPTY_STR
-				return
+				x_str = EMPTY_STR; return
 			end if
 		end if
 
@@ -7445,8 +7354,7 @@ submodule (io_fortran_lib) internal_io
 			if ( any(REAL_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				x_str = EMPTY_STR
-				return
+				x_str = EMPTY_STR; return
 			end if
 		end if
 
@@ -7498,8 +7406,7 @@ submodule (io_fortran_lib) internal_io
 			else if ( locale == 'EU' ) then
 				decimal = 'COMMA'
 			else
-				x_str = EMPTY_STR
-				return
+				x_str = EMPTY_STR; return
 			end if
 		end if
 
@@ -7509,8 +7416,7 @@ submodule (io_fortran_lib) internal_io
 			if ( any(REAL_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				x_str = EMPTY_STR
-				return
+				x_str = EMPTY_STR; return
 			end if
 		end if
 
@@ -7611,8 +7517,7 @@ submodule (io_fortran_lib) internal_io
 			else if ( locale == 'EU' ) then
 				decimal = 'COMMA'
 			else
-				x_str = EMPTY_STR
-				return
+				x_str = EMPTY_STR; return
 			end if
 		end if
 
@@ -7622,8 +7527,7 @@ submodule (io_fortran_lib) internal_io
 			if ( any(REAL_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				x_str = EMPTY_STR
-				return
+				x_str = EMPTY_STR; return
 			end if
 		end if
 
@@ -7724,8 +7628,7 @@ submodule (io_fortran_lib) internal_io
 			else if ( locale == 'EU' ) then
 				decimal = 'COMMA'
 			else
-				x_str = EMPTY_STR
-				return
+				x_str = EMPTY_STR; return
 			end if
 		end if
 
@@ -7735,8 +7638,7 @@ submodule (io_fortran_lib) internal_io
 			if ( any(REAL_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				x_str = EMPTY_STR
-				return
+				x_str = EMPTY_STR; return
 			end if
 		end if
 
@@ -7836,8 +7738,7 @@ submodule (io_fortran_lib) internal_io
 			if ( any(INT_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				x_str = EMPTY_STR
-				return
+				x_str = EMPTY_STR; return
 			end if
 		end if
 
@@ -7859,8 +7760,7 @@ submodule (io_fortran_lib) internal_io
 			if ( any(INT_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				x_str = EMPTY_STR
-				return
+				x_str = EMPTY_STR; return
 			end if
 		end if
 
@@ -7882,8 +7782,7 @@ submodule (io_fortran_lib) internal_io
 			if ( any(INT_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				x_str = EMPTY_STR
-				return
+				x_str = EMPTY_STR; return
 			end if
 		end if
 
@@ -7905,8 +7804,7 @@ submodule (io_fortran_lib) internal_io
 			if ( any(INT_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				x_str = EMPTY_STR
-				return
+				x_str = EMPTY_STR; return
 			end if
 		end if
 
@@ -7920,16 +7818,15 @@ submodule (io_fortran_lib) internal_io
 	end procedure str_i8
 
 	module procedure cast_c128
-		character(len=:), allocatable :: locale_, fmt_, im_, chars_, decimal
+		character(len=:), allocatable :: locale_, fmt_, im_, substring_, decimal
 		character(len=:), allocatable, dimension(:) :: ignore_chars, e_chars
 		character(len=1) :: current_char
 
 		real(real128) :: z_re, z_im
 		integer :: i
 
-		if ( len(chars) == 0 ) then
-			into = (0.0_real128,0.0_real128)
-			return
+		if ( len(substring) == 0 ) then
+			into = (0.0_real128,0.0_real128); return
 		end if
 
 		if ( .not. present(locale) ) then
@@ -7938,8 +7835,7 @@ submodule (io_fortran_lib) internal_io
 			if ( any(LOCALES == locale) ) then
 				locale_ = locale
 			else
-				into = (0.0_real128,0.0_real128)
-				return
+				into = (0.0_real128,0.0_real128); return
 			end if
 		end if
 
@@ -7949,8 +7845,7 @@ submodule (io_fortran_lib) internal_io
 			if ( any(REAL_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				into = (0.0_real128,0.0_real128)
-				return
+				into = (0.0_real128,0.0_real128); return
 			end if
 		end if
 
@@ -7974,70 +7869,65 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		chars_ = trim(adjustl(chars))
+		substring_ = trim(adjustl(substring))
 
 		if ( im_ == EMPTY_STR ) then
-			if ( chars_(1:1) /= '(' ) then
-				into = (0.0_real128,0.0_real128)
-				return
+			if ( substring_(1:1) /= '(' ) then
+				into = (0.0_real128,0.0_real128); return
 			else
-				chars_ = chars_(2:len(chars_)-1)
+				substring_ = substring_(2:len(substring_)-1)
 
-				do i = 1, len(chars_)
-					if ( .not. any(ignore_chars == chars_(i:i)) ) then
+				do i = 1, len(substring_)
+					if ( .not. any(ignore_chars == substring_(i:i)) ) then
 						if ( fmt_ == 'z' ) then
-							read(unit=chars_(:i-1), fmt='(z'//str(i-1)//')') z_re
-							read(unit=chars_(i+1:), fmt='(z'//str(len(chars_)-i)//')') z_im
+							read(unit=substring_(:i-1), fmt='(z'//str(i-1)//')') z_re
+							read(unit=substring_(i+1:), fmt='(z'//str(len(substring_)-i)//')') z_im
 						else
-							read(unit=chars_(:i-1), fmt=*, decimal=decimal) z_re
-							read(unit=chars_(i+1:), fmt=*, decimal=decimal) z_im
+							read(unit=substring_(:i-1), fmt=*, decimal=decimal) z_re
+							read(unit=substring_(i+1:), fmt=*, decimal=decimal) z_im
 						end if
 
-						into = cmplx(z_re, z_im, kind=real128)
-						return
+						into = cmplx(z_re, z_im, kind=real128); return
 					end if
 				end do
 			end if
 		else
-			if ( chars_(len(chars_):len(chars_)) /= im_(len(im_):len(im_)) ) then
-				into = (0.0_real128,0.0_real128)
-				return
+			if ( substring_(len(substring_):len(substring_)) /= im_(len(im_):len(im_)) ) then
+				into = (0.0_real128,0.0_real128); return
 			else
-				chars_ = chars_(:len(chars_)-len(im_))
+				substring_ = substring_(:len(substring_)-len(im_))
 
-				do i = 1, len(chars_)
-					current_char = chars_(i:i)
+				do i = 1, len(substring_)
+					current_char = substring_(i:i)
 
 					if ( (current_char == '+') .or. (current_char == '-') ) then
 						if ( i == 1 ) cycle
 
 						if ( fmt_ == 'z' ) then
-							read(unit=chars_(:i-1), fmt='(z'//str(i-1)//')') z_re
-							read(unit=chars_(i+1:), fmt='(z'//str(len(chars_)-i)//')') z_im
+							read(unit=substring_(:i-1), fmt='(z'//str(i-1)//')') z_re
+							read(unit=substring_(i+1:), fmt='(z'//str(len(substring_)-i)//')') z_im
 						else
-							if ( any(e_chars == chars_(i-1:i-1)) ) cycle
-							read(unit=chars_(:i-1), fmt=*, decimal=decimal) z_re
-							read(unit=chars_(i:), fmt=*, decimal=decimal) z_im
+							if ( any(e_chars == substring_(i-1:i-1)) ) cycle
+							read(unit=substring_(:i-1), fmt=*, decimal=decimal) z_re
+							read(unit=substring_(i:), fmt=*, decimal=decimal) z_im
 						end if
 
-						into = cmplx(z_re, z_im, kind=real128)
-						return
+						into = cmplx(z_re, z_im, kind=real128); return
 					end if
 				end do
 			end if
 		end if
 	end procedure cast_c128
 	module procedure cast_c64
-		character(len=:), allocatable :: locale_, fmt_, im_, chars_, decimal
+		character(len=:), allocatable :: locale_, fmt_, im_, substring_, decimal
 		character(len=:), allocatable, dimension(:) :: ignore_chars, e_chars
 		character(len=1) :: current_char
 
 		real(real64) :: z_re, z_im
 		integer :: i
 
-		if ( len(chars) == 0 ) then
-			into = (0.0_real64,0.0_real64)
-			return
+		if ( len(substring) == 0 ) then
+			into = (0.0_real64,0.0_real64); return
 		end if
 
 		if ( .not. present(locale) ) then
@@ -8046,8 +7936,7 @@ submodule (io_fortran_lib) internal_io
 			if ( any(LOCALES == locale) ) then
 				locale_ = locale
 			else
-				into = (0.0_real64,0.0_real64)
-				return
+				into = (0.0_real64,0.0_real64); return
 			end if
 		end if
 
@@ -8057,8 +7946,7 @@ submodule (io_fortran_lib) internal_io
 			if ( any(REAL_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				into = (0.0_real64,0.0_real64)
-				return
+				into = (0.0_real64,0.0_real64); return
 			end if
 		end if
 
@@ -8082,70 +7970,65 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		chars_ = trim(adjustl(chars))
+		substring_ = trim(adjustl(substring))
 
 		if ( im_ == EMPTY_STR ) then
-			if ( chars_(1:1) /= '(' ) then
-				into = (0.0_real64,0.0_real64)
-				return
+			if ( substring_(1:1) /= '(' ) then
+				into = (0.0_real64,0.0_real64); return
 			else
-				chars_ = chars_(2:len(chars_)-1)
+				substring_ = substring_(2:len(substring_)-1)
 
-				do i = 1, len(chars_)
-					if ( .not. any(ignore_chars == chars_(i:i)) ) then
+				do i = 1, len(substring_)
+					if ( .not. any(ignore_chars == substring_(i:i)) ) then
 						if ( fmt_ == 'z' ) then
-							read(unit=chars_(:i-1), fmt='(z'//str(i-1)//')') z_re
-							read(unit=chars_(i+1:), fmt='(z'//str(len(chars_)-i)//')') z_im
+							read(unit=substring_(:i-1), fmt='(z'//str(i-1)//')') z_re
+							read(unit=substring_(i+1:), fmt='(z'//str(len(substring_)-i)//')') z_im
 						else
-							read(unit=chars_(:i-1), fmt=*, decimal=decimal) z_re
-							read(unit=chars_(i+1:), fmt=*, decimal=decimal) z_im
+							read(unit=substring_(:i-1), fmt=*, decimal=decimal) z_re
+							read(unit=substring_(i+1:), fmt=*, decimal=decimal) z_im
 						end if
 
-						into = cmplx(z_re, z_im, kind=real64)
-						return
+						into = cmplx(z_re, z_im, kind=real64); return
 					end if
 				end do
 			end if
 		else
-			if ( chars_(len(chars_):len(chars_)) /= im_(len(im_):len(im_)) ) then
-				into = (0.0_real64,0.0_real64)
-				return
+			if ( substring_(len(substring_):len(substring_)) /= im_(len(im_):len(im_)) ) then
+				into = (0.0_real64,0.0_real64); return
 			else
-				chars_ = chars_(:len(chars_)-len(im_))
+				substring_ = substring_(:len(substring_)-len(im_))
 
-				do i = 1, len(chars_)
-					current_char = chars_(i:i)
+				do i = 1, len(substring_)
+					current_char = substring_(i:i)
 
 					if ( (current_char == '+') .or. (current_char == '-') ) then
 						if ( i == 1 ) cycle
 
 						if ( fmt_ == 'z' ) then
-							read(unit=chars_(:i-1), fmt='(z'//str(i-1)//')') z_re
-							read(unit=chars_(i+1:), fmt='(z'//str(len(chars_)-i)//')') z_im
+							read(unit=substring_(:i-1), fmt='(z'//str(i-1)//')') z_re
+							read(unit=substring_(i+1:), fmt='(z'//str(len(substring_)-i)//')') z_im
 						else
-							if ( any(e_chars == chars_(i-1:i-1)) ) cycle
-							read(unit=chars_(:i-1), fmt=*, decimal=decimal) z_re
-							read(unit=chars_(i:), fmt=*, decimal=decimal) z_im
+							if ( any(e_chars == substring_(i-1:i-1)) ) cycle
+							read(unit=substring_(:i-1), fmt=*, decimal=decimal) z_re
+							read(unit=substring_(i:), fmt=*, decimal=decimal) z_im
 						end if
 
-						into = cmplx(z_re, z_im, kind=real64)
-						return
+						into = cmplx(z_re, z_im, kind=real64); return
 					end if
 				end do
 			end if
 		end if
 	end procedure cast_c64
 	module procedure cast_c32
-		character(len=:), allocatable :: locale_, fmt_, im_, chars_, decimal
+		character(len=:), allocatable :: locale_, fmt_, im_, substring_, decimal
 		character(len=:), allocatable, dimension(:) :: ignore_chars, e_chars
 		character(len=1) :: current_char
 
 		real(real32) :: z_re, z_im
 		integer :: i
 
-		if ( len(chars) == 0 ) then
-			into = (0.0_real32,0.0_real32)
-			return
+		if ( len(substring) == 0 ) then
+			into = (0.0_real32,0.0_real32); return
 		end if
 
 		if ( .not. present(locale) ) then
@@ -8154,8 +8037,7 @@ submodule (io_fortran_lib) internal_io
 			if ( any(LOCALES == locale) ) then
 				locale_ = locale
 			else
-				into = (0.0_real32,0.0_real32)
-				return
+				into = (0.0_real32,0.0_real32); return
 			end if
 		end if
 
@@ -8165,8 +8047,7 @@ submodule (io_fortran_lib) internal_io
 			if ( any(REAL_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				into = (0.0_real32,0.0_real32)
-				return
+				into = (0.0_real32,0.0_real32); return
 			end if
 		end if
 
@@ -8190,54 +8071,50 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		chars_ = trim(adjustl(chars))
+		substring_ = trim(adjustl(substring))
 
 		if ( im_ == EMPTY_STR ) then
-			if ( chars_(1:1) /= '(' ) then
-				into = (0.0_real32,0.0_real32)
-				return
+			if ( substring_(1:1) /= '(' ) then
+				into = (0.0_real32,0.0_real32); return
 			else
-				chars_ = chars_(2:len(chars_)-1)
+				substring_ = substring_(2:len(substring_)-1)
 
-				do i = 1, len(chars_)
-					if ( .not. any(ignore_chars == chars_(i:i)) ) then
+				do i = 1, len(substring_)
+					if ( .not. any(ignore_chars == substring_(i:i)) ) then
 						if ( fmt_ == 'z' ) then
-							read(unit=chars_(:i-1), fmt='(z'//str(i-1)//')') z_re
-							read(unit=chars_(i+1:), fmt='(z'//str(len(chars_)-i)//')') z_im
+							read(unit=substring_(:i-1), fmt='(z'//str(i-1)//')') z_re
+							read(unit=substring_(i+1:), fmt='(z'//str(len(substring_)-i)//')') z_im
 						else
-							read(unit=chars_(:i-1), fmt=*, decimal=decimal) z_re
-							read(unit=chars_(i+1:), fmt=*, decimal=decimal) z_im
+							read(unit=substring_(:i-1), fmt=*, decimal=decimal) z_re
+							read(unit=substring_(i+1:), fmt=*, decimal=decimal) z_im
 						end if
 
-						into = cmplx(z_re, z_im, kind=real32)
-						return
+						into = cmplx(z_re, z_im, kind=real32); return
 					end if
 				end do
 			end if
 		else
-			if ( chars_(len(chars_):len(chars_)) /= im_(len(im_):len(im_)) ) then
-				into = (0.0_real32,0.0_real32)
-				return
+			if ( substring_(len(substring_):len(substring_)) /= im_(len(im_):len(im_)) ) then
+				into = (0.0_real32,0.0_real32); return
 			else
-				chars_ = chars_(:len(chars_)-len(im_))
+				substring_ = substring_(:len(substring_)-len(im_))
 
-				do i = 1, len(chars_)
-					current_char = chars_(i:i)
+				do i = 1, len(substring_)
+					current_char = substring_(i:i)
 
 					if ( (current_char == '+') .or. (current_char == '-') ) then
 						if ( i == 1 ) cycle
 
 						if ( fmt_ == 'z' ) then
-							read(unit=chars_(:i-1), fmt='(z'//str(i-1)//')') z_re
-							read(unit=chars_(i+1:), fmt='(z'//str(len(chars_)-i)//')') z_im
+							read(unit=substring_(:i-1), fmt='(z'//str(i-1)//')') z_re
+							read(unit=substring_(i+1:), fmt='(z'//str(len(substring_)-i)//')') z_im
 						else
-							if ( any(e_chars == chars_(i-1:i-1)) ) cycle
-							read(unit=chars_(:i-1), fmt=*, decimal=decimal) z_re
-							read(unit=chars_(i:), fmt=*, decimal=decimal) z_im
+							if ( any(e_chars == substring_(i-1:i-1)) ) cycle
+							read(unit=substring_(:i-1), fmt=*, decimal=decimal) z_re
+							read(unit=substring_(i:), fmt=*, decimal=decimal) z_im
 						end if
 
-						into = cmplx(z_re, z_im, kind=real32)
-						return
+						into = cmplx(z_re, z_im, kind=real32); return
 					end if
 				end do
 			end if
@@ -8245,11 +8122,10 @@ submodule (io_fortran_lib) internal_io
 	end procedure cast_c32
 
 	module procedure cast_r128
-		character(len=:), allocatable :: locale_, fmt_, chars_, decimal
+		character(len=:), allocatable :: locale_, fmt_, substring_, decimal
 
-		if ( len(chars) == 0 ) then
-			into = 0.0_real128
-			return
+		if ( len(substring) == 0 ) then
+			into = 0.0_real128; return
 		end if
 
 		if ( .not. present(locale) ) then
@@ -8258,8 +8134,7 @@ submodule (io_fortran_lib) internal_io
 			if ( any(LOCALES == locale) ) then
 				locale_ = locale
 			else
-				into = 0.0_real128
-				return
+				into = 0.0_real128; return
 			end if
 		end if
 
@@ -8269,15 +8144,14 @@ submodule (io_fortran_lib) internal_io
 			if ( any(REAL_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				into = 0.0_real128
-				return
+				into = 0.0_real128; return
 			end if
 		end if
 
-		chars_ = trim(adjustl(chars))
+		substring_ = trim(adjustl(substring))
 
 		if ( fmt_ == 'z' ) then
-			read(unit=chars_, fmt='(z'//str(len(chars_))//')') into
+			read(unit=substring_, fmt='(z'//str(len(substring_))//')') into
 		else
 			if ( locale_ == 'US' ) then
 				decimal = 'POINT'
@@ -8285,15 +8159,14 @@ submodule (io_fortran_lib) internal_io
 				decimal = 'COMMA'
 			end if
 
-			read(unit=chars_, fmt=*, decimal=decimal) into
+			read(unit=substring_, fmt=*, decimal=decimal) into
 		end if
 	end procedure cast_r128
 	module procedure cast_r64
-		character(len=:), allocatable :: locale_, fmt_, chars_, decimal
+		character(len=:), allocatable :: locale_, fmt_, substring_, decimal
 
-		if ( len(chars) == 0 ) then
-			into = 0.0_real64
-			return
+		if ( len(substring) == 0 ) then
+			into = 0.0_real64; return
 		end if
 
 		if ( .not. present(locale) ) then
@@ -8302,8 +8175,7 @@ submodule (io_fortran_lib) internal_io
 			if ( any(LOCALES == locale) ) then
 				locale_ = locale
 			else
-				into = 0.0_real64
-				return
+				into = 0.0_real64; return
 			end if
 		end if
 
@@ -8313,15 +8185,14 @@ submodule (io_fortran_lib) internal_io
 			if ( any(REAL_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				into = 0.0_real64
-				return
+				into = 0.0_real64; return
 			end if
 		end if
 
-		chars_ = trim(adjustl(chars))
+		substring_ = trim(adjustl(substring))
 
 		if ( fmt_ == 'z' ) then
-			read(unit=chars_, fmt='(z'//str(len(chars_))//')') into
+			read(unit=substring_, fmt='(z'//str(len(substring_))//')') into
 		else
 			if ( locale_ == 'US' ) then
 				decimal = 'POINT'
@@ -8329,15 +8200,14 @@ submodule (io_fortran_lib) internal_io
 				decimal = 'COMMA'
 			end if
 
-			read(unit=chars_, fmt=*, decimal=decimal) into
+			read(unit=substring_, fmt=*, decimal=decimal) into
 		end if
 	end procedure cast_r64
 	module procedure cast_r32
-		character(len=:), allocatable :: locale_, fmt_, chars_, decimal
+		character(len=:), allocatable :: locale_, fmt_, substring_, decimal
 
-		if ( len(chars) == 0 ) then
-			into = 0.0_real32
-			return
+		if ( len(substring) == 0 ) then
+			into = 0.0_real32; return
 		end if
 
 		if ( .not. present(locale) ) then
@@ -8346,8 +8216,7 @@ submodule (io_fortran_lib) internal_io
 			if ( any(LOCALES == locale) ) then
 				locale_ = locale
 			else
-				into = 0.0_real32
-				return
+				into = 0.0_real32; return
 			end if
 		end if
 
@@ -8357,15 +8226,14 @@ submodule (io_fortran_lib) internal_io
 			if ( any(REAL_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				into = 0.0_real32
-				return
+				into = 0.0_real32; return
 			end if
 		end if
 
-		chars_ = trim(adjustl(chars))
+		substring_ = trim(adjustl(substring))
 
 		if ( fmt_ == 'z' ) then
-			read(unit=chars_, fmt='(z'//str(len(chars_))//')') into
+			read(unit=substring_, fmt='(z'//str(len(substring_))//')') into
 		else
 			if ( locale_ == 'US' ) then
 				decimal = 'POINT'
@@ -8373,16 +8241,15 @@ submodule (io_fortran_lib) internal_io
 				decimal = 'COMMA'
 			end if
 
-			read(unit=chars_, fmt=*, decimal=decimal) into
+			read(unit=substring_, fmt=*, decimal=decimal) into
 		end if
 	end procedure cast_r32
 
 	module procedure cast_i64
-		character(len=:), allocatable :: fmt_, chars_
+		character(len=:), allocatable :: fmt_, substring_
 
-		if ( len(chars) == 0 ) then
-			into = 0_int64
-			return
+		if ( len(substring) == 0 ) then
+			into = 0_int64; return
 		end if
 
 		if ( .not. present(fmt) ) then
@@ -8391,25 +8258,23 @@ submodule (io_fortran_lib) internal_io
 			if ( any(INT_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				into = 0_int64
-				return
+				into = 0_int64; return
 			end if
 		end if
 
-		chars_ = trim(adjustl(chars))
+		substring_ = trim(adjustl(substring))
 
 		if ( fmt_ == 'z' ) then
-			read(unit=chars_, fmt='(z'//str(len(chars_))//')') into
+			read(unit=substring_, fmt='(z'//str(len(substring_))//')') into
 		else
-			read(unit=chars_, fmt=*) into
+			read(unit=substring_, fmt=*) into
 		end if
 	end procedure cast_i64
 	module procedure cast_i32
-		character(len=:), allocatable :: fmt_, chars_
+		character(len=:), allocatable :: fmt_, substring_
 
-		if ( len(chars) == 0 ) then
-			into = 0_int32
-			return
+		if ( len(substring) == 0 ) then
+			into = 0_int32; return
 		end if
 
 		if ( .not. present(fmt) ) then
@@ -8418,25 +8283,23 @@ submodule (io_fortran_lib) internal_io
 			if ( any(INT_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				into = 0_int32
-				return
+				into = 0_int32; return
 			end if
 		end if
 
-		chars_ = trim(adjustl(chars))
+		substring_ = trim(adjustl(substring))
 
 		if ( fmt_ == 'z' ) then
-			read(unit=chars_, fmt='(z'//str(len(chars_))//')') into
+			read(unit=substring_, fmt='(z'//str(len(substring_))//')') into
 		else
-			read(unit=chars_, fmt=*) into
+			read(unit=substring_, fmt=*) into
 		end if
 	end procedure cast_i32
 	module procedure cast_i16
-		character(len=:), allocatable :: fmt_, chars_
+		character(len=:), allocatable :: fmt_, substring_
 
-		if ( len(chars) == 0 ) then
-			into = 0_int16
-			return
+		if ( len(substring) == 0 ) then
+			into = 0_int16; return
 		end if
 
 		if ( .not. present(fmt) ) then
@@ -8445,25 +8308,23 @@ submodule (io_fortran_lib) internal_io
 			if ( any(INT_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				into = 0_int16
-				return
+				into = 0_int16; return
 			end if
 		end if
 
-		chars_ = trim(adjustl(chars))
+		substring_ = trim(adjustl(substring))
 
 		if ( fmt_ == 'z' ) then
-			read(unit=chars_, fmt='(z'//str(len(chars_))//')') into
+			read(unit=substring_, fmt='(z'//str(len(substring_))//')') into
 		else
-			read(unit=chars_, fmt=*) into
+			read(unit=substring_, fmt=*) into
 		end if
 	end procedure cast_i16
 	module procedure cast_i8
-		character(len=:), allocatable :: fmt_, chars_
+		character(len=:), allocatable :: fmt_, substring_
 
-		if ( len(chars) == 0 ) then
-			into = 0_int8
-			return
+		if ( len(substring) == 0 ) then
+			into = 0_int8; return
 		end if
 
 		if ( .not. present(fmt) ) then
@@ -8472,17 +8333,16 @@ submodule (io_fortran_lib) internal_io
 			if ( any(INT_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				into = 0_int8
-				return
+				into = 0_int8; return
 			end if
 		end if
 
-		chars_ = trim(adjustl(chars))
+		substring_ = trim(adjustl(substring))
 
 		if ( fmt_ == 'z' ) then
-			read(unit=chars_, fmt='(z'//str(len(chars_))//')') into
+			read(unit=substring_, fmt='(z'//str(len(substring_))//')') into
 		else
-			read(unit=chars_, fmt=*) into
+			read(unit=substring_, fmt=*) into
 		end if
 	end procedure cast_i8
 end submodule internal_io
@@ -17301,7 +17161,7 @@ submodule (io_fortran_lib) text_io
 			return
 		end if
 
-		if ( len(string) == 0 ) then
+		if ( len(substring) == 0 ) then
 			write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". '// &
 								'String to write is empty.'
 			return
@@ -17336,10 +17196,64 @@ submodule (io_fortran_lib) text_io
 			end if
 		end if
 
-		write( unit=file_unit ) string//terminator_
+		write( unit=file_unit ) substring//terminator_
 
 		close(file_unit)
 	end procedure echo_chars
+
+	module procedure echo_string
+		character(len=:), allocatable :: ext, terminator_
+		logical :: exists, append_
+		integer :: file_unit
+
+		ext = ext_of(file_name)
+
+		if ( .not. any(TEXT_EXT == ext) ) then
+			write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'" '// &
+								'due to unsupported file extension "'//ext//'".'// &
+							LF//'Supported file extensions: '//to_str(TEXT_EXT, delim=SPACE)
+			return
+		end if
+
+		if ( self%len() < 1 ) then
+			write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". '// &
+								'String to write is empty.'
+			return
+		end if
+
+		if ( .not. present(append) ) then
+			append_ = .true.
+		else
+			append_ = append
+		end if
+
+		if ( .not. present(terminator) ) then
+			terminator_ = LF
+		else
+			terminator_ = terminator
+		end if
+
+		inquire( file=file_name, exist=exists )
+
+		file_unit = output_unit
+
+		if ( .not. exists ) then
+			open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
+				  action='write', access='stream', position='rewind' )
+		else
+			if ( .not. append_ ) then
+				open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
+					  action='write', access='stream', position='rewind' )
+			else
+				open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
+					  action='write', access='stream', position='append' )
+			end if
+		end if
+
+		write( unit=file_unit ) self%s//terminator_
+
+		close(file_unit)
+	end procedure echo_string
 
 	module procedure to_text_1dc128
 		type(String) :: text_file
