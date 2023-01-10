@@ -5,7 +5,7 @@ author: Austin C Bullock
 
 ## [interface echo](../../interface/echo.html)
 
-*Description*: Subroutine for streaming scalar `character` data to an external text file.
+*Description*: Subroutine for streaming a scalar `character` string to an external text file.
 
 For writing a `character` string to an external file:
 

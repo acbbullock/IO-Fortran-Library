@@ -23,7 +23,7 @@ For `self` a scalar of type `String`:
 
 ### [cast](../../type/string.html#boundprocedure-cast)
 
-*Description*: A generic binding for the interface [cast_string](cast_string.html).
+*Description*: A generic binding for the interface [cast](cast.html).
 
 ### [count](../../type/string.html#boundprocedure-count)
 

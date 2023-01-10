@@ -98,7 +98,7 @@
   
   <div class="row">
     <div class="col-md-9 col-md-push-3" id='text'>
-      <p>When writing <code>integer</code> data as strings with <a href="../Ref/str.html">str</a>, <a href="../Ref/string.html">String</a>, or <a href="../Ref/to_file.html">to_file</a>, any of the following text formats may be used:</p>
+      <p>When writing <code>integer</code> data as strings with <a href="../Ref/string.html">String</a>, <a href="../Ref/str.html">str</a>, or <a href="../Ref/to_file.html">to_file</a>, any of the following text formats may be used:</p>
 <div class="codehilite"><pre><span></span><code><span class="n">INT_FMTS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s1">&#39;i&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;z&#39;</span><span class="w"> </span><span class="p">]</span><span class="w"></span>
 </code></pre></div>
 
@@ -106,7 +106,7 @@
 <li><code>'i'</code>: integer format (default), e.g. <code>123456</code></li>
 <li><code>'z'</code>: hexadecimal format, e.g. <code>1E240</code></li>
 </ul>
-<p>When writing floating point numbers of type <code>real</code> or <code>complex</code> as strings with <a href="../Ref/str.html">str</a>, <a href="../Ref/string.html">String</a>, or <a href="../Ref/to_file.html">to_file</a>, any of the following text formats may be used:</p>
+<p>When writing floating point numbers of type <code>real</code> or <code>complex</code> as strings with <a href="../Ref/string.html">String</a>, <a href="../Ref/str.html">str</a>, or <a href="../Ref/to_file.html">to_file</a>, any of the following text formats may be used:</p>
 <div class="codehilite"><pre><span></span><code><span class="n">REAL_FMTS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s1">&#39;e&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;f&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;z&#39;</span><span class="w"> </span><span class="p">]</span><span class="w"></span>
 </code></pre></div>
 
@@ -116,7 +116,7 @@
 <li><code>'z'</code>: hexadecimal format, e.g. <code>40FE240C9FCB68CD</code></li>
 </ul>
 <p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>The <code>'z'</code> hexadecimal format is an integer format and may be used for <code>integer</code>, <code>real</code>, or <code>complex</code> data. Floating point numbers are interpreted bit-wise as integers when written with the <code>'z'</code> format, preventing any loss of precision in a round-trip conversion. This format is preferred for portable data transfers for which precision losses are intolerable.</p></div>
-<p>When moving data in the opposite direction with the complementary procedures <a href="../Ref/cast.html">cast</a>, <a href="../Ref/cast_string.html">cast_string</a>, or <a href="../Ref/from_file.html">from_file</a>, the same <code>fmt</code> is required to properly cast the data. Specifying a <code>fmt</code> that is different from what is actually present may result in an I/O syntax error.</p>
+<p>When moving data in the opposite direction with the complementary procedures <a href="../Ref/cast.html">cast</a> or <a href="../Ref/from_file.html">from_file</a>, the same <code>fmt</code> is required to properly cast the data. Specifying a <code>fmt</code> that is different from what is actually present may result in an I/O syntax error.</p>
 <p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>In round-trip conversions for type <code>real</code> and <code>complex</code> of the form <code>numeric -&gt; string -&gt; numeric</code>, strings will be written by default with a number of significant digits required in the worst case for a lossless round-trip conversion. In general, one may expect the <code>f</code> format to produce losses in round-trip conversion. However, the <code>e</code> format will rarely produce any losses, and the <code>z</code> format will never produce losses as it involves direct bit transfer (no base-10 ⇆ base-2 conversions are involved).</p></div>
     </div>
     <div class="col-md-3 col-md-pull-9">
@@ -158,16 +158,13 @@
             <a href='../../page/Ref/constants.html'>CONSTANTS</a>
             </li>
             <li role="presentation">
+            <a href='../../page/Ref/String.html'>String</a>
+            </li>
+            <li role="presentation">
             <a href='../../page/Ref/str.html'>str</a>
             </li>
             <li role="presentation">
             <a href='../../page/Ref/cast.html'>cast</a>
-            </li>
-            <li role="presentation">
-            <a href='../../page/Ref/String.html'>String</a>
-            </li>
-            <li role="presentation">
-            <a href='../../page/Ref/cast_string.html'>cast_string</a>
             </li>
             <li role="presentation">
             <a href='../../page/Ref/to_file.html'>to_file</a>
@@ -227,7 +224,7 @@
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-01-09 19:42            </p>
+ on 2023-01-09 21:01            </p>
         </div>
       </div>
       <br>

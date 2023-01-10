@@ -100,7 +100,7 @@ For a slightly more advanced example, consider the following program to read in 
 ```fortran
 program main
     use, intrinsic :: iso_fortran_env, only: int8, int64
-    use io_fortran_lib, only: String, cast_string, CR, LF, operator(+), operator(-)
+    use io_fortran_lib, only: String, cast, CR, LF, operator(+), operator(-)
     implicit none (type,external)
 
     type(String) :: csv
@@ -118,13 +118,13 @@ program main
     allocate( copy(nrows), chromosome(nrows), start_point(nrows), end_point(nrows) )
 
     call cells(2:,2)%cast(into=copy)
-    call cast_string(cells(2:,3)%replace('X','0') - 'chr', into=chromosome)
+    call cast(cells(2:,3)%replace('X','0') - 'chr', into=chromosome)
     call cells(2:,4)%cast(into=start_point)
     call cells(2:,5)%cast(into=end_point)
 end program main
 ```
 
-Here, `file_name` is a relative path, and we use the extended operator `+` for [concatenation](../Ref/operators.html#concatenation) in the `character` expression `CR+LF`. We then allocate data arrays and cast each column into respective arrays. Note that the type-bound procedure [cast](../Ref/string-methods.html#cast) is a generic binding for the interface [cast_string](../Ref/cast_string.html), and we must use `cast_string` as a standalone subroutine to accept the `String`-valued expression
+Here, `file_name` is a relative path, and we use the extended operator `+` for [concatenation](../Ref/operators.html#concatenation) in the `character` expression `CR+LF`. We then allocate data arrays and cast each column into respective arrays. Note that we must use [cast](../Ref/cast.html) as a standalone subroutine to accept the `String`-valued expression
 
 ```fortran
 cells(2:,3)%replace('X','0') - 'chr'

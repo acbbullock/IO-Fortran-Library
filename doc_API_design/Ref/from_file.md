@@ -5,7 +5,7 @@ author: Austin C Bullock
 
 ## [interface from_file](../../interface/from_file.html)
 
-*Description*: Subroutine for reading an external file of uniform numeric data type **and** format into an array.
+*Description*: Subroutine for reading an external file of uniform numeric data type and format into an array.
 
 For reading textual data into an array `into` of rank `1` or `2` and of type `integer`:
 

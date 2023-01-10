@@ -175,7 +175,7 @@
 <p>For a slightly more advanced example, consider the following program to read in and cast the data of mixed type contained in the example data <code>/data/ancestry_comp.csv</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="k">program </span><span class="n">main</span><span class="w"></span>
 <span class="w">    </span><span class="k">use</span><span class="p">,</span><span class="w"> </span><span class="k">intrinsic</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">iso_fortran_env</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="p">:</span><span class="w"> </span><span class="n">int8</span><span class="p">,</span><span class="w"> </span><span class="n">int64</span><span class="w"></span>
-<span class="w">    </span><span class="k">use </span><span class="n">io_fortran_lib</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="p">:</span><span class="w"> </span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">cast_string</span><span class="p">,</span><span class="w"> </span><span class="n">CR</span><span class="p">,</span><span class="w"> </span><span class="n">LF</span><span class="p">,</span><span class="w"> </span><span class="n">operator</span><span class="p">(</span><span class="o">+</span><span class="p">),</span><span class="w"> </span><span class="n">operator</span><span class="p">(</span><span class="o">-</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">use </span><span class="n">io_fortran_lib</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="p">:</span><span class="w"> </span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">cast</span><span class="p">,</span><span class="w"> </span><span class="n">CR</span><span class="p">,</span><span class="w"> </span><span class="n">LF</span><span class="p">,</span><span class="w"> </span><span class="n">operator</span><span class="p">(</span><span class="o">+</span><span class="p">),</span><span class="w"> </span><span class="n">operator</span><span class="p">(</span><span class="o">-</span><span class="p">)</span><span class="w"></span>
 <span class="w">    </span><span class="k">implicit none</span><span class="w"> </span><span class="p">(</span><span class="k">type</span><span class="p">,</span><span class="k">external</span><span class="p">)</span><span class="w"></span>
 
 <span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="n">String</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">csv</span><span class="w"></span>
@@ -193,13 +193,13 @@
 <span class="w">    </span><span class="k">allocate</span><span class="p">(</span><span class="w"> </span><span class="n">copy</span><span class="p">(</span><span class="n">nrows</span><span class="p">),</span><span class="w"> </span><span class="n">chromosome</span><span class="p">(</span><span class="n">nrows</span><span class="p">),</span><span class="w"> </span><span class="n">start_point</span><span class="p">(</span><span class="n">nrows</span><span class="p">),</span><span class="w"> </span><span class="n">end_point</span><span class="p">(</span><span class="n">nrows</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"></span>
 
 <span class="w">    </span><span class="k">call </span><span class="n">cells</span><span class="p">(</span><span class="mi">2</span><span class="p">:,</span><span class="mi">2</span><span class="p">)%</span><span class="n">cast</span><span class="p">(</span><span class="n">into</span><span class="o">=</span><span class="n">copy</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">call </span><span class="n">cast_string</span><span class="p">(</span><span class="n">cells</span><span class="p">(</span><span class="mi">2</span><span class="p">:,</span><span class="mi">3</span><span class="p">)%</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">,</span><span class="s1">&#39;0&#39;</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="s1">&#39;chr&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">into</span><span class="o">=</span><span class="n">chromosome</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">call </span><span class="n">cast</span><span class="p">(</span><span class="n">cells</span><span class="p">(</span><span class="mi">2</span><span class="p">:,</span><span class="mi">3</span><span class="p">)%</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">,</span><span class="s1">&#39;0&#39;</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="s1">&#39;chr&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">into</span><span class="o">=</span><span class="n">chromosome</span><span class="p">)</span><span class="w"></span>
 <span class="w">    </span><span class="k">call </span><span class="n">cells</span><span class="p">(</span><span class="mi">2</span><span class="p">:,</span><span class="mi">4</span><span class="p">)%</span><span class="n">cast</span><span class="p">(</span><span class="n">into</span><span class="o">=</span><span class="n">start_point</span><span class="p">)</span><span class="w"></span>
 <span class="w">    </span><span class="k">call </span><span class="n">cells</span><span class="p">(</span><span class="mi">2</span><span class="p">:,</span><span class="mi">5</span><span class="p">)%</span><span class="n">cast</span><span class="p">(</span><span class="n">into</span><span class="o">=</span><span class="n">end_point</span><span class="p">)</span><span class="w"></span>
 <span class="k">end program </span><span class="n">main</span><span class="w"></span>
 </code></pre></div>
 
-<p>Here, <code>file_name</code> is a relative path, and we use the extended operator <code>+</code> for <a href="../Ref/operators.html#concatenation">concatenation</a> in the <code>character</code> expression <code>CR+LF</code>. We then allocate data arrays and cast each column into respective arrays. Note that the type-bound procedure <a href="../Ref/string-methods.html#cast">cast</a> is a generic binding for the interface <a href="../Ref/cast_string.html">cast_string</a>, and we must use <code>cast_string</code> as a standalone subroutine to accept the <code>String</code>-valued expression</p>
+<p>Here, <code>file_name</code> is a relative path, and we use the extended operator <code>+</code> for <a href="../Ref/operators.html#concatenation">concatenation</a> in the <code>character</code> expression <code>CR+LF</code>. We then allocate data arrays and cast each column into respective arrays. Note that we must use <a href="../Ref/cast.html">cast</a> as a standalone subroutine to accept the <code>String</code>-valued expression</p>
 <div class="codehilite"><pre><span></span><code><span class="n">cells</span><span class="p">(</span><span class="mi">2</span><span class="p">:,</span><span class="mi">3</span><span class="p">)%</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">,</span><span class="s1">&#39;0&#39;</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="s1">&#39;chr&#39;</span><span class="w"></span>
 </code></pre></div>
 
@@ -245,16 +245,13 @@
             <a href='../../page/Ref/constants.html'>CONSTANTS</a>
             </li>
             <li role="presentation">
+            <a href='../../page/Ref/String.html'>String</a>
+            </li>
+            <li role="presentation">
             <a href='../../page/Ref/str.html'>str</a>
             </li>
             <li role="presentation">
             <a href='../../page/Ref/cast.html'>cast</a>
-            </li>
-            <li role="presentation">
-            <a href='../../page/Ref/String.html'>String</a>
-            </li>
-            <li role="presentation">
-            <a href='../../page/Ref/cast_string.html'>cast_string</a>
             </li>
             <li role="presentation">
             <a href='../../page/Ref/to_file.html'>to_file</a>
@@ -314,7 +311,7 @@
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-01-09 19:42            </p>
+ on 2023-01-09 21:01            </p>
         </div>
       </div>
       <br>

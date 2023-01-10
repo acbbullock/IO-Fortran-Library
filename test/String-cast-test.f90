@@ -13,7 +13,7 @@ program main
 	logfile = 'tests.log'
 	call date_and_time(date=date, time=time)
 
-	logmsg = String('RUNNING TESTS (String|cast_string) - date: ' + trim(adjustl(date)) + ' | time: ' + time + LF)
+	logmsg = String('RUNNING TESTS (String|cast) - date: ' + trim(adjustl(date)) + ' | time: ' + time + LF)
 	call logmsg%push('-'**logmsg%len() + LF)
 
 	all_passing = .true.

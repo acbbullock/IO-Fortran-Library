@@ -5,7 +5,7 @@ author: Austin C Bullock
 
 ## [interface cast](../../interface/cast.html)
 
-*Description*: Subroutine for casting a scalar `character` string into a number.
+*Description*: Subroutine for casting a `String` or `character` type into a number.
 
 For casting a scalar `character` string `chars` into a variable `into` of type `integer`:
 
@@ -33,6 +33,49 @@ call cast(chars, into, locale, fmt, im)
 * `locale` is `optional`, may be one of `LOCALES`
 * `fmt` is `optional`, may be one of `REAL_FMTS`
 * `im` is `optional` and of type `character(len=*)`
+
+For casting a `String` type `self` into a variable `into` of compatible rank and of type `integer`:
+
+```fortran
+call cast(self, into, fmt)
+```
+
+```fortran
+call self%cast(into, fmt)
+```
+
+* `fmt` is `optional`, may be one of `INT_FMTS`
+
+For casting a `String` type `self` into a variable `into` of compatible rank and of type `real`:
+
+```fortran
+call cast(self, into, locale, fmt)
+```
+
+```fortran
+call self%cast(into, locale, fmt)
+```
+
+* `locale` is `optional`, may be one of `LOCALES`
+* `fmt` is `optional`, may be one of `REAL_FMTS`
+
+For casting a `String` type `self` into a variable `into` of compatible rank and of type `complex`:
+
+```fortran
+call cast(self, into, locale, fmt, im)
+```
+
+```fortran
+call self%cast(into, locale, fmt, im)
+```
+
+* `locale` is `optional`, may be one of `LOCALES`
+* `fmt` is `optional`, may be one of `REAL_FMTS`
+* `im` is `optional` and of type `character(len=*)`
+
+@note The type-bound procedure access of the form `call self%cast()` is valid when `self` is a `String` variable. To cast a `String` expression, the expression must be passed to `cast` by the form `call cast()`.
+
+@warning In all cases, `into` must be pre-allocated prior to calling `cast` due to the restriction that `intent(out)` arguments of `elemental` procedures may not be `allocatable`.
 
 ### Optional Arguments
 
