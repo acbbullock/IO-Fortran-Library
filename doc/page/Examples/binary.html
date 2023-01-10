@@ -8,7 +8,7 @@
     <meta name="author" content="Austin C Bullock" >
     <link rel="icon" href="../../favicon.png">
 
-    <title>dat file I/O &ndash; IO-Fortran-Library</title>
+    <title>Handling dat files &ndash; IO-Fortran-Library</title>
 
     <link href="../../css/bootstrap.min.css" rel="stylesheet">
     <link href="../../css/pygments.css" rel="stylesheet">
@@ -77,7 +77,7 @@
 
     <div class="container">
   <div class="row">
-    <h1>dat file I/O</h1>
+    <h1>Handling dat files</h1>
     <div class="row">
     <div class="col-lg-12">
     <div class="well well-sm" style="min-height: 40px;">
@@ -89,7 +89,7 @@
         <ol class="breadcrumb in-well">
          <li><a href='../../page/index.html'>API Design</a></li>
          <li><a href='../../page/Examples/index.html'>Tutorials</a></li>
-         <li class="active">dat file I/O</li>
+         <li class="active">Handling dat files</li>
       </ol>
     </div>
     </div>
@@ -98,7 +98,9 @@
   
   <div class="row">
     <div class="col-md-9 col-md-push-3" id='text'>
-      <p>The following program demonstrates the use of <a href="../Ref/to_file.html">to_file</a> and <a href="../Ref/from_file.html">from_file</a> for writing <code>real</code> data of rank <code>5</code> to a <code>.dat</code> file, reading the file back into the program, and testing for exact equality to ensure that there has been no loss in precision:</p>
+      <h2 id="binary-file-io">Binary file I/O</h2>
+<p>The routines <a href="../Ref/to_file.html">to_file</a> and <a href="../Ref/from_file.html">from_file</a> are used for writing numeric arrays to binary files with the extension <code>.dat</code> or <code>.bin</code>.</p>
+<p>The following program demonstrates the use of <code>to_file</code> and <code>from_file</code> for writing <code>real</code> data of rank <code>5</code> to a <code>.dat</code> file, reading the file back into the program, and testing for exact equality to ensure that there has been no loss in precision:</p>
 <div class="codehilite"><pre><span></span><code><span class="k">program </span><span class="n">main</span><span class="w"></span>
 <span class="w"> </span><span class="k">use </span><span class="n">io_fortran_lib</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="p">:</span><span class="w"> </span><span class="n">to_file</span><span class="p">,</span><span class="w"> </span><span class="n">from_file</span><span class="w"></span>
 <span class="w">    </span><span class="k">implicit none</span><span class="w"> </span><span class="p">(</span><span class="k">type</span><span class="p">,</span><span class="k">external</span><span class="p">)</span><span class="w"></span>
@@ -117,7 +119,7 @@
 </code></pre></div>
 
 <p></p><div class="alert alert-warning" role="alert"><h4>Warning</h4><p>Reading into arrays of a different <code>kind</code> than the array that was written will invalidate the data. Always make sure the <code>kind</code> is matching.</p></div>
-<p>Tip: The <code>shape</code> of an array may be written to file as a <code>.csv</code> so that the value of <code>data_shape</code> can be read into the program before reading in the main array with the corresponding value. The following program demonstrates the above tip:</p>
+<p>TIP: The <code>shape</code> of an array may be written to a csv file so that the value of <code>data_shape</code> can be read into the program before reading in the main array with the corresponding value. The following program demonstrates the above tip:</p>
 <div class="codehilite"><pre><span></span><code><span class="k">program </span><span class="n">main</span><span class="w"></span>
 <span class="w">    </span><span class="k">use </span><span class="n">io_fortran_lib</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="p">:</span><span class="w"> </span><span class="n">to_file</span><span class="p">,</span><span class="w"> </span><span class="n">from_file</span><span class="w"></span>
 <span class="w">    </span><span class="k">implicit none</span><span class="w"> </span><span class="p">(</span><span class="k">type</span><span class="p">,</span><span class="k">external</span><span class="p">)</span><span class="w"></span>
@@ -213,13 +215,13 @@
             <a href='../../page/Examples/index.html'>Tutorials</a>
             <ul class="nav nav-stacked nav-pills">
                           <li role="presentation">
-            <a href='../../page/Examples/csv.html'>csv file I/O</a>
+            <a href='../../page/Examples/csv.html'>Handling csv files</a>
             </li>
             <li role="presentation" class="disabled">
-            <a href='../../page/Examples/binary.html'>dat file I/O</a>
+            <a href='../../page/Examples/binary.html'>Handling dat files</a>
             </li>
             <li role="presentation">
-            <a href='../../page/Examples/logging.html'>log file output</a>
+            <a href='../../page/Examples/logging.html'>Handling log files</a>
             </li>
             <li role="presentation">
             <a href='../../page/Examples/timestamp.html'>String manipulation</a>
@@ -246,7 +248,7 @@
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-01-09 15:56            </p>
+ on 2023-01-09 19:42            </p>
         </div>
       </div>
       <br>

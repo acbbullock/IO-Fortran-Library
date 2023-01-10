@@ -30,9 +30,9 @@ module io_fortran_lib
 	character(len=1), parameter :: CNUL  = c_null_char			!! The C null character re-exported from iso_c_binding.
 	character(len=0), parameter :: EMPTY_STR = ''												   !! The empty string.
 
-	character(len=1), 				parameter :: SEMICOLON	= achar(59)										! Semicolon
-	character(len=1), 				parameter :: POINT		= achar(46)										! Full stop
-	character(len=1), 				parameter :: COMMA		= achar(44)											! Comma
+	character(len=1),				parameter :: SEMICOLON	= achar(59)										! Semicolon
+	character(len=1),				parameter :: POINT		= achar(46)										! Full stop
+	character(len=1),				parameter :: COMMA		= achar(44)											! Comma
 	character(len=1),				parameter :: QQUOTE		= achar(34)									 ! Double quote
 	character(len=*), dimension(*), parameter :: INT_FMTS   = [ 'i', 'z' ]				 ! Allowed formats for integers
 	character(len=*), dimension(*), parameter :: REAL_FMTS  = [ 'e', 'f', 'z' ]			   ! Allowed formats for floats
@@ -40,7 +40,7 @@ module io_fortran_lib
 	character(len=*), dimension(*), parameter :: BINARY_EXT = [ 'dat', 'bin' ]				! Allowed binary extensions
 	character(len=*), dimension(*), parameter :: TEXT_EXT   = [ 'csv', 'txt', 'log', 'rtf', & ! Allowed text extensions
 																'odm', 'odt', 'ods', 'odf', 'xls', &
-																'doc', 'org', 'dbf', 'bed' ]
+																'doc', 'org', 'dbf', 'bed', 'gff', 'gtf' ]
 
 	type String
 		!--------------------------------------------------------------------------------------------------------------

@@ -8,7 +8,8 @@ When writing to file or reading from file, a valid file extension must be presen
 The following are valid text file extensions:
 
 ```fortran
-TEXT_EXT = [ 'csv', 'txt', 'log', 'rtf', 'odm', 'odt', 'ods', 'odf', 'xls', 'doc', 'org', 'dbf', 'bed' ]
+TEXT_EXT = [ 'csv', 'txt', 'log', 'rtf', 'odm', 'odt', 'ods', 'odf', 'xls', 'doc', 'org', 'dbf', 'bed', 'gff', &
+             'gtf' ]
 ```
 
 The following are valid binary file extensions:

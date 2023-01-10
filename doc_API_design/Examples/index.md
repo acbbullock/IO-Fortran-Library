@@ -10,8 +10,8 @@ ordered_subpage: fizzbuzz.md
 
 The following subsections provide complete example programs for common use cases of the public [interfaces](../../lists/procedures.html):
 
-* [`.csv` file I/O](csv.html)
-* [`.dat` file I/O](binary.html)
-* [`.log` file I/O](logging.html)
+* [Handling csv files](csv.html)
+* [Handling dat files](binary.html)
+* [Handling log files](logging.html)
 * [String manipulation](timestamp.html)
 * [FizzBuzz](fizzbuzz.html)

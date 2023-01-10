@@ -8,7 +8,7 @@
     <meta name="author" content="Austin C Bullock" >
     <link rel="icon" href="../../favicon.png">
 
-    <title>csv file I/O &ndash; IO-Fortran-Library</title>
+    <title>Handling csv files &ndash; IO-Fortran-Library</title>
 
     <link href="../../css/bootstrap.min.css" rel="stylesheet">
     <link href="../../css/pygments.css" rel="stylesheet">
@@ -77,7 +77,7 @@
 
     <div class="container">
   <div class="row">
-    <h1>csv file I/O</h1>
+    <h1>Handling csv files</h1>
     <div class="row">
     <div class="col-lg-12">
     <div class="well well-sm" style="min-height: 40px;">
@@ -89,7 +89,7 @@
         <ol class="breadcrumb in-well">
          <li><a href='../../page/index.html'>API Design</a></li>
          <li><a href='../../page/Examples/index.html'>Tutorials</a></li>
-         <li class="active">csv file I/O</li>
+         <li class="active">Handling csv files</li>
       </ol>
     </div>
     </div>
@@ -98,8 +98,9 @@
   
   <div class="row">
     <div class="col-md-9 col-md-push-3" id='text'>
-      <h3 id="writingreading-data-of-uniform-type-with-uniform-format">Writing/reading data of uniform type with uniform format</h3>
-<p>The following program demonstrates the use of <a href="../Ref/to_file.html">to_file</a> and <a href="../Ref/from_file.html">from_file</a> for writing an array of <code>real</code> data to a <code>.csv</code> file in each possible <a href="../UserInfo/text-fmts.html">text format</a>, reading each file back into the program, and testing for exact equality to ensure that there has been no loss in precision:</p>
+      <h2 id="basic-csv-file-io">Basic csv file I/O</h2>
+<p>The routines <a href="../Ref/to_file.html">to_file</a> and <a href="../Ref/from_file.html">from_file</a> are the preferred method for handling I/O for numeric data of uniform type and format. Typical use cases involve writing whole arrays to file and reading files of uniform type and format directly into an array of numeric type.</p>
+<p>The following program demonstrates the use of <code>to_file</code> and <code>from_file</code> for writing an array of <code>real</code> data to a csv file in each possible <a href="../UserInfo/text-fmts.html">text format</a>, reading each file back into the program, and testing for exact equality to ensure that there has been no loss in precision:</p>
 <div class="codehilite"><pre><span></span><code><span class="k">program </span><span class="n">main</span><span class="w"></span>
 <span class="w">    </span><span class="k">use </span><span class="n">io_fortran_lib</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="p">:</span><span class="w"> </span><span class="n">to_file</span><span class="p">,</span><span class="w"> </span><span class="n">from_file</span><span class="w"></span>
 <span class="w">    </span><span class="k">implicit none</span><span class="w"> </span><span class="p">(</span><span class="k">type</span><span class="p">,</span><span class="k">external</span><span class="p">)</span><span class="w"></span>
@@ -130,8 +131,9 @@
 <p>Note that the default value for <code>header</code> when reading is <code>.false.</code>. If a header is actually present, the output array will have an extra row with default initialized values.</p>
 <p></p><div class="alert alert-warning" role="alert"><h4>Warning</h4><p>Default text format for writing and reading is <code>'e'</code> for data of type <code>real</code> or <code>complex</code>, and <code>'i'</code> for data of type <code>integer</code>. Attempting to read data with a format that does not correspond to the format in the file will result in an I/O syntax error.</p></div>
 <p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>Reading into arrays of a different <code>kind</code> than the array that was written is a type conversion, and will fail the equality test.</p></div>
-<h3 id="writingreading-data-of-non-uniform-type-with-non-uniform-format">Writing/reading data of non-uniform type with non-uniform format</h3>
-<p>The same program above can be recast in an object-oriented fashion that is generalizable for processing data of mixed type:</p>
+<h2 id="advanced-csv-file-io">Advanced csv file I/O</h2>
+<p>The routines <a href="../Ref/String-methods.html#write_file">write_file</a> and <a href="../Ref/String-methods.html#read_file">read_file</a> are the preferred method for handling I/O for general text files. Typical use cases involve writing cell arrays of type <code>String</code> to delimited files, and reading delimited files into a cell array. For reading and writing non-delimited text files, one would use <code>read_file</code> without the <code>cell_array</code> argument and <a href="../Ref/String-methods.html#echo">echo</a>.</p>
+<p>The same program as above can be recast in an object-oriented fashion that is generalizable for processing data of mixed type:</p>
 <div class="codehilite"><pre><span></span><code><span class="k">program </span><span class="n">main</span><span class="w"></span>
 <span class="w">    </span><span class="k">use </span><span class="n">io_fortran_lib</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="p">:</span><span class="w"> </span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="w"></span>
 <span class="w">    </span><span class="k">implicit none</span><span class="w"> </span><span class="p">(</span><span class="k">type</span><span class="p">,</span><span class="k">external</span><span class="p">)</span><span class="w"></span>
@@ -163,11 +165,11 @@
 <span class="k">end program </span><span class="n">main</span><span class="w"></span>
 </code></pre></div>
 
-<p>Here, we construct the same header ourselves with the implicit loop</p>
+<p>Here, we construct the same header as before with the implicit loop</p>
 <div class="codehilite"><pre><span></span><code><span class="n">cells</span><span class="p">(</span><span class="mi">1</span><span class="p">,:)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[(</span><span class="n">String</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="o">//</span><span class="n">str</span><span class="p">(</span><span class="n">i</span><span class="p">)),</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">)]</span><span class="w"></span>
 </code></pre></div>
 
-<p>and then construct the remainder of the cell array <code>cells</code> with an elemental assignment <code>cells(2:,:) = String(x, fmt)</code> before writing the array to a <code>.csv</code> file. We then read the files back into <code>csv</code> and output the cells into <code>cells</code> (which is reallocated internally). Note that when casting the cell data into numeric arrays, we must pre-allocate the output arrays due to the restriction that <code>intent(out)</code> arguments of <code>elemental</code> procedures may not be <code>allocatable</code>.</p>
+<p>and then construct the remainder of the cell array <code>cells</code> with an elemental assignment <code>cells(2:,:) = String(x, fmt)</code> before writing the array to a csv file. We then read the files back into <code>csv</code> and output the cells into <code>cells</code> (which is reallocated internally). Note that when casting the cell data into numeric arrays, we must pre-allocate the output arrays due to the restriction that <code>intent(out)</code> arguments of <code>elemental</code> procedures may not be <code>allocatable</code>.</p>
 <p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>One may optionally specify the arguments of <code>row_separator</code> and <code>column_separator</code> when writing and reading text files with <a href="../Ref/string-methods.html#write_file">write_file</a> and <a href="../Ref/string-methods.html#read_file">read_file</a>. The default <code>row_separator</code> is <code>LF</code>, and the default <code>column_separator</code> is <code>','</code>.</p></div>
 <p></p><div class="alert alert-warning" role="alert"><h4>Warning</h4><p>When reading files with <code>CRLF</code> line endings, be sure to specify <code>row_separator=CR//LF</code> or pre-process the file to <code>LF</code>. Trying to cast data with a hidden <code>CR</code> character may result in an I/O syntax error.</p></div>
 <p>For a slightly more advanced example, consider the following program to read in and cast the data of mixed type contained in the example data <code>/data/ancestry_comp.csv</code>:</p>
@@ -202,6 +204,7 @@
 </code></pre></div>
 
 <p>which first calls <a href="../Ref/string-methods.html#replace">replace</a> to return an elemental copy of the given cells in which all instances of <code>X</code> have been replaced with <code>0</code>, and then calls the <a href="../Ref/operators.html#excision">excision operator</a> <code>-</code> to remove all instances of <code>'chr'</code> elementally. The output of the <code>String</code> expression contains numeric characters only, which are then casted to the array <code>chromosome</code>.</p>
+<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>In general, for other <a href="../UserInfo/file-ext.html">text file extensions</a>, one would specify the <code>column_separator</code> associated with the given file. For instance, one would specify <code>column_separator=TAB</code> for the file formats <code>.bed</code>, <code>.gff</code>, and <code>.gtf</code>.</p></div>
     </div>
     <div class="col-md-3 col-md-pull-9">
       <hr class="visible-xs visible-sm">
@@ -278,13 +281,13 @@
             <a href='../../page/Examples/index.html'>Tutorials</a>
             <ul class="nav nav-stacked nav-pills">
                           <li role="presentation" class="disabled">
-            <a href='../../page/Examples/csv.html'>csv file I/O</a>
+            <a href='../../page/Examples/csv.html'>Handling csv files</a>
             </li>
             <li role="presentation">
-            <a href='../../page/Examples/binary.html'>dat file I/O</a>
+            <a href='../../page/Examples/binary.html'>Handling dat files</a>
             </li>
             <li role="presentation">
-            <a href='../../page/Examples/logging.html'>log file output</a>
+            <a href='../../page/Examples/logging.html'>Handling log files</a>
             </li>
             <li role="presentation">
             <a href='../../page/Examples/timestamp.html'>String manipulation</a>
@@ -311,7 +314,7 @@
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-01-09 15:56            </p>
+ on 2023-01-09 19:42            </p>
         </div>
       </div>
       <br>

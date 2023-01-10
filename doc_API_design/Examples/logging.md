@@ -1,9 +1,13 @@
 ---
-title: log file output
+title: Handling log files
 author: Austin C Bullock
 ---
 
-The following program demonstrates a simple use of [echo](../Ref/echo.html) for writing messages to a `.log` file, supplemented with the use of [LF](../../module/io_fortran_lib.html#variable-lf) and [str](../Ref/str.html):
+## Log file I/O
+
+The routine [echo](../Ref/echo.html) is the preferred method for streaming text data of type `character` to a log file.
+
+The following program demonstrates a simple use of `echo` for writing messages to a log file:
 
 ```fortran
 program main
@@ -38,7 +42,7 @@ program main
 end program main
 ```
 
-Depending on style, one may wish to accumulate log messages into a `String` and then `echo` conditionally:
+Depending on style, one may wish to accumulate log messages into a `String` and then call the type-bound procedure [echo](../Ref/string-methods.html#echo) conditionally:
 
 ```fortran
 program main

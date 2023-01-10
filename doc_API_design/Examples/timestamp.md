@@ -3,7 +3,7 @@ title: String manipulation
 author: Austin C Bullock
 ---
 
-The following program demonstrates the use of the [String](../../type/string.html) type and some [type-bound procedures](../Ref/string-methods.html) for manipulating a timestamp, supplemented with the use of [LF](../../module/io_fortran_lib.html#variable-lf) and the [operators](../Ref/operators.html) `+` and `-`:
+The following program demonstrates the use of the [String](../../type/string.html) type and some [type-bound procedures](../Ref/string-methods.html) for manipulating a timestamp:
 
 ```fortran
 program main
