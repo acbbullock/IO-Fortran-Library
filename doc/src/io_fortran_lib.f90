@@ -4551,8 +4551,8 @@ submodule (io_fortran_lib) String_procedures
 
 	module procedure glue_into_self
 		character(len=:), allocatable :: separator_
-		integer, allocatable, dimension(:) :: lengths
-		integer :: i
+		integer, allocatable, dimension(:) :: lengths, cumm_lengths
+		integer :: sep_len, num_tokens, total_length, pos, i
 
 		if ( .not. present(separator) ) then
 			separator_ = SPACE
@@ -4560,22 +4560,48 @@ submodule (io_fortran_lib) String_procedures
 			separator_ = separator
 		end if
 
+		sep_len = len(separator_)
 		lengths = tokens%len()
+		num_tokens = size(lengths)
 
-		self%s = EMPTY_STR
-		do i = 1, size(tokens)-1
-			if ( lengths(i) < 1 ) then
-				self%s = self%s//separator_
+		if ( num_tokens == 1 ) then
+			if ( lengths(1) < 1 ) then
+				self%s = EMPTY_STR; return
 			else
-				self%s = self%s//tokens(i)%s//separator_
+				self%s = tokens(1)%s; return
 			end if
+		end if
+
+		where ( lengths == -1 ) lengths = 0
+		total_length = sum(lengths)
+
+		if ( total_length == 0 ) then
+			self%s = EMPTY_STR; return
+		end if
+
+		allocate( cumm_lengths(num_tokens), source=1 )
+
+		do concurrent (i = 2:num_tokens)
+			cumm_lengths(i) = sum( lengths(:i-1) ) + 1
 		end do
 
-		if ( lengths(size(tokens)) < 1 ) then
-			return
-		else
-			self%s = self%s//tokens(size(tokens))%s
-		end if
+		if ( allocated(self%s) ) deallocate(self%s)
+
+		allocate( character(len=total_length + (num_tokens-1)*sep_len) :: self%s )
+
+		positional_transfer: do concurrent (i = 1:num_tokens)
+			pos = cumm_lengths(i) + (i-1)*sep_len
+			if ( lengths(i) > 0 ) then
+				self%s(pos:pos+lengths(i)-1) = tokens(i)%s
+				if ( sep_len > 0 ) then
+					if ( i < num_tokens ) self%s(pos+lengths(i):pos+lengths(i)+sep_len-1) = separator_
+				end if
+			else
+				if ( sep_len > 0 ) then
+					if ( i < num_tokens ) self%s(pos:pos+sep_len-1) = separator_
+				end if
+			end if
+		end do positional_transfer
 	end procedure glue_into_self
 
 	module procedure length
@@ -5327,10 +5353,8 @@ submodule (io_fortran_lib) String_procedures
 		allocate( rows(n_rows) )
 
 		do concurrent (i = 1:n_rows)
-			call rows(i)%glue(tokens=cell_array(i,:), separator=column_separator_)
+			rows(i) = glue(tokens=cell_array(i,:), separator=column_separator_)//row_separator_
 		end do
-
-		call rows%push(row_separator_)
 
 		call self%glue(tokens=rows, separator=EMPTY_STR)
 
@@ -7384,8 +7408,8 @@ submodule (io_fortran_lib) glue_split
 
 	module procedure glue_string
 		character(len=:), allocatable :: separator_
-		integer, allocatable, dimension(:) :: lengths
-		integer :: i
+		integer, allocatable, dimension(:) :: lengths, cumm_lengths
+		integer :: sep_len, num_tokens, total_length, pos, i
 
 		if ( .not. present(separator) ) then
 			separator_ = SPACE
@@ -7393,22 +7417,46 @@ submodule (io_fortran_lib) glue_split
 			separator_ = separator
 		end if
 
+		sep_len = len(separator_)
 		lengths = tokens%len()
+		num_tokens = size(lengths)
 
-		new%s = EMPTY_STR
-		do i = 1, size(tokens)-1
-			if ( lengths(i) < 1 ) then
-				new%s = new%s//separator_
+		if ( num_tokens == 1 ) then
+			if ( lengths(1) < 1 ) then
+				new%s = EMPTY_STR; return
 			else
-				new%s = new%s//tokens(i)%s//separator_
+				new%s = tokens(1)%s; return
 			end if
+		end if
+
+		where ( lengths == -1 ) lengths = 0
+		total_length = sum(lengths)
+
+		if ( total_length == 0 ) then
+			new%s = EMPTY_STR; return
+		end if
+
+		allocate( cumm_lengths(num_tokens), source=1 )
+
+		do concurrent (i = 2:num_tokens)
+			cumm_lengths(i) = sum( lengths(:i-1) ) + 1
 		end do
 
-		if ( lengths(size(tokens)) < 1 ) then
-			return
-		else
-			new%s = new%s//tokens(size(tokens))%s
-		end if
+		allocate( character(len=total_length + (num_tokens-1)*sep_len) :: new%s )
+
+		positional_transfer: do concurrent (i = 1:num_tokens)
+			pos = cumm_lengths(i) + (i-1)*sep_len
+			if ( lengths(i) > 0 ) then
+				new%s(pos:pos+lengths(i)-1) = tokens(i)%s
+				if ( sep_len > 0 ) then
+					if ( i < num_tokens ) new%s(pos+lengths(i):pos+lengths(i)+sep_len-1) = separator_
+				end if
+			else
+				if ( sep_len > 0 ) then
+					if ( i < num_tokens ) new%s(pos:pos+sep_len-1) = separator_
+				end if
+			end if
+		end do positional_transfer
 	end procedure glue_string
 
 	module procedure split_char

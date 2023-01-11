@@ -6,6 +6,7 @@ ordered_subpage: binary.md
 ordered_subpage: logging.md
 ordered_subpage: timestamp.md
 ordered_subpage: fizzbuzz.md
+ordered_subpage: exome.md
 ---
 
 The following subsections provide complete example programs for common use cases of the public [interfaces](../../lists/procedures.html):
@@ -15,3 +16,4 @@ The following subsections provide complete example programs for common use cases
 * [Handling log files](logging.html)
 * [String manipulation](timestamp.html)
 * [FizzBuzz](fizzbuzz.html)
+* [NGS Human Core Exome Panel](exome.html)
