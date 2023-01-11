@@ -10,7 +10,7 @@ program main
     use io_fortran_lib
     implicit none (type,external)
 
-    call echo(string='Hello from image '//str(this_image()), file_name='hello.txt')
+    call echo('Hello from image '//str(this_image()), file_name='hello.txt')
 end program main
 ```
 
@@ -24,7 +24,7 @@ program main
     implicit none (type,external)
 
     critical
-        call echo(string='Hello from image '//str(this_image()), file_name='hello.txt')
+        call echo('Hello from image '//str(this_image()), file_name='hello.txt')
     end critical
 end program main
 ```
@@ -37,7 +37,7 @@ program main
     implicit none (type,external)
 
     if ( this_image() == 1 ) then
-        call echo(string='Hello from image '//str(this_image()), file_name='hello.txt')
+        call echo('Hello from image '//str(this_image()), file_name='hello.txt')
     end if
 end program main
 ```

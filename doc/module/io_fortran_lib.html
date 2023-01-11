@@ -90,7 +90,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title="17.7% of total for modules and submodules.">3940 statements</a>
+               title="17.7% of total for modules and submodules.">3947 statements</a>
           </li>
 
             <li id="source-file">
@@ -4063,6 +4063,49 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
           </li>
           <li class="list-group-item">
                 <h3>
+    private pure elemental recursive module function new_Str_string(x) result(new)  
+
+    </h3>
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>x</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/string.html'>String</a>)</small>
+    </h4>
+    
+
+          </li>
+          <li class="list-group-item">
+                <h3>
     private pure elemental recursive module function new_Str_char(x) result(new)  
 
     </h3>
@@ -4944,6 +4987,49 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
+    private pure recursive module function str_string(x) result(x_str)  
+
+    </h3>
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>x</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>character(len=:), allocatable</small>
+    </h4>
+    
+
+          </li>
+          <li class="list-group-item">
+                <h3>
     private pure recursive module function str_char(x) result(x_str)  
 
     </h3>
@@ -5011,14 +5097,14 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
       </h3>
     </div>
       <div class="panel-body">
-        <p>Subroutine for casting a <code>character</code> or <code>String</code> type into a number.</p>
+        <p>Subroutine for casting a <code>character</code> or <code>String</code> into a number.</p>
 <p>For the complement of <code>cast</code>, see <a href="../page/Ref/string.html">String</a> and <a href="../page/Ref/str.html">str</a>.</p>
 <p>For a user reference, see <a href="../page/Ref/cast.html">cast</a>.</p>
       </div>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module subroutine cast_string_c128(self, into, locale, fmt, im)  
+    private pure elemental recursive module subroutine cast_string_c128(substring, into, locale, fmt, im)  
 
     </h3>
   
@@ -5044,7 +5130,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
               
             </td>
             <td>::</td>
-            <td><strong>self</strong></td>
+            <td><strong>substring</strong></td>
             <td>
                 
             </td>
@@ -5116,7 +5202,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module subroutine cast_string_c64(self, into, locale, fmt, im)  
+    private pure elemental recursive module subroutine cast_string_c64(substring, into, locale, fmt, im)  
 
     </h3>
   
@@ -5142,7 +5228,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
               
             </td>
             <td>::</td>
-            <td><strong>self</strong></td>
+            <td><strong>substring</strong></td>
             <td>
                 
             </td>
@@ -5214,7 +5300,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module subroutine cast_string_c32(self, into, locale, fmt, im)  
+    private pure elemental recursive module subroutine cast_string_c32(substring, into, locale, fmt, im)  
 
     </h3>
   
@@ -5240,7 +5326,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
               
             </td>
             <td>::</td>
-            <td><strong>self</strong></td>
+            <td><strong>substring</strong></td>
             <td>
                 
             </td>
@@ -5312,7 +5398,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module subroutine cast_string_r128(self, into, locale, fmt)  
+    private pure elemental recursive module subroutine cast_string_r128(substring, into, locale, fmt)  
 
     </h3>
   
@@ -5338,7 +5424,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
               
             </td>
             <td>::</td>
-            <td><strong>self</strong></td>
+            <td><strong>substring</strong></td>
             <td>
                 
             </td>
@@ -5395,7 +5481,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module subroutine cast_string_r64(self, into, locale, fmt)  
+    private pure elemental recursive module subroutine cast_string_r64(substring, into, locale, fmt)  
 
     </h3>
   
@@ -5421,7 +5507,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
               
             </td>
             <td>::</td>
-            <td><strong>self</strong></td>
+            <td><strong>substring</strong></td>
             <td>
                 
             </td>
@@ -5478,7 +5564,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module subroutine cast_string_r32(self, into, locale, fmt)  
+    private pure elemental recursive module subroutine cast_string_r32(substring, into, locale, fmt)  
 
     </h3>
   
@@ -5504,7 +5590,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
               
             </td>
             <td>::</td>
-            <td><strong>self</strong></td>
+            <td><strong>substring</strong></td>
             <td>
                 
             </td>
@@ -5561,7 +5647,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module subroutine cast_string_i64(self, into, fmt)  
+    private pure elemental recursive module subroutine cast_string_i64(substring, into, fmt)  
 
     </h3>
   
@@ -5587,7 +5673,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
               
             </td>
             <td>::</td>
-            <td><strong>self</strong></td>
+            <td><strong>substring</strong></td>
             <td>
                 
             </td>
@@ -5629,7 +5715,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module subroutine cast_string_i32(self, into, fmt)  
+    private pure elemental recursive module subroutine cast_string_i32(substring, into, fmt)  
 
     </h3>
   
@@ -5655,7 +5741,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
               
             </td>
             <td>::</td>
-            <td><strong>self</strong></td>
+            <td><strong>substring</strong></td>
             <td>
                 
             </td>
@@ -5697,7 +5783,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module subroutine cast_string_i16(self, into, fmt)  
+    private pure elemental recursive module subroutine cast_string_i16(substring, into, fmt)  
 
     </h3>
   
@@ -5723,7 +5809,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
               
             </td>
             <td>::</td>
-            <td><strong>self</strong></td>
+            <td><strong>substring</strong></td>
             <td>
                 
             </td>
@@ -5765,7 +5851,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module subroutine cast_string_i8(self, into, fmt)  
+    private pure elemental recursive module subroutine cast_string_i8(substring, into, fmt)  
 
     </h3>
   
@@ -5791,7 +5877,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
               
             </td>
             <td>::</td>
-            <td><strong>self</strong></td>
+            <td><strong>substring</strong></td>
             <td>
                 
             </td>
@@ -28272,7 +28358,7 @@ read.</p>
       </h3>
     </div>
       <div class="panel-body">
-        <p>Subroutine for streaming a scalar <code>character</code> or <code>String</code> type to an external text file.</p>
+        <p>Subroutine for writing a scalar <code>character</code> or <code>String</code> to an external text file.</p>
 <p>The file <code>file_name</code> will be created if it does not already exist and will be overwritten if <code>append</code> is
 <code>.false.</code> (if it already exists). The default terminator is <code>LF</code> (line feed).</p>
 <p>For a user reference, see <a href="../page/Ref/echo.html">echo</a>.</p>
@@ -28363,7 +28449,7 @@ read.</p>
           </li>
           <li class="list-group-item">
                 <h3>
-    private impure recursive module subroutine echo_string(self, file_name, append, terminator)  
+    private impure recursive module subroutine echo_string(substring, file_name, append, terminator)  
 
     </h3>
   
@@ -28389,7 +28475,7 @@ read.</p>
               
             </td>
             <td>::</td>
-            <td><strong>self</strong></td>
+            <td><strong>substring</strong></td>
             <td>
                 
             </td>
@@ -28577,6 +28663,17 @@ read.</p>
                     function
                     <strong>new_Str_i8</strong>
                     (x, fmt)
+                  </td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>
+                        private
+
+                    pure, elemental, recursive, module
+                    function
+                    <strong>new_Str_string</strong>
+                    (x)
                   </td>
                   <td></td>
                 </tr>
@@ -28782,7 +28879,7 @@ generic,
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-01-10 15:09            </p>
+ on 2023-01-10 22:01            </p>
         </div>
       </div>
       <br>

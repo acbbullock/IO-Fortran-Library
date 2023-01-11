@@ -13,7 +13,7 @@ To return the [empty string](../../module/io_fortran_lib.html#variable-empty_str
 result = str()
 ```
 
-For `x` a scalar of type `character` (identity function):
+For `x` a scalar of type `String`:
 
 ```fortran
 result = str(x)

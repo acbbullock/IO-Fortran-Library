@@ -99,15 +99,15 @@
   <div class="row">
     <div class="col-md-9 col-md-push-3" id='text'>
       <h2 id="interface-cast"><a href="../../interface/cast.html">interface cast</a></h2>
-<p><em>Description</em>: Subroutine for casting a <code>character</code> or <code>String</code> type into a number.</p>
-<p>For casting a scalar <code>character</code> string <code>substring</code> into a variable <code>into</code> of type <code>integer</code>:</p>
+<p><em>Description</em>: Subroutine for casting a <code>character</code> or <code>String</code> into a number.</p>
+<p>For casting <code>substring</code> of type <code>character</code> (scalar only) or <code>String</code> (any rank) into a variable <code>into</code> of compatible rank and of type <code>integer</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">cast</span><span class="p">(</span><span class="n">substring</span><span class="p">,</span><span class="w"> </span><span class="n">into</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 
 <ul>
 <li><code>fmt</code> is <code>optional</code>, may be one of <code>INT_FMTS</code></li>
 </ul>
-<p>For casting a scalar <code>character</code> string <code>substring</code> into a variable <code>into</code> of type <code>real</code>:</p>
+<p>For casting <code>substring</code> of type <code>character</code> (scalar only) or <code>String</code> (any rank) into a variable <code>into</code> of compatible rank and of type <code>real</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">cast</span><span class="p">(</span><span class="n">substring</span><span class="p">,</span><span class="w"> </span><span class="n">into</span><span class="p">,</span><span class="w"> </span><span class="n">locale</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 
@@ -115,7 +115,7 @@
 <li><code>locale</code> is <code>optional</code>, may be one of <code>LOCALES</code></li>
 <li><code>fmt</code> is <code>optional</code>, may be one of <code>REAL_FMTS</code></li>
 </ul>
-<p>For casting a scalar <code>character</code> string <code>substring</code> into a variable <code>into</code> of type <code>complex</code>:</p>
+<p>For casting <code>substring</code> of type <code>character</code> (scalar only) or <code>String</code> (any rank) into a variable <code>into</code> of compatible rank and of type <code>complex</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">cast</span><span class="p">(</span><span class="n">substring</span><span class="p">,</span><span class="w"> </span><span class="n">into</span><span class="p">,</span><span class="w"> </span><span class="n">locale</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">,</span><span class="w"> </span><span class="n">im</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 
@@ -124,40 +124,19 @@
 <li><code>fmt</code> is <code>optional</code>, may be one of <code>REAL_FMTS</code></li>
 <li><code>im</code> is <code>optional</code> and of type <code>character(len=*)</code></li>
 </ul>
-<p>For casting a <code>String</code> type <code>self</code> into a variable <code>into</code> of compatible rank and of type <code>integer</code>:</p>
-<div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">cast</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="n">into</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">)</span><span class="w"></span>
+<p>For casting a <code>String</code> variable <code>substring</code> into a variable <code>into</code> of compatible rank and of type <code>integer</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">substring</span><span class="p">%</span><span class="n">cast</span><span class="p">(</span><span class="n">into</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 
-<div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">cast</span><span class="p">(</span><span class="n">into</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">)</span><span class="w"></span>
+<p>For casting a <code>String</code> variable <code>substring</code> into a variable <code>into</code> of compatible rank and of type <code>real</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">substring</span><span class="p">%</span><span class="n">cast</span><span class="p">(</span><span class="n">into</span><span class="p">,</span><span class="w"> </span><span class="n">locale</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 
-<ul>
-<li><code>fmt</code> is <code>optional</code>, may be one of <code>INT_FMTS</code></li>
-</ul>
-<p>For casting a <code>String</code> type <code>self</code> into a variable <code>into</code> of compatible rank and of type <code>real</code>:</p>
-<div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">cast</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="n">into</span><span class="p">,</span><span class="w"> </span><span class="n">locale</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">)</span><span class="w"></span>
+<p>For casting a <code>String</code> variable <code>substring</code> into a variable <code>into</code> of compatible rank and of type <code>complex</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">substring</span><span class="p">%</span><span class="n">cast</span><span class="p">(</span><span class="n">into</span><span class="p">,</span><span class="w"> </span><span class="n">locale</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">,</span><span class="w"> </span><span class="n">im</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 
-<div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">cast</span><span class="p">(</span><span class="n">into</span><span class="p">,</span><span class="w"> </span><span class="n">locale</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">)</span><span class="w"></span>
-</code></pre></div>
-
-<ul>
-<li><code>locale</code> is <code>optional</code>, may be one of <code>LOCALES</code></li>
-<li><code>fmt</code> is <code>optional</code>, may be one of <code>REAL_FMTS</code></li>
-</ul>
-<p>For casting a <code>String</code> type <code>self</code> into a variable <code>into</code> of compatible rank and of type <code>complex</code>:</p>
-<div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">cast</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="n">into</span><span class="p">,</span><span class="w"> </span><span class="n">locale</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">,</span><span class="w"> </span><span class="n">im</span><span class="p">)</span><span class="w"></span>
-</code></pre></div>
-
-<div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">cast</span><span class="p">(</span><span class="n">into</span><span class="p">,</span><span class="w"> </span><span class="n">locale</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">,</span><span class="w"> </span><span class="n">im</span><span class="p">)</span><span class="w"></span>
-</code></pre></div>
-
-<ul>
-<li><code>locale</code> is <code>optional</code>, may be one of <code>LOCALES</code></li>
-<li><code>fmt</code> is <code>optional</code>, may be one of <code>REAL_FMTS</code></li>
-<li><code>im</code> is <code>optional</code> and of type <code>character(len=*)</code></li>
-</ul>
-<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>The type-bound procedure access of the form <code>call self%cast()</code> is valid when <code>self</code> is a <code>String</code> variable. To cast a <code>String</code> expression, the expression must be passed to <code>cast</code> by the form <code>call cast()</code>.</p></div>
+<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>The type-bound procedure access of the form <code>call substring%cast()</code> is valid when <code>substring</code> is a <code>String</code> variable. To cast a <code>String</code>-valued expression, the expression must be passed to <code>cast</code> by the form <code>call cast()</code>.</p></div>
 <p></p><div class="alert alert-warning" role="alert"><h4>Warning</h4><p>In all cases, <code>into</code> must be pre-allocated prior to calling <code>cast</code> due to the restriction that <code>intent(out)</code> arguments of <code>elemental</code> procedures may not be <code>allocatable</code>.</p></div>
 <h3 id="optional-arguments">Optional Arguments</h3>
 <p>Integer formats (default is <code>'i'</code>):</p>
@@ -279,7 +258,7 @@
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-01-10 15:09            </p>
+ on 2023-01-10 22:01            </p>
         </div>
       </div>
       <br>

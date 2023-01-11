@@ -47,7 +47,7 @@ Note that the default value for `header` when reading is `.false.`. If a header 
 
 ## Advanced csv file I/O
 
-The routines [write_file](../Ref/String-methods.html#write_file) and [read_file](../Ref/String-methods.html#read_file) are the preferred method for handling I/O for general text files. Typical use cases involve writing cell arrays of type `String` to delimited files, and reading delimited files into a cell array. For reading and writing non-delimited text files, one would use `read_file` without the `cell_array` argument and [echo](../Ref/String-methods.html#echo).
+The routines [write_file](../Ref/String-methods.html#write_file) and [read_file](../Ref/String-methods.html#read_file) are the preferred method for handling I/O for general text files. Typical use cases involve writing cell arrays of type `String` to delimited files, and reading delimited files into a cell array. For reading and writing non-delimited text files, one would use `read_file` without the `cell_array` argument and [echo](../Ref/echo.html).
 
 The same program as above can be recast in an object-oriented fashion that is generalizable for processing data of mixed type:
 

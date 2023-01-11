@@ -74,11 +74,11 @@ module io_fortran_lib
 
 			! Specifics ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 			procedure, pass(self), public	::	as_str
-			procedure, pass(self)			::	cast_string_c128, cast_string_c64, cast_string_c32, &
+			procedure, pass(substring)		::	cast_string_c128, cast_string_c64, cast_string_c32, &
 												cast_string_r128, cast_string_r64, cast_string_r32, &
 												cast_string_i64, cast_string_i32, cast_string_i16, cast_string_i8
 			procedure, pass(self)			::	count_substring_chars, count_substring_string
-			procedure, pass(self)			::	echo_string
+			procedure, pass(substring)		::	echo_string
 			procedure, pass(self), public	::	empty
 			procedure, pass(self), public	::	glue
 			procedure, pass(self), public	::	len => length
@@ -91,7 +91,7 @@ module io_fortran_lib
 			procedure, pass(self), public	::	trim => trim_copy
 			procedure, pass(self), public	::	trim_inplace
 			procedure, pass(self), public	::	write_file
-			procedure, pass(self)			::	write_string
+			procedure, pass(substring)		::	write_string
 	end type String
 
 	interface                                                                             ! Submodule String_procedures
@@ -126,7 +126,8 @@ module io_fortran_lib
 
 		pure elemental recursive module subroutine empty(self)
 			!----------------------------------------------------------------------------------------------------------
-			!! Sets the string slice component to the empty string elementally.
+			!! Sets the string slice component to the empty string elementally. This procedure is identical in function
+			!! to the assignment `self = String()`.
 			!!
 			!! For a user reference, see [empty](../page/Ref/string-methods.html#empty).
 			!----------------------------------------------------------------------------------------------------------
@@ -135,8 +136,8 @@ module io_fortran_lib
 
 		pure recursive module subroutine glue(self, tokens, separator)
 			!----------------------------------------------------------------------------------------------------------
-			!! Glues a `String` vector into `self` with given separator. Default separator is SPACE. The string slice
-			!! component will be replaced if already allocated.
+			!! Glues a `String` vector `tokens` into `self` with given separator. Default separator is SPACE. The
+			!! string slice component will be replaced if already allocated.
 			!!
 			!! For a user reference, see [glue](../page/Ref/string-methods.html#glue).
 			!----------------------------------------------------------------------------------------------------------
@@ -304,11 +305,11 @@ module io_fortran_lib
 			character(len=*), intent(in), optional :: row_separator, column_separator
 		end subroutine write_file
 
-		impure recursive module subroutine write_string(self, unit, iotype, v_list, iostat, iomsg)
+		impure recursive module subroutine write_string(substring, unit, iotype, v_list, iostat, iomsg)
 			!----------------------------------------------------------------------------------------------------------
 			!! Formatted write DTIO procedure for type `String`.
 			!----------------------------------------------------------------------------------------------------------
-			class(String), intent(in) :: self
+			class(String), intent(in) :: substring
 			integer, intent(in) :: unit
 			character(len=*), intent(in) :: iotype
 			integer, dimension(:), intent(in) :: v_list
@@ -654,6 +655,10 @@ module io_fortran_lib
 			character(len=*), intent(in), optional :: fmt
 		end function new_Str_i8
 
+		pure elemental recursive type(String) module function new_Str_string(x) result(new)
+			class(String), intent(in) :: x
+		end function new_Str_string
+
 		pure elemental recursive type(String) module function new_Str_char(x) result(new)
 			character(len=*), intent(in) :: x
 		end function new_Str_char
@@ -741,6 +746,11 @@ module io_fortran_lib
 			character(len=:), allocatable :: x_str
 		end function str_i8
 
+		pure recursive module function str_string(x) result(x_str)
+			class(String), intent(in) :: x
+			character(len=:), allocatable :: x_str
+		end function str_string
+
 		pure recursive module function str_char(x) result(x_str)
 			character(len=*), intent(in) :: x
 			character(len=:), allocatable :: x_str
@@ -753,70 +763,70 @@ module io_fortran_lib
 
 	interface cast                                                                              ! Submodule internal_io
 		!--------------------------------------------------------------------------------------------------------------
-		!! Subroutine for casting a `character` or `String` type into a number.
+		!! Subroutine for casting a `character` or `String` into a number.
 		!!
 		!! For the complement of `cast`, see [String](../page/Ref/string.html) and [str](../page/Ref/str.html).
 		!!
 		!! For a user reference, see [cast](../page/Ref/cast.html).
 		!--------------------------------------------------------------------------------------------------------------
-		pure elemental recursive module subroutine cast_string_c128(self, into, locale, fmt, im)
-			class(String), intent(in) :: self
+		pure elemental recursive module subroutine cast_string_c128(substring, into, locale, fmt, im)
+			class(String), intent(in) :: substring
 			complex(real128), intent(out) :: into
 			character(len=*), intent(in), optional :: locale
 			character(len=*), intent(in), optional :: fmt
 			character(len=*), intent(in), optional :: im
 		end subroutine cast_string_c128
-		pure elemental recursive module subroutine cast_string_c64(self, into, locale, fmt, im)
-			class(String), intent(in) :: self
+		pure elemental recursive module subroutine cast_string_c64(substring, into, locale, fmt, im)
+			class(String), intent(in) :: substring
 			complex(real64), intent(out) :: into
 			character(len=*), intent(in), optional :: locale
 			character(len=*), intent(in), optional :: fmt
 			character(len=*), intent(in), optional :: im
 		end subroutine cast_string_c64
-		pure elemental recursive module subroutine cast_string_c32(self, into, locale, fmt, im)
-			class(String), intent(in) :: self
+		pure elemental recursive module subroutine cast_string_c32(substring, into, locale, fmt, im)
+			class(String), intent(in) :: substring
 			complex(real32), intent(out) :: into
 			character(len=*), intent(in), optional :: locale
 			character(len=*), intent(in), optional :: fmt
 			character(len=*), intent(in), optional :: im
 		end subroutine cast_string_c32
 
-		pure elemental recursive module subroutine cast_string_r128(self, into, locale, fmt)
-			class(String), intent(in) :: self
+		pure elemental recursive module subroutine cast_string_r128(substring, into, locale, fmt)
+			class(String), intent(in) :: substring
 			real(real128), intent(out) :: into
 			character(len=*), intent(in), optional :: locale
 			character(len=*), intent(in), optional :: fmt
 		end subroutine cast_string_r128
-		pure elemental recursive module subroutine cast_string_r64(self, into, locale, fmt)
-			class(String), intent(in) :: self
+		pure elemental recursive module subroutine cast_string_r64(substring, into, locale, fmt)
+			class(String), intent(in) :: substring
 			real(real64), intent(out) :: into
 			character(len=*), intent(in), optional :: locale
 			character(len=*), intent(in), optional :: fmt
 		end subroutine cast_string_r64
-		pure elemental recursive module subroutine cast_string_r32(self, into, locale, fmt)
-			class(String), intent(in) :: self
+		pure elemental recursive module subroutine cast_string_r32(substring, into, locale, fmt)
+			class(String), intent(in) :: substring
 			real(real32), intent(out) :: into
 			character(len=*), intent(in), optional :: locale
 			character(len=*), intent(in), optional :: fmt
 		end subroutine cast_string_r32
 
-		pure elemental recursive module subroutine cast_string_i64(self, into, fmt)
-			class(String), intent(in) :: self
+		pure elemental recursive module subroutine cast_string_i64(substring, into, fmt)
+			class(String), intent(in) :: substring
 			integer(int64), intent(out) :: into
 			character(len=*), intent(in), optional :: fmt
 		end subroutine cast_string_i64
-		pure elemental recursive module subroutine cast_string_i32(self, into, fmt)
-			class(String), intent(in) :: self
+		pure elemental recursive module subroutine cast_string_i32(substring, into, fmt)
+			class(String), intent(in) :: substring
 			integer(int32), intent(out) :: into
 			character(len=*), intent(in), optional :: fmt
 		end subroutine cast_string_i32
-		pure elemental recursive module subroutine cast_string_i16(self, into, fmt)
-			class(String), intent(in) :: self
+		pure elemental recursive module subroutine cast_string_i16(substring, into, fmt)
+			class(String), intent(in) :: substring
 			integer(int16), intent(out) :: into
 			character(len=*), intent(in), optional :: fmt
 		end subroutine cast_string_i16
-		pure elemental recursive module subroutine cast_string_i8(self, into, fmt)
-			class(String), intent(in) :: self
+		pure elemental recursive module subroutine cast_string_i8(substring, into, fmt)
+			class(String), intent(in) :: substring
 			integer(int8), intent(out) :: into
 			character(len=*), intent(in), optional :: fmt
 		end subroutine cast_string_i8
@@ -2588,7 +2598,7 @@ module io_fortran_lib
 
 	interface echo                                                                                  ! Submodule text_io
 		!--------------------------------------------------------------------------------------------------------------
-		!! Subroutine for streaming a scalar `character` or `String` type to an external text file.
+		!! Subroutine for writing a scalar `character` or `String` to an external text file.
 		!!
 		!! The file `file_name` will be created if it does not already exist and will be overwritten if `append` is
 		!! `.false.` (if it already exists). The default terminator is `LF` (line feed).
@@ -2602,8 +2612,8 @@ module io_fortran_lib
 			character(len=*), intent(in), optional :: terminator
 		end subroutine echo_chars
 
-		impure recursive module subroutine echo_string(self, file_name, append, terminator)
-			class(String), intent(in) :: self
+		impure recursive module subroutine echo_string(substring, file_name, append, terminator)
+			class(String), intent(in) :: substring
 			character(len=*), intent(in) :: file_name
 			logical, intent(in), optional :: append
 			character(len=*), intent(in), optional :: terminator
@@ -5421,10 +5431,10 @@ submodule (io_fortran_lib) String_procedures
 	end procedure write_file
 
 	module procedure write_string
-		if ( self%len() < 1 ) then
+		if ( substring%len() < 1 ) then
 			write(unit=unit, fmt='(a)', iostat=iostat, iomsg=iomsg) EMPTY_STR
 		else
-			write(unit=unit, fmt='(a)', iostat=iostat, iomsg=iomsg) self%s
+			write(unit=unit, fmt='(a)', iostat=iostat, iomsg=iomsg) substring%s
 		end if
 	end procedure write_string
 end submodule String_procedures
@@ -6936,6 +6946,14 @@ submodule (io_fortran_lib) internal_io
 		new%s = str(x, fmt=fmt_)
 	end procedure new_Str_i8
 
+	module procedure new_Str_string
+		if ( x%len() < 1 ) then
+			new%s = EMPTY_STR
+		else
+			new%s = x%s
+		end if
+	end procedure new_Str_string
+
 	module procedure new_Str_char
 		new%s = x
 	end procedure new_Str_char
@@ -6947,7 +6965,7 @@ submodule (io_fortran_lib) internal_io
 	module procedure cast_string_c128
 		character(len=:), allocatable :: locale_, fmt_, im_, substring_
 
-		if ( self%len() < 1 ) then
+		if ( substring%len() < 1 ) then
 			into = (0.0_real128,0.0_real128); return
 		end if
 
@@ -6977,13 +6995,13 @@ submodule (io_fortran_lib) internal_io
 			im_ = trim(adjustl(im))
 		end if
 
-		substring_ = trim(adjustl(self%s))
+		substring_ = trim(adjustl(substring%s))
 		call cast(substring=substring_, into=into, locale=locale_, fmt=fmt_, im=im_)
 	end procedure cast_string_c128
 	module procedure cast_string_c64
 		character(len=:), allocatable :: locale_, fmt_, im_, substring_
 
-		if ( self%len() < 1 ) then
+		if ( substring%len() < 1 ) then
 			into = (0.0_real64,0.0_real64); return
 		end if
 
@@ -7013,13 +7031,13 @@ submodule (io_fortran_lib) internal_io
 			im_ = trim(adjustl(im))
 		end if
 
-		substring_ = trim(adjustl(self%s))
+		substring_ = trim(adjustl(substring%s))
 		call cast(substring=substring_, into=into, locale=locale_, fmt=fmt_, im=im_)
 	end procedure cast_string_c64
 	module procedure cast_string_c32
 		character(len=:), allocatable :: locale_, fmt_, im_, substring_
 
-		if ( self%len() < 1 ) then
+		if ( substring%len() < 1 ) then
 			into = (0.0_real32,0.0_real32); return
 		end if
 
@@ -7049,14 +7067,14 @@ submodule (io_fortran_lib) internal_io
 			im_ = trim(adjustl(im))
 		end if
 
-		substring_ = trim(adjustl(self%s))
+		substring_ = trim(adjustl(substring%s))
 		call cast(substring=substring_, into=into, locale=locale_, fmt=fmt_, im=im_)
 	end procedure cast_string_c32
 
 	module procedure cast_string_r128
 		character(len=:), allocatable :: locale_, fmt_, substring_
 
-		if ( self%len() < 1 ) then
+		if ( substring%len() < 1 ) then
 			into = 0.0_real128; return
 		end if
 
@@ -7080,13 +7098,13 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		substring_ = trim(adjustl(self%s))
+		substring_ = trim(adjustl(substring%s))
 		call cast(substring=substring_, into=into, locale=locale_, fmt=fmt_)
 	end procedure cast_string_r128
 	module procedure cast_string_r64
 		character(len=:), allocatable :: locale_, fmt_, substring_
 
-		if ( self%len() < 1 ) then
+		if ( substring%len() < 1 ) then
 			into = 0.0_real64; return
 		end if
 
@@ -7110,13 +7128,13 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		substring_ = trim(adjustl(self%s))
+		substring_ = trim(adjustl(substring%s))
 		call cast(substring=substring_, into=into, locale=locale_, fmt=fmt_)
 	end procedure cast_string_r64
 	module procedure cast_string_r32
 		character(len=:), allocatable :: locale_, fmt_, substring_
 
-		if ( self%len() < 1 ) then
+		if ( substring%len() < 1 ) then
 			into = 0.0_real32; return
 		end if
 
@@ -7140,14 +7158,14 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		substring_ = trim(adjustl(self%s))
+		substring_ = trim(adjustl(substring%s))
 		call cast(substring=substring_, into=into, locale=locale_, fmt=fmt_)
 	end procedure cast_string_r32
 
 	module procedure cast_string_i64
 		character(len=:), allocatable :: fmt_, substring_
 
-		if ( self%len() < 1 ) then
+		if ( substring%len() < 1 ) then
 			into = 0_int64; return
 		end if
 
@@ -7161,13 +7179,13 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		substring_ = trim(adjustl(self%s))
+		substring_ = trim(adjustl(substring%s))
 		call cast(substring=substring_, into=into, fmt=fmt_)
 	end procedure cast_string_i64
 	module procedure cast_string_i32
 		character(len=:), allocatable :: fmt_, substring_
 
-		if ( self%len() < 1 ) then
+		if ( substring%len() < 1 ) then
 			into = 0_int32; return
 		end if
 
@@ -7181,13 +7199,13 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		substring_ = trim(adjustl(self%s))
+		substring_ = trim(adjustl(substring%s))
 		call cast(substring=substring_, into=into, fmt=fmt_)
 	end procedure cast_string_i32
 	module procedure cast_string_i16
 		character(len=:), allocatable :: fmt_, substring_
 
-		if ( self%len() < 1 ) then
+		if ( substring%len() < 1 ) then
 			into = 0_int16; return
 		end if
 
@@ -7201,13 +7219,13 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		substring_ = trim(adjustl(self%s))
+		substring_ = trim(adjustl(substring%s))
 		call cast(substring=substring_, into=into, fmt=fmt_)
 	end procedure cast_string_i16
 	module procedure cast_string_i8
 		character(len=:), allocatable :: fmt_, substring_
 
-		if ( self%len() < 1 ) then
+		if ( substring%len() < 1 ) then
 			into = 0_int8; return
 		end if
 
@@ -7221,7 +7239,7 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		substring_ = trim(adjustl(self%s))
+		substring_ = trim(adjustl(substring%s))
 		call cast(substring=substring_, into=into, fmt=fmt_)
 	end procedure cast_string_i8
 
@@ -7825,6 +7843,14 @@ submodule (io_fortran_lib) internal_io
 
 		x_str = trim(adjustl(str_tmp))
 	end procedure str_i8
+
+	module procedure str_string
+		if ( x%len() < 1 ) then
+			x_str = EMPTY_STR
+		else
+			x_str = x%s
+		end if
+	end procedure str_string
 
 	module procedure str_char
 		x_str = x
@@ -17232,7 +17258,7 @@ submodule (io_fortran_lib) text_io
 			return
 		end if
 
-		if ( self%len() < 1 ) then
+		if ( substring%len() < 1 ) then
 			write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". '// &
 								'String to write is empty.'
 			return
@@ -17267,7 +17293,7 @@ submodule (io_fortran_lib) text_io
 			end if
 		end if
 
-		write( unit=file_unit ) self%s//terminator_
+		write( unit=file_unit ) substring%s//terminator_
 
 		close(file_unit)
 	end procedure echo_string

@@ -1084,6 +1084,49 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
           </li>
           <li class="list-group-item">
                 <h3>
+    private pure elemental recursive module function new_Str_string(x) result(new)  
+
+    </h3>
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>x</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/string.html'>String</a>)</small>
+    </h4>
+    
+
+          </li>
+          <li class="list-group-item">
+                <h3>
     private pure elemental recursive module function new_Str_char(x) result(new)  
 
     </h3>
@@ -1156,7 +1199,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
     <ul class="list-group">
         <li class="list-group-item">
                   <h3>
-    private pure elemental recursive module subroutine cast_string_c128(self, into, locale, fmt, im)  
+    private pure elemental recursive module subroutine cast_string_c128(substring, into, locale, fmt, im)  
 </h3>
   
 
@@ -1181,7 +1224,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
               
             </td>
             <td>::</td>
-            <td><strong>self</strong></td>
+            <td><strong>substring</strong></td>
             <td>
                 
             </td>
@@ -1253,7 +1296,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
         </li>
         <li class="list-group-item">
                   <h3>
-    private pure elemental recursive module subroutine cast_string_c64(self, into, locale, fmt, im)  
+    private pure elemental recursive module subroutine cast_string_c64(substring, into, locale, fmt, im)  
 </h3>
   
 
@@ -1278,7 +1321,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
               
             </td>
             <td>::</td>
-            <td><strong>self</strong></td>
+            <td><strong>substring</strong></td>
             <td>
                 
             </td>
@@ -1350,7 +1393,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
         </li>
         <li class="list-group-item">
                   <h3>
-    private pure elemental recursive module subroutine cast_string_c32(self, into, locale, fmt, im)  
+    private pure elemental recursive module subroutine cast_string_c32(substring, into, locale, fmt, im)  
 </h3>
   
 
@@ -1375,7 +1418,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
               
             </td>
             <td>::</td>
-            <td><strong>self</strong></td>
+            <td><strong>substring</strong></td>
             <td>
                 
             </td>
@@ -1447,7 +1490,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
         </li>
         <li class="list-group-item">
                   <h3>
-    private pure elemental recursive module subroutine cast_string_r128(self, into, locale, fmt)  
+    private pure elemental recursive module subroutine cast_string_r128(substring, into, locale, fmt)  
 </h3>
   
 
@@ -1472,7 +1515,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
               
             </td>
             <td>::</td>
-            <td><strong>self</strong></td>
+            <td><strong>substring</strong></td>
             <td>
                 
             </td>
@@ -1529,7 +1572,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
         </li>
         <li class="list-group-item">
                   <h3>
-    private pure elemental recursive module subroutine cast_string_r64(self, into, locale, fmt)  
+    private pure elemental recursive module subroutine cast_string_r64(substring, into, locale, fmt)  
 </h3>
   
 
@@ -1554,7 +1597,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
               
             </td>
             <td>::</td>
-            <td><strong>self</strong></td>
+            <td><strong>substring</strong></td>
             <td>
                 
             </td>
@@ -1611,7 +1654,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
         </li>
         <li class="list-group-item">
                   <h3>
-    private pure elemental recursive module subroutine cast_string_r32(self, into, locale, fmt)  
+    private pure elemental recursive module subroutine cast_string_r32(substring, into, locale, fmt)  
 </h3>
   
 
@@ -1636,7 +1679,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
               
             </td>
             <td>::</td>
-            <td><strong>self</strong></td>
+            <td><strong>substring</strong></td>
             <td>
                 
             </td>
@@ -1693,7 +1736,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
         </li>
         <li class="list-group-item">
                   <h3>
-    private pure elemental recursive module subroutine cast_string_i64(self, into, fmt)  
+    private pure elemental recursive module subroutine cast_string_i64(substring, into, fmt)  
 </h3>
   
 
@@ -1718,7 +1761,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
               
             </td>
             <td>::</td>
-            <td><strong>self</strong></td>
+            <td><strong>substring</strong></td>
             <td>
                 
             </td>
@@ -1760,7 +1803,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
         </li>
         <li class="list-group-item">
                   <h3>
-    private pure elemental recursive module subroutine cast_string_i32(self, into, fmt)  
+    private pure elemental recursive module subroutine cast_string_i32(substring, into, fmt)  
 </h3>
   
 
@@ -1785,7 +1828,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
               
             </td>
             <td>::</td>
-            <td><strong>self</strong></td>
+            <td><strong>substring</strong></td>
             <td>
                 
             </td>
@@ -1827,7 +1870,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
         </li>
         <li class="list-group-item">
                   <h3>
-    private pure elemental recursive module subroutine cast_string_i16(self, into, fmt)  
+    private pure elemental recursive module subroutine cast_string_i16(substring, into, fmt)  
 </h3>
   
 
@@ -1852,7 +1895,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
               
             </td>
             <td>::</td>
-            <td><strong>self</strong></td>
+            <td><strong>substring</strong></td>
             <td>
                 
             </td>
@@ -1894,7 +1937,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
         </li>
         <li class="list-group-item">
                   <h3>
-    private pure elemental recursive module subroutine cast_string_i8(self, into, fmt)  
+    private pure elemental recursive module subroutine cast_string_i8(substring, into, fmt)  
 </h3>
   
 
@@ -1919,7 +1962,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
               
             </td>
             <td>::</td>
-            <td><strong>self</strong></td>
+            <td><strong>substring</strong></td>
             <td>
                 
             </td>
@@ -1995,7 +2038,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
     <ul class="list-group">
         <li class="list-group-item">
                   <h3>
-    private impure recursive module subroutine echo_string(self, file_name, append, terminator)  
+    private impure recursive module subroutine echo_string(substring, file_name, append, terminator)  
 </h3>
   
 
@@ -2020,7 +2063,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
               
             </td>
             <td>::</td>
-            <td><strong>self</strong></td>
+            <td><strong>substring</strong></td>
             <td>
                 
             </td>
@@ -2280,7 +2323,8 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
                   <h3>
     private pure elemental recursive module subroutine empty(self)  
 </h3>
-  <p>Sets the string slice component to the empty string elementally.</p>
+  <p>Sets the string slice component to the empty string elementally. This procedure is identical in function
+to the assignment <code>self = String()</code>.</p>
 <p>For a user reference, see <a href="../page/Ref/string-methods.html#empty">empty</a>.</p>
 
   <h4>Arguments</h4>
@@ -2328,8 +2372,8 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
                   <h3>
     private pure recursive module subroutine glue(self, tokens, separator)  
 </h3>
-  <p>Glues a <code>String</code> vector into <code>self</code> with given separator. Default separator is SPACE. The string slice
-component will be replaced if already allocated.</p>
+  <p>Glues a <code>String</code> vector <code>tokens</code> into <code>self</code> with given separator. Default separator is SPACE. The
+string slice component will be replaced if already allocated.</p>
 <p>For a user reference, see <a href="../page/Ref/string-methods.html#glue">glue</a>.</p>
 
   <h4>Arguments</h4>
@@ -2857,7 +2901,7 @@ in place.</p>
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-01-10 15:09            </p>
+ on 2023-01-10 22:01            </p>
         </div>
       </div>
       <br>

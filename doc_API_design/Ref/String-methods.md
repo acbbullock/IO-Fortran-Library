@@ -13,7 +13,7 @@ author: Austin C Bullock
 
 ### [as_str](../../type/string.html#boundprocedure-as_str)
 
-For `self` a scalar of type `String`:
+For `self` a scalar variable of type `String`:
 
 ```fortran
     result = self%as_str()
@@ -27,7 +27,7 @@ For `self` a scalar of type `String`:
 
 ### [count](../../type/string.html#boundprocedure-count)
 
-For `self` of type `String` and `match` of type `character` or `String` both scalars or arrays of any compatible rank:
+For `self` a scalar or array variable of any rank and of type `String`:
 
 ```fortran
     result = self%count(match)
@@ -37,23 +37,25 @@ For `self` of type `String` and `match` of type `character` or `String` both sca
 
 *Description*: Returns number of non-overlapping occurrences of a substring elementally.
 
+@note `match` may be of any rank compatible with `self`.
+
 ### [echo](../../type/string.html#boundprocedure-echo)
 
 *Description*: A generic binding for the interface [echo](echo.html).
 
 ### [empty](../../type/string.html#boundprocedure-empty)
 
-For `self` a scalar or array of any rank and of type `String`:
+For `self` a scalar or array variable of any rank and of type `String`:
 
 ```fortran
     call self%empty()
 ```
 
-*Description*: Sets the string slice component to the empty string elementally.
+*Description*: Sets the string slice component to the empty string elementally. This procedure is identical in function to the assignment `self = String()`.
 
 ### [glue](../../type/string.html#boundprocedure-glue)
 
-For `self` a scalar of type `String`:
+For `self` a scalar variable of type `String`:
 
 ```fortran
     call self%glue(tokens, separator)
@@ -62,11 +64,11 @@ For `self` a scalar of type `String`:
 * `tokens` is of type `type(String), dimension(:)`
 * `separator` is `optional` and of type `character(len=*)` (default is `SPACE`)
 
-*Description*: Glues a `String` vector into `self` with given separator. Default separator is `SPACE`. The string slice component will be replaced if already allocated.
+*Description*: Glues a `String` vector `tokens` into `self` with given separator. Default separator is `SPACE`. The string slice component will be replaced if already allocated.
 
 ### [len](../../type/string.html#boundprocedure-len)
 
-For `self` a scalar or array of any rank and of type `String`:
+For `self` a scalar or array variable of any rank and of type `String`:
 
 ```fortran
     result = self%len()
@@ -76,7 +78,7 @@ For `self` a scalar or array of any rank and of type `String`:
 
 ### [push](../../type/string.html#boundprocedure-push)
 
-For `self` of type `String` and `substring` of type `character` or `String` both scalars or arrays of any compatible rank:
+For `self` a scalar or array variable of any rank and of type `String`:
 
 ```fortran
     call self%push(substring)
@@ -86,9 +88,11 @@ For `self` of type `String` and `substring` of type `character` or `String` both
 
 *Description*: Appends to the string slice component elementally in place. This procedure is identical in function to the [concatenation operators](operators.html#concatenation) with self assignment: `self = self // substring` and `self = self + substring`.
 
+@note `substring` may be of any rank compatible with `self`.
+
 ### [read_file](../../type/string.html#boundprocedure-read_file)
 
-For `self` a scalar of type `String`:
+For `self` a scalar variable of type `String`:
 
 ```fortran
     call self%read_file(file_name, cell_array, row_separator, column_separator)
@@ -107,7 +111,7 @@ For `self` a scalar of type `String`:
 
 ### [replace](../../type/string.html#boundprocedure-replace)
 
-For `self` a scalar or array of any rank and of type `String`:
+For `self` a scalar or array variable of any rank and of type `String`:
 
 ```fortran
     result = self%replace(match, substring, back)
@@ -119,11 +123,11 @@ For `self` a scalar or array of any rank and of type `String`:
 
 *Description*: Matches and replaces all occurrences of a substring elementally. If `back` is `.true.`, then `self` is scanned from back to front, which may result in a different outcome in the case that `match` is overlapping itself.
 
-@note `match` and `substring` may be any combination of `character` or `String` and may be of any rank compatible with each other and with `self`.
+@note `match` and `substring` may be any combination of `character` and `String`, and may be of any rank compatible with each other and with `self`.
 
 ### [replace_inplace](../../type/string.html#boundprocedure-replace_inplace)
 
-For `self` a scalar or array of any rank and of type `String`:
+For `self` a scalar or array variable of any rank and of type `String`:
 
 ```fortran
     call self%replace_inplace(match, substring, back)
@@ -135,11 +139,11 @@ For `self` a scalar or array of any rank and of type `String`:
 
 *Description*: Matches and replaces all occurrences of a substring elementally in place. If `back` is `.true.`, then `self` is scanned from back to front, which may result in a different outcome in the case that `match` is overlapping itself.
 
-@note `match` and `substring` may be any combination of `character` or `String` and may be of any rank compatible with each other and with `self`.
+@note `match` and `substring` may be any combination of `character` and `String`, and may be of any rank compatible with each other and with `self`.
 
 ### [split](../../type/string.html#boundprocedure-split)
 
-For `self` a scalar of type `String`:
+For `self` a scalar variable of type `String`:
 
 ```fortran
     result = self%split(separator)
@@ -151,7 +155,7 @@ For `self` a scalar of type `String`:
 
 ### [trim](../../type/string.html#boundprocedure-trim)
 
-For `self` a scalar or array of any rank and of type `String`:
+For `self` a scalar or array variable of any rank and of type `String`:
 
 ```fortran
     result = self%trim()
@@ -161,7 +165,7 @@ For `self` a scalar or array of any rank and of type `String`:
 
 ### [trim_inplace](../../type/string.html#boundprocedure-trim_inplace)
 
-For `self` a scalar or array of any rank and of type `String`:
+For `self` a scalar or array variable of any rank and of type `String`:
 
 ```fortran
     call self%trim_inplace()
@@ -171,7 +175,7 @@ For `self` a scalar or array of any rank and of type `String`:
 
 ### [write_file](../../type/string.html#boundprocedure-write_file)
 
-For `self` a scalar of type `String`:
+For `self` a scalar variable of type `String`:
 
 ```fortran
     call self%write_file(cell_array, file_name, row_separator, column_separator)
@@ -188,14 +192,14 @@ For `self` a scalar of type `String`:
 
 ### [write(formatted)](../../type/string.html#boundprocedure-write%28formatted%29)
 
-For `self` a scalar or array of any rank and of type `String`:
+For `substring` a scalar or array of any rank and of type `String`:
 
 ```fortran
-    print '(DT)', self
+    print '(DT)', substring
 ```
 
 ```fortran
-    write(unit, '(DT)') self
+    write(unit, '(DT)') substring
 ```
 
 *Description*: Formatted write DTIO procedure for type `String`.

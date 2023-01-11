@@ -103,7 +103,7 @@
 <p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>In addition to the functionality provided through type-bound procedures, the <code>String</code> type may be useful in array contexts for which the user requires arrays of strings which may have non-identical lengths, whose lengths may not be known, whose lengths may need to vary during run time, or in any other context in which the intrinsic <code>character</code> type is insufficient.</p></div>
 <h2 id="type-bound-procedures">Type-bound procedures</h2>
 <h3 id="as_str"><a href="../../type/string.html#boundprocedure-as_str">as_str</a></h3>
-<p>For <code>self</code> a scalar of type <code>String</code>:</p>
+<p>For <code>self</code> a scalar variable of type <code>String</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="k">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">as_str</span><span class="p">()</span><span class="w"></span>
 </code></pre></div>
 
@@ -111,7 +111,7 @@
 <h3 id="cast"><a href="../../type/string.html#boundprocedure-cast">cast</a></h3>
 <p><em>Description</em>: A generic binding for the interface <a href="cast.html">cast</a>.</p>
 <h3 id="count"><a href="../../type/string.html#boundprocedure-count">count</a></h3>
-<p>For <code>self</code> of type <code>String</code> and <code>match</code> of type <code>character</code> or <code>String</code> both scalars or arrays of any compatible rank:</p>
+<p>For <code>self</code> a scalar or array variable of any rank and of type <code>String</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="k">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="nb">count</span><span class="p">(</span><span class="n">match</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 
@@ -119,16 +119,17 @@
 <li><code>match</code> is of type <code>character(len=*)</code> or <code>String</code></li>
 </ul>
 <p><em>Description</em>: Returns number of non-overlapping occurrences of a substring elementally.</p>
+<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p><code>match</code> may be of any rank compatible with <code>self</code>.</p></div>
 <h3 id="echo"><a href="../../type/string.html#boundprocedure-echo">echo</a></h3>
 <p><em>Description</em>: A generic binding for the interface <a href="echo.html">echo</a>.</p>
 <h3 id="empty"><a href="../../type/string.html#boundprocedure-empty">empty</a></h3>
-<p>For <code>self</code> a scalar or array of any rank and of type <code>String</code>:</p>
+<p>For <code>self</code> a scalar or array variable of any rank and of type <code>String</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">empty</span><span class="p">()</span><span class="w"></span>
 </code></pre></div>
 
-<p><em>Description</em>: Sets the string slice component to the empty string elementally.</p>
+<p><em>Description</em>: Sets the string slice component to the empty string elementally. This procedure is identical in function to the assignment <code>self = String()</code>.</p>
 <h3 id="glue"><a href="../../type/string.html#boundprocedure-glue">glue</a></h3>
-<p>For <code>self</code> a scalar of type <code>String</code>:</p>
+<p>For <code>self</code> a scalar variable of type <code>String</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">glue</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span><span class="w"> </span><span class="n">separator</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 
@@ -136,15 +137,15 @@
 <li><code>tokens</code> is of type <code>type(String), dimension(:)</code></li>
 <li><code>separator</code> is <code>optional</code> and of type <code>character(len=*)</code> (default is <code>SPACE</code>)</li>
 </ul>
-<p><em>Description</em>: Glues a <code>String</code> vector into <code>self</code> with given separator. Default separator is <code>SPACE</code>. The string slice component will be replaced if already allocated.</p>
+<p><em>Description</em>: Glues a <code>String</code> vector <code>tokens</code> into <code>self</code> with given separator. Default separator is <code>SPACE</code>. The string slice component will be replaced if already allocated.</p>
 <h3 id="len"><a href="../../type/string.html#boundprocedure-len">len</a></h3>
-<p>For <code>self</code> a scalar or array of any rank and of type <code>String</code>:</p>
+<p>For <code>self</code> a scalar or array variable of any rank and of type <code>String</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="k">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="nb">len</span><span class="p">()</span><span class="w"></span>
 </code></pre></div>
 
 <p><em>Description</em>: Returns the length of the string slice component elementally. Unallocated components return <code>-1</code>.</p>
 <h3 id="push"><a href="../../type/string.html#boundprocedure-push">push</a></h3>
-<p>For <code>self</code> of type <code>String</code> and <code>substring</code> of type <code>character</code> or <code>String</code> both scalars or arrays of any compatible rank:</p>
+<p>For <code>self</code> a scalar or array variable of any rank and of type <code>String</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">push</span><span class="p">(</span><span class="n">substring</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 
@@ -152,8 +153,9 @@
 <li><code>substring</code> is of type <code>character(len=*)</code> or <code>String</code></li>
 </ul>
 <p><em>Description</em>: Appends to the string slice component elementally in place. This procedure is identical in function to the <a href="operators.html#concatenation">concatenation operators</a> with self assignment: <code>self = self // substring</code> and <code>self = self + substring</code>.</p>
+<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p><code>substring</code> may be of any rank compatible with <code>self</code>.</p></div>
 <h3 id="read_file"><a href="../../type/string.html#boundprocedure-read_file">read_file</a></h3>
-<p>For <code>self</code> a scalar of type <code>String</code>:</p>
+<p>For <code>self</code> a scalar variable of type <code>String</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">read_file</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span><span class="w"> </span><span class="n">cell_array</span><span class="p">,</span><span class="w"> </span><span class="n">row_separator</span><span class="p">,</span><span class="w"> </span><span class="n">column_separator</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 
@@ -167,7 +169,7 @@
 <p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p><code>file_name</code> may be a relative path, but absolute paths are not guaranteed to work on every platform.</p></div>
 <p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>The <code>cell_array</code> must be <code>allocatable</code> and will be re-allocated internally (if already allocated).</p></div>
 <h3 id="replace"><a href="../../type/string.html#boundprocedure-replace">replace</a></h3>
-<p>For <code>self</code> a scalar or array of any rank and of type <code>String</code>:</p>
+<p>For <code>self</code> a scalar or array variable of any rank and of type <code>String</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="k">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">replace</span><span class="p">(</span><span class="n">match</span><span class="p">,</span><span class="w"> </span><span class="n">substring</span><span class="p">,</span><span class="w"> </span><span class="n">back</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 
@@ -177,9 +179,9 @@
 <li><code>back</code> is <code>optional</code> and of type <code>logical</code> (default is <code>.false.</code>)</li>
 </ul>
 <p><em>Description</em>: Matches and replaces all occurrences of a substring elementally. If <code>back</code> is <code>.true.</code>, then <code>self</code> is scanned from back to front, which may result in a different outcome in the case that <code>match</code> is overlapping itself.</p>
-<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p><code>match</code> and <code>substring</code> may be any combination of <code>character</code> or <code>String</code> and may be of any rank compatible with each other and with <code>self</code>.</p></div>
+<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p><code>match</code> and <code>substring</code> may be any combination of <code>character</code> and <code>String</code>, and may be of any rank compatible with each other and with <code>self</code>.</p></div>
 <h3 id="replace_inplace"><a href="../../type/string.html#boundprocedure-replace_inplace">replace_inplace</a></h3>
-<p>For <code>self</code> a scalar or array of any rank and of type <code>String</code>:</p>
+<p>For <code>self</code> a scalar or array variable of any rank and of type <code>String</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">replace_inplace</span><span class="p">(</span><span class="n">match</span><span class="p">,</span><span class="w"> </span><span class="n">substring</span><span class="p">,</span><span class="w"> </span><span class="n">back</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 
@@ -189,9 +191,9 @@
 <li><code>back</code> is <code>optional</code> and of type <code>logical</code> (default is <code>.false.</code>)</li>
 </ul>
 <p><em>Description</em>: Matches and replaces all occurrences of a substring elementally in place. If <code>back</code> is <code>.true.</code>, then <code>self</code> is scanned from back to front, which may result in a different outcome in the case that <code>match</code> is overlapping itself.</p>
-<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p><code>match</code> and <code>substring</code> may be any combination of <code>character</code> or <code>String</code> and may be of any rank compatible with each other and with <code>self</code>.</p></div>
+<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p><code>match</code> and <code>substring</code> may be any combination of <code>character</code> and <code>String</code>, and may be of any rank compatible with each other and with <code>self</code>.</p></div>
 <h3 id="split"><a href="../../type/string.html#boundprocedure-split">split</a></h3>
-<p>For <code>self</code> a scalar of type <code>String</code>:</p>
+<p>For <code>self</code> a scalar variable of type <code>String</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="k">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">split</span><span class="p">(</span><span class="n">separator</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 
@@ -200,19 +202,19 @@
 </ul>
 <p><em>Description</em>: Splits a string into a vector of <code>tokens</code> with given separator. Default separator is <code>SPACE</code>.</p>
 <h3 id="trim"><a href="../../type/string.html#boundprocedure-trim">trim</a></h3>
-<p>For <code>self</code> a scalar or array of any rank and of type <code>String</code>:</p>
+<p>For <code>self</code> a scalar or array variable of any rank and of type <code>String</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="k">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="nb">trim</span><span class="p">()</span><span class="w"></span>
 </code></pre></div>
 
 <p><em>Description</em>: Returns a copy of a <code>String</code> elementally in which each string slice component has been trimmed of any leading or trailing whitespace.</p>
 <h3 id="trim_inplace"><a href="../../type/string.html#boundprocedure-trim_inplace">trim_inplace</a></h3>
-<p>For <code>self</code> a scalar or array of any rank and of type <code>String</code>:</p>
+<p>For <code>self</code> a scalar or array variable of any rank and of type <code>String</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">trim_inplace</span><span class="p">()</span><span class="w"></span>
 </code></pre></div>
 
 <p><em>Description</em>: Removes any leading or trailing whitespace of the string slice component of a <code>String</code> elementally and in place.</p>
 <h3 id="write_file"><a href="../../type/string.html#boundprocedure-write_file">write_file</a></h3>
-<p>For <code>self</code> a scalar of type <code>String</code>:</p>
+<p>For <code>self</code> a scalar variable of type <code>String</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">write_file</span><span class="p">(</span><span class="n">cell_array</span><span class="p">,</span><span class="w"> </span><span class="n">file_name</span><span class="p">,</span><span class="w"> </span><span class="n">row_separator</span><span class="p">,</span><span class="w"> </span><span class="n">column_separator</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 
@@ -225,11 +227,11 @@
 <p><em>Description</em>: Writes the content of a cell array to a text file. The cell array's entire contents are populated into <code>self</code> and then streamed to an external text file using the designated <code>row_separator</code> and <code>column_separator</code> whose default values are <code>LF</code> and <code>','</code> respectively.</p>
 <p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p><code>file_name</code> may be a relative path, but absolute paths are not guaranteed to work on every platform. Additionally, the file will be created if it does not already exist and will be overwritten if it does exist.</p></div>
 <h3 id="writeformatted"><a href="../../type/string.html#boundprocedure-write%28formatted%29">write(formatted)</a></h3>
-<p>For <code>self</code> a scalar or array of any rank and of type <code>String</code>:</p>
-<div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="k">print</span><span class="w"> </span><span class="s1">&#39;(DT)&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">self</span><span class="w"></span>
+<p>For <code>substring</code> a scalar or array of any rank and of type <code>String</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="k">print</span><span class="w"> </span><span class="s1">&#39;(DT)&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">substring</span><span class="w"></span>
 </code></pre></div>
 
-<div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="k">write</span><span class="p">(</span><span class="n">unit</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;(DT)&#39;</span><span class="p">)</span><span class="w"> </span><span class="n">self</span><span class="w"></span>
+<div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="k">write</span><span class="p">(</span><span class="n">unit</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;(DT)&#39;</span><span class="p">)</span><span class="w"> </span><span class="n">substring</span><span class="w"></span>
 </code></pre></div>
 
 <p><em>Description</em>: Formatted write DTIO procedure for type <code>String</code>.</p>
@@ -340,7 +342,7 @@
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-01-10 15:09            </p>
+ on 2023-01-10 22:01            </p>
         </div>
       </div>
       <br>

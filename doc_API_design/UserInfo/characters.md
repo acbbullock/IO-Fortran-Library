@@ -14,7 +14,7 @@ program main
 
     type(String) :: emojis
 
-    emojis = String('😂🙈😊🤣') + '😍' - '😂' + '👌'**5
+    emojis = '😂🙈😊🤣' + '😍' - '😂' + '👌'**5
     call emojis%echo('emojis.txt')
     write(*,*) emojis
 end program main

@@ -655,6 +655,10 @@ module io_fortran_lib
 			character(len=*), intent(in), optional :: fmt
 		end function new_Str_i8
 
+		pure elemental recursive type(String) module function new_Str_string(x) result(new)
+			class(String), intent(in) :: x
+		end function new_Str_string
+
 		pure elemental recursive type(String) module function new_Str_char(x) result(new)
 			character(len=*), intent(in) :: x
 		end function new_Str_char
@@ -741,6 +745,11 @@ module io_fortran_lib
 			character(len=*), intent(in), optional :: fmt
 			character(len=:), allocatable :: x_str
 		end function str_i8
+
+		pure recursive module function str_string(x) result(x_str)
+			class(String), intent(in) :: x
+			character(len=:), allocatable :: x_str
+		end function str_string
 
 		pure recursive module function str_char(x) result(x_str)
 			character(len=*), intent(in) :: x
@@ -6937,6 +6946,14 @@ submodule (io_fortran_lib) internal_io
 		new%s = str(x, fmt=fmt_)
 	end procedure new_Str_i8
 
+	module procedure new_Str_string
+		if ( x%len() < 1 ) then
+			new%s = EMPTY_STR
+		else
+			new%s = x%s
+		end if
+	end procedure new_Str_string
+
 	module procedure new_Str_char
 		new%s = x
 	end procedure new_Str_char
@@ -7826,6 +7843,14 @@ submodule (io_fortran_lib) internal_io
 
 		x_str = trim(adjustl(str_tmp))
 	end procedure str_i8
+
+	module procedure str_string
+		if ( x%len() < 1 ) then
+			x_str = EMPTY_STR
+		else
+			x_str = x%s
+		end if
+	end procedure str_string
 
 	module procedure str_char
 		x_str = x
