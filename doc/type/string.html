@@ -90,7 +90,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title="<p>100.0% of total for derived types.</p>Including implementation: 158 statements, 100.0% of total for derived types.">28 statements</a>
+               title="<p>100.0% of total for derived types.</p>Including implementation: 169 statements, 100.0% of total for derived types.">29 statements</a>
           </li>
 
             <li id="source-file">
@@ -161,13 +161,13 @@
             <a class="list-group-item" href="../type/string.html#boundprocedure-push">push</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-replace">replace</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-replace_inplace">replace_inplace</a>
+            <a class="list-group-item" href="../type/string.html#boundprocedure-split">split</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-write%28formatted%29">write(formatted)</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-as_str">as_str</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-empty">empty</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-glue">glue</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-len">len</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-read_file">read_file</a>
-            <a class="list-group-item" href="../type/string.html#boundprocedure-split">split</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-trim">trim</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-trim_inplace">trim_inplace</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-write_file">write_file</a>
@@ -239,13 +239,13 @@ treated as the <a href="../module/io_fortran_lib.html#variable-empty_str">empty 
             <a class="list-group-item" href="../type/string.html#boundprocedure-push">push</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-replace">replace</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-replace_inplace">replace_inplace</a>
+            <a class="list-group-item" href="../type/string.html#boundprocedure-split">split</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-write%28formatted%29">write(formatted)</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-as_str">as_str</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-empty">empty</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-glue">glue</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-len">len</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-read_file">read_file</a>
-            <a class="list-group-item" href="../type/string.html#boundprocedure-split">split</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-trim">trim</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-trim_inplace">trim_inplace</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-write_file">write_file</a>
@@ -2243,6 +2243,70 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
   </div>
 
             <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-split"></span><h3>generic, public :: <strong>split</strong>  => split_string         
+    </h3></div>
+    <ul class="list-group">
+        <li class="list-group-item">
+                  <h3>
+    private pure recursive module function split_string(substring, separator) result(tokens)  
+</h3>
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>substring</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>separator</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/string.html'>String</a>), allocatable, dimension(:)</small>
+    </h4>
+    
+
+        </li>
+    </ul>
+  </div>
+
+            <div class="panel panel-default">
     <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-write%28formatted%29"></span><h3>generic, public :: <strong>write(formatted)</strong>  => write_string         
     </h3></div>
     <ul class="list-group">
@@ -2362,7 +2426,7 @@ to the assignment <code>self = String()</code>.</p>
   </div>
 
             <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-glue"></span><h3>procedure, public, pass(self) :: <strong>glue</strong>          
+    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-glue"></span><h3>procedure, public, pass(self) :: <strong>glue</strong>  => glue_into_self         
     </h3></div>
     <ul class="list-group">
         <li class="list-group-item">
@@ -2370,7 +2434,7 @@ to the assignment <code>self = String()</code>.</p>
                   
                 <p>Methods for the <code>String</code> type.</p>
                   <h3>
-    private pure recursive module subroutine glue(self, tokens, separator)  
+    private pure recursive module subroutine glue_into_self(self, tokens, separator)  
 </h3>
   <p>Glues a <code>String</code> vector <code>tokens</code> into <code>self</code> with given separator. Default separator is SPACE. The
 string slice component will be replaced if already allocated.</p>
@@ -2597,74 +2661,6 @@ string slice component will be replaced if already allocated.</p>
     </tbody>
   </table>
 
-
-        </li>
-    </ul>
-  </div>
-
-            <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-split"></span><h3>procedure, public, pass(self) :: <strong>split</strong>          
-    </h3></div>
-    <ul class="list-group">
-        <li class="list-group-item">
-              <h3>interface </h3>
-                  
-                <p>Methods for the <code>String</code> type.</p>
-                  <h3>
-    private pure recursive module function split(self, separator) result(tokens)  
-</h3>
-  <p>Splits a string into a vector of <code>tokens</code> with given separator. Default separator is SPACE.</p>
-<p>For a user reference, see <a href="../page/Ref/string-methods.html#split">split</a>.</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              class(<a href='../type/string.html'>String</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>self</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              character(len=*),
-            </td>
-<td>intent(in),</td>
-              <td>optional</td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>separator</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>type(<a href='../type/string.html'>String</a>), allocatable, dimension(:)</small>
-    </h4>
-    
 
         </li>
     </ul>
@@ -2901,7 +2897,7 @@ in place.</p>
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-01-10 22:01            </p>
+ on 2023-01-11 03:31            </p>
         </div>
       </div>
       <br>

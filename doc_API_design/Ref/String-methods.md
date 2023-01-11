@@ -19,7 +19,7 @@ For `self` a scalar variable of type `String`:
     result = self%as_str()
 ```
 
-*Description*: Returns a copy of the string slice component of a scalar `String`.
+*Description*: Returns a copy of the string slice component of a scalar `String`. This procedure is identical in function to the type conversion `result = str(self)`.
 
 ### [cast](../../type/string.html#boundprocedure-cast)
 
@@ -65,6 +65,8 @@ For `self` a scalar variable of type `String`:
 * `separator` is `optional` and of type `character(len=*)` (default is `SPACE`)
 
 *Description*: Glues a `String` vector `tokens` into `self` with given separator. Default separator is `SPACE`. The string slice component will be replaced if already allocated.
+
+For a functional version of `glue`, see [glue](glue-split.html).
 
 ### [len](../../type/string.html#boundprocedure-len)
 
@@ -143,15 +145,7 @@ For `self` a scalar or array variable of any rank and of type `String`:
 
 ### [split](../../type/string.html#boundprocedure-split)
 
-For `self` a scalar variable of type `String`:
-
-```fortran
-    result = self%split(separator)
-```
-
-* `separator` is `optional` and of type `character(len=*)` (default is `SPACE`)
-
-*Description*: Splits a string into a vector of `tokens` with given separator. Default separator is `SPACE`.
+*Description*: A generic binding for the interface [split](glue-split.html).
 
 ### [trim](../../type/string.html#boundprocedure-trim)
 
