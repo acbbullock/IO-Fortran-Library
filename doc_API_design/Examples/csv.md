@@ -41,7 +41,7 @@ x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12,x13,x14,x15,x16,x17,x18,x19,x20
 
 Note that the default value for `header` when reading is `.false.`. If a header is actually present, the output array will have an extra row with default initialized values.
 
-@warning Default text format for writing and reading is `'e'` for data of type `real` or `complex`, and `'i'` for data of type `integer`. Attempting to read data with a format that does not correspond to the format in the file will result in an I/O syntax error.
+@warning Default text format for writing and reading is `'e'` for data of type `real` or `complex`, and `'i'` for data of type `integer`. Attempting to read data with a format that does not correspond to the format in the file may result in an I/O syntax error.
 
 @note Reading into arrays of a different `kind` than the array that was written is a type conversion, and will fail the equality test.
 

@@ -23,11 +23,12 @@ program main
 
     call hg38%read_file('./data/hg38.bed', cell_array=cells, column_separator=TAB)
     call hg38_new%write_file(cells, './data/hg38_new.bed', column_separator=TAB)
-    write(*,'(a,l1)') 'New file and original are exact match: ', hg38_new == hg38
 
     call system_clock(t2, count_rate=rate); wall_time = real(t2-t1,real64)/rate
-    write(*,'(a)')  'Wall time: ' + str(wall_time, fmt='f', decimals=3) + ' s ' + &
-                    'using compiler: "' + compiler_version() + '".'
+
+    write(*,'(a,l1)')   'New file and original are exact match: ', hg38_new == hg38
+    write(*,'(a)')      'Wall time: ' + str(wall_time, fmt='f', decimals=3) + ' s ' + &
+                        'using compiler: "' + compiler_version() + '".'
 end program main
 ```
 
@@ -39,10 +40,10 @@ New file and original are exact match: T
 Wall time: 4.126 s using compiler: "GCC version 11.3.0".
 ---
 New file and original are exact match: T
-Wall time: 4.449 s using compiler: "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201".
+Wall time: 4.432 s using compiler: "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201".
 ---
 New file and original are exact match: T
-Wall time: 1.499 s using compiler: "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000".
+Wall time: 1.466 s using compiler: "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000".
 ---
 ```
 

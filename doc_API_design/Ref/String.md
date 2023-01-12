@@ -48,7 +48,7 @@ result = String(x, locale, fmt, decimals, im)
 * `decimals` is `optional` and of type `integer`
 * `im` is `optional` and of type `character(len=*)`
 
-@note Unlike [str](str.html), which takes scalar arguments only and returns a `character` value, `String` operates elementally and returns a [String](../../type/string.html) value.
+@note Unlike [str](str.html), which takes scalar arguments only and returns a `character`, `String` operates elementally and returns a [String](../../type/string.html).
 
 ### Optional Arguments
 

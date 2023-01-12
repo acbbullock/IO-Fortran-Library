@@ -7,7 +7,7 @@ author: Austin C Bullock
 
 *Description*: Subroutine for printing arrays and array sections to stdout.
 
-For `x` an array of rank `1` or `2` and of type `character`, `String`:
+For `x` an array of rank `1` or `2` and of type `character` or `String`:
 
 ```fortran
 call aprint(x)

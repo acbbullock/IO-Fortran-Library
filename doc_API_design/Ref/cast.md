@@ -34,19 +34,19 @@ call cast(substring, into, locale, fmt, im)
 * `fmt` is `optional`, may be one of `REAL_FMTS`
 * `im` is `optional` and of type `character(len=*)`
 
-For casting a `String` variable `substring` into a variable `into` and of type `integer`:
+For casting a `String` variable `substring` into a variable `into` of type `integer`:
 
 ```fortran
 call substring%cast(into, fmt)
 ```
 
-For casting a `String` variable `substring` into a variable `into` and of type `real`:
+For casting a `String` variable `substring` into a variable `into` of type `real`:
 
 ```fortran
 call substring%cast(into, locale, fmt)
 ```
 
-For casting a `String` variable `substring` into a variable `into` and of type `complex`:
+For casting a `String` variable `substring` into a variable `into` of type `complex`:
 
 ```fortran
 call substring%cast(into, locale, fmt, im)
