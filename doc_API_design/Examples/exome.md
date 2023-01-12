@@ -5,7 +5,7 @@ author: Austin C Bullock
 
 ## Handling large data files
 
-To demonstrate the speed and robustness of the IO-Fortran-Library, the following program reads the Twist Human Core Exome target `.bed` file for hg38 obtained from [Twist Bioscience](https://www.twistbioscience.com/resources/data-files/ngs-human-core-exome-panel-bed-file) into a cell array and then writes the cell array to a new file, comparing the two files for an exact match and providing the total time elapsed:
+To demonstrate the speed of file I/O, the following program reads the Twist Human Core Exome target `.bed` file for hg38 obtained from [Twist Bioscience](https://www.twistbioscience.com/resources/data-files/ngs-human-core-exome-panel-bed-file) into a cell array and then writes the cell array to a new file, comparing the two files for an exact match and providing the total time elapsed:
 
 ```fortran
 program main
@@ -46,6 +46,6 @@ Wall time: 1.499 s using compiler: "Intel(R) Fortran Intel(R) 64 Compiler Classi
 ---
 ```
 
-The file `hg38.bed` is provided locally in `/data` and contains `192262` lines.
+The file `hg38.bed` is provided locally in `/data` and contains `192262` lines of `TAB`-delimited data.
 
 @note With the Intel Fortran compiler `ifx`/`ifort`, we must specify `-heap-arrays 0` to avoid a segmentation fault when reading such a large file, as noted in [compiler-dependent behavior](../UserInfo/compilers.html).

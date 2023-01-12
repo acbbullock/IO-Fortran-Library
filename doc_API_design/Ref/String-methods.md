@@ -37,7 +37,7 @@ For `self` a scalar or array variable of any rank and of type `String`:
 
 *Description*: Returns number of non-overlapping occurrences of a substring elementally.
 
-@note `match` may be of any rank compatible with `self`.
+@note `match` may be a scalar or the same rank and shape as `self`.
 
 ### [echo](../../type/string.html#boundprocedure-echo)
 
@@ -90,7 +90,7 @@ For `self` a scalar or array variable of any rank and of type `String`:
 
 *Description*: Appends to the string slice component elementally in place. This procedure is identical in function to the [concatenation operators](operators.html#concatenation) with self assignment: `self = self // substring` and `self = self + substring`.
 
-@note `substring` may be of any rank compatible with `self`.
+@note `substring` may be a scalar or the same rank and shape as `self`.
 
 ### [read_file](../../type/string.html#boundprocedure-read_file)
 
@@ -125,7 +125,7 @@ For `self` a scalar or array variable of any rank and of type `String`:
 
 *Description*: Matches and replaces all occurrences of a substring elementally. If `back` is `.true.`, then `self` is scanned from back to front, which may result in a different outcome in the case that `match` is overlapping itself.
 
-@note `match` and `substring` may be any combination of `character` and `String`, and may be of any rank compatible with each other and with `self`.
+@note `match` and `substring` may be any combination of `character` and `String`, and may be any combination of scalars or arrays with the same rank and shape as `self`, with the same rank/shape matching rules applying to `back`.
 
 ### [replace_inplace](../../type/string.html#boundprocedure-replace_inplace)
 
@@ -141,7 +141,7 @@ For `self` a scalar or array variable of any rank and of type `String`:
 
 *Description*: Matches and replaces all occurrences of a substring elementally in place. If `back` is `.true.`, then `self` is scanned from back to front, which may result in a different outcome in the case that `match` is overlapping itself.
 
-@note `match` and `substring` may be any combination of `character` and `String`, and may be of any rank compatible with each other and with `self`.
+@note `match` and `substring` may be any combination of `character` and `String`, and may be any combination of scalars or arrays with the same rank and shape as `self`, with the same rank/shape matching rules applying to `back`.
 
 ### [split](../../type/string.html#boundprocedure-split)
 

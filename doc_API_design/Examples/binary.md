@@ -27,9 +27,9 @@ program main
 end program main
 ```
 
-@warning Reading into arrays of a different `kind` than the array that was written will invalidate the data. Always make sure the `kind` is matching.
+@warning Reading into arrays of a different `kind` than the array that was written will invalidate the data. Always make sure the `kind` is matching for binary I/O.
 
-TIP: The `shape` of an array may be written to a csv file so that the value of `data_shape` can be read into the program before reading in the main array with the corresponding value. The following program demonstrates the above tip:
+TIP: The shape of an array may be written to a csv file so that the value of `data_shape` can be read into the program before reading in the main array with the corresponding value. The following program demonstrates the above tip:
 
 ```fortran
 program main

@@ -7384,8 +7384,8 @@ submodule (io_fortran_lib) glue_split
 	!! This submodule provides module procedure implementations for the **public interfaces** `glue` and `split`.
 	contains
 	module procedure glue_char
+		type(String) :: temp_String
 		character(len=:), allocatable :: separator_
-		integer :: length, i
 
 		if ( .not. present(separator) ) then
 			separator_ = SPACE
@@ -7393,17 +7393,13 @@ submodule (io_fortran_lib) glue_split
 			separator_ = separator
 		end if
 
-		length = len(tokens)
+		temp_String = glue(String(tokens), separator=separator_)
 
-		if ( length == 0 ) then
-			new = EMPTY_STR; return
+		if ( temp_String%len() < 1 ) then
+			new = EMPTY_STR
+		else
+			new = temp_String%s
 		end if
-
-		new = EMPTY_STR
-		do i = 1, size(tokens)-1
-			new = new//trim(adjustl(tokens(i)))//separator_
-		end do
-		new = new//trim(adjustl(tokens(size(tokens))))
 	end procedure glue_char
 
 	module procedure glue_string
@@ -27893,8 +27889,7 @@ submodule (io_fortran_lib) array_printing
 			if ( any(REAL_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				write(*,'(a)') LF//'WARNING: Unknown format "'//fmt//'" for printing real array. Aborting...'
-				return
+				fmt_ = 'f'
 			end if
 		end if
 
@@ -27952,8 +27947,7 @@ submodule (io_fortran_lib) array_printing
 			if ( any(REAL_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				write(*,'(a)') LF//'WARNING: Unknown format "'//fmt//'" for printing real array. Aborting...'
-				return
+				fmt_ = 'f'
 			end if
 		end if
 
@@ -28011,8 +28005,7 @@ submodule (io_fortran_lib) array_printing
 			if ( any(REAL_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				write(*,'(a)') LF//'WARNING: Unknown format "'//fmt//'" for printing real array. Aborting...'
-				return
+				fmt_ = 'f'
 			end if
 		end if
 
@@ -28071,8 +28064,7 @@ submodule (io_fortran_lib) array_printing
 			if ( any(REAL_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				write(*,'(a)') LF//'WARNING: Unknown format "'//fmt//'" for printing real array. Aborting...'
-				return
+				fmt_ = 'f'
 			end if
 		end if
 
@@ -28130,8 +28122,7 @@ submodule (io_fortran_lib) array_printing
 			if ( any(REAL_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				write(*,'(a)') LF//'WARNING: Unknown format "'//fmt//'" for printing real array. Aborting...'
-				return
+				fmt_ = 'f'
 			end if
 		end if
 
@@ -28189,8 +28180,7 @@ submodule (io_fortran_lib) array_printing
 			if ( any(REAL_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				write(*,'(a)') LF//'WARNING: Unknown format "'//fmt//'" for printing real array. Aborting...'
-				return
+				fmt_ = 'f'
 			end if
 		end if
 
@@ -28249,8 +28239,7 @@ submodule (io_fortran_lib) array_printing
 			if ( any(REAL_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				write(*,'(a)') LF//'WARNING: Unknown format "'//fmt//'" for printing real array. Aborting...'
-				return
+				fmt_ = 'f'
 			end if
 		end if
 
@@ -28291,8 +28280,7 @@ submodule (io_fortran_lib) array_printing
 			if ( any(REAL_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				write(*,'(a)') LF//'WARNING: Unknown format "'//fmt//'" for printing real array. Aborting...'
-				return
+				fmt_ = 'f'
 			end if
 		end if
 
@@ -28333,8 +28321,7 @@ submodule (io_fortran_lib) array_printing
 			if ( any(REAL_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				write(*,'(a)') LF//'WARNING: Unknown format "'//fmt//'" for printing real array. Aborting...'
-				return
+				fmt_ = 'f'
 			end if
 		end if
 
@@ -28376,8 +28363,7 @@ submodule (io_fortran_lib) array_printing
 			if ( any(REAL_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				write(*,'(a)') LF//'WARNING: Unknown format "'//fmt//'" for printing real array. Aborting...'
-				return
+				fmt_ = 'f'
 			end if
 		end if
 
@@ -28418,8 +28404,7 @@ submodule (io_fortran_lib) array_printing
 			if ( any(REAL_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				write(*,'(a)') LF//'WARNING: Unknown format "'//fmt//'" for printing real array. Aborting...'
-				return
+				fmt_ = 'f'
 			end if
 		end if
 
@@ -28460,8 +28445,7 @@ submodule (io_fortran_lib) array_printing
 			if ( any(REAL_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				write(*,'(a)') LF//'WARNING: Unknown format "'//fmt//'" for printing real array. Aborting...'
-				return
+				fmt_ = 'f'
 			end if
 		end if
 
@@ -28503,8 +28487,7 @@ submodule (io_fortran_lib) array_printing
 			if ( any(INT_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				write(*,'(a)') LF//'WARNING: Unknown format "'//fmt//'" for printing integer array. Aborting...'
-				return
+				fmt_ = 'i'
 			end if
 		end if
 
@@ -28536,8 +28519,7 @@ submodule (io_fortran_lib) array_printing
 			if ( any(INT_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				write(*,'(a)') LF//'WARNING: Unknown format "'//fmt//'" for printing integer array. Aborting...'
-				return
+				fmt_ = 'i'
 			end if
 		end if
 
@@ -28569,8 +28551,7 @@ submodule (io_fortran_lib) array_printing
 			if ( any(INT_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				write(*,'(a)') LF//'WARNING: Unknown format "'//fmt//'" for printing integer array. Aborting...'
-				return
+				fmt_ = 'i'
 			end if
 		end if
 
@@ -28602,8 +28583,7 @@ submodule (io_fortran_lib) array_printing
 			if ( any(INT_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				write(*,'(a)') LF//'WARNING: Unknown format "'//fmt//'" for printing integer array. Aborting...'
-				return
+				fmt_ = 'i'
 			end if
 		end if
 
@@ -28636,8 +28616,7 @@ submodule (io_fortran_lib) array_printing
 			if ( any(INT_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				write(*,'(a)') LF//'WARNING: Unknown format "'//fmt//'" for printing integer array. Aborting...'
-				return
+				fmt_ = 'i'
 			end if
 		end if
 
@@ -28669,8 +28648,7 @@ submodule (io_fortran_lib) array_printing
 			if ( any(INT_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				write(*,'(a)') LF//'WARNING: Unknown format "'//fmt//'" for printing integer array. Aborting...'
-				return
+				fmt_ = 'i'
 			end if
 		end if
 
@@ -28702,8 +28680,7 @@ submodule (io_fortran_lib) array_printing
 			if ( any(INT_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				write(*,'(a)') LF//'WARNING: Unknown format "'//fmt//'" for printing integer array. Aborting...'
-				return
+				fmt_ = 'i'
 			end if
 		end if
 
@@ -28735,8 +28712,7 @@ submodule (io_fortran_lib) array_printing
 			if ( any(INT_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				write(*,'(a)') LF//'WARNING: Unknown format "'//fmt//'" for printing integer array. Aborting...'
-				return
+				fmt_ = 'i'
 			end if
 		end if
 
@@ -28759,48 +28735,71 @@ submodule (io_fortran_lib) array_printing
 	end procedure aprint_2di8
 
 	module procedure aprint_1dchar
+		type(String), allocatable, dimension(:) :: rows
 		integer :: i
 
-		write(unit=*, fmt='(a)') LF//'     '//adjustr(x(lbound(x, dim=1)))
+		allocate( rows(lbound(x, dim=1):ubound(x, dim=1)) )
 
-		if ( size(x) == 1 ) return
+		do concurrent(i = lbound(x, dim=1):ubound(x, dim=1))
+			if ( i == lbound(x, dim=1) ) then
+				rows(i)%s = LF//'    '//adjustl( x(i) )
+			else if ( i == ubound(x, dim=1) ) then
+				rows(i)%s = '    '//adjustl( x(i) )//LF
+			else
+				rows(i)%s = '    '//adjustl( x(i) )
+			end if
+		end do
 
-		if ( size(x) > 2 ) then
-			do i = lbound(x, dim=1) + 1, ubound(x, dim=1) - 1
-				write(unit=*, fmt='(a)') '     '//adjustr(x(i))
-			end do
-		end if
-
-		write(unit=*, fmt='(a)') '     '//adjustr(x(ubound(x, dim=1)))//LF
+		do i = lbound(x, dim=1), ubound(x, dim=1)
+			write(*,'(a)') rows(i)%s
+		end do
 	end procedure aprint_1dchar
 
 	module procedure aprint_2dchar
+		type(String), allocatable, dimension(:) :: rows
 		integer :: i
 
-		write(unit=*, fmt='(a)') LF//'    '//accum(x(lbound(x, dim=1),:))
+		allocate( rows(lbound(x, dim=1):ubound(x, dim=1)) )
 
-		if ( size(x, dim=1) == 1 ) return
+		do concurrent(i = lbound(x, dim=1):ubound(x, dim=1))
+			if ( i == lbound(x, dim=1) ) then
+				rows(i)%s = LF//'    '//accum( x(i,:) )
+			else if ( i == ubound(x, dim=1) ) then
+				rows(i)%s = '    '//accum( x(i,:) )//LF
+			else
+				rows(i)%s = '    '//accum( x(i,:) )
+			end if
+		end do
 
-		if ( size(x, dim=1) > 2 ) then
-			do i = lbound(x, dim=1) + 1, ubound(x, dim=1) - 1
-				write(unit=*, fmt='(a)') '    '//accum(x(i,:))
-			end do
-		end if
-
-		write(unit=*, fmt='(a)') '    '//accum(x(ubound(x, dim=1),:))//LF
+		do i = lbound(x, dim=1), ubound(x, dim=1)
+			write(*,'(a)') rows(i)%s
+		end do
 
 		contains
 		pure recursive function accum(x) result(x_str)
 			character(len=*), dimension(:), intent(in) :: x
 			character(len=:), allocatable :: x_str
 
-			integer :: i
+			integer :: x_len, x_size, i, pos
 
-			x_str = EMPTY_STR
-			do i = 1, size(x)-1
-				x_str = x_str//adjustr(x(i))//SPACE
-			end do
-			x_str = x_str//adjustr(x(size(x)))
+			x_len = len(x)
+			x_size = size(x)
+
+			if ( x_size == 1 ) then
+				x_str = x(1); return
+			end if
+
+			if ( x_len == 0 ) then
+				x_str = EMPTY_STR; return
+			end if
+
+			allocate( character(len=x_len*x_size + x_size - 1) :: x_str )
+
+			positional_transfer: do concurrent (i = 1:x_size)
+				pos = (i-1)*(x_len + 1) + 1
+				x_str(pos:pos+x_len-1) = adjustl(x(i))
+				if ( i < x_size ) x_str(pos+x_len:pos+x_len) = SPACE
+			end do positional_transfer
 		end function accum
 	end procedure aprint_2dchar
 

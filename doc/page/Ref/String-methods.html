@@ -119,7 +119,7 @@
 <li><code>match</code> is of type <code>character(len=*)</code> or <code>String</code></li>
 </ul>
 <p><em>Description</em>: Returns number of non-overlapping occurrences of a substring elementally.</p>
-<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p><code>match</code> may be of any rank compatible with <code>self</code>.</p></div>
+<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p><code>match</code> may be a scalar or the same rank and shape as <code>self</code>.</p></div>
 <h3 id="echo"><a href="../../type/string.html#boundprocedure-echo">echo</a></h3>
 <p><em>Description</em>: A generic binding for the interface <a href="echo.html">echo</a>.</p>
 <h3 id="empty"><a href="../../type/string.html#boundprocedure-empty">empty</a></h3>
@@ -154,7 +154,7 @@
 <li><code>substring</code> is of type <code>character(len=*)</code> or <code>String</code></li>
 </ul>
 <p><em>Description</em>: Appends to the string slice component elementally in place. This procedure is identical in function to the <a href="operators.html#concatenation">concatenation operators</a> with self assignment: <code>self = self // substring</code> and <code>self = self + substring</code>.</p>
-<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p><code>substring</code> may be of any rank compatible with <code>self</code>.</p></div>
+<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p><code>substring</code> may be a scalar or the same rank and shape as <code>self</code>.</p></div>
 <h3 id="read_file"><a href="../../type/string.html#boundprocedure-read_file">read_file</a></h3>
 <p>For <code>self</code> a scalar variable of type <code>String</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">read_file</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span><span class="w"> </span><span class="n">cell_array</span><span class="p">,</span><span class="w"> </span><span class="n">row_separator</span><span class="p">,</span><span class="w"> </span><span class="n">column_separator</span><span class="p">)</span><span class="w"></span>
@@ -180,7 +180,7 @@
 <li><code>back</code> is <code>optional</code> and of type <code>logical</code> (default is <code>.false.</code>)</li>
 </ul>
 <p><em>Description</em>: Matches and replaces all occurrences of a substring elementally. If <code>back</code> is <code>.true.</code>, then <code>self</code> is scanned from back to front, which may result in a different outcome in the case that <code>match</code> is overlapping itself.</p>
-<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p><code>match</code> and <code>substring</code> may be any combination of <code>character</code> and <code>String</code>, and may be of any rank compatible with each other and with <code>self</code>.</p></div>
+<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p><code>match</code> and <code>substring</code> may be any combination of <code>character</code> and <code>String</code>, and may be any combination of scalars or arrays with the same rank and shape as <code>self</code>, with the same rank/shape matching rules applying to <code>back</code>.</p></div>
 <h3 id="replace_inplace"><a href="../../type/string.html#boundprocedure-replace_inplace">replace_inplace</a></h3>
 <p>For <code>self</code> a scalar or array variable of any rank and of type <code>String</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">replace_inplace</span><span class="p">(</span><span class="n">match</span><span class="p">,</span><span class="w"> </span><span class="n">substring</span><span class="p">,</span><span class="w"> </span><span class="n">back</span><span class="p">)</span><span class="w"></span>
@@ -192,7 +192,7 @@
 <li><code>back</code> is <code>optional</code> and of type <code>logical</code> (default is <code>.false.</code>)</li>
 </ul>
 <p><em>Description</em>: Matches and replaces all occurrences of a substring elementally in place. If <code>back</code> is <code>.true.</code>, then <code>self</code> is scanned from back to front, which may result in a different outcome in the case that <code>match</code> is overlapping itself.</p>
-<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p><code>match</code> and <code>substring</code> may be any combination of <code>character</code> and <code>String</code>, and may be of any rank compatible with each other and with <code>self</code>.</p></div>
+<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p><code>match</code> and <code>substring</code> may be any combination of <code>character</code> and <code>String</code>, and may be any combination of scalars or arrays with the same rank and shape as <code>self</code>, with the same rank/shape matching rules applying to <code>back</code>.</p></div>
 <h3 id="split"><a href="../../type/string.html#boundprocedure-split">split</a></h3>
 <p><em>Description</em>: A generic binding for the interface <a href="glue-split.html">split</a>.</p>
 <h3 id="trim"><a href="../../type/string.html#boundprocedure-trim">trim</a></h3>
@@ -342,7 +342,7 @@
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-01-11 14:36            </p>
+ on 2023-01-11 17:49            </p>
         </div>
       </div>
       <br>

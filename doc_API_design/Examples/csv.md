@@ -89,7 +89,7 @@ Here, we construct the same header as before with the implicit loop
 cells(1,:) = [(String('x'//str(i)), i = 1, 20)]
 ```
 
-and then construct the remainder of the cell array `cells` with an elemental assignment `cells(2:,:) = String(x, fmt)` before writing the array to a csv file. We then read the files back into `csv` and output the cells into `cells` (which is reallocated internally). Note that when casting the cell data into numeric arrays, we must pre-allocate the output arrays due to the restriction that `intent(out)` arguments of `elemental` procedures may not be `allocatable`.
+and then construct the remainder of the cell array `cells` with an elemental assignment `cells(2:,:) = String(x, fmt)` before writing the array to a csv file. We then read the files back into `csv` and output the cells into `cells` (which is reallocated internally). Note that when casting the cell data into numeric arrays, we must pre-allocate the output arrays due to the restrictions on `intent(out)` arguments of `elemental` procedures.
 
 @note One may optionally specify the arguments of `row_separator` and `column_separator` when writing and reading text files with [write_file](../Ref/string-methods.html#write_file) and [read_file](../Ref/string-methods.html#read_file). The default `row_separator` is `LF`, and the default `column_separator` is `','`.
 

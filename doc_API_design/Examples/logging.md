@@ -5,7 +5,7 @@ author: Austin C Bullock
 
 ## Log file I/O
 
-The routine [echo](../Ref/echo.html) is the preferred method for streaming text data of type `character` to a log file.
+The routine [echo](../Ref/echo.html) is the preferred method for writing general text data to a log file.
 
 The following program demonstrates a simple use of `echo` for writing messages to a log file:
 
@@ -68,12 +68,12 @@ program main
 
     if ( errstat /= 0 ) then
         call logmsg%push('Process has non-zero exit status: ' + str(errstat) + LF + 'Stopping...')
-        call logmsg%echo(file_name=logfile)
+        call logmsg%echo(logfile)
         error stop logmsg%as_str()
     end if
 
     call logmsg%push('All processes have executed successfully.')
-    call logmsg%echo(file_name=logfile)
+    call logmsg%echo(logfile)
 end program main
 ```
 

@@ -3,6 +3,10 @@ title: String manipulation
 author: Austin C Bullock
 ---
 
+## Dynamic string manipulation
+
+Using [operator](../Ref/operators.html) techniques and [string methods](../Ref/string-methods.html), we may easily perform complex string manipulations during run time.
+
 The following program demonstrates the use of the [String](../../type/string.html) type and some [type-bound procedures](../Ref/string-methods.html) for manipulating a timestamp:
 
 ```fortran

@@ -7,7 +7,7 @@ author: Austin C Bullock
 
 *Description*: Subroutine for casting a `character` or `String` into a number.
 
-For casting `substring` of type `character` (scalar only) or `String` (any rank) into a variable `into` of compatible rank and of type `integer`:
+For casting a `substring` of type `character` (scalar only) or `String` (any rank) into a variable `into` of type `integer`:
 
 ```fortran
 call cast(substring, into, fmt)
@@ -15,7 +15,7 @@ call cast(substring, into, fmt)
 
 * `fmt` is `optional`, may be one of `INT_FMTS`
 
-For casting `substring` of type `character` (scalar only) or `String` (any rank) into a variable `into` of compatible rank and of type `real`:
+For casting a `substring` of type `character` (scalar only) or `String` (any rank) into a variable `into` of type `real`:
 
 ```fortran
 call cast(substring, into, locale, fmt)
@@ -24,7 +24,7 @@ call cast(substring, into, locale, fmt)
 * `locale` is `optional`, may be one of `LOCALES`
 * `fmt` is `optional`, may be one of `REAL_FMTS`
 
-For casting `substring` of type `character` (scalar only) or `String` (any rank) into a variable `into` of compatible rank and of type `complex`:
+For casting a `substring` of type `character` (scalar only) or `String` (any rank) into a variable `into` of type `complex`:
 
 ```fortran
 call cast(substring, into, locale, fmt, im)
@@ -34,27 +34,27 @@ call cast(substring, into, locale, fmt, im)
 * `fmt` is `optional`, may be one of `REAL_FMTS`
 * `im` is `optional` and of type `character(len=*)`
 
-For casting a `String` variable `substring` into a variable `into` of compatible rank and of type `integer`:
+For casting a `String` variable `substring` into a variable `into` and of type `integer`:
 
 ```fortran
 call substring%cast(into, fmt)
 ```
 
-For casting a `String` variable `substring` into a variable `into` of compatible rank and of type `real`:
+For casting a `String` variable `substring` into a variable `into` and of type `real`:
 
 ```fortran
 call substring%cast(into, locale, fmt)
 ```
 
-For casting a `String` variable `substring` into a variable `into` of compatible rank and of type `complex`:
+For casting a `String` variable `substring` into a variable `into` and of type `complex`:
 
 ```fortran
 call substring%cast(into, locale, fmt, im)
 ```
 
-@note The type-bound procedure access of the form `call substring%cast()` is valid when `substring` is a `String` variable. To cast a `String`-valued expression, the expression must be passed to `cast` by the form `call cast()`.
+@warning The arguments `substring` and `into` must always be of the same rank and shape, and `into` must be pre-allocated prior to calling `cast` due to the restrictions on `intent(out)` arguments of `elemental` procedures.
 
-@warning In all cases, `into` must be pre-allocated prior to calling `cast` due to the restriction that `intent(out)` arguments of `elemental` procedures may not be `allocatable`.
+@note The type-bound procedure access of the form `call substring%cast()` is valid when `substring` is a `String` variable. To cast a `String`-valued expression, the expression must be passed to `cast` by the form `call cast()`.
 
 ### Optional Arguments
 
