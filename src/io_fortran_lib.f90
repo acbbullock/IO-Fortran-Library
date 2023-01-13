@@ -5664,18 +5664,10 @@ submodule (io_fortran_lib) internal_io
 	!! `cast`.
 	contains
 	module procedure new_Str_c128
-		character(len=:), allocatable :: locale_, fmt_, im_
-		integer :: decimals_
-
-		if ( .not. present(locale) ) then
-			locale_ = 'US'
-		else
-			if ( any(LOCALES == locale) ) then
-				locale_ = locale
-			else
-				locale_ = 'US'
-			end if
-		end if
+		character(len=1) :: fmt_
+		character(len=:), allocatable :: decimal, xre_str, xim_str, im_
+		integer, allocatable :: ere, eim, max_decimalsre, max_decimalsim, decimals_, lre, lim
+		integer, allocatable :: decimals_re, decimals_im, extrare, extraim
 
 		if ( .not. present(fmt) ) then
 			fmt_ = 'e'
@@ -5683,14 +5675,227 @@ submodule (io_fortran_lib) internal_io
 			if ( any(REAL_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				fmt_ = 'e'
+				new%s = EMPTY_STR; return
 			end if
 		end if
 
-		if ( .not. present(decimals) ) then
-			decimals_ = 150
+		if ( fmt_ == 'z' ) then
+			if ( x%re /= 0.0_real128 ) then
+				allocate( character(len=32) :: xre_str )
+				write(unit=xre_str, fmt='(z32)') x%re
+			else
+				xre_str = '0'
+			end if
+
+			if ( x%im /= 0.0_real128 ) then
+				allocate( character(len=32) :: xim_str )
+				write(unit=xim_str, fmt='(z32)') x%im
+			else
+				xim_str = '0'
+			end if
+		end if
+
+		if ( .not. present(locale) ) then
+			decimal = 'POINT'
 		else
-			decimals_ = decimals
+			if ( locale == 'US' ) then
+				decimal = 'POINT'
+			else if ( locale == 'EU' ) then
+				decimal = 'COMMA'
+			else
+				new%s = EMPTY_STR; return
+			end if
+		end if
+
+		if ( fmt_ == 'e' ) then
+			associate ( max_precision => ceiling( 1.0 + log10(real(radix(x%re)))*digits(x%re) ) )
+				if ( .not. present(decimals) ) then
+					decimals_ = max_precision - 1
+				else
+					if ( decimals < 0 ) then
+						decimals_ = 0
+					else if ( decimals > (max_precision - 1) ) then
+						decimals_ = max_precision - 1
+					else
+						decimals_ = decimals
+					end if
+				end if
+			end associate
+
+			if ( x%re < 0.0_real128 ) then
+				lre = decimals_ + 9
+			else
+				lre = decimals_ + 8
+			end if
+
+			if ( x%im < 0.0_real128 ) then
+				lim = decimals_ + 9
+			else
+				lim = decimals_ + 8
+			end if
+
+			allocate( character(len=lre) :: xre_str )
+			allocate( character(len=lim) :: xim_str )
+
+			internal_write_e: block
+				character(len=3) :: lre_str, lim_str, decimals_str
+
+				write(unit=lre_str, fmt='(i3)') lre
+				write(unit=lim_str, fmt='(i3)') lim
+				write(unit=decimals_str, fmt='(i3)') decimals_
+				write(unit=xre_str, fmt='(es'//lre_str//'.'//decimals_str//'e4)', decimal=decimal) x%re
+				write(unit=xim_str, fmt='(es'//lim_str//'.'//decimals_str//'e4)', decimal=decimal) x%im
+			end block internal_write_e
+
+			if ( x%re == 0.0_real128 ) then
+				xre_str = '0.0E+0000'
+			end if
+
+			if ( x%im == 0.0_real128 ) then
+				xim_str = '0.0E+0000'
+			end if
+		else if ( fmt_ == 'f' ) then
+			if ( abs(x%re) /= 0.0_real128 ) then
+				ere = int(log10(abs(x%re)))
+			else
+				ere = 0
+			end if
+
+			if ( abs(x%im) /= 0.0_real128 ) then
+				eim = int(log10(abs(x%im)))
+			else
+				eim = 0
+			end if
+
+			associate ( max_precision => ceiling( 1.0 + log10(real(radix(x%re)))*digits(x%re) ) )
+				if ( ere == 0 ) then
+					if ( floor(x%re) == 0 ) then
+						max_decimalsre = max_precision
+					else
+						max_decimalsre = max_precision - 1
+						ere = 1 + ere
+					end if
+				else if ( ere > 0 ) then
+					max_decimalsre = max_precision - (1 + ere)
+					ere = 1 + ere
+				else
+					max_decimalsre = max_precision - ere
+				end if
+
+				if ( eim == 0 ) then
+					if ( floor(x%im) == 0 ) then
+						max_decimalsim = max_precision
+					else
+						max_decimalsim = max_precision - 1
+						eim = 1 + eim
+					end if
+				else if ( eim > 0 ) then
+					max_decimalsim = max_precision - (1 + eim)
+					eim = 1 + eim
+				else
+					max_decimalsim = max_precision - eim
+				end if
+
+				extrare = ere - max_precision
+				extraim = eim - max_precision
+			end associate
+
+			if ( max_decimalsre < 0 ) max_decimalsre = 0
+			if ( max_decimalsim < 0 ) max_decimalsim = 0
+
+			if ( .not. present(decimals) ) then
+				decimals_re = max_decimalsre
+				decimals_im = max_decimalsim
+			else
+				if ( decimals < 0 ) then
+					decimals_re = 0
+					decimals_im = 0
+				end if
+
+				if ( decimals > max_decimalsre ) then
+					decimals_re = max_decimalsre
+				else
+					decimals_re = decimals
+				end if
+
+				if ( decimals > max_decimalsim ) then
+					decimals_im = max_decimalsim
+				else
+					decimals_im = decimals
+				end if
+			end if
+
+			if ( ere > 0 ) then
+				if ( x%re < 0.0_real128 ) then
+					lre = decimals_re + ere + 2
+				else
+					lre = decimals_re + ere + 1
+				end if
+			else
+				if ( x%re < 0.0_real128 ) then
+					lre = decimals_re + 3
+				else
+					lre = decimals_re + 2
+				end if
+			end if
+
+			if ( eim > 0 ) then
+				if ( x%im < 0.0_real128 ) then
+					lim = decimals_im + eim + 2
+				else
+					lim = decimals_im + eim + 1
+				end if
+			else
+				if ( x%im < 0.0_real128 ) then
+					lim = decimals_im + 3
+				else
+					lim = decimals_im + 2
+				end if
+			end if
+
+			allocate( character(len=lre) :: xre_str )
+			allocate( character(len=lim) :: xim_str )
+
+			internal_write_f: block
+				character(len=3) :: lre_str, lim_str, decimals_restr, decimals_imstr
+
+				write(unit=lre_str, fmt='(i3)') lre
+				write(unit=lim_str, fmt='(i3)') lim
+				write(unit=decimals_restr, fmt='(i3)') decimals_re
+				write(unit=decimals_imstr, fmt='(i3)') decimals_im
+				write(unit=xre_str, fmt='(f'//lre_str//'.'//decimals_restr//')', decimal=decimal) x%re
+				write(unit=xim_str, fmt='(f'//lim_str//'.'//decimals_imstr//')', decimal=decimal) x%im
+			end block internal_write_f
+
+			if ( x%re == 0.0_real128 ) then
+				xre_str = '0.0'
+			end if
+
+			if ( x%im == 0.0_real128 ) then
+				xim_str = '0.0'
+			end if
+
+			if ( extrare > 0 ) then
+				remove_extra_re: block
+					integer :: i
+					do i = len(xre_str)-1, 1, -1
+						xre_str(i:i) = '0'
+						extrare = extrare - 1
+						if ( extrare == 0 ) exit remove_extra_re
+					end do
+				end block remove_extra_re
+			end if
+
+			if ( extraim > 0 ) then
+				remove_extra_im: block
+					integer :: i
+					do i = len(xim_str)-1, 1, -1
+						xim_str(i:i) = '0'
+						extraim = extraim - 1
+						if ( extraim == 0 ) exit remove_extra_im
+					end do
+				end block remove_extra_im
+			end if
 		end if
 
 		if ( .not. present(im) ) then
@@ -5699,21 +5904,29 @@ submodule (io_fortran_lib) internal_io
 			im_ = trim(adjustl(im))
 		end if
 
-		new%s = str(x, locale=locale_, fmt=fmt_, decimals=decimals_, im=im_)
+		if ( im_ == EMPTY_STR ) then
+			if ( decimal == 'POINT' ) then
+				new%s = '('//xre_str//COMMA//xim_str//')'; return
+			else
+				new%s = '('//xre_str//SEMICOLON//xim_str//')'; return
+			end if
+		end if
+
+		if ( fmt_ == 'z' ) then
+			new%s = xre_str//'+'//xim_str//im_; return
+		end if
+
+		if ( x%im < 0.0_real128 ) then
+			new%s = xre_str//xim_str//im_
+		else
+			new%s = xre_str//'+'//xim_str//im_
+		end if
 	end procedure new_Str_c128
 	module procedure new_Str_c64
-		character(len=:), allocatable :: locale_, fmt_, im_
-		integer :: decimals_
-
-		if ( .not. present(locale) ) then
-			locale_ = 'US'
-		else
-			if ( any(LOCALES == locale) ) then
-				locale_ = locale
-			else
-				locale_ = 'US'
-			end if
-		end if
+		character(len=1) :: fmt_
+		character(len=:), allocatable :: decimal, xre_str, xim_str, im_
+		integer, allocatable :: ere, eim, max_decimalsre, max_decimalsim, decimals_, lre, lim
+		integer, allocatable :: decimals_re, decimals_im, extrare, extraim
 
 		if ( .not. present(fmt) ) then
 			fmt_ = 'e'
@@ -5721,14 +5934,227 @@ submodule (io_fortran_lib) internal_io
 			if ( any(REAL_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				fmt_ = 'e'
+				new%s = EMPTY_STR; return
 			end if
 		end if
 
-		if ( .not. present(decimals) ) then
-			decimals_ = 150
+		if ( fmt_ == 'z' ) then
+			if ( x%re /= 0.0_real64 ) then
+				allocate( character(len=16) :: xre_str )
+				write(unit=xre_str, fmt='(z16)') x%re
+			else
+				xre_str = '0'
+			end if
+
+			if ( x%im /= 0.0_real64 ) then
+				allocate( character(len=16) :: xim_str )
+				write(unit=xim_str, fmt='(z16)') x%im
+			else
+				xim_str = '0'
+			end if
+		end if
+
+		if ( .not. present(locale) ) then
+			decimal = 'POINT'
 		else
-			decimals_ = decimals
+			if ( locale == 'US' ) then
+				decimal = 'POINT'
+			else if ( locale == 'EU' ) then
+				decimal = 'COMMA'
+			else
+				new%s = EMPTY_STR; return
+			end if
+		end if
+
+		if ( fmt_ == 'e' ) then
+			associate ( max_precision => ceiling( 1.0 + log10(real(radix(x%re)))*digits(x%re) ) )
+				if ( .not. present(decimals) ) then
+					decimals_ = max_precision - 1
+				else
+					if ( decimals < 0 ) then
+						decimals_ = 0
+					else if ( decimals > (max_precision - 1) ) then
+						decimals_ = max_precision - 1
+					else
+						decimals_ = decimals
+					end if
+				end if
+			end associate
+
+			if ( x%re < 0.0_real64 ) then
+				lre = decimals_ + 8
+			else
+				lre = decimals_ + 7
+			end if
+
+			if ( x%im < 0.0_real64 ) then
+				lim = decimals_ + 8
+			else
+				lim = decimals_ + 7
+			end if
+
+			allocate( character(len=lre) :: xre_str )
+			allocate( character(len=lim) :: xim_str )
+
+			internal_write_e: block
+				character(len=3) :: lre_str, lim_str, decimals_str
+
+				write(unit=lre_str, fmt='(i3)') lre
+				write(unit=lim_str, fmt='(i3)') lim
+				write(unit=decimals_str, fmt='(i3)') decimals_
+				write(unit=xre_str, fmt='(es'//lre_str//'.'//decimals_str//'e3)', decimal=decimal) x%re
+				write(unit=xim_str, fmt='(es'//lim_str//'.'//decimals_str//'e3)', decimal=decimal) x%im
+			end block internal_write_e
+
+			if ( x%re == 0.0_real64 ) then
+				xre_str = '0.0E+000'
+			end if
+
+			if ( x%im == 0.0_real64 ) then
+				xim_str = '0.0E+000'
+			end if
+		else if ( fmt_ == 'f' ) then
+			if ( abs(x%re) /= 0.0_real64 ) then
+				ere = int(log10(abs(x%re)))
+			else
+				ere = 0
+			end if
+
+			if ( abs(x%im) /= 0.0_real64 ) then
+				eim = int(log10(abs(x%im)))
+			else
+				eim = 0
+			end if
+
+			associate ( max_precision => ceiling( 1.0 + log10(real(radix(x%re)))*digits(x%re) ) )
+				if ( ere == 0 ) then
+					if ( floor(x%re) == 0 ) then
+						max_decimalsre = max_precision
+					else
+						max_decimalsre = max_precision - 1
+						ere = 1 + ere
+					end if
+				else if ( ere > 0 ) then
+					max_decimalsre = max_precision - (1 + ere)
+					ere = 1 + ere
+				else
+					max_decimalsre = max_precision - ere
+				end if
+
+				if ( eim == 0 ) then
+					if ( floor(x%im) == 0 ) then
+						max_decimalsim = max_precision
+					else
+						max_decimalsim = max_precision - 1
+						eim = 1 + eim
+					end if
+				else if ( eim > 0 ) then
+					max_decimalsim = max_precision - (1 + eim)
+					eim = 1 + eim
+				else
+					max_decimalsim = max_precision - eim
+				end if
+
+				extrare = ere - max_precision
+				extraim = eim - max_precision
+			end associate
+
+			if ( max_decimalsre < 0 ) max_decimalsre = 0
+			if ( max_decimalsim < 0 ) max_decimalsim = 0
+
+			if ( .not. present(decimals) ) then
+				decimals_re = max_decimalsre
+				decimals_im = max_decimalsim
+			else
+				if ( decimals < 0 ) then
+					decimals_re = 0
+					decimals_im = 0
+				end if
+
+				if ( decimals > max_decimalsre ) then
+					decimals_re = max_decimalsre
+				else
+					decimals_re = decimals
+				end if
+
+				if ( decimals > max_decimalsim ) then
+					decimals_im = max_decimalsim
+				else
+					decimals_im = decimals
+				end if
+			end if
+
+			if ( ere > 0 ) then
+				if ( x%re < 0.0_real64 ) then
+					lre = decimals_re + ere + 2
+				else
+					lre = decimals_re + ere + 1
+				end if
+			else
+				if ( x%re < 0.0_real64 ) then
+					lre = decimals_re + 3
+				else
+					lre = decimals_re + 2
+				end if
+			end if
+
+			if ( eim > 0 ) then
+				if ( x%im < 0.0_real64 ) then
+					lim = decimals_im + eim + 2
+				else
+					lim = decimals_im + eim + 1
+				end if
+			else
+				if ( x%im < 0.0_real64 ) then
+					lim = decimals_im + 3
+				else
+					lim = decimals_im + 2
+				end if
+			end if
+
+			allocate( character(len=lre) :: xre_str )
+			allocate( character(len=lim) :: xim_str )
+
+			internal_write_f: block
+				character(len=3) :: lre_str, lim_str, decimals_restr, decimals_imstr
+
+				write(unit=lre_str, fmt='(i3)') lre
+				write(unit=lim_str, fmt='(i3)') lim
+				write(unit=decimals_restr, fmt='(i3)') decimals_re
+				write(unit=decimals_imstr, fmt='(i3)') decimals_im
+				write(unit=xre_str, fmt='(f'//lre_str//'.'//decimals_restr//')', decimal=decimal) x%re
+				write(unit=xim_str, fmt='(f'//lim_str//'.'//decimals_imstr//')', decimal=decimal) x%im
+			end block internal_write_f
+
+			if ( x%re == 0.0_real64 ) then
+				xre_str = '0.0'
+			end if
+
+			if ( x%im == 0.0_real64 ) then
+				xim_str = '0.0'
+			end if
+
+			if ( extrare > 0 ) then
+				remove_extra_re: block
+					integer :: i
+					do i = len(xre_str)-1, 1, -1
+						xre_str(i:i) = '0'
+						extrare = extrare - 1
+						if ( extrare == 0 ) exit remove_extra_re
+					end do
+				end block remove_extra_re
+			end if
+
+			if ( extraim > 0 ) then
+				remove_extra_im: block
+					integer :: i
+					do i = len(xim_str)-1, 1, -1
+						xim_str(i:i) = '0'
+						extraim = extraim - 1
+						if ( extraim == 0 ) exit remove_extra_im
+					end do
+				end block remove_extra_im
+			end if
 		end if
 
 		if ( .not. present(im) ) then
@@ -5737,21 +6163,29 @@ submodule (io_fortran_lib) internal_io
 			im_ = trim(adjustl(im))
 		end if
 
-		new%s = str(x, locale=locale_, fmt=fmt_, decimals=decimals_, im=im_)
+		if ( im_ == EMPTY_STR ) then
+			if ( decimal == 'POINT' ) then
+				new%s = '('//xre_str//COMMA//xim_str//')'; return
+			else
+				new%s = '('//xre_str//SEMICOLON//xim_str//')'; return
+			end if
+		end if
+
+		if ( fmt_ == 'z' ) then
+			new%s = xre_str//'+'//xim_str//im_; return
+		end if
+
+		if ( x%im < 0.0_real64 ) then
+			new%s = xre_str//xim_str//im_
+		else
+			new%s = xre_str//'+'//xim_str//im_
+		end if
 	end procedure new_Str_c64
 	module procedure new_Str_c32
-		character(len=:), allocatable :: locale_, fmt_, im_
-		integer :: decimals_
-
-		if ( .not. present(locale) ) then
-			locale_ = 'US'
-		else
-			if ( any(LOCALES == locale) ) then
-				locale_ = locale
-			else
-				locale_ = 'US'
-			end if
-		end if
+		character(len=1) :: fmt_
+		character(len=:), allocatable :: decimal, xre_str, xim_str, im_
+		integer, allocatable :: ere, eim, max_decimalsre, max_decimalsim, decimals_, lre, lim
+		integer, allocatable :: decimals_re, decimals_im, extrare, extraim
 
 		if ( .not. present(fmt) ) then
 			fmt_ = 'e'
@@ -5759,14 +6193,227 @@ submodule (io_fortran_lib) internal_io
 			if ( any(REAL_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				fmt_ = 'e'
+				new%s = EMPTY_STR; return
 			end if
 		end if
 
-		if ( .not. present(decimals) ) then
-			decimals_ = 150
+		if ( fmt_ == 'z' ) then
+			if ( x%re /= 0.0_real32 ) then
+				allocate( character(len=8) :: xre_str )
+				write(unit=xre_str, fmt='(z8)') x%re
+			else
+				xre_str = '0'
+			end if
+
+			if ( x%im /= 0.0_real32 ) then
+				allocate( character(len=8) :: xim_str )
+				write(unit=xim_str, fmt='(z8)') x%im
+			else
+				xim_str = '0'
+			end if
+		end if
+
+		if ( .not. present(locale) ) then
+			decimal = 'POINT'
 		else
-			decimals_ = decimals
+			if ( locale == 'US' ) then
+				decimal = 'POINT'
+			else if ( locale == 'EU' ) then
+				decimal = 'COMMA'
+			else
+				new%s = EMPTY_STR; return
+			end if
+		end if
+
+		if ( fmt_ == 'e' ) then
+			associate ( max_precision => ceiling( 1.0 + log10(real(radix(x%re)))*digits(x%re) ) )
+				if ( .not. present(decimals) ) then
+					decimals_ = max_precision - 1
+				else
+					if ( decimals < 0 ) then
+						decimals_ = 0
+					else if ( decimals > (max_precision - 1) ) then
+						decimals_ = max_precision - 1
+					else
+						decimals_ = decimals
+					end if
+				end if
+			end associate
+
+			if ( x%re < 0.0_real32 ) then
+				lre = decimals_ + 7
+			else
+				lre = decimals_ + 6
+			end if
+
+			if ( x%im < 0.0_real32 ) then
+				lim = decimals_ + 7
+			else
+				lim = decimals_ + 6
+			end if
+
+			allocate( character(len=lre) :: xre_str )
+			allocate( character(len=lim) :: xim_str )
+
+			internal_write_e: block
+				character(len=3) :: lre_str, lim_str, decimals_str
+
+				write(unit=lre_str, fmt='(i3)') lre
+				write(unit=lim_str, fmt='(i3)') lim
+				write(unit=decimals_str, fmt='(i3)') decimals_
+				write(unit=xre_str, fmt='(es'//lre_str//'.'//decimals_str//'e2)', decimal=decimal) x%re
+				write(unit=xim_str, fmt='(es'//lim_str//'.'//decimals_str//'e2)', decimal=decimal) x%im
+			end block internal_write_e
+
+			if ( x%re == 0.0_real32 ) then
+				xre_str = '0.0E+00'
+			end if
+
+			if ( x%im == 0.0_real32 ) then
+				xim_str = '0.0E+00'
+			end if
+		else if ( fmt_ == 'f' ) then
+			if ( abs(x%re) /= 0.0_real32 ) then
+				ere = int(log10(abs(x%re)))
+			else
+				ere = 0
+			end if
+
+			if ( abs(x%im) /= 0.0_real32 ) then
+				eim = int(log10(abs(x%im)))
+			else
+				eim = 0
+			end if
+
+			associate ( max_precision => ceiling( 1.0 + log10(real(radix(x%re)))*digits(x%re) ) )
+				if ( ere == 0 ) then
+					if ( floor(x%re) == 0 ) then
+						max_decimalsre = max_precision
+					else
+						max_decimalsre = max_precision - 1
+						ere = 1 + ere
+					end if
+				else if ( ere > 0 ) then
+					max_decimalsre = max_precision - (1 + ere)
+					ere = 1 + ere
+				else
+					max_decimalsre = max_precision - ere
+				end if
+
+				if ( eim == 0 ) then
+					if ( floor(x%im) == 0 ) then
+						max_decimalsim = max_precision
+					else
+						max_decimalsim = max_precision - 1
+						eim = 1 + eim
+					end if
+				else if ( eim > 0 ) then
+					max_decimalsim = max_precision - (1 + eim)
+					eim = 1 + eim
+				else
+					max_decimalsim = max_precision - eim
+				end if
+
+				extrare = ere - max_precision
+				extraim = eim - max_precision
+			end associate
+
+			if ( max_decimalsre < 0 ) max_decimalsre = 0
+			if ( max_decimalsim < 0 ) max_decimalsim = 0
+
+			if ( .not. present(decimals) ) then
+				decimals_re = max_decimalsre
+				decimals_im = max_decimalsim
+			else
+				if ( decimals < 0 ) then
+					decimals_re = 0
+					decimals_im = 0
+				end if
+
+				if ( decimals > max_decimalsre ) then
+					decimals_re = max_decimalsre
+				else
+					decimals_re = decimals
+				end if
+
+				if ( decimals > max_decimalsim ) then
+					decimals_im = max_decimalsim
+				else
+					decimals_im = decimals
+				end if
+			end if
+
+			if ( ere > 0 ) then
+				if ( x%re < 0.0_real32 ) then
+					lre = decimals_re + ere + 2
+				else
+					lre = decimals_re + ere + 1
+				end if
+			else
+				if ( x%re < 0.0_real32 ) then
+					lre = decimals_re + 3
+				else
+					lre = decimals_re + 2
+				end if
+			end if
+
+			if ( eim > 0 ) then
+				if ( x%im < 0.0_real32 ) then
+					lim = decimals_im + eim + 2
+				else
+					lim = decimals_im + eim + 1
+				end if
+			else
+				if ( x%im < 0.0_real32 ) then
+					lim = decimals_im + 3
+				else
+					lim = decimals_im + 2
+				end if
+			end if
+
+			allocate( character(len=lre) :: xre_str )
+			allocate( character(len=lim) :: xim_str )
+
+			internal_write_f: block
+				character(len=3) :: lre_str, lim_str, decimals_restr, decimals_imstr
+
+				write(unit=lre_str, fmt='(i3)') lre
+				write(unit=lim_str, fmt='(i3)') lim
+				write(unit=decimals_restr, fmt='(i3)') decimals_re
+				write(unit=decimals_imstr, fmt='(i3)') decimals_im
+				write(unit=xre_str, fmt='(f'//lre_str//'.'//decimals_restr//')', decimal=decimal) x%re
+				write(unit=xim_str, fmt='(f'//lim_str//'.'//decimals_imstr//')', decimal=decimal) x%im
+			end block internal_write_f
+
+			if ( x%re == 0.0_real32 ) then
+				xre_str = '0.0'
+			end if
+
+			if ( x%im == 0.0_real32 ) then
+				xim_str = '0.0'
+			end if
+
+			if ( extrare > 0 ) then
+				remove_extra_re: block
+					integer :: i
+					do i = len(xre_str)-1, 1, -1
+						xre_str(i:i) = '0'
+						extrare = extrare - 1
+						if ( extrare == 0 ) exit remove_extra_re
+					end do
+				end block remove_extra_re
+			end if
+
+			if ( extraim > 0 ) then
+				remove_extra_im: block
+					integer :: i
+					do i = len(xim_str)-1, 1, -1
+						xim_str(i:i) = '0'
+						extraim = extraim - 1
+						if ( extraim == 0 ) exit remove_extra_im
+					end do
+				end block remove_extra_im
+			end if
 		end if
 
 		if ( .not. present(im) ) then
@@ -5775,22 +6422,29 @@ submodule (io_fortran_lib) internal_io
 			im_ = trim(adjustl(im))
 		end if
 
-		new%s = str(x, locale=locale_, fmt=fmt_, decimals=decimals_, im=im_)
+		if ( im_ == EMPTY_STR ) then
+			if ( decimal == 'POINT' ) then
+				new%s = '('//xre_str//COMMA//xim_str//')'; return
+			else
+				new%s = '('//xre_str//SEMICOLON//xim_str//')'; return
+			end if
+		end if
+
+		if ( fmt_ == 'z' ) then
+			new%s = xre_str//'+'//xim_str//im_; return
+		end if
+
+		if ( x%im < 0.0_real32 ) then
+			new%s = xre_str//xim_str//im_
+		else
+			new%s = xre_str//'+'//xim_str//im_
+		end if
 	end procedure new_Str_c32
 
 	module procedure new_Str_r128
-		character(len=:), allocatable :: locale_, fmt_
-		integer :: decimals_
-
-		if ( .not. present(locale) ) then
-			locale_ = 'US'
-		else
-			if ( any(LOCALES == locale) ) then
-				locale_ = locale
-			else
-				locale_ = 'US'
-			end if
-		end if
+		character(len=1) :: fmt_
+		character(len=:), allocatable :: decimal
+		integer, allocatable :: e, max_decimals, decimals_, l, extra
 
 		if ( .not. present(fmt) ) then
 			fmt_ = 'e'
@@ -5798,31 +6452,146 @@ submodule (io_fortran_lib) internal_io
 			if ( any(REAL_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				fmt_ = 'e'
+				new%s = EMPTY_STR; return
 			end if
 		end if
 
-		if ( .not. present(decimals) ) then
-			decimals_ = 150
-		else
-			decimals_ = decimals
+		if ( fmt_ == 'z' ) then
+			if ( x /= 0.0_real128 ) then
+				allocate( character(len=32) :: new%s )
+			else
+				new%s = '0'; return
+			end if
+
+			write(unit=new%s, fmt='(z32)') x; return
 		end if
 
-		new%s = str(x, locale=locale_, fmt=fmt_, decimals=decimals_)
+		if ( .not. present(locale) ) then
+			decimal = 'POINT'
+		else
+			if ( locale == 'US' ) then
+				decimal = 'POINT'
+			else if ( locale == 'EU' ) then
+				decimal = 'COMMA'
+			else
+				new%s = EMPTY_STR; return
+			end if
+		end if
+
+		if ( fmt_ == 'e' ) then
+			if ( x == 0.0_real128 ) then
+				new%s = '0.0E+0000'; return
+			end if
+
+			associate ( max_precision => ceiling( 1.0 + log10(real(radix(x)))*digits(x) ) )
+				if ( .not. present(decimals) ) then
+					decimals_ = max_precision - 1
+				else
+					if ( decimals < 0 ) then
+						decimals_ = 0
+					else if ( decimals > (max_precision - 1) ) then
+						decimals_ = max_precision - 1
+					else
+						decimals_ = decimals
+					end if
+				end if
+			end associate
+
+			if ( x < 0.0_real128 ) then
+				l = decimals_ + 9
+			else
+				l = decimals_ + 8
+			end if
+
+			allocate( character(len=l) :: new%s )
+
+			internal_write_e: block
+				character(len=3) :: l_str, decimals_str
+
+				write(unit=l_str, fmt='(i3)') l
+				write(unit=decimals_str, fmt='(i3)') decimals_
+				write(unit=new%s, fmt='(es'//l_str//'.'//decimals_str//'e4)', decimal=decimal) x
+			end block internal_write_e
+			
+		else if ( fmt_ == 'f' ) then
+			if ( abs(x) /= 0.0_real128 ) then
+				e = int(log10(abs(x)))
+			else
+				new%s = '0.0'; return
+			end if
+
+			associate ( max_precision => ceiling( 1.0 + log10(real(radix(x)))*digits(x) ) )
+				if ( e == 0 ) then
+					if ( floor(x) == 0 ) then
+						max_decimals = max_precision
+					else
+						max_decimals = max_precision - 1
+						e = 1 + e
+					end if
+				else if ( e > 0 ) then
+					max_decimals = max_precision - (1 + e)
+					e = 1 + e
+				else
+					max_decimals = max_precision - e
+				end if
+
+				extra = e - max_precision
+			end associate
+
+			if ( max_decimals < 0 ) max_decimals = 0
+
+			if ( .not. present(decimals) ) then
+				decimals_ = max_decimals
+			else
+				if ( decimals < 0 ) then
+					decimals_ = 0
+				else if ( decimals > max_decimals ) then
+					decimals_ = max_decimals
+				else
+					decimals_ = decimals
+				end if
+			end if
+
+			if ( e > 0 ) then
+				if ( x < 0.0_real128 ) then
+					l = decimals_ + e + 2
+				else
+					l = decimals_ + e + 1
+				end if
+			else
+				if ( x < 0.0_real128 ) then
+					l = decimals_ + 3
+				else
+					l = decimals_ + 2
+				end if
+			end if
+
+			allocate( character(len=l) :: new%s )
+
+			internal_write_f: block
+				character(len=3) :: l_str, decimals_str
+
+				write(unit=l_str, fmt='(i3)') l
+				write(unit=decimals_str, fmt='(i3)') decimals_
+				write(unit=new%s, fmt='(f'//l_str//'.'//decimals_str//')', decimal=decimal) x
+			end block internal_write_f
+
+			if ( extra > 0 ) then
+				remove_extra: block
+					integer :: i
+					do i = len(new%s)-1, 1, -1
+						new%s(i:i) = '0'
+						extra = extra - 1
+						if ( extra == 0 ) return
+					end do
+				end block remove_extra
+			end if
+		end if
 	end procedure new_Str_r128
 	module procedure new_Str_r64
-		character(len=:), allocatable :: locale_, fmt_
-		integer :: decimals_
-
-		if ( .not. present(locale) ) then
-			locale_ = 'US'
-		else
-			if ( any(LOCALES == locale) ) then
-				locale_ = locale
-			else
-				locale_ = 'US'
-			end if
-		end if
+		character(len=1) :: fmt_
+		character(len=:), allocatable :: decimal
+		integer, allocatable :: e, max_decimals, decimals_, l, extra
 
 		if ( .not. present(fmt) ) then
 			fmt_ = 'e'
@@ -5830,31 +6599,146 @@ submodule (io_fortran_lib) internal_io
 			if ( any(REAL_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				fmt_ = 'e'
+				new%s = EMPTY_STR; return
 			end if
 		end if
 
-		if ( .not. present(decimals) ) then
-			decimals_ = 150
-		else
-			decimals_ = decimals
+		if ( fmt_ == 'z' ) then
+			if ( x /= 0.0_real64 ) then
+				allocate( character(len=16) :: new%s )
+			else
+				new%s = '0'; return
+			end if
+
+			write(unit=new%s, fmt='(z16)') x; return
 		end if
 
-		new%s = str(x, locale=locale_, fmt=fmt_, decimals=decimals_)
+		if ( .not. present(locale) ) then
+			decimal = 'POINT'
+		else
+			if ( locale == 'US' ) then
+				decimal = 'POINT'
+			else if ( locale == 'EU' ) then
+				decimal = 'COMMA'
+			else
+				new%s = EMPTY_STR; return
+			end if
+		end if
+
+		if ( fmt_ == 'e' ) then
+			if ( x == 0.0_real64 ) then
+				new%s = '0.0E+000'; return
+			end if
+
+			associate ( max_precision => ceiling( 1.0 + log10(real(radix(x)))*digits(x) ) )
+				if ( .not. present(decimals) ) then
+					decimals_ = max_precision - 1
+				else
+					if ( decimals < 0 ) then
+						decimals_ = 0
+					else if ( decimals > (max_precision - 1) ) then
+						decimals_ = max_precision - 1
+					else
+						decimals_ = decimals
+					end if
+				end if
+			end associate
+
+			if ( x < 0.0_real64 ) then
+				l = decimals_ + 8
+			else
+				l = decimals_ + 7
+			end if
+
+			allocate( character(len=l) :: new%s )
+
+			internal_write_e: block
+				character(len=3) :: l_str, decimals_str
+
+				write(unit=l_str, fmt='(i3)') l
+				write(unit=decimals_str, fmt='(i3)') decimals_
+				write(unit=new%s, fmt='(es'//l_str//'.'//decimals_str//'e3)', decimal=decimal) x
+			end block internal_write_e
+			
+		else if ( fmt_ == 'f' ) then
+			if ( abs(x) /= 0.0_real64 ) then
+				e = int(log10(abs(x)))
+			else
+				new%s = '0.0'; return
+			end if
+
+			associate ( max_precision => ceiling( 1.0 + log10(real(radix(x)))*digits(x) ) )
+				if ( e == 0 ) then
+					if ( floor(x) == 0 ) then
+						max_decimals = max_precision
+					else
+						max_decimals = max_precision - 1
+						e = 1 + e
+					end if
+				else if ( e > 0 ) then
+					max_decimals = max_precision - (1 + e)
+					e = 1 + e
+				else
+					max_decimals = max_precision - e
+				end if
+
+				extra = e - max_precision
+			end associate
+
+			if ( max_decimals < 0 ) max_decimals = 0
+
+			if ( .not. present(decimals) ) then
+				decimals_ = max_decimals
+			else
+				if ( decimals < 0 ) then
+					decimals_ = 0
+				else if ( decimals > max_decimals ) then
+					decimals_ = max_decimals
+				else
+					decimals_ = decimals
+				end if
+			end if
+
+			if ( e > 0 ) then
+				if ( x < 0.0_real64 ) then
+					l = decimals_ + e + 2
+				else
+					l = decimals_ + e + 1
+				end if
+			else
+				if ( x < 0.0_real64 ) then
+					l = decimals_ + 3
+				else
+					l = decimals_ + 2
+				end if
+			end if
+
+			allocate( character(len=l) :: new%s )
+
+			internal_write_f: block
+				character(len=3) :: l_str, decimals_str
+
+				write(unit=l_str, fmt='(i3)') l
+				write(unit=decimals_str, fmt='(i3)') decimals_
+				write(unit=new%s, fmt='(f'//l_str//'.'//decimals_str//')', decimal=decimal) x
+			end block internal_write_f
+
+			if ( extra > 0 ) then
+				remove_extra: block
+					integer :: i
+					do i = len(new%s)-1, 1, -1
+						new%s(i:i) = '0'
+						extra = extra - 1
+						if ( extra == 0 ) return
+					end do
+				end block remove_extra
+			end if
+		end if
 	end procedure new_Str_r64
 	module procedure new_Str_r32
-		character(len=:), allocatable :: locale_, fmt_
-		integer :: decimals_
-
-		if ( .not. present(locale) ) then
-			locale_ = 'US'
-		else
-			if ( any(LOCALES == locale) ) then
-				locale_ = locale
-			else
-				locale_ = 'US'
-			end if
-		end if
+		character(len=1) :: fmt_
+		character(len=:), allocatable :: decimal
+		integer, allocatable :: e, max_decimals, decimals_, l, extra
 
 		if ( .not. present(fmt) ) then
 			fmt_ = 'e'
@@ -5862,21 +6746,145 @@ submodule (io_fortran_lib) internal_io
 			if ( any(REAL_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				fmt_ = 'e'
+				new%s = EMPTY_STR; return
 			end if
 		end if
 
-		if ( .not. present(decimals) ) then
-			decimals_ = 150
-		else
-			decimals_ = decimals
+		if ( fmt_ == 'z' ) then
+			if ( x /= 0.0_real32 ) then
+				allocate( character(len=8) :: new%s )
+			else
+				new%s = '0'; return
+			end if
+
+			write(unit=new%s, fmt='(z8)') x; return
 		end if
 
-		new%s = str(x, locale=locale_, fmt=fmt_, decimals=decimals_)
+		if ( .not. present(locale) ) then
+			decimal = 'POINT'
+		else
+			if ( locale == 'US' ) then
+				decimal = 'POINT'
+			else if ( locale == 'EU' ) then
+				decimal = 'COMMA'
+			else
+				new%s = EMPTY_STR; return
+			end if
+		end if
+
+		if ( fmt_ == 'e' ) then
+			if ( x == 0.0_real32 ) then
+				new%s = '0.0E+00'; return
+			end if
+
+			associate ( max_precision => ceiling( 1.0 + log10(real(radix(x)))*digits(x) ) )
+				if ( .not. present(decimals) ) then
+					decimals_ = max_precision - 1
+				else
+					if ( decimals < 0 ) then
+						decimals_ = 0
+					else if ( decimals > (max_precision - 1) ) then
+						decimals_ = max_precision - 1
+					else
+						decimals_ = decimals
+					end if
+				end if
+			end associate
+
+			if ( x < 0.0_real32 ) then
+				l = decimals_ + 7
+			else
+				l = decimals_ + 6
+			end if
+
+			allocate( character(len=l) :: new%s )
+
+			internal_write_e: block
+				character(len=3) :: l_str, decimals_str
+
+				write(unit=l_str, fmt='(i3)') l
+				write(unit=decimals_str, fmt='(i3)') decimals_
+				write(unit=new%s, fmt='(es'//l_str//'.'//decimals_str//'e2)', decimal=decimal) x
+			end block internal_write_e
+
+		else if ( fmt_ == 'f' ) then
+			if ( abs(x) /= 0.0_real32 ) then
+				e = int(log10(abs(x)))
+			else
+				new%s = '0.0'; return
+			end if
+
+			associate ( max_precision => ceiling( 1.0 + log10(real(radix(x)))*digits(x) ) )
+				if ( e == 0 ) then
+					if ( floor(x) == 0 ) then
+						max_decimals = max_precision
+					else
+						max_decimals = max_precision - 1
+						e = 1 + e
+					end if
+				else if ( e > 0 ) then
+					max_decimals = max_precision - (1 + e)
+					e = 1 + e
+				else
+					max_decimals = max_precision - e
+				end if
+
+				extra = e - max_precision
+			end associate
+
+			if ( max_decimals < 0 ) max_decimals = 0
+
+			if ( .not. present(decimals) ) then
+				decimals_ = max_decimals
+			else
+				if ( decimals < 0 ) then
+					decimals_ = 0
+				else if ( decimals > max_decimals ) then
+					decimals_ = max_decimals
+				else
+					decimals_ = decimals
+				end if
+			end if
+
+			if ( e > 0 ) then
+				if ( x < 0.0_real32 ) then
+					l = decimals_ + e + 2
+				else
+					l = decimals_ + e + 1
+				end if
+			else
+				if ( x < 0.0_real32 ) then
+					l = decimals_ + 3
+				else
+					l = decimals_ + 2
+				end if
+			end if
+
+			allocate( character(len=l) :: new%s )
+
+			internal_write_f: block
+				character(len=3) :: l_str, decimals_str
+
+				write(unit=l_str, fmt='(i3)') l
+				write(unit=decimals_str, fmt='(i3)') decimals_
+				write(unit=new%s, fmt='(f'//l_str//'.'//decimals_str//')', decimal=decimal) x
+			end block internal_write_f
+
+			if ( extra > 0 ) then
+				remove_extra: block
+					integer :: i
+					do i = len(new%s)-1, 1, -1
+						new%s(i:i) = '0'
+						extra = extra - 1
+						if ( extra == 0 ) return
+					end do
+				end block remove_extra
+			end if
+		end if
 	end procedure new_Str_r32
 
 	module procedure new_Str_i64
-		character(len=:), allocatable :: fmt_
+		character(len=1) :: fmt_
 
 		if ( .not. present(fmt) ) then
 			fmt_ = 'i'
@@ -5884,14 +6892,22 @@ submodule (io_fortran_lib) internal_io
 			if ( any(INT_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				fmt_ = 'i'
+				new%s = EMPTY_STR; return
 			end if
 		end if
 
-		new%s = str(x, fmt=fmt_)
+		allocate( character(len=40) :: new%s )
+
+		if ( fmt_ == 'i' ) then
+			write(unit=new%s, fmt='(i40)') x
+		else if ( fmt_ == 'z' ) then
+			write(unit=new%s, fmt='(z40)') x
+		end if
+
+		new%s = trim(adjustl(new%s))
 	end procedure new_Str_i64
 	module procedure new_Str_i32
-		character(len=:), allocatable :: fmt_
+		character(len=1) :: fmt_
 
 		if ( .not. present(fmt) ) then
 			fmt_ = 'i'
@@ -5899,14 +6915,22 @@ submodule (io_fortran_lib) internal_io
 			if ( any(INT_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				fmt_ = 'i'
+				new%s = EMPTY_STR; return
 			end if
 		end if
 
-		new%s = str(x, fmt=fmt_)
+		allocate( character(len=25) :: new%s )
+
+		if ( fmt_ == 'i' ) then
+			write(unit=new%s, fmt='(i25)') x
+		else if ( fmt_ == 'z' ) then
+			write(unit=new%s, fmt='(z25)') x
+		end if
+
+		new%s = trim(adjustl(new%s))
 	end procedure new_Str_i32
 	module procedure new_Str_i16
-		character(len=:), allocatable :: fmt_
+		character(len=1) :: fmt_
 
 		if ( .not. present(fmt) ) then
 			fmt_ = 'i'
@@ -5914,14 +6938,22 @@ submodule (io_fortran_lib) internal_io
 			if ( any(INT_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				fmt_ = 'i'
+				new%s = EMPTY_STR; return
 			end if
 		end if
 
-		new%s = str(x, fmt=fmt_)
+		allocate( character(len=15) :: new%s )
+
+		if ( fmt_ == 'i' ) then
+			write(unit=new%s, fmt='(i15)') x
+		else if ( fmt_ == 'z' ) then
+			write(unit=new%s, fmt='(z15)') x
+		end if
+
+		new%s = trim(adjustl(new%s))
 	end procedure new_Str_i16
 	module procedure new_Str_i8
-		character(len=:), allocatable :: fmt_
+		character(len=1) :: fmt_
 
 		if ( .not. present(fmt) ) then
 			fmt_ = 'i'
@@ -5929,11 +6961,19 @@ submodule (io_fortran_lib) internal_io
 			if ( any(INT_FMTS == fmt) ) then
 				fmt_ = fmt
 			else
-				fmt_ = 'i'
+				new%s = EMPTY_STR; return
 			end if
 		end if
 
-		new%s = str(x, fmt=fmt_)
+		allocate( character(len=10) :: new%s )
+
+		if ( fmt_ == 'i' ) then
+			write(unit=new%s, fmt='(i10)') x
+		else if ( fmt_ == 'z' ) then
+			write(unit=new%s, fmt='(z10)') x
+		end if
+
+		new%s = trim(adjustl(new%s))
 	end procedure new_Str_i8
 
 	module procedure new_Str_string
@@ -6234,18 +7274,10 @@ submodule (io_fortran_lib) internal_io
 	end procedure cast_string_i8
 
 	module procedure str_c128
-		character(len=:), allocatable :: locale_, fmt_, im_, sep
-		integer :: decimals_
-
-		if ( .not. present(locale) ) then
-			locale_ = 'US'
-		else
-			if ( any(LOCALES == locale) ) then
-				locale_ = locale
-			else
-				x_str = EMPTY_STR; return
-			end if
-		end if
+		character(len=1) :: fmt_
+		character(len=:), allocatable :: decimal, xre_str, xim_str, im_
+		integer, allocatable :: ere, eim, max_decimalsre, max_decimalsim, decimals_, lre, lim
+		integer, allocatable :: decimals_re, decimals_im, extrare, extraim
 
 		if ( .not. present(fmt) ) then
 			fmt_ = 'e'
@@ -6257,10 +7289,223 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		if ( .not. present(decimals) ) then
-			decimals_ = 150
+		if ( fmt_ == 'z' ) then
+			if ( x%re /= 0.0_real128 ) then
+				allocate( character(len=32) :: xre_str )
+				write(unit=xre_str, fmt='(z32)') x%re
+			else
+				xre_str = '0'
+			end if
+
+			if ( x%im /= 0.0_real128 ) then
+				allocate( character(len=32) :: xim_str )
+				write(unit=xim_str, fmt='(z32)') x%im
+			else
+				xim_str = '0'
+			end if
+		end if
+
+		if ( .not. present(locale) ) then
+			decimal = 'POINT'
 		else
-			decimals_ = decimals
+			if ( locale == 'US' ) then
+				decimal = 'POINT'
+			else if ( locale == 'EU' ) then
+				decimal = 'COMMA'
+			else
+				x_str = EMPTY_STR; return
+			end if
+		end if
+
+		if ( fmt_ == 'e' ) then
+			associate ( max_precision => ceiling( 1.0 + log10(real(radix(x%re)))*digits(x%re) ) )
+				if ( .not. present(decimals) ) then
+					decimals_ = max_precision - 1
+				else
+					if ( decimals < 0 ) then
+						decimals_ = 0
+					else if ( decimals > (max_precision - 1) ) then
+						decimals_ = max_precision - 1
+					else
+						decimals_ = decimals
+					end if
+				end if
+			end associate
+
+			if ( x%re < 0.0_real128 ) then
+				lre = decimals_ + 9
+			else
+				lre = decimals_ + 8
+			end if
+
+			if ( x%im < 0.0_real128 ) then
+				lim = decimals_ + 9
+			else
+				lim = decimals_ + 8
+			end if
+
+			allocate( character(len=lre) :: xre_str )
+			allocate( character(len=lim) :: xim_str )
+
+			internal_write_e: block
+				character(len=3) :: lre_str, lim_str, decimals_str
+
+				write(unit=lre_str, fmt='(i3)') lre
+				write(unit=lim_str, fmt='(i3)') lim
+				write(unit=decimals_str, fmt='(i3)') decimals_
+				write(unit=xre_str, fmt='(es'//lre_str//'.'//decimals_str//'e4)', decimal=decimal) x%re
+				write(unit=xim_str, fmt='(es'//lim_str//'.'//decimals_str//'e4)', decimal=decimal) x%im
+			end block internal_write_e
+
+			if ( x%re == 0.0_real128 ) then
+				xre_str = '0.0E+0000'
+			end if
+
+			if ( x%im == 0.0_real128 ) then
+				xim_str = '0.0E+0000'
+			end if
+		else if ( fmt_ == 'f' ) then
+			if ( abs(x%re) /= 0.0_real128 ) then
+				ere = int(log10(abs(x%re)))
+			else
+				ere = 0
+			end if
+
+			if ( abs(x%im) /= 0.0_real128 ) then
+				eim = int(log10(abs(x%im)))
+			else
+				eim = 0
+			end if
+
+			associate ( max_precision => ceiling( 1.0 + log10(real(radix(x%re)))*digits(x%re) ) )
+				if ( ere == 0 ) then
+					if ( floor(x%re) == 0 ) then
+						max_decimalsre = max_precision
+					else
+						max_decimalsre = max_precision - 1
+						ere = 1 + ere
+					end if
+				else if ( ere > 0 ) then
+					max_decimalsre = max_precision - (1 + ere)
+					ere = 1 + ere
+				else
+					max_decimalsre = max_precision - ere
+				end if
+
+				if ( eim == 0 ) then
+					if ( floor(x%im) == 0 ) then
+						max_decimalsim = max_precision
+					else
+						max_decimalsim = max_precision - 1
+						eim = 1 + eim
+					end if
+				else if ( eim > 0 ) then
+					max_decimalsim = max_precision - (1 + eim)
+					eim = 1 + eim
+				else
+					max_decimalsim = max_precision - eim
+				end if
+
+				extrare = ere - max_precision
+				extraim = eim - max_precision
+			end associate
+
+			if ( max_decimalsre < 0 ) max_decimalsre = 0
+			if ( max_decimalsim < 0 ) max_decimalsim = 0
+
+			if ( .not. present(decimals) ) then
+				decimals_re = max_decimalsre
+				decimals_im = max_decimalsim
+			else
+				if ( decimals < 0 ) then
+					decimals_re = 0
+					decimals_im = 0
+				end if
+
+				if ( decimals > max_decimalsre ) then
+					decimals_re = max_decimalsre
+				else
+					decimals_re = decimals
+				end if
+
+				if ( decimals > max_decimalsim ) then
+					decimals_im = max_decimalsim
+				else
+					decimals_im = decimals
+				end if
+			end if
+
+			if ( ere > 0 ) then
+				if ( x%re < 0.0_real128 ) then
+					lre = decimals_re + ere + 2
+				else
+					lre = decimals_re + ere + 1
+				end if
+			else
+				if ( x%re < 0.0_real128 ) then
+					lre = decimals_re + 3
+				else
+					lre = decimals_re + 2
+				end if
+			end if
+
+			if ( eim > 0 ) then
+				if ( x%im < 0.0_real128 ) then
+					lim = decimals_im + eim + 2
+				else
+					lim = decimals_im + eim + 1
+				end if
+			else
+				if ( x%im < 0.0_real128 ) then
+					lim = decimals_im + 3
+				else
+					lim = decimals_im + 2
+				end if
+			end if
+
+			allocate( character(len=lre) :: xre_str )
+			allocate( character(len=lim) :: xim_str )
+
+			internal_write_f: block
+				character(len=3) :: lre_str, lim_str, decimals_restr, decimals_imstr
+
+				write(unit=lre_str, fmt='(i3)') lre
+				write(unit=lim_str, fmt='(i3)') lim
+				write(unit=decimals_restr, fmt='(i3)') decimals_re
+				write(unit=decimals_imstr, fmt='(i3)') decimals_im
+				write(unit=xre_str, fmt='(f'//lre_str//'.'//decimals_restr//')', decimal=decimal) x%re
+				write(unit=xim_str, fmt='(f'//lim_str//'.'//decimals_imstr//')', decimal=decimal) x%im
+			end block internal_write_f
+
+			if ( x%re == 0.0_real128 ) then
+				xre_str = '0.0'
+			end if
+
+			if ( x%im == 0.0_real128 ) then
+				xim_str = '0.0'
+			end if
+
+			if ( extrare > 0 ) then
+				remove_extra_re: block
+					integer :: i
+					do i = len(xre_str)-1, 1, -1
+						xre_str(i:i) = '0'
+						extrare = extrare - 1
+						if ( extrare == 0 ) exit remove_extra_re
+					end do
+				end block remove_extra_re
+			end if
+
+			if ( extraim > 0 ) then
+				remove_extra_im: block
+					integer :: i
+					do i = len(xim_str)-1, 1, -1
+						xim_str(i:i) = '0'
+						extraim = extraim - 1
+						if ( extraim == 0 ) exit remove_extra_im
+					end do
+				end block remove_extra_im
+			end if
 		end if
 
 		if ( .not. present(im) ) then
@@ -6270,41 +7515,28 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if ( im_ == EMPTY_STR ) then
-			if ( locale_ == 'US' ) then
-				sep = COMMA
+			if ( decimal == 'POINT' ) then
+				x_str = '('//xre_str//COMMA//xim_str//')'; return
 			else
-				sep = SEMICOLON
+				x_str = '('//xre_str//SEMICOLON//xim_str//')'; return
 			end if
-			x_str = '('//str(x%re, locale=locale_, fmt=fmt_, decimals=decimals_)//sep// &
-						 str(x%im, locale=locale_, fmt=fmt_, decimals=decimals_)//')'
+		end if
+
+		if ( fmt_ == 'z' ) then
+			x_str = xre_str//'+'//xim_str//im_; return
+		end if
+
+		if ( x%im < 0.0_real128 ) then
+			x_str = xre_str//xim_str//im_
 		else
-			if ( fmt_ == 'z' ) then
-				x_str = str(x%re, locale=locale_, fmt=fmt_, decimals=decimals_)//'+'// &
-						str(x%im, locale=locale_, fmt=fmt_, decimals=decimals_)//im_
-			else
-				if ( x%im < 0 ) then
-					x_str = str(x%re, locale=locale_, fmt=fmt_, decimals=decimals_)//'-'// &
-							str(abs(x%im), locale=locale_, fmt=fmt_, decimals=decimals_)//im_
-				else
-					x_str = str(x%re, locale=locale_, fmt=fmt_, decimals=decimals_)//'+'// &
-							str(x%im, locale=locale_, fmt=fmt_, decimals=decimals_)//im_
-				end if
-			end if
+			x_str = xre_str//'+'//xim_str//im_
 		end if
 	end procedure str_c128
 	module procedure str_c64
-		character(len=:), allocatable :: locale_, fmt_, im_, sep
-		integer :: decimals_
-
-		if ( .not. present(locale) ) then
-			locale_ = 'US'
-		else
-			if ( any(LOCALES == locale) ) then
-				locale_ = locale
-			else
-				x_str = EMPTY_STR; return
-			end if
-		end if
+		character(len=1) :: fmt_
+		character(len=:), allocatable :: decimal, xre_str, xim_str, im_
+		integer, allocatable :: ere, eim, max_decimalsre, max_decimalsim, decimals_, lre, lim
+		integer, allocatable :: decimals_re, decimals_im, extrare, extraim
 
 		if ( .not. present(fmt) ) then
 			fmt_ = 'e'
@@ -6316,10 +7548,223 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		if ( .not. present(decimals) ) then
-			decimals_ = 150
+		if ( fmt_ == 'z' ) then
+			if ( x%re /= 0.0_real64 ) then
+				allocate( character(len=16) :: xre_str )
+				write(unit=xre_str, fmt='(z16)') x%re
+			else
+				xre_str = '0'
+			end if
+
+			if ( x%im /= 0.0_real64 ) then
+				allocate( character(len=16) :: xim_str )
+				write(unit=xim_str, fmt='(z16)') x%im
+			else
+				xim_str = '0'
+			end if
+		end if
+
+		if ( .not. present(locale) ) then
+			decimal = 'POINT'
 		else
-			decimals_ = decimals
+			if ( locale == 'US' ) then
+				decimal = 'POINT'
+			else if ( locale == 'EU' ) then
+				decimal = 'COMMA'
+			else
+				x_str = EMPTY_STR; return
+			end if
+		end if
+
+		if ( fmt_ == 'e' ) then
+			associate ( max_precision => ceiling( 1.0 + log10(real(radix(x%re)))*digits(x%re) ) )
+				if ( .not. present(decimals) ) then
+					decimals_ = max_precision - 1
+				else
+					if ( decimals < 0 ) then
+						decimals_ = 0
+					else if ( decimals > (max_precision - 1) ) then
+						decimals_ = max_precision - 1
+					else
+						decimals_ = decimals
+					end if
+				end if
+			end associate
+
+			if ( x%re < 0.0_real64 ) then
+				lre = decimals_ + 8
+			else
+				lre = decimals_ + 7
+			end if
+
+			if ( x%im < 0.0_real64 ) then
+				lim = decimals_ + 8
+			else
+				lim = decimals_ + 7
+			end if
+
+			allocate( character(len=lre) :: xre_str )
+			allocate( character(len=lim) :: xim_str )
+
+			internal_write_e: block
+				character(len=3) :: lre_str, lim_str, decimals_str
+
+				write(unit=lre_str, fmt='(i3)') lre
+				write(unit=lim_str, fmt='(i3)') lim
+				write(unit=decimals_str, fmt='(i3)') decimals_
+				write(unit=xre_str, fmt='(es'//lre_str//'.'//decimals_str//'e3)', decimal=decimal) x%re
+				write(unit=xim_str, fmt='(es'//lim_str//'.'//decimals_str//'e3)', decimal=decimal) x%im
+			end block internal_write_e
+
+			if ( x%re == 0.0_real64 ) then
+				xre_str = '0.0E+000'
+			end if
+
+			if ( x%im == 0.0_real64 ) then
+				xim_str = '0.0E+000'
+			end if
+		else if ( fmt_ == 'f' ) then
+			if ( abs(x%re) /= 0.0_real64 ) then
+				ere = int(log10(abs(x%re)))
+			else
+				ere = 0
+			end if
+
+			if ( abs(x%im) /= 0.0_real64 ) then
+				eim = int(log10(abs(x%im)))
+			else
+				eim = 0
+			end if
+
+			associate ( max_precision => ceiling( 1.0 + log10(real(radix(x%re)))*digits(x%re) ) )
+				if ( ere == 0 ) then
+					if ( floor(x%re) == 0 ) then
+						max_decimalsre = max_precision
+					else
+						max_decimalsre = max_precision - 1
+						ere = 1 + ere
+					end if
+				else if ( ere > 0 ) then
+					max_decimalsre = max_precision - (1 + ere)
+					ere = 1 + ere
+				else
+					max_decimalsre = max_precision - ere
+				end if
+
+				if ( eim == 0 ) then
+					if ( floor(x%im) == 0 ) then
+						max_decimalsim = max_precision
+					else
+						max_decimalsim = max_precision - 1
+						eim = 1 + eim
+					end if
+				else if ( eim > 0 ) then
+					max_decimalsim = max_precision - (1 + eim)
+					eim = 1 + eim
+				else
+					max_decimalsim = max_precision - eim
+				end if
+
+				extrare = ere - max_precision
+				extraim = eim - max_precision
+			end associate
+
+			if ( max_decimalsre < 0 ) max_decimalsre = 0
+			if ( max_decimalsim < 0 ) max_decimalsim = 0
+
+			if ( .not. present(decimals) ) then
+				decimals_re = max_decimalsre
+				decimals_im = max_decimalsim
+			else
+				if ( decimals < 0 ) then
+					decimals_re = 0
+					decimals_im = 0
+				end if
+
+				if ( decimals > max_decimalsre ) then
+					decimals_re = max_decimalsre
+				else
+					decimals_re = decimals
+				end if
+
+				if ( decimals > max_decimalsim ) then
+					decimals_im = max_decimalsim
+				else
+					decimals_im = decimals
+				end if
+			end if
+
+			if ( ere > 0 ) then
+				if ( x%re < 0.0_real64 ) then
+					lre = decimals_re + ere + 2
+				else
+					lre = decimals_re + ere + 1
+				end if
+			else
+				if ( x%re < 0.0_real64 ) then
+					lre = decimals_re + 3
+				else
+					lre = decimals_re + 2
+				end if
+			end if
+
+			if ( eim > 0 ) then
+				if ( x%im < 0.0_real64 ) then
+					lim = decimals_im + eim + 2
+				else
+					lim = decimals_im + eim + 1
+				end if
+			else
+				if ( x%im < 0.0_real64 ) then
+					lim = decimals_im + 3
+				else
+					lim = decimals_im + 2
+				end if
+			end if
+
+			allocate( character(len=lre) :: xre_str )
+			allocate( character(len=lim) :: xim_str )
+
+			internal_write_f: block
+				character(len=3) :: lre_str, lim_str, decimals_restr, decimals_imstr
+
+				write(unit=lre_str, fmt='(i3)') lre
+				write(unit=lim_str, fmt='(i3)') lim
+				write(unit=decimals_restr, fmt='(i3)') decimals_re
+				write(unit=decimals_imstr, fmt='(i3)') decimals_im
+				write(unit=xre_str, fmt='(f'//lre_str//'.'//decimals_restr//')', decimal=decimal) x%re
+				write(unit=xim_str, fmt='(f'//lim_str//'.'//decimals_imstr//')', decimal=decimal) x%im
+			end block internal_write_f
+
+			if ( x%re == 0.0_real64 ) then
+				xre_str = '0.0'
+			end if
+
+			if ( x%im == 0.0_real64 ) then
+				xim_str = '0.0'
+			end if
+
+			if ( extrare > 0 ) then
+				remove_extra_re: block
+					integer :: i
+					do i = len(xre_str)-1, 1, -1
+						xre_str(i:i) = '0'
+						extrare = extrare - 1
+						if ( extrare == 0 ) exit remove_extra_re
+					end do
+				end block remove_extra_re
+			end if
+
+			if ( extraim > 0 ) then
+				remove_extra_im: block
+					integer :: i
+					do i = len(xim_str)-1, 1, -1
+						xim_str(i:i) = '0'
+						extraim = extraim - 1
+						if ( extraim == 0 ) exit remove_extra_im
+					end do
+				end block remove_extra_im
+			end if
 		end if
 
 		if ( .not. present(im) ) then
@@ -6329,41 +7774,28 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if ( im_ == EMPTY_STR ) then
-			if ( locale_ == 'US' ) then
-				sep = COMMA
+			if ( decimal == 'POINT' ) then
+				x_str = '('//xre_str//COMMA//xim_str//')'; return
 			else
-				sep = SEMICOLON
+				x_str = '('//xre_str//SEMICOLON//xim_str//')'; return
 			end if
-			x_str = '('//str(x%re, locale=locale_, fmt=fmt_, decimals=decimals_)//sep// &
-						 str(x%im, locale=locale_, fmt=fmt_, decimals=decimals_)//')'
+		end if
+
+		if ( fmt_ == 'z' ) then
+			x_str = xre_str//'+'//xim_str//im_; return
+		end if
+
+		if ( x%im < 0.0_real64 ) then
+			x_str = xre_str//xim_str//im_
 		else
-			if ( fmt_ == 'z' ) then
-				x_str = str(x%re, locale=locale_, fmt=fmt_, decimals=decimals_)//'+'// &
-						str(x%im, locale=locale_, fmt=fmt_, decimals=decimals_)//im_
-			else
-				if ( x%im < 0 ) then
-					x_str = str(x%re, locale=locale_, fmt=fmt_, decimals=decimals_)//'-'// &
-							str(abs(x%im), locale=locale_, fmt=fmt_, decimals=decimals_)//im_
-				else
-					x_str = str(x%re, locale=locale_, fmt=fmt_, decimals=decimals_)//'+'// &
-							str(x%im, locale=locale_, fmt=fmt_, decimals=decimals_)//im_
-				end if
-			end if
+			x_str = xre_str//'+'//xim_str//im_
 		end if
 	end procedure str_c64
 	module procedure str_c32
-		character(len=:), allocatable :: locale_, fmt_, im_, sep
-		integer :: decimals_
-
-		if ( .not. present(locale) ) then
-			locale_ = 'US'
-		else
-			if ( any(LOCALES == locale) ) then
-				locale_ = locale
-			else
-				x_str = EMPTY_STR; return
-			end if
-		end if
+		character(len=1) :: fmt_
+		character(len=:), allocatable :: decimal, xre_str, xim_str, im_
+		integer, allocatable :: ere, eim, max_decimalsre, max_decimalsim, decimals_, lre, lim
+		integer, allocatable :: decimals_re, decimals_im, extrare, extraim
 
 		if ( .not. present(fmt) ) then
 			fmt_ = 'e'
@@ -6375,10 +7807,223 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		if ( .not. present(decimals) ) then
-			decimals_ = 150
+		if ( fmt_ == 'z' ) then
+			if ( x%re /= 0.0_real32 ) then
+				allocate( character(len=8) :: xre_str )
+				write(unit=xre_str, fmt='(z8)') x%re
+			else
+				xre_str = '0'
+			end if
+
+			if ( x%im /= 0.0_real32 ) then
+				allocate( character(len=8) :: xim_str )
+				write(unit=xim_str, fmt='(z8)') x%im
+			else
+				xim_str = '0'
+			end if
+		end if
+
+		if ( .not. present(locale) ) then
+			decimal = 'POINT'
 		else
-			decimals_ = decimals
+			if ( locale == 'US' ) then
+				decimal = 'POINT'
+			else if ( locale == 'EU' ) then
+				decimal = 'COMMA'
+			else
+				x_str = EMPTY_STR; return
+			end if
+		end if
+
+		if ( fmt_ == 'e' ) then
+			associate ( max_precision => ceiling( 1.0 + log10(real(radix(x%re)))*digits(x%re) ) )
+				if ( .not. present(decimals) ) then
+					decimals_ = max_precision - 1
+				else
+					if ( decimals < 0 ) then
+						decimals_ = 0
+					else if ( decimals > (max_precision - 1) ) then
+						decimals_ = max_precision - 1
+					else
+						decimals_ = decimals
+					end if
+				end if
+			end associate
+
+			if ( x%re < 0.0_real32 ) then
+				lre = decimals_ + 7
+			else
+				lre = decimals_ + 6
+			end if
+
+			if ( x%im < 0.0_real32 ) then
+				lim = decimals_ + 7
+			else
+				lim = decimals_ + 6
+			end if
+
+			allocate( character(len=lre) :: xre_str )
+			allocate( character(len=lim) :: xim_str )
+
+			internal_write_e: block
+				character(len=3) :: lre_str, lim_str, decimals_str
+
+				write(unit=lre_str, fmt='(i3)') lre
+				write(unit=lim_str, fmt='(i3)') lim
+				write(unit=decimals_str, fmt='(i3)') decimals_
+				write(unit=xre_str, fmt='(es'//lre_str//'.'//decimals_str//'e2)', decimal=decimal) x%re
+				write(unit=xim_str, fmt='(es'//lim_str//'.'//decimals_str//'e2)', decimal=decimal) x%im
+			end block internal_write_e
+
+			if ( x%re == 0.0_real32 ) then
+				xre_str = '0.0E+00'
+			end if
+
+			if ( x%im == 0.0_real32 ) then
+				xim_str = '0.0E+00'
+			end if
+		else if ( fmt_ == 'f' ) then
+			if ( abs(x%re) /= 0.0_real32 ) then
+				ere = int(log10(abs(x%re)))
+			else
+				ere = 0
+			end if
+
+			if ( abs(x%im) /= 0.0_real32 ) then
+				eim = int(log10(abs(x%im)))
+			else
+				eim = 0
+			end if
+
+			associate ( max_precision => ceiling( 1.0 + log10(real(radix(x%re)))*digits(x%re) ) )
+				if ( ere == 0 ) then
+					if ( floor(x%re) == 0 ) then
+						max_decimalsre = max_precision
+					else
+						max_decimalsre = max_precision - 1
+						ere = 1 + ere
+					end if
+				else if ( ere > 0 ) then
+					max_decimalsre = max_precision - (1 + ere)
+					ere = 1 + ere
+				else
+					max_decimalsre = max_precision - ere
+				end if
+
+				if ( eim == 0 ) then
+					if ( floor(x%im) == 0 ) then
+						max_decimalsim = max_precision
+					else
+						max_decimalsim = max_precision - 1
+						eim = 1 + eim
+					end if
+				else if ( eim > 0 ) then
+					max_decimalsim = max_precision - (1 + eim)
+					eim = 1 + eim
+				else
+					max_decimalsim = max_precision - eim
+				end if
+
+				extrare = ere - max_precision
+				extraim = eim - max_precision
+			end associate
+
+			if ( max_decimalsre < 0 ) max_decimalsre = 0
+			if ( max_decimalsim < 0 ) max_decimalsim = 0
+
+			if ( .not. present(decimals) ) then
+				decimals_re = max_decimalsre
+				decimals_im = max_decimalsim
+			else
+				if ( decimals < 0 ) then
+					decimals_re = 0
+					decimals_im = 0
+				end if
+
+				if ( decimals > max_decimalsre ) then
+					decimals_re = max_decimalsre
+				else
+					decimals_re = decimals
+				end if
+
+				if ( decimals > max_decimalsim ) then
+					decimals_im = max_decimalsim
+				else
+					decimals_im = decimals
+				end if
+			end if
+
+			if ( ere > 0 ) then
+				if ( x%re < 0.0_real32 ) then
+					lre = decimals_re + ere + 2
+				else
+					lre = decimals_re + ere + 1
+				end if
+			else
+				if ( x%re < 0.0_real32 ) then
+					lre = decimals_re + 3
+				else
+					lre = decimals_re + 2
+				end if
+			end if
+
+			if ( eim > 0 ) then
+				if ( x%im < 0.0_real32 ) then
+					lim = decimals_im + eim + 2
+				else
+					lim = decimals_im + eim + 1
+				end if
+			else
+				if ( x%im < 0.0_real32 ) then
+					lim = decimals_im + 3
+				else
+					lim = decimals_im + 2
+				end if
+			end if
+
+			allocate( character(len=lre) :: xre_str )
+			allocate( character(len=lim) :: xim_str )
+
+			internal_write_f: block
+				character(len=3) :: lre_str, lim_str, decimals_restr, decimals_imstr
+
+				write(unit=lre_str, fmt='(i3)') lre
+				write(unit=lim_str, fmt='(i3)') lim
+				write(unit=decimals_restr, fmt='(i3)') decimals_re
+				write(unit=decimals_imstr, fmt='(i3)') decimals_im
+				write(unit=xre_str, fmt='(f'//lre_str//'.'//decimals_restr//')', decimal=decimal) x%re
+				write(unit=xim_str, fmt='(f'//lim_str//'.'//decimals_imstr//')', decimal=decimal) x%im
+			end block internal_write_f
+
+			if ( x%re == 0.0_real32 ) then
+				xre_str = '0.0'
+			end if
+
+			if ( x%im == 0.0_real32 ) then
+				xim_str = '0.0'
+			end if
+
+			if ( extrare > 0 ) then
+				remove_extra_re: block
+					integer :: i
+					do i = len(xre_str)-1, 1, -1
+						xre_str(i:i) = '0'
+						extrare = extrare - 1
+						if ( extrare == 0 ) exit remove_extra_re
+					end do
+				end block remove_extra_re
+			end if
+
+			if ( extraim > 0 ) then
+				remove_extra_im: block
+					integer :: i
+					do i = len(xim_str)-1, 1, -1
+						xim_str(i:i) = '0'
+						extraim = extraim - 1
+						if ( extraim == 0 ) exit remove_extra_im
+					end do
+				end block remove_extra_im
+			end if
 		end if
 
 		if ( .not. present(im) ) then
@@ -6388,32 +8033,48 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if ( im_ == EMPTY_STR ) then
-			if ( locale_ == 'US' ) then
-				sep = COMMA
+			if ( decimal == 'POINT' ) then
+				x_str = '('//xre_str//COMMA//xim_str//')'; return
 			else
-				sep = SEMICOLON
+				x_str = '('//xre_str//SEMICOLON//xim_str//')'; return
 			end if
-			x_str = '('//str(x%re, locale=locale_, fmt=fmt_, decimals=decimals_)//sep// &
-						 str(x%im, locale=locale_, fmt=fmt_, decimals=decimals_)//')'
+		end if
+
+		if ( fmt_ == 'z' ) then
+			x_str = xre_str//'+'//xim_str//im_; return
+		end if
+
+		if ( x%im < 0.0_real32 ) then
+			x_str = xre_str//xim_str//im_
 		else
-			if ( fmt_ == 'z' ) then
-				x_str = str(x%re, locale=locale_, fmt=fmt_, decimals=decimals_)//'+'// &
-						str(x%im, locale=locale_, fmt=fmt_, decimals=decimals_)//im_
-			else
-				if ( x%im < 0 ) then
-					x_str = str(x%re, locale=locale_, fmt=fmt_, decimals=decimals_)//'-'// &
-							str(abs(x%im), locale=locale_, fmt=fmt_, decimals=decimals_)//im_
-				else
-					x_str = str(x%re, locale=locale_, fmt=fmt_, decimals=decimals_)//'+'// &
-							str(x%im, locale=locale_, fmt=fmt_, decimals=decimals_)//im_
-				end if
-			end if
+			x_str = xre_str//'+'//xim_str//im_
 		end if
 	end procedure str_c32
 
 	module procedure str_r128
-		character(len=:), allocatable :: decimal, fmt_, str_tmp
-		integer :: i, e, max_decimals, decimals_, l, extra
+		character(len=1) :: fmt_
+		character(len=:), allocatable :: decimal
+		integer, allocatable :: e, max_decimals, decimals_, l, extra
+
+		if ( .not. present(fmt) ) then
+			fmt_ = 'e'
+		else
+			if ( any(REAL_FMTS == fmt) ) then
+				fmt_ = fmt
+			else
+				x_str = EMPTY_STR; return
+			end if
+		end if
+
+		if ( fmt_ == 'z' ) then
+			if ( x /= 0.0_real128 ) then
+				allocate( character(len=32) :: x_str )
+			else
+				x_str = '0'; return
+			end if
+
+			write(unit=x_str, fmt='(z32)') x; return
+		end if
 
 		if ( .not. present(locale) ) then
 			decimal = 'POINT'
@@ -6427,17 +8088,11 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		if ( .not. present(fmt) ) then
-			fmt_ = 'e'
-		else
-			if ( any(REAL_FMTS == fmt) ) then
-				fmt_ = fmt
-			else
-				x_str = EMPTY_STR; return
-			end if
-		end if
-
 		if ( fmt_ == 'e' ) then
+			if ( x == 0.0_real128 ) then
+				x_str = '0.0E+0000'; return
+			end if
+
 			associate ( max_precision => ceiling( 1.0 + log10(real(radix(x)))*digits(x) ) )
 				if ( .not. present(decimals) ) then
 					decimals_ = max_precision - 1
@@ -6452,17 +8107,27 @@ submodule (io_fortran_lib) internal_io
 				end if
 			end associate
 
-			l = decimals_ + 15
+			if ( x < 0.0_real128 ) then
+				l = decimals_ + 9
+			else
+				l = decimals_ + 8
+			end if
 
-			allocate( character(len=l) :: str_tmp )
+			allocate( character(len=l) :: x_str )
 
-			write(unit=str_tmp, fmt='(es'//str(l)//'.'//str(decimals_)//'e4)', decimal=decimal) x
-			x_str = trim(adjustl(str_tmp))
+			internal_write_e: block
+				character(len=3) :: l_str, decimals_str
+
+				write(unit=l_str, fmt='(i3)') l
+				write(unit=decimals_str, fmt='(i3)') decimals_
+				write(unit=x_str, fmt='(es'//l_str//'.'//decimals_str//'e4)', decimal=decimal) x
+			end block internal_write_e
+			
 		else if ( fmt_ == 'f' ) then
 			if ( abs(x) /= 0.0_real128 ) then
 				e = int(log10(abs(x)))
 			else
-				e = 0
+				x_str = '0.0'; return
 			end if
 
 			associate ( max_precision => ceiling( 1.0 + log10(real(radix(x)))*digits(x) ) )
@@ -6498,33 +8163,65 @@ submodule (io_fortran_lib) internal_io
 			end if
 
 			if ( e > 0 ) then
-				l = decimals_ + e + 10
+				if ( x < 0.0_real128 ) then
+					l = decimals_ + e + 2
+				else
+					l = decimals_ + e + 1
+				end if
 			else
-				l = decimals_ + 10
+				if ( x < 0.0_real128 ) then
+					l = decimals_ + 3
+				else
+					l = decimals_ + 2
+				end if
 			end if
 
-			allocate( character(len=l) :: str_tmp )
+			allocate( character(len=l) :: x_str )
 
-			write(unit=str_tmp, fmt='(f'//str(l)//'.'//str(decimals_)//')', decimal=decimal) x
-			x_str = trim(adjustl(str_tmp))
+			internal_write_f: block
+				character(len=3) :: l_str, decimals_str
+
+				write(unit=l_str, fmt='(i3)') l
+				write(unit=decimals_str, fmt='(i3)') decimals_
+				write(unit=x_str, fmt='(f'//l_str//'.'//decimals_str//')', decimal=decimal) x
+			end block internal_write_f
 
 			if ( extra > 0 ) then
-				do i = len(x_str)-1, 1, -1
-					x_str(i:i) = '0'
-					extra = extra - 1
-					if ( extra == 0 ) exit
-				end do
+				remove_extra: block
+					integer :: i
+					do i = len(x_str)-1, 1, -1
+						x_str(i:i) = '0'
+						extra = extra - 1
+						if ( extra == 0 ) return
+					end do
+				end block remove_extra
 			end if
-		else if ( fmt_ == 'z' ) then
-			allocate( character(len=70) :: str_tmp )
-
-			write(unit=str_tmp, fmt='(z70)') x
-			x_str = trim(adjustl(str_tmp))
 		end if
 	end procedure str_r128
 	module procedure str_r64
-		character(len=:), allocatable :: decimal, fmt_, str_tmp
-		integer :: i, e, max_decimals, decimals_, l, extra
+		character(len=1) :: fmt_
+		character(len=:), allocatable :: decimal
+		integer, allocatable :: e, max_decimals, decimals_, l, extra
+
+		if ( .not. present(fmt) ) then
+			fmt_ = 'e'
+		else
+			if ( any(REAL_FMTS == fmt) ) then
+				fmt_ = fmt
+			else
+				x_str = EMPTY_STR; return
+			end if
+		end if
+
+		if ( fmt_ == 'z' ) then
+			if ( x /= 0.0_real64 ) then
+				allocate( character(len=16) :: x_str )
+			else
+				x_str = '0'; return
+			end if
+
+			write(unit=x_str, fmt='(z16)') x; return
+		end if
 
 		if ( .not. present(locale) ) then
 			decimal = 'POINT'
@@ -6538,17 +8235,11 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		if ( .not. present(fmt) ) then
-			fmt_ = 'e'
-		else
-			if ( any(REAL_FMTS == fmt) ) then
-				fmt_ = fmt
-			else
-				x_str = EMPTY_STR; return
-			end if
-		end if
-
 		if ( fmt_ == 'e' ) then
+			if ( x == 0.0_real64 ) then
+				x_str = '0.0E+000'; return
+			end if
+
 			associate ( max_precision => ceiling( 1.0 + log10(real(radix(x)))*digits(x) ) )
 				if ( .not. present(decimals) ) then
 					decimals_ = max_precision - 1
@@ -6563,17 +8254,27 @@ submodule (io_fortran_lib) internal_io
 				end if
 			end associate
 
-			l = decimals_ + 15
+			if ( x < 0.0_real64 ) then
+				l = decimals_ + 8
+			else
+				l = decimals_ + 7
+			end if
 
-			allocate( character(len=l) :: str_tmp )
+			allocate( character(len=l) :: x_str )
 
-			write(unit=str_tmp, fmt='(es'//str(l)//'.'//str(decimals_)//'e3)', decimal=decimal) x
-			x_str = trim(adjustl(str_tmp))
+			internal_write_e: block
+				character(len=3) :: l_str, decimals_str
+
+				write(unit=l_str, fmt='(i3)') l
+				write(unit=decimals_str, fmt='(i3)') decimals_
+				write(unit=x_str, fmt='(es'//l_str//'.'//decimals_str//'e3)', decimal=decimal) x
+			end block internal_write_e
+			
 		else if ( fmt_ == 'f' ) then
 			if ( abs(x) /= 0.0_real64 ) then
 				e = int(log10(abs(x)))
 			else
-				e = 0
+				x_str = '0.0'; return
 			end if
 
 			associate ( max_precision => ceiling( 1.0 + log10(real(radix(x)))*digits(x) ) )
@@ -6609,33 +8310,65 @@ submodule (io_fortran_lib) internal_io
 			end if
 
 			if ( e > 0 ) then
-				l = decimals_ + e + 10
+				if ( x < 0.0_real64 ) then
+					l = decimals_ + e + 2
+				else
+					l = decimals_ + e + 1
+				end if
 			else
-				l = decimals_ + 10
+				if ( x < 0.0_real64 ) then
+					l = decimals_ + 3
+				else
+					l = decimals_ + 2
+				end if
 			end if
 
-			allocate( character(len=l) :: str_tmp )
+			allocate( character(len=l) :: x_str )
 
-			write(unit=str_tmp, fmt='(f'//str(l)//'.'//str(decimals_)//')', decimal=decimal) x
-			x_str = trim(adjustl(str_tmp))
+			internal_write_f: block
+				character(len=3) :: l_str, decimals_str
+
+				write(unit=l_str, fmt='(i3)') l
+				write(unit=decimals_str, fmt='(i3)') decimals_
+				write(unit=x_str, fmt='(f'//l_str//'.'//decimals_str//')', decimal=decimal) x
+			end block internal_write_f
 
 			if ( extra > 0 ) then
-				do i = len(x_str)-1, 1, -1
-					x_str(i:i) = '0'
-					extra = extra - 1
-					if ( extra == 0 ) exit
-				end do
+				remove_extra: block
+					integer :: i
+					do i = len(x_str)-1, 1, -1
+						x_str(i:i) = '0'
+						extra = extra - 1
+						if ( extra == 0 ) return
+					end do
+				end block remove_extra
 			end if
-		else if ( fmt_ == 'z' ) then
-			allocate( character(len=40) :: str_tmp )
-
-			write(unit=str_tmp, fmt='(z40)') x
-			x_str = trim(adjustl(str_tmp))
 		end if
 	end procedure str_r64
 	module procedure str_r32
-		character(len=:), allocatable :: decimal, fmt_, str_tmp
-		integer :: i, e, max_decimals, decimals_, l, extra
+		character(len=1) :: fmt_
+		character(len=:), allocatable :: decimal
+		integer, allocatable :: e, max_decimals, decimals_, l, extra
+
+		if ( .not. present(fmt) ) then
+			fmt_ = 'e'
+		else
+			if ( any(REAL_FMTS == fmt) ) then
+				fmt_ = fmt
+			else
+				x_str = EMPTY_STR; return
+			end if
+		end if
+
+		if ( fmt_ == 'z' ) then
+			if ( x /= 0.0_real32 ) then
+				allocate( character(len=8) :: x_str )
+			else
+				x_str = '0'; return
+			end if
+
+			write(unit=x_str, fmt='(z8)') x; return
+		end if
 
 		if ( .not. present(locale) ) then
 			decimal = 'POINT'
@@ -6649,17 +8382,11 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		if ( .not. present(fmt) ) then
-			fmt_ = 'e'
-		else
-			if ( any(REAL_FMTS == fmt) ) then
-				fmt_ = fmt
-			else
-				x_str = EMPTY_STR; return
-			end if
-		end if
-
 		if ( fmt_ == 'e' ) then
+			if ( x == 0.0_real32 ) then
+				x_str = '0.0E+00'; return
+			end if
+
 			associate ( max_precision => ceiling( 1.0 + log10(real(radix(x)))*digits(x) ) )
 				if ( .not. present(decimals) ) then
 					decimals_ = max_precision - 1
@@ -6674,17 +8401,27 @@ submodule (io_fortran_lib) internal_io
 				end if
 			end associate
 
-			l = decimals_ + 15
+			if ( x < 0.0_real32 ) then
+				l = decimals_ + 7
+			else
+				l = decimals_ + 6
+			end if
 
-			allocate( character(len=l) :: str_tmp )
+			allocate( character(len=l) :: x_str )
 
-			write(unit=str_tmp, fmt='(es'//str(l)//'.'//str(decimals_)//'e2)', decimal=decimal) x
-			x_str = trim(adjustl(str_tmp))
+			internal_write_e: block
+				character(len=3) :: l_str, decimals_str
+
+				write(unit=l_str, fmt='(i3)') l
+				write(unit=decimals_str, fmt='(i3)') decimals_
+				write(unit=x_str, fmt='(es'//l_str//'.'//decimals_str//'e2)', decimal=decimal) x
+			end block internal_write_e
+
 		else if ( fmt_ == 'f' ) then
 			if ( abs(x) /= 0.0_real32 ) then
 				e = int(log10(abs(x)))
 			else
-				e = 0
+				x_str = '0.0'; return
 			end if
 
 			associate ( max_precision => ceiling( 1.0 + log10(real(radix(x)))*digits(x) ) )
@@ -6720,34 +8457,44 @@ submodule (io_fortran_lib) internal_io
 			end if
 
 			if ( e > 0 ) then
-				l = decimals_ + e + 10
+				if ( x < 0.0_real32 ) then
+					l = decimals_ + e + 2
+				else
+					l = decimals_ + e + 1
+				end if
 			else
-				l = decimals_ + 10
+				if ( x < 0.0_real32 ) then
+					l = decimals_ + 3
+				else
+					l = decimals_ + 2
+				end if
 			end if
 
-			allocate( character(len=l) :: str_tmp )
+			allocate( character(len=l) :: x_str )
 
-			write(unit=str_tmp, fmt='(f'//str(l)//'.'//str(decimals_)//')', decimal=decimal) x
-			x_str = trim(adjustl(str_tmp))
+			internal_write_f: block
+				character(len=3) :: l_str, decimals_str
+
+				write(unit=l_str, fmt='(i3)') l
+				write(unit=decimals_str, fmt='(i3)') decimals_
+				write(unit=x_str, fmt='(f'//l_str//'.'//decimals_str//')', decimal=decimal) x
+			end block internal_write_f
 
 			if ( extra > 0 ) then
-				do i = len(x_str)-1, 1, -1
-					x_str(i:i) = '0'
-					extra = extra - 1
-					if ( extra == 0 ) exit
-				end do
+				remove_extra: block
+					integer :: i
+					do i = len(x_str)-1, 1, -1
+						x_str(i:i) = '0'
+						extra = extra - 1
+						if ( extra == 0 ) return
+					end do
+				end block remove_extra
 			end if
-		else if ( fmt_ == 'z' ) then
-			allocate( character(len=25) :: str_tmp )
-
-			write(unit=str_tmp, fmt='(z25)') x
-			x_str = trim(adjustl(str_tmp))
 		end if
 	end procedure str_r32
 
 	module procedure str_i64
-		character(len=:), allocatable :: fmt_
-		character(len=40) :: str_tmp
+		character(len=1) :: fmt_
 
 		if ( .not. present(fmt) ) then
 			fmt_ = 'i'
@@ -6759,17 +8506,18 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
+		allocate( character(len=40) :: x_str )
+
 		if ( fmt_ == 'i' ) then
-			write(unit=str_tmp, fmt='(i40)') x
+			write(unit=x_str, fmt='(i40)') x
 		else if ( fmt_ == 'z' ) then
-			write(unit=str_tmp, fmt='(z40)') x
+			write(unit=x_str, fmt='(z40)') x
 		end if
 
-		x_str = trim(adjustl(str_tmp))
+		x_str = trim(adjustl(x_str))
 	end procedure str_i64
 	module procedure str_i32
-		character(len=:), allocatable :: fmt_
-		character(len=25) :: str_tmp
+		character(len=1) :: fmt_
 
 		if ( .not. present(fmt) ) then
 			fmt_ = 'i'
@@ -6781,17 +8529,18 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
+		allocate( character(len=25) :: x_str )
+
 		if ( fmt_ == 'i' ) then
-			write(unit=str_tmp, fmt='(i25)') x
+			write(unit=x_str, fmt='(i25)') x
 		else if ( fmt_ == 'z' ) then
-			write(unit=str_tmp, fmt='(z25)') x
+			write(unit=x_str, fmt='(z25)') x
 		end if
 
-		x_str = trim(adjustl(str_tmp))
+		x_str = trim(adjustl(x_str))
 	end procedure str_i32
 	module procedure str_i16
-		character(len=:), allocatable :: fmt_
-		character(len=15) :: str_tmp
+		character(len=1) :: fmt_
 
 		if ( .not. present(fmt) ) then
 			fmt_ = 'i'
@@ -6803,17 +8552,18 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
+		allocate( character(len=15) :: x_str )
+
 		if ( fmt_ == 'i' ) then
-			write(unit=str_tmp, fmt='(i15)') x
+			write(unit=x_str, fmt='(i15)') x
 		else if ( fmt_ == 'z' ) then
-			write(unit=str_tmp, fmt='(z15)') x
+			write(unit=x_str, fmt='(z15)') x
 		end if
 
-		x_str = trim(adjustl(str_tmp))
+		x_str = trim(adjustl(x_str))
 	end procedure str_i16
 	module procedure str_i8
-		character(len=:), allocatable :: fmt_
-		character(len=10) :: str_tmp
+		character(len=1) :: fmt_
 
 		if ( .not. present(fmt) ) then
 			fmt_ = 'i'
@@ -6825,13 +8575,15 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
+		allocate( character(len=10) :: x_str )
+
 		if ( fmt_ == 'i' ) then
-			write(unit=str_tmp, fmt='(i10)') x
+			write(unit=x_str, fmt='(i10)') x
 		else if ( fmt_ == 'z' ) then
-			write(unit=str_tmp, fmt='(z10)') x
+			write(unit=x_str, fmt='(z10)') x
 		end if
 
-		x_str = trim(adjustl(str_tmp))
+		x_str = trim(adjustl(x_str))
 	end procedure str_i8
 
 	module procedure str_string
