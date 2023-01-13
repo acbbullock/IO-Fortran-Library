@@ -290,7 +290,7 @@ module io_fortran_lib
 			!! For a user reference, see [write_file](../page/Ref/string-methods.html#write_file).
 			!----------------------------------------------------------------------------------------------------------
 			class(String), intent(inout) :: self
-			type(String), dimension(:,:), intent(in) :: cell_array
+			type(String), dimension(:,:), intent(inout) :: cell_array
 			character(len=*), intent(in) :: file_name
 			character(len=*), intent(in), optional :: row_separator, column_separator
 		end subroutine write_file
@@ -4638,7 +4638,8 @@ submodule (io_fortran_lib) String_procedures
 
 	module procedure read_file
 		character(len=:), allocatable :: ext
-		integer :: file_unit, file_length, iostat
+		integer(int64) :: file_length
+		integer :: file_unit, iostat
 		logical :: exists
 
 		ext = ext_of(file_name)
@@ -4668,7 +4669,7 @@ submodule (io_fortran_lib) String_procedures
 
 		inquire( file=file_name, size=file_length )
 
-		if ( file_length == 0 ) then
+		if ( file_length == 0_int64 ) then
 			error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
 			return
 		end if
@@ -4691,18 +4692,18 @@ submodule (io_fortran_lib) String_procedures
 
 			if ( .not. present(cell_array) ) then
 				if ( present(row_separator) ) then
-					write(*,'(a)') LF//'Row separator was specified in method READ_FILE for file "'// &
-									   file_name//'" without a cell array output. To use this option, '// &
-									   'provide an actual argument to cell_array.'
+					write(*,'(a)')	LF//'Row separator was specified in method READ_FILE for file "'// &
+										file_name//'" without a cell array output. To use this option, '// &
+										'provide an actual argument to cell_array.'
 				end if
 
 				if ( present(column_separator) ) then
-					write(*,'(a)') LF//'Column separator was specified in method READ_FILE for file "'// &
-									   file_name//'" without a cell array output. To use this option, '// &
-									   'provide an actual argument to cell_array.'
+					write(*,'(a)')	LF//'Column separator was specified in method READ_FILE for file "'// &
+										file_name//'" without a cell array output. To use this option, '// &
+										'provide an actual argument to cell_array.'
 				end if
 
-				exit cell_block
+				return
 			end if
 
 			if ( .not. present(row_separator) ) then
@@ -4711,21 +4712,68 @@ submodule (io_fortran_lib) String_procedures
 				row_separator_ = row_separator
 			end if
 
+			if ( len(row_separator_) == 0 ) then
+				write(*,'(a)')	LF//'Cannot populate a cell array with the contents of file "'// &
+									file_name//'" using an empty row separator. Returning without cell array...'
+				return
+			end if
+
 			if ( .not. present(column_separator) ) then
 				column_separator_ = COMMA
 			else
 				column_separator_ = column_separator
 			end if
 
+			if ( len(column_separator_) == 0 ) then
+				write(*,'(a)')	LF//'Cannot populate a cell array with the contents of file "'// &
+									file_name//'" using an empty column separator. Returning without cell array...'
+				return
+			end if
+
 			rows = self%split(separator=row_separator_)
 
-			if ( row_separator_ == self%s(file_length-len(row_separator_)+1:) ) then
+			if ( rows(size(rows))%len() < 1 ) then
 				n_rows = size(rows) - 1
 			else
 				n_rows = size(rows)
 			end if
 
-			call process_quotes(rows, row_separator=row_separator_, column_separator=column_separator_)
+			process_quotes: block
+				character(len=:), allocatable :: replacement
+				logical :: in_quote
+				integer :: j, sep_len
+
+				sep_len = len(column_separator_)
+
+				if ( sep_len == 1 ) then
+					replacement = NUL
+				else
+					replacement = repeat(NUL, ncopies=sep_len)
+				end if
+
+				do concurrent (j = 1:n_rows)
+					i = 1
+					in_quote = .false.
+
+					replace_sep: do while ( i <= rows(j)%len()-sep_len+1 )
+						if ( rows(j)%s(i:i) == QQUOTE ) then
+							in_quote = ( .not. in_quote )
+							i = i + 1; cycle replace_sep
+						end if
+
+						if ( in_quote ) then
+							if ( rows(j)%s(i:i+sep_len-1) == column_separator_ ) then
+								rows(j)%s(i:i+sep_len-1) = replacement
+								i = i + sep_len; cycle replace_sep
+							else
+								i = i + 1; cycle replace_sep
+							end if
+						else
+							i = i + 1; cycle replace_sep
+						end if
+					end do replace_sep
+				end do
+			end block process_quotes
 
 			columns = rows(1)%split(separator=column_separator_)
 			n_columns = size(columns)
@@ -4738,59 +4786,47 @@ submodule (io_fortran_lib) String_procedures
 			if ( n_rows > 1 ) then
 				do concurrent (i = 2:n_rows)
 					cell_array(i,:) = rows(i)%split(separator=column_separator_)
+					deallocate(rows(i)%s)
 				end do
 			end if
 
-			call cell_array%replace_inplace(match=row_separator_, substring=column_separator_)
-		end block cell_block
+			re_process_quotes: block
+				character(len=:), allocatable :: replacement
+				logical :: in_quote
+				integer :: j, k, sep_len
 
-		contains
-		pure elemental recursive subroutine process_quotes(row, row_separator, column_separator)
-			type(String), intent(inout) :: row
-			character(len=*), intent(in) :: row_separator, column_separator
+				sep_len = len(column_separator_)
 
-			type(String) :: new_row
-			integer :: row_len, sep_len, diff_len, i
-			logical :: in_quote
-
-			row_len = row%len()
-			sep_len = len(column_separator)
-
-			if ( row_len < 1 ) return
-
-			in_quote = .false.
-
-			new_row%s = row%s
-			diff_len = 0
-			i = 1
-
-			replace_sep: do while ( i <= row_len )
-				if ( row%s(i:i) == QQUOTE ) then
-					in_quote = ( .not. in_quote )
-					i = i + 1; cycle replace_sep
+				if ( sep_len == 1 ) then
+					replacement = NUL
+				else
+					replacement = repeat(NUL, ncopies=sep_len)
 				end if
 
-				if ( in_quote ) then
-					if ( row%s(i:i) == column_separator(1:1) ) then
-						if ( i+sep_len-1 > row_len ) exit replace_sep
+				do concurrent (k = 1:n_columns, j = 1:n_rows)
+					i = 1
+					in_quote = .false.
 
-						if ( row%s(i:i+sep_len-1) == column_separator ) then
-							new_row%s = new_row%s(:i-1+diff_len)//row_separator//new_row%s(i+sep_len+diff_len:)
-							diff_len = diff_len + ( len(row_separator) - sep_len )
-							i = i + sep_len; cycle replace_sep
+					replace_sep: do while ( i <= cell_array(j,k)%len()-sep_len+1 )
+						if ( cell_array(j,k)%s(i:i) == QQUOTE ) then
+							in_quote = ( .not. in_quote )
+							i = i + 1; cycle replace_sep
+						end if
+
+						if ( in_quote ) then
+							if ( cell_array(j,k)%s(i:i+sep_len-1) == replacement ) then
+								cell_array(j,k)%s(i:i+sep_len-1) = column_separator_
+								i = i + sep_len; cycle replace_sep
+							else
+								i = i + 1; cycle replace_sep
+							end if
 						else
 							i = i + 1; cycle replace_sep
 						end if
-					else
-						i = i + 1; cycle replace_sep
-					end if
-				else
-					i = i + 1; cycle replace_sep
-				end if
-			end do replace_sep
-
-			row = new_row%replace(match=QQUOTE, substring=EMPTY_STR)
-		end subroutine process_quotes
+					end do replace_sep
+				end do
+			end block re_process_quotes
+		end block cell_block
 	end procedure read_file
 
 	module procedure replace_ch_copy
@@ -5354,6 +5390,7 @@ submodule (io_fortran_lib) String_procedures
 
 		do concurrent (i = 1:n_rows)
 			rows(i) = glue(tokens=cell_array(i,:), separator=column_separator_)//row_separator_
+			call cell_array(i,:)%empty()
 		end do
 
 		call self%glue(tokens=rows, separator=EMPTY_STR)
@@ -9220,14 +9257,12 @@ submodule (io_fortran_lib) glue_split
 	end procedure split_char
 
 	module procedure split_string
-		type(String) :: temp_String
 		character(len=:), allocatable :: separator_
-		integer :: i, temp_len, sep_len, num_seps, l, current_sep
+		integer :: i, substring_len, sep_len, num_seps, l, current_sep
 
-		temp_String = substring%trim()
-		temp_len = temp_String%len()
+		substring_len = substring%len()
 
-		if ( temp_len < 1 ) then
+		if ( substring_len < 1 ) then
 			tokens = [ String(EMPTY_STR) ]; return
 		end if
 
@@ -9240,9 +9275,9 @@ submodule (io_fortran_lib) glue_split
 		sep_len = len(separator_)
 
 		if ( sep_len == 0 ) then
-			allocate( tokens(temp_len) )
-			do concurrent (i = 1:temp_len)
-				tokens(i)%s = temp_String%s(i:i)
+			allocate( tokens(substring_len) )
+			do concurrent (i = 1:substring_len)
+				tokens(i)%s = substring%s(i:i)
 			end do
 			return
 		end if
@@ -9251,10 +9286,10 @@ submodule (io_fortran_lib) glue_split
 		i = 1
 
 		count_seps: do
-			if ( temp_String%s(i:i) == separator_(1:1) ) then
-				if ( i+sep_len-1 > temp_len ) exit count_seps
+			if ( substring%s(i:i) == separator_(1:1) ) then
+				if ( i+sep_len-1 > substring_len ) exit count_seps
 
-				if ( temp_String%s(i:i+sep_len-1) == separator_ ) then
+				if ( substring%s(i:i+sep_len-1) == separator_ ) then
 					num_seps = num_seps + 1
 					i = i + sep_len
 				else
@@ -9264,7 +9299,7 @@ submodule (io_fortran_lib) glue_split
 				i = i + 1
 			end if
 
-			if ( i > temp_len ) exit count_seps
+			if ( i > substring_len ) exit count_seps
 		end do count_seps
 
 		if ( num_seps == 0 ) then
@@ -9278,15 +9313,19 @@ submodule (io_fortran_lib) glue_split
 		l = 1
 		current_sep = 1
 
-		splitting: do while ( i <= temp_len-sep_len+1 )
-			if ( temp_String%s(i:i+sep_len-1) == separator_ ) then
-				tokens(current_sep)%s = temp_String%s(l:i-1)
+		splitting: do while ( i <= substring_len-sep_len+1 )
+			if ( substring%s(i:i+sep_len-1) == separator_ ) then
+				if ( l > i-1 ) then
+					tokens(current_sep)%s = EMPTY_STR
+				else
+					tokens(current_sep)%s = substring%s(l:i-1)
+				end if
 
 				if ( current_sep == num_seps ) then
-					if ( i+sep_len > temp_len ) then
+					if ( i+sep_len > substring_len ) then
 						tokens(num_seps+1)%s = EMPTY_STR; exit splitting
 					else
-						tokens(num_seps+1)%s = temp_String%s(i+sep_len:); exit splitting
+						tokens(num_seps+1)%s = substring%s(i+sep_len:); exit splitting
 					end if
 				end if
 
@@ -9295,8 +9334,6 @@ submodule (io_fortran_lib) glue_split
 				i = i + 1; cycle splitting
 			end if
 		end do splitting
-
-		call tokens%trim_inplace()
 	end procedure split_string
 end submodule glue_split
 
@@ -19121,7 +19158,7 @@ submodule (io_fortran_lib) text_io
 
 		inquire( file=file_name, size=file_length )
 
-		if ( file_length == 0 ) then
+		if ( file_length == 0_int64 ) then
 			error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
 			return
 		end if
@@ -19149,7 +19186,7 @@ submodule (io_fortran_lib) text_io
 				end if
 			end do
 
-			if ( file_length == 0 ) then
+			if ( file_length == 0_int64 ) then
 				error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty after header.'
 				return
 			end if
@@ -19347,7 +19384,7 @@ submodule (io_fortran_lib) text_io
 
 		inquire( file=file_name, size=file_length )
 
-		if ( file_length == 0 ) then
+		if ( file_length == 0_int64 ) then
 			error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
 			return
 		end if
@@ -19375,7 +19412,7 @@ submodule (io_fortran_lib) text_io
 				end if
 			end do
 
-			if ( file_length == 0 ) then
+			if ( file_length == 0_int64 ) then
 				error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty after header.'
 				return
 			end if
@@ -19573,7 +19610,7 @@ submodule (io_fortran_lib) text_io
 
 		inquire( file=file_name, size=file_length )
 
-		if ( file_length == 0 ) then
+		if ( file_length == 0_int64 ) then
 			error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
 			return
 		end if
@@ -19601,7 +19638,7 @@ submodule (io_fortran_lib) text_io
 				end if
 			end do
 
-			if ( file_length == 0 ) then
+			if ( file_length == 0_int64 ) then
 				error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty after header.'
 				return
 			end if
@@ -19801,7 +19838,7 @@ submodule (io_fortran_lib) text_io
 
 		inquire( file=file_name, size=file_length )
 
-		if ( file_length == 0 ) then
+		if ( file_length == 0_int64 ) then
 			error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
 			return
 		end if
@@ -19829,7 +19866,7 @@ submodule (io_fortran_lib) text_io
 				end if
 			end do
 
-			if ( file_length == 0 ) then
+			if ( file_length == 0_int64 ) then
 				error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty after header.'
 				return
 			end if
@@ -20041,7 +20078,7 @@ submodule (io_fortran_lib) text_io
 
 		inquire( file=file_name, size=file_length )
 
-		if ( file_length == 0 ) then
+		if ( file_length == 0_int64 ) then
 			error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
 			return
 		end if
@@ -20069,7 +20106,7 @@ submodule (io_fortran_lib) text_io
 				end if
 			end do
 
-			if ( file_length == 0 ) then
+			if ( file_length == 0_int64 ) then
 				error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty after header.'
 				return
 			end if
@@ -20281,7 +20318,7 @@ submodule (io_fortran_lib) text_io
 
 		inquire( file=file_name, size=file_length )
 
-		if ( file_length == 0 ) then
+		if ( file_length == 0_int64 ) then
 			error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
 			return
 		end if
@@ -20309,7 +20346,7 @@ submodule (io_fortran_lib) text_io
 				end if
 			end do
 
-			if ( file_length == 0 ) then
+			if ( file_length == 0_int64 ) then
 				error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty after header.'
 				return
 			end if
@@ -20520,7 +20557,7 @@ submodule (io_fortran_lib) text_io
 
 		inquire( file=file_name, size=file_length )
 
-		if ( file_length == 0 ) then
+		if ( file_length == 0_int64 ) then
 			error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
 			return
 		end if
@@ -20548,7 +20585,7 @@ submodule (io_fortran_lib) text_io
 				end if
 			end do
 
-			if ( file_length == 0 ) then
+			if ( file_length == 0_int64 ) then
 				error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty after header.'
 				return
 			end if
@@ -20660,7 +20697,7 @@ submodule (io_fortran_lib) text_io
 
 		inquire( file=file_name, size=file_length )
 
-		if ( file_length == 0 ) then
+		if ( file_length == 0_int64 ) then
 			error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
 			return
 		end if
@@ -20688,7 +20725,7 @@ submodule (io_fortran_lib) text_io
 				end if
 			end do
 
-			if ( file_length == 0 ) then
+			if ( file_length == 0_int64 ) then
 				error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty after header.'
 				return
 			end if
@@ -20800,7 +20837,7 @@ submodule (io_fortran_lib) text_io
 
 		inquire( file=file_name, size=file_length )
 
-		if ( file_length == 0 ) then
+		if ( file_length == 0_int64 ) then
 			error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
 			return
 		end if
@@ -20828,7 +20865,7 @@ submodule (io_fortran_lib) text_io
 				end if
 			end do
 
-			if ( file_length == 0 ) then
+			if ( file_length == 0_int64 ) then
 				error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty after header.'
 				return
 			end if
@@ -20942,7 +20979,7 @@ submodule (io_fortran_lib) text_io
 
 		inquire( file=file_name, size=file_length )
 
-		if ( file_length == 0 ) then
+		if ( file_length == 0_int64 ) then
 			error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
 			return
 		end if
@@ -20970,7 +21007,7 @@ submodule (io_fortran_lib) text_io
 				end if
 			end do
 
-			if ( file_length == 0 ) then
+			if ( file_length == 0_int64 ) then
 				error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty after header.'
 				return
 			end if
@@ -21096,7 +21133,7 @@ submodule (io_fortran_lib) text_io
 
 		inquire( file=file_name, size=file_length )
 
-		if ( file_length == 0 ) then
+		if ( file_length == 0_int64 ) then
 			error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
 			return
 		end if
@@ -21124,7 +21161,7 @@ submodule (io_fortran_lib) text_io
 				end if
 			end do
 
-			if ( file_length == 0 ) then
+			if ( file_length == 0_int64 ) then
 				error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty after header.'
 				return
 			end if
@@ -21250,7 +21287,7 @@ submodule (io_fortran_lib) text_io
 
 		inquire( file=file_name, size=file_length )
 
-		if ( file_length == 0 ) then
+		if ( file_length == 0_int64 ) then
 			error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
 			return
 		end if
@@ -21278,7 +21315,7 @@ submodule (io_fortran_lib) text_io
 				end if
 			end do
 
-			if ( file_length == 0 ) then
+			if ( file_length == 0_int64 ) then
 				error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty after header.'
 				return
 			end if
@@ -21404,7 +21441,7 @@ submodule (io_fortran_lib) text_io
 
 		inquire( file=file_name, size=file_length )
 
-		if ( file_length == 0 ) then
+		if ( file_length == 0_int64 ) then
 			error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
 			return
 		end if
@@ -21432,7 +21469,7 @@ submodule (io_fortran_lib) text_io
 				end if
 			end do
 
-			if ( file_length == 0 ) then
+			if ( file_length == 0_int64 ) then
 				error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty after header.'
 				return
 			end if
@@ -21538,7 +21575,7 @@ submodule (io_fortran_lib) text_io
 
 		inquire( file=file_name, size=file_length )
 
-		if ( file_length == 0 ) then
+		if ( file_length == 0_int64 ) then
 			error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
 			return
 		end if
@@ -21566,7 +21603,7 @@ submodule (io_fortran_lib) text_io
 				end if
 			end do
 
-			if ( file_length == 0 ) then
+			if ( file_length == 0_int64 ) then
 				error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty after header.'
 				return
 			end if
@@ -21672,7 +21709,7 @@ submodule (io_fortran_lib) text_io
 
 		inquire( file=file_name, size=file_length )
 
-		if ( file_length == 0 ) then
+		if ( file_length == 0_int64 ) then
 			error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
 			return
 		end if
@@ -21700,7 +21737,7 @@ submodule (io_fortran_lib) text_io
 				end if
 			end do
 
-			if ( file_length == 0 ) then
+			if ( file_length == 0_int64 ) then
 				error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty after header.'
 				return
 			end if
@@ -21806,7 +21843,7 @@ submodule (io_fortran_lib) text_io
 
 		inquire( file=file_name, size=file_length )
 
-		if ( file_length == 0 ) then
+		if ( file_length == 0_int64 ) then
 			error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
 			return
 		end if
@@ -21834,7 +21871,7 @@ submodule (io_fortran_lib) text_io
 				end if
 			end do
 
-			if ( file_length == 0 ) then
+			if ( file_length == 0_int64 ) then
 				error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty after header.'
 				return
 			end if
@@ -21942,7 +21979,7 @@ submodule (io_fortran_lib) text_io
 
 		inquire( file=file_name, size=file_length )
 
-		if ( file_length == 0 ) then
+		if ( file_length == 0_int64 ) then
 			error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
 			return
 		end if
@@ -21970,7 +22007,7 @@ submodule (io_fortran_lib) text_io
 				end if
 			end do
 
-			if ( file_length == 0 ) then
+			if ( file_length == 0_int64 ) then
 				error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty after header.'
 				return
 			end if
@@ -22090,7 +22127,7 @@ submodule (io_fortran_lib) text_io
 
 		inquire( file=file_name, size=file_length )
 
-		if ( file_length == 0 ) then
+		if ( file_length == 0_int64 ) then
 			error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
 			return
 		end if
@@ -22118,7 +22155,7 @@ submodule (io_fortran_lib) text_io
 				end if
 			end do
 
-			if ( file_length == 0 ) then
+			if ( file_length == 0_int64 ) then
 				error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty after header.'
 				return
 			end if
@@ -22238,7 +22275,7 @@ submodule (io_fortran_lib) text_io
 
 		inquire( file=file_name, size=file_length )
 
-		if ( file_length == 0 ) then
+		if ( file_length == 0_int64 ) then
 			error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
 			return
 		end if
@@ -22266,7 +22303,7 @@ submodule (io_fortran_lib) text_io
 				end if
 			end do
 
-			if ( file_length == 0 ) then
+			if ( file_length == 0_int64 ) then
 				error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty after header.'
 				return
 			end if
@@ -22386,7 +22423,7 @@ submodule (io_fortran_lib) text_io
 
 		inquire( file=file_name, size=file_length )
 
-		if ( file_length == 0 ) then
+		if ( file_length == 0_int64 ) then
 			error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
 			return
 		end if
@@ -22414,7 +22451,7 @@ submodule (io_fortran_lib) text_io
 				end if
 			end do
 
-			if ( file_length == 0 ) then
+			if ( file_length == 0_int64 ) then
 				error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty after header.'
 				return
 			end if
