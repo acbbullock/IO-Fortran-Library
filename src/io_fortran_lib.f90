@@ -7139,22 +7139,13 @@ submodule (io_fortran_lib) internal_io
 	end procedure cast_string_c32
 
 	module procedure cast_string_r128
-		character(len=:), allocatable :: locale_, fmt_, substring_
+		character(len=1) :: fmt_
+		character(len=:), allocatable :: decimal
 
 		if ( substring%len() < 1 ) then
 			into = 0.0_real128; return
 		end if
 
-		if ( .not. present(locale) ) then
-			locale_ = 'US'
-		else
-			if ( any(LOCALES == locale) ) then
-				locale_ = locale
-			else
-				into = 0.0_real128; return
-			end if
-		end if
-
 		if ( .not. present(fmt) ) then
 			fmt_ = 'e'
 		else
@@ -7165,26 +7156,38 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		substring_ = trim(adjustl(substring%s))
-		call cast(substring=substring_, into=into, locale=locale_, fmt=fmt_)
+		if ( fmt_ == 'z' ) then
+			read_z: block
+				character(len=2) :: substring_len
+
+				write(unit=substring_len, fmt='(i2)') substring%len()
+				read(unit=substring%s, fmt='(z'//substring_len//')') into
+				return
+			end block read_z
+		end if
+
+		if ( .not. present(locale) ) then
+			decimal = 'POINT'
+		else
+			if ( locale == 'US' ) then
+				decimal = 'POINT'
+			else if ( locale == 'EU' ) then
+				decimal = 'COMMA'
+			else
+				into = 0.0_real128; return
+			end if
+		end if
+
+		read(unit=substring%s, fmt=*, decimal=decimal) into
 	end procedure cast_string_r128
 	module procedure cast_string_r64
-		character(len=:), allocatable :: locale_, fmt_, substring_
+		character(len=1) :: fmt_
+		character(len=:), allocatable :: decimal
 
 		if ( substring%len() < 1 ) then
 			into = 0.0_real64; return
 		end if
 
-		if ( .not. present(locale) ) then
-			locale_ = 'US'
-		else
-			if ( any(LOCALES == locale) ) then
-				locale_ = locale
-			else
-				into = 0.0_real64; return
-			end if
-		end if
-
 		if ( .not. present(fmt) ) then
 			fmt_ = 'e'
 		else
@@ -7195,26 +7198,38 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		substring_ = trim(adjustl(substring%s))
-		call cast(substring=substring_, into=into, locale=locale_, fmt=fmt_)
+		if ( fmt_ == 'z' ) then
+			read_z: block
+				character(len=2) :: substring_len
+
+				write(unit=substring_len, fmt='(i2)') substring%len()
+				read(unit=substring%s, fmt='(z'//substring_len//')') into
+				return
+			end block read_z
+		end if
+
+		if ( .not. present(locale) ) then
+			decimal = 'POINT'
+		else
+			if ( locale == 'US' ) then
+				decimal = 'POINT'
+			else if ( locale == 'EU' ) then
+				decimal = 'COMMA'
+			else
+				into = 0.0_real64; return
+			end if
+		end if
+
+		read(unit=substring%s, fmt=*, decimal=decimal) into
 	end procedure cast_string_r64
 	module procedure cast_string_r32
-		character(len=:), allocatable :: locale_, fmt_, substring_
+		character(len=1) :: fmt_
+		character(len=:), allocatable :: decimal
 
 		if ( substring%len() < 1 ) then
 			into = 0.0_real32; return
 		end if
 
-		if ( .not. present(locale) ) then
-			locale_ = 'US'
-		else
-			if ( any(LOCALES == locale) ) then
-				locale_ = locale
-			else
-				into = 0.0_real32; return
-			end if
-		end if
-
 		if ( .not. present(fmt) ) then
 			fmt_ = 'e'
 		else
@@ -7225,12 +7240,33 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		substring_ = trim(adjustl(substring%s))
-		call cast(substring=substring_, into=into, locale=locale_, fmt=fmt_)
+		if ( fmt_ == 'z' ) then
+			read_z: block
+				character(len=1) :: substring_len
+
+				write(unit=substring_len, fmt='(i1)') substring%len()
+				read(unit=substring%s, fmt='(z'//substring_len//')') into
+				return
+			end block read_z
+		end if
+
+		if ( .not. present(locale) ) then
+			decimal = 'POINT'
+		else
+			if ( locale == 'US' ) then
+				decimal = 'POINT'
+			else if ( locale == 'EU' ) then
+				decimal = 'COMMA'
+			else
+				into = 0.0_real32; return
+			end if
+		end if
+
+		read(unit=substring%s, fmt=*, decimal=decimal) into
 	end procedure cast_string_r32
 
 	module procedure cast_string_i64
-		character(len=:), allocatable :: fmt_, substring_
+		character(len=1) :: fmt_
 
 		if ( substring%len() < 1 ) then
 			into = 0_int64; return
@@ -7246,11 +7282,20 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		substring_ = trim(adjustl(substring%s))
-		call cast(substring=substring_, into=into, fmt=fmt_)
+		if ( fmt_ == 'z' ) then
+			read_z: block
+				character(len=2) :: substring_len
+
+				write(unit=substring_len, fmt='(i2)') substring%len()
+				read(unit=substring%s, fmt='(z'//substring_len//')') into
+				return
+			end block read_z
+		end if
+
+		read(unit=substring%s, fmt=*) into
 	end procedure cast_string_i64
 	module procedure cast_string_i32
-		character(len=:), allocatable :: fmt_, substring_
+		character(len=1) :: fmt_
 
 		if ( substring%len() < 1 ) then
 			into = 0_int32; return
@@ -7266,11 +7311,20 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		substring_ = trim(adjustl(substring%s))
-		call cast(substring=substring_, into=into, fmt=fmt_)
+		if ( fmt_ == 'z' ) then
+			read_z: block
+				character(len=1) :: substring_len
+
+				write(unit=substring_len, fmt='(i1)') substring%len()
+				read(unit=substring%s, fmt='(z'//substring_len//')') into
+				return
+			end block read_z
+		end if
+
+		read(unit=substring%s, fmt=*) into
 	end procedure cast_string_i32
 	module procedure cast_string_i16
-		character(len=:), allocatable :: fmt_, substring_
+		character(len=1) :: fmt_
 
 		if ( substring%len() < 1 ) then
 			into = 0_int16; return
@@ -7286,11 +7340,20 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		substring_ = trim(adjustl(substring%s))
-		call cast(substring=substring_, into=into, fmt=fmt_)
+		if ( fmt_ == 'z' ) then
+			read_z: block
+				character(len=1) :: substring_len
+
+				write(unit=substring_len, fmt='(i1)') substring%len()
+				read(unit=substring%s, fmt='(z'//substring_len//')') into
+				return
+			end block read_z
+		end if
+
+		read(unit=substring%s, fmt=*) into
 	end procedure cast_string_i16
 	module procedure cast_string_i8
-		character(len=:), allocatable :: fmt_, substring_
+		character(len=1) :: fmt_
 
 		if ( substring%len() < 1 ) then
 			into = 0_int8; return
@@ -7306,8 +7369,17 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		substring_ = trim(adjustl(substring%s))
-		call cast(substring=substring_, into=into, fmt=fmt_)
+		if ( fmt_ == 'z' ) then
+			read_z: block
+				character(len=1) :: substring_len
+
+				write(unit=substring_len, fmt='(i1)') substring%len()
+				read(unit=substring%s, fmt='(z'//substring_len//')') into
+				return
+			end block read_z
+		end if
+
+		read(unit=substring%s, fmt=*) into
 	end procedure cast_string_i8
 
 	module procedure str_c128
@@ -8944,22 +9016,13 @@ submodule (io_fortran_lib) internal_io
 	end procedure cast_c32
 
 	module procedure cast_r128
-		character(len=:), allocatable :: locale_, fmt_, substring_, decimal
+		character(len=1) :: fmt_
+		character(len=:), allocatable :: decimal
 
 		if ( len(substring) == 0 ) then
 			into = 0.0_real128; return
 		end if
 
-		if ( .not. present(locale) ) then
-			locale_ = 'US'
-		else
-			if ( any(LOCALES == locale) ) then
-				locale_ = locale
-			else
-				into = 0.0_real128; return
-			end if
-		end if
-
 		if ( .not. present(fmt) ) then
 			fmt_ = 'e'
 		else
@@ -8970,37 +9033,38 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		substring_ = trim(adjustl(substring))
-
 		if ( fmt_ == 'z' ) then
-			read(unit=substring_, fmt='(z'//str(len(substring_))//')') into
-		else
-			if ( locale_ == 'US' ) then
-				decimal = 'POINT'
-			else if ( locale_ == 'EU' ) then
-				decimal = 'COMMA'
-			end if
+			read_z: block
+				character(len=2) :: substring_len
 
-			read(unit=substring_, fmt=*, decimal=decimal) into
+				write(unit=substring_len, fmt='(i2)') len(substring)
+				read(unit=substring, fmt='(z'//substring_len//')') into
+				return
+			end block read_z
 		end if
+
+		if ( .not. present(locale) ) then
+			decimal = 'POINT'
+		else
+			if ( locale == 'US' ) then
+				decimal = 'POINT'
+			else if ( locale == 'EU' ) then
+				decimal = 'COMMA'
+			else
+				into = 0.0_real128; return
+			end if
+		end if
+
+		read(unit=substring, fmt=*, decimal=decimal) into
 	end procedure cast_r128
 	module procedure cast_r64
-		character(len=:), allocatable :: locale_, fmt_, substring_, decimal
+		character(len=1) :: fmt_
+		character(len=:), allocatable :: decimal
 
 		if ( len(substring) == 0 ) then
 			into = 0.0_real64; return
 		end if
 
-		if ( .not. present(locale) ) then
-			locale_ = 'US'
-		else
-			if ( any(LOCALES == locale) ) then
-				locale_ = locale
-			else
-				into = 0.0_real64; return
-			end if
-		end if
-
 		if ( .not. present(fmt) ) then
 			fmt_ = 'e'
 		else
@@ -9011,37 +9075,38 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		substring_ = trim(adjustl(substring))
-
 		if ( fmt_ == 'z' ) then
-			read(unit=substring_, fmt='(z'//str(len(substring_))//')') into
-		else
-			if ( locale_ == 'US' ) then
-				decimal = 'POINT'
-			else if ( locale_ == 'EU' ) then
-				decimal = 'COMMA'
-			end if
+			read_z: block
+				character(len=2) :: substring_len
 
-			read(unit=substring_, fmt=*, decimal=decimal) into
+				write(unit=substring_len, fmt='(i2)') len(substring)
+				read(unit=substring, fmt='(z'//substring_len//')') into
+				return
+			end block read_z
 		end if
+
+		if ( .not. present(locale) ) then
+			decimal = 'POINT'
+		else
+			if ( locale == 'US' ) then
+				decimal = 'POINT'
+			else if ( locale == 'EU' ) then
+				decimal = 'COMMA'
+			else
+				into = 0.0_real64; return
+			end if
+		end if
+
+		read(unit=substring, fmt=*, decimal=decimal) into
 	end procedure cast_r64
 	module procedure cast_r32
-		character(len=:), allocatable :: locale_, fmt_, substring_, decimal
+		character(len=1) :: fmt_
+		character(len=:), allocatable :: decimal
 
 		if ( len(substring) == 0 ) then
 			into = 0.0_real32; return
 		end if
 
-		if ( .not. present(locale) ) then
-			locale_ = 'US'
-		else
-			if ( any(LOCALES == locale) ) then
-				locale_ = locale
-			else
-				into = 0.0_real32; return
-			end if
-		end if
-
 		if ( .not. present(fmt) ) then
 			fmt_ = 'e'
 		else
@@ -9052,23 +9117,33 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		substring_ = trim(adjustl(substring))
-
 		if ( fmt_ == 'z' ) then
-			read(unit=substring_, fmt='(z'//str(len(substring_))//')') into
-		else
-			if ( locale_ == 'US' ) then
-				decimal = 'POINT'
-			else if ( locale_ == 'EU' ) then
-				decimal = 'COMMA'
-			end if
+			read_z: block
+				character(len=1) :: substring_len
 
-			read(unit=substring_, fmt=*, decimal=decimal) into
+				write(unit=substring_len, fmt='(i1)') len(substring)
+				read(unit=substring, fmt='(z'//substring_len//')') into
+				return
+			end block read_z
 		end if
+
+		if ( .not. present(locale) ) then
+			decimal = 'POINT'
+		else
+			if ( locale == 'US' ) then
+				decimal = 'POINT'
+			else if ( locale == 'EU' ) then
+				decimal = 'COMMA'
+			else
+				into = 0.0_real32; return
+			end if
+		end if
+
+		read(unit=substring, fmt=*, decimal=decimal) into
 	end procedure cast_r32
 
 	module procedure cast_i64
-		character(len=:), allocatable :: fmt_, substring_
+		character(len=1) :: fmt_
 
 		if ( len(substring) == 0 ) then
 			into = 0_int64; return
@@ -9084,16 +9159,20 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		substring_ = trim(adjustl(substring))
-
 		if ( fmt_ == 'z' ) then
-			read(unit=substring_, fmt='(z'//str(len(substring_))//')') into
-		else
-			read(unit=substring_, fmt=*) into
+			read_z: block
+				character(len=2) :: substring_len
+
+				write(unit=substring_len, fmt='(i2)') len(substring)
+				read(unit=substring, fmt='(z'//substring_len//')') into
+				return
+			end block read_z
 		end if
+
+		read(unit=substring, fmt=*) into
 	end procedure cast_i64
 	module procedure cast_i32
-		character(len=:), allocatable :: fmt_, substring_
+		character(len=1) :: fmt_
 
 		if ( len(substring) == 0 ) then
 			into = 0_int32; return
@@ -9109,16 +9188,20 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		substring_ = trim(adjustl(substring))
-
 		if ( fmt_ == 'z' ) then
-			read(unit=substring_, fmt='(z'//str(len(substring_))//')') into
-		else
-			read(unit=substring_, fmt=*) into
+			read_z: block
+				character(len=1) :: substring_len
+
+				write(unit=substring_len, fmt='(i1)') len(substring)
+				read(unit=substring, fmt='(z'//substring_len//')') into
+				return
+			end block read_z
 		end if
+
+		read(unit=substring, fmt=*) into
 	end procedure cast_i32
 	module procedure cast_i16
-		character(len=:), allocatable :: fmt_, substring_
+		character(len=1) :: fmt_
 
 		if ( len(substring) == 0 ) then
 			into = 0_int16; return
@@ -9134,16 +9217,20 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		substring_ = trim(adjustl(substring))
-
 		if ( fmt_ == 'z' ) then
-			read(unit=substring_, fmt='(z'//str(len(substring_))//')') into
-		else
-			read(unit=substring_, fmt=*) into
+			read_z: block
+				character(len=1) :: substring_len
+
+				write(unit=substring_len, fmt='(i1)') len(substring)
+				read(unit=substring, fmt='(z'//substring_len//')') into
+				return
+			end block read_z
 		end if
+
+		read(unit=substring, fmt=*) into
 	end procedure cast_i16
 	module procedure cast_i8
-		character(len=:), allocatable :: fmt_, substring_
+		character(len=1) :: fmt_
 
 		if ( len(substring) == 0 ) then
 			into = 0_int8; return
@@ -9159,13 +9246,17 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		substring_ = trim(adjustl(substring))
-
 		if ( fmt_ == 'z' ) then
-			read(unit=substring_, fmt='(z'//str(len(substring_))//')') into
-		else
-			read(unit=substring_, fmt=*) into
+			read_z: block
+				character(len=1) :: substring_len
+
+				write(unit=substring_len, fmt='(i1)') len(substring)
+				read(unit=substring, fmt='(z'//substring_len//')') into
+				return
+			end block read_z
 		end if
+
+		read(unit=substring, fmt=*) into
 	end procedure cast_i8
 end submodule internal_io
 
