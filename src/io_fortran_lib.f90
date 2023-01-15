@@ -83,6 +83,7 @@ module io_fortran_lib
 			procedure, pass(self), public	::	empty
 			procedure, pass(self), public	::	glue => glue_into_self
 			procedure, pass(self), public	::	len => length
+			procedure, pass(self), public	::	len64 => length64
 			procedure, pass(self)			::	push_chars, push_string
 			procedure, pass(self), public	::	read_file
 			procedure, pass(self)			::	replace_ch_copy, replace_st_copy, replace_chst_copy, &
@@ -155,6 +156,16 @@ module io_fortran_lib
 			!----------------------------------------------------------------------------------------------------------
 			class(String), intent(in) :: self
 		end function length
+
+		pure elemental recursive integer(int64) module function length64(self) result(self_len)
+			!----------------------------------------------------------------------------------------------------------
+			!! Returns the length of the string slice component elementally. Unallocated components return `-1`. This
+			!! function is identical to `len` for strings of 2,147,483,647 bytes or smaller.
+			!!
+			!! For a user reference, see [len](../page/Ref/string-methods.html#len).
+			!----------------------------------------------------------------------------------------------------------
+			class(String), intent(in) :: self
+		end function length64
 
 		pure elemental recursive module subroutine push_chars(self, substring)
 			!----------------------------------------------------------------------------------------------------------
@@ -4551,8 +4562,8 @@ submodule (io_fortran_lib) String_procedures
 
 	module procedure glue_into_self
 		character(len=:), allocatable :: separator_
-		integer, allocatable, dimension(:) :: lengths, cumm_lengths
-		integer :: sep_len, num_tokens, total_length, pos, i
+		integer(int64), allocatable, dimension(:) :: lengths, cumm_lengths
+		integer(int64) :: sep_len, num_tokens, total_length, pos, i
 
 		if ( .not. present(separator) ) then
 			separator_ = SPACE
@@ -4560,45 +4571,46 @@ submodule (io_fortran_lib) String_procedures
 			separator_ = separator
 		end if
 
-		sep_len = len(separator_)
-		lengths = tokens%len()
-		num_tokens = size(lengths)
+		sep_len = len(separator_, kind=int64)
+		lengths = tokens%len64()
+		num_tokens = size(lengths, kind=int64)
 
-		if ( num_tokens == 1 ) then
-			if ( lengths(1) < 1 ) then
+		if ( num_tokens == 1_int64 ) then
+			if ( lengths(1_int64) < 1_int64 ) then
 				self%s = EMPTY_STR; return
 			else
-				self%s = tokens(1)%s; return
+				self%s = tokens(1_int64)%s; return
 			end if
 		end if
 
-		where ( lengths == -1 ) lengths = 0
+		where ( lengths == -1_int64 ) lengths = 0_int64
 		total_length = sum(lengths)
 
-		if ( total_length == 0 ) then
+		if ( total_length == 0_int64 ) then
 			self%s = EMPTY_STR; return
 		end if
 
-		allocate( cumm_lengths(num_tokens), source=1 )
+		allocate( cumm_lengths(num_tokens), source=1_int64 )
 
-		do concurrent (i = 2:num_tokens)
-			cumm_lengths(i) = sum( lengths(:i-1) ) + 1
+		do concurrent (i = 2_int64:num_tokens)
+			cumm_lengths(i) = sum( lengths(:i-1_int64) ) + 1_int64
 		end do
 
 		if ( allocated(self%s) ) deallocate(self%s)
 
-		allocate( character(len=total_length + (num_tokens-1)*sep_len) :: self%s )
+		total_length = total_length + (num_tokens-1_int64)*sep_len
+		allocate( character(len=total_length) :: self%s )
 
-		positional_transfer: do concurrent (i = 1:num_tokens)
-			pos = cumm_lengths(i) + (i-1)*sep_len
-			if ( lengths(i) > 0 ) then
-				self%s(pos:pos+lengths(i)-1) = tokens(i)%s
-				if ( sep_len > 0 ) then
-					if ( i < num_tokens ) self%s(pos+lengths(i):pos+lengths(i)+sep_len-1) = separator_
+		positional_transfer: do concurrent (i = 1_int64:num_tokens)
+			pos = cumm_lengths(i) + (i-1_int64)*sep_len
+			if ( lengths(i) > 0_int64 ) then
+				self%s(pos:pos+lengths(i)-1_int64) = tokens(i)%s
+				if ( sep_len > 0_int64 ) then
+					if ( i < num_tokens ) self%s(pos+lengths(i):pos+lengths(i)+sep_len-1_int64) = separator_
 				end if
 			else
-				if ( sep_len > 0 ) then
-					if ( i < num_tokens ) self%s(pos:pos+sep_len-1) = separator_
+				if ( sep_len > 0_int64 ) then
+					if ( i < num_tokens ) self%s(pos:pos+sep_len-1_int64) = separator_
 				end if
 			end if
 		end do positional_transfer
@@ -4611,6 +4623,14 @@ submodule (io_fortran_lib) String_procedures
 			self_len = len(self%s)
 		end if
 	end procedure length
+
+	module procedure length64
+		if ( .not. allocated(self%s) ) then
+			self_len = -1_int64
+		else
+			self_len = len(self%s, kind=int64)
+		end if
+	end procedure length64
 
 	module procedure push_chars
 		if ( self%len() < 1 ) then
@@ -4685,37 +4705,47 @@ submodule (io_fortran_lib) String_procedures
 			return
 		end if
 
+		if ( .not. present(cell_array) ) then
+			if ( present(row_separator) ) then
+				write(*,'(a)')	LF//'WARNING: Row separator was specified in method READ_FILE for file "'// &
+									file_name//'" without a cell array output. To use this option, '// &
+									'provide an actual argument to cell_array.'
+			end if
+
+			if ( present(column_separator) ) then
+				write(*,'(a)')	LF//'WARNING: Column separator was specified in method READ_FILE for file "'// &
+									file_name//'" without a cell array output. To use this option, '// &
+									'provide an actual argument to cell_array.'
+			end if
+
+			return
+		end if
+
+		if ( present(row_separator) ) then
+			if ( len(row_separator) == 0 ) then
+				write(*,'(a)')	LF//'WARNING: Cannot populate a cell array with the contents of file "'// &
+									file_name//'" using an empty row separator. Returning without cell array...'
+				return
+			end if
+		end if
+
+		if ( present(column_separator) ) then
+			if ( len(column_separator) == 0 ) then
+				write(*,'(a)')	LF//'WARNING: Cannot populate a cell array with the contents of file "'// &
+									file_name//'" using an empty column separator. Returning without cell array...'
+				return
+			end if
+		end if
+
 		cell_block: block
 			type(String), allocatable, dimension(:) :: rows, columns
 			character(len=:), allocatable :: row_separator_, column_separator_
-			integer :: n_rows, n_columns, i
-
-			if ( .not. present(cell_array) ) then
-				if ( present(row_separator) ) then
-					write(*,'(a)')	LF//'Row separator was specified in method READ_FILE for file "'// &
-										file_name//'" without a cell array output. To use this option, '// &
-										'provide an actual argument to cell_array.'
-				end if
-
-				if ( present(column_separator) ) then
-					write(*,'(a)')	LF//'Column separator was specified in method READ_FILE for file "'// &
-										file_name//'" without a cell array output. To use this option, '// &
-										'provide an actual argument to cell_array.'
-				end if
-
-				return
-			end if
+			integer(int64) :: n_rows, n_columns, i
 
 			if ( .not. present(row_separator) ) then
 				row_separator_ = LF
 			else
 				row_separator_ = row_separator
-			end if
-
-			if ( len(row_separator_) == 0 ) then
-				write(*,'(a)')	LF//'Cannot populate a cell array with the contents of file "'// &
-									file_name//'" using an empty row separator. Returning without cell array...'
-				return
 			end if
 
 			if ( .not. present(column_separator) ) then
@@ -4724,109 +4754,182 @@ submodule (io_fortran_lib) String_procedures
 				column_separator_ = column_separator
 			end if
 
-			if ( len(column_separator_) == 0 ) then
-				write(*,'(a)')	LF//'Cannot populate a cell array with the contents of file "'// &
-									file_name//'" using an empty column separator. Returning without cell array...'
-				return
-			end if
+			! rows = self%split(separator=row_separator_)
+			call split_because_ifxbug(self, separator=row_separator_, tokens=rows)
 
-			rows = self%split(separator=row_separator_)
-
-			if ( rows(size(rows))%len() < 1 ) then
-				n_rows = size(rows) - 1
+			if ( rows(size(rows, kind=int64))%len64() < 1_int64 ) then
+				n_rows = size(rows, kind=int64) - 1_int64
 			else
-				n_rows = size(rows)
+				n_rows = size(rows, kind=int64)
 			end if
 
-			process_quotes: block
-				character(len=:), allocatable :: replacement
-				logical :: in_quote
-				integer :: j, sep_len
+			call process_quotes(rows, column_separator=column_separator_)
 
-				sep_len = len(column_separator_)
-
-				if ( sep_len == 1 ) then
-					replacement = NUL
-				else
-					replacement = repeat(NUL, ncopies=sep_len)
-				end if
-
-				do concurrent (j = 1:n_rows)
-					i = 1
-					in_quote = .false.
-
-					replace_sep: do while ( i <= rows(j)%len()-sep_len+1 )
-						if ( rows(j)%s(i:i) == QQUOTE ) then
-							in_quote = ( .not. in_quote )
-							i = i + 1; cycle replace_sep
-						end if
-
-						if ( in_quote ) then
-							if ( rows(j)%s(i:i+sep_len-1) == column_separator_ ) then
-								rows(j)%s(i:i+sep_len-1) = replacement
-								i = i + sep_len; cycle replace_sep
-							else
-								i = i + 1; cycle replace_sep
-							end if
-						else
-							i = i + 1; cycle replace_sep
-						end if
-					end do replace_sep
-				end do
-			end block process_quotes
-
-			columns = rows(1)%split(separator=column_separator_)
-			n_columns = size(columns)
+			! columns = rows(1_int64)%split(separator=column_separator_)
+			call split_because_ifxbug(rows(1_int64), separator=column_separator_, tokens=columns)
+			n_columns = size(columns, kind=int64)
 
 			allocate( cell_array(n_rows, n_columns) )
 
-			cell_array(1,:) = columns
+			cell_array(1_int64,:) = columns
 			deallocate(columns)
 
-			if ( n_rows > 1 ) then
-				do concurrent (i = 2:n_rows)
-					cell_array(i,:) = rows(i)%split(separator=column_separator_)
-					deallocate(rows(i)%s)
-				end do
+			do concurrent (i = 2_int64:n_rows)
+				! cell_array(i,:) = rows(i)%split(separator=column_separator_)
+				call split_because_ifxbug(rows(i), separator=column_separator_, tokens=columns)
+				cell_array(i,:) = columns
+				deallocate(rows(i)%s)
+			end do
+			deallocate(columns)
+
+			call re_process_quotes(cell_array, column_separator=column_separator_)
+		end block cell_block
+
+		contains
+		pure elemental recursive subroutine process_quotes(row, column_separator)
+			type(String), intent(inout) :: row
+			character(len=*), intent(in) :: column_separator
+
+			character(len=:), allocatable :: replacement
+			logical :: in_quote
+			integer(int64) :: sep_len, i
+
+			sep_len = len(column_separator, kind=int64)
+
+			if ( sep_len == 1_int64 ) then
+				replacement = NUL
+			else
+				replacement = repeat(NUL, ncopies=sep_len)
 			end if
 
-			re_process_quotes: block
-				character(len=:), allocatable :: replacement
-				logical :: in_quote
-				integer :: j, k, sep_len
+			i = 1_int64
+			in_quote = .false.
 
-				sep_len = len(column_separator_)
-
-				if ( sep_len == 1 ) then
-					replacement = NUL
-				else
-					replacement = repeat(NUL, ncopies=sep_len)
+			replace_sep: do while ( i <= row%len64()-sep_len+1_int64 )
+				if ( row%s(i:i) == QQUOTE ) then
+					in_quote = ( .not. in_quote )
+					i = i + 1_int64; cycle replace_sep
 				end if
 
-				do concurrent (k = 1:n_columns, j = 1:n_rows)
-					i = 1
-					in_quote = .false.
+				if ( in_quote ) then
+					if ( row%s(i:i+sep_len-1_int64) == column_separator ) then
+						row%s(i:i+sep_len-1_int64) = replacement
+						i = i + sep_len; cycle replace_sep
+					else
+						i = i + 1_int64; cycle replace_sep
+					end if
+				else
+					i = i + 1_int64; cycle replace_sep
+				end if
+			end do replace_sep
+		end subroutine process_quotes
+		pure elemental recursive subroutine re_process_quotes(cell, column_separator)
+			type(String), intent(inout) :: cell
+			character(len=*), intent(in) :: column_separator
 
-					replace_sep: do while ( i <= cell_array(j,k)%len()-sep_len+1 )
-						if ( cell_array(j,k)%s(i:i) == QQUOTE ) then
-							in_quote = ( .not. in_quote )
-							i = i + 1; cycle replace_sep
-						end if
+			character(len=:), allocatable :: replacement
+			logical :: in_quote
+			integer(int64) :: sep_len, i
 
-						if ( in_quote ) then
-							if ( cell_array(j,k)%s(i:i+sep_len-1) == replacement ) then
-								cell_array(j,k)%s(i:i+sep_len-1) = column_separator_
-								i = i + sep_len; cycle replace_sep
-							else
-								i = i + 1; cycle replace_sep
-							end if
+			sep_len = len(column_separator, kind=int64)
+
+			if ( sep_len == 1_int64 ) then
+				replacement = NUL
+			else
+				replacement = repeat(NUL, ncopies=sep_len)
+			end if
+
+			i = 1_int64
+			in_quote = .false.
+
+			replace_sep: do while ( i <= cell%len64()-sep_len+1_int64 )
+				if ( cell%s(i:i) == QQUOTE ) then
+					in_quote = ( .not. in_quote )
+					i = i + 1_int64; cycle replace_sep
+				end if
+
+				if ( in_quote ) then
+					if ( cell%s(i:i+sep_len-1_int64) == replacement ) then
+						cell%s(i:i+sep_len-1_int64) = column_separator
+						i = i + sep_len; cycle replace_sep
+					else
+						i = i + 1_int64; cycle replace_sep
+					end if
+				else
+					i = i + 1_int64; cycle replace_sep
+				end if
+			end do replace_sep
+		end subroutine re_process_quotes
+		pure recursive subroutine split_because_ifxbug(substring, separator, tokens)
+			! This subroutine exists purely as a workaround for an ifx 2023.0.0 bug resulting in a
+			! segmentation fault on an assignment of the form tokens = substring%split(separator).
+			! This procedure is a copy of split_string.
+			class(String), intent(in) :: substring
+			character(len=*), intent(in) :: separator
+			type(String), allocatable, dimension(:), intent(out) :: tokens
+
+			integer(int64) :: i, substring_len, sep_len, num_seps, l, current_sep
+
+			substring_len = substring%len64()
+
+			if ( substring_len < 1_int64 ) then
+				tokens = [ String(EMPTY_STR) ]; return
+			end if
+
+			sep_len = len(separator, kind=int64)
+
+			num_seps = 0_int64
+			i = 1_int64
+
+			count_seps: do
+				if ( substring%s(i:i) == separator(1_int64:1_int64) ) then
+					if ( i+sep_len-1_int64 > substring_len ) exit count_seps
+
+					if ( substring%s(i:i+sep_len-1_int64) == separator ) then
+						num_seps = num_seps + 1_int64
+						i = i + sep_len
+					else
+						i = i + 1_int64
+					end if
+				else
+					i = i + 1_int64
+				end if
+
+				if ( i > substring_len ) exit count_seps
+			end do count_seps
+
+			if ( num_seps == 0_int64 ) then
+				tokens = [ substring ]; return
+			end if
+
+			allocate( tokens(num_seps + 1_int64) )
+
+			i = 1_int64
+			l = 1_int64
+			current_sep = 1_int64
+
+			splitting: do while ( i <= substring_len-sep_len+1_int64 )
+				if ( substring%s(i:i+sep_len-1_int64) == separator ) then
+					if ( l > i-1_int64 ) then
+						tokens(current_sep)%s = EMPTY_STR
+					else
+						tokens(current_sep)%s = substring%s(l:i-1_int64)
+					end if
+
+					if ( current_sep == num_seps ) then
+						if ( i+sep_len > substring_len ) then
+							tokens(num_seps+1_int64)%s = EMPTY_STR; exit splitting
 						else
-							i = i + 1; cycle replace_sep
+							tokens(num_seps+1_int64)%s = substring%s(i+sep_len:); exit splitting
 						end if
-					end do replace_sep
-				end do
-			end block re_process_quotes
-		end block cell_block
+					end if
+
+					current_sep = current_sep + 1_int64; i = i + sep_len; l = i; cycle splitting
+				else
+					i = i + 1_int64; cycle splitting
+				end if
+			end do splitting
+		end subroutine split_because_ifxbug
 	end procedure read_file
 
 	module procedure replace_ch_copy
@@ -5360,7 +5463,8 @@ submodule (io_fortran_lib) String_procedures
 	module procedure write_file
 		type(String), allocatable, dimension(:) :: rows
 		character(len=:), allocatable :: ext, row_separator_, column_separator_
-		integer :: n_rows, i, file_unit
+		integer :: file_unit
+		integer(int64) :: n_rows, i
 		logical :: exists
 
 		ext = ext_of(file_name)
@@ -5384,11 +5488,11 @@ submodule (io_fortran_lib) String_procedures
 			column_separator_ = column_separator
 		end if
 
-		n_rows = size(cell_array, dim=1)
+		n_rows = size(cell_array, dim=1, kind=int64)
 
 		allocate( rows(n_rows) )
 
-		do concurrent (i = 1:n_rows)
+		do concurrent (i = 1_int64:n_rows)
 			rows(i) = glue(tokens=cell_array(i,:), separator=column_separator_)//row_separator_
 			call cell_array(i,:)%empty()
 		end do
@@ -9284,8 +9388,8 @@ submodule (io_fortran_lib) glue_split
 
 	module procedure glue_string
 		character(len=:), allocatable :: separator_
-		integer, allocatable, dimension(:) :: lengths, cumm_lengths
-		integer :: sep_len, num_tokens, total_length, pos, i
+		integer(int64), allocatable, dimension(:) :: lengths, cumm_lengths
+		integer(int64) :: sep_len, num_tokens, total_length, pos, i
 
 		if ( .not. present(separator) ) then
 			separator_ = SPACE
@@ -9293,43 +9397,44 @@ submodule (io_fortran_lib) glue_split
 			separator_ = separator
 		end if
 
-		sep_len = len(separator_)
-		lengths = tokens%len()
-		num_tokens = size(lengths)
+		sep_len = len(separator_, kind=int64)
+		lengths = tokens%len64()
+		num_tokens = size(lengths, kind=int64)
 
-		if ( num_tokens == 1 ) then
-			if ( lengths(1) < 1 ) then
+		if ( num_tokens == 1_int64 ) then
+			if ( lengths(1_int64) < 1_int64 ) then
 				new%s = EMPTY_STR; return
 			else
-				new%s = tokens(1)%s; return
+				new%s = tokens(1_int64)%s; return
 			end if
 		end if
 
-		where ( lengths == -1 ) lengths = 0
+		where ( lengths == -1_int64 ) lengths = 0_int64
 		total_length = sum(lengths)
 
-		if ( total_length == 0 ) then
+		if ( total_length == 0_int64 ) then
 			new%s = EMPTY_STR; return
 		end if
 
-		allocate( cumm_lengths(num_tokens), source=1 )
+		allocate( cumm_lengths(num_tokens), source=1_int64 )
 
-		do concurrent (i = 2:num_tokens)
-			cumm_lengths(i) = sum( lengths(:i-1) ) + 1
+		do concurrent (i = 2_int64:num_tokens)
+			cumm_lengths(i) = sum( lengths(:i-1_int64) ) + 1_int64
 		end do
 
-		allocate( character(len=total_length + (num_tokens-1)*sep_len) :: new%s )
+		total_length = total_length + (num_tokens-1_int64)*sep_len
+		allocate( character(len=total_length) :: new%s )
 
-		positional_transfer: do concurrent (i = 1:num_tokens)
-			pos = cumm_lengths(i) + (i-1)*sep_len
-			if ( lengths(i) > 0 ) then
-				new%s(pos:pos+lengths(i)-1) = tokens(i)%s
-				if ( sep_len > 0 ) then
-					if ( i < num_tokens ) new%s(pos+lengths(i):pos+lengths(i)+sep_len-1) = separator_
+		positional_transfer: do concurrent (i = 1_int64:num_tokens)
+			pos = cumm_lengths(i) + (i-1_int64)*sep_len
+			if ( lengths(i) > 0_int64 ) then
+				new%s(pos:pos+lengths(i)-1_int64) = tokens(i)%s
+				if ( sep_len > 0_int64 ) then
+					if ( i < num_tokens ) new%s(pos+lengths(i):pos+lengths(i)+sep_len-1_int64) = separator_
 				end if
 			else
-				if ( sep_len > 0 ) then
-					if ( i < num_tokens ) new%s(pos:pos+sep_len-1) = separator_
+				if ( sep_len > 0_int64 ) then
+					if ( i < num_tokens ) new%s(pos:pos+sep_len-1_int64) = separator_
 				end if
 			end if
 		end do positional_transfer
@@ -9349,11 +9454,11 @@ submodule (io_fortran_lib) glue_split
 
 	module procedure split_string
 		character(len=:), allocatable :: separator_
-		integer :: i, substring_len, sep_len, num_seps, l, current_sep
+		integer(int64) :: i, substring_len, sep_len, num_seps, l, current_sep
 
-		substring_len = substring%len()
+		substring_len = substring%len64()
 
-		if ( substring_len < 1 ) then
+		if ( substring_len < 1_int64 ) then
 			tokens = [ String(EMPTY_STR) ]; return
 		end if
 
@@ -9363,66 +9468,66 @@ submodule (io_fortran_lib) glue_split
 			separator_ = separator
 		end if
 
-		sep_len = len(separator_)
+		sep_len = len(separator_, kind=int64)
 
-		if ( sep_len == 0 ) then
+		if ( sep_len == 0_int64 ) then
 			allocate( tokens(substring_len) )
-			do concurrent (i = 1:substring_len)
+			do concurrent (i = 1_int64:substring_len)
 				tokens(i)%s = substring%s(i:i)
 			end do
 			return
 		end if
 
-		num_seps = 0
-		i = 1
+		num_seps = 0_int64
+		i = 1_int64
 
 		count_seps: do
-			if ( substring%s(i:i) == separator_(1:1) ) then
-				if ( i+sep_len-1 > substring_len ) exit count_seps
+			if ( substring%s(i:i) == separator_(1_int64:1_int64) ) then
+				if ( i+sep_len-1_int64 > substring_len ) exit count_seps
 
-				if ( substring%s(i:i+sep_len-1) == separator_ ) then
-					num_seps = num_seps + 1
+				if ( substring%s(i:i+sep_len-1_int64) == separator_ ) then
+					num_seps = num_seps + 1_int64
 					i = i + sep_len
 				else
-					i = i + 1
+					i = i + 1_int64
 				end if
 			else
-				i = i + 1
+				i = i + 1_int64
 			end if
 
 			if ( i > substring_len ) exit count_seps
 		end do count_seps
 
-		if ( num_seps == 0 ) then
+		if ( num_seps == 0_int64 ) then
 			tokens = [ substring ]; return
 		end if
 
-		allocate( tokens(num_seps + 1) )
+		allocate( tokens(num_seps + 1_int64) )
 		call tokens%empty()
 
-		i = 1
-		l = 1
-		current_sep = 1
+		i = 1_int64
+		l = 1_int64
+		current_sep = 1_int64
 
-		splitting: do while ( i <= substring_len-sep_len+1 )
-			if ( substring%s(i:i+sep_len-1) == separator_ ) then
-				if ( l > i-1 ) then
+		splitting: do while ( i <= substring_len-sep_len+1_int64 )
+			if ( substring%s(i:i+sep_len-1_int64) == separator_ ) then
+				if ( l > i-1_int64 ) then
 					tokens(current_sep)%s = EMPTY_STR
 				else
-					tokens(current_sep)%s = substring%s(l:i-1)
+					tokens(current_sep)%s = substring%s(l:i-1_int64)
 				end if
 
 				if ( current_sep == num_seps ) then
 					if ( i+sep_len > substring_len ) then
-						tokens(num_seps+1)%s = EMPTY_STR; exit splitting
+						tokens(num_seps+1_int64)%s = EMPTY_STR; exit splitting
 					else
-						tokens(num_seps+1)%s = substring%s(i+sep_len:); exit splitting
+						tokens(num_seps+1_int64)%s = substring%s(i+sep_len:); exit splitting
 					end if
 				end if
 
-				current_sep = current_sep + 1; i = i + sep_len; l = i; cycle splitting
+				current_sep = current_sep + 1_int64; i = i + sep_len; l = i; cycle splitting
 			else
-				i = i + 1; cycle splitting
+				i = i + 1_int64; cycle splitting
 			end if
 		end do splitting
 	end procedure split_string
