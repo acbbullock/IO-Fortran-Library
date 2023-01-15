@@ -22,7 +22,7 @@ program main
     logfile = 'logfile_main_'//trim(adjustl(date))//'_'//time//'.log'
 
     logmsg = 'PROGRAM MAIN - BEGINNING EXECUTION'//LF
-    call echo(string=logmsg//repeat('-', ncopies=len(logmsg)), file_name=logfile)
+    call echo(logmsg//repeat('-', ncopies=len(logmsg)), file_name=logfile)
 
     ! ...
 

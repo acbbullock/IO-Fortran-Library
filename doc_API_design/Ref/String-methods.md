@@ -76,7 +76,7 @@ For `self` a scalar or array variable of any rank and of type `String`:
     result = self%len()
 ```
 
-*Description*: Returns the length of the string slice component elementally. Unallocated components return `-1`.
+*Description*: Returns the length of the string slice component elementally. Unallocated components return `-1`. For strings larger than 2,147,483,647 bytes, use `self%len64()`.
 
 ### [push](../../type/string.html#boundprocedure-push)
 
@@ -105,7 +105,7 @@ For `self` a scalar variable of type `String`:
 * `row_separator` is `optional` and of type `character(len=*)` (default is `LF`)
 * `column_separator` is `optional` and of type `character(len=*)` (default is `','`)
 
-*Description*: Reads an external text file into `self` and optionally populates a cell array using the designated `row_separator` and `column_separator` whose default values are `LF` and `','` respectively.
+*Description*: Reads raw text file contents into `self` and optionally populates a cell array using the designated `row_separator` and `column_separator` whose default values are `LF` and `','` respectively.
 
 @note `file_name` may be a relative path, but absolute paths are not guaranteed to work on every platform.
 
@@ -180,7 +180,7 @@ For `self` a scalar variable of type `String`:
 * `row_separator` is `optional` and of type `character(len=*)` (default is `LF`)
 * `column_separator` is `optional` and of type `character(len=*)` (default is `','`)
 
-*Description*: Writes the content of a cell array to a text file. The cell array's entire contents are populated into `self` and then streamed to an external text file using the designated `row_separator` and `column_separator` whose default values are `LF` and `','` respectively.
+*Description*: Writes the content of a cell array to a text file, consuming the cell array in the process. The cell array's entire contents are populated into `self` and then streamed to an external text file using the designated `row_separator` and `column_separator` whose default values are `LF` and `','` respectively.
 
 @note `file_name` may be a relative path, but absolute paths are not guaranteed to work on every platform. Additionally, the file will be created if it does not already exist and will be overwritten if it does exist.
 

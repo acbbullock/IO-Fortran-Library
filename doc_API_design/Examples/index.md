@@ -7,9 +7,10 @@ ordered_subpage: logging.md
 ordered_subpage: timestamp.md
 ordered_subpage: fizzbuzz.md
 ordered_subpage: exome.md
+ordered_subpage: benchmark.md
 ---
 
-The following subsections provide complete example programs for common use cases of the public [interfaces](../../lists/procedures.html):
+The following subsections provide example programs for common use cases of the public [interfaces](../../lists/procedures.html):
 
 * [Handling csv files](csv.html)
 * [Handling dat files](binary.html)
@@ -17,3 +18,4 @@ The following subsections provide complete example programs for common use cases
 * [String manipulation](timestamp.html)
 * [FizzBuzz](fizzbuzz.html)
 * [NGS Human Core Exome Panel](exome.html)
+* [Benchmarking](benchmark.html)

@@ -90,7 +90,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title="<p>100.0% of total for derived types.</p>Including implementation: 169 statements, 100.0% of total for derived types.">29 statements</a>
+               title="<p>100.0% of total for derived types.</p>Including implementation: 170 statements, 100.0% of total for derived types.">30 statements</a>
           </li>
 
             <li id="source-file">
@@ -167,6 +167,7 @@
             <a class="list-group-item" href="../type/string.html#boundprocedure-empty">empty</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-glue">glue</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-len">len</a>
+            <a class="list-group-item" href="../type/string.html#boundprocedure-len64">len64</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-read_file">read_file</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-trim">trim</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-trim_inplace">trim_inplace</a>
@@ -245,6 +246,7 @@ treated as the <a href="../module/io_fortran_lib.html#variable-empty_str">empty 
             <a class="list-group-item" href="../type/string.html#boundprocedure-empty">empty</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-glue">glue</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-len">len</a>
+            <a class="list-group-item" href="../type/string.html#boundprocedure-len64">len64</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-read_file">read_file</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-trim">trim</a>
             <a class="list-group-item" href="../type/string.html#boundprocedure-trim_inplace">trim_inplace</a>
@@ -2558,6 +2560,60 @@ string slice component will be replaced if already allocated.</p>
   </div>
 
             <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-len64"></span><h3>procedure, public, pass(self) :: <strong>len64</strong>  => length64         
+    </h3></div>
+    <ul class="list-group">
+        <li class="list-group-item">
+              <h3>interface </h3>
+                  
+                <p>Methods for the <code>String</code> type.</p>
+                  <h3>
+    private pure elemental recursive module function length64(self) result(self_len)  
+</h3>
+  <p>Returns the length of the string slice component elementally. Unallocated components return <code>-1</code>. This
+function is identical to <code>len</code> for strings of 2,147,483,647 bytes or smaller.</p>
+<p>For a user reference, see <a href="../page/Ref/string-methods.html#len">len</a>.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>self</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>integer(kind=int64)</small>
+    </h4>
+    
+
+        </li>
+    </ul>
+  </div>
+
+            <div class="panel panel-default">
     <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-read_file"></span><h3>procedure, public, pass(self) :: <strong>read_file</strong>          
     </h3></div>
     <ul class="list-group">
@@ -2568,7 +2624,7 @@ string slice component will be replaced if already allocated.</p>
                   <h3>
     private impure recursive module subroutine read_file(self, file_name, cell_array, row_separator, column_separator)  
 </h3>
-  <p>Reads an external text file into <code>self</code> and optionally populates a cell array using the designated
+  <p>Reads raw text file contents into <code>self</code> and optionally populates a cell array using the designated
 <code>row_separator</code> and <code>column_separator</code> whose default values are <code>LF</code> and <code>COMMA</code> respectively.</p>
 <p>For a user reference, see <a href="../page/Ref/string-methods.html#read_file">read_file</a>.</p>
 
@@ -2816,7 +2872,7 @@ in place.</p>
               <span class="anchor" ></span>
               type(<a href='../type/string.html'>String</a>),
             </td>
-<td>intent(in),</td>
+<td>intent(inout),</td>
               <td></td>            <td>
               dimension(:,:)
             </td>
@@ -2897,7 +2953,7 @@ in place.</p>
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-01-12 00:28            </p>
+ on 2023-01-15 02:20            </p>
         </div>
       </div>
       <br>

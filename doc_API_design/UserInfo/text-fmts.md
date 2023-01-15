@@ -22,7 +22,7 @@ REAL_FMTS = [ 'e', 'f', 'z' ]
 * `'f'`: decimal format, e.g. `123456.78901234567`
 * `'z'`: hexadecimal format, e.g. `40FE240C9FCB68CD`
 
-@note The `'z'` hexadecimal format is an integer format and may be used for `integer`, `real`, or `complex` data. Floating point numbers are interpreted bit-wise as integers when written with the `'z'` format, preventing any loss of precision in a round-trip conversion. This format is preferred for portable data transfers for which precision losses are intolerable.
+@note The `'z'` hexadecimal format is an unsigned integer format and may be used for `integer`, `real`, or `complex` data. Floating point numbers are interpreted bit-wise as unsigned integers when written with the `'z'` format, preventing any loss of precision in a round-trip conversion. This format is preferred for portable data transfers for which precision losses are intolerable.
 
 When moving data in the opposite direction with the complementary procedures [cast](../Ref/cast.html) or [from_file](../Ref/from_file.html), the same `fmt` is required to properly cast the data. Specifying a `fmt` that is different from what is actually present may result in an I/O syntax error.
 

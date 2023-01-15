@@ -3,9 +3,11 @@ title: NGS Human Core Exome Panel
 author: Austin C Bullock
 ---
 
-## Handling large data files
+## Handling genomic data
 
-To demonstrate the speed of file I/O, the following program reads the Twist Human Core Exome target `.bed` file for hg38 obtained from [Twist Bioscience](https://www.twistbioscience.com/resources/data-files/ngs-human-core-exome-panel-bed-file) into a cell array and then writes the cell array to a new file, comparing the two files for an exact match and providing the total time elapsed:
+Fortran can serve as a valuable tool for heavy numerical calculations in Next Generation Sequencing (NGS) analysis, which may often involve reading and writing many large `.bed` files in succession. The IO-Fortran-Library is optimized for both performance and memory consumption when reading and writing large text files, streamlining performance for Fortran bioinformatics applications.
+
+To demonstrate the speed of file I/O, the following program reads the Twist Human Core Exome target `.bed` file for hg38 obtained from [Twist Bioscience](https://www.twistbioscience.com/resources/data-files/ngs-human-core-exome-panel-bed-file) into a cell array and then writes the cell array to a new file in a round-trip, comparing the two files for an exact match and providing the total time elapsed:
 
 ```fortran
 program main
@@ -32,21 +34,21 @@ program main
 end program main
 ```
 
-The following output is observed on Linux:
+The file `hg38.bed` is provided locally in `/data` and contains `192262` lines of `TAB`-delimited data.
+
+The following sample output is observed on Linux with highest optimizations enabled (`-O3`):
 
 ```text
 ---
 New file and original are exact match: T
-Wall time: 4.126 s using compiler: "GCC version 11.3.0".
+Wall time: 2.193 s using compiler: "GCC version 11.3.0".
 ---
 New file and original are exact match: T
-Wall time: 4.432 s using compiler: "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201".
+Wall time: 4.534 s using compiler: "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201".
 ---
 New file and original are exact match: T
-Wall time: 1.466 s using compiler: "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000".
+Wall time: 2.298 s using compiler: "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000".
 ---
 ```
 
-The file `hg38.bed` is provided locally in `/data` and contains `192262` lines of `TAB`-delimited data.
-
-@note With the Intel Fortran compiler `ifx`/`ifort`, we must specify `-heap-arrays 0` to avoid a segmentation fault when reading such a large file, as noted in [compiler-dependent behavior](../UserInfo/compilers.html).
+@note With the Intel Fortran compiler `ifx`/`ifort`, we must specify `-heap-arrays 0` to avoid a segmentation fault when reading a file of this size, as noted in [compiler-dependent behavior](../UserInfo/compilers.html).

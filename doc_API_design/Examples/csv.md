@@ -57,20 +57,18 @@ program main
     implicit none (type,external)
 
     type(String) :: csv
+    type(String), allocatable, dimension(:) :: header
     type(String), allocatable, dimension(:,:) :: cells
 
     real, dimension(1000,20) :: x
     real, allocatable, dimension(:,:) :: x_e, x_f, x_z
     integer :: i
 
-    call random_number(x)
+    call random_number(x); allocate( cells(1001,20) ); header = [(String('x'//str(i)), i = 1, 20)]
 
-    allocate( cells(1001,20) )
-    cells(1,:) = [(String('x'//str(i)), i = 1, 20)]
-
-    cells(2:,:) = String(x, fmt='e'); call csv%write_file(cells, file_name='x_e.csv')
-    cells(2:,:) = String(x, fmt='f'); call csv%write_file(cells, file_name='x_f.csv')
-    cells(2:,:) = String(x, fmt='z'); call csv%write_file(cells, file_name='x_z.csv')
+    cells(1,:) = header; cells(2:,:) = String(x, fmt='e'); call csv%write_file(cells, file_name='x_e.csv')
+    cells(1,:) = header; cells(2:,:) = String(x, fmt='f'); call csv%write_file(cells, file_name='x_f.csv')
+    cells(1,:) = header; cells(2:,:) = String(x, fmt='z'); call csv%write_file(cells, file_name='x_z.csv')
 
     allocate( x_e, x_f, x_z, mold=x )
     call csv%read_file('x_e.csv', cell_array=cells); call cells(2:,:)%cast(into=x_e, fmt='e')
@@ -86,10 +84,10 @@ end program main
 Here, we construct the same header as before with the implicit loop
 
 ```fortran
-cells(1,:) = [(String('x'//str(i)), i = 1, 20)]
+header = [(String('x'//str(i)), i = 1, 20)]
 ```
 
-and then construct the remainder of the cell array `cells` with an elemental assignment `cells(2:,:) = String(x, fmt)` before writing the array to a csv file. We then read the files back into `csv` and output the cells into `cells` (which is reallocated internally). Note that when casting the cell data into numeric arrays, we must pre-allocate the output arrays due to the restrictions on `intent(out)` arguments of `elemental` procedures.
+and then construct the remainder of the cell array `cells` with an elemental assignment `cells(2:,:) = String(x, fmt)` before writing the array to a csv file. We then read the files back into `csv` and output the cells into `cells` (which is reallocated internally). Note that when casting the cell data into numeric arrays, we must pre-allocate the output arrays due to the restrictions on `intent(out)` arguments of `elemental` procedures. Note also that we must reassign the header row to `cells` before writing each time because `write_file` consumes the cell array.
 
 @note One may optionally specify the arguments of `row_separator` and `column_separator` when writing and reading text files with [write_file](../Ref/string-methods.html#write_file) and [read_file](../Ref/string-methods.html#read_file). The default `row_separator` is `LF`, and the default `column_separator` is `','`.
 
@@ -111,7 +109,7 @@ program main
     integer :: nrows
 
     call csv%read_file('./data/ancestry_comp.csv', cell_array=cells, row_separator=CR+LF)
-    write(*,'(DT)') csv
+    write(*,*) csv
 
     nrows = size(cells, dim=1) - 1
 

@@ -185,7 +185,7 @@ module io_fortran_lib
 
 		impure recursive module subroutine read_file(self, file_name, cell_array, row_separator, column_separator)
 			!----------------------------------------------------------------------------------------------------------
-			!! Reads an external text file into `self` and optionally populates a cell array using the designated
+			!! Reads raw text file contents into `self` and optionally populates a cell array using the designated
 			!! `row_separator` and `column_separator` whose default values are `LF` and `COMMA` respectively.
 			!!
 			!! For a user reference, see [read_file](../page/Ref/string-methods.html#read_file).
