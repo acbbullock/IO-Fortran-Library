@@ -7134,22 +7134,18 @@ submodule (io_fortran_lib) internal_io
 	end procedure new_Str_empty
 
 	module procedure cast_string_c128
-		character(len=:), allocatable :: locale_, fmt_, im_, substring_
+		character(len=1) :: fmt_
+		character(len=:), allocatable :: im_, width, decimal
+		character(len=:), allocatable, dimension(:) :: seps, skip_chars
+
+		real(real128) :: z_re, z_im
+		integer, allocatable :: i, l, im_len
+		logical, allocatable :: in_paren
 
 		if ( substring%len() < 1 ) then
 			into = (0.0_real128,0.0_real128); return
 		end if
 
-		if ( .not. present(locale) ) then
-			locale_ = 'US'
-		else
-			if ( any(LOCALES == locale) ) then
-				locale_ = locale
-			else
-				into = (0.0_real128,0.0_real128); return
-			end if
-		end if
-
 		if ( .not. present(fmt) ) then
 			fmt_ = 'e'
 		else
@@ -7166,26 +7162,149 @@ submodule (io_fortran_lib) internal_io
 			im_ = trim(adjustl(im))
 		end if
 
-		substring_ = trim(adjustl(substring%s))
-		call cast(substring=substring_, into=into, locale=locale_, fmt=fmt_, im=im_)
+		if ( fmt_ == 'z' ) then
+			allocate( character(len=2) :: width )
+
+			if ( len(im_) == 0 ) then
+				in_paren = .false.; i = 1; l = 1
+				seps = [ ',', ';' ]
+
+				do while ( i <= substring%len() )
+					if ( .not. in_paren ) then
+						if ( substring%s(i:i) == '(' ) then
+							in_paren = .true.; i = i + 1; l = i; cycle
+						else
+							i = i + 1; cycle
+						end if
+					end if
+
+					if ( in_paren ) then
+						if ( any(seps == substring%s(i:i)) ) then
+							write(unit=width, fmt='(i2)') i-l
+							read(unit=substring%s(l:i-1), fmt='(z'//width//')') z_re
+							i = i + 1; l = i; cycle
+						end if
+
+						if ( substring%s(i:i) == ')' ) then
+							write(unit=width, fmt='(i2)') i-l
+							read(unit=substring%s(l:i-1), fmt='(z'//width//')') z_im
+							into = cmplx(z_re, z_im, kind=real128); return
+						end if
+
+						i = i + 1; cycle
+					end if
+				end do
+			else
+				im_len = len(im_); i = 1; l = 1
+				seps = [ '+' ]
+
+				do while ( i <= substring%len()-im_len+1 )
+					if ( substring%s(i:i) == SPACE ) then
+						i = i + 1; l = i; cycle
+					end if
+
+					if ( any(seps == substring%s(i:i)) ) then
+						write(unit=width, fmt='(i2)') i-l
+						read(unit=substring%s(l:i-1), fmt='(z'//width//')') z_re
+						i = i + 1; l = i; cycle
+					end if
+
+					if ( substring%s(i:i+im_len-1) == im_ ) then
+						write(unit=width, fmt='(i2)') i-l
+						read(unit=substring%s(l:i-1), fmt='(z'//width//')') z_im
+						into = cmplx(z_re, z_im, kind=real128); return
+					end if
+
+					i = i + 1; cycle
+				end do
+			end if
+		end if
+
+		if ( .not. present(locale) ) then
+			decimal = 'POINT'
+		else
+			if ( locale == 'US' ) then
+				decimal = 'POINT'
+			else if ( locale == 'EU' ) then
+				decimal = 'COMMA'
+			else
+				into = (0.0_real128,0.0_real128); return
+			end if
+		end if
+
+		if ( len(im_) == 0 ) then
+			in_paren = .false.; i = 1; l = 1
+			if ( decimal == 'POINT' ) then
+				seps = [ ',' ]
+			else
+				seps = [ ';' ]
+			end if
+
+			do while ( i <= substring%len() )
+				if ( .not. in_paren ) then
+					if ( substring%s(i:i) == '(' ) then
+						in_paren = .true.; i = i + 1; l = i; cycle
+					else
+						i = i + 1; cycle
+					end if
+				end if
+
+				if ( in_paren ) then
+					if ( any(seps == substring%s(i:i)) ) then
+						read(unit=substring%s(l:i-1), fmt=*, decimal=decimal) z_re
+						i = i + 1; l = i; cycle
+					end if
+
+					if ( substring%s(i:i) == ')' ) then
+						read(unit=substring%s(l:i-1), fmt=*, decimal=decimal) z_im
+						into = cmplx(z_re, z_im, kind=real128); return
+					end if
+
+					i = i + 1; cycle
+				end if
+			end do
+		else
+			im_len = len(im_); i = 1; l = 1
+			seps = [ '+', '-' ]; skip_chars = [ 'E', 'e', SPACE ]
+
+			do while ( i <= substring%len()-im_len+1 )
+				if ( substring%s(i:i) == SPACE ) then
+					i = i + 1; l = i; cycle
+				end if
+
+				if ( any(seps == substring%s(i:i)) ) then
+					if ( i == 1 ) then
+						i = i + 1; cycle
+					end if
+					if ( any(skip_chars == substring%s(i-1:i-1)) ) then
+						i = i + 1; cycle
+					end if
+					read(unit=substring%s(l:i-1), fmt=*, decimal=decimal) z_re
+					l = i; i = i + 1; cycle
+				end if
+
+				if ( substring%s(i:i+im_len-1) == im_ ) then
+					read(unit=substring%s(l:i-1), fmt=*, decimal=decimal) z_im
+					into = cmplx(z_re, z_im, kind=real128); return
+				end if
+
+				i = i + 1; cycle
+			end do
+		end if
 	end procedure cast_string_c128
 	module procedure cast_string_c64
-		character(len=:), allocatable :: locale_, fmt_, im_, substring_
+		character(len=1) :: fmt_
+		character(len=:), allocatable :: im_, width, decimal
+		character(len=:), allocatable, dimension(:) :: seps, skip_chars
+
+		real(real64) :: z_re, z_im
+		integer, allocatable :: i, l, im_len
+		logical, allocatable :: in_paren
 
 		if ( substring%len() < 1 ) then
 			into = (0.0_real64,0.0_real64); return
 		end if
 
-		if ( .not. present(locale) ) then
-			locale_ = 'US'
-		else
-			if ( any(LOCALES == locale) ) then
-				locale_ = locale
-			else
-				into = (0.0_real64,0.0_real64); return
-			end if
-		end if
-
 		if ( .not. present(fmt) ) then
 			fmt_ = 'e'
 		else
@@ -7202,26 +7321,149 @@ submodule (io_fortran_lib) internal_io
 			im_ = trim(adjustl(im))
 		end if
 
-		substring_ = trim(adjustl(substring%s))
-		call cast(substring=substring_, into=into, locale=locale_, fmt=fmt_, im=im_)
+		if ( fmt_ == 'z' ) then
+			allocate( character(len=2) :: width )
+
+			if ( len(im_) == 0 ) then
+				in_paren = .false.; i = 1; l = 1
+				seps = [ ',', ';' ]
+
+				do while ( i <= substring%len() )
+					if ( .not. in_paren ) then
+						if ( substring%s(i:i) == '(' ) then
+							in_paren = .true.; i = i + 1; l = i; cycle
+						else
+							i = i + 1; cycle
+						end if
+					end if
+
+					if ( in_paren ) then
+						if ( any(seps == substring%s(i:i)) ) then
+							write(unit=width, fmt='(i2)') i-l
+							read(unit=substring%s(l:i-1), fmt='(z'//width//')') z_re
+							i = i + 1; l = i; cycle
+						end if
+
+						if ( substring%s(i:i) == ')' ) then
+							write(unit=width, fmt='(i2)') i-l
+							read(unit=substring%s(l:i-1), fmt='(z'//width//')') z_im
+							into = cmplx(z_re, z_im, kind=real64); return
+						end if
+
+						i = i + 1; cycle
+					end if
+				end do
+			else
+				im_len = len(im_); i = 1; l = 1
+				seps = [ '+' ]
+
+				do while ( i <= substring%len()-im_len+1 )
+					if ( substring%s(i:i) == SPACE ) then
+						i = i + 1; l = i; cycle
+					end if
+
+					if ( any(seps == substring%s(i:i)) ) then
+						write(unit=width, fmt='(i2)') i-l
+						read(unit=substring%s(l:i-1), fmt='(z'//width//')') z_re
+						i = i + 1; l = i; cycle
+					end if
+
+					if ( substring%s(i:i+im_len-1) == im_ ) then
+						write(unit=width, fmt='(i2)') i-l
+						read(unit=substring%s(l:i-1), fmt='(z'//width//')') z_im
+						into = cmplx(z_re, z_im, kind=real64); return
+					end if
+
+					i = i + 1; cycle
+				end do
+			end if
+		end if
+
+		if ( .not. present(locale) ) then
+			decimal = 'POINT'
+		else
+			if ( locale == 'US' ) then
+				decimal = 'POINT'
+			else if ( locale == 'EU' ) then
+				decimal = 'COMMA'
+			else
+				into = (0.0_real64,0.0_real64); return
+			end if
+		end if
+
+		if ( len(im_) == 0 ) then
+			in_paren = .false.; i = 1; l = 1
+			if ( decimal == 'POINT' ) then
+				seps = [ ',' ]
+			else
+				seps = [ ';' ]
+			end if
+
+			do while ( i <= substring%len() )
+				if ( .not. in_paren ) then
+					if ( substring%s(i:i) == '(' ) then
+						in_paren = .true.; i = i + 1; l = i; cycle
+					else
+						i = i + 1; cycle
+					end if
+				end if
+
+				if ( in_paren ) then
+					if ( any(seps == substring%s(i:i)) ) then
+						read(unit=substring%s(l:i-1), fmt=*, decimal=decimal) z_re
+						i = i + 1; l = i; cycle
+					end if
+
+					if ( substring%s(i:i) == ')' ) then
+						read(unit=substring%s(l:i-1), fmt=*, decimal=decimal) z_im
+						into = cmplx(z_re, z_im, kind=real64); return
+					end if
+
+					i = i + 1; cycle
+				end if
+			end do
+		else
+			im_len = len(im_); i = 1; l = 1
+			seps = [ '+', '-' ]; skip_chars = [ 'E', 'e', SPACE ]
+
+			do while ( i <= substring%len()-im_len+1 )
+				if ( substring%s(i:i) == SPACE ) then
+					i = i + 1; l = i; cycle
+				end if
+
+				if ( any(seps == substring%s(i:i)) ) then
+					if ( i == 1 ) then
+						i = i + 1; cycle
+					end if
+					if ( any(skip_chars == substring%s(i-1:i-1)) ) then
+						i = i + 1; cycle
+					end if
+					read(unit=substring%s(l:i-1), fmt=*, decimal=decimal) z_re
+					l = i; i = i + 1; cycle
+				end if
+
+				if ( substring%s(i:i+im_len-1) == im_ ) then
+					read(unit=substring%s(l:i-1), fmt=*, decimal=decimal) z_im
+					into = cmplx(z_re, z_im, kind=real64); return
+				end if
+
+				i = i + 1; cycle
+			end do
+		end if
 	end procedure cast_string_c64
 	module procedure cast_string_c32
-		character(len=:), allocatable :: locale_, fmt_, im_, substring_
+		character(len=1) :: fmt_
+		character(len=:), allocatable :: im_, width, decimal
+		character(len=:), allocatable, dimension(:) :: seps, skip_chars
+
+		real(real32) :: z_re, z_im
+		integer, allocatable :: i, l, im_len
+		logical, allocatable :: in_paren
 
 		if ( substring%len() < 1 ) then
 			into = (0.0_real32,0.0_real32); return
 		end if
 
-		if ( .not. present(locale) ) then
-			locale_ = 'US'
-		else
-			if ( any(LOCALES == locale) ) then
-				locale_ = locale
-			else
-				into = (0.0_real32,0.0_real32); return
-			end if
-		end if
-
 		if ( .not. present(fmt) ) then
 			fmt_ = 'e'
 		else
@@ -7238,8 +7480,135 @@ submodule (io_fortran_lib) internal_io
 			im_ = trim(adjustl(im))
 		end if
 
-		substring_ = trim(adjustl(substring%s))
-		call cast(substring=substring_, into=into, locale=locale_, fmt=fmt_, im=im_)
+		if ( fmt_ == 'z' ) then
+			allocate( character(len=1) :: width )
+
+			if ( len(im_) == 0 ) then
+				in_paren = .false.; i = 1; l = 1
+				seps = [ ',', ';' ]
+
+				do while ( i <= substring%len() )
+					if ( .not. in_paren ) then
+						if ( substring%s(i:i) == '(' ) then
+							in_paren = .true.; i = i + 1; l = i; cycle
+						else
+							i = i + 1; cycle
+						end if
+					end if
+
+					if ( in_paren ) then
+						if ( any(seps == substring%s(i:i)) ) then
+							write(unit=width, fmt='(i1)') i-l
+							read(unit=substring%s(l:i-1), fmt='(z'//width//')') z_re
+							i = i + 1; l = i; cycle
+						end if
+
+						if ( substring%s(i:i) == ')' ) then
+							write(unit=width, fmt='(i1)') i-l
+							read(unit=substring%s(l:i-1), fmt='(z'//width//')') z_im
+							into = cmplx(z_re, z_im, kind=real32); return
+						end if
+
+						i = i + 1; cycle
+					end if
+				end do
+			else
+				im_len = len(im_); i = 1; l = 1
+				seps = [ '+' ]
+
+				do while ( i <= substring%len()-im_len+1 )
+					if ( substring%s(i:i) == SPACE ) then
+						i = i + 1; l = i; cycle
+					end if
+
+					if ( any(seps == substring%s(i:i)) ) then
+						write(unit=width, fmt='(i1)') i-l
+						read(unit=substring%s(l:i-1), fmt='(z'//width//')') z_re
+						i = i + 1; l = i; cycle
+					end if
+
+					if ( substring%s(i:i+im_len-1) == im_ ) then
+						write(unit=width, fmt='(i1)') i-l
+						read(unit=substring%s(l:i-1), fmt='(z'//width//')') z_im
+						into = cmplx(z_re, z_im, kind=real32); return
+					end if
+
+					i = i + 1; cycle
+				end do
+			end if
+		end if
+
+		if ( .not. present(locale) ) then
+			decimal = 'POINT'
+		else
+			if ( locale == 'US' ) then
+				decimal = 'POINT'
+			else if ( locale == 'EU' ) then
+				decimal = 'COMMA'
+			else
+				into = (0.0_real32,0.0_real32); return
+			end if
+		end if
+
+		if ( len(im_) == 0 ) then
+			in_paren = .false.; i = 1; l = 1
+			if ( decimal == 'POINT' ) then
+				seps = [ ',' ]
+			else
+				seps = [ ';' ]
+			end if
+
+			do while ( i <= substring%len() )
+				if ( .not. in_paren ) then
+					if ( substring%s(i:i) == '(' ) then
+						in_paren = .true.; i = i + 1; l = i; cycle
+					else
+						i = i + 1; cycle
+					end if
+				end if
+
+				if ( in_paren ) then
+					if ( any(seps == substring%s(i:i)) ) then
+						read(unit=substring%s(l:i-1), fmt=*, decimal=decimal) z_re
+						i = i + 1; l = i; cycle
+					end if
+
+					if ( substring%s(i:i) == ')' ) then
+						read(unit=substring%s(l:i-1), fmt=*, decimal=decimal) z_im
+						into = cmplx(z_re, z_im, kind=real32); return
+					end if
+
+					i = i + 1; cycle
+				end if
+			end do
+		else
+			im_len = len(im_); i = 1; l = 1
+			seps = [ '+', '-' ]; skip_chars = [ 'E', 'e', SPACE ]
+
+			do while ( i <= substring%len()-im_len+1 )
+				if ( substring%s(i:i) == SPACE ) then
+					i = i + 1; l = i; cycle
+				end if
+
+				if ( any(seps == substring%s(i:i)) ) then
+					if ( i == 1 ) then
+						i = i + 1; cycle
+					end if
+					if ( any(skip_chars == substring%s(i-1:i-1)) ) then
+						i = i + 1; cycle
+					end if
+					read(unit=substring%s(l:i-1), fmt=*, decimal=decimal) z_re
+					l = i; i = i + 1; cycle
+				end if
+
+				if ( substring%s(i:i+im_len-1) == im_ ) then
+					read(unit=substring%s(l:i-1), fmt=*, decimal=decimal) z_im
+					into = cmplx(z_re, z_im, kind=real32); return
+				end if
+
+				i = i + 1; cycle
+			end do
+		end if
 	end procedure cast_string_c32
 
 	module procedure cast_string_r128
@@ -8816,27 +9185,18 @@ submodule (io_fortran_lib) internal_io
 	end procedure str_empty
 
 	module procedure cast_c128
-		character(len=:), allocatable :: locale_, fmt_, im_, substring_, decimal
-		character(len=:), allocatable, dimension(:) :: ignore_chars, e_chars
-		character(len=1) :: current_char
+		character(len=1) :: fmt_
+		character(len=:), allocatable :: im_, width, decimal
+		character(len=:), allocatable, dimension(:) :: seps, skip_chars
 
 		real(real128) :: z_re, z_im
-		integer :: i
+		integer, allocatable :: i, l, im_len
+		logical, allocatable :: in_paren
 
 		if ( len(substring) == 0 ) then
 			into = (0.0_real128,0.0_real128); return
 		end if
 
-		if ( .not. present(locale) ) then
-			locale_ = 'US'
-		else
-			if ( any(LOCALES == locale) ) then
-				locale_ = locale
-			else
-				into = (0.0_real128,0.0_real128); return
-			end if
-		end if
-
 		if ( .not. present(fmt) ) then
 			fmt_ = 'e'
 		else
@@ -8851,93 +9211,151 @@ submodule (io_fortran_lib) internal_io
 			im_ = EMPTY_STR
 		else
 			im_ = trim(adjustl(im))
-			e_chars = ['e', 'E']
 		end if
 
 		if ( fmt_ == 'z' ) then
-			ignore_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', &
-							'a', 'b', 'c', 'd', 'e', 'f']
-		else
-			if ( locale_ == 'US' ) then
-				decimal = 'POINT'
-				ignore_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', 'e', 'E', '+', '-']
-			else if ( locale_ == 'EU' ) then
-				decimal = 'COMMA'
-				ignore_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ',', 'e', 'E', '+', '-']
+			allocate( character(len=2) :: width )
+
+			if ( len(im_) == 0 ) then
+				in_paren = .false.; i = 1; l = 1
+				seps = [ ',', ';' ]
+
+				do while ( i <= len(substring) )
+					if ( .not. in_paren ) then
+						if ( substring(i:i) == '(' ) then
+							in_paren = .true.; i = i + 1; l = i; cycle
+						else
+							i = i + 1; cycle
+						end if
+					end if
+
+					if ( in_paren ) then
+						if ( any(seps == substring(i:i)) ) then
+							write(unit=width, fmt='(i2)') i-l
+							read(unit=substring(l:i-1), fmt='(z'//width//')') z_re
+							i = i + 1; l = i; cycle
+						end if
+
+						if ( substring(i:i) == ')' ) then
+							write(unit=width, fmt='(i2)') i-l
+							read(unit=substring(l:i-1), fmt='(z'//width//')') z_im
+							into = cmplx(z_re, z_im, kind=real128); return
+						end if
+
+						i = i + 1; cycle
+					end if
+				end do
+			else
+				im_len = len(im_); i = 1; l = 1
+				seps = [ '+' ]
+
+				do while ( i <= len(substring)-im_len+1 )
+					if ( substring(i:i) == SPACE ) then
+						i = i + 1; l = i; cycle
+					end if
+
+					if ( any(seps == substring(i:i)) ) then
+						write(unit=width, fmt='(i2)') i-l
+						read(unit=substring(l:i-1), fmt='(z'//width//')') z_re
+						i = i + 1; l = i; cycle
+					end if
+
+					if ( substring(i:i+im_len-1) == im_ ) then
+						write(unit=width, fmt='(i2)') i-l
+						read(unit=substring(l:i-1), fmt='(z'//width//')') z_im
+						into = cmplx(z_re, z_im, kind=real128); return
+					end if
+
+					i = i + 1; cycle
+				end do
 			end if
 		end if
 
-		substring_ = trim(adjustl(substring))
-
-		if ( im_ == EMPTY_STR ) then
-			if ( substring_(1:1) /= '(' ) then
-				into = (0.0_real128,0.0_real128); return
-			else
-				substring_ = substring_(2:len(substring_)-1)
-
-				do i = 1, len(substring_)
-					if ( .not. any(ignore_chars == substring_(i:i)) ) then
-						if ( fmt_ == 'z' ) then
-							read(unit=substring_(:i-1), fmt='(z'//str(i-1)//')') z_re
-							read(unit=substring_(i+1:), fmt='(z'//str(len(substring_)-i)//')') z_im
-						else
-							read(unit=substring_(:i-1), fmt=*, decimal=decimal) z_re
-							read(unit=substring_(i+1:), fmt=*, decimal=decimal) z_im
-						end if
-
-						into = cmplx(z_re, z_im, kind=real128); return
-					end if
-				end do
-			end if
+		if ( .not. present(locale) ) then
+			decimal = 'POINT'
 		else
-			if ( substring_(len(substring_):len(substring_)) /= im_(len(im_):len(im_)) ) then
-				into = (0.0_real128,0.0_real128); return
+			if ( locale == 'US' ) then
+				decimal = 'POINT'
+			else if ( locale == 'EU' ) then
+				decimal = 'COMMA'
 			else
-				substring_ = substring_(:len(substring_)-len(im_))
+				into = (0.0_real128,0.0_real128); return
+			end if
+		end if
 
-				do i = 1, len(substring_)
-					current_char = substring_(i:i)
+		if ( len(im_) == 0 ) then
+			in_paren = .false.; i = 1; l = 1
+			if ( decimal == 'POINT' ) then
+				seps = [ ',' ]
+			else
+				seps = [ ';' ]
+			end if
 
-					if ( (current_char == '+') .or. (current_char == '-') ) then
-						if ( i == 1 ) cycle
+			do while ( i <= len(substring) )
+				if ( .not. in_paren ) then
+					if ( substring(i:i) == '(' ) then
+						in_paren = .true.; i = i + 1; l = i; cycle
+					else
+						i = i + 1; cycle
+					end if
+				end if
 
-						if ( fmt_ == 'z' ) then
-							read(unit=substring_(:i-1), fmt='(z'//str(i-1)//')') z_re
-							read(unit=substring_(i+1:), fmt='(z'//str(len(substring_)-i)//')') z_im
-						else
-							if ( any(e_chars == substring_(i-1:i-1)) ) cycle
-							read(unit=substring_(:i-1), fmt=*, decimal=decimal) z_re
-							read(unit=substring_(i:), fmt=*, decimal=decimal) z_im
-						end if
+				if ( in_paren ) then
+					if ( any(seps == substring(i:i)) ) then
+						read(unit=substring(l:i-1), fmt=*, decimal=decimal) z_re
+						i = i + 1; l = i; cycle
+					end if
 
+					if ( substring(i:i) == ')' ) then
+						read(unit=substring(l:i-1), fmt=*, decimal=decimal) z_im
 						into = cmplx(z_re, z_im, kind=real128); return
 					end if
-				end do
-			end if
+
+					i = i + 1; cycle
+				end if
+			end do
+		else
+			im_len = len(im_); i = 1; l = 1
+			seps = [ '+', '-' ]; skip_chars = [ 'E', 'e', SPACE ]
+
+			do while ( i <= len(substring)-im_len+1 )
+				if ( substring(i:i) == SPACE ) then
+					i = i + 1; l = i; cycle
+				end if
+
+				if ( any(seps == substring(i:i)) ) then
+					if ( i == 1 ) then
+						i = i + 1; cycle
+					end if
+					if ( any(skip_chars == substring(i-1:i-1)) ) then
+						i = i + 1; cycle
+					end if
+					read(unit=substring(l:i-1), fmt=*, decimal=decimal) z_re
+					l = i; i = i + 1; cycle
+				end if
+
+				if ( substring(i:i+im_len-1) == im_ ) then
+					read(unit=substring(l:i-1), fmt=*, decimal=decimal) z_im
+					into = cmplx(z_re, z_im, kind=real128); return
+				end if
+
+				i = i + 1; cycle
+			end do
 		end if
 	end procedure cast_c128
 	module procedure cast_c64
-		character(len=:), allocatable :: locale_, fmt_, im_, substring_, decimal
-		character(len=:), allocatable, dimension(:) :: ignore_chars, e_chars
-		character(len=1) :: current_char
+		character(len=1) :: fmt_
+		character(len=:), allocatable :: im_, width, decimal
+		character(len=:), allocatable, dimension(:) :: seps, skip_chars
 
 		real(real64) :: z_re, z_im
-		integer :: i
+		integer, allocatable :: i, l, im_len
+		logical, allocatable :: in_paren
 
 		if ( len(substring) == 0 ) then
 			into = (0.0_real64,0.0_real64); return
 		end if
 
-		if ( .not. present(locale) ) then
-			locale_ = 'US'
-		else
-			if ( any(LOCALES == locale) ) then
-				locale_ = locale
-			else
-				into = (0.0_real64,0.0_real64); return
-			end if
-		end if
-
 		if ( .not. present(fmt) ) then
 			fmt_ = 'e'
 		else
@@ -8952,93 +9370,151 @@ submodule (io_fortran_lib) internal_io
 			im_ = EMPTY_STR
 		else
 			im_ = trim(adjustl(im))
-			e_chars = ['e', 'E']
 		end if
 
 		if ( fmt_ == 'z' ) then
-			ignore_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', &
-							'a', 'b', 'c', 'd', 'e', 'f']
-		else
-			if ( locale_ == 'US' ) then
-				decimal = 'POINT'
-				ignore_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', 'e', 'E', '+', '-']
-			else if ( locale_ == 'EU' ) then
-				decimal = 'COMMA'
-				ignore_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ',', 'e', 'E', '+', '-']
+			allocate( character(len=2) :: width )
+
+			if ( len(im_) == 0 ) then
+				in_paren = .false.; i = 1; l = 1
+				seps = [ ',', ';' ]
+
+				do while ( i <= len(substring) )
+					if ( .not. in_paren ) then
+						if ( substring(i:i) == '(' ) then
+							in_paren = .true.; i = i + 1; l = i; cycle
+						else
+							i = i + 1; cycle
+						end if
+					end if
+
+					if ( in_paren ) then
+						if ( any(seps == substring(i:i)) ) then
+							write(unit=width, fmt='(i2)') i-l
+							read(unit=substring(l:i-1), fmt='(z'//width//')') z_re
+							i = i + 1; l = i; cycle
+						end if
+
+						if ( substring(i:i) == ')' ) then
+							write(unit=width, fmt='(i2)') i-l
+							read(unit=substring(l:i-1), fmt='(z'//width//')') z_im
+							into = cmplx(z_re, z_im, kind=real64); return
+						end if
+
+						i = i + 1; cycle
+					end if
+				end do
+			else
+				im_len = len(im_); i = 1; l = 1
+				seps = [ '+' ]
+
+				do while ( i <= len(substring)-im_len+1 )
+					if ( substring(i:i) == SPACE ) then
+						i = i + 1; l = i; cycle
+					end if
+
+					if ( any(seps == substring(i:i)) ) then
+						write(unit=width, fmt='(i2)') i-l
+						read(unit=substring(l:i-1), fmt='(z'//width//')') z_re
+						i = i + 1; l = i; cycle
+					end if
+
+					if ( substring(i:i+im_len-1) == im_ ) then
+						write(unit=width, fmt='(i2)') i-l
+						read(unit=substring(l:i-1), fmt='(z'//width//')') z_im
+						into = cmplx(z_re, z_im, kind=real64); return
+					end if
+
+					i = i + 1; cycle
+				end do
 			end if
 		end if
 
-		substring_ = trim(adjustl(substring))
-
-		if ( im_ == EMPTY_STR ) then
-			if ( substring_(1:1) /= '(' ) then
-				into = (0.0_real64,0.0_real64); return
-			else
-				substring_ = substring_(2:len(substring_)-1)
-
-				do i = 1, len(substring_)
-					if ( .not. any(ignore_chars == substring_(i:i)) ) then
-						if ( fmt_ == 'z' ) then
-							read(unit=substring_(:i-1), fmt='(z'//str(i-1)//')') z_re
-							read(unit=substring_(i+1:), fmt='(z'//str(len(substring_)-i)//')') z_im
-						else
-							read(unit=substring_(:i-1), fmt=*, decimal=decimal) z_re
-							read(unit=substring_(i+1:), fmt=*, decimal=decimal) z_im
-						end if
-
-						into = cmplx(z_re, z_im, kind=real64); return
-					end if
-				end do
-			end if
+		if ( .not. present(locale) ) then
+			decimal = 'POINT'
 		else
-			if ( substring_(len(substring_):len(substring_)) /= im_(len(im_):len(im_)) ) then
-				into = (0.0_real64,0.0_real64); return
+			if ( locale == 'US' ) then
+				decimal = 'POINT'
+			else if ( locale == 'EU' ) then
+				decimal = 'COMMA'
 			else
-				substring_ = substring_(:len(substring_)-len(im_))
+				into = (0.0_real64,0.0_real64); return
+			end if
+		end if
 
-				do i = 1, len(substring_)
-					current_char = substring_(i:i)
+		if ( len(im_) == 0 ) then
+			in_paren = .false.; i = 1; l = 1
+			if ( decimal == 'POINT' ) then
+				seps = [ ',' ]
+			else
+				seps = [ ';' ]
+			end if
 
-					if ( (current_char == '+') .or. (current_char == '-') ) then
-						if ( i == 1 ) cycle
+			do while ( i <= len(substring) )
+				if ( .not. in_paren ) then
+					if ( substring(i:i) == '(' ) then
+						in_paren = .true.; i = i + 1; l = i; cycle
+					else
+						i = i + 1; cycle
+					end if
+				end if
 
-						if ( fmt_ == 'z' ) then
-							read(unit=substring_(:i-1), fmt='(z'//str(i-1)//')') z_re
-							read(unit=substring_(i+1:), fmt='(z'//str(len(substring_)-i)//')') z_im
-						else
-							if ( any(e_chars == substring_(i-1:i-1)) ) cycle
-							read(unit=substring_(:i-1), fmt=*, decimal=decimal) z_re
-							read(unit=substring_(i:), fmt=*, decimal=decimal) z_im
-						end if
+				if ( in_paren ) then
+					if ( any(seps == substring(i:i)) ) then
+						read(unit=substring(l:i-1), fmt=*, decimal=decimal) z_re
+						i = i + 1; l = i; cycle
+					end if
 
+					if ( substring(i:i) == ')' ) then
+						read(unit=substring(l:i-1), fmt=*, decimal=decimal) z_im
 						into = cmplx(z_re, z_im, kind=real64); return
 					end if
-				end do
-			end if
+
+					i = i + 1; cycle
+				end if
+			end do
+		else
+			im_len = len(im_); i = 1; l = 1
+			seps = [ '+', '-' ]; skip_chars = [ 'E', 'e', SPACE ]
+
+			do while ( i <= len(substring)-im_len+1 )
+				if ( substring(i:i) == SPACE ) then
+					i = i + 1; l = i; cycle
+				end if
+
+				if ( any(seps == substring(i:i)) ) then
+					if ( i == 1 ) then
+						i = i + 1; cycle
+					end if
+					if ( any(skip_chars == substring(i-1:i-1)) ) then
+						i = i + 1; cycle
+					end if
+					read(unit=substring(l:i-1), fmt=*, decimal=decimal) z_re
+					l = i; i = i + 1; cycle
+				end if
+
+				if ( substring(i:i+im_len-1) == im_ ) then
+					read(unit=substring(l:i-1), fmt=*, decimal=decimal) z_im
+					into = cmplx(z_re, z_im, kind=real64); return
+				end if
+
+				i = i + 1; cycle
+			end do
 		end if
 	end procedure cast_c64
 	module procedure cast_c32
-		character(len=:), allocatable :: locale_, fmt_, im_, substring_, decimal
-		character(len=:), allocatable, dimension(:) :: ignore_chars, e_chars
-		character(len=1) :: current_char
+		character(len=1) :: fmt_
+		character(len=:), allocatable :: im_, width, decimal
+		character(len=:), allocatable, dimension(:) :: seps, skip_chars
 
 		real(real32) :: z_re, z_im
-		integer :: i
+		integer, allocatable :: i, l, im_len
+		logical, allocatable :: in_paren
 
 		if ( len(substring) == 0 ) then
 			into = (0.0_real32,0.0_real32); return
 		end if
 
-		if ( .not. present(locale) ) then
-			locale_ = 'US'
-		else
-			if ( any(LOCALES == locale) ) then
-				locale_ = locale
-			else
-				into = (0.0_real32,0.0_real32); return
-			end if
-		end if
-
 		if ( .not. present(fmt) ) then
 			fmt_ = 'e'
 		else
@@ -9053,69 +9529,136 @@ submodule (io_fortran_lib) internal_io
 			im_ = EMPTY_STR
 		else
 			im_ = trim(adjustl(im))
-			e_chars = ['e', 'E']
 		end if
 
 		if ( fmt_ == 'z' ) then
-			ignore_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', &
-							'a', 'b', 'c', 'd', 'e', 'f']
-		else
-			if ( locale_ == 'US' ) then
-				decimal = 'POINT'
-				ignore_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', 'e', 'E', '+', '-']
-			else if ( locale_ == 'EU' ) then
-				decimal = 'COMMA'
-				ignore_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ',', 'e', 'E', '+', '-']
+			allocate( character(len=1) :: width )
+
+			if ( len(im_) == 0 ) then
+				in_paren = .false.; i = 1; l = 1
+				seps = [ ',', ';' ]
+
+				do while ( i <= len(substring) )
+					if ( .not. in_paren ) then
+						if ( substring(i:i) == '(' ) then
+							in_paren = .true.; i = i + 1; l = i; cycle
+						else
+							i = i + 1; cycle
+						end if
+					end if
+
+					if ( in_paren ) then
+						if ( any(seps == substring(i:i)) ) then
+							write(unit=width, fmt='(i1)') i-l
+							read(unit=substring(l:i-1), fmt='(z'//width//')') z_re
+							i = i + 1; l = i; cycle
+						end if
+
+						if ( substring(i:i) == ')' ) then
+							write(unit=width, fmt='(i1)') i-l
+							read(unit=substring(l:i-1), fmt='(z'//width//')') z_im
+							into = cmplx(z_re, z_im, kind=real32); return
+						end if
+
+						i = i + 1; cycle
+					end if
+				end do
+			else
+				im_len = len(im_); i = 1; l = 1
+				seps = [ '+' ]
+
+				do while ( i <= len(substring)-im_len+1 )
+					if ( substring(i:i) == SPACE ) then
+						i = i + 1; l = i; cycle
+					end if
+
+					if ( any(seps == substring(i:i)) ) then
+						write(unit=width, fmt='(i1)') i-l
+						read(unit=substring(l:i-1), fmt='(z'//width//')') z_re
+						i = i + 1; l = i; cycle
+					end if
+
+					if ( substring(i:i+im_len-1) == im_ ) then
+						write(unit=width, fmt='(i1)') i-l
+						read(unit=substring(l:i-1), fmt='(z'//width//')') z_im
+						into = cmplx(z_re, z_im, kind=real32); return
+					end if
+
+					i = i + 1; cycle
+				end do
 			end if
 		end if
 
-		substring_ = trim(adjustl(substring))
-
-		if ( im_ == EMPTY_STR ) then
-			if ( substring_(1:1) /= '(' ) then
-				into = (0.0_real32,0.0_real32); return
-			else
-				substring_ = substring_(2:len(substring_)-1)
-
-				do i = 1, len(substring_)
-					if ( .not. any(ignore_chars == substring_(i:i)) ) then
-						if ( fmt_ == 'z' ) then
-							read(unit=substring_(:i-1), fmt='(z'//str(i-1)//')') z_re
-							read(unit=substring_(i+1:), fmt='(z'//str(len(substring_)-i)//')') z_im
-						else
-							read(unit=substring_(:i-1), fmt=*, decimal=decimal) z_re
-							read(unit=substring_(i+1:), fmt=*, decimal=decimal) z_im
-						end if
-
-						into = cmplx(z_re, z_im, kind=real32); return
-					end if
-				end do
-			end if
+		if ( .not. present(locale) ) then
+			decimal = 'POINT'
 		else
-			if ( substring_(len(substring_):len(substring_)) /= im_(len(im_):len(im_)) ) then
-				into = (0.0_real32,0.0_real32); return
+			if ( locale == 'US' ) then
+				decimal = 'POINT'
+			else if ( locale == 'EU' ) then
+				decimal = 'COMMA'
 			else
-				substring_ = substring_(:len(substring_)-len(im_))
+				into = (0.0_real32,0.0_real32); return
+			end if
+		end if
 
-				do i = 1, len(substring_)
-					current_char = substring_(i:i)
+		if ( len(im_) == 0 ) then
+			in_paren = .false.; i = 1; l = 1
+			if ( decimal == 'POINT' ) then
+				seps = [ ',' ]
+			else
+				seps = [ ';' ]
+			end if
 
-					if ( (current_char == '+') .or. (current_char == '-') ) then
-						if ( i == 1 ) cycle
+			do while ( i <= len(substring) )
+				if ( .not. in_paren ) then
+					if ( substring(i:i) == '(' ) then
+						in_paren = .true.; i = i + 1; l = i; cycle
+					else
+						i = i + 1; cycle
+					end if
+				end if
 
-						if ( fmt_ == 'z' ) then
-							read(unit=substring_(:i-1), fmt='(z'//str(i-1)//')') z_re
-							read(unit=substring_(i+1:), fmt='(z'//str(len(substring_)-i)//')') z_im
-						else
-							if ( any(e_chars == substring_(i-1:i-1)) ) cycle
-							read(unit=substring_(:i-1), fmt=*, decimal=decimal) z_re
-							read(unit=substring_(i:), fmt=*, decimal=decimal) z_im
-						end if
+				if ( in_paren ) then
+					if ( any(seps == substring(i:i)) ) then
+						read(unit=substring(l:i-1), fmt=*, decimal=decimal) z_re
+						i = i + 1; l = i; cycle
+					end if
 
+					if ( substring(i:i) == ')' ) then
+						read(unit=substring(l:i-1), fmt=*, decimal=decimal) z_im
 						into = cmplx(z_re, z_im, kind=real32); return
 					end if
-				end do
-			end if
+
+					i = i + 1; cycle
+				end if
+			end do
+		else
+			im_len = len(im_); i = 1; l = 1
+			seps = [ '+', '-' ]; skip_chars = [ 'E', 'e', SPACE ]
+
+			do while ( i <= len(substring)-im_len+1 )
+				if ( substring(i:i) == SPACE ) then
+					i = i + 1; l = i; cycle
+				end if
+
+				if ( any(seps == substring(i:i)) ) then
+					if ( i == 1 ) then
+						i = i + 1; cycle
+					end if
+					if ( any(skip_chars == substring(i-1:i-1)) ) then
+						i = i + 1; cycle
+					end if
+					read(unit=substring(l:i-1), fmt=*, decimal=decimal) z_re
+					l = i; i = i + 1; cycle
+				end if
+
+				if ( substring(i:i+im_len-1) == im_ ) then
+					read(unit=substring(l:i-1), fmt=*, decimal=decimal) z_im
+					into = cmplx(z_re, z_im, kind=real32); return
+				end if
+
+				i = i + 1; cycle
+			end do
 		end if
 	end procedure cast_c32
 
