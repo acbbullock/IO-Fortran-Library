@@ -28,7 +28,7 @@ program main
 
     call system_clock(t2, count_rate=rate); wall_time = real(t2-t1,real64)/rate
 
-    write(*,'(a,l1)')   'New file and original are exact match: ', hg38_new == hg38
+    write(*,'(a,l)')    'New file and original are exact match: ', hg38_new == hg38
     write(*,'(a)')      'Wall time: ' + str(wall_time, fmt='f', decimals=3) + ' s ' + &
                         'using compiler: "' + compiler_version() + '".'
 end program main
@@ -41,13 +41,13 @@ The following sample output is observed on Linux with highest optimizations enab
 ```text
 ---
 New file and original are exact match: T
-Wall time: 2.193 s using compiler: "GCC version 11.3.0".
+Wall time: 0.177 s using compiler: "GCC version 11.3.0".
 ---
-New file and original are exact match: T
-Wall time: 4.534 s using compiler: "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201".
+New file and original are exact match:  T
+Wall time: 0.501 s using compiler: "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201".
 ---
-New file and original are exact match: T
-Wall time: 2.298 s using compiler: "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000".
+New file and original are exact match:  T
+Wall time: 0.399 s using compiler: "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000".
 ---
 ```
 

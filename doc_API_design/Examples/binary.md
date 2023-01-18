@@ -11,7 +11,7 @@ The following program demonstrates the use of `to_file` and `from_file` for writ
 
 ```fortran
 program main
- use io_fortran_lib, only: to_file, from_file
+    use io_fortran_lib, only: to_file, from_file
     implicit none (type,external)
 
     real, dimension(20,20,20,20,20) :: x

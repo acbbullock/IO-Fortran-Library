@@ -68,50 +68,52 @@ With highest optimizations enabled for each compiler on Linux (`-O3`), we observ
 ```text
 ---
 Compiler version: GCC version 11.3.0
-Compiler options: -I build/gfortran_93B6DA15423670F8 -mtune=generic -march=x86-64 -O3 -J build/gfortran_93B6DA15423670F8 -fpre-include=/usr/include/finclude/math-vector-fortran.h
+Compiler options: -I build/gfortran_93B6DA15423670F8 -mtune=generic -march=x86-64 -O3 -J build/gfortran_93B6DA15423670F8 -fpre-include=/usr/include/finclude/math-vector-fortran.h     
 
-Wall time for String: 190.994 s
-Number of string conversions/second: 523575
+Wall time for String: 187.538 s
+Number of string conversions/second: 533224
 
-Wall time for write_file: 61.152 s
-Estimated file size: 2.450002 GB
+Wall time for write_file: 19.493 s
+Estimated file size: 2.450001 GB
 
-Wall time for read_file: 37.612 s
+Wall time for read_file: 65.141 s
 
-Wall time for cast: 74.840 s
-Number of string casts/second: 1336176
+Wall time for cast: 76.298 s
+Number of string casts/second: 1310649
 Data is exact match: T
 ---
 Compiler version: Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201
 Compiler options: -Ibuild/ifx_810FD198DC3B0576 -c -O3 -heap-arrays 0 -module build/ifx_810FD198DC3B0576 -o build/ifx_810FD198DC3B0576/IO-Fortran-Library/test_benchmark.f90.o
 
-Wall time for String: 110.713 s
-Number of string conversions/second: 903240
+Wall time for String: 109.756 s
+Number of string conversions/second: 911110
 
-Wall time for write_file: 130.360 s
+Wall time for write_file: 22.502 s
 Estimated file size: 2.450004 GB
 
-Wall time for read_file: 89.282 s
+Wall time for read_file: 84.185 s
 
-Wall time for cast: 56.884 s
-Number of string casts/second: 1757976
+Wall time for cast: 53.625 s
+Number of string casts/second: 1864795
 Data is exact match:  T
 ---
 Compiler version: Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000
-Compiler options: -Ibuild/ifort_810FD198DC3B0576 -c -O3 -heap-arrays 0 -module build/ifort_810FD198DC3B0576 -o build/ifort_810FD198DC3B0576/IO-Fortran-Library/test_benchmark.f90.o
+Compiler options: -Ibuild/ifort_810FD198DC3B0576 -c -O3 -heap-arrays 0 -module build/ifort_810FD198DC3B0576 -o build/ifort_810FD198DC3B0576/IO-Fortran-Library/test_benchmark.f90.o    
 
-Wall time for String: 110.278 s
-Number of string conversions/second: 906798
+Wall time for String: 111.570 s
+Number of string conversions/second: 896294
 
-Wall time for write_file: 66.240 s
+Wall time for write_file: 18.855 s
 Estimated file size: 2.450005 GB
 
-Wall time for read_file: 60.099 s
+Wall time for read_file: 78.025 s
 
-Wall time for cast: 55.383 s
-Number of string casts/second: 1805596
+Wall time for cast: 56.315 s
+Number of string casts/second: 1775710
 Data is exact match:  T
 ---
 ```
+
+After testing, it is clear that different compilers have different strengths and weaknesses, with some performing internal I/O more efficiently while others perform external I/O more efficiently. On Windows, the timings may be slower by a factor of 2-3 times.
 
 @note With the Intel Fortran compiler `ifx`/`ifort`, we must specify `-heap-arrays 0` to avoid a segmentation fault when reading a file of this size, as noted in [compiler-dependent behavior](../UserInfo/compilers.html).
