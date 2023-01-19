@@ -84,7 +84,7 @@ Locales (default is `'US'`):
 LOCALES = [ 'US', 'EU' ]
 ```
 
-Delimiter (default is `','`): data separator. Default is `','` for `'US'` locale and `';'` for `'EU'` locale. It is always recommended to omit the delimiter argument for default unless a custom delimiter is really necessary.
+Delimiter: data separator. Default is `','` for `integer` data and for `real`/`complex` data with `'US'` locale, and `';'` for `real`/`complex` data with `'EU'` locale. It is always recommended to omit the delimiter argument for default unless a custom delimiter is really necessary. If `x` has rank `1` and `dim=1`, then the `delim` argument is ignored.
 
 Integer formats (default is `'i'`):
 

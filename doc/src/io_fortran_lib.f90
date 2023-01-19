@@ -1588,11 +1588,12 @@ module io_fortran_lib
 		!!
 		!! For a user reference, see [from_file](../page/Ref/from_file.html).
 		!--------------------------------------------------------------------------------------------------------------
-		impure recursive module subroutine from_textfile_1dc128(file_name, into, header, locale, fmt, im)
+		impure recursive module subroutine from_textfile_1dc128(file_name, into, header, locale, delim, fmt, im)
 			character(len=*), intent(in) :: file_name
 			complex(real128), allocatable, dimension(:), intent(out) :: into
 			logical, intent(in), optional :: header
 			character(len=*), intent(in), optional :: locale
+			character(len=*), intent(in), optional :: delim
 			character(len=*), intent(in), optional :: fmt
 			character(len=*), intent(in), optional :: im
 		end subroutine from_textfile_1dc128
@@ -1601,11 +1602,12 @@ module io_fortran_lib
 			complex(real128), allocatable, dimension(:), intent(out) :: into
 			integer, dimension(:), intent(in) :: data_shape
 		end subroutine from_binaryfile_1dc128
-		impure recursive module subroutine from_textfile_1dc64(file_name, into, header, locale, fmt, im)
+		impure recursive module subroutine from_textfile_1dc64(file_name, into, header, locale, delim, fmt, im)
 			character(len=*), intent(in) :: file_name
 			complex(real64), allocatable, dimension(:), intent(out) :: into
 			logical, intent(in), optional :: header
 			character(len=*), intent(in), optional :: locale
+			character(len=*), intent(in), optional :: delim
 			character(len=*), intent(in), optional :: fmt
 			character(len=*), intent(in), optional :: im
 		end subroutine from_textfile_1dc64
@@ -1614,11 +1616,12 @@ module io_fortran_lib
 			complex(real64), allocatable, dimension(:), intent(out) :: into
 			integer, dimension(:), intent(in) :: data_shape
 		end subroutine from_binaryfile_1dc64
-		impure recursive module subroutine from_textfile_1dc32(file_name, into, header, locale, fmt, im)
+		impure recursive module subroutine from_textfile_1dc32(file_name, into, header, locale, delim, fmt, im)
 			character(len=*), intent(in) :: file_name
 			complex(real32), allocatable, dimension(:), intent(out) :: into
 			logical, intent(in), optional :: header
 			character(len=*), intent(in), optional :: locale
+			character(len=*), intent(in), optional :: delim
 			character(len=*), intent(in), optional :: fmt
 			character(len=*), intent(in), optional :: im
 		end subroutine from_textfile_1dc32
@@ -1628,11 +1631,12 @@ module io_fortran_lib
 			integer, dimension(:), intent(in) :: data_shape
 		end subroutine from_binaryfile_1dc32
 
-		impure recursive module subroutine from_textfile_2dc128(file_name, into, header, locale, fmt, im)
+		impure recursive module subroutine from_textfile_2dc128(file_name, into, header, locale, delim, fmt, im)
 			character(len=*), intent(in) :: file_name
 			complex(real128), allocatable, dimension(:,:), intent(out) :: into
 			logical, intent(in), optional :: header
 			character(len=*), intent(in), optional :: locale
+			character(len=*), intent(in), optional :: delim
 			character(len=*), intent(in), optional :: fmt
 			character(len=*), intent(in), optional :: im
 		end subroutine from_textfile_2dc128
@@ -1641,11 +1645,12 @@ module io_fortran_lib
 			complex(real128), allocatable, dimension(:,:), intent(out) :: into
 			integer, dimension(:), intent(in) :: data_shape
 		end subroutine from_binaryfile_2dc128
-		impure recursive module subroutine from_textfile_2dc64(file_name, into, header, locale, fmt, im)
+		impure recursive module subroutine from_textfile_2dc64(file_name, into, header, locale, delim, fmt, im)
 			character(len=*), intent(in) :: file_name
 			complex(real64), allocatable, dimension(:,:), intent(out) :: into
 			logical, intent(in), optional :: header
 			character(len=*), intent(in), optional :: locale
+			character(len=*), intent(in), optional :: delim
 			character(len=*), intent(in), optional :: fmt
 			character(len=*), intent(in), optional :: im
 		end subroutine from_textfile_2dc64
@@ -1654,11 +1659,12 @@ module io_fortran_lib
 			complex(real64), allocatable, dimension(:,:), intent(out) :: into
 			integer, dimension(:), intent(in) :: data_shape
 		end subroutine from_binaryfile_2dc64
-		impure recursive module subroutine from_textfile_2dc32(file_name, into, header, locale, fmt, im)
+		impure recursive module subroutine from_textfile_2dc32(file_name, into, header, locale, delim, fmt, im)
 			character(len=*), intent(in) :: file_name
 			complex(real32), allocatable, dimension(:,:), intent(out) :: into
 			logical, intent(in), optional :: header
 			character(len=*), intent(in), optional :: locale
+			character(len=*), intent(in), optional :: delim
 			character(len=*), intent(in), optional :: fmt
 			character(len=*), intent(in), optional :: im
 		end subroutine from_textfile_2dc32
@@ -1876,11 +1882,12 @@ module io_fortran_lib
 			integer, dimension(:), intent(in) :: data_shape
 		end subroutine from_file_15dc32
 
-		impure recursive module subroutine from_textfile_1dr128(file_name, into, header, locale, fmt)
+		impure recursive module subroutine from_textfile_1dr128(file_name, into, header, locale, delim, fmt)
 			character(len=*), intent(in) :: file_name
 			real(real128), allocatable, dimension(:), intent(out) :: into
 			logical, intent(in), optional :: header
 			character(len=*), intent(in), optional :: locale
+			character(len=*), intent(in), optional :: delim
 			character(len=*), intent(in), optional :: fmt
 		end subroutine from_textfile_1dr128
 		impure recursive module subroutine from_binaryfile_1dr128(file_name, into, data_shape)
@@ -1888,11 +1895,12 @@ module io_fortran_lib
 			real(real128), allocatable, dimension(:), intent(out) :: into
 			integer, dimension(:), intent(in) :: data_shape
 		end subroutine from_binaryfile_1dr128
-		impure recursive module subroutine from_textfile_1dr64(file_name, into, header, locale, fmt)
+		impure recursive module subroutine from_textfile_1dr64(file_name, into, header, locale, delim, fmt)
 			character(len=*), intent(in) :: file_name
 			real(real64), allocatable, dimension(:), intent(out) :: into
 			logical, intent(in), optional :: header
 			character(len=*), intent(in), optional :: locale
+			character(len=*), intent(in), optional :: delim
 			character(len=*), intent(in), optional :: fmt
 		end subroutine from_textfile_1dr64
 		impure recursive module subroutine from_binaryfile_1dr64(file_name, into, data_shape)
@@ -1900,11 +1908,12 @@ module io_fortran_lib
 			real(real64), allocatable, dimension(:), intent(out) :: into
 			integer, dimension(:), intent(in) :: data_shape
 		end subroutine from_binaryfile_1dr64
-		impure recursive module subroutine from_textfile_1dr32(file_name, into, header, locale, fmt)
+		impure recursive module subroutine from_textfile_1dr32(file_name, into, header, locale, delim, fmt)
 			character(len=*), intent(in) :: file_name
 			real(real32), allocatable, dimension(:), intent(out) :: into
 			logical, intent(in), optional :: header
 			character(len=*), intent(in), optional :: locale
+			character(len=*), intent(in), optional :: delim
 			character(len=*), intent(in), optional :: fmt
 		end subroutine from_textfile_1dr32
 		impure recursive module subroutine from_binaryfile_1dr32(file_name, into, data_shape)
@@ -1913,11 +1922,12 @@ module io_fortran_lib
 			integer, dimension(:), intent(in) :: data_shape
 		end subroutine from_binaryfile_1dr32
 
-		impure recursive module subroutine from_textfile_2dr128(file_name, into, header, locale, fmt)
+		impure recursive module subroutine from_textfile_2dr128(file_name, into, header, locale, delim, fmt)
 			character(len=*), intent(in) :: file_name
 			real(real128), allocatable, dimension(:,:), intent(out) :: into
 			logical, intent(in), optional :: header
 			character(len=*), intent(in), optional :: locale
+			character(len=*), intent(in), optional :: delim
 			character(len=*), intent(in), optional :: fmt
 		end subroutine from_textfile_2dr128
 		impure recursive module subroutine from_binaryfile_2dr128(file_name, into, data_shape)
@@ -1925,11 +1935,12 @@ module io_fortran_lib
 			real(real128), allocatable, dimension(:,:), intent(out) :: into
 			integer, dimension(:), intent(in) :: data_shape
 		end subroutine from_binaryfile_2dr128
-		impure recursive module subroutine from_textfile_2dr64(file_name, into, header, locale, fmt)
+		impure recursive module subroutine from_textfile_2dr64(file_name, into, header, locale, delim, fmt)
 			character(len=*), intent(in) :: file_name
 			real(real64), allocatable, dimension(:,:), intent(out) :: into
 			logical, intent(in), optional :: header
 			character(len=*), intent(in), optional :: locale
+			character(len=*), intent(in), optional :: delim
 			character(len=*), intent(in), optional :: fmt
 		end subroutine from_textfile_2dr64
 		impure recursive module subroutine from_binaryfile_2dr64(file_name, into, data_shape)
@@ -1937,11 +1948,12 @@ module io_fortran_lib
 			real(real64), allocatable, dimension(:,:), intent(out) :: into
 			integer, dimension(:), intent(in) :: data_shape
 		end subroutine from_binaryfile_2dr64
-		impure recursive module subroutine from_textfile_2dr32(file_name, into, header, locale, fmt)
+		impure recursive module subroutine from_textfile_2dr32(file_name, into, header, locale, delim, fmt)
 			character(len=*), intent(in) :: file_name
 			real(real32), allocatable, dimension(:,:), intent(out) :: into
 			logical, intent(in), optional :: header
 			character(len=*), intent(in), optional :: locale
+			character(len=*), intent(in), optional :: delim
 			character(len=*), intent(in), optional :: fmt
 		end subroutine from_textfile_2dr32
 		impure recursive module subroutine from_binaryfile_2dr32(file_name, into, data_shape)
@@ -2158,10 +2170,11 @@ module io_fortran_lib
 			integer, dimension(:), intent(in) :: data_shape
 		end subroutine from_file_15dr32
 
-		impure recursive module subroutine from_textfile_1di64(file_name, into, header, fmt)
+		impure recursive module subroutine from_textfile_1di64(file_name, into, header, delim, fmt)
 			character(len=*), intent(in) :: file_name
 			integer(int64), allocatable, dimension(:), intent(out) :: into
 			logical, intent(in), optional :: header
+			character(len=*), intent(in), optional :: delim
 			character(len=*), intent(in), optional :: fmt
 		end subroutine from_textfile_1di64
 		impure recursive module subroutine from_binaryfile_1di64(file_name, into, data_shape)
@@ -2169,10 +2182,11 @@ module io_fortran_lib
 			integer(int64), allocatable, dimension(:), intent(out) :: into
 			integer, dimension(:), intent(in) :: data_shape
 		end subroutine from_binaryfile_1di64
-		impure recursive module subroutine from_textfile_1di32(file_name, into, header, fmt)
+		impure recursive module subroutine from_textfile_1di32(file_name, into, header, delim, fmt)
 			character(len=*), intent(in) :: file_name
 			integer(int32), allocatable, dimension(:), intent(out) :: into
 			logical, intent(in), optional :: header
+			character(len=*), intent(in), optional :: delim
 			character(len=*), intent(in), optional :: fmt
 		end subroutine from_textfile_1di32
 		impure recursive module subroutine from_binaryfile_1di32(file_name, into, data_shape)
@@ -2180,10 +2194,11 @@ module io_fortran_lib
 			integer(int32), allocatable, dimension(:), intent(out) :: into
 			integer, dimension(:), intent(in) :: data_shape
 		end subroutine from_binaryfile_1di32
-		impure recursive module subroutine from_textfile_1di16(file_name, into, header, fmt)
+		impure recursive module subroutine from_textfile_1di16(file_name, into, header, delim, fmt)
 			character(len=*), intent(in) :: file_name
 			integer(int16), allocatable, dimension(:), intent(out) :: into
 			logical, intent(in), optional :: header
+			character(len=*), intent(in), optional :: delim
 			character(len=*), intent(in), optional :: fmt
 		end subroutine from_textfile_1di16
 		impure recursive module subroutine from_binaryfile_1di16(file_name, into, data_shape)
@@ -2191,10 +2206,11 @@ module io_fortran_lib
 			integer(int16), allocatable, dimension(:), intent(out) :: into
 			integer, dimension(:), intent(in) :: data_shape
 		end subroutine from_binaryfile_1di16
-		impure recursive module subroutine from_textfile_1di8(file_name, into, header, fmt)
+		impure recursive module subroutine from_textfile_1di8(file_name, into, header, delim, fmt)
 			character(len=*), intent(in) :: file_name
 			integer(int8), allocatable, dimension(:), intent(out) :: into
 			logical, intent(in), optional :: header
+			character(len=*), intent(in), optional :: delim
 			character(len=*), intent(in), optional :: fmt
 		end subroutine from_textfile_1di8
 		impure recursive module subroutine from_binaryfile_1di8(file_name, into, data_shape)
@@ -2203,10 +2219,11 @@ module io_fortran_lib
 			integer, dimension(:), intent(in) :: data_shape
 		end subroutine from_binaryfile_1di8
 
-		impure recursive module subroutine from_textfile_2di64(file_name, into, header, fmt)
+		impure recursive module subroutine from_textfile_2di64(file_name, into, header, delim, fmt)
 			character(len=*), intent(in) :: file_name
 			integer(int64), allocatable, dimension(:,:), intent(out) :: into
 			logical, intent(in), optional :: header
+			character(len=*), intent(in), optional :: delim
 			character(len=*), intent(in), optional :: fmt
 		end subroutine from_textfile_2di64
 		impure recursive module subroutine from_binaryfile_2di64(file_name, into, data_shape)
@@ -2214,10 +2231,11 @@ module io_fortran_lib
 			integer(int64), allocatable, dimension(:,:), intent(out) :: into
 			integer, dimension(:), intent(in) :: data_shape
 		end subroutine from_binaryfile_2di64
-		impure recursive module subroutine from_textfile_2di32(file_name, into, header, fmt)
+		impure recursive module subroutine from_textfile_2di32(file_name, into, header, delim, fmt)
 			character(len=*), intent(in) :: file_name
 			integer(int32), allocatable, dimension(:,:), intent(out) :: into
 			logical, intent(in), optional :: header
+			character(len=*), intent(in), optional :: delim
 			character(len=*), intent(in), optional :: fmt
 		end subroutine from_textfile_2di32
 		impure recursive module subroutine from_binaryfile_2di32(file_name, into, data_shape)
@@ -2225,10 +2243,11 @@ module io_fortran_lib
 			integer(int32), allocatable, dimension(:,:), intent(out) :: into
 			integer, dimension(:), intent(in) :: data_shape
 		end subroutine from_binaryfile_2di32
-		impure recursive module subroutine from_textfile_2di16(file_name, into, header, fmt)
+		impure recursive module subroutine from_textfile_2di16(file_name, into, header, delim, fmt)
 			character(len=*), intent(in) :: file_name
 			integer(int16), allocatable, dimension(:,:), intent(out) :: into
 			logical, intent(in), optional :: header
+			character(len=*), intent(in), optional :: delim
 			character(len=*), intent(in), optional :: fmt
 		end subroutine from_textfile_2di16
 		impure recursive module subroutine from_binaryfile_2di16(file_name, into, data_shape)
@@ -2236,10 +2255,11 @@ module io_fortran_lib
 			integer(int16), allocatable, dimension(:,:), intent(out) :: into
 			integer, dimension(:), intent(in) :: data_shape
 		end subroutine from_binaryfile_2di16
-		impure recursive module subroutine from_textfile_2di8(file_name, into, header, fmt)
+		impure recursive module subroutine from_textfile_2di8(file_name, into, header, delim, fmt)
 			character(len=*), intent(in) :: file_name
 			integer(int8), allocatable, dimension(:,:), intent(out) :: into
 			logical, intent(in), optional :: header
+			character(len=*), intent(in), optional :: delim
 			character(len=*), intent(in), optional :: fmt
 		end subroutine from_textfile_2di8
 		impure recursive module subroutine from_binaryfile_2di8(file_name, into, data_shape)
@@ -2737,147 +2757,167 @@ module io_fortran_lib
 
 	interface from_text                                                                             ! Submodule text_io
 		!! Private interface for reading an external text file into an array.
-		impure recursive module subroutine from_text_1dc128(file_name, into, header, locale, fmt, im)
+		impure recursive module subroutine from_text_1dc128(file_name, into, header, locale, delim, fmt, im)
 			character(len=*), intent(in) :: file_name
 			complex(real128), allocatable, dimension(:), intent(out) :: into
 			logical, intent(in) :: header
 			character(len=*), intent(in) :: locale
+			character(len=*), intent(in) :: delim
 			character(len=*), intent(in) :: fmt
 			character(len=*), intent(in) :: im
 		end subroutine from_text_1dc128
-		impure recursive module subroutine from_text_1dc64(file_name, into, header, locale, fmt, im)
+		impure recursive module subroutine from_text_1dc64(file_name, into, header, locale, delim, fmt, im)
 			character(len=*), intent(in) :: file_name
 			complex(real64), allocatable, dimension(:), intent(out) :: into
 			logical, intent(in) :: header
 			character(len=*), intent(in) :: locale
+			character(len=*), intent(in) :: delim
 			character(len=*), intent(in) :: fmt
 			character(len=*), intent(in) :: im
 		end subroutine from_text_1dc64
-		impure recursive module subroutine from_text_1dc32(file_name, into, header, locale, fmt, im)
+		impure recursive module subroutine from_text_1dc32(file_name, into, header, locale, delim, fmt, im)
 			character(len=*), intent(in) :: file_name
 			complex(real32), allocatable, dimension(:), intent(out) :: into
 			logical, intent(in) :: header
 			character(len=*), intent(in) :: locale
+			character(len=*), intent(in) :: delim
 			character(len=*), intent(in) :: fmt
 			character(len=*), intent(in) :: im
 		end subroutine from_text_1dc32
 
-		impure recursive module subroutine from_text_2dc128(file_name, into, header, locale, fmt, im)
+		impure recursive module subroutine from_text_2dc128(file_name, into, header, locale, delim, fmt, im)
 			character(len=*), intent(in) :: file_name
 			complex(real128), allocatable, dimension(:,:), intent(out) :: into
 			logical, intent(in) :: header
 			character(len=*), intent(in) :: locale
+			character(len=*), intent(in) :: delim
 			character(len=*), intent(in) :: fmt
 			character(len=*), intent(in) :: im
 		end subroutine from_text_2dc128
-		impure recursive module subroutine from_text_2dc64(file_name, into, header, locale, fmt, im)
+		impure recursive module subroutine from_text_2dc64(file_name, into, header, locale, delim, fmt, im)
 			character(len=*), intent(in) :: file_name
 			complex(real64), allocatable, dimension(:,:), intent(out) :: into
 			logical, intent(in) :: header
 			character(len=*), intent(in) :: locale
+			character(len=*), intent(in) :: delim
 			character(len=*), intent(in) :: fmt
 			character(len=*), intent(in) :: im
 		end subroutine from_text_2dc64
-		impure recursive module subroutine from_text_2dc32(file_name, into, header, locale, fmt, im)
+		impure recursive module subroutine from_text_2dc32(file_name, into, header, locale, delim, fmt, im)
 			character(len=*), intent(in) :: file_name
 			complex(real32), allocatable, dimension(:,:), intent(out) :: into
 			logical, intent(in) :: header
 			character(len=*), intent(in) :: locale
+			character(len=*), intent(in) :: delim
 			character(len=*), intent(in) :: fmt
 			character(len=*), intent(in) :: im
 		end subroutine from_text_2dc32
 
-		impure recursive module subroutine from_text_1dr128(file_name, into, header, locale, fmt)
+		impure recursive module subroutine from_text_1dr128(file_name, into, header, locale, delim, fmt)
 			character(len=*), intent(in) :: file_name
 			real(real128), allocatable, dimension(:), intent(out) :: into
 			logical, intent(in) :: header
 			character(len=*), intent(in) :: locale
+			character(len=*), intent(in) :: delim
 			character(len=*), intent(in) :: fmt
 		end subroutine from_text_1dr128
-		impure recursive module subroutine from_text_1dr64(file_name, into, header, locale, fmt)
+		impure recursive module subroutine from_text_1dr64(file_name, into, header, locale, delim, fmt)
 			character(len=*), intent(in) :: file_name
 			real(real64), allocatable, dimension(:), intent(out) :: into
 			logical, intent(in) :: header
 			character(len=*), intent(in) :: locale
+			character(len=*), intent(in) :: delim
 			character(len=*), intent(in) :: fmt
 		end subroutine from_text_1dr64
-		impure recursive module subroutine from_text_1dr32(file_name, into, header, locale, fmt)
+		impure recursive module subroutine from_text_1dr32(file_name, into, header, locale, delim, fmt)
 			character(len=*), intent(in) :: file_name
 			real(real32), allocatable, dimension(:), intent(out) :: into
 			logical, intent(in) :: header
 			character(len=*), intent(in) :: locale
+			character(len=*), intent(in) :: delim
 			character(len=*), intent(in) :: fmt
 		end subroutine from_text_1dr32
 
-		impure recursive module subroutine from_text_2dr128(file_name, into, header, locale, fmt)
+		impure recursive module subroutine from_text_2dr128(file_name, into, header, locale, delim, fmt)
 			character(len=*), intent(in) :: file_name
 			real(real128), allocatable, dimension(:,:), intent(out) :: into
 			logical, intent(in) :: header
 			character(len=*), intent(in) :: locale
+			character(len=*), intent(in) :: delim
 			character(len=*), intent(in) :: fmt
 		end subroutine from_text_2dr128
-		impure recursive module subroutine from_text_2dr64(file_name, into, header, locale, fmt)
+		impure recursive module subroutine from_text_2dr64(file_name, into, header, locale, delim, fmt)
 			character(len=*), intent(in) :: file_name
 			real(real64), allocatable, dimension(:,:), intent(out) :: into
 			logical, intent(in) :: header
 			character(len=*), intent(in) :: locale
+			character(len=*), intent(in) :: delim
 			character(len=*), intent(in) :: fmt
 		end subroutine from_text_2dr64
-		impure recursive module subroutine from_text_2dr32(file_name, into, header, locale, fmt)
+		impure recursive module subroutine from_text_2dr32(file_name, into, header, locale, delim, fmt)
 			character(len=*), intent(in) :: file_name
 			real(real32), allocatable, dimension(:,:), intent(out) :: into
 			logical, intent(in) :: header
 			character(len=*), intent(in) :: locale
+			character(len=*), intent(in) :: delim
 			character(len=*), intent(in) :: fmt
 		end subroutine from_text_2dr32
 
-		impure recursive module subroutine from_text_1di64(file_name, into, header, fmt)
+		impure recursive module subroutine from_text_1di64(file_name, into, header, delim, fmt)
 			character(len=*), intent(in) :: file_name
 			integer(int64), allocatable, dimension(:), intent(out) :: into
 			logical, intent(in) :: header
+			character(len=*), intent(in) :: delim
 			character(len=*), intent(in) :: fmt
 		end subroutine from_text_1di64
-		impure recursive module subroutine from_text_1di32(file_name, into, header, fmt)
+		impure recursive module subroutine from_text_1di32(file_name, into, header, delim, fmt)
 			character(len=*), intent(in) :: file_name
 			integer(int32), allocatable, dimension(:), intent(out) :: into
 			logical, intent(in) :: header
+			character(len=*), intent(in) :: delim
 			character(len=*), intent(in) :: fmt
 		end subroutine from_text_1di32
-		impure recursive module subroutine from_text_1di16(file_name, into, header, fmt)
+		impure recursive module subroutine from_text_1di16(file_name, into, header, delim, fmt)
 			character(len=*), intent(in) :: file_name
 			integer(int16), allocatable, dimension(:), intent(out) :: into
 			logical, intent(in) :: header
+			character(len=*), intent(in) :: delim
 			character(len=*), intent(in) :: fmt
 		end subroutine from_text_1di16
-		impure recursive module subroutine from_text_1di8(file_name, into, header, fmt)
+		impure recursive module subroutine from_text_1di8(file_name, into, header, delim, fmt)
 			character(len=*), intent(in) :: file_name
 			integer(int8), allocatable, dimension(:), intent(out) :: into
 			logical, intent(in) :: header
+			character(len=*), intent(in) :: delim
 			character(len=*), intent(in) :: fmt
 		end subroutine from_text_1di8
 
-		impure recursive module subroutine from_text_2di64(file_name, into, header, fmt)
+		impure recursive module subroutine from_text_2di64(file_name, into, header, delim, fmt)
 			character(len=*), intent(in) :: file_name
 			integer(int64), allocatable, dimension(:,:), intent(out) :: into
 			logical, intent(in) :: header
+			character(len=*), intent(in) :: delim
 			character(len=*), intent(in) :: fmt
 		end subroutine from_text_2di64
-		impure recursive module subroutine from_text_2di32(file_name, into, header, fmt)
+		impure recursive module subroutine from_text_2di32(file_name, into, header, delim, fmt)
 			character(len=*), intent(in) :: file_name
 			integer(int32), allocatable, dimension(:,:), intent(out) :: into
 			logical, intent(in) :: header
+			character(len=*), intent(in) :: delim
 			character(len=*), intent(in) :: fmt
 		end subroutine from_text_2di32
-		impure recursive module subroutine from_text_2di16(file_name, into, header, fmt)
+		impure recursive module subroutine from_text_2di16(file_name, into, header, delim, fmt)
 			character(len=*), intent(in) :: file_name
 			integer(int16), allocatable, dimension(:,:), intent(out) :: into
 			logical, intent(in) :: header
+			character(len=*), intent(in) :: delim
 			character(len=*), intent(in) :: fmt
 		end subroutine from_text_2di16
-		impure recursive module subroutine from_text_2di8(file_name, into, header, fmt)
+		impure recursive module subroutine from_text_2di8(file_name, into, header, delim, fmt)
 			character(len=*), intent(in) :: file_name
 			integer(int8), allocatable, dimension(:,:), intent(out) :: into
 			logical, intent(in) :: header
+			character(len=*), intent(in) :: delim
 			character(len=*), intent(in) :: fmt
 		end subroutine from_text_2di8
 	end interface
@@ -4809,7 +4849,7 @@ submodule (io_fortran_lib) String_procedures
 			allocate( cell_array(n_rows, n_columns) )
 
 			cell_array(1_int64,:) = columns
-			deallocate(columns)
+			deallocate(columns, rows(1_int64)%s)
 
 			do concurrent (i = 2_int64:n_rows)
 				! cell_array(i,:) = rows(i)%split(separator=column_separator_)
@@ -4817,7 +4857,7 @@ submodule (io_fortran_lib) String_procedures
 				cell_array(i,:) = columns
 				deallocate(rows(i)%s)
 			end do
-			deallocate(columns)
+			if ( allocated(columns) ) deallocate(columns)
 
 			call re_process_quotes(cell_array, column_separator=column_separator_)
 		end block cell_block
@@ -4910,7 +4950,7 @@ submodule (io_fortran_lib) String_procedures
 			substring_len = substring%len64()
 
 			if ( substring_len < 1_int64 ) then
-				tokens = [ String(EMPTY_STR) ]; return
+				allocate( tokens(1) ); tokens(1)%s = EMPTY_STR; return
 			end if
 
 			sep_len = len(separator, kind=int64)
@@ -4927,7 +4967,7 @@ submodule (io_fortran_lib) String_procedures
 			end do count_seps
 
 			if ( num_seps == 0_int64 ) then
-				tokens = [ substring ]; return
+				allocate( tokens(1) ); tokens(1)%s = substring%s; return
 			end if
 
 			allocate( tokens(num_seps + 1_int64) )
@@ -7195,7 +7235,7 @@ submodule (io_fortran_lib) internal_io
 
 			if ( len(im_) == 0 ) then
 				in_paren = .false.; i = 1; l = 1
-				seps = [ ',', ';' ]
+				seps = [ COMMA, SEMICOLON ]
 
 				do while ( i <= substring%len() )
 					if ( .not. in_paren ) then
@@ -7263,9 +7303,9 @@ submodule (io_fortran_lib) internal_io
 		if ( len(im_) == 0 ) then
 			in_paren = .false.; i = 1; l = 1
 			if ( decimal == 'POINT' ) then
-				seps = [ ',' ]
+				seps = [ COMMA ]
 			else
-				seps = [ ';' ]
+				seps = [ SEMICOLON ]
 			end if
 
 			do while ( i <= substring%len() )
@@ -7354,7 +7394,7 @@ submodule (io_fortran_lib) internal_io
 
 			if ( len(im_) == 0 ) then
 				in_paren = .false.; i = 1; l = 1
-				seps = [ ',', ';' ]
+				seps = [ COMMA, SEMICOLON ]
 
 				do while ( i <= substring%len() )
 					if ( .not. in_paren ) then
@@ -7422,9 +7462,9 @@ submodule (io_fortran_lib) internal_io
 		if ( len(im_) == 0 ) then
 			in_paren = .false.; i = 1; l = 1
 			if ( decimal == 'POINT' ) then
-				seps = [ ',' ]
+				seps = [ COMMA ]
 			else
-				seps = [ ';' ]
+				seps = [ SEMICOLON ]
 			end if
 
 			do while ( i <= substring%len() )
@@ -7513,7 +7553,7 @@ submodule (io_fortran_lib) internal_io
 
 			if ( len(im_) == 0 ) then
 				in_paren = .false.; i = 1; l = 1
-				seps = [ ',', ';' ]
+				seps = [ COMMA, SEMICOLON ]
 
 				do while ( i <= substring%len() )
 					if ( .not. in_paren ) then
@@ -7581,9 +7621,9 @@ submodule (io_fortran_lib) internal_io
 		if ( len(im_) == 0 ) then
 			in_paren = .false.; i = 1; l = 1
 			if ( decimal == 'POINT' ) then
-				seps = [ ',' ]
+				seps = [ COMMA ]
 			else
-				seps = [ ';' ]
+				seps = [ SEMICOLON ]
 			end if
 
 			do while ( i <= substring%len() )
@@ -9246,7 +9286,7 @@ submodule (io_fortran_lib) internal_io
 
 			if ( len(im_) == 0 ) then
 				in_paren = .false.; i = 1; l = 1
-				seps = [ ',', ';' ]
+				seps = [ COMMA, SEMICOLON ]
 
 				do while ( i <= len(substring) )
 					if ( .not. in_paren ) then
@@ -9314,9 +9354,9 @@ submodule (io_fortran_lib) internal_io
 		if ( len(im_) == 0 ) then
 			in_paren = .false.; i = 1; l = 1
 			if ( decimal == 'POINT' ) then
-				seps = [ ',' ]
+				seps = [ COMMA ]
 			else
-				seps = [ ';' ]
+				seps = [ SEMICOLON ]
 			end if
 
 			do while ( i <= len(substring) )
@@ -9405,7 +9445,7 @@ submodule (io_fortran_lib) internal_io
 
 			if ( len(im_) == 0 ) then
 				in_paren = .false.; i = 1; l = 1
-				seps = [ ',', ';' ]
+				seps = [ COMMA, SEMICOLON ]
 
 				do while ( i <= len(substring) )
 					if ( .not. in_paren ) then
@@ -9473,9 +9513,9 @@ submodule (io_fortran_lib) internal_io
 		if ( len(im_) == 0 ) then
 			in_paren = .false.; i = 1; l = 1
 			if ( decimal == 'POINT' ) then
-				seps = [ ',' ]
+				seps = [ COMMA ]
 			else
-				seps = [ ';' ]
+				seps = [ SEMICOLON ]
 			end if
 
 			do while ( i <= len(substring) )
@@ -9564,7 +9604,7 @@ submodule (io_fortran_lib) internal_io
 
 			if ( len(im_) == 0 ) then
 				in_paren = .false.; i = 1; l = 1
-				seps = [ ',', ';' ]
+				seps = [ COMMA, SEMICOLON ]
 
 				do while ( i <= len(substring) )
 					if ( .not. in_paren ) then
@@ -9632,9 +9672,9 @@ submodule (io_fortran_lib) internal_io
 		if ( len(im_) == 0 ) then
 			in_paren = .false.; i = 1; l = 1
 			if ( decimal == 'POINT' ) then
-				seps = [ ',' ]
+				seps = [ COMMA ]
 			else
-				seps = [ ';' ]
+				seps = [ SEMICOLON ]
 			end if
 
 			do while ( i <= len(substring) )
@@ -9962,9 +10002,6 @@ submodule (io_fortran_lib) glue_split
 		character(len=:), allocatable :: separator_
 		integer(int64) :: num_tokens
 
-		type(String) :: comp
-		logical :: GCC
-
 		num_tokens = size(tokens, kind=int64)
 
 		if ( num_tokens == 1_int64 ) then
@@ -9981,17 +10018,9 @@ submodule (io_fortran_lib) glue_split
 			separator_ = separator
 		end if
 
-		comp = String(COMPILER); GCC = ( comp%count(match='GCC') > 0 ); deallocate(comp%s)
-
 		if ( num_tokens > 500_int64 ) then
-			if ( GCC ) then
-				new = glue(tokens=[ glue(tokens(:num_tokens/2_int64), separator_), &
-									glue(tokens(1_int64+num_tokens/2_int64:), separator_) ], separator=separator_)
-			else
-				token_pair(1) = glue(tokens(:num_tokens/2_int64), separator_)
-				token_pair(2) = glue(tokens(1_int64+num_tokens/2_int64:), separator_)
-				new = glue(tokens=token_pair, separator=separator_)
-			end if
+			new = glue(tokens=[ glue(tokens(:num_tokens/2_int64), separator_), &
+								glue(tokens(1_int64+num_tokens/2_int64:), separator_) ], separator=separator_)
 		else
 			call new%glue_base(tokens=tokens, separator=separator_)
 		end if
@@ -14452,7 +14481,7 @@ submodule (io_fortran_lib) file_io
 
 	! Reading Procedures ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	module procedure from_textfile_1dc128
-		character(len=:), allocatable :: ext, locale_, fmt_, im_
+		character(len=:), allocatable :: ext, locale_, delim_, fmt_, im_
 		logical :: header_
 
 		ext = ext_of(file_name)
@@ -14475,6 +14504,25 @@ submodule (io_fortran_lib) file_io
 				end if
 			end if
 
+			if ( .not. present(delim) ) then
+				if ( locale_ == 'US' ) then
+					delim_ = COMMA
+				else
+					delim_ = SEMICOLON
+				end if
+			else
+				delim_ = delim
+				if ( locale_ == 'US' ) then
+					if ( delim_ == POINT ) then
+						error stop LF//'FATAL: Invalid delimiter for read of file "'//file_name//'" with US decimal.'
+					end if
+				else
+					if ( delim_ == COMMA ) then
+						error stop LF//'FATAL: Invalid delimiter for read of file "'//file_name//'" with EU decimal.'
+					end if
+				end if
+			end if
+
 			if ( .not. present(fmt) ) then
 				fmt_ = 'e'
 			else
@@ -14493,7 +14541,8 @@ submodule (io_fortran_lib) file_io
 				im_ = im
 			end if
 
-			call from_text(file_name=file_name, into=into, header=header_, locale=locale_, fmt=fmt_, im=im_)
+			call from_text( file_name=file_name, into=into, header=header_, locale=locale_, delim=delim_, &
+							fmt=fmt_, im=im_ )
 		else
 			if ( any(BINARY_EXT == ext) ) then
 				error stop LF//'FATAL: Error reading file "'//file_name//'", data_shape must be specified '// &
@@ -14530,7 +14579,7 @@ submodule (io_fortran_lib) file_io
 		end if
 	end procedure from_binaryfile_1dc128
 	module procedure from_textfile_1dc64
-		character(len=:), allocatable :: ext, locale_, fmt_, im_
+		character(len=:), allocatable :: ext, locale_, delim_, fmt_, im_
 		logical :: header_
 
 		ext = ext_of(file_name)
@@ -14553,6 +14602,25 @@ submodule (io_fortran_lib) file_io
 				end if
 			end if
 
+			if ( .not. present(delim) ) then
+				if ( locale_ == 'US' ) then
+					delim_ = COMMA
+				else
+					delim_ = SEMICOLON
+				end if
+			else
+				delim_ = delim
+				if ( locale_ == 'US' ) then
+					if ( delim_ == POINT ) then
+						error stop LF//'FATAL: Invalid delimiter for read of file "'//file_name//'" with US decimal.'
+					end if
+				else
+					if ( delim_ == COMMA ) then
+						error stop LF//'FATAL: Invalid delimiter for read of file "'//file_name//'" with EU decimal.'
+					end if
+				end if
+			end if
+
 			if ( .not. present(fmt) ) then
 				fmt_ = 'e'
 			else
@@ -14571,7 +14639,8 @@ submodule (io_fortran_lib) file_io
 				im_ = im
 			end if
 
-			call from_text(file_name=file_name, into=into, header=header_, locale=locale_, fmt=fmt_, im=im_)
+			call from_text( file_name=file_name, into=into, header=header_, locale=locale_, delim=delim_, &
+							fmt=fmt_, im=im_ )
 		else
 			if ( any(BINARY_EXT == ext) ) then
 				error stop LF//'FATAL: Error reading file "'//file_name//'", data_shape must be specified '// &
@@ -14608,7 +14677,7 @@ submodule (io_fortran_lib) file_io
 		end if
 	end procedure from_binaryfile_1dc64
 	module procedure from_textfile_1dc32
-		character(len=:), allocatable :: ext, locale_, fmt_, im_
+		character(len=:), allocatable :: ext, locale_, delim_, fmt_, im_
 		logical :: header_
 
 		ext = ext_of(file_name)
@@ -14631,6 +14700,25 @@ submodule (io_fortran_lib) file_io
 				end if
 			end if
 
+			if ( .not. present(delim) ) then
+				if ( locale_ == 'US' ) then
+					delim_ = COMMA
+				else
+					delim_ = SEMICOLON
+				end if
+			else
+				delim_ = delim
+				if ( locale_ == 'US' ) then
+					if ( delim_ == POINT ) then
+						error stop LF//'FATAL: Invalid delimiter for read of file "'//file_name//'" with US decimal.'
+					end if
+				else
+					if ( delim_ == COMMA ) then
+						error stop LF//'FATAL: Invalid delimiter for read of file "'//file_name//'" with EU decimal.'
+					end if
+				end if
+			end if
+
 			if ( .not. present(fmt) ) then
 				fmt_ = 'e'
 			else
@@ -14649,7 +14737,8 @@ submodule (io_fortran_lib) file_io
 				im_ = im
 			end if
 
-			call from_text(file_name=file_name, into=into, header=header_, locale=locale_, fmt=fmt_, im=im_)
+			call from_text( file_name=file_name, into=into, header=header_, locale=locale_, delim=delim_, &
+							fmt=fmt_, im=im_ )
 		else
 			if ( any(BINARY_EXT == ext) ) then
 				error stop LF//'FATAL: Error reading file "'//file_name//'", data_shape must be specified '// &
@@ -14687,7 +14776,7 @@ submodule (io_fortran_lib) file_io
 	end procedure from_binaryfile_1dc32
 
 	module procedure from_textfile_2dc128
-		character(len=:), allocatable :: ext, locale_, fmt_, im_
+		character(len=:), allocatable :: ext, locale_, delim_, fmt_, im_
 		logical :: header_
 
 		ext = ext_of(file_name)
@@ -14710,6 +14799,25 @@ submodule (io_fortran_lib) file_io
 				end if
 			end if
 
+			if ( .not. present(delim) ) then
+				if ( locale_ == 'US' ) then
+					delim_ = COMMA
+				else
+					delim_ = SEMICOLON
+				end if
+			else
+				delim_ = delim
+				if ( locale_ == 'US' ) then
+					if ( delim_ == POINT ) then
+						error stop LF//'FATAL: Invalid delimiter for read of file "'//file_name//'" with US decimal.'
+					end if
+				else
+					if ( delim_ == COMMA ) then
+						error stop LF//'FATAL: Invalid delimiter for read of file "'//file_name//'" with EU decimal.'
+					end if
+				end if
+			end if
+
 			if ( .not. present(fmt) ) then
 				fmt_ = 'e'
 			else
@@ -14728,7 +14836,8 @@ submodule (io_fortran_lib) file_io
 				im_ = im
 			end if
 
-			call from_text(file_name=file_name, into=into, header=header_, locale=locale_, fmt=fmt_, im=im_)
+			call from_text( file_name=file_name, into=into, header=header_, locale=locale_, delim=delim_, &
+							fmt=fmt_, im=im_ )
 		else
 			if ( any(BINARY_EXT == ext) ) then
 				error stop LF//'FATAL: Error reading file "'//file_name//'", data_shape must be specified '// &
@@ -14765,7 +14874,7 @@ submodule (io_fortran_lib) file_io
 		end if
 	end procedure from_binaryfile_2dc128
 	module procedure from_textfile_2dc64
-		character(len=:), allocatable :: ext, locale_, fmt_, im_
+		character(len=:), allocatable :: ext, locale_, delim_, fmt_, im_
 		logical :: header_
 
 		ext = ext_of(file_name)
@@ -14788,6 +14897,25 @@ submodule (io_fortran_lib) file_io
 				end if
 			end if
 
+			if ( .not. present(delim) ) then
+				if ( locale_ == 'US' ) then
+					delim_ = COMMA
+				else
+					delim_ = SEMICOLON
+				end if
+			else
+				delim_ = delim
+				if ( locale_ == 'US' ) then
+					if ( delim_ == POINT ) then
+						error stop LF//'FATAL: Invalid delimiter for read of file "'//file_name//'" with US decimal.'
+					end if
+				else
+					if ( delim_ == COMMA ) then
+						error stop LF//'FATAL: Invalid delimiter for read of file "'//file_name//'" with EU decimal.'
+					end if
+				end if
+			end if
+
 			if ( .not. present(fmt) ) then
 				fmt_ = 'e'
 			else
@@ -14806,7 +14934,8 @@ submodule (io_fortran_lib) file_io
 				im_ = im
 			end if
 
-			call from_text(file_name=file_name, into=into, header=header_, locale=locale_, fmt=fmt_, im=im_)
+			call from_text( file_name=file_name, into=into, header=header_, locale=locale_, delim=delim_, &
+							fmt=fmt_, im=im_ )
 		else
 			if ( any(BINARY_EXT == ext) ) then
 				error stop LF//'FATAL: Error reading file "'//file_name//'", data_shape must be specified '// &
@@ -14843,7 +14972,7 @@ submodule (io_fortran_lib) file_io
 		end if
 	end procedure from_binaryfile_2dc64
 	module procedure from_textfile_2dc32
-		character(len=:), allocatable :: ext, locale_, fmt_, im_
+		character(len=:), allocatable :: ext, locale_, delim_, fmt_, im_
 		logical :: header_
 
 		ext = ext_of(file_name)
@@ -14866,6 +14995,25 @@ submodule (io_fortran_lib) file_io
 				end if
 			end if
 
+			if ( .not. present(delim) ) then
+				if ( locale_ == 'US' ) then
+					delim_ = COMMA
+				else
+					delim_ = SEMICOLON
+				end if
+			else
+				delim_ = delim
+				if ( locale_ == 'US' ) then
+					if ( delim_ == POINT ) then
+						error stop LF//'FATAL: Invalid delimiter for read of file "'//file_name//'" with US decimal.'
+					end if
+				else
+					if ( delim_ == COMMA ) then
+						error stop LF//'FATAL: Invalid delimiter for read of file "'//file_name//'" with EU decimal.'
+					end if
+				end if
+			end if
+
 			if ( .not. present(fmt) ) then
 				fmt_ = 'e'
 			else
@@ -14884,7 +15032,8 @@ submodule (io_fortran_lib) file_io
 				im_ = im
 			end if
 
-			call from_text(file_name=file_name, into=into, header=header_, locale=locale_, fmt=fmt_, im=im_)
+			call from_text( file_name=file_name, into=into, header=header_, locale=locale_, delim=delim_, &
+							fmt=fmt_, im=im_ )
 		else
 			if ( any(BINARY_EXT == ext) ) then
 				error stop LF//'FATAL: Error reading file "'//file_name//'", data_shape must be specified '// &
@@ -15832,7 +15981,7 @@ submodule (io_fortran_lib) file_io
 	end procedure from_file_15dc32
 
 	module procedure from_textfile_1dr128
-		character(len=:), allocatable :: ext, locale_, fmt_
+		character(len=:), allocatable :: ext, locale_, delim_, fmt_
 		logical :: header_
 
 		ext = ext_of(file_name)
@@ -15855,6 +16004,25 @@ submodule (io_fortran_lib) file_io
 				end if
 			end if
 
+			if ( .not. present(delim) ) then
+				if ( locale_ == 'US' ) then
+					delim_ = COMMA
+				else
+					delim_ = SEMICOLON
+				end if
+			else
+				delim_ = delim
+				if ( locale_ == 'US' ) then
+					if ( delim_ == POINT ) then
+						error stop LF//'FATAL: Invalid delimiter for read of file "'//file_name//'" with US decimal.'
+					end if
+				else
+					if ( delim_ == COMMA ) then
+						error stop LF//'FATAL: Invalid delimiter for read of file "'//file_name//'" with EU decimal.'
+					end if
+				end if
+			end if
+
 			if ( .not. present(fmt) ) then
 				fmt_ = 'e'
 			else
@@ -15867,7 +16035,7 @@ submodule (io_fortran_lib) file_io
 				end if
 			end if
 
-			call from_text(file_name=file_name, into=into, header=header_, locale=locale_, fmt=fmt_)
+			call from_text(file_name=file_name, into=into, header=header_, locale=locale_, delim=delim_, fmt=fmt_)
 		else
 			if ( any(BINARY_EXT == ext) ) then
 				error stop LF//'FATAL: Error reading file "'//file_name//'", data_shape must be specified '// &
@@ -15904,7 +16072,7 @@ submodule (io_fortran_lib) file_io
 		end if
 	end procedure from_binaryfile_1dr128
 	module procedure from_textfile_1dr64
-		character(len=:), allocatable :: ext, locale_, fmt_
+		character(len=:), allocatable :: ext, locale_, delim_, fmt_
 		logical :: header_
 
 		ext = ext_of(file_name)
@@ -15927,6 +16095,25 @@ submodule (io_fortran_lib) file_io
 				end if
 			end if
 
+			if ( .not. present(delim) ) then
+				if ( locale_ == 'US' ) then
+					delim_ = COMMA
+				else
+					delim_ = SEMICOLON
+				end if
+			else
+				delim_ = delim
+				if ( locale_ == 'US' ) then
+					if ( delim_ == POINT ) then
+						error stop LF//'FATAL: Invalid delimiter for read of file "'//file_name//'" with US decimal.'
+					end if
+				else
+					if ( delim_ == COMMA ) then
+						error stop LF//'FATAL: Invalid delimiter for read of file "'//file_name//'" with EU decimal.'
+					end if
+				end if
+			end if
+
 			if ( .not. present(fmt) ) then
 				fmt_ = 'e'
 			else
@@ -15939,7 +16126,7 @@ submodule (io_fortran_lib) file_io
 				end if
 			end if
 
-			call from_text(file_name=file_name, into=into, header=header_, locale=locale_, fmt=fmt_)
+			call from_text(file_name=file_name, into=into, header=header_, locale=locale_, delim=delim_, fmt=fmt_)
 		else
 			if ( any(BINARY_EXT == ext) ) then
 				error stop LF//'FATAL: Error reading file "'//file_name//'", data_shape must be specified '// &
@@ -15976,7 +16163,7 @@ submodule (io_fortran_lib) file_io
 		end if
 	end procedure from_binaryfile_1dr64
 	module procedure from_textfile_1dr32
-		character(len=:), allocatable :: ext, locale_, fmt_
+		character(len=:), allocatable :: ext, locale_, delim_, fmt_
 		logical :: header_
 
 		ext = ext_of(file_name)
@@ -15999,6 +16186,25 @@ submodule (io_fortran_lib) file_io
 				end if
 			end if
 
+			if ( .not. present(delim) ) then
+				if ( locale_ == 'US' ) then
+					delim_ = COMMA
+				else
+					delim_ = SEMICOLON
+				end if
+			else
+				delim_ = delim
+				if ( locale_ == 'US' ) then
+					if ( delim_ == POINT ) then
+						error stop LF//'FATAL: Invalid delimiter for read of file "'//file_name//'" with US decimal.'
+					end if
+				else
+					if ( delim_ == COMMA ) then
+						error stop LF//'FATAL: Invalid delimiter for read of file "'//file_name//'" with EU decimal.'
+					end if
+				end if
+			end if
+
 			if ( .not. present(fmt) ) then
 				fmt_ = 'e'
 			else
@@ -16011,7 +16217,7 @@ submodule (io_fortran_lib) file_io
 				end if
 			end if
 
-			call from_text(file_name=file_name, into=into, header=header_, locale=locale_, fmt=fmt_)
+			call from_text(file_name=file_name, into=into, header=header_, locale=locale_, delim=delim_, fmt=fmt_)
 		else
 			if ( any(BINARY_EXT == ext) ) then
 				error stop LF//'FATAL: Error reading file "'//file_name//'", data_shape must be specified '// &
@@ -16049,7 +16255,7 @@ submodule (io_fortran_lib) file_io
 	end procedure from_binaryfile_1dr32
 
 	module procedure from_textfile_2dr128
-		character(len=:), allocatable :: ext, locale_, fmt_
+		character(len=:), allocatable :: ext, locale_, delim_, fmt_
 		logical :: header_
 
 		ext = ext_of(file_name)
@@ -16072,6 +16278,25 @@ submodule (io_fortran_lib) file_io
 				end if
 			end if
 
+			if ( .not. present(delim) ) then
+				if ( locale_ == 'US' ) then
+					delim_ = COMMA
+				else
+					delim_ = SEMICOLON
+				end if
+			else
+				delim_ = delim
+				if ( locale_ == 'US' ) then
+					if ( delim_ == POINT ) then
+						error stop LF//'FATAL: Invalid delimiter for read of file "'//file_name//'" with US decimal.'
+					end if
+				else
+					if ( delim_ == COMMA ) then
+						error stop LF//'FATAL: Invalid delimiter for read of file "'//file_name//'" with EU decimal.'
+					end if
+				end if
+			end if
+
 			if ( .not. present(fmt) ) then
 				fmt_ = 'e'
 			else
@@ -16084,7 +16309,7 @@ submodule (io_fortran_lib) file_io
 				end if
 			end if
 
-			call from_text(file_name=file_name, into=into, header=header_, locale=locale_, fmt=fmt_)
+			call from_text(file_name=file_name, into=into, header=header_, locale=locale_, delim=delim_, fmt=fmt_)
 		else
 			if ( any(BINARY_EXT == ext) ) then
 				error stop LF//'FATAL: Error reading file "'//file_name//'", data_shape must be specified '// &
@@ -16121,7 +16346,7 @@ submodule (io_fortran_lib) file_io
 		end if
 	end procedure from_binaryfile_2dr128
 	module procedure from_textfile_2dr64
-		character(len=:), allocatable :: ext, locale_, fmt_
+		character(len=:), allocatable :: ext, locale_, delim_, fmt_
 		logical :: header_
 
 		ext = ext_of(file_name)
@@ -16144,6 +16369,25 @@ submodule (io_fortran_lib) file_io
 				end if
 			end if
 
+			if ( .not. present(delim) ) then
+				if ( locale_ == 'US' ) then
+					delim_ = COMMA
+				else
+					delim_ = SEMICOLON
+				end if
+			else
+				delim_ = delim
+				if ( locale_ == 'US' ) then
+					if ( delim_ == POINT ) then
+						error stop LF//'FATAL: Invalid delimiter for read of file "'//file_name//'" with US decimal.'
+					end if
+				else
+					if ( delim_ == COMMA ) then
+						error stop LF//'FATAL: Invalid delimiter for read of file "'//file_name//'" with EU decimal.'
+					end if
+				end if
+			end if
+
 			if ( .not. present(fmt) ) then
 				fmt_ = 'e'
 			else
@@ -16156,7 +16400,7 @@ submodule (io_fortran_lib) file_io
 				end if
 			end if
 
-			call from_text(file_name=file_name, into=into, header=header_, locale=locale_, fmt=fmt_)
+			call from_text(file_name=file_name, into=into, header=header_, locale=locale_, delim=delim_, fmt=fmt_)
 		else
 			if ( any(BINARY_EXT == ext) ) then
 				error stop LF//'FATAL: Error reading file "'//file_name//'", data_shape must be specified '// &
@@ -16193,7 +16437,7 @@ submodule (io_fortran_lib) file_io
 		end if
 	end procedure from_binaryfile_2dr64
 	module procedure from_textfile_2dr32
-		character(len=:), allocatable :: ext, locale_, fmt_
+		character(len=:), allocatable :: ext, locale_, delim_, fmt_
 		logical :: header_
 
 		ext = ext_of(file_name)
@@ -16216,6 +16460,25 @@ submodule (io_fortran_lib) file_io
 				end if
 			end if
 
+			if ( .not. present(delim) ) then
+				if ( locale_ == 'US' ) then
+					delim_ = COMMA
+				else
+					delim_ = SEMICOLON
+				end if
+			else
+				delim_ = delim
+				if ( locale_ == 'US' ) then
+					if ( delim_ == POINT ) then
+						error stop LF//'FATAL: Invalid delimiter for read of file "'//file_name//'" with US decimal.'
+					end if
+				else
+					if ( delim_ == COMMA ) then
+						error stop LF//'FATAL: Invalid delimiter for read of file "'//file_name//'" with EU decimal.'
+					end if
+				end if
+			end if
+
 			if ( .not. present(fmt) ) then
 				fmt_ = 'e'
 			else
@@ -16228,7 +16491,7 @@ submodule (io_fortran_lib) file_io
 				end if
 			end if
 
-			call from_text(file_name=file_name, into=into, header=header_, locale=locale_, fmt=fmt_)
+			call from_text(file_name=file_name, into=into, header=header_, locale=locale_, delim=delim_, fmt=fmt_)
 		else
 			if ( any(BINARY_EXT == ext) ) then
 				error stop LF//'FATAL: Error reading file "'//file_name//'", data_shape must be specified '// &
@@ -17176,7 +17439,7 @@ submodule (io_fortran_lib) file_io
 	end procedure from_file_15dr32
 
 	module procedure from_textfile_1di64
-		character(len=:), allocatable :: ext, fmt_
+		character(len=:), allocatable :: ext, delim_, fmt_
 		logical :: header_
 
 		ext = ext_of(file_name)
@@ -17186,6 +17449,12 @@ submodule (io_fortran_lib) file_io
 				header_ = .false.
 			else
 				header_ = header
+			end if
+
+			if ( .not. present(delim) ) then
+				delim_ = COMMA
+			else
+				delim_ = delim
 			end if
 
 			if ( .not. present(fmt) ) then
@@ -17200,7 +17469,7 @@ submodule (io_fortran_lib) file_io
 				end if
 			end if
 
-			call from_text(file_name=file_name, into=into, header=header_, fmt=fmt_)
+			call from_text(file_name=file_name, into=into, header=header_, delim=delim_, fmt=fmt_)
 		else
 			if ( any(BINARY_EXT == ext) ) then
 				error stop LF//'FATAL: Error reading file "'//file_name//'", data_shape must be specified '// &
@@ -17237,7 +17506,7 @@ submodule (io_fortran_lib) file_io
 		end if
 	end procedure from_binaryfile_1di64
 	module procedure from_textfile_1di32
-		character(len=:), allocatable :: ext, fmt_
+		character(len=:), allocatable :: ext, delim_, fmt_
 		logical :: header_
 
 		ext = ext_of(file_name)
@@ -17247,6 +17516,12 @@ submodule (io_fortran_lib) file_io
 				header_ = .false.
 			else
 				header_ = header
+			end if
+
+			if ( .not. present(delim) ) then
+				delim_ = COMMA
+			else
+				delim_ = delim
 			end if
 
 			if ( .not. present(fmt) ) then
@@ -17261,7 +17536,7 @@ submodule (io_fortran_lib) file_io
 				end if
 			end if
 
-			call from_text(file_name=file_name, into=into, header=header_, fmt=fmt_)
+			call from_text(file_name=file_name, into=into, header=header_, delim=delim_, fmt=fmt_)
 		else
 			if ( any(BINARY_EXT == ext) ) then
 				error stop LF//'FATAL: Error reading file "'//file_name//'", data_shape must be specified '// &
@@ -17298,7 +17573,7 @@ submodule (io_fortran_lib) file_io
 		end if
 	end procedure from_binaryfile_1di32
 	module procedure from_textfile_1di16
-		character(len=:), allocatable :: ext, fmt_
+		character(len=:), allocatable :: ext, delim_, fmt_
 		logical :: header_
 
 		ext = ext_of(file_name)
@@ -17308,6 +17583,12 @@ submodule (io_fortran_lib) file_io
 				header_ = .false.
 			else
 				header_ = header
+			end if
+
+			if ( .not. present(delim) ) then
+				delim_ = COMMA
+			else
+				delim_ = delim
 			end if
 
 			if ( .not. present(fmt) ) then
@@ -17322,7 +17603,7 @@ submodule (io_fortran_lib) file_io
 				end if
 			end if
 
-			call from_text(file_name=file_name, into=into, header=header_, fmt=fmt_)
+			call from_text(file_name=file_name, into=into, header=header_, delim=delim_, fmt=fmt_)
 		else
 			if ( any(BINARY_EXT == ext) ) then
 				error stop LF//'FATAL: Error reading file "'//file_name//'", data_shape must be specified '// &
@@ -17359,7 +17640,7 @@ submodule (io_fortran_lib) file_io
 		end if
 	end procedure from_binaryfile_1di16
 	module procedure from_textfile_1di8
-		character(len=:), allocatable :: ext, fmt_
+		character(len=:), allocatable :: ext, delim_, fmt_
 		logical :: header_
 
 		ext = ext_of(file_name)
@@ -17369,6 +17650,12 @@ submodule (io_fortran_lib) file_io
 				header_ = .false.
 			else
 				header_ = header
+			end if
+
+			if ( .not. present(delim) ) then
+				delim_ = COMMA
+			else
+				delim_ = delim
 			end if
 
 			if ( .not. present(fmt) ) then
@@ -17383,7 +17670,7 @@ submodule (io_fortran_lib) file_io
 				end if
 			end if
 
-			call from_text(file_name=file_name, into=into, header=header_, fmt=fmt_)
+			call from_text(file_name=file_name, into=into, header=header_, delim=delim_, fmt=fmt_)
 		else
 			if ( any(BINARY_EXT == ext) ) then
 				error stop LF//'FATAL: Error reading file "'//file_name//'", data_shape must be specified '// &
@@ -17421,7 +17708,7 @@ submodule (io_fortran_lib) file_io
 	end procedure from_binaryfile_1di8
 
 	module procedure from_textfile_2di64
-		character(len=:), allocatable :: ext, fmt_
+		character(len=:), allocatable :: ext, delim_, fmt_
 		logical :: header_
 
 		ext = ext_of(file_name)
@@ -17431,6 +17718,12 @@ submodule (io_fortran_lib) file_io
 				header_ = .false.
 			else
 				header_ = header
+			end if
+
+			if ( .not. present(delim) ) then
+				delim_ = COMMA
+			else
+				delim_ = delim
 			end if
 
 			if ( .not. present(fmt) ) then
@@ -17445,7 +17738,7 @@ submodule (io_fortran_lib) file_io
 				end if
 			end if
 
-			call from_text(file_name=file_name, into=into, header=header_, fmt=fmt_)
+			call from_text(file_name=file_name, into=into, header=header_, delim=delim_, fmt=fmt_)
 		else
 			if ( any(BINARY_EXT == ext) ) then
 				error stop LF//'FATAL: Error reading file "'//file_name//'", data_shape must be specified '// &
@@ -17482,7 +17775,7 @@ submodule (io_fortran_lib) file_io
 		end if
 	end procedure from_binaryfile_2di64
 	module procedure from_textfile_2di32
-		character(len=:), allocatable :: ext, fmt_
+		character(len=:), allocatable :: ext, delim_, fmt_
 		logical :: header_
 
 		ext = ext_of(file_name)
@@ -17492,6 +17785,12 @@ submodule (io_fortran_lib) file_io
 				header_ = .false.
 			else
 				header_ = header
+			end if
+
+			if ( .not. present(delim) ) then
+				delim_ = COMMA
+			else
+				delim_ = delim
 			end if
 
 			if ( .not. present(fmt) ) then
@@ -17506,7 +17805,7 @@ submodule (io_fortran_lib) file_io
 				end if
 			end if
 
-			call from_text(file_name=file_name, into=into, header=header_, fmt=fmt_)
+			call from_text(file_name=file_name, into=into, header=header_, delim=delim_, fmt=fmt_)
 		else
 			if ( any(BINARY_EXT == ext) ) then
 				error stop LF//'FATAL: Error reading file "'//file_name//'", data_shape must be specified '// &
@@ -17543,7 +17842,7 @@ submodule (io_fortran_lib) file_io
 		end if
 	end procedure from_binaryfile_2di32
 	module procedure from_textfile_2di16
-		character(len=:), allocatable :: ext, fmt_
+		character(len=:), allocatable :: ext, delim_, fmt_
 		logical :: header_
 
 		ext = ext_of(file_name)
@@ -17553,6 +17852,12 @@ submodule (io_fortran_lib) file_io
 				header_ = .false.
 			else
 				header_ = header
+			end if
+
+			if ( .not. present(delim) ) then
+				delim_ = COMMA
+			else
+				delim_ = delim
 			end if
 
 			if ( .not. present(fmt) ) then
@@ -17567,7 +17872,7 @@ submodule (io_fortran_lib) file_io
 				end if
 			end if
 
-			call from_text(file_name=file_name, into=into, header=header_, fmt=fmt_)
+			call from_text(file_name=file_name, into=into, header=header_, delim=delim_, fmt=fmt_)
 		else
 			if ( any(BINARY_EXT == ext) ) then
 				error stop LF//'FATAL: Error reading file "'//file_name//'", data_shape must be specified '// &
@@ -17604,7 +17909,7 @@ submodule (io_fortran_lib) file_io
 		end if
 	end procedure from_binaryfile_2di16
 	module procedure from_textfile_2di8
-		character(len=:), allocatable :: ext, fmt_
+		character(len=:), allocatable :: ext, delim_, fmt_
 		logical :: header_
 
 		ext = ext_of(file_name)
@@ -17614,6 +17919,12 @@ submodule (io_fortran_lib) file_io
 				header_ = .false.
 			else
 				header_ = header
+			end if
+
+			if ( .not. present(delim) ) then
+				delim_ = COMMA
+			else
+				delim_ = delim
 			end if
 
 			if ( .not. present(fmt) ) then
@@ -17628,7 +17939,7 @@ submodule (io_fortran_lib) file_io
 				end if
 			end if
 
-			call from_text(file_name=file_name, into=into, header=header_, fmt=fmt_)
+			call from_text(file_name=file_name, into=into, header=header_, delim=delim_, fmt=fmt_)
 		else
 			if ( any(BINARY_EXT == ext) ) then
 				error stop LF//'FATAL: Error reading file "'//file_name//'", data_shape must be specified '// &
@@ -19876,3418 +20187,1228 @@ submodule (io_fortran_lib) text_io
 
 	! Reading Procedures ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	module procedure from_text_1dc128
-		logical :: exists, ignore_sep
-		integer :: file_unit, iostat
-		integer :: n_rows, n_columns
-		integer :: i, j, ind, l1, l2, sep_pos
+		type(String) :: text_file
+		type(String), allocatable, dimension(:,:) :: cells
+		integer(int64) :: n_rows, n_cols
 
-		complex(real128) :: c
-		character(len=:), allocatable, dimension(:) :: im_chars, non_separating_chars
-		character(len=:), allocatable :: file, decimal, sep, number
-		character(len=1) :: prev_char, current_char
-		integer(int64) :: file_length
+		if ( len(im) == 0 ) then
+			custom_processing: block
+				type(String), allocatable, dimension(:) :: rows, columns
+				integer(int64) :: file_length, i
+				integer :: file_unit, iostat
+				logical :: exists
 
-		inquire( file=file_name, exist=exists )
+				inquire( file=file_name, exist=exists )
 
-		file_unit = input_unit
+				file_unit = input_unit
 
-		if ( exists ) then
-			open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-				  action='read', access='stream', position='rewind' )
-		else
-			error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
-			return
-		end if
-
-		inquire( file=file_name, size=file_length )
-
-		if ( file_length == 0_int64 ) then
-			error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
-			return
-		end if
-
-		allocate( character(len=file_length) :: file )
-		read(unit=file_unit, iostat=iostat) file
-		close(file_unit)
-
-		if ( iostat > 0 ) then
-			error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
-			return
-		end if
-
-		if ( header ) then
-			do i = 1, file_length
-				if ( file(i:i) == NL ) then
-					file = file(i+1:)
-					file_length = len(file)
-					exit
-				else if ( i == file_length ) then
-					file = file//LF
-					file_length = file_length + 1
-					write(*,'(a)') 'WARNING: Ignoring erroneous value of (T) for header in read of file "'// &
-									file_name//'". File has one line.'
+				if ( exists ) then
+					open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
+						  action='read', access='stream', position='rewind' )
+				else
+					error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+					return
 				end if
-			end do
 
-			if ( file_length == 0_int64 ) then
-				error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty after header.'
+				inquire( file=file_name, size=file_length )
+
+				if ( file_length == 0_int64 ) then
+					error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
+					return
+				end if
+
+				allocate( character(len=file_length) :: text_file%s )
+				read(unit=file_unit, iostat=iostat) text_file%s
+				close(file_unit)
+
+				if ( iostat > 0 ) then
+					error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+					return
+				end if
+
+				rows = text_file%split(separator=NL)
+
+				if ( rows(size(rows, kind=int64))%len64() < 1_int64 ) then
+					n_rows = size(rows, kind=int64) - 1_int64
+				else
+					n_rows = size(rows, kind=int64)
+				end if
+	
+				call process_parentheses(rows, column_separator=delim)
+
+				columns = rows(1_int64)%split(separator=delim)
+				n_cols = size(columns, kind=int64)
+	
+				allocate( cells(n_rows, n_cols) )
+	
+				cells(1_int64,:) = columns
+				deallocate(columns)
+
+				do concurrent (i = 2_int64:n_rows)
+					cells(i,:) = rows(i)%split(separator=delim)
+					deallocate(rows(i)%s)
+				end do
+	
+				call re_process_parentheses(cells, column_separator=delim)
+			end block custom_processing
+		else
+			call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
+
+			n_rows = size(cells, dim=1, kind=int64)
+			n_cols = size(cells, dim=2, kind=int64)
+		end if
+		call text_file%empty()
+
+		if ( (n_rows > 1_int64) .and. (n_cols > 1_int64) ) then
+			if ( header ) then
+				if ( n_rows /= 2_int64 ) then
+					error stop LF//'Error reading file "'//file_name//'". Data cannot fit into one-dimensional array.'
+					return
+				end if
+			else
+				error stop LF//'Error reading file "'//file_name//'". Data cannot fit into one-dimensional array.'// &
+							   ' If there are two rows including a header row, specify "header=.true." .'
 				return
 			end if
 		end if
 
-		n_rows = 0
-
-		do i = 1, file_length
-			if ( file(i:i) == NL ) then
-				n_rows = n_rows + 1
-			else if ( i == file_length ) then
-				file = file//LF
-				file_length = file_length + 1
-				n_rows = n_rows + 1
-			end if
-		end do
-
-		if ( len(im) > 0 ) then
-			allocate( character(len=1) :: im_chars(len(im)) )
-			do i = 1, len(im)
-				im_chars(i) = im(i:i)
-			end do
-		else
-			im_chars = [ EMPTY_STR ]
-		end if
-
-		if ( fmt == 'z' ) then
-			non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', &
-									'a', 'b', 'c', 'd', 'e', 'f', '(', ')', '+']
-		else
-			if ( locale == 'US' ) then
-				decimal = 'POINT'
-				non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', 'e', 'E', '+', '-', &
-										'(', ')']
-			else if ( locale == 'EU' ) then
-				decimal = 'COMMA'
-				non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ',', 'e', 'E', '+', '-', &
-										'(', ')']
-			end if
-		end if
-
-		if ( locale == 'US' ) then
-			sep = COMMA
-		else if ( locale == 'EU' ) then
-			sep = SEMICOLON
-		end if
-
-		ignore_sep = .false.
-		prev_char = '0'
-		n_columns = 0
-
-		do i = 1, file_length
-			current_char = file(i:i)
-			if ( current_char == '(' ) then
-				ignore_sep = .true.
-			else if ( current_char == ')' ) then
-				ignore_sep = .false.
-			end if
-
-			if ( any(non_separating_chars == current_char) .or. any(im_chars == current_char) ) then
-				prev_char = current_char
+		if ( n_cols == 1_int64 ) then
+			if ( header ) then
+				if ( .not. (n_rows > 1_int64) ) then
+					error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+					return
+				end if
+				
+				allocate( into(n_rows-1_int64) )
+				call cells(2_int64:,1_int64)%cast(into=into, locale=locale, fmt=fmt, im=im); return
 			else
-				if ( ignore_sep ) then
-					prev_char = current_char
-					cycle
-				end if
-
-				if ( any(non_separating_chars == prev_char) .or. any(im_chars == prev_char) ) then
-					prev_char = current_char
-					n_columns = n_columns + 1
-				else
-					prev_char = current_char
-				end if
+				allocate( into(n_rows) )
+				call cells(:,1_int64)%cast(into=into, locale=locale, fmt=fmt, im=im); return
 			end if
-
-			if ( current_char == NL ) exit
-		end do
-
-		if ( (n_rows > 1) .and. (n_columns > 1) ) then
-			error stop LF//'Error reading file "'//file_name//'". File data cannot fit into one-dimensional array.'
-			return
-		else if ( n_columns == 1 ) then
-			allocate( into(n_rows) )
-		else if ( n_rows == 1 ) then
-			allocate( into(n_columns) )
 		end if
 
-		ignore_sep = .false.
-		ind = 1
-		l1 = 1
-		l2 = 1
-		i = 1
-
-		read_into: do while ( i <= file_length )
-			current_char = file(i:i)
-			if ( current_char == '(' ) then
-				ignore_sep = .true.
-			else if ( current_char == ')' ) then
-				ignore_sep = .false.
+		if ( header ) then
+			if ( .not. (n_rows > 1_int64) ) then
+				error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+				return
 			end if
-
-			if ( any(non_separating_chars == current_char) ) then
-				if ( .not. any(non_separating_chars == file(l2:l2)) ) l1 = i
-				l2 = i
-			else if ( current_char == im_chars(1) ) then
-				number = file(l1:i-1)
-				do j = 2, len(number)
-					if ( (number(j:j) == '+') .or. (number(j:j) == '-') ) then
-						if ( fmt == 'e' ) then
-							if ( (number(j-1:j-1) /= 'E') .and. (number(j-1:j-1) /= 'e') ) then
-								sep_pos = j
-								exit
-							end if
-						else
-							sep_pos = j
-							exit
-						end if
-					end if
-				end do
-				if ( fmt == 'z' ) then
-					read(unit=number(:sep_pos-1), fmt='(z'//str(len(number(:sep_pos-1)))//')') c%re
-					read(unit=number(sep_pos+1:), fmt='(z'//str(len(number(sep_pos+1:)))//')') c%im
-				else
-					read(unit=number(:sep_pos-1), fmt=*, decimal=decimal) c%re
-					read(unit=number(sep_pos:), fmt=*, decimal=decimal) c%im
-				end if
-				into(ind) = c
-				if ( ind /= size(into) ) then
-					ind = ind + 1
-				else
-					exit read_into
-				end if
-				l2 = i
-				i = i + size(im_chars)
-				cycle read_into
-			else
-				if ( ignore_sep ) then
-					l2 = i + 1
-					i = i + 1
-					cycle read_into
-				end if
-
-				if ( any(non_separating_chars == file(l2:l2)) ) then
-					number = file(l1+1:l2-1)
-					do j = 1, len(number)
-						if ( number(j:j) == sep ) then
-							sep_pos = j
-							exit
-						end if
-					end do
-					if ( fmt == 'z' ) then
-						read(unit=number(:sep_pos-1), fmt='(z'//str(len(number(:sep_pos-1)))//')') c%re
-						read(unit=number(sep_pos+1:), fmt='(z'//str(len(number(sep_pos+1:)))//')') c%im
-					else
-						read(unit=number(:sep_pos-1), fmt=*, decimal=decimal) c%re
-						read(unit=number(sep_pos+1:), fmt=*, decimal=decimal) c%im
-					end if
-					into(ind) = c
-					if ( ind /= size(into) ) then
-						ind = ind + 1
-					else
-						exit read_into
-					end if
-					l2 = i
-				else
-					l2 = i
-				end if
-			end if
-			i = i + 1
-		end do read_into
+			
+			allocate( into(n_cols) )
+			call cells(2_int64,:)%cast(into=into, locale=locale, fmt=fmt, im=im); return
+		else
+			allocate( into(n_cols) )
+			call cells(1_int64,:)%cast(into=into, locale=locale, fmt=fmt, im=im); return
+		end if
 	end procedure from_text_1dc128
 	module procedure from_text_1dc64
-		logical :: exists, ignore_sep
-		integer :: file_unit, iostat
-		integer :: n_rows, n_columns
-		integer :: i, j, ind, l1, l2, sep_pos
+		type(String) :: text_file
+		type(String), allocatable, dimension(:,:) :: cells
+		integer(int64) :: n_rows, n_cols
 
-		complex(real64) :: c
-		character(len=:), allocatable, dimension(:) :: im_chars, non_separating_chars
-		character(len=:), allocatable :: file, decimal, sep, number
-		character(len=1) :: prev_char, current_char
-		integer(int64) :: file_length
+		if ( len(im) == 0 ) then
+			custom_processing: block
+				type(String), allocatable, dimension(:) :: rows, columns
+				integer(int64) :: file_length, i
+				integer :: file_unit, iostat
+				logical :: exists
 
-		inquire( file=file_name, exist=exists )
+				inquire( file=file_name, exist=exists )
 
-		file_unit = input_unit
+				file_unit = input_unit
 
-		if ( exists ) then
-			open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-				  action='read', access='stream', position='rewind' )
-		else
-			error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
-			return
-		end if
-
-		inquire( file=file_name, size=file_length )
-
-		if ( file_length == 0_int64 ) then
-			error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
-			return
-		end if
-
-		allocate( character(len=file_length) :: file )
-		read(unit=file_unit, iostat=iostat) file
-		close(file_unit)
-
-		if ( iostat > 0 ) then
-			error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
-			return
-		end if
-
-		if ( header ) then
-			do i = 1, file_length
-				if ( file(i:i) == NL ) then
-					file = file(i+1:)
-					file_length = len(file)
-					exit
-				else if ( i == file_length ) then
-					file = file//LF
-					file_length = file_length + 1
-					write(*,'(a)') 'WARNING: Ignoring erroneous value of (T) for header in read of file "'// &
-									file_name//'". File has one line.'
+				if ( exists ) then
+					open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
+						  action='read', access='stream', position='rewind' )
+				else
+					error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+					return
 				end if
-			end do
 
-			if ( file_length == 0_int64 ) then
-				error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty after header.'
+				inquire( file=file_name, size=file_length )
+
+				if ( file_length == 0_int64 ) then
+					error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
+					return
+				end if
+
+				allocate( character(len=file_length) :: text_file%s )
+				read(unit=file_unit, iostat=iostat) text_file%s
+				close(file_unit)
+
+				if ( iostat > 0 ) then
+					error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+					return
+				end if
+
+				rows = text_file%split(separator=NL)
+
+				if ( rows(size(rows, kind=int64))%len64() < 1_int64 ) then
+					n_rows = size(rows, kind=int64) - 1_int64
+				else
+					n_rows = size(rows, kind=int64)
+				end if
+	
+				call process_parentheses(rows, column_separator=delim)
+
+				columns = rows(1_int64)%split(separator=delim)
+				n_cols = size(columns, kind=int64)
+	
+				allocate( cells(n_rows, n_cols) )
+	
+				cells(1_int64,:) = columns
+				deallocate(columns)
+
+				do concurrent (i = 2_int64:n_rows)
+					cells(i,:) = rows(i)%split(separator=delim)
+					deallocate(rows(i)%s)
+				end do
+	
+				call re_process_parentheses(cells, column_separator=delim)
+			end block custom_processing
+		else
+			call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
+
+			n_rows = size(cells, dim=1, kind=int64)
+			n_cols = size(cells, dim=2, kind=int64)
+		end if
+		call text_file%empty()
+
+		if ( (n_rows > 1_int64) .and. (n_cols > 1_int64) ) then
+			if ( header ) then
+				if ( n_rows /= 2_int64 ) then
+					error stop LF//'Error reading file "'//file_name//'". Data cannot fit into one-dimensional array.'
+					return
+				end if
+			else
+				error stop LF//'Error reading file "'//file_name//'". Data cannot fit into one-dimensional array.'// &
+							   ' If there are two rows including a header row, specify "header=.true." .'
 				return
 			end if
 		end if
 
-		n_rows = 0
-
-		do i = 1, file_length
-			if ( file(i:i) == NL ) then
-				n_rows = n_rows + 1
-			else if ( i == file_length ) then
-				file = file//LF
-				file_length = file_length + 1
-				n_rows = n_rows + 1
-			end if
-		end do
-
-		if ( len(im) > 0 ) then
-			allocate( character(len=1) :: im_chars(len(im)) )
-			do i = 1, len(im)
-				im_chars(i) = im(i:i)
-			end do
-		else
-			im_chars = [ EMPTY_STR ]
-		end if
-
-		if ( fmt == 'z' ) then
-			non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', &
-									'a', 'b', 'c', 'd', 'e', 'f', '(', ')', '+']
-		else
-			if ( locale == 'US' ) then
-				decimal = 'POINT'
-				non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', 'e', 'E', '+', '-', &
-										'(', ')']
-			else if ( locale == 'EU' ) then
-				decimal = 'COMMA'
-				non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ',', 'e', 'E', '+', '-', &
-										'(', ')']
-			end if
-		end if
-
-		if ( locale == 'US' ) then
-			sep = COMMA
-		else if ( locale == 'EU' ) then
-			sep = SEMICOLON
-		end if
-
-		ignore_sep = .false.
-		prev_char = '0'
-		n_columns = 0
-
-		do i = 1, file_length
-			current_char = file(i:i)
-			if ( current_char == '(' ) then
-				ignore_sep = .true.
-			else if ( current_char == ')' ) then
-				ignore_sep = .false.
-			end if
-
-			if ( any(non_separating_chars == current_char) .or. any(im_chars == current_char) ) then
-				prev_char = current_char
+		if ( n_cols == 1_int64 ) then
+			if ( header ) then
+				if ( .not. (n_rows > 1_int64) ) then
+					error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+					return
+				end if
+				
+				allocate( into(n_rows-1_int64) )
+				call cells(2_int64:,1_int64)%cast(into=into, locale=locale, fmt=fmt, im=im); return
 			else
-				if ( ignore_sep ) then
-					prev_char = current_char
-					cycle
-				end if
-
-				if ( any(non_separating_chars == prev_char) .or. any(im_chars == prev_char) ) then
-					prev_char = current_char
-					n_columns = n_columns + 1
-				else
-					prev_char = current_char
-				end if
+				allocate( into(n_rows) )
+				call cells(:,1_int64)%cast(into=into, locale=locale, fmt=fmt, im=im); return
 			end if
-
-			if ( current_char == NL ) exit
-		end do
-
-		if ( (n_rows > 1) .and. (n_columns > 1) ) then
-			error stop LF//'Error reading file "'//file_name//'". File data cannot fit into one-dimensional array.'
-			return
-		else if ( n_columns == 1 ) then
-			allocate( into(n_rows) )
-		else if ( n_rows == 1 ) then
-			allocate( into(n_columns) )
 		end if
 
-		ignore_sep = .false.
-		ind = 1
-		l1 = 1
-		l2 = 1
-		i = 1
-
-		read_into: do while ( i <= file_length )
-			current_char = file(i:i)
-			if ( current_char == '(' ) then
-				ignore_sep = .true.
-			else if ( current_char == ')' ) then
-				ignore_sep = .false.
+		if ( header ) then
+			if ( .not. (n_rows > 1_int64) ) then
+				error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+				return
 			end if
-
-			if ( any(non_separating_chars == current_char) ) then
-				if ( .not. any(non_separating_chars == file(l2:l2)) ) l1 = i
-				l2 = i
-			else if ( current_char == im_chars(1) ) then
-				number = file(l1:i-1)
-				do j = 2, len(number)
-					if ( (number(j:j) == '+') .or. (number(j:j) == '-') ) then
-						if ( fmt == 'e' ) then
-							if ( (number(j-1:j-1) /= 'E') .and. (number(j-1:j-1) /= 'e') ) then
-								sep_pos = j
-								exit
-							end if
-						else
-							sep_pos = j
-							exit
-						end if
-					end if
-				end do
-				if ( fmt == 'z' ) then
-					read(unit=number(:sep_pos-1), fmt='(z'//str(len(number(:sep_pos-1)))//')') c%re
-					read(unit=number(sep_pos+1:), fmt='(z'//str(len(number(sep_pos+1:)))//')') c%im
-				else
-					read(unit=number(:sep_pos-1), fmt=*, decimal=decimal) c%re
-					read(unit=number(sep_pos:), fmt=*, decimal=decimal) c%im
-				end if
-				into(ind) = c
-				if ( ind /= size(into) ) then
-					ind = ind + 1
-				else
-					exit read_into
-				end if
-				l2 = i
-				i = i + size(im_chars)
-				cycle read_into
-			else
-				if ( ignore_sep ) then
-					l2 = i + 1
-					i = i + 1
-					cycle read_into
-				end if
-
-				if ( any(non_separating_chars == file(l2:l2)) ) then
-					number = file(l1+1:l2-1)
-					do j = 1, len(number)
-						if ( number(j:j) == sep ) then
-							sep_pos = j
-							exit
-						end if
-					end do
-					if ( fmt == 'z' ) then
-						read(unit=number(:sep_pos-1), fmt='(z'//str(len(number(:sep_pos-1)))//')') c%re
-						read(unit=number(sep_pos+1:), fmt='(z'//str(len(number(sep_pos+1:)))//')') c%im
-					else
-						read(unit=number(:sep_pos-1), fmt=*, decimal=decimal) c%re
-						read(unit=number(sep_pos+1:), fmt=*, decimal=decimal) c%im
-					end if
-					into(ind) = c
-					if ( ind /= size(into) ) then
-						ind = ind + 1
-					else
-						exit read_into
-					end if
-					l2 = i
-				else
-					l2 = i
-				end if
-			end if
-			i = i + 1
-		end do read_into
+			
+			allocate( into(n_cols) )
+			call cells(2_int64,:)%cast(into=into, locale=locale, fmt=fmt, im=im); return
+		else
+			allocate( into(n_cols) )
+			call cells(1_int64,:)%cast(into=into, locale=locale, fmt=fmt, im=im); return
+		end if
 	end procedure from_text_1dc64
 	module procedure from_text_1dc32
-		logical :: exists, ignore_sep
-		integer :: file_unit, iostat
-		integer :: n_rows, n_columns
-		integer :: i, j, ind, l1, l2, sep_pos
+		type(String) :: text_file
+		type(String), allocatable, dimension(:,:) :: cells
+		integer(int64) :: n_rows, n_cols
 
-		complex(real32) :: c
-		character(len=:), allocatable, dimension(:) :: im_chars, non_separating_chars
-		character(len=:), allocatable :: file, decimal, sep, number
-		character(len=1) :: prev_char, current_char
-		integer(int64) :: file_length
+		if ( len(im) == 0 ) then
+			custom_processing: block
+				type(String), allocatable, dimension(:) :: rows, columns
+				integer(int64) :: file_length, i
+				integer :: file_unit, iostat
+				logical :: exists
 
-		inquire( file=file_name, exist=exists )
+				inquire( file=file_name, exist=exists )
 
-		file_unit = input_unit
+				file_unit = input_unit
 
-		if ( exists ) then
-			open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-				  action='read', access='stream', position='rewind' )
-		else
-			error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
-			return
-		end if
-
-		inquire( file=file_name, size=file_length )
-
-		if ( file_length == 0_int64 ) then
-			error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
-			return
-		end if
-
-		allocate( character(len=file_length) :: file )
-		read(unit=file_unit, iostat=iostat) file
-		close(file_unit)
-
-		if ( iostat > 0 ) then
-			error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
-			return
-		end if
-
-		if ( header ) then
-			do i = 1, file_length
-				if ( file(i:i) == NL ) then
-					file = file(i+1:)
-					file_length = len(file)
-					exit
-				else if ( i == file_length ) then
-					file = file//LF
-					file_length = file_length + 1
-					write(*,'(a)') 'WARNING: Ignoring erroneous value of (T) for header in read of file "'// &
-									file_name//'". File has one line.'
+				if ( exists ) then
+					open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
+						  action='read', access='stream', position='rewind' )
+				else
+					error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+					return
 				end if
-			end do
 
-			if ( file_length == 0_int64 ) then
-				error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty after header.'
+				inquire( file=file_name, size=file_length )
+
+				if ( file_length == 0_int64 ) then
+					error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
+					return
+				end if
+
+				allocate( character(len=file_length) :: text_file%s )
+				read(unit=file_unit, iostat=iostat) text_file%s
+				close(file_unit)
+
+				if ( iostat > 0 ) then
+					error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+					return
+				end if
+
+				rows = text_file%split(separator=NL)
+
+				if ( rows(size(rows, kind=int64))%len64() < 1_int64 ) then
+					n_rows = size(rows, kind=int64) - 1_int64
+				else
+					n_rows = size(rows, kind=int64)
+				end if
+	
+				call process_parentheses(rows, column_separator=delim)
+
+				columns = rows(1_int64)%split(separator=delim)
+				n_cols = size(columns, kind=int64)
+	
+				allocate( cells(n_rows, n_cols) )
+	
+				cells(1_int64,:) = columns
+				deallocate(columns)
+
+				do concurrent (i = 2_int64:n_rows)
+					cells(i,:) = rows(i)%split(separator=delim)
+					deallocate(rows(i)%s)
+				end do
+	
+				call re_process_parentheses(cells, column_separator=delim)
+			end block custom_processing
+		else
+			call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
+
+			n_rows = size(cells, dim=1, kind=int64)
+			n_cols = size(cells, dim=2, kind=int64)
+		end if
+		call text_file%empty()
+
+		if ( (n_rows > 1_int64) .and. (n_cols > 1_int64) ) then
+			if ( header ) then
+				if ( n_rows /= 2_int64 ) then
+					error stop LF//'Error reading file "'//file_name//'". Data cannot fit into one-dimensional array.'
+					return
+				end if
+			else
+				error stop LF//'Error reading file "'//file_name//'". Data cannot fit into one-dimensional array.'// &
+							   ' If there are two rows including a header row, specify "header=.true." .'
 				return
 			end if
 		end if
 
-		n_rows = 0
-
-		do i = 1, file_length
-			if ( file(i:i) == NL ) then
-				n_rows = n_rows + 1
-			else if ( i == file_length ) then
-				file = file//LF
-				file_length = file_length + 1
-				n_rows = n_rows + 1
-			end if
-		end do
-
-		if ( len(im) > 0 ) then
-			allocate( character(len=1) :: im_chars(len(im)) )
-			do i = 1, len(im)
-				im_chars(i) = im(i:i)
-			end do
-		else
-			im_chars = [ EMPTY_STR ]
-		end if
-
-		if ( fmt == 'z' ) then
-			non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', &
-									'a', 'b', 'c', 'd', 'e', 'f', '(', ')', '+']
-		else
-			if ( locale == 'US' ) then
-				decimal = 'POINT'
-				non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', 'e', 'E', '+', '-', &
-										'(', ')']
-			else if ( locale == 'EU' ) then
-				decimal = 'COMMA'
-				non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ',', 'e', 'E', '+', '-', &
-										'(', ')']
-			end if
-		end if
-
-		if ( locale == 'US' ) then
-			sep = COMMA
-		else if ( locale == 'EU' ) then
-			sep = SEMICOLON
-		end if
-
-		ignore_sep = .false.
-		prev_char = '0'
-		n_columns = 0
-
-		do i = 1, file_length
-			current_char = file(i:i)
-			if ( current_char == '(' ) then
-				ignore_sep = .true.
-			else if ( current_char == ')' ) then
-				ignore_sep = .false.
-			end if
-
-			if ( any(non_separating_chars == current_char) .or. any(im_chars == current_char) ) then
-				prev_char = current_char
+		if ( n_cols == 1_int64 ) then
+			if ( header ) then
+				if ( .not. (n_rows > 1_int64) ) then
+					error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+					return
+				end if
+				
+				allocate( into(n_rows-1_int64) )
+				call cells(2_int64:,1_int64)%cast(into=into, locale=locale, fmt=fmt, im=im); return
 			else
-				if ( ignore_sep ) then
-					prev_char = current_char
-					cycle
-				end if
-
-				if ( any(non_separating_chars == prev_char) .or. any(im_chars == prev_char) ) then
-					prev_char = current_char
-					n_columns = n_columns + 1
-				else
-					prev_char = current_char
-				end if
+				allocate( into(n_rows) )
+				call cells(:,1_int64)%cast(into=into, locale=locale, fmt=fmt, im=im); return
 			end if
-
-			if ( current_char == NL ) exit
-		end do
-
-		if ( (n_rows > 1) .and. (n_columns > 1) ) then
-			error stop LF//'Error reading file "'//file_name//'". File data cannot fit into one-dimensional array.'
-			return
-		else if ( n_columns == 1 ) then
-			allocate( into(n_rows) )
-		else if ( n_rows == 1 ) then
-			allocate( into(n_columns) )
 		end if
 
-		ignore_sep = .false.
-		ind = 1
-		l1 = 1
-		l2 = 1
-		i = 1
-
-		read_into: do while ( i <= file_length )
-			current_char = file(i:i)
-			if ( current_char == '(' ) then
-				ignore_sep = .true.
-			else if ( current_char == ')' ) then
-				ignore_sep = .false.
+		if ( header ) then
+			if ( .not. (n_rows > 1_int64) ) then
+				error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+				return
 			end if
-
-			if ( any(non_separating_chars == current_char) ) then
-				if ( .not. any(non_separating_chars == file(l2:l2)) ) l1 = i
-				l2 = i
-			else if ( current_char == im_chars(1) ) then
-				number = file(l1:i-1)
-				do j = 2, len(number)
-					if ( (number(j:j) == '+') .or. (number(j:j) == '-') ) then
-						if ( fmt == 'e' ) then
-							if ( (number(j-1:j-1) /= 'E') .and. (number(j-1:j-1) /= 'e') ) then
-								sep_pos = j
-								exit
-							end if
-						else
-							sep_pos = j
-							exit
-						end if
-					end if
-				end do
-				if ( fmt == 'z' ) then
-					read(unit=number(:sep_pos-1), fmt='(z'//str(len(number(:sep_pos-1)))//')') c%re
-					read(unit=number(sep_pos+1:), fmt='(z'//str(len(number(sep_pos+1:)))//')') c%im
-				else
-					read(unit=number(:sep_pos-1), fmt=*, decimal=decimal) c%re
-					read(unit=number(sep_pos:), fmt=*, decimal=decimal) c%im
-				end if
-				into(ind) = c
-				if ( ind /= size(into) ) then
-					ind = ind + 1
-				else
-					exit read_into
-				end if
-				l2 = i
-				i = i + size(im_chars)
-				cycle read_into
-			else
-				if ( ignore_sep ) then
-					l2 = i + 1
-					i = i + 1
-					cycle read_into
-				end if
-
-				if ( any(non_separating_chars == file(l2:l2)) ) then
-					number = file(l1+1:l2-1)
-					do j = 1, len(number)
-						if ( number(j:j) == sep ) then
-							sep_pos = j
-							exit
-						end if
-					end do
-					if ( fmt == 'z' ) then
-						read(unit=number(:sep_pos-1), fmt='(z'//str(len(number(:sep_pos-1)))//')') c%re
-						read(unit=number(sep_pos+1:), fmt='(z'//str(len(number(sep_pos+1:)))//')') c%im
-					else
-						read(unit=number(:sep_pos-1), fmt=*, decimal=decimal) c%re
-						read(unit=number(sep_pos+1:), fmt=*, decimal=decimal) c%im
-					end if
-					into(ind) = c
-					if ( ind /= size(into) ) then
-						ind = ind + 1
-					else
-						exit read_into
-					end if
-					l2 = i
-				else
-					l2 = i
-				end if
-			end if
-			i = i + 1
-		end do read_into
+			
+			allocate( into(n_cols) )
+			call cells(2_int64,:)%cast(into=into, locale=locale, fmt=fmt, im=im); return
+		else
+			allocate( into(n_cols) )
+			call cells(1_int64,:)%cast(into=into, locale=locale, fmt=fmt, im=im); return
+		end if
 	end procedure from_text_1dc32
 
 	module procedure from_text_2dc128
-		logical :: exists, ignore_sep
-		integer :: file_unit, iostat
-		integer :: n_rows, n_columns
-		integer :: i, j, row, column, l1, l2, sep_pos
+		type(String) :: text_file
+		type(String), allocatable, dimension(:,:) :: cells
+		integer(int64) :: n_rows, n_cols
 
-		complex(real128) :: c
-		type(String), allocatable, dimension(:) :: lines
-		character(len=:), allocatable, dimension(:) :: im_chars, non_separating_chars
-		character(len=:), allocatable :: file, decimal, sep, number
-		character(len=1) :: prev_char, current_char
-		integer(int64) :: file_length
+		if ( len(im) == 0 ) then
+			custom_processing: block
+				type(String), allocatable, dimension(:) :: rows, columns
+				integer(int64) :: file_length, i
+				integer :: file_unit, iostat
+				logical :: exists
 
-		inquire( file=file_name, exist=exists )
+				inquire( file=file_name, exist=exists )
 
-		file_unit = input_unit
+				file_unit = input_unit
 
-		if ( exists ) then
-			open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-				  action='read', access='stream', position='rewind' )
+				if ( exists ) then
+					open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
+						  action='read', access='stream', position='rewind' )
+				else
+					error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+					return
+				end if
+
+				inquire( file=file_name, size=file_length )
+
+				if ( file_length == 0_int64 ) then
+					error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
+					return
+				end if
+
+				allocate( character(len=file_length) :: text_file%s )
+				read(unit=file_unit, iostat=iostat) text_file%s
+				close(file_unit)
+
+				if ( iostat > 0 ) then
+					error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+					return
+				end if
+
+				rows = text_file%split(separator=NL)
+
+				if ( rows(size(rows, kind=int64))%len64() < 1_int64 ) then
+					n_rows = size(rows, kind=int64) - 1_int64
+				else
+					n_rows = size(rows, kind=int64)
+				end if
+	
+				call process_parentheses(rows, column_separator=delim)
+
+				columns = rows(1_int64)%split(separator=delim)
+				n_cols = size(columns, kind=int64)
+	
+				allocate( cells(n_rows, n_cols) )
+	
+				cells(1_int64,:) = columns
+				deallocate(columns)
+
+				do concurrent (i = 2_int64:n_rows)
+					cells(i,:) = rows(i)%split(separator=delim)
+					deallocate(rows(i)%s)
+				end do
+	
+				call re_process_parentheses(cells, column_separator=delim)
+			end block custom_processing
 		else
-			error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
-			return
+			call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
+
+			n_rows = size(cells, dim=1, kind=int64)
+			n_cols = size(cells, dim=2, kind=int64)
 		end if
-
-		inquire( file=file_name, size=file_length )
-
-		if ( file_length == 0_int64 ) then
-			error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
-			return
-		end if
-
-		allocate( character(len=file_length) :: file )
-		read(unit=file_unit, iostat=iostat) file
-		close(file_unit)
-
-		if ( iostat > 0 ) then
-			error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
-			return
-		end if
+		call text_file%empty()
 
 		if ( header ) then
-			do i = 1, file_length
-				if ( file(i:i) == NL ) then
-					file = file(i+1:)
-					file_length = len(file)
-					exit
-				else if ( i == file_length ) then
-					file = file//LF
-					file_length = file_length + 1
-					write(*,'(a)') 'WARNING: Ignoring erroneous value of (T) for header in read of file "'// &
-									file_name//'". File has one line.'
-				end if
-			end do
-
-			if ( file_length == 0_int64 ) then
-				error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty after header.'
+			if ( .not. (n_rows > 1_int64) ) then
+				error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
 				return
 			end if
-		end if
 
-		n_rows = 0
-
-		do i = 1, file_length
-			if ( file(i:i) == NL ) then
-				n_rows = n_rows + 1
-			else if ( i == file_length ) then
-				file = file//LF
-				file_length = file_length + 1
-				n_rows = n_rows + 1
-			end if
-		end do
-
-		if ( len(im) > 0 ) then
-			allocate( character(len=1) :: im_chars(len(im)) )
-			do i = 1, len(im)
-				im_chars(i) = im(i:i)
-			end do
+			allocate( into(n_rows-1_int64,n_cols) )
+			call cells(2_int64:,:)%cast(into=into, locale=locale, fmt=fmt, im=im); return
 		else
-			im_chars = [ EMPTY_STR ]
+			allocate( into(n_rows,n_cols) )
+			call cells%cast(into=into, locale=locale, fmt=fmt, im=im); return
 		end if
-
-		if ( fmt == 'z' ) then
-			non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', &
-									'a', 'b', 'c', 'd', 'e', 'f', '(', ')', '+']
-		else
-			if ( locale == 'US' ) then
-				decimal = 'POINT'
-				non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', 'e', 'E', '+', '-', &
-										'(', ')']
-			else if ( locale == 'EU' ) then
-				decimal = 'COMMA'
-				non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ',', 'e', 'E', '+', '-', &
-										'(', ')']
-			end if
-		end if
-
-		if ( locale == 'US' ) then
-			sep = COMMA
-		else if ( locale == 'EU' ) then
-			sep = SEMICOLON
-		end if
-
-		ignore_sep = .false.
-		prev_char = '0'
-		n_columns = 0
-
-		do i = 1, file_length
-			current_char = file(i:i)
-			if ( current_char == '(' ) then
-				ignore_sep = .true.
-			else if ( current_char == ')' ) then
-				ignore_sep = .false.
-			end if
-
-			if ( any(non_separating_chars == current_char) .or. any(im_chars == current_char) ) then
-				prev_char = current_char
-			else
-				if ( ignore_sep ) then
-					prev_char = current_char
-					cycle
-				end if
-
-				if ( any(non_separating_chars == prev_char) .or. any(im_chars == prev_char) ) then
-					prev_char = current_char
-					n_columns = n_columns + 1
-				else
-					prev_char = current_char
-				end if
-			end if
-
-			if ( current_char == NL ) exit
-		end do
-
-		allocate( lines(n_rows) )
-
-		row = 1
-		l1 = 1
-
-		do i = 1, file_length
-			if ( file(i:i) == NL ) then
-				lines(row)%s = file(l1:i)
-				if ( row /= n_rows ) then
-					row = row + 1
-					l1 = i + 1
-				else
-					exit
-				end if
-			end if
-		end do
-
-		deallocate(file)
-
-		allocate( into(n_rows, n_columns) )
-
-		do concurrent (row = 1:n_rows)
-			ignore_sep = .false.
-			column = 1
-			l1 = 1
-			l2 = 1
-			i = 1
-			read_into: do while ( i <= len(lines(row)%s) )
-				current_char = lines(row)%s(i:i)
-				if ( current_char == '(' ) then
-					ignore_sep = .true.
-				else if ( current_char == ')' ) then
-					ignore_sep = .false.
-				end if
-
-				if ( any(non_separating_chars == current_char) ) then
-					if ( .not. any(non_separating_chars == lines(row)%s(l2:l2)) ) l1 = i
-					l2 = i
-				else if ( current_char == im_chars(1) ) then
-					number = lines(row)%s(l1:i-1)
-					do j = 2, len(number)
-						if ( (number(j:j) == '+') .or. (number(j:j) == '-') ) then
-							if ( fmt == 'e' ) then
-								if ( (number(j-1:j-1) /= 'E') .and. (number(j-1:j-1) /= 'e') ) then
-									sep_pos = j
-									exit
-								end if
-							else
-								sep_pos = j
-								exit
-							end if
-						end if
-					end do
-					if ( fmt == 'z' ) then
-						read(unit=number(:sep_pos-1), fmt='(z'//str(len(number(:sep_pos-1)))//')') c%re
-						read(unit=number(sep_pos+1:), fmt='(z'//str(len(number(sep_pos+1:)))//')') c%im
-					else
-						read(unit=number(:sep_pos-1), fmt=*, decimal=decimal) c%re
-						read(unit=number(sep_pos:), fmt=*, decimal=decimal) c%im
-					end if
-					into(row, column) = c
-					if ( column /= n_columns ) then
-						column = column + 1
-					else
-						exit read_into
-					end if
-					l2 = i
-					i = i + size(im_chars)
-					cycle read_into
-				else
-					if ( ignore_sep ) then
-						l2 = i + 1
-						i = i + 1
-						cycle read_into
-					end if
-
-					if ( any(non_separating_chars == lines(row)%s(l2:l2)) ) then
-						number = lines(row)%s(l1+1:l2-1)
-						do j = 1, len(number)
-							if ( number(j:j) == sep ) then
-								sep_pos = j
-								exit
-							end if
-						end do
-						if ( fmt == 'z' ) then
-							read(unit=number(:sep_pos-1), fmt='(z'//str(len(number(:sep_pos-1)))//')') c%re
-							read(unit=number(sep_pos+1:), fmt='(z'//str(len(number(sep_pos+1:)))//')') c%im
-						else
-							read(unit=number(:sep_pos-1), fmt=*, decimal=decimal) c%re
-							read(unit=number(sep_pos+1:), fmt=*, decimal=decimal) c%im
-						end if
-						into(row, column) = c
-						if ( column /= n_columns ) then
-							column = column + 1
-						else
-							exit read_into
-						end if
-						l2 = i
-					else
-						l2 = i
-					end if
-				end if
-				i = i + 1
-			end do read_into
-		end do
 	end procedure from_text_2dc128
 	module procedure from_text_2dc64
-		logical :: exists, ignore_sep
-		integer :: file_unit, iostat
-		integer :: n_rows, n_columns
-		integer :: i, j, row, column, l1, l2, sep_pos
+		type(String) :: text_file
+		type(String), allocatable, dimension(:,:) :: cells
+		integer(int64) :: n_rows, n_cols
 
-		complex(real64) :: c
-		type(String), allocatable, dimension(:) :: lines
-		character(len=:), allocatable, dimension(:) :: im_chars, non_separating_chars
-		character(len=:), allocatable :: file, decimal, sep, number
-		character(len=1) :: prev_char, current_char
-		integer(int64) :: file_length
+		if ( len(im) == 0 ) then
+			custom_processing: block
+				type(String), allocatable, dimension(:) :: rows, columns
+				integer(int64) :: file_length, i
+				integer :: file_unit, iostat
+				logical :: exists
 
-		inquire( file=file_name, exist=exists )
+				inquire( file=file_name, exist=exists )
 
-		file_unit = input_unit
+				file_unit = input_unit
 
-		if ( exists ) then
-			open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-				  action='read', access='stream', position='rewind' )
+				if ( exists ) then
+					open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
+						  action='read', access='stream', position='rewind' )
+				else
+					error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+					return
+				end if
+
+				inquire( file=file_name, size=file_length )
+
+				if ( file_length == 0_int64 ) then
+					error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
+					return
+				end if
+
+				allocate( character(len=file_length) :: text_file%s )
+				read(unit=file_unit, iostat=iostat) text_file%s
+				close(file_unit)
+
+				if ( iostat > 0 ) then
+					error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+					return
+				end if
+
+				rows = text_file%split(separator=NL)
+
+				if ( rows(size(rows, kind=int64))%len64() < 1_int64 ) then
+					n_rows = size(rows, kind=int64) - 1_int64
+				else
+					n_rows = size(rows, kind=int64)
+				end if
+	
+				call process_parentheses(rows, column_separator=delim)
+
+				columns = rows(1_int64)%split(separator=delim)
+				n_cols = size(columns, kind=int64)
+	
+				allocate( cells(n_rows, n_cols) )
+	
+				cells(1_int64,:) = columns
+				deallocate(columns)
+
+				do concurrent (i = 2_int64:n_rows)
+					cells(i,:) = rows(i)%split(separator=delim)
+					deallocate(rows(i)%s)
+				end do
+	
+				call re_process_parentheses(cells, column_separator=delim)
+			end block custom_processing
 		else
-			error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
-			return
+			call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
+
+			n_rows = size(cells, dim=1, kind=int64)
+			n_cols = size(cells, dim=2, kind=int64)
 		end if
-
-		inquire( file=file_name, size=file_length )
-
-		if ( file_length == 0_int64 ) then
-			error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
-			return
-		end if
-
-		allocate( character(len=file_length) :: file )
-		read(unit=file_unit, iostat=iostat) file
-		close(file_unit)
-
-		if ( iostat > 0 ) then
-			error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
-			return
-		end if
+		call text_file%empty()
 
 		if ( header ) then
-			do i = 1, file_length
-				if ( file(i:i) == NL ) then
-					file = file(i+1:)
-					file_length = len(file)
-					exit
-				else if ( i == file_length ) then
-					file = file//LF
-					file_length = file_length + 1
-					write(*,'(a)') 'WARNING: Ignoring erroneous value of (T) for header in read of file "'// &
-									file_name//'". File has one line.'
-				end if
-			end do
-
-			if ( file_length == 0_int64 ) then
-				error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty after header.'
+			if ( .not. (n_rows > 1_int64) ) then
+				error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
 				return
 			end if
-		end if
 
-		n_rows = 0
-
-		do i = 1, file_length
-			if ( file(i:i) == NL ) then
-				n_rows = n_rows + 1
-			else if ( i == file_length ) then
-				file = file//LF
-				file_length = file_length + 1
-				n_rows = n_rows + 1
-			end if
-		end do
-
-		if ( len(im) > 0 ) then
-			allocate( character(len=1) :: im_chars(len(im)) )
-			do i = 1, len(im)
-				im_chars(i) = im(i:i)
-			end do
+			allocate( into(n_rows-1_int64,n_cols) )
+			call cells(2_int64:,:)%cast(into=into, locale=locale, fmt=fmt, im=im); return
 		else
-			im_chars = [ EMPTY_STR ]
+			allocate( into(n_rows,n_cols) )
+			call cells%cast(into=into, locale=locale, fmt=fmt, im=im); return
 		end if
-
-		if ( fmt == 'z' ) then
-			non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', &
-									'a', 'b', 'c', 'd', 'e', 'f', '(', ')', '+']
-		else
-			if ( locale == 'US' ) then
-				decimal = 'POINT'
-				non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', 'e', 'E', '+', '-', &
-										'(', ')']
-			else if ( locale == 'EU' ) then
-				decimal = 'COMMA'
-				non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ',', 'e', 'E', '+', '-', &
-										'(', ')']
-			end if
-		end if
-
-		if ( locale == 'US' ) then
-			sep = COMMA
-		else if ( locale == 'EU' ) then
-			sep = SEMICOLON
-		end if
-
-		ignore_sep = .false.
-		prev_char = '0'
-		n_columns = 0
-
-		do i = 1, file_length
-			current_char = file(i:i)
-			if ( current_char == '(' ) then
-				ignore_sep = .true.
-			else if ( current_char == ')' ) then
-				ignore_sep = .false.
-			end if
-
-			if ( any(non_separating_chars == current_char) .or. any(im_chars == current_char) ) then
-				prev_char = current_char
-			else
-				if ( ignore_sep ) then
-					prev_char = current_char
-					cycle
-				end if
-
-				if ( any(non_separating_chars == prev_char) .or. any(im_chars == prev_char) ) then
-					prev_char = current_char
-					n_columns = n_columns + 1
-				else
-					prev_char = current_char
-				end if
-			end if
-
-			if ( current_char == NL ) exit
-		end do
-
-		allocate( lines(n_rows) )
-
-		row = 1
-		l1 = 1
-
-		do i = 1, file_length
-			if ( file(i:i) == NL ) then
-				lines(row)%s = file(l1:i)
-				if ( row /= n_rows ) then
-					row = row + 1
-					l1 = i + 1
-				else
-					exit
-				end if
-			end if
-		end do
-
-		deallocate(file)
-
-		allocate( into(n_rows, n_columns) )
-
-		do concurrent (row = 1:n_rows)
-			ignore_sep = .false.
-			column = 1
-			l1 = 1
-			l2 = 1
-			i = 1
-			read_into: do while ( i <= len(lines(row)%s) )
-				current_char = lines(row)%s(i:i)
-				if ( current_char == '(' ) then
-					ignore_sep = .true.
-				else if ( current_char == ')' ) then
-					ignore_sep = .false.
-				end if
-
-				if ( any(non_separating_chars == current_char) ) then
-					if ( .not. any(non_separating_chars == lines(row)%s(l2:l2)) ) l1 = i
-					l2 = i
-				else if ( current_char == im_chars(1) ) then
-					number = lines(row)%s(l1:i-1)
-					do j = 2, len(number)
-						if ( (number(j:j) == '+') .or. (number(j:j) == '-') ) then
-							if ( fmt == 'e' ) then
-								if ( (number(j-1:j-1) /= 'E') .and. (number(j-1:j-1) /= 'e') ) then
-									sep_pos = j
-									exit
-								end if
-							else
-								sep_pos = j
-								exit
-							end if
-						end if
-					end do
-					if ( fmt == 'z' ) then
-						read(unit=number(:sep_pos-1), fmt='(z'//str(len(number(:sep_pos-1)))//')') c%re
-						read(unit=number(sep_pos+1:), fmt='(z'//str(len(number(sep_pos+1:)))//')') c%im
-					else
-						read(unit=number(:sep_pos-1), fmt=*, decimal=decimal) c%re
-						read(unit=number(sep_pos:), fmt=*, decimal=decimal) c%im
-					end if
-					into(row, column) = c
-					if ( column /= n_columns ) then
-						column = column + 1
-					else
-						exit read_into
-					end if
-					l2 = i
-					i = i + size(im_chars)
-					cycle read_into
-				else
-					if ( ignore_sep ) then
-						l2 = i + 1
-						i = i + 1
-						cycle read_into
-					end if
-
-					if ( any(non_separating_chars == lines(row)%s(l2:l2)) ) then
-						number = lines(row)%s(l1+1:l2-1)
-						do j = 1, len(number)
-							if ( number(j:j) == sep ) then
-								sep_pos = j
-								exit
-							end if
-						end do
-						if ( fmt == 'z' ) then
-							read(unit=number(:sep_pos-1), fmt='(z'//str(len(number(:sep_pos-1)))//')') c%re
-							read(unit=number(sep_pos+1:), fmt='(z'//str(len(number(sep_pos+1:)))//')') c%im
-						else
-							read(unit=number(:sep_pos-1), fmt=*, decimal=decimal) c%re
-							read(unit=number(sep_pos+1:), fmt=*, decimal=decimal) c%im
-						end if
-						into(row, column) = c
-						if ( column /= n_columns ) then
-							column = column + 1
-						else
-							exit read_into
-						end if
-						l2 = i
-					else
-						l2 = i
-					end if
-				end if
-				i = i + 1
-			end do read_into
-		end do
 	end procedure from_text_2dc64
 	module procedure from_text_2dc32
-		logical :: exists, ignore_sep
-		integer :: file_unit, iostat
-		integer :: n_rows, n_columns
-		integer :: i, j, row, column, l1, l2, sep_pos
+		type(String) :: text_file
+		type(String), allocatable, dimension(:,:) :: cells
+		integer(int64) :: n_rows, n_cols
 
-		complex(real32) :: c
-		type(String), allocatable, dimension(:) :: lines
-		character(len=:), allocatable, dimension(:) :: im_chars, non_separating_chars
-		character(len=:), allocatable :: file, decimal, sep, number
-		character(len=1) :: prev_char, current_char
-		integer(int64) :: file_length
+		if ( len(im) == 0 ) then
+			custom_processing: block
+				type(String), allocatable, dimension(:) :: rows, columns
+				integer(int64) :: file_length, i
+				integer :: file_unit, iostat
+				logical :: exists
 
-		inquire( file=file_name, exist=exists )
+				inquire( file=file_name, exist=exists )
 
-		file_unit = input_unit
+				file_unit = input_unit
 
-		if ( exists ) then
-			open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-				  action='read', access='stream', position='rewind' )
+				if ( exists ) then
+					open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
+						  action='read', access='stream', position='rewind' )
+				else
+					error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+					return
+				end if
+
+				inquire( file=file_name, size=file_length )
+
+				if ( file_length == 0_int64 ) then
+					error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
+					return
+				end if
+
+				allocate( character(len=file_length) :: text_file%s )
+				read(unit=file_unit, iostat=iostat) text_file%s
+				close(file_unit)
+
+				if ( iostat > 0 ) then
+					error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+					return
+				end if
+
+				rows = text_file%split(separator=NL)
+
+				if ( rows(size(rows, kind=int64))%len64() < 1_int64 ) then
+					n_rows = size(rows, kind=int64) - 1_int64
+				else
+					n_rows = size(rows, kind=int64)
+				end if
+	
+				call process_parentheses(rows, column_separator=delim)
+
+				columns = rows(1_int64)%split(separator=delim)
+				n_cols = size(columns, kind=int64)
+	
+				allocate( cells(n_rows, n_cols) )
+	
+				cells(1_int64,:) = columns
+				deallocate(columns)
+
+				do concurrent (i = 2_int64:n_rows)
+					cells(i,:) = rows(i)%split(separator=delim)
+					deallocate(rows(i)%s)
+				end do
+	
+				call re_process_parentheses(cells, column_separator=delim)
+			end block custom_processing
 		else
-			error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
-			return
+			call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
+
+			n_rows = size(cells, dim=1, kind=int64)
+			n_cols = size(cells, dim=2, kind=int64)
 		end if
-
-		inquire( file=file_name, size=file_length )
-
-		if ( file_length == 0_int64 ) then
-			error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
-			return
-		end if
-
-		allocate( character(len=file_length) :: file )
-		read(unit=file_unit, iostat=iostat) file
-		close(file_unit)
-
-		if ( iostat > 0 ) then
-			error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
-			return
-		end if
+		call text_file%empty()
 
 		if ( header ) then
-			do i = 1, file_length
-				if ( file(i:i) == NL ) then
-					file = file(i+1:)
-					file_length = len(file)
-					exit
-				else if ( i == file_length ) then
-					file = file//LF
-					file_length = file_length + 1
-					write(*,'(a)') 'WARNING: Ignoring erroneous value of (T) for header in read of file "'// &
-									file_name//'". File has one line.'
-				end if
-			end do
-
-			if ( file_length == 0_int64 ) then
-				error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty after header.'
+			if ( .not. (n_rows > 1_int64) ) then
+				error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
 				return
 			end if
-		end if
 
-		n_rows = 0
-
-		do i = 1, file_length
-			if ( file(i:i) == NL ) then
-				n_rows = n_rows + 1
-			else if ( i == file_length ) then
-				file = file//LF
-				file_length = file_length + 1
-				n_rows = n_rows + 1
-			end if
-		end do
-
-		if ( len(im) > 0 ) then
-			allocate( character(len=1) :: im_chars(len(im)) )
-			do i = 1, len(im)
-				im_chars(i) = im(i:i)
-			end do
+			allocate( into(n_rows-1_int64,n_cols) )
+			call cells(2_int64:,:)%cast(into=into, locale=locale, fmt=fmt, im=im); return
 		else
-			im_chars = [ EMPTY_STR ]
+			allocate( into(n_rows,n_cols) )
+			call cells%cast(into=into, locale=locale, fmt=fmt, im=im); return
 		end if
-
-		if ( fmt == 'z' ) then
-			non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', &
-									'a', 'b', 'c', 'd', 'e', 'f', '(', ')', '+']
-		else
-			if ( locale == 'US' ) then
-				decimal = 'POINT'
-				non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', 'e', 'E', '+', '-', &
-										'(', ')']
-			else if ( locale == 'EU' ) then
-				decimal = 'COMMA'
-				non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ',', 'e', 'E', '+', '-', &
-										'(', ')']
-			end if
-		end if
-
-		if ( locale == 'US' ) then
-			sep = COMMA
-		else if ( locale == 'EU' ) then
-			sep = SEMICOLON
-		end if
-
-		ignore_sep = .false.
-		prev_char = '0'
-		n_columns = 0
-
-		do i = 1, file_length
-			current_char = file(i:i)
-			if ( current_char == '(' ) then
-				ignore_sep = .true.
-			else if ( current_char == ')' ) then
-				ignore_sep = .false.
-			end if
-
-			if ( any(non_separating_chars == current_char) .or. any(im_chars == current_char) ) then
-				prev_char = current_char
-			else
-				if ( ignore_sep ) then
-					prev_char = current_char
-					cycle
-				end if
-
-				if ( any(non_separating_chars == prev_char) .or. any(im_chars == prev_char) ) then
-					prev_char = current_char
-					n_columns = n_columns + 1
-				else
-					prev_char = current_char
-				end if
-			end if
-
-			if ( current_char == NL ) exit
-		end do
-
-		allocate( lines(n_rows) )
-
-		row = 1
-		l1 = 1
-
-		do i = 1, file_length
-			if ( file(i:i) == NL ) then
-				lines(row)%s = file(l1:i)
-				if ( row /= n_rows ) then
-					row = row + 1
-					l1 = i + 1
-				else
-					exit
-				end if
-			end if
-		end do
-
-		deallocate(file)
-
-		allocate( into(n_rows, n_columns) )
-
-		do concurrent (row = 1:n_rows)
-			ignore_sep = .false.
-			column = 1
-			l1 = 1
-			l2 = 1
-			i = 1
-			read_into: do while ( i <= len(lines(row)%s) )
-				current_char = lines(row)%s(i:i)
-				if ( current_char == '(' ) then
-					ignore_sep = .true.
-				else if ( current_char == ')' ) then
-					ignore_sep = .false.
-				end if
-
-				if ( any(non_separating_chars == current_char) ) then
-					if ( .not. any(non_separating_chars == lines(row)%s(l2:l2)) ) l1 = i
-					l2 = i
-				else if ( current_char == im_chars(1) ) then
-					number = lines(row)%s(l1:i-1)
-					do j = 2, len(number)
-						if ( (number(j:j) == '+') .or. (number(j:j) == '-') ) then
-							if ( fmt == 'e' ) then
-								if ( (number(j-1:j-1) /= 'E') .and. (number(j-1:j-1) /= 'e') ) then
-									sep_pos = j
-									exit
-								end if
-							else
-								sep_pos = j
-								exit
-							end if
-						end if
-					end do
-					if ( fmt == 'z' ) then
-						read(unit=number(:sep_pos-1), fmt='(z'//str(len(number(:sep_pos-1)))//')') c%re
-						read(unit=number(sep_pos+1:), fmt='(z'//str(len(number(sep_pos+1:)))//')') c%im
-					else
-						read(unit=number(:sep_pos-1), fmt=*, decimal=decimal) c%re
-						read(unit=number(sep_pos:), fmt=*, decimal=decimal) c%im
-					end if
-					into(row, column) = c
-					if ( column /= n_columns ) then
-						column = column + 1
-					else
-						exit read_into
-					end if
-					l2 = i
-					i = i + size(im_chars)
-					cycle read_into
-				else
-					if ( ignore_sep ) then
-						l2 = i + 1
-						i = i + 1
-						cycle read_into
-					end if
-
-					if ( any(non_separating_chars == lines(row)%s(l2:l2)) ) then
-						number = lines(row)%s(l1+1:l2-1)
-						do j = 1, len(number)
-							if ( number(j:j) == sep ) then
-								sep_pos = j
-								exit
-							end if
-						end do
-						if ( fmt == 'z' ) then
-							read(unit=number(:sep_pos-1), fmt='(z'//str(len(number(:sep_pos-1)))//')') c%re
-							read(unit=number(sep_pos+1:), fmt='(z'//str(len(number(sep_pos+1:)))//')') c%im
-						else
-							read(unit=number(:sep_pos-1), fmt=*, decimal=decimal) c%re
-							read(unit=number(sep_pos+1:), fmt=*, decimal=decimal) c%im
-						end if
-						into(row, column) = c
-						if ( column /= n_columns ) then
-							column = column + 1
-						else
-							exit read_into
-						end if
-						l2 = i
-					else
-						l2 = i
-					end if
-				end if
-				i = i + 1
-			end do read_into
-		end do
 	end procedure from_text_2dc32
 
 	module procedure from_text_1dr128
-		logical :: exists
-		integer :: file_unit, iostat
-		integer :: n_rows, n_columns
-		integer :: i, ind, l1, l2
+		type(String) :: text_file
+		type(String), allocatable, dimension(:,:) :: cells
+		integer(int64) :: n_rows, n_cols
 
-		character(len=:), allocatable, dimension(:) :: non_separating_chars
-		character(len=:), allocatable :: file, decimal
-		character(len=1) :: prev_char, current_char
-		integer(int64) :: file_length
+		call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
+		call text_file%empty()
 
-		inquire( file=file_name, exist=exists )
+		n_rows = size(cells, dim=1, kind=int64)
+		n_cols = size(cells, dim=2, kind=int64)
 
-		file_unit = input_unit
-
-		if ( exists ) then
-			open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-				  action='read', access='stream', position='rewind' )
-		else
-			error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
-			return
-		end if
-
-		inquire( file=file_name, size=file_length )
-
-		if ( file_length == 0_int64 ) then
-			error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
-			return
-		end if
-
-		allocate( character(len=file_length) :: file )
-		read(unit=file_unit, iostat=iostat) file
-		close(file_unit)
-
-		if ( iostat > 0 ) then
-			error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
-			return
-		end if
-
-		if ( header ) then
-			do i = 1, file_length
-				if ( file(i:i) == NL ) then
-					file = file(i+1:)
-					file_length = len(file)
-					exit
-				else if ( i == file_length ) then
-					file = file//LF
-					file_length = file_length + 1
-					write(*,'(a)') 'WARNING: Ignoring erroneous value of (T) for header in read of file "'// &
-									file_name//'". File has one line.'
+		if ( (n_rows > 1_int64) .and. (n_cols > 1_int64) ) then
+			if ( header ) then
+				if ( n_rows /= 2_int64 ) then
+					error stop LF//'Error reading file "'//file_name//'". Data cannot fit into one-dimensional array.'
+					return
 				end if
-			end do
-
-			if ( file_length == 0_int64 ) then
-				error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty after header.'
+			else
+				error stop LF//'Error reading file "'//file_name//'". Data cannot fit into one-dimensional array.'// &
+							   ' If there are two rows including a header row, specify "header=.true." .'
 				return
 			end if
 		end if
 
-		n_rows = 0
-
-		do i = 1, file_length
-			if ( file(i:i) == NL ) then
-				n_rows = n_rows + 1
-			else if ( i == file_length ) then
-				file = file//LF
-				file_length = file_length + 1
-				n_rows = n_rows + 1
+		if ( n_cols == 1_int64 ) then
+			if ( header ) then
+				if ( .not. (n_rows > 1_int64) ) then
+					error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+					return
+				end if
+				
+				allocate( into(n_rows-1_int64) )
+				call cells(2_int64:,1_int64)%cast(into=into, locale=locale, fmt=fmt); return
+			else
+				allocate( into(n_rows) )
+				call cells(:,1_int64)%cast(into=into, locale=locale, fmt=fmt); return
 			end if
-		end do
+		end if
 
-		if ( fmt == 'z' ) then
-			non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', &
-									'a', 'b', 'c', 'd', 'e', 'f']
+		if ( header ) then
+			if ( .not. (n_rows > 1_int64) ) then
+				error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+				return
+			end if
+			
+			allocate( into(n_cols) )
+			call cells(2_int64,:)%cast(into=into, locale=locale, fmt=fmt); return
 		else
-			if ( locale == 'US' ) then
-				decimal = 'POINT'
-				non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', 'e', 'E', '+', '-']
-			else if ( locale == 'EU' ) then
-				decimal = 'COMMA'
-				non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ',', 'e', 'E', '+', '-']
-			end if
+			allocate( into(n_cols) )
+			call cells(1_int64,:)%cast(into=into, locale=locale, fmt=fmt); return
 		end if
-
-		prev_char = '0'
-		n_columns = 0
-
-		do i = 1, file_length
-			current_char = file(i:i)
-
-			if ( any(non_separating_chars == current_char) ) then
-				prev_char = current_char
-			else
-				if ( any(non_separating_chars == prev_char) ) then
-					prev_char = current_char
-					n_columns = n_columns + 1
-				else
-					prev_char = current_char
-				end if
-			end if
-
-			if ( current_char == NL ) exit
-		end do
-
-		if ( (n_rows > 1) .and. (n_columns > 1) ) then
-			error stop LF//'Error reading file "'//file_name//'". File data cannot fit into one-dimensional array.'
-			return
-		else if ( n_columns == 1 ) then
-			allocate( into(n_rows) )
-		else if ( n_rows == 1 ) then
-			allocate( into(n_columns) )
-		end if
-
-		ind = 1
-		l1 = 1
-		l2 = 1
-
-		read_into: do i = 1, file_length
-			if ( any(non_separating_chars == file(i:i)) ) then
-				if ( .not. any(non_separating_chars == file(l2:l2)) ) l1 = i
-				l2 = i
-			else
-				if ( any(non_separating_chars == file(l2:l2)) ) then
-					if ( fmt == 'z' ) then
-						read(unit=file(l1:l2), fmt='(z'//str(l2-l1+1)//')') into(ind)
-					else
-						read(unit=file(l1:l2), fmt=*, decimal=decimal) into(ind)
-					end if
-					if ( ind /= size(into) ) then
-						ind = ind + 1
-					else
-						exit read_into
-					end if
-					l2 = i
-				else
-					l2 = i
-				end if
-			end if
-		end do read_into
 	end procedure from_text_1dr128
 	module procedure from_text_1dr64
-		logical :: exists
-		integer :: file_unit, iostat
-		integer :: n_rows, n_columns
-		integer :: i, ind, l1, l2
+		type(String) :: text_file
+		type(String), allocatable, dimension(:,:) :: cells
+		integer(int64) :: n_rows, n_cols
 
-		character(len=:), allocatable, dimension(:) :: non_separating_chars
-		character(len=:), allocatable :: file, decimal
-		character(len=1) :: prev_char, current_char
-		integer(int64) :: file_length
+		call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
+		call text_file%empty()
 
-		inquire( file=file_name, exist=exists )
+		n_rows = size(cells, dim=1, kind=int64)
+		n_cols = size(cells, dim=2, kind=int64)
 
-		file_unit = input_unit
-
-		if ( exists ) then
-			open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-				  action='read', access='stream', position='rewind' )
-		else
-			error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
-			return
-		end if
-
-		inquire( file=file_name, size=file_length )
-
-		if ( file_length == 0_int64 ) then
-			error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
-			return
-		end if
-
-		allocate( character(len=file_length) :: file )
-		read(unit=file_unit, iostat=iostat) file
-		close(file_unit)
-
-		if ( iostat > 0 ) then
-			error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
-			return
-		end if
-
-		if ( header ) then
-			do i = 1, file_length
-				if ( file(i:i) == NL ) then
-					file = file(i+1:)
-					file_length = len(file)
-					exit
-				else if ( i == file_length ) then
-					file = file//LF
-					file_length = file_length + 1
-					write(*,'(a)') 'WARNING: Ignoring erroneous value of (T) for header in read of file "'// &
-									file_name//'". File has one line.'
+		if ( (n_rows > 1_int64) .and. (n_cols > 1_int64) ) then
+			if ( header ) then
+				if ( n_rows /= 2_int64 ) then
+					error stop LF//'Error reading file "'//file_name//'". Data cannot fit into one-dimensional array.'
+					return
 				end if
-			end do
-
-			if ( file_length == 0_int64 ) then
-				error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty after header.'
+			else
+				error stop LF//'Error reading file "'//file_name//'". Data cannot fit into one-dimensional array.'// &
+							   ' If there are two rows including a header row, specify "header=.true." .'
 				return
 			end if
 		end if
 
-		n_rows = 0
-
-		do i = 1, file_length
-			if ( file(i:i) == NL ) then
-				n_rows = n_rows + 1
-			else if ( i == file_length ) then
-				file = file//LF
-				file_length = file_length + 1
-				n_rows = n_rows + 1
+		if ( n_cols == 1_int64 ) then
+			if ( header ) then
+				if ( .not. (n_rows > 1_int64) ) then
+					error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+					return
+				end if
+				
+				allocate( into(n_rows-1_int64) )
+				call cells(2_int64:,1_int64)%cast(into=into, locale=locale, fmt=fmt); return
+			else
+				allocate( into(n_rows) )
+				call cells(:,1_int64)%cast(into=into, locale=locale, fmt=fmt); return
 			end if
-		end do
+		end if
 
-		if ( fmt == 'z' ) then
-			non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', &
-									'a', 'b', 'c', 'd', 'e', 'f']
+		if ( header ) then
+			if ( .not. (n_rows > 1_int64) ) then
+				error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+				return
+			end if
+			
+			allocate( into(n_cols) )
+			call cells(2_int64,:)%cast(into=into, locale=locale, fmt=fmt); return
 		else
-			if ( locale == 'US' ) then
-				decimal = 'POINT'
-				non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', 'e', 'E', '+', '-']
-			else if ( locale == 'EU' ) then
-				decimal = 'COMMA'
-				non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ',', 'e', 'E', '+', '-']
-			end if
+			allocate( into(n_cols) )
+			call cells(1_int64,:)%cast(into=into, locale=locale, fmt=fmt); return
 		end if
-
-		prev_char = '0'
-		n_columns = 0
-
-		do i = 1, file_length
-			current_char = file(i:i)
-
-			if ( any(non_separating_chars == current_char) ) then
-				prev_char = current_char
-			else
-				if ( any(non_separating_chars == prev_char) ) then
-					prev_char = current_char
-					n_columns = n_columns + 1
-				else
-					prev_char = current_char
-				end if
-			end if
-
-			if ( current_char == NL ) exit
-		end do
-
-		if ( (n_rows > 1) .and. (n_columns > 1) ) then
-			error stop LF//'Error reading file "'//file_name//'". File data cannot fit into one-dimensional array.'
-			return
-		else if ( n_columns == 1 ) then
-			allocate( into(n_rows) )
-		else if ( n_rows == 1 ) then
-			allocate( into(n_columns) )
-		end if
-
-		ind = 1
-		l1 = 1
-		l2 = 1
-
-		read_into: do i = 1, file_length
-			if ( any(non_separating_chars == file(i:i)) ) then
-				if ( .not. any(non_separating_chars == file(l2:l2)) ) l1 = i
-				l2 = i
-			else
-				if ( any(non_separating_chars == file(l2:l2)) ) then
-					if ( fmt == 'z' ) then
-						read(unit=file(l1:l2), fmt='(z'//str(l2-l1+1)//')') into(ind)
-					else
-						read(unit=file(l1:l2), fmt=*, decimal=decimal) into(ind)
-					end if
-					if ( ind /= size(into) ) then
-						ind = ind + 1
-					else
-						exit read_into
-					end if
-					l2 = i
-				else
-					l2 = i
-				end if
-			end if
-		end do read_into
 	end procedure from_text_1dr64
 	module procedure from_text_1dr32
-		logical :: exists
-		integer :: file_unit, iostat
-		integer :: n_rows, n_columns
-		integer :: i, ind, l1, l2
+		type(String) :: text_file
+		type(String), allocatable, dimension(:,:) :: cells
+		integer(int64) :: n_rows, n_cols
 
-		character(len=:), allocatable, dimension(:) :: non_separating_chars
-		character(len=:), allocatable :: file, decimal
-		character(len=1) :: prev_char, current_char
-		integer(int64) :: file_length
+		call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
+		call text_file%empty()
 
-		inquire( file=file_name, exist=exists )
+		n_rows = size(cells, dim=1, kind=int64)
+		n_cols = size(cells, dim=2, kind=int64)
 
-		file_unit = input_unit
-
-		if ( exists ) then
-			open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-				  action='read', access='stream', position='rewind' )
-		else
-			error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
-			return
-		end if
-
-		inquire( file=file_name, size=file_length )
-
-		if ( file_length == 0_int64 ) then
-			error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
-			return
-		end if
-
-		allocate( character(len=file_length) :: file )
-		read(unit=file_unit, iostat=iostat) file
-		close(file_unit)
-
-		if ( iostat > 0 ) then
-			error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
-			return
-		end if
-
-		if ( header ) then
-			do i = 1, file_length
-				if ( file(i:i) == NL ) then
-					file = file(i+1:)
-					file_length = len(file)
-					exit
-				else if ( i == file_length ) then
-					file = file//LF
-					file_length = file_length + 1
-					write(*,'(a)') 'WARNING: Ignoring erroneous value of (T) for header in read of file "'// &
-									file_name//'". File has one line.'
+		if ( (n_rows > 1_int64) .and. (n_cols > 1_int64) ) then
+			if ( header ) then
+				if ( n_rows /= 2_int64 ) then
+					error stop LF//'Error reading file "'//file_name//'". Data cannot fit into one-dimensional array.'
+					return
 				end if
-			end do
-
-			if ( file_length == 0_int64 ) then
-				error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty after header.'
+			else
+				error stop LF//'Error reading file "'//file_name//'". Data cannot fit into one-dimensional array.'// &
+							   ' If there are two rows including a header row, specify "header=.true." .'
 				return
 			end if
 		end if
 
-		n_rows = 0
-
-		do i = 1, file_length
-			if ( file(i:i) == NL ) then
-				n_rows = n_rows + 1
-			else if ( i == file_length ) then
-				file = file//LF
-				file_length = file_length + 1
-				n_rows = n_rows + 1
+		if ( n_cols == 1_int64 ) then
+			if ( header ) then
+				if ( .not. (n_rows > 1_int64) ) then
+					error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+					return
+				end if
+				
+				allocate( into(n_rows-1_int64) )
+				call cells(2_int64:,1_int64)%cast(into=into, locale=locale, fmt=fmt); return
+			else
+				allocate( into(n_rows) )
+				call cells(:,1_int64)%cast(into=into, locale=locale, fmt=fmt); return
 			end if
-		end do
+		end if
 
-		if ( fmt == 'z' ) then
-			non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', &
-									'a', 'b', 'c', 'd', 'e', 'f']
+		if ( header ) then
+			if ( .not. (n_rows > 1_int64) ) then
+				error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+				return
+			end if
+			
+			allocate( into(n_cols) )
+			call cells(2_int64,:)%cast(into=into, locale=locale, fmt=fmt); return
 		else
-			if ( locale == 'US' ) then
-				decimal = 'POINT'
-				non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', 'e', 'E', '+', '-']
-			else if ( locale == 'EU' ) then
-				decimal = 'COMMA'
-				non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ',', 'e', 'E', '+', '-']
-			end if
+			allocate( into(n_cols) )
+			call cells(1_int64,:)%cast(into=into, locale=locale, fmt=fmt); return
 		end if
-
-		prev_char = '0'
-		n_columns = 0
-
-		do i = 1, file_length
-			current_char = file(i:i)
-
-			if ( any(non_separating_chars == current_char) ) then
-				prev_char = current_char
-			else
-				if ( any(non_separating_chars == prev_char) ) then
-					prev_char = current_char
-					n_columns = n_columns + 1
-				else
-					prev_char = current_char
-				end if
-			end if
-
-			if ( current_char == NL ) exit
-		end do
-
-		if ( (n_rows > 1) .and. (n_columns > 1) ) then
-			error stop LF//'Error reading file "'//file_name//'". File data cannot fit into one-dimensional array.'
-			return
-		else if ( n_columns == 1 ) then
-			allocate( into(n_rows) )
-		else if ( n_rows == 1 ) then
-			allocate( into(n_columns) )
-		end if
-
-		ind = 1
-		l1 = 1
-		l2 = 1
-
-		read_into: do i = 1, file_length
-			if ( any(non_separating_chars == file(i:i)) ) then
-				if ( .not. any(non_separating_chars == file(l2:l2)) ) l1 = i
-				l2 = i
-			else
-				if ( any(non_separating_chars == file(l2:l2)) ) then
-					if ( fmt == 'z' ) then
-						read(unit=file(l1:l2), fmt='(z'//str(l2-l1+1)//')') into(ind)
-					else
-						read(unit=file(l1:l2), fmt=*, decimal=decimal) into(ind)
-					end if
-					if ( ind /= size(into) ) then
-						ind = ind + 1
-					else
-						exit read_into
-					end if
-					l2 = i
-				else
-					l2 = i
-				end if
-			end if
-		end do read_into
 	end procedure from_text_1dr32
 
 	module procedure from_text_2dr128
-		logical :: exists
-		integer :: file_unit, iostat
-		integer :: n_rows, n_columns
-		integer :: i, row, column, l1, l2
+		type(String) :: text_file
+		type(String), allocatable, dimension(:,:) :: cells
+		integer(int64) :: n_rows, n_cols
 
-		type(String), allocatable, dimension(:) :: lines
-		character(len=:), allocatable, dimension(:) :: non_separating_chars
-		character(len=:), allocatable :: file, decimal
-		character(len=1) :: prev_char, current_char
-		integer(int64) :: file_length
+		call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
+		call text_file%empty()
 
-		inquire( file=file_name, exist=exists )
-
-		file_unit = input_unit
-
-		if ( exists ) then
-			open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-				  action='read', access='stream', position='rewind' )
-		else
-			error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
-			return
-		end if
-
-		inquire( file=file_name, size=file_length )
-
-		if ( file_length == 0_int64 ) then
-			error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
-			return
-		end if
-
-		allocate( character(len=file_length) :: file )
-		read(unit=file_unit, iostat=iostat) file
-		close(file_unit)
-
-		if ( iostat > 0 ) then
-			error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
-			return
-		end if
+		n_rows = size(cells, dim=1, kind=int64)
+		n_cols = size(cells, dim=2, kind=int64)
 
 		if ( header ) then
-			do i = 1, file_length
-				if ( file(i:i) == NL ) then
-					file = file(i+1:)
-					file_length = len(file)
-					exit
-				else if ( i == file_length ) then
-					file = file//LF
-					file_length = file_length + 1
-					write(*,'(a)') 'WARNING: Ignoring erroneous value of (T) for header in read of file "'// &
-									file_name//'". File has one line.'
-				end if
-			end do
-
-			if ( file_length == 0_int64 ) then
-				error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty after header.'
+			if ( .not. (n_rows > 1_int64) ) then
+				error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
 				return
 			end if
-		end if
 
-		n_rows = 0
-
-		do i = 1, file_length
-			if ( file(i:i) == NL ) then
-				n_rows = n_rows + 1
-			else if ( i == file_length ) then
-				file = file//LF
-				file_length = file_length + 1
-				n_rows = n_rows + 1
-			end if
-		end do
-
-		if ( fmt == 'z' ) then
-			non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', &
-									'a', 'b', 'c', 'd', 'e', 'f']
+			allocate( into(n_rows-1_int64,n_cols) )
+			call cells(2_int64:,:)%cast(into=into, locale=locale, fmt=fmt); return
 		else
-			if ( locale == 'US' ) then
-				decimal = 'POINT'
-				non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', 'e', 'E', '+', '-']
-			else if ( locale == 'EU' ) then
-				decimal = 'COMMA'
-				non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ',', 'e', 'E', '+', '-']
-			end if
+			allocate( into(n_rows,n_cols) )
+			call cells%cast(into=into, locale=locale, fmt=fmt); return
 		end if
-
-		prev_char = '0'
-		n_columns = 0
-
-		do i = 1, file_length
-			current_char = file(i:i)
-
-			if ( any(non_separating_chars == current_char) ) then
-				prev_char = current_char
-			else
-				if ( any(non_separating_chars == prev_char) ) then
-					prev_char = current_char
-					n_columns = n_columns + 1
-				else
-					prev_char = current_char
-				end if
-			end if
-
-			if ( current_char == NL ) exit
-		end do
-
-		allocate( lines(n_rows) )
-
-		row = 1
-		l1 = 1
-
-		do i = 1, file_length
-			if ( file(i:i) == NL ) then
-				lines(row)%s = file(l1:i)
-				if ( row /= n_rows ) then
-					row = row + 1
-					l1 = i + 1
-				else
-					exit
-				end if
-			end if
-		end do
-
-		deallocate(file)
-
-		allocate( into(n_rows, n_columns) )
-
-		do concurrent (row = 1:n_rows)
-			column = 1
-			l1 = 1
-			l2 = 1
-			read_into: do i = 1, len(lines(row)%s)
-				if ( any(non_separating_chars == lines(row)%s(i:i)) ) then
-					if ( .not. any(non_separating_chars == lines(row)%s(l2:l2)) ) l1 = i
-					l2 = i
-				else
-					if ( any(non_separating_chars == lines(row)%s(l2:l2)) ) then
-						if ( fmt == 'z' ) then
-							read(unit=lines(row)%s(l1:l2), fmt='(z'//str(l2-l1+1)//')') into(row, column)
-						else
-							read(unit=lines(row)%s(l1:l2), fmt=*, decimal=decimal) into(row, column)
-						end if
-						if ( column /= n_columns ) then
-							column = column + 1
-						else
-							exit read_into
-						end if
-						l2 = i
-					else
-						l2 = i
-					end if
-				end if
-			end do read_into
-		end do
 	end procedure from_text_2dr128
 	module procedure from_text_2dr64
-		logical :: exists
-		integer :: file_unit, iostat
-		integer :: n_rows, n_columns
-		integer :: i, row, column, l1, l2
+		type(String) :: text_file
+		type(String), allocatable, dimension(:,:) :: cells
+		integer(int64) :: n_rows, n_cols
 
-		type(String), allocatable, dimension(:) :: lines
-		character(len=:), allocatable, dimension(:) :: non_separating_chars
-		character(len=:), allocatable :: file, decimal
-		character(len=1) :: prev_char, current_char
-		integer(int64) :: file_length
+		call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
+		call text_file%empty()
 
-		inquire( file=file_name, exist=exists )
-
-		file_unit = input_unit
-
-		if ( exists ) then
-			open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-				  action='read', access='stream', position='rewind' )
-		else
-			error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
-			return
-		end if
-
-		inquire( file=file_name, size=file_length )
-
-		if ( file_length == 0_int64 ) then
-			error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
-			return
-		end if
-
-		allocate( character(len=file_length) :: file )
-		read(unit=file_unit, iostat=iostat) file
-		close(file_unit)
-
-		if ( iostat > 0 ) then
-			error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
-			return
-		end if
+		n_rows = size(cells, dim=1, kind=int64)
+		n_cols = size(cells, dim=2, kind=int64)
 
 		if ( header ) then
-			do i = 1, file_length
-				if ( file(i:i) == NL ) then
-					file = file(i+1:)
-					file_length = len(file)
-					exit
-				else if ( i == file_length ) then
-					file = file//LF
-					file_length = file_length + 1
-					write(*,'(a)') 'WARNING: Ignoring erroneous value of (T) for header in read of file "'// &
-									file_name//'". File has one line.'
-				end if
-			end do
-
-			if ( file_length == 0_int64 ) then
-				error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty after header.'
+			if ( .not. (n_rows > 1_int64) ) then
+				error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
 				return
 			end if
-		end if
 
-		n_rows = 0
-
-		do i = 1, file_length
-			if ( file(i:i) == NL ) then
-				n_rows = n_rows + 1
-			else if ( i == file_length ) then
-				file = file//LF
-				file_length = file_length + 1
-				n_rows = n_rows + 1
-			end if
-		end do
-
-		if ( fmt == 'z' ) then
-			non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', &
-									'a', 'b', 'c', 'd', 'e', 'f']
+			allocate( into(n_rows-1_int64,n_cols) )
+			call cells(2_int64:,:)%cast(into=into, locale=locale, fmt=fmt); return
 		else
-			if ( locale == 'US' ) then
-				decimal = 'POINT'
-				non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', 'e', 'E', '+', '-']
-			else if ( locale == 'EU' ) then
-				decimal = 'COMMA'
-				non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ',', 'e', 'E', '+', '-']
-			end if
+			allocate( into(n_rows,n_cols) )
+			call cells%cast(into=into, locale=locale, fmt=fmt); return
 		end if
-
-		prev_char = '0'
-		n_columns = 0
-
-		do i = 1, file_length
-			current_char = file(i:i)
-
-			if ( any(non_separating_chars == current_char) ) then
-				prev_char = current_char
-			else
-				if ( any(non_separating_chars == prev_char) ) then
-					prev_char = current_char
-					n_columns = n_columns + 1
-				else
-					prev_char = current_char
-				end if
-			end if
-
-			if ( current_char == NL ) exit
-		end do
-
-		allocate( lines(n_rows) )
-
-		row = 1
-		l1 = 1
-
-		do i = 1, file_length
-			if ( file(i:i) == NL ) then
-				lines(row)%s = file(l1:i)
-				if ( row /= n_rows ) then
-					row = row + 1
-					l1 = i + 1
-				else
-					exit
-				end if
-			end if
-		end do
-
-		deallocate(file)
-
-		allocate( into(n_rows, n_columns) )
-
-		do concurrent (row = 1:n_rows)
-			column = 1
-			l1 = 1
-			l2 = 1
-			read_into: do i = 1, len(lines(row)%s)
-				if ( any(non_separating_chars == lines(row)%s(i:i)) ) then
-					if ( .not. any(non_separating_chars == lines(row)%s(l2:l2)) ) l1 = i
-					l2 = i
-				else
-					if ( any(non_separating_chars == lines(row)%s(l2:l2)) ) then
-						if ( fmt == 'z' ) then
-							read(unit=lines(row)%s(l1:l2), fmt='(z'//str(l2-l1+1)//')') into(row, column)
-						else
-							read(unit=lines(row)%s(l1:l2), fmt=*, decimal=decimal) into(row, column)
-						end if
-						if ( column /= n_columns ) then
-							column = column + 1
-						else
-							exit read_into
-						end if
-						l2 = i
-					else
-						l2 = i
-					end if
-				end if
-			end do read_into
-		end do
 	end procedure from_text_2dr64
 	module procedure from_text_2dr32
-		logical :: exists
-		integer :: file_unit, iostat
-		integer :: n_rows, n_columns
-		integer :: i, row, column, l1, l2
+		type(String) :: text_file
+		type(String), allocatable, dimension(:,:) :: cells
+		integer(int64) :: n_rows, n_cols
 
-		type(String), allocatable, dimension(:) :: lines
-		character(len=:), allocatable, dimension(:) :: non_separating_chars
-		character(len=:), allocatable :: file, decimal
-		character(len=1) :: prev_char, current_char
-		integer(int64) :: file_length
+		call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
+		call text_file%empty()
 
-		inquire( file=file_name, exist=exists )
-
-		file_unit = input_unit
-
-		if ( exists ) then
-			open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-				  action='read', access='stream', position='rewind' )
-		else
-			error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
-			return
-		end if
-
-		inquire( file=file_name, size=file_length )
-
-		if ( file_length == 0_int64 ) then
-			error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
-			return
-		end if
-
-		allocate( character(len=file_length) :: file )
-		read(unit=file_unit, iostat=iostat) file
-		close(file_unit)
-
-		if ( iostat > 0 ) then
-			error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
-			return
-		end if
+		n_rows = size(cells, dim=1, kind=int64)
+		n_cols = size(cells, dim=2, kind=int64)
 
 		if ( header ) then
-			do i = 1, file_length
-				if ( file(i:i) == NL ) then
-					file = file(i+1:)
-					file_length = len(file)
-					exit
-				else if ( i == file_length ) then
-					file = file//LF
-					file_length = file_length + 1
-					write(*,'(a)') 'WARNING: Ignoring erroneous value of (T) for header in read of file "'// &
-									file_name//'". File has one line.'
-				end if
-			end do
-
-			if ( file_length == 0_int64 ) then
-				error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty after header.'
+			if ( .not. (n_rows > 1_int64) ) then
+				error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
 				return
 			end if
-		end if
 
-		n_rows = 0
-
-		do i = 1, file_length
-			if ( file(i:i) == NL ) then
-				n_rows = n_rows + 1
-			else if ( i == file_length ) then
-				file = file//LF
-				file_length = file_length + 1
-				n_rows = n_rows + 1
-			end if
-		end do
-
-		if ( fmt == 'z' ) then
-			non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', &
-									'a', 'b', 'c', 'd', 'e', 'f']
+			allocate( into(n_rows-1_int64,n_cols) )
+			call cells(2_int64:,:)%cast(into=into, locale=locale, fmt=fmt); return
 		else
-			if ( locale == 'US' ) then
-				decimal = 'POINT'
-				non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', 'e', 'E', '+', '-']
-			else if ( locale == 'EU' ) then
-				decimal = 'COMMA'
-				non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ',', 'e', 'E', '+', '-']
-			end if
+			allocate( into(n_rows,n_cols) )
+			call cells%cast(into=into, locale=locale, fmt=fmt); return
 		end if
-
-		prev_char = '0'
-		n_columns = 0
-
-		do i = 1, file_length
-			current_char = file(i:i)
-
-			if ( any(non_separating_chars == current_char) ) then
-				prev_char = current_char
-			else
-				if ( any(non_separating_chars == prev_char) ) then
-					prev_char = current_char
-					n_columns = n_columns + 1
-				else
-					prev_char = current_char
-				end if
-			end if
-
-			if ( current_char == NL ) exit
-		end do
-
-		allocate( lines(n_rows) )
-
-		row = 1
-		l1 = 1
-
-		do i = 1, file_length
-			if ( file(i:i) == NL ) then
-				lines(row)%s = file(l1:i)
-				if ( row /= n_rows ) then
-					row = row + 1
-					l1 = i + 1
-				else
-					exit
-				end if
-			end if
-		end do
-
-		deallocate(file)
-
-		allocate( into(n_rows, n_columns) )
-
-		do concurrent (row = 1:n_rows)
-			column = 1
-			l1 = 1
-			l2 = 1
-			read_into: do i = 1, len(lines(row)%s)
-				if ( any(non_separating_chars == lines(row)%s(i:i)) ) then
-					if ( .not. any(non_separating_chars == lines(row)%s(l2:l2)) ) l1 = i
-					l2 = i
-				else
-					if ( any(non_separating_chars == lines(row)%s(l2:l2)) ) then
-						if ( fmt == 'z' ) then
-							read(unit=lines(row)%s(l1:l2), fmt='(z'//str(l2-l1+1)//')') into(row, column)
-						else
-							read(unit=lines(row)%s(l1:l2), fmt=*, decimal=decimal) into(row, column)
-						end if
-						if ( column /= n_columns ) then
-							column = column + 1
-						else
-							exit read_into
-						end if
-						l2 = i
-					else
-						l2 = i
-					end if
-				end if
-			end do read_into
-		end do
 	end procedure from_text_2dr32
 
 	module procedure from_text_1di64
-		logical :: exists
-		integer :: file_unit, iostat
-		integer :: n_rows, n_columns
-		integer :: i, ind, l1, l2
+		type(String) :: text_file
+		type(String), allocatable, dimension(:,:) :: cells
+		integer(int64) :: n_rows, n_cols
 
-		character(len=:), allocatable, dimension(:) :: non_separating_chars
-		character(len=:), allocatable :: file
-		character(len=1) :: prev_char, current_char
-		integer(int64) :: file_length
+		call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
+		call text_file%empty()
 
-		inquire( file=file_name, exist=exists )
+		n_rows = size(cells, dim=1, kind=int64)
+		n_cols = size(cells, dim=2, kind=int64)
 
-		file_unit = input_unit
-
-		if ( exists ) then
-			open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-				  action='read', access='stream', position='rewind' )
-		else
-			error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
-			return
-		end if
-
-		inquire( file=file_name, size=file_length )
-
-		if ( file_length == 0_int64 ) then
-			error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
-			return
-		end if
-
-		allocate( character(len=file_length) :: file )
-		read(unit=file_unit, iostat=iostat) file
-		close(file_unit)
-
-		if ( iostat > 0 ) then
-			error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
-			return
-		end if
-
-		if ( header ) then
-			do i = 1, file_length
-				if ( file(i:i) == NL ) then
-					file = file(i+1:)
-					file_length = len(file)
-					exit
-				else if ( i == file_length ) then
-					file = file//LF
-					file_length = file_length + 1
-					write(*,'(a)') 'WARNING: Ignoring erroneous value of (T) for header in read of file "'// &
-									file_name//'". File has one line.'
+		if ( (n_rows > 1_int64) .and. (n_cols > 1_int64) ) then
+			if ( header ) then
+				if ( n_rows /= 2_int64 ) then
+					error stop LF//'Error reading file "'//file_name//'". Data cannot fit into one-dimensional array.'
+					return
 				end if
-			end do
-
-			if ( file_length == 0_int64 ) then
-				error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty after header.'
+			else
+				error stop LF//'Error reading file "'//file_name//'". Data cannot fit into one-dimensional array.'// &
+							   ' If there are two rows including a header row, specify "header=.true." .'
 				return
 			end if
 		end if
 
-		n_rows = 0
-
-		do i = 1, file_length
-			if ( file(i:i) == NL ) then
-				n_rows = n_rows + 1
-			else if ( i == file_length ) then
-				file = file//LF
-				file_length = file_length + 1
-				n_rows = n_rows + 1
+		if ( n_cols == 1_int64 ) then
+			if ( header ) then
+				if ( .not. (n_rows > 1_int64) ) then
+					error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+					return
+				end if
+				
+				allocate( into(n_rows-1_int64) )
+				call cells(2_int64:,1_int64)%cast(into=into, fmt=fmt); return
+			else
+				allocate( into(n_rows) )
+				call cells(:,1_int64)%cast(into=into, fmt=fmt); return
 			end if
-		end do
-
-		if ( fmt == 'i' ) then
-			non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '-']
-		else if ( fmt == 'z' ) then
-			non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', &
-									'a', 'b', 'c', 'd', 'e', 'f']
 		end if
 
-		prev_char = '0'
-		n_columns = 0
-
-		do i = 1, file_length
-			current_char = file(i:i)
-
-			if ( any(non_separating_chars == current_char) ) then
-				prev_char = current_char
-			else
-				if ( any(non_separating_chars == prev_char) ) then
-					prev_char = current_char
-					n_columns = n_columns + 1
-				else
-					prev_char = current_char
-				end if
+		if ( header ) then
+			if ( .not. (n_rows > 1_int64) ) then
+				error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+				return
 			end if
-
-			if ( current_char == NL ) exit
-		end do
-
-		if ( (n_rows > 1) .and. (n_columns > 1) ) then
-			error stop LF//'Error reading file "'//file_name//'". File data cannot fit into one-dimensional array.'
-			return
-		else if ( n_columns == 1 ) then
-			allocate( into(n_rows) )
-		else if ( n_rows == 1 ) then
-			allocate( into(n_columns) )
+			
+			allocate( into(n_cols) )
+			call cells(2_int64,:)%cast(into=into, fmt=fmt); return
+		else
+			allocate( into(n_cols) )
+			call cells(1_int64,:)%cast(into=into, fmt=fmt); return
 		end if
-
-		ind = 1
-		l1 = 1
-		l2 = 1
-
-		read_into: do i = 1, file_length
-			if ( any(non_separating_chars == file(i:i)) ) then
-				if ( .not. any(non_separating_chars == file(l2:l2)) ) l1 = i
-				l2 = i
-			else
-				if ( any(non_separating_chars == file(l2:l2)) ) then
-					if ( fmt == 'z' ) then
-						read(unit=file(l1:l2), fmt='(z'//str(l2-l1+1)//')') into(ind)
-					else
-						read(unit=file(l1:l2), fmt=*) into(ind)
-					end if
-					if ( ind /= size(into) ) then
-						ind = ind + 1
-					else
-						exit read_into
-					end if
-					l2 = i
-				else
-					l2 = i
-				end if
-			end if
-		end do read_into
 	end procedure from_text_1di64
 	module procedure from_text_1di32
-		logical :: exists
-		integer :: file_unit, iostat
-		integer :: n_rows, n_columns
-		integer :: i, ind, l1, l2
+		type(String) :: text_file
+		type(String), allocatable, dimension(:,:) :: cells
+		integer(int64) :: n_rows, n_cols
 
-		character(len=:), allocatable, dimension(:) :: non_separating_chars
-		character(len=:), allocatable :: file
-		character(len=1) :: prev_char, current_char
-		integer(int64) :: file_length
+		call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
+		call text_file%empty()
 
-		inquire( file=file_name, exist=exists )
+		n_rows = size(cells, dim=1, kind=int64)
+		n_cols = size(cells, dim=2, kind=int64)
 
-		file_unit = input_unit
-
-		if ( exists ) then
-			open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-				  action='read', access='stream', position='rewind' )
-		else
-			error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
-			return
-		end if
-
-		inquire( file=file_name, size=file_length )
-
-		if ( file_length == 0_int64 ) then
-			error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
-			return
-		end if
-
-		allocate( character(len=file_length) :: file )
-		read(unit=file_unit, iostat=iostat) file
-		close(file_unit)
-
-		if ( iostat > 0 ) then
-			error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
-			return
-		end if
-
-		if ( header ) then
-			do i = 1, file_length
-				if ( file(i:i) == NL ) then
-					file = file(i+1:)
-					file_length = len(file)
-					exit
-				else if ( i == file_length ) then
-					file = file//LF
-					file_length = file_length + 1
-					write(*,'(a)') 'WARNING: Ignoring erroneous value of (T) for header in read of file "'// &
-									file_name//'". File has one line.'
+		if ( (n_rows > 1_int64) .and. (n_cols > 1_int64) ) then
+			if ( header ) then
+				if ( n_rows /= 2_int64 ) then
+					error stop LF//'Error reading file "'//file_name//'". Data cannot fit into one-dimensional array.'
+					return
 				end if
-			end do
-
-			if ( file_length == 0_int64 ) then
-				error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty after header.'
+			else
+				error stop LF//'Error reading file "'//file_name//'". Data cannot fit into one-dimensional array.'// &
+							   ' If there are two rows including a header row, specify "header=.true." .'
 				return
 			end if
 		end if
 
-		n_rows = 0
-
-		do i = 1, file_length
-			if ( file(i:i) == NL ) then
-				n_rows = n_rows + 1
-			else if ( i == file_length ) then
-				file = file//LF
-				file_length = file_length + 1
-				n_rows = n_rows + 1
+		if ( n_cols == 1_int64 ) then
+			if ( header ) then
+				if ( .not. (n_rows > 1_int64) ) then
+					error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+					return
+				end if
+				
+				allocate( into(n_rows-1_int64) )
+				call cells(2_int64:,1_int64)%cast(into=into, fmt=fmt); return
+			else
+				allocate( into(n_rows) )
+				call cells(:,1_int64)%cast(into=into, fmt=fmt); return
 			end if
-		end do
-
-		if ( fmt == 'i' ) then
-			non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '-']
-		else if ( fmt == 'z' ) then
-			non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', &
-									'a', 'b', 'c', 'd', 'e', 'f']
 		end if
 
-		prev_char = '0'
-		n_columns = 0
-
-		do i = 1, file_length
-			current_char = file(i:i)
-
-			if ( any(non_separating_chars == current_char) ) then
-				prev_char = current_char
-			else
-				if ( any(non_separating_chars == prev_char) ) then
-					prev_char = current_char
-					n_columns = n_columns + 1
-				else
-					prev_char = current_char
-				end if
+		if ( header ) then
+			if ( .not. (n_rows > 1_int64) ) then
+				error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+				return
 			end if
-
-			if ( current_char == NL ) exit
-		end do
-
-		if ( (n_rows > 1) .and. (n_columns > 1) ) then
-			error stop LF//'Error reading file "'//file_name//'". File data cannot fit into one-dimensional array.'
-			return
-		else if ( n_columns == 1 ) then
-			allocate( into(n_rows) )
-		else if ( n_rows == 1 ) then
-			allocate( into(n_columns) )
+			
+			allocate( into(n_cols) )
+			call cells(2_int64,:)%cast(into=into, fmt=fmt); return
+		else
+			allocate( into(n_cols) )
+			call cells(1_int64,:)%cast(into=into, fmt=fmt); return
 		end if
-
-		ind = 1
-		l1 = 1
-		l2 = 1
-
-		read_into: do i = 1, file_length
-			if ( any(non_separating_chars == file(i:i)) ) then
-				if ( .not. any(non_separating_chars == file(l2:l2)) ) l1 = i
-				l2 = i
-			else
-				if ( any(non_separating_chars == file(l2:l2)) ) then
-					if ( fmt == 'z' ) then
-						read(unit=file(l1:l2), fmt='(z'//str(l2-l1+1)//')') into(ind)
-					else
-						read(unit=file(l1:l2), fmt=*) into(ind)
-					end if
-					if ( ind /= size(into) ) then
-						ind = ind + 1
-					else
-						exit read_into
-					end if
-					l2 = i
-				else
-					l2 = i
-				end if
-			end if
-		end do read_into
 	end procedure from_text_1di32
 	module procedure from_text_1di16
-		logical :: exists
-		integer :: file_unit, iostat
-		integer :: n_rows, n_columns
-		integer :: i, ind, l1, l2
+		type(String) :: text_file
+		type(String), allocatable, dimension(:,:) :: cells
+		integer(int64) :: n_rows, n_cols
 
-		character(len=:), allocatable, dimension(:) :: non_separating_chars
-		character(len=:), allocatable :: file
-		character(len=1) :: prev_char, current_char
-		integer(int64) :: file_length
+		call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
+		call text_file%empty()
 
-		inquire( file=file_name, exist=exists )
+		n_rows = size(cells, dim=1, kind=int64)
+		n_cols = size(cells, dim=2, kind=int64)
 
-		file_unit = input_unit
-
-		if ( exists ) then
-			open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-				  action='read', access='stream', position='rewind' )
-		else
-			error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
-			return
-		end if
-
-		inquire( file=file_name, size=file_length )
-
-		if ( file_length == 0_int64 ) then
-			error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
-			return
-		end if
-
-		allocate( character(len=file_length) :: file )
-		read(unit=file_unit, iostat=iostat) file
-		close(file_unit)
-
-		if ( iostat > 0 ) then
-			error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
-			return
-		end if
-
-		if ( header ) then
-			do i = 1, file_length
-				if ( file(i:i) == NL ) then
-					file = file(i+1:)
-					file_length = len(file)
-					exit
-				else if ( i == file_length ) then
-					file = file//LF
-					file_length = file_length + 1
-					write(*,'(a)') 'WARNING: Ignoring erroneous value of (T) for header in read of file "'// &
-									file_name//'". File has one line.'
+		if ( (n_rows > 1_int64) .and. (n_cols > 1_int64) ) then
+			if ( header ) then
+				if ( n_rows /= 2_int64 ) then
+					error stop LF//'Error reading file "'//file_name//'". Data cannot fit into one-dimensional array.'
+					return
 				end if
-			end do
-
-			if ( file_length == 0_int64 ) then
-				error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty after header.'
+			else
+				error stop LF//'Error reading file "'//file_name//'". Data cannot fit into one-dimensional array.'// &
+							   ' If there are two rows including a header row, specify "header=.true." .'
 				return
 			end if
 		end if
 
-		n_rows = 0
-
-		do i = 1, file_length
-			if ( file(i:i) == NL ) then
-				n_rows = n_rows + 1
-			else if ( i == file_length ) then
-				file = file//LF
-				file_length = file_length + 1
-				n_rows = n_rows + 1
+		if ( n_cols == 1_int64 ) then
+			if ( header ) then
+				if ( .not. (n_rows > 1_int64) ) then
+					error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+					return
+				end if
+				
+				allocate( into(n_rows-1_int64) )
+				call cells(2_int64:,1_int64)%cast(into=into, fmt=fmt); return
+			else
+				allocate( into(n_rows) )
+				call cells(:,1_int64)%cast(into=into, fmt=fmt); return
 			end if
-		end do
-
-		if ( fmt == 'i' ) then
-			non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '-']
-		else if ( fmt == 'z' ) then
-			non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', &
-									'a', 'b', 'c', 'd', 'e', 'f']
 		end if
 
-		prev_char = '0'
-		n_columns = 0
-
-		do i = 1, file_length
-			current_char = file(i:i)
-
-			if ( any(non_separating_chars == current_char) ) then
-				prev_char = current_char
-			else
-				if ( any(non_separating_chars == prev_char) ) then
-					prev_char = current_char
-					n_columns = n_columns + 1
-				else
-					prev_char = current_char
-				end if
+		if ( header ) then
+			if ( .not. (n_rows > 1_int64) ) then
+				error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+				return
 			end if
-
-			if ( current_char == NL ) exit
-		end do
-
-		if ( (n_rows > 1) .and. (n_columns > 1) ) then
-			error stop LF//'Error reading file "'//file_name//'". File data cannot fit into one-dimensional array.'
-			return
-		else if ( n_columns == 1 ) then
-			allocate( into(n_rows) )
-		else if ( n_rows == 1 ) then
-			allocate( into(n_columns) )
+			
+			allocate( into(n_cols) )
+			call cells(2_int64,:)%cast(into=into, fmt=fmt); return
+		else
+			allocate( into(n_cols) )
+			call cells(1_int64,:)%cast(into=into, fmt=fmt); return
 		end if
-
-		ind = 1
-		l1 = 1
-		l2 = 1
-
-		read_into: do i = 1, file_length
-			if ( any(non_separating_chars == file(i:i)) ) then
-				if ( .not. any(non_separating_chars == file(l2:l2)) ) l1 = i
-				l2 = i
-			else
-				if ( any(non_separating_chars == file(l2:l2)) ) then
-					if ( fmt == 'z' ) then
-						read(unit=file(l1:l2), fmt='(z'//str(l2-l1+1)//')') into(ind)
-					else
-						read(unit=file(l1:l2), fmt=*) into(ind)
-					end if
-					if ( ind /= size(into) ) then
-						ind = ind + 1
-					else
-						exit read_into
-					end if
-					l2 = i
-				else
-					l2 = i
-				end if
-			end if
-		end do read_into
 	end procedure from_text_1di16
 	module procedure from_text_1di8
-		logical :: exists
-		integer :: file_unit, iostat
-		integer :: n_rows, n_columns
-		integer :: i, ind, l1, l2
+		type(String) :: text_file
+		type(String), allocatable, dimension(:,:) :: cells
+		integer(int64) :: n_rows, n_cols
 
-		character(len=:), allocatable, dimension(:) :: non_separating_chars
-		character(len=:), allocatable :: file
-		character(len=1) :: prev_char, current_char
-		integer(int64) :: file_length
+		call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
+		call text_file%empty()
 
-		inquire( file=file_name, exist=exists )
+		n_rows = size(cells, dim=1, kind=int64)
+		n_cols = size(cells, dim=2, kind=int64)
 
-		file_unit = input_unit
-
-		if ( exists ) then
-			open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-				  action='read', access='stream', position='rewind' )
-		else
-			error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
-			return
-		end if
-
-		inquire( file=file_name, size=file_length )
-
-		if ( file_length == 0_int64 ) then
-			error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
-			return
-		end if
-
-		allocate( character(len=file_length) :: file )
-		read(unit=file_unit, iostat=iostat) file
-		close(file_unit)
-
-		if ( iostat > 0 ) then
-			error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
-			return
-		end if
-
-		if ( header ) then
-			do i = 1, file_length
-				if ( file(i:i) == NL ) then
-					file = file(i+1:)
-					file_length = len(file)
-					exit
-				else if ( i == file_length ) then
-					file = file//LF
-					file_length = file_length + 1
-					write(*,'(a)') 'WARNING: Ignoring erroneous value of (T) for header in read of file "'// &
-									file_name//'". File has one line.'
+		if ( (n_rows > 1_int64) .and. (n_cols > 1_int64) ) then
+			if ( header ) then
+				if ( n_rows /= 2_int64 ) then
+					error stop LF//'Error reading file "'//file_name//'". Data cannot fit into one-dimensional array.'
+					return
 				end if
-			end do
-
-			if ( file_length == 0_int64 ) then
-				error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty after header.'
+			else
+				error stop LF//'Error reading file "'//file_name//'". Data cannot fit into one-dimensional array.'// &
+							   ' If there are two rows including a header row, specify "header=.true." .'
 				return
 			end if
 		end if
 
-		n_rows = 0
-
-		do i = 1, file_length
-			if ( file(i:i) == NL ) then
-				n_rows = n_rows + 1
-			else if ( i == file_length ) then
-				file = file//LF
-				file_length = file_length + 1
-				n_rows = n_rows + 1
+		if ( n_cols == 1_int64 ) then
+			if ( header ) then
+				if ( .not. (n_rows > 1_int64) ) then
+					error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+					return
+				end if
+				
+				allocate( into(n_rows-1_int64) )
+				call cells(2_int64:,1_int64)%cast(into=into, fmt=fmt); return
+			else
+				allocate( into(n_rows) )
+				call cells(:,1_int64)%cast(into=into, fmt=fmt); return
 			end if
-		end do
-
-		if ( fmt == 'i' ) then
-			non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '-']
-		else if ( fmt == 'z' ) then
-			non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', &
-									'a', 'b', 'c', 'd', 'e', 'f']
 		end if
 
-		prev_char = '0'
-		n_columns = 0
-
-		do i = 1, file_length
-			current_char = file(i:i)
-
-			if ( any(non_separating_chars == current_char) ) then
-				prev_char = current_char
-			else
-				if ( any(non_separating_chars == prev_char) ) then
-					prev_char = current_char
-					n_columns = n_columns + 1
-				else
-					prev_char = current_char
-				end if
+		if ( header ) then
+			if ( .not. (n_rows > 1_int64) ) then
+				error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+				return
 			end if
-
-			if ( current_char == NL ) exit
-		end do
-
-		if ( (n_rows > 1) .and. (n_columns > 1) ) then
-			error stop LF//'Error reading file "'//file_name//'". File data cannot fit into one-dimensional array.'
-			return
-		else if ( n_columns == 1 ) then
-			allocate( into(n_rows) )
-		else if ( n_rows == 1 ) then
-			allocate( into(n_columns) )
+			
+			allocate( into(n_cols) )
+			call cells(2_int64,:)%cast(into=into, fmt=fmt); return
+		else
+			allocate( into(n_cols) )
+			call cells(1_int64,:)%cast(into=into, fmt=fmt); return
 		end if
-
-		ind = 1
-		l1 = 1
-		l2 = 1
-
-		read_into: do i = 1, file_length
-			if ( any(non_separating_chars == file(i:i)) ) then
-				if ( .not. any(non_separating_chars == file(l2:l2)) ) l1 = i
-				l2 = i
-			else
-				if ( any(non_separating_chars == file(l2:l2)) ) then
-					if ( fmt == 'z' ) then
-						read(unit=file(l1:l2), fmt='(z'//str(l2-l1+1)//')') into(ind)
-					else
-						read(unit=file(l1:l2), fmt=*) into(ind)
-					end if
-					if ( ind /= size(into) ) then
-						ind = ind + 1
-					else
-						exit read_into
-					end if
-					l2 = i
-				else
-					l2 = i
-				end if
-			end if
-		end do read_into
 	end procedure from_text_1di8
 
 	module procedure from_text_2di64
-		logical :: exists
-		integer :: file_unit, iostat
-		integer :: n_rows, n_columns
-		integer :: i, row, column, l1, l2
+		type(String) :: text_file
+		type(String), allocatable, dimension(:,:) :: cells
+		integer(int64) :: n_rows, n_cols
 
-		type(String), allocatable, dimension(:) :: lines
-		character(len=:), allocatable, dimension(:) :: non_separating_chars
-		character(len=:), allocatable :: file
-		character(len=1) :: prev_char, current_char
-		integer(int64) :: file_length
+		call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
+		call text_file%empty()
 
-		inquire( file=file_name, exist=exists )
-
-		file_unit = input_unit
-
-		if ( exists ) then
-			open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-				  action='read', access='stream', position='rewind' )
-		else
-			error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
-			return
-		end if
-
-		inquire( file=file_name, size=file_length )
-
-		if ( file_length == 0_int64 ) then
-			error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
-			return
-		end if
-
-		allocate( character(len=file_length) :: file )
-		read(unit=file_unit, iostat=iostat) file
-		close(file_unit)
-
-		if ( iostat > 0 ) then
-			error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
-			return
-		end if
+		n_rows = size(cells, dim=1, kind=int64)
+		n_cols = size(cells, dim=2, kind=int64)
 
 		if ( header ) then
-			do i = 1, file_length
-				if ( file(i:i) == NL ) then
-					file = file(i+1:)
-					file_length = len(file)
-					exit
-				else if ( i == file_length ) then
-					file = file//LF
-					file_length = file_length + 1
-					write(*,'(a)') 'WARNING: Ignoring erroneous value of (T) for header in read of file "'// &
-									file_name//'". File has one line.'
-				end if
-			end do
-
-			if ( file_length == 0_int64 ) then
-				error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty after header.'
+			if ( .not. (n_rows > 1_int64) ) then
+				error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
 				return
 			end if
+
+			allocate( into(n_rows-1_int64,n_cols) )
+			call cells(2_int64:,:)%cast(into=into, fmt=fmt); return
+		else
+			allocate( into(n_rows,n_cols) )
+			call cells%cast(into=into, fmt=fmt); return
 		end if
-
-		n_rows = 0
-
-		do i = 1, file_length
-			if ( file(i:i) == NL ) then
-				n_rows = n_rows + 1
-			else if ( i == file_length ) then
-				file = file//LF
-				file_length = file_length + 1
-				n_rows = n_rows + 1
-			end if
-		end do
-
-		if ( fmt == 'i' ) then
-			non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '-']
-		else if ( fmt == 'z' ) then
-			non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', &
-									'a', 'b', 'c', 'd', 'e', 'f']
-		end if
-
-		prev_char = '0'
-		n_columns = 0
-
-		do i = 1, file_length
-			current_char = file(i:i)
-
-			if ( any(non_separating_chars == current_char) ) then
-				prev_char = current_char
-			else
-				if ( any(non_separating_chars == prev_char) ) then
-					prev_char = current_char
-					n_columns = n_columns + 1
-				else
-					prev_char = current_char
-				end if
-			end if
-
-			if ( current_char == NL ) exit
-		end do
-
-		allocate( lines(n_rows) )
-
-		row = 1
-		l1 = 1
-
-		do i = 1, file_length
-			if ( file(i:i) == NL ) then
-				lines(row)%s = file(l1:i)
-				if ( row /= n_rows ) then
-					row = row + 1
-					l1 = i + 1
-				else
-					exit
-				end if
-			end if
-		end do
-
-		deallocate(file)
-
-		allocate( into(n_rows, n_columns) )
-
-		do concurrent (row = 1:n_rows)
-			column = 1
-			l1 = 1
-			l2 = 1
-			read_into: do i = 1, len(lines(row)%s)
-				if ( any(non_separating_chars == lines(row)%s(i:i)) ) then
-					if ( .not. any(non_separating_chars == lines(row)%s(l2:l2)) ) l1 = i
-					l2 = i
-				else
-					if ( any(non_separating_chars == lines(row)%s(l2:l2)) ) then
-						if ( fmt == 'z' ) then
-							read(unit=lines(row)%s(l1:l2), fmt='(z'//str(l2-l1+1)//')') into(row, column)
-						else
-							read(unit=lines(row)%s(l1:l2), fmt=*) into(row, column)
-						end if
-						if ( column /= n_columns ) then
-							column = column + 1
-						else
-							exit read_into
-						end if
-						l2 = i
-					else
-						l2 = i
-					end if
-				end if
-			end do read_into
-		end do
 	end procedure from_text_2di64
 	module procedure from_text_2di32
-		logical :: exists
-		integer :: file_unit, iostat
-		integer :: n_rows, n_columns
-		integer :: i, row, column, l1, l2
+		type(String) :: text_file
+		type(String), allocatable, dimension(:,:) :: cells
+		integer(int64) :: n_rows, n_cols
 
-		type(String), allocatable, dimension(:) :: lines
-		character(len=:), allocatable, dimension(:) :: non_separating_chars
-		character(len=:), allocatable :: file
-		character(len=1) :: prev_char, current_char
-		integer(int64) :: file_length
+		call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
+		call text_file%empty()
 
-		inquire( file=file_name, exist=exists )
-
-		file_unit = input_unit
-
-		if ( exists ) then
-			open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-				  action='read', access='stream', position='rewind' )
-		else
-			error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
-			return
-		end if
-
-		inquire( file=file_name, size=file_length )
-
-		if ( file_length == 0_int64 ) then
-			error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
-			return
-		end if
-
-		allocate( character(len=file_length) :: file )
-		read(unit=file_unit, iostat=iostat) file
-		close(file_unit)
-
-		if ( iostat > 0 ) then
-			error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
-			return
-		end if
+		n_rows = size(cells, dim=1, kind=int64)
+		n_cols = size(cells, dim=2, kind=int64)
 
 		if ( header ) then
-			do i = 1, file_length
-				if ( file(i:i) == NL ) then
-					file = file(i+1:)
-					file_length = len(file)
-					exit
-				else if ( i == file_length ) then
-					file = file//LF
-					file_length = file_length + 1
-					write(*,'(a)') 'WARNING: Ignoring erroneous value of (T) for header in read of file "'// &
-									file_name//'". File has one line.'
-				end if
-			end do
-
-			if ( file_length == 0_int64 ) then
-				error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty after header.'
+			if ( .not. (n_rows > 1_int64) ) then
+				error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
 				return
 			end if
+
+			allocate( into(n_rows-1_int64,n_cols) )
+			call cells(2_int64:,:)%cast(into=into, fmt=fmt); return
+		else
+			allocate( into(n_rows,n_cols) )
+			call cells%cast(into=into, fmt=fmt); return
 		end if
-
-		n_rows = 0
-
-		do i = 1, file_length
-			if ( file(i:i) == NL ) then
-				n_rows = n_rows + 1
-			else if ( i == file_length ) then
-				file = file//LF
-				file_length = file_length + 1
-				n_rows = n_rows + 1
-			end if
-		end do
-
-		if ( fmt == 'i' ) then
-			non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '-']
-		else if ( fmt == 'z' ) then
-			non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', &
-									'a', 'b', 'c', 'd', 'e', 'f']
-		end if
-
-		prev_char = '0'
-		n_columns = 0
-
-		do i = 1, file_length
-			current_char = file(i:i)
-
-			if ( any(non_separating_chars == current_char) ) then
-				prev_char = current_char
-			else
-				if ( any(non_separating_chars == prev_char) ) then
-					prev_char = current_char
-					n_columns = n_columns + 1
-				else
-					prev_char = current_char
-				end if
-			end if
-
-			if ( current_char == NL ) exit
-		end do
-
-		allocate( lines(n_rows) )
-
-		row = 1
-		l1 = 1
-
-		do i = 1, file_length
-			if ( file(i:i) == NL ) then
-				lines(row)%s = file(l1:i)
-				if ( row /= n_rows ) then
-					row = row + 1
-					l1 = i + 1
-				else
-					exit
-				end if
-			end if
-		end do
-
-		deallocate(file)
-
-		allocate( into(n_rows, n_columns) )
-
-		do concurrent (row = 1:n_rows)
-			column = 1
-			l1 = 1
-			l2 = 1
-			read_into: do i = 1, len(lines(row)%s)
-				if ( any(non_separating_chars == lines(row)%s(i:i)) ) then
-					if ( .not. any(non_separating_chars == lines(row)%s(l2:l2)) ) l1 = i
-					l2 = i
-				else
-					if ( any(non_separating_chars == lines(row)%s(l2:l2)) ) then
-						if ( fmt == 'z' ) then
-							read(unit=lines(row)%s(l1:l2), fmt='(z'//str(l2-l1+1)//')') into(row, column)
-						else
-							read(unit=lines(row)%s(l1:l2), fmt=*) into(row, column)
-						end if
-						if ( column /= n_columns ) then
-							column = column + 1
-						else
-							exit read_into
-						end if
-						l2 = i
-					else
-						l2 = i
-					end if
-				end if
-			end do read_into
-		end do
 	end procedure from_text_2di32
 	module procedure from_text_2di16
-		logical :: exists
-		integer :: file_unit, iostat
-		integer :: n_rows, n_columns
-		integer :: i, row, column, l1, l2
+		type(String) :: text_file
+		type(String), allocatable, dimension(:,:) :: cells
+		integer(int64) :: n_rows, n_cols
 
-		type(String), allocatable, dimension(:) :: lines
-		character(len=:), allocatable, dimension(:) :: non_separating_chars
-		character(len=:), allocatable :: file
-		character(len=1) :: prev_char, current_char
-		integer(int64) :: file_length
+		call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
+		call text_file%empty()
 
-		inquire( file=file_name, exist=exists )
-
-		file_unit = input_unit
-
-		if ( exists ) then
-			open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-				  action='read', access='stream', position='rewind' )
-		else
-			error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
-			return
-		end if
-
-		inquire( file=file_name, size=file_length )
-
-		if ( file_length == 0_int64 ) then
-			error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
-			return
-		end if
-
-		allocate( character(len=file_length) :: file )
-		read(unit=file_unit, iostat=iostat) file
-		close(file_unit)
-
-		if ( iostat > 0 ) then
-			error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
-			return
-		end if
+		n_rows = size(cells, dim=1, kind=int64)
+		n_cols = size(cells, dim=2, kind=int64)
 
 		if ( header ) then
-			do i = 1, file_length
-				if ( file(i:i) == NL ) then
-					file = file(i+1:)
-					file_length = len(file)
-					exit
-				else if ( i == file_length ) then
-					file = file//LF
-					file_length = file_length + 1
-					write(*,'(a)') 'WARNING: Ignoring erroneous value of (T) for header in read of file "'// &
-									file_name//'". File has one line.'
-				end if
-			end do
-
-			if ( file_length == 0_int64 ) then
-				error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty after header.'
+			if ( .not. (n_rows > 1_int64) ) then
+				error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
 				return
 			end if
+
+			allocate( into(n_rows-1_int64,n_cols) )
+			call cells(2_int64:,:)%cast(into=into, fmt=fmt); return
+		else
+			allocate( into(n_rows,n_cols) )
+			call cells%cast(into=into, fmt=fmt); return
 		end if
-
-		n_rows = 0
-
-		do i = 1, file_length
-			if ( file(i:i) == NL ) then
-				n_rows = n_rows + 1
-			else if ( i == file_length ) then
-				file = file//LF
-				file_length = file_length + 1
-				n_rows = n_rows + 1
-			end if
-		end do
-
-		if ( fmt == 'i' ) then
-			non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '-']
-		else if ( fmt == 'z' ) then
-			non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', &
-									'a', 'b', 'c', 'd', 'e', 'f']
-		end if
-
-		prev_char = '0'
-		n_columns = 0
-
-		do i = 1, file_length
-			current_char = file(i:i)
-
-			if ( any(non_separating_chars == current_char) ) then
-				prev_char = current_char
-			else
-				if ( any(non_separating_chars == prev_char) ) then
-					prev_char = current_char
-					n_columns = n_columns + 1
-				else
-					prev_char = current_char
-				end if
-			end if
-
-			if ( current_char == NL ) exit
-		end do
-
-		allocate( lines(n_rows) )
-
-		row = 1
-		l1 = 1
-
-		do i = 1, file_length
-			if ( file(i:i) == NL ) then
-				lines(row)%s = file(l1:i)
-				if ( row /= n_rows ) then
-					row = row + 1
-					l1 = i + 1
-				else
-					exit
-				end if
-			end if
-		end do
-
-		deallocate(file)
-
-		allocate( into(n_rows, n_columns) )
-
-		do concurrent (row = 1:n_rows)
-			column = 1
-			l1 = 1
-			l2 = 1
-			read_into: do i = 1, len(lines(row)%s)
-				if ( any(non_separating_chars == lines(row)%s(i:i)) ) then
-					if ( .not. any(non_separating_chars == lines(row)%s(l2:l2)) ) l1 = i
-					l2 = i
-				else
-					if ( any(non_separating_chars == lines(row)%s(l2:l2)) ) then
-						if ( fmt == 'z' ) then
-							read(unit=lines(row)%s(l1:l2), fmt='(z'//str(l2-l1+1)//')') into(row, column)
-						else
-							read(unit=lines(row)%s(l1:l2), fmt=*) into(row, column)
-						end if
-						if ( column /= n_columns ) then
-							column = column + 1
-						else
-							exit read_into
-						end if
-						l2 = i
-					else
-						l2 = i
-					end if
-				end if
-			end do read_into
-		end do
 	end procedure from_text_2di16
 	module procedure from_text_2di8
-		logical :: exists
-		integer :: file_unit, iostat
-		integer :: n_rows, n_columns
-		integer :: i, row, column, l1, l2
+		type(String) :: text_file
+		type(String), allocatable, dimension(:,:) :: cells
+		integer(int64) :: n_rows, n_cols
 
-		type(String), allocatable, dimension(:) :: lines
-		character(len=:), allocatable, dimension(:) :: non_separating_chars
-		character(len=:), allocatable :: file
-		character(len=1) :: prev_char, current_char
-		integer(int64) :: file_length
+		call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
+		call text_file%empty()
 
-		inquire( file=file_name, exist=exists )
-
-		file_unit = input_unit
-
-		if ( exists ) then
-			open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-				  action='read', access='stream', position='rewind' )
-		else
-			error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
-			return
-		end if
-
-		inquire( file=file_name, size=file_length )
-
-		if ( file_length == 0_int64 ) then
-			error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
-			return
-		end if
-
-		allocate( character(len=file_length) :: file )
-		read(unit=file_unit, iostat=iostat) file
-		close(file_unit)
-
-		if ( iostat > 0 ) then
-			error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
-			return
-		end if
+		n_rows = size(cells, dim=1, kind=int64)
+		n_cols = size(cells, dim=2, kind=int64)
 
 		if ( header ) then
-			do i = 1, file_length
-				if ( file(i:i) == NL ) then
-					file = file(i+1:)
-					file_length = len(file)
-					exit
-				else if ( i == file_length ) then
-					file = file//LF
-					file_length = file_length + 1
-					write(*,'(a)') 'WARNING: Ignoring erroneous value of (T) for header in read of file "'// &
-									file_name//'". File has one line.'
-				end if
-			end do
-
-			if ( file_length == 0_int64 ) then
-				error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty after header.'
+			if ( .not. (n_rows > 1_int64) ) then
+				error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
 				return
 			end if
+
+			allocate( into(n_rows-1_int64,n_cols) )
+			call cells(2_int64:,:)%cast(into=into, fmt=fmt); return
+		else
+			allocate( into(n_rows,n_cols) )
+			call cells%cast(into=into, fmt=fmt); return
 		end if
-
-		n_rows = 0
-
-		do i = 1, file_length
-			if ( file(i:i) == NL ) then
-				n_rows = n_rows + 1
-			else if ( i == file_length ) then
-				file = file//LF
-				file_length = file_length + 1
-				n_rows = n_rows + 1
-			end if
-		end do
-
-		if ( fmt == 'i' ) then
-			non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '-']
-		else if ( fmt == 'z' ) then
-			non_separating_chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', &
-									'a', 'b', 'c', 'd', 'e', 'f']
-		end if
-
-		prev_char = '0'
-		n_columns = 0
-
-		do i = 1, file_length
-			current_char = file(i:i)
-
-			if ( any(non_separating_chars == current_char) ) then
-				prev_char = current_char
-			else
-				if ( any(non_separating_chars == prev_char) ) then
-					prev_char = current_char
-					n_columns = n_columns + 1
-				else
-					prev_char = current_char
-				end if
-			end if
-
-			if ( current_char == NL ) exit
-		end do
-
-		allocate( lines(n_rows) )
-
-		row = 1
-		l1 = 1
-
-		do i = 1, file_length
-			if ( file(i:i) == NL ) then
-				lines(row)%s = file(l1:i)
-				if ( row /= n_rows ) then
-					row = row + 1
-					l1 = i + 1
-				else
-					exit
-				end if
-			end if
-		end do
-
-		deallocate(file)
-
-		allocate( into(n_rows, n_columns) )
-
-		do concurrent (row = 1:n_rows)
-			column = 1
-			l1 = 1
-			l2 = 1
-			read_into: do i = 1, len(lines(row)%s)
-				if ( any(non_separating_chars == lines(row)%s(i:i)) ) then
-					if ( .not. any(non_separating_chars == lines(row)%s(l2:l2)) ) l1 = i
-					l2 = i
-				else
-					if ( any(non_separating_chars == lines(row)%s(l2:l2)) ) then
-						if ( fmt == 'z' ) then
-							read(unit=lines(row)%s(l1:l2), fmt='(z'//str(l2-l1+1)//')') into(row, column)
-						else
-							read(unit=lines(row)%s(l1:l2), fmt=*) into(row, column)
-						end if
-						if ( column /= n_columns ) then
-							column = column + 1
-						else
-							exit read_into
-						end if
-						l2 = i
-					else
-						l2 = i
-					end if
-				end if
-			end do read_into
-		end do
 	end procedure from_text_2di8
+
+	! Internal Procedures ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	pure elemental recursive subroutine process_parentheses(row, column_separator)
+		type(String), intent(inout) :: row
+		character(len=*), intent(in) :: column_separator
+
+		character(len=:), allocatable :: replacement
+		logical :: in_paren
+		integer(int64) :: sep_len, i
+
+		sep_len = len(column_separator, kind=int64)
+
+		if ( sep_len == 1_int64 ) then
+			replacement = NUL
+		else
+			replacement = repeat(NUL, ncopies=sep_len)
+		end if
+
+		i = 1_int64
+		in_paren = .false.
+
+		replace_sep: do while ( i <= row%len64()-sep_len+1_int64 )
+			if ( row%s(i:i) == '(' ) then
+				in_paren = .true.
+				i = i + 1_int64; cycle replace_sep
+			end if
+
+			if ( row%s(i:i) == ')' ) then
+				in_paren = .false.
+				i = i + 1_int64; cycle replace_sep
+			end if
+
+			if ( in_paren ) then
+				if ( row%s(i:i+sep_len-1_int64) == column_separator ) then
+					row%s(i:i+sep_len-1_int64) = replacement
+					i = i + sep_len; cycle replace_sep
+				else
+					i = i + 1_int64; cycle replace_sep
+				end if
+			else
+				i = i + 1_int64; cycle replace_sep
+			end if
+		end do replace_sep
+	end subroutine process_parentheses
+	pure elemental recursive subroutine re_process_parentheses(cell, column_separator)
+		type(String), intent(inout) :: cell
+		character(len=*), intent(in) :: column_separator
+
+		character(len=:), allocatable :: replacement
+		logical :: in_paren
+		integer(int64) :: sep_len, i
+
+		sep_len = len(column_separator, kind=int64)
+
+		if ( sep_len == 1_int64 ) then
+			replacement = NUL
+		else
+			replacement = repeat(NUL, ncopies=sep_len)
+		end if
+
+		i = 1_int64
+		in_paren = .false.
+
+		replace_sep: do while ( i <= cell%len64()-sep_len+1_int64 )
+			if ( cell%s(i:i) == '(' ) then
+				in_paren = .true.
+				i = i + 1_int64; cycle replace_sep
+			end if
+
+			if ( cell%s(i:i) == ')' ) then
+				in_paren = .false.
+				i = i + 1_int64; cycle replace_sep
+			end if
+
+			if ( in_paren ) then
+				if ( cell%s(i:i+sep_len-1_int64) == replacement ) then
+					cell%s(i:i+sep_len-1_int64) = column_separator
+					i = i + sep_len; cycle replace_sep
+				else
+					i = i + 1_int64; cycle replace_sep
+				end if
+			else
+				i = i + 1_int64; cycle replace_sep
+			end if
+		end do replace_sep
+	end subroutine re_process_parentheses
 end submodule text_io
 
 submodule (io_fortran_lib) binary_io
@@ -31378,3 +29499,24 @@ submodule (io_fortran_lib) array_printing
 		call aprint(char_arr)
 	end procedure aprint_2dString
 end submodule array_printing
+
+!======================================================================================================================
+!	List of workarounds for compiler bugs in ifx 2023.0.0 :
+!	-------------------------------------------------------
+!	1.	In read_file (line 4736), the internal subroutine split_because_ifxbug (line 4940) is called by the form
+!		|>	call split_because_ifxbug(substring, separator, tokens)
+!		where tokens is intent(out), to replace a functional call to split_string (line 10052) of the form
+!		|>	tokens = substring%split(separator)
+!		which induces a run-time segmentation fault in the program contained in benchmark.f90 not seen with the
+!		following compilers: ifort 2021.8.0, gfortran 11.3.0, gfortran 11.2.0. From investigation, the segmentation
+!		fault seems due entirely to the assignment of arrays of derived type, as the right-hand-side always evaluates
+!		as expected, and seems to only appear when "-heap-arrays 0" is specified, as required by the large arrays of
+!		the program contained in benchmark.f90. With small arrays, the same situation happens with the assignment on
+!		line 20 of benchmark.f90.
+!	2.	In glue_into_self (line 4614), the recursive call to glue_into_self at line 4642 induces a run-time
+!		segmentation fault in the program contained in benchmark.f90 not seen with the following compilers: ifort
+!		2021.8.0, gfortran 11.3.0, gfortran 11.2.0. From investigation, the segmentation fault seems due to the passing
+!		of the array of derived type. The fault occurs in a majority of runs, but not in every run. To avoid the fault,
+!		the array to be passed must be constructed element by element and passed as in the "else" section of the "if"
+!		block. The fault again seems to be induced only when "-heap-arrays 0" is specified and only with ifx 2023.0.0.
+!======================================================================================================================
