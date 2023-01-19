@@ -1,5 +1,5 @@
 program main
-	use, intrinsic :: iso_fortran_env, only: ik=>int64, rk=>real128, compiler_version, compiler_options
+	use, intrinsic :: iso_fortran_env, only: ik=>int64, rk=>real32, compiler_version, compiler_options
 	use io_fortran_lib
 	implicit none (type,external)
 

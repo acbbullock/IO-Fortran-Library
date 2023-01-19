@@ -1,10 +1,10 @@
 program main
-	use, intrinsic :: iso_fortran_env, only: ik=>int64, rk=>real128, compiler_version, compiler_options
+	use, intrinsic :: iso_fortran_env, only: ik=>int64, rk=>real32, compiler_version, compiler_options
 	use io_fortran_lib
 	implicit none (type,external)
 
 	real(rk), parameter :: tol = epsilon(1.0_rk)
-	integer, parameter :: n = 1000
+	integer, parameter :: n = 2000
 
 	type(String) :: logmsg
 	character(len=:), allocatable :: logfile
