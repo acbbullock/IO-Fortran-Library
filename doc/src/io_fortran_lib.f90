@@ -96,6 +96,7 @@ module io_fortran_lib
 			procedure, pass(self), public	::	trim_inplace
 			procedure, pass(self), public	::	write_file
 			procedure, pass(substring)		::	write_string
+			final							::	scrub
 	end type String
 
 	interface                                                                             ! Submodule String_procedures
@@ -303,7 +304,7 @@ module io_fortran_lib
 			class(String), intent(inout) :: self
 		end subroutine trim_inplace
 
-		impure recursive module subroutine write_file(self, cell_array, file_name, row_separator, column_separator)
+		impure recursive module subroutine write_file(self, cell_array,file_name,row_separator,column_separator,append)
 			!----------------------------------------------------------------------------------------------------------
 			!! Writes the content of a cell array to a text file. The cell array's entire contents are populated into
 			!! `self` and then streamed to an external text file using the designated `row_separator` and
@@ -315,6 +316,7 @@ module io_fortran_lib
 			type(String), dimension(:,:), intent(inout) :: cell_array
 			character(len=*), intent(in) :: file_name
 			character(len=*), intent(in), optional :: row_separator, column_separator
+			logical, intent(in), optional :: append
 		end subroutine write_file
 
 		impure recursive module subroutine write_string(substring, unit, iotype, v_list, iostat, iomsg)
@@ -328,6 +330,13 @@ module io_fortran_lib
 			integer, intent(out) :: iostat
 			character(len=*), intent(inout) :: iomsg
 		end subroutine write_string
+
+		pure elemental recursive module subroutine scrub(self)
+			!----------------------------------------------------------------------------------------------------------
+			!! Finalization procedure for type `String`.
+			!----------------------------------------------------------------------------------------------------------
+			type(String), intent(inout) :: self
+		end subroutine scrub
 	end interface
 
 	interface operator(//)                                                                        ! Submodule operators
@@ -4817,7 +4826,7 @@ submodule (io_fortran_lib) String_procedures
 		cell_block: block
 			type(String), allocatable, dimension(:) :: rows, columns
 			character(len=:), allocatable :: row_separator_, column_separator_
-			integer(int64) :: n_rows, n_columns, i
+			integer(int64) :: n_rows, n_cols, i
 
 			if ( .not. present(row_separator) ) then
 				row_separator_ = LF
@@ -4844,20 +4853,22 @@ submodule (io_fortran_lib) String_procedures
 
 			! columns = rows(1_int64)%split(separator=column_separator_)
 			call split_because_ifxbug(rows(1_int64), separator=column_separator_, tokens=columns)
-			n_columns = size(columns, kind=int64)
+			n_cols = size(columns, kind=int64)
 
-			allocate( cell_array(n_rows, n_columns) )
+			allocate( cell_array(n_rows, n_cols) )
 
-			cell_array(1_int64,:) = columns
-			deallocate(columns, rows(1_int64)%s)
+			cell_array(1_int64,:) = columns; call scrub(columns); deallocate(columns)
 
 			do concurrent (i = 2_int64:n_rows)
 				! cell_array(i,:) = rows(i)%split(separator=column_separator_)
-				call split_because_ifxbug(rows(i), separator=column_separator_, tokens=columns)
-				cell_array(i,:) = columns
-				deallocate(rows(i)%s)
+				call split_because_ifxbug(rows(i),separator=column_separator_,tokens=columns); cell_array(i,:)=columns
 			end do
-			if ( allocated(columns) ) deallocate(columns)
+
+			call scrub(rows); deallocate(rows)
+			
+			if ( allocated(columns) ) then
+				call scrub(columns); deallocate(columns)
+			end if
 
 			call re_process_quotes(cell_array, column_separator=column_separator_)
 		end block cell_block
@@ -5531,9 +5542,9 @@ submodule (io_fortran_lib) String_procedures
 	module procedure write_file
 		type(String), allocatable, dimension(:) :: rows
 		character(len=:), allocatable :: ext, row_separator_, column_separator_
-		integer :: file_unit
 		integer(int64) :: n_rows, i
-		logical :: exists
+		logical :: exists, append_
+		integer :: file_unit
 
 		ext = ext_of(file_name)
 
@@ -5556,6 +5567,12 @@ submodule (io_fortran_lib) String_procedures
 			column_separator_ = column_separator
 		end if
 
+		if ( .not. present(append) ) then
+			append_ = .false.
+		else
+			append_ = append
+		end if
+
 		n_rows = size(cell_array, dim=1, kind=int64)
 
 		allocate( rows(n_rows) )
@@ -5563,9 +5580,10 @@ submodule (io_fortran_lib) String_procedures
 		do concurrent (i = 1_int64:n_rows)
 			rows(i) = glue(tokens=cell_array(i,:), separator=column_separator_)//row_separator_
 		end do
-		call cell_array%empty()
+		call scrub(cell_array)
 
 		call self%glue(tokens=rows, separator=EMPTY_STR)
+		call scrub(rows); deallocate(rows)
 
 		inquire( file=file_name, exist=exists )
 
@@ -5575,8 +5593,13 @@ submodule (io_fortran_lib) String_procedures
 			open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
 				  action='write', access='stream' )
 		else
-			open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-				  action='write', access='stream' )
+			if ( .not. append_ ) then
+				open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
+					  action='write', access='stream' )
+			else
+				open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
+					  action='write', access='stream', position='append' )
+			end if
 		end if
 
 		write( unit=file_unit ) self%s
@@ -5591,6 +5614,10 @@ submodule (io_fortran_lib) String_procedures
 			write(unit=unit, fmt='(a)', iostat=iostat, iomsg=iomsg) substring%s
 		end if
 	end procedure write_string
+
+	module procedure scrub
+		if ( allocated(self%s) ) deallocate(self%s)
+	end procedure scrub
 end submodule String_procedures
 
 submodule (io_fortran_lib) operators
@@ -10126,15 +10153,15 @@ submodule (io_fortran_lib) file_io
 				header_ = [ EMPTY_STR ]
 				hstat = 0
 			else
-				if ( (size(header) /= 1) .and. (size(header) /= size(x)) ) then
+				if ( (size(header,kind=int64) /= 1_int64) .and. (size(header,kind=int64) /= size(x,kind=int64)) ) then
 					header_ = [ EMPTY_STR ]
 					hstat = -1
 					write(*,'(a)') LF//'WARNING: Invalid header for file "'//file_name//'".'// &
 								   LF//'Header for this data must have size (1) or '// &
-									   '('//str(size(x))//').'
+									   '('//str(size(x, kind=int64))//').'
 				else
 					header_ = header
-					if ( size(header) == 1 ) then
+					if ( size(header, kind=int64) == 1_int64 ) then
 						hstat = 1
 					else
 						hstat = 2
@@ -10255,15 +10282,15 @@ submodule (io_fortran_lib) file_io
 				header_ = [ EMPTY_STR ]
 				hstat = 0
 			else
-				if ( (size(header) /= 1) .and. (size(header) /= size(x)) ) then
+				if ( (size(header,kind=int64) /= 1_int64) .and. (size(header,kind=int64) /= size(x,kind=int64)) ) then
 					header_ = [ EMPTY_STR ]
 					hstat = -1
 					write(*,'(a)') LF//'WARNING: Invalid header for file "'//file_name//'".'// &
 								   LF//'Header for this data must have size (1) or '// &
-									   '('//str(size(x))//').'
+									   '('//str(size(x, kind=int64))//').'
 				else
 					header_ = header
-					if ( size(header) == 1 ) then
+					if ( size(header, kind=int64) == 1_int64 ) then
 						hstat = 1
 					else
 						hstat = 2
@@ -10384,15 +10411,15 @@ submodule (io_fortran_lib) file_io
 				header_ = [ EMPTY_STR ]
 				hstat = 0
 			else
-				if ( (size(header) /= 1) .and. (size(header) /= size(x)) ) then
+				if ( (size(header,kind=int64) /= 1_int64) .and. (size(header,kind=int64) /= size(x,kind=int64)) ) then
 					header_ = [ EMPTY_STR ]
 					hstat = -1
 					write(*,'(a)') LF//'WARNING: Invalid header for file "'//file_name//'".'// &
 								   LF//'Header for this data must have size (1) or '// &
-									   '('//str(size(x))//').'
+									   '('//str(size(x, kind=int64))//').'
 				else
 					header_ = header
-					if ( size(header) == 1 ) then
+					if ( size(header, kind=int64) == 1_int64 ) then
 						hstat = 1
 					else
 						hstat = 2
@@ -10513,11 +10540,11 @@ submodule (io_fortran_lib) file_io
 			if ( .not. present(header) ) then
 				header_ = [ EMPTY_STR ]
 			else
-				if ( (size(header) /= 1) .and. (size(header) /= size(x, dim=2)) ) then
+				if ( (size(header,kind=int64)/=1_int64).and.(size(header,kind=int64)/=size(x,dim=2,kind=int64)) ) then
 					header_ = [ EMPTY_STR ]
 					write(*,'(a)') LF//'WARNING: Invalid header for file "'//file_name//'".'// &
 								   LF//'Header for this data must have size (1) or '// &
-									   '('//str(size(x, dim=2))//').'
+									   '('//str(size(x, dim=2, kind=int64))//').'
 				else
 					header_ = header
 				end if
@@ -10600,11 +10627,11 @@ submodule (io_fortran_lib) file_io
 			if ( .not. present(header) ) then
 				header_ = [ EMPTY_STR ]
 			else
-				if ( (size(header) /= 1) .and. (size(header) /= size(x, dim=2)) ) then
+				if ( (size(header,kind=int64)/=1_int64).and.(size(header,kind=int64)/=size(x,dim=2,kind=int64)) ) then
 					header_ = [ EMPTY_STR ]
 					write(*,'(a)') LF//'WARNING: Invalid header for file "'//file_name//'".'// &
 								   LF//'Header for this data must have size (1) or '// &
-									   '('//str(size(x, dim=2))//').'
+									   '('//str(size(x, dim=2, kind=int64))//').'
 				else
 					header_ = header
 				end if
@@ -10687,11 +10714,11 @@ submodule (io_fortran_lib) file_io
 			if ( .not. present(header) ) then
 				header_ = [ EMPTY_STR ]
 			else
-				if ( (size(header) /= 1) .and. (size(header) /= size(x, dim=2)) ) then
+				if ( (size(header,kind=int64)/=1_int64).and.(size(header,kind=int64)/=size(x,dim=2,kind=int64)) ) then
 					header_ = [ EMPTY_STR ]
 					write(*,'(a)') LF//'WARNING: Invalid header for file "'//file_name//'".'// &
 								   LF//'Header for this data must have size (1) or '// &
-									   '('//str(size(x, dim=2))//').'
+									   '('//str(size(x, dim=2, kind=int64))//').'
 				else
 					header_ = header
 				end if
@@ -11530,15 +11557,15 @@ submodule (io_fortran_lib) file_io
 				header_ = [ EMPTY_STR ]
 				hstat = 0
 			else
-				if ( (size(header) /= 1) .and. (size(header) /= size(x)) ) then
+				if ( (size(header,kind=int64) /= 1_int64) .and. (size(header,kind=int64) /= size(x,kind=int64)) ) then
 					header_ = [ EMPTY_STR ]
 					hstat = -1
 					write(*,'(a)') LF//'WARNING: Invalid header for file "'//file_name//'".'// &
 								   LF//'Header for this data must have size (1) or '// &
-									   '('//str(size(x))//').'
+									   '('//str(size(x, kind=int64))//').'
 				else
 					header_ = header
-					if ( size(header) == 1 ) then
+					if ( size(header, kind=int64) == 1_int64 ) then
 						hstat = 1
 					else
 						hstat = 2
@@ -11652,15 +11679,15 @@ submodule (io_fortran_lib) file_io
 				header_ = [ EMPTY_STR ]
 				hstat = 0
 			else
-				if ( (size(header) /= 1) .and. (size(header) /= size(x)) ) then
+				if ( (size(header,kind=int64) /= 1_int64) .and. (size(header,kind=int64) /= size(x,kind=int64)) ) then
 					header_ = [ EMPTY_STR ]
 					hstat = -1
 					write(*,'(a)') LF//'WARNING: Invalid header for file "'//file_name//'".'// &
 								   LF//'Header for this data must have size (1) or '// &
-									   '('//str(size(x))//').'
+									   '('//str(size(x, kind=int64))//').'
 				else
 					header_ = header
-					if ( size(header) == 1 ) then
+					if ( size(header, kind=int64) == 1_int64 ) then
 						hstat = 1
 					else
 						hstat = 2
@@ -11774,15 +11801,15 @@ submodule (io_fortran_lib) file_io
 				header_ = [ EMPTY_STR ]
 				hstat = 0
 			else
-				if ( (size(header) /= 1) .and. (size(header) /= size(x)) ) then
+				if ( (size(header,kind=int64) /= 1_int64) .and. (size(header,kind=int64) /= size(x,kind=int64)) ) then
 					header_ = [ EMPTY_STR ]
 					hstat = -1
 					write(*,'(a)') LF//'WARNING: Invalid header for file "'//file_name//'".'// &
 								   LF//'Header for this data must have size (1) or '// &
-									   '('//str(size(x))//').'
+									   '('//str(size(x, kind=int64))//').'
 				else
 					header_ = header
-					if ( size(header) == 1 ) then
+					if ( size(header, kind=int64) == 1_int64 ) then
 						hstat = 1
 					else
 						hstat = 2
@@ -11896,11 +11923,11 @@ submodule (io_fortran_lib) file_io
 			if ( .not. present(header) ) then
 				header_ = [ EMPTY_STR ]
 			else
-				if ( (size(header) /= 1) .and. (size(header) /= size(x, dim=2)) ) then
+				if ( (size(header,kind=int64)/=1_int64).and.(size(header,kind=int64)/=size(x,dim=2,kind=int64)) ) then
 					header_ = [ EMPTY_STR ]
 					write(*,'(a)') LF//'WARNING: Invalid header for file "'//file_name//'".'// &
 								   LF//'Header for this data must have size (1) or '// &
-									   '('//str(size(x, dim=2))//').'
+									   '('//str(size(x, dim=2, kind=int64))//').'
 				else
 					header_ = header
 				end if
@@ -11976,11 +12003,11 @@ submodule (io_fortran_lib) file_io
 			if ( .not. present(header) ) then
 				header_ = [ EMPTY_STR ]
 			else
-				if ( (size(header) /= 1) .and. (size(header) /= size(x, dim=2)) ) then
+				if ( (size(header,kind=int64)/=1_int64).and.(size(header,kind=int64)/=size(x,dim=2,kind=int64)) ) then
 					header_ = [ EMPTY_STR ]
 					write(*,'(a)') LF//'WARNING: Invalid header for file "'//file_name//'".'// &
 								   LF//'Header for this data must have size (1) or '// &
-									   '('//str(size(x, dim=2))//').'
+									   '('//str(size(x, dim=2, kind=int64))//').'
 				else
 					header_ = header
 				end if
@@ -12056,11 +12083,11 @@ submodule (io_fortran_lib) file_io
 			if ( .not. present(header) ) then
 				header_ = [ EMPTY_STR ]
 			else
-				if ( (size(header) /= 1) .and. (size(header) /= size(x, dim=2)) ) then
+				if ( (size(header,kind=int64)/=1_int64).and.(size(header,kind=int64)/=size(x,dim=2,kind=int64)) ) then
 					header_ = [ EMPTY_STR ]
 					write(*,'(a)') LF//'WARNING: Invalid header for file "'//file_name//'".'// &
 								   LF//'Header for this data must have size (1) or '// &
-									   '('//str(size(x, dim=2))//').'
+									   '('//str(size(x, dim=2, kind=int64))//').'
 				else
 					header_ = header
 				end if
@@ -12892,15 +12919,15 @@ submodule (io_fortran_lib) file_io
 				header_ = [ EMPTY_STR ]
 				hstat = 0
 			else
-				if ( (size(header) /= 1) .and. (size(header) /= size(x)) ) then
+				if ( (size(header,kind=int64) /= 1_int64) .and. (size(header,kind=int64) /= size(x,kind=int64)) ) then
 					header_ = [ EMPTY_STR ]
 					hstat = -1
 					write(*,'(a)') LF//'WARNING: Invalid header for file "'//file_name//'".'// &
 								   LF//'Header for this data must have size (1) or '// &
-									   '('//str(size(x))//').'
+									   '('//str(size(x, kind=int64))//').'
 				else
 					header_ = header
-					if ( size(header) == 1 ) then
+					if ( size(header, kind=int64) == 1_int64 ) then
 						hstat = 1
 					else
 						hstat = 2
@@ -12988,15 +13015,15 @@ submodule (io_fortran_lib) file_io
 				header_ = [ EMPTY_STR ]
 				hstat = 0
 			else
-				if ( (size(header) /= 1) .and. (size(header) /= size(x)) ) then
+				if ( (size(header,kind=int64) /= 1_int64) .and. (size(header,kind=int64) /= size(x,kind=int64)) ) then
 					header_ = [ EMPTY_STR ]
 					hstat = -1
 					write(*,'(a)') LF//'WARNING: Invalid header for file "'//file_name//'".'// &
 								   LF//'Header for this data must have size (1) or '// &
-									   '('//str(size(x))//').'
+									   '('//str(size(x, kind=int64))//').'
 				else
 					header_ = header
-					if ( size(header) == 1 ) then
+					if ( size(header, kind=int64) == 1_int64 ) then
 						hstat = 1
 					else
 						hstat = 2
@@ -13084,15 +13111,15 @@ submodule (io_fortran_lib) file_io
 				header_ = [ EMPTY_STR ]
 				hstat = 0
 			else
-				if ( (size(header) /= 1) .and. (size(header) /= size(x)) ) then
+				if ( (size(header,kind=int64) /= 1_int64) .and. (size(header,kind=int64) /= size(x,kind=int64)) ) then
 					header_ = [ EMPTY_STR ]
 					hstat = -1
 					write(*,'(a)') LF//'WARNING: Invalid header for file "'//file_name//'".'// &
 								   LF//'Header for this data must have size (1) or '// &
-									   '('//str(size(x))//').'
+									   '('//str(size(x, kind=int64))//').'
 				else
 					header_ = header
-					if ( size(header) == 1 ) then
+					if ( size(header, kind=int64) == 1_int64 ) then
 						hstat = 1
 					else
 						hstat = 2
@@ -13180,15 +13207,15 @@ submodule (io_fortran_lib) file_io
 				header_ = [ EMPTY_STR ]
 				hstat = 0
 			else
-				if ( (size(header) /= 1) .and. (size(header) /= size(x)) ) then
+				if ( (size(header,kind=int64) /= 1_int64) .and. (size(header,kind=int64) /= size(x,kind=int64)) ) then
 					header_ = [ EMPTY_STR ]
 					hstat = -1
 					write(*,'(a)') LF//'WARNING: Invalid header for file "'//file_name//'".'// &
 								   LF//'Header for this data must have size (1) or '// &
-									   '('//str(size(x))//').'
+									   '('//str(size(x, kind=int64))//').'
 				else
 					header_ = header
-					if ( size(header) == 1 ) then
+					if ( size(header, kind=int64) == 1_int64 ) then
 						hstat = 1
 					else
 						hstat = 2
@@ -13275,11 +13302,11 @@ submodule (io_fortran_lib) file_io
 			if ( .not. present(header) ) then
 				header_ = [ EMPTY_STR ]
 			else
-				if ( (size(header) /= 1) .and. (size(header) /= size(x, dim=2)) ) then
+				if ( (size(header,kind=int64)/=1_int64).and.(size(header,kind=int64)/=size(x,dim=2,kind=int64)) ) then
 					header_ = [ EMPTY_STR ]
 					write(*,'(a)') LF//'WARNING: Invalid header for file "'//file_name//'".'// &
 								   LF//'Header for this data must have size (1) or '// &
-									   '('//str(size(x, dim=2))//').'
+									   '('//str(size(x, dim=2, kind=int64))//').'
 				else
 					header_ = header
 				end if
@@ -13328,11 +13355,11 @@ submodule (io_fortran_lib) file_io
 			if ( .not. present(header) ) then
 				header_ = [ EMPTY_STR ]
 			else
-				if ( (size(header) /= 1) .and. (size(header) /= size(x, dim=2)) ) then
+				if ( (size(header,kind=int64)/=1_int64).and.(size(header,kind=int64)/=size(x,dim=2,kind=int64)) ) then
 					header_ = [ EMPTY_STR ]
 					write(*,'(a)') LF//'WARNING: Invalid header for file "'//file_name//'".'// &
 								   LF//'Header for this data must have size (1) or '// &
-									   '('//str(size(x, dim=2))//').'
+									   '('//str(size(x, dim=2, kind=int64))//').'
 				else
 					header_ = header
 				end if
@@ -13381,11 +13408,11 @@ submodule (io_fortran_lib) file_io
 			if ( .not. present(header) ) then
 				header_ = [ EMPTY_STR ]
 			else
-				if ( (size(header) /= 1) .and. (size(header) /= size(x, dim=2)) ) then
+				if ( (size(header,kind=int64)/=1_int64).and.(size(header,kind=int64)/=size(x,dim=2,kind=int64)) ) then
 					header_ = [ EMPTY_STR ]
 					write(*,'(a)') LF//'WARNING: Invalid header for file "'//file_name//'".'// &
 								   LF//'Header for this data must have size (1) or '// &
-									   '('//str(size(x, dim=2))//').'
+									   '('//str(size(x, dim=2, kind=int64))//').'
 				else
 					header_ = header
 				end if
@@ -13434,11 +13461,11 @@ submodule (io_fortran_lib) file_io
 			if ( .not. present(header) ) then
 				header_ = [ EMPTY_STR ]
 			else
-				if ( (size(header) /= 1) .and. (size(header) /= size(x, dim=2)) ) then
+				if ( (size(header,kind=int64)/=1_int64).and.(size(header,kind=int64)/=size(x,dim=2,kind=int64)) ) then
 					header_ = [ EMPTY_STR ]
 					write(*,'(a)') LF//'WARNING: Invalid header for file "'//file_name//'".'// &
 								   LF//'Header for this data must have size (1) or '// &
-									   '('//str(size(x, dim=2))//').'
+									   '('//str(size(x, dim=2, kind=int64))//').'
 				else
 					header_ = header
 				end if
@@ -19205,7 +19232,7 @@ submodule (io_fortran_lib) text_io
 			return
 		end if
 
-		if ( len(substring) == 0 ) then
+		if ( len(substring, kind=int64) == 0_int64 ) then
 			write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". '// &
 								'String to write is empty.'
 			return
@@ -19229,11 +19256,11 @@ submodule (io_fortran_lib) text_io
 
 		if ( .not. exists ) then
 			open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-				  action='write', access='stream', position='rewind' )
+				  action='write', access='stream' )
 		else
 			if ( .not. append_ ) then
 				open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-					  action='write', access='stream', position='rewind' )
+					  action='write', access='stream' )
 			else
 				open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
 					  action='write', access='stream', position='append' )
@@ -19259,7 +19286,7 @@ submodule (io_fortran_lib) text_io
 			return
 		end if
 
-		if ( substring%len() < 1 ) then
+		if ( substring%len64() < 1_int64 ) then
 			write(*,'(a)')  LF//'WARNING: Skipping write to "'//file_name//'". '// &
 								'String to write is empty.'
 			return
@@ -19283,11 +19310,11 @@ submodule (io_fortran_lib) text_io
 
 		if ( .not. exists ) then
 			open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-				  action='write', access='stream', position='rewind' )
+				  action='write', access='stream' )
 		else
 			if ( .not. append_ ) then
 				open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-					  action='write', access='stream', position='rewind' )
+					  action='write', access='stream' )
 			else
 				open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
 					  action='write', access='stream', position='append' )
@@ -19303,49 +19330,49 @@ submodule (io_fortran_lib) text_io
 		type(String) :: text_file
 		type(String), allocatable, dimension(:,:) :: cells
 		character(len=:), allocatable :: label
-		integer :: nx, j
+		integer(int64) :: nx, j
 		logical :: header_present
 
-		nx = size(x)
+		nx = size(x, kind=int64)
 		header_present = .false.
 
-		if ( size(header) == 1 ) then
+		if ( size(header, kind=int64) == 1_int64 ) then
 			if ( all(header == EMPTY_STR) ) then
 				if ( dim == 1 ) then
-					allocate( cells(nx,1) )
+					allocate( cells(nx,1_int64) )
 				else
-					allocate( cells(1,nx) )
+					allocate( cells(1_int64,nx) )
 				end if
 			else
 				header_present = .true.
 				if ( dim == 1 ) then
-					allocate( cells(nx+1,1) )
-					cells(1,1) = String( trim(adjustl(header(1))) )
+					allocate( cells(nx+1_int64,1_int64) )
+					cells(1_int64,1_int64) = String( trim(adjustl(header(1_int64))) )
 				else
-					allocate( cells(2,nx) )
-					label = trim(adjustl(header(1)))
-					do concurrent (j = lbound(x, dim=1):ubound(x, dim=1))
-						cells(1,j) = String(label//str(j))
+					allocate( cells(2_int64,nx) )
+					label = trim(adjustl(header(1_int64)))
+					do concurrent (j = lbound(x, dim=1, kind=int64):ubound(x, dim=1, kind=int64))
+						cells(1_int64,j) = String(label//str(j))
 					end do
 				end if
 			end if
 		else
 			header_present = .true.
-			allocate( cells(2,nx) )
-			cells(1,:) = String(header)
+			allocate( cells(2_int64,nx) )
+			cells(1_int64,:) = String(header)
 		end if
 
 		if ( header_present ) then
 			if ( dim == 1 ) then
-				cells(2:,1) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
+				cells(2_int64:,1_int64) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
 			else
-				cells(2,:) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
+				cells(2_int64,:) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
 			end if
 		else
 			if ( dim == 1 ) then
-				cells(:,1) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
+				cells(:,1_int64) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
 			else
-				cells(1,:) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
+				cells(1_int64,:) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
 			end if
 		end if
 
@@ -19355,49 +19382,49 @@ submodule (io_fortran_lib) text_io
 		type(String) :: text_file
 		type(String), allocatable, dimension(:,:) :: cells
 		character(len=:), allocatable :: label
-		integer :: nx, j
+		integer(int64) :: nx, j
 		logical :: header_present
 
-		nx = size(x)
+		nx = size(x, kind=int64)
 		header_present = .false.
 
-		if ( size(header) == 1 ) then
+		if ( size(header, kind=int64) == 1_int64 ) then
 			if ( all(header == EMPTY_STR) ) then
 				if ( dim == 1 ) then
-					allocate( cells(nx,1) )
+					allocate( cells(nx,1_int64) )
 				else
-					allocate( cells(1,nx) )
+					allocate( cells(1_int64,nx) )
 				end if
 			else
 				header_present = .true.
 				if ( dim == 1 ) then
-					allocate( cells(nx+1,1) )
-					cells(1,1) = String( trim(adjustl(header(1))) )
+					allocate( cells(nx+1_int64,1_int64) )
+					cells(1_int64,1_int64) = String( trim(adjustl(header(1_int64))) )
 				else
-					allocate( cells(2,nx) )
-					label = trim(adjustl(header(1)))
-					do concurrent (j = lbound(x, dim=1):ubound(x, dim=1))
-						cells(1,j) = String(label//str(j))
+					allocate( cells(2_int64,nx) )
+					label = trim(adjustl(header(1_int64)))
+					do concurrent (j = lbound(x, dim=1, kind=int64):ubound(x, dim=1, kind=int64))
+						cells(1_int64,j) = String(label//str(j))
 					end do
 				end if
 			end if
 		else
 			header_present = .true.
-			allocate( cells(2,nx) )
-			cells(1,:) = String(header)
+			allocate( cells(2_int64,nx) )
+			cells(1_int64,:) = String(header)
 		end if
 
 		if ( header_present ) then
 			if ( dim == 1 ) then
-				cells(2:,1) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
+				cells(2_int64:,1_int64) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
 			else
-				cells(2,:) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
+				cells(2_int64,:) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
 			end if
 		else
 			if ( dim == 1 ) then
-				cells(:,1) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
+				cells(:,1_int64) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
 			else
-				cells(1,:) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
+				cells(1_int64,:) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
 			end if
 		end if
 
@@ -19407,49 +19434,49 @@ submodule (io_fortran_lib) text_io
 		type(String) :: text_file
 		type(String), allocatable, dimension(:,:) :: cells
 		character(len=:), allocatable :: label
-		integer :: nx, j
+		integer(int64) :: nx, j
 		logical :: header_present
 
-		nx = size(x)
+		nx = size(x, kind=int64)
 		header_present = .false.
 
-		if ( size(header) == 1 ) then
+		if ( size(header, kind=int64) == 1_int64 ) then
 			if ( all(header == EMPTY_STR) ) then
 				if ( dim == 1 ) then
-					allocate( cells(nx,1) )
+					allocate( cells(nx,1_int64) )
 				else
-					allocate( cells(1,nx) )
+					allocate( cells(1_int64,nx) )
 				end if
 			else
 				header_present = .true.
 				if ( dim == 1 ) then
-					allocate( cells(nx+1,1) )
-					cells(1,1) = String( trim(adjustl(header(1))) )
+					allocate( cells(nx+1_int64,1_int64) )
+					cells(1_int64,1_int64) = String( trim(adjustl(header(1_int64))) )
 				else
-					allocate( cells(2,nx) )
-					label = trim(adjustl(header(1)))
-					do concurrent (j = lbound(x, dim=1):ubound(x, dim=1))
-						cells(1,j) = String(label//str(j))
+					allocate( cells(2_int64,nx) )
+					label = trim(adjustl(header(1_int64)))
+					do concurrent (j = lbound(x, dim=1, kind=int64):ubound(x, dim=1, kind=int64))
+						cells(1_int64,j) = String(label//str(j))
 					end do
 				end if
 			end if
 		else
 			header_present = .true.
-			allocate( cells(2,nx) )
-			cells(1,:) = String(header)
+			allocate( cells(2_int64,nx) )
+			cells(1_int64,:) = String(header)
 		end if
 
 		if ( header_present ) then
 			if ( dim == 1 ) then
-				cells(2:,1) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
+				cells(2_int64:,1_int64) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
 			else
-				cells(2,:) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
+				cells(2_int64,:) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
 			end if
 		else
 			if ( dim == 1 ) then
-				cells(:,1) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
+				cells(:,1_int64) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
 			else
-				cells(1,:) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
+				cells(1_int64,:) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
 			end if
 		end if
 
@@ -19460,32 +19487,32 @@ submodule (io_fortran_lib) text_io
 		type(String) :: text_file
 		type(String), allocatable, dimension(:,:) :: cells
 		character(len=:), allocatable :: label
-		integer :: nrows, ncols, j
+		integer(int64) :: n_rows, n_cols, j
 		logical :: header_present
 
-		nrows = size(x, dim=1)
-		ncols = size(x, dim=2)
+		n_rows = size(x, dim=1, kind=int64)
+		n_cols = size(x, dim=2, kind=int64)
 		header_present = .false.
 
-		if ( size(header) == 1 ) then
+		if ( size(header, kind=int64) == 1_int64 ) then
 			if ( all(header == EMPTY_STR) ) then
-				allocate( cells(nrows,ncols) )
+				allocate( cells(n_rows,n_cols) )
 			else
 				header_present = .true.
-				allocate( cells(nrows+1,ncols) )
-				label = trim(adjustl(header(1)))
-				do concurrent (j = lbound(x, dim=2):ubound(x, dim=2))
-					cells(1,j) = String(label//str(j))
+				allocate( cells(n_rows+1_int64,n_cols) )
+				label = trim(adjustl(header(1_int64)))
+				do concurrent (j = lbound(x, dim=2, kind=int64):ubound(x, dim=2, kind=int64))
+					cells(1_int64,j) = String(label//str(j))
 				end do
 			end if
 		else
 			header_present = .true.
-			allocate( cells(nrows+1,ncols) )
-			cells(1,:) = String(header)
+			allocate( cells(n_rows+1_int64,n_cols) )
+			cells(1_int64,:) = String(header)
 		end if
 
 		if ( header_present ) then
-			cells(2:,:) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
+			cells(2_int64:,:) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
 		else
 			cells = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
 		end if
@@ -19496,32 +19523,32 @@ submodule (io_fortran_lib) text_io
 		type(String) :: text_file
 		type(String), allocatable, dimension(:,:) :: cells
 		character(len=:), allocatable :: label
-		integer :: nrows, ncols, j
+		integer(int64) :: n_rows, n_cols, j
 		logical :: header_present
 
-		nrows = size(x, dim=1)
-		ncols = size(x, dim=2)
+		n_rows = size(x, dim=1, kind=int64)
+		n_cols = size(x, dim=2, kind=int64)
 		header_present = .false.
 
-		if ( size(header) == 1 ) then
+		if ( size(header, kind=int64) == 1_int64 ) then
 			if ( all(header == EMPTY_STR) ) then
-				allocate( cells(nrows,ncols) )
+				allocate( cells(n_rows,n_cols) )
 			else
 				header_present = .true.
-				allocate( cells(nrows+1,ncols) )
-				label = trim(adjustl(header(1)))
-				do concurrent (j = lbound(x, dim=2):ubound(x, dim=2))
-					cells(1,j) = String(label//str(j))
+				allocate( cells(n_rows+1_int64,n_cols) )
+				label = trim(adjustl(header(1_int64)))
+				do concurrent (j = lbound(x, dim=2, kind=int64):ubound(x, dim=2, kind=int64))
+					cells(1_int64,j) = String(label//str(j))
 				end do
 			end if
 		else
 			header_present = .true.
-			allocate( cells(nrows+1,ncols) )
-			cells(1,:) = String(header)
+			allocate( cells(n_rows+1_int64,n_cols) )
+			cells(1_int64,:) = String(header)
 		end if
 
 		if ( header_present ) then
-			cells(2:,:) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
+			cells(2_int64:,:) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
 		else
 			cells = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
 		end if
@@ -19532,32 +19559,32 @@ submodule (io_fortran_lib) text_io
 		type(String) :: text_file
 		type(String), allocatable, dimension(:,:) :: cells
 		character(len=:), allocatable :: label
-		integer :: nrows, ncols, j
+		integer(int64) :: n_rows, n_cols, j
 		logical :: header_present
 
-		nrows = size(x, dim=1)
-		ncols = size(x, dim=2)
+		n_rows = size(x, dim=1, kind=int64)
+		n_cols = size(x, dim=2, kind=int64)
 		header_present = .false.
 
-		if ( size(header) == 1 ) then
+		if ( size(header, kind=int64) == 1_int64 ) then
 			if ( all(header == EMPTY_STR) ) then
-				allocate( cells(nrows,ncols) )
+				allocate( cells(n_rows,n_cols) )
 			else
 				header_present = .true.
-				allocate( cells(nrows+1,ncols) )
-				label = trim(adjustl(header(1)))
-				do concurrent (j = lbound(x, dim=2):ubound(x, dim=2))
-					cells(1,j) = String(label//str(j))
+				allocate( cells(n_rows+1_int64,n_cols) )
+				label = trim(adjustl(header(1_int64)))
+				do concurrent (j = lbound(x, dim=2, kind=int64):ubound(x, dim=2, kind=int64))
+					cells(1_int64,j) = String(label//str(j))
 				end do
 			end if
 		else
 			header_present = .true.
-			allocate( cells(nrows+1,ncols) )
-			cells(1,:) = String(header)
+			allocate( cells(n_rows+1_int64,n_cols) )
+			cells(1_int64,:) = String(header)
 		end if
 
 		if ( header_present ) then
-			cells(2:,:) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
+			cells(2_int64:,:) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
 		else
 			cells = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
 		end if
@@ -19569,49 +19596,49 @@ submodule (io_fortran_lib) text_io
 		type(String) :: text_file
 		type(String), allocatable, dimension(:,:) :: cells
 		character(len=:), allocatable :: label
-		integer :: nx, j
+		integer(int64) :: nx, j
 		logical :: header_present
 
-		nx = size(x)
+		nx = size(x, kind=int64)
 		header_present = .false.
 
-		if ( size(header) == 1 ) then
+		if ( size(header, kind=int64) == 1_int64 ) then
 			if ( all(header == EMPTY_STR) ) then
 				if ( dim == 1 ) then
-					allocate( cells(nx,1) )
+					allocate( cells(nx,1_int64) )
 				else
-					allocate( cells(1,nx) )
+					allocate( cells(1_int64,nx) )
 				end if
 			else
 				header_present = .true.
 				if ( dim == 1 ) then
-					allocate( cells(nx+1,1) )
-					cells(1,1) = String( trim(adjustl(header(1))) )
+					allocate( cells(nx+1_int64,1_int64) )
+					cells(1_int64,1_int64) = String( trim(adjustl(header(1_int64))) )
 				else
-					allocate( cells(2,nx) )
-					label = trim(adjustl(header(1)))
-					do concurrent (j = lbound(x, dim=1):ubound(x, dim=1))
-						cells(1,j) = String(label//str(j))
+					allocate( cells(2_int64,nx) )
+					label = trim(adjustl(header(1_int64)))
+					do concurrent (j = lbound(x, dim=1, kind=int64):ubound(x, dim=1, kind=int64))
+						cells(1_int64,j) = String(label//str(j))
 					end do
 				end if
 			end if
 		else
 			header_present = .true.
-			allocate( cells(2,nx) )
-			cells(1,:) = String(header)
+			allocate( cells(2_int64,nx) )
+			cells(1_int64,:) = String(header)
 		end if
 
 		if ( header_present ) then
 			if ( dim == 1 ) then
-				cells(2:,1) = String(x, locale=locale, fmt=fmt, decimals=decimals)
+				cells(2_int64:,1_int64) = String(x, locale=locale, fmt=fmt, decimals=decimals)
 			else
-				cells(2,:) = String(x, locale=locale, fmt=fmt, decimals=decimals)
+				cells(2_int64,:) = String(x, locale=locale, fmt=fmt, decimals=decimals)
 			end if
 		else
 			if ( dim == 1 ) then
-				cells(:,1) = String(x, locale=locale, fmt=fmt, decimals=decimals)
+				cells(:,1_int64) = String(x, locale=locale, fmt=fmt, decimals=decimals)
 			else
-				cells(1,:) = String(x, locale=locale, fmt=fmt, decimals=decimals)
+				cells(1_int64,:) = String(x, locale=locale, fmt=fmt, decimals=decimals)
 			end if
 		end if
 
@@ -19621,49 +19648,49 @@ submodule (io_fortran_lib) text_io
 		type(String) :: text_file
 		type(String), allocatable, dimension(:,:) :: cells
 		character(len=:), allocatable :: label
-		integer :: nx, j
+		integer(int64) :: nx, j
 		logical :: header_present
 
-		nx = size(x)
+		nx = size(x, kind=int64)
 		header_present = .false.
 
-		if ( size(header) == 1 ) then
+		if ( size(header, kind=int64) == 1_int64 ) then
 			if ( all(header == EMPTY_STR) ) then
 				if ( dim == 1 ) then
-					allocate( cells(nx,1) )
+					allocate( cells(nx,1_int64) )
 				else
-					allocate( cells(1,nx) )
+					allocate( cells(1_int64,nx) )
 				end if
 			else
 				header_present = .true.
 				if ( dim == 1 ) then
-					allocate( cells(nx+1,1) )
-					cells(1,1) = String( trim(adjustl(header(1))) )
+					allocate( cells(nx+1_int64,1_int64) )
+					cells(1_int64,1_int64) = String( trim(adjustl(header(1_int64))) )
 				else
-					allocate( cells(2,nx) )
-					label = trim(adjustl(header(1)))
-					do concurrent (j = lbound(x, dim=1):ubound(x, dim=1))
-						cells(1,j) = String(label//str(j))
+					allocate( cells(2_int64,nx) )
+					label = trim(adjustl(header(1_int64)))
+					do concurrent (j = lbound(x, dim=1, kind=int64):ubound(x, dim=1, kind=int64))
+						cells(1_int64,j) = String(label//str(j))
 					end do
 				end if
 			end if
 		else
 			header_present = .true.
-			allocate( cells(2,nx) )
-			cells(1,:) = String(header)
+			allocate( cells(2_int64,nx) )
+			cells(1_int64,:) = String(header)
 		end if
 
 		if ( header_present ) then
 			if ( dim == 1 ) then
-				cells(2:,1) = String(x, locale=locale, fmt=fmt, decimals=decimals)
+				cells(2_int64:,1_int64) = String(x, locale=locale, fmt=fmt, decimals=decimals)
 			else
-				cells(2,:) = String(x, locale=locale, fmt=fmt, decimals=decimals)
+				cells(2_int64,:) = String(x, locale=locale, fmt=fmt, decimals=decimals)
 			end if
 		else
 			if ( dim == 1 ) then
-				cells(:,1) = String(x, locale=locale, fmt=fmt, decimals=decimals)
+				cells(:,1_int64) = String(x, locale=locale, fmt=fmt, decimals=decimals)
 			else
-				cells(1,:) = String(x, locale=locale, fmt=fmt, decimals=decimals)
+				cells(1_int64,:) = String(x, locale=locale, fmt=fmt, decimals=decimals)
 			end if
 		end if
 
@@ -19673,49 +19700,49 @@ submodule (io_fortran_lib) text_io
 		type(String) :: text_file
 		type(String), allocatable, dimension(:,:) :: cells
 		character(len=:), allocatable :: label
-		integer :: nx, j
+		integer(int64) :: nx, j
 		logical :: header_present
 
-		nx = size(x)
+		nx = size(x, kind=int64)
 		header_present = .false.
 
-		if ( size(header) == 1 ) then
+		if ( size(header, kind=int64) == 1_int64 ) then
 			if ( all(header == EMPTY_STR) ) then
 				if ( dim == 1 ) then
-					allocate( cells(nx,1) )
+					allocate( cells(nx,1_int64) )
 				else
-					allocate( cells(1,nx) )
+					allocate( cells(1_int64,nx) )
 				end if
 			else
 				header_present = .true.
 				if ( dim == 1 ) then
-					allocate( cells(nx+1,1) )
-					cells(1,1) = String( trim(adjustl(header(1))) )
+					allocate( cells(nx+1_int64,1_int64) )
+					cells(1_int64,1_int64) = String( trim(adjustl(header(1_int64))) )
 				else
-					allocate( cells(2,nx) )
-					label = trim(adjustl(header(1)))
-					do concurrent (j = lbound(x, dim=1):ubound(x, dim=1))
-						cells(1,j) = String(label//str(j))
+					allocate( cells(2_int64,nx) )
+					label = trim(adjustl(header(1_int64)))
+					do concurrent (j = lbound(x, dim=1, kind=int64):ubound(x, dim=1, kind=int64))
+						cells(1_int64,j) = String(label//str(j))
 					end do
 				end if
 			end if
 		else
 			header_present = .true.
-			allocate( cells(2,nx) )
-			cells(1,:) = String(header)
+			allocate( cells(2_int64,nx) )
+			cells(1_int64,:) = String(header)
 		end if
 
 		if ( header_present ) then
 			if ( dim == 1 ) then
-				cells(2:,1) = String(x, locale=locale, fmt=fmt, decimals=decimals)
+				cells(2_int64:,1_int64) = String(x, locale=locale, fmt=fmt, decimals=decimals)
 			else
-				cells(2,:) = String(x, locale=locale, fmt=fmt, decimals=decimals)
+				cells(2_int64,:) = String(x, locale=locale, fmt=fmt, decimals=decimals)
 			end if
 		else
 			if ( dim == 1 ) then
-				cells(:,1) = String(x, locale=locale, fmt=fmt, decimals=decimals)
+				cells(:,1_int64) = String(x, locale=locale, fmt=fmt, decimals=decimals)
 			else
-				cells(1,:) = String(x, locale=locale, fmt=fmt, decimals=decimals)
+				cells(1_int64,:) = String(x, locale=locale, fmt=fmt, decimals=decimals)
 			end if
 		end if
 
@@ -19726,32 +19753,32 @@ submodule (io_fortran_lib) text_io
 		type(String) :: text_file
 		type(String), allocatable, dimension(:,:) :: cells
 		character(len=:), allocatable :: label
-		integer :: nrows, ncols, j
+		integer(int64) :: n_rows, n_cols, j
 		logical :: header_present
 
-		nrows = size(x, dim=1)
-		ncols = size(x, dim=2)
+		n_rows = size(x, dim=1, kind=int64)
+		n_cols = size(x, dim=2, kind=int64)
 		header_present = .false.
 
-		if ( size(header) == 1 ) then
+		if ( size(header, kind=int64) == 1_int64 ) then
 			if ( all(header == EMPTY_STR) ) then
-				allocate( cells(nrows,ncols) )
+				allocate( cells(n_rows,n_cols) )
 			else
 				header_present = .true.
-				allocate( cells(nrows+1,ncols) )
-				label = trim(adjustl(header(1)))
-				do concurrent (j = lbound(x, dim=2):ubound(x, dim=2))
-					cells(1,j) = String(label//str(j))
+				allocate( cells(n_rows+1_int64,n_cols) )
+				label = trim(adjustl(header(1_int64)))
+				do concurrent (j = lbound(x, dim=2, kind=int64):ubound(x, dim=2, kind=int64))
+					cells(1_int64,j) = String(label//str(j))
 				end do
 			end if
 		else
 			header_present = .true.
-			allocate( cells(nrows+1,ncols) )
-			cells(1,:) = String(header)
+			allocate( cells(n_rows+1_int64,n_cols) )
+			cells(1_int64,:) = String(header)
 		end if
 
 		if ( header_present ) then
-			cells(2:,:) = String(x, locale=locale, fmt=fmt, decimals=decimals)
+			cells(2_int64:,:) = String(x, locale=locale, fmt=fmt, decimals=decimals)
 		else
 			cells = String(x, locale=locale, fmt=fmt, decimals=decimals)
 		end if
@@ -19762,32 +19789,32 @@ submodule (io_fortran_lib) text_io
 		type(String) :: text_file
 		type(String), allocatable, dimension(:,:) :: cells
 		character(len=:), allocatable :: label
-		integer :: nrows, ncols, j
+		integer(int64) :: n_rows, n_cols, j
 		logical :: header_present
 
-		nrows = size(x, dim=1)
-		ncols = size(x, dim=2)
+		n_rows = size(x, dim=1, kind=int64)
+		n_cols = size(x, dim=2, kind=int64)
 		header_present = .false.
 
-		if ( size(header) == 1 ) then
+		if ( size(header, kind=int64) == 1_int64 ) then
 			if ( all(header == EMPTY_STR) ) then
-				allocate( cells(nrows,ncols) )
+				allocate( cells(n_rows,n_cols) )
 			else
 				header_present = .true.
-				allocate( cells(nrows+1,ncols) )
-				label = trim(adjustl(header(1)))
-				do concurrent (j = lbound(x, dim=2):ubound(x, dim=2))
-					cells(1,j) = String(label//str(j))
+				allocate( cells(n_rows+1_int64,n_cols) )
+				label = trim(adjustl(header(1_int64)))
+				do concurrent (j = lbound(x, dim=2, kind=int64):ubound(x, dim=2, kind=int64))
+					cells(1_int64,j) = String(label//str(j))
 				end do
 			end if
 		else
 			header_present = .true.
-			allocate( cells(nrows+1,ncols) )
-			cells(1,:) = String(header)
+			allocate( cells(n_rows+1_int64,n_cols) )
+			cells(1_int64,:) = String(header)
 		end if
 
 		if ( header_present ) then
-			cells(2:,:) = String(x, locale=locale, fmt=fmt, decimals=decimals)
+			cells(2_int64:,:) = String(x, locale=locale, fmt=fmt, decimals=decimals)
 		else
 			cells = String(x, locale=locale, fmt=fmt, decimals=decimals)
 		end if
@@ -19798,32 +19825,32 @@ submodule (io_fortran_lib) text_io
 		type(String) :: text_file
 		type(String), allocatable, dimension(:,:) :: cells
 		character(len=:), allocatable :: label
-		integer :: nrows, ncols, j
+		integer(int64) :: n_rows, n_cols, j
 		logical :: header_present
 
-		nrows = size(x, dim=1)
-		ncols = size(x, dim=2)
+		n_rows = size(x, dim=1, kind=int64)
+		n_cols = size(x, dim=2, kind=int64)
 		header_present = .false.
 
-		if ( size(header) == 1 ) then
+		if ( size(header, kind=int64) == 1_int64 ) then
 			if ( all(header == EMPTY_STR) ) then
-				allocate( cells(nrows,ncols) )
+				allocate( cells(n_rows,n_cols) )
 			else
 				header_present = .true.
-				allocate( cells(nrows+1,ncols) )
-				label = trim(adjustl(header(1)))
-				do concurrent (j = lbound(x, dim=2):ubound(x, dim=2))
-					cells(1,j) = String(label//str(j))
+				allocate( cells(n_rows+1_int64,n_cols) )
+				label = trim(adjustl(header(1_int64)))
+				do concurrent (j = lbound(x, dim=2, kind=int64):ubound(x, dim=2, kind=int64))
+					cells(1_int64,j) = String(label//str(j))
 				end do
 			end if
 		else
 			header_present = .true.
-			allocate( cells(nrows+1,ncols) )
-			cells(1,:) = String(header)
+			allocate( cells(n_rows+1_int64,n_cols) )
+			cells(1_int64,:) = String(header)
 		end if
 
 		if ( header_present ) then
-			cells(2:,:) = String(x, locale=locale, fmt=fmt, decimals=decimals)
+			cells(2_int64:,:) = String(x, locale=locale, fmt=fmt, decimals=decimals)
 		else
 			cells = String(x, locale=locale, fmt=fmt, decimals=decimals)
 		end if
@@ -19835,49 +19862,49 @@ submodule (io_fortran_lib) text_io
 		type(String) :: text_file
 		type(String), allocatable, dimension(:,:) :: cells
 		character(len=:), allocatable :: label
-		integer :: nx, j
+		integer(int64) :: nx, j
 		logical :: header_present
 
-		nx = size(x)
+		nx = size(x, kind=int64)
 		header_present = .false.
 
-		if ( size(header) == 1 ) then
+		if ( size(header, kind=int64) == 1_int64 ) then
 			if ( all(header == EMPTY_STR) ) then
 				if ( dim == 1 ) then
-					allocate( cells(nx,1) )
+					allocate( cells(nx,1_int64) )
 				else
-					allocate( cells(1,nx) )
+					allocate( cells(1_int64,nx) )
 				end if
 			else
 				header_present = .true.
 				if ( dim == 1 ) then
-					allocate( cells(nx+1,1) )
-					cells(1,1) = String( trim(adjustl(header(1))) )
+					allocate( cells(nx+1_int64,1_int64) )
+					cells(1_int64,1_int64) = String( trim(adjustl(header(1_int64))) )
 				else
-					allocate( cells(2,nx) )
-					label = trim(adjustl(header(1)))
-					do concurrent (j = lbound(x, dim=1):ubound(x, dim=1))
-						cells(1,j) = String(label//str(j))
+					allocate( cells(2_int64,nx) )
+					label = trim(adjustl(header(1_int64)))
+					do concurrent (j = lbound(x, dim=1, kind=int64):ubound(x, dim=1, kind=int64))
+						cells(1_int64,j) = String(label//str(j))
 					end do
 				end if
 			end if
 		else
 			header_present = .true.
-			allocate( cells(2,nx) )
-			cells(1,:) = String(header)
+			allocate( cells(2_int64,nx) )
+			cells(1_int64,:) = String(header)
 		end if
 
 		if ( header_present ) then
 			if ( dim == 1 ) then
-				cells(2:,1) = String(x, fmt=fmt)
+				cells(2_int64:,1_int64) = String(x, fmt=fmt)
 			else
-				cells(2,:) = String(x, fmt=fmt)
+				cells(2_int64,:) = String(x, fmt=fmt)
 			end if
 		else
 			if ( dim == 1 ) then
-				cells(:,1) = String(x, fmt=fmt)
+				cells(:,1_int64) = String(x, fmt=fmt)
 			else
-				cells(1,:) = String(x, fmt=fmt)
+				cells(1_int64,:) = String(x, fmt=fmt)
 			end if
 		end if
 
@@ -19887,49 +19914,49 @@ submodule (io_fortran_lib) text_io
 		type(String) :: text_file
 		type(String), allocatable, dimension(:,:) :: cells
 		character(len=:), allocatable :: label
-		integer :: nx, j
+		integer(int64) :: nx, j
 		logical :: header_present
 
-		nx = size(x)
+		nx = size(x, kind=int64)
 		header_present = .false.
 
-		if ( size(header) == 1 ) then
+		if ( size(header, kind=int64) == 1_int64 ) then
 			if ( all(header == EMPTY_STR) ) then
 				if ( dim == 1 ) then
-					allocate( cells(nx,1) )
+					allocate( cells(nx,1_int64) )
 				else
-					allocate( cells(1,nx) )
+					allocate( cells(1_int64,nx) )
 				end if
 			else
 				header_present = .true.
 				if ( dim == 1 ) then
-					allocate( cells(nx+1,1) )
-					cells(1,1) = String( trim(adjustl(header(1))) )
+					allocate( cells(nx+1_int64,1_int64) )
+					cells(1_int64,1_int64) = String( trim(adjustl(header(1_int64))) )
 				else
-					allocate( cells(2,nx) )
-					label = trim(adjustl(header(1)))
-					do concurrent (j = lbound(x, dim=1):ubound(x, dim=1))
-						cells(1,j) = String(label//str(j))
+					allocate( cells(2_int64,nx) )
+					label = trim(adjustl(header(1_int64)))
+					do concurrent (j = lbound(x, dim=1, kind=int64):ubound(x, dim=1, kind=int64))
+						cells(1_int64,j) = String(label//str(j))
 					end do
 				end if
 			end if
 		else
 			header_present = .true.
-			allocate( cells(2,nx) )
-			cells(1,:) = String(header)
+			allocate( cells(2_int64,nx) )
+			cells(1_int64,:) = String(header)
 		end if
 
 		if ( header_present ) then
 			if ( dim == 1 ) then
-				cells(2:,1) = String(x, fmt=fmt)
+				cells(2_int64:,1_int64) = String(x, fmt=fmt)
 			else
-				cells(2,:) = String(x, fmt=fmt)
+				cells(2_int64,:) = String(x, fmt=fmt)
 			end if
 		else
 			if ( dim == 1 ) then
-				cells(:,1) = String(x, fmt=fmt)
+				cells(:,1_int64) = String(x, fmt=fmt)
 			else
-				cells(1,:) = String(x, fmt=fmt)
+				cells(1_int64,:) = String(x, fmt=fmt)
 			end if
 		end if
 
@@ -19939,49 +19966,49 @@ submodule (io_fortran_lib) text_io
 		type(String) :: text_file
 		type(String), allocatable, dimension(:,:) :: cells
 		character(len=:), allocatable :: label
-		integer :: nx, j
+		integer(int64) :: nx, j
 		logical :: header_present
 
-		nx = size(x)
+		nx = size(x, kind=int64)
 		header_present = .false.
 
-		if ( size(header) == 1 ) then
+		if ( size(header, kind=int64) == 1_int64 ) then
 			if ( all(header == EMPTY_STR) ) then
 				if ( dim == 1 ) then
-					allocate( cells(nx,1) )
+					allocate( cells(nx,1_int64) )
 				else
-					allocate( cells(1,nx) )
+					allocate( cells(1_int64,nx) )
 				end if
 			else
 				header_present = .true.
 				if ( dim == 1 ) then
-					allocate( cells(nx+1,1) )
-					cells(1,1) = String( trim(adjustl(header(1))) )
+					allocate( cells(nx+1_int64,1_int64) )
+					cells(1_int64,1_int64) = String( trim(adjustl(header(1_int64))) )
 				else
-					allocate( cells(2,nx) )
-					label = trim(adjustl(header(1)))
-					do concurrent (j = lbound(x, dim=1):ubound(x, dim=1))
-						cells(1,j) = String(label//str(j))
+					allocate( cells(2_int64,nx) )
+					label = trim(adjustl(header(1_int64)))
+					do concurrent (j = lbound(x, dim=1, kind=int64):ubound(x, dim=1, kind=int64))
+						cells(1_int64,j) = String(label//str(j))
 					end do
 				end if
 			end if
 		else
 			header_present = .true.
-			allocate( cells(2,nx) )
-			cells(1,:) = String(header)
+			allocate( cells(2_int64,nx) )
+			cells(1_int64,:) = String(header)
 		end if
 
 		if ( header_present ) then
 			if ( dim == 1 ) then
-				cells(2:,1) = String(x, fmt=fmt)
+				cells(2_int64:,1_int64) = String(x, fmt=fmt)
 			else
-				cells(2,:) = String(x, fmt=fmt)
+				cells(2_int64,:) = String(x, fmt=fmt)
 			end if
 		else
 			if ( dim == 1 ) then
-				cells(:,1) = String(x, fmt=fmt)
+				cells(:,1_int64) = String(x, fmt=fmt)
 			else
-				cells(1,:) = String(x, fmt=fmt)
+				cells(1_int64,:) = String(x, fmt=fmt)
 			end if
 		end if
 
@@ -19991,49 +20018,49 @@ submodule (io_fortran_lib) text_io
 		type(String) :: text_file
 		type(String), allocatable, dimension(:,:) :: cells
 		character(len=:), allocatable :: label
-		integer :: nx, j
+		integer(int64) :: nx, j
 		logical :: header_present
 
-		nx = size(x)
+		nx = size(x, kind=int64)
 		header_present = .false.
 
-		if ( size(header) == 1 ) then
+		if ( size(header, kind=int64) == 1_int64 ) then
 			if ( all(header == EMPTY_STR) ) then
 				if ( dim == 1 ) then
-					allocate( cells(nx,1) )
+					allocate( cells(nx,1_int64) )
 				else
-					allocate( cells(1,nx) )
+					allocate( cells(1_int64,nx) )
 				end if
 			else
 				header_present = .true.
 				if ( dim == 1 ) then
-					allocate( cells(nx+1,1) )
-					cells(1,1) = String( trim(adjustl(header(1))) )
+					allocate( cells(nx+1_int64,1_int64) )
+					cells(1_int64,1_int64) = String( trim(adjustl(header(1_int64))) )
 				else
-					allocate( cells(2,nx) )
-					label = trim(adjustl(header(1)))
-					do concurrent (j = lbound(x, dim=1):ubound(x, dim=1))
-						cells(1,j) = String(label//str(j))
+					allocate( cells(2_int64,nx) )
+					label = trim(adjustl(header(1_int64)))
+					do concurrent (j = lbound(x, dim=1, kind=int64):ubound(x, dim=1, kind=int64))
+						cells(1_int64,j) = String(label//str(j))
 					end do
 				end if
 			end if
 		else
 			header_present = .true.
-			allocate( cells(2,nx) )
-			cells(1,:) = String(header)
+			allocate( cells(2_int64,nx) )
+			cells(1_int64,:) = String(header)
 		end if
 
 		if ( header_present ) then
 			if ( dim == 1 ) then
-				cells(2:,1) = String(x, fmt=fmt)
+				cells(2_int64:,1_int64) = String(x, fmt=fmt)
 			else
-				cells(2,:) = String(x, fmt=fmt)
+				cells(2_int64,:) = String(x, fmt=fmt)
 			end if
 		else
 			if ( dim == 1 ) then
-				cells(:,1) = String(x, fmt=fmt)
+				cells(:,1_int64) = String(x, fmt=fmt)
 			else
-				cells(1,:) = String(x, fmt=fmt)
+				cells(1_int64,:) = String(x, fmt=fmt)
 			end if
 		end if
 
@@ -20044,32 +20071,32 @@ submodule (io_fortran_lib) text_io
 		type(String) :: text_file
 		type(String), allocatable, dimension(:,:) :: cells
 		character(len=:), allocatable :: label
-		integer :: nrows, ncols, j
+		integer(int64) :: n_rows, n_cols, j
 		logical :: header_present
 
-		nrows = size(x, dim=1)
-		ncols = size(x, dim=2)
+		n_rows = size(x, dim=1, kind=int64)
+		n_cols = size(x, dim=2, kind=int64)
 		header_present = .false.
 
-		if ( size(header) == 1 ) then
+		if ( size(header, kind=int64) == 1_int64 ) then
 			if ( all(header == EMPTY_STR) ) then
-				allocate( cells(nrows,ncols) )
+				allocate( cells(n_rows,n_cols) )
 			else
 				header_present = .true.
-				allocate( cells(nrows+1,ncols) )
-				label = trim(adjustl(header(1)))
-				do concurrent (j = lbound(x, dim=2):ubound(x, dim=2))
-					cells(1,j) = String(label//str(j))
+				allocate( cells(n_rows+1_int64,n_cols) )
+				label = trim(adjustl(header(1_int64)))
+				do concurrent (j = lbound(x, dim=2, kind=int64):ubound(x, dim=2, kind=int64))
+					cells(1_int64,j) = String(label//str(j))
 				end do
 			end if
 		else
 			header_present = .true.
-			allocate( cells(nrows+1,ncols) )
-			cells(1,:) = String(header)
+			allocate( cells(n_rows+1_int64,n_cols) )
+			cells(1_int64,:) = String(header)
 		end if
 
 		if ( header_present ) then
-			cells(2:,:) = String(x, fmt=fmt)
+			cells(2_int64:,:) = String(x, fmt=fmt)
 		else
 			cells = String(x, fmt=fmt)
 		end if
@@ -20080,32 +20107,32 @@ submodule (io_fortran_lib) text_io
 		type(String) :: text_file
 		type(String), allocatable, dimension(:,:) :: cells
 		character(len=:), allocatable :: label
-		integer :: nrows, ncols, j
+		integer(int64) :: n_rows, n_cols, j
 		logical :: header_present
 
-		nrows = size(x, dim=1)
-		ncols = size(x, dim=2)
+		n_rows = size(x, dim=1, kind=int64)
+		n_cols = size(x, dim=2, kind=int64)
 		header_present = .false.
 
-		if ( size(header) == 1 ) then
+		if ( size(header, kind=int64) == 1_int64 ) then
 			if ( all(header == EMPTY_STR) ) then
-				allocate( cells(nrows,ncols) )
+				allocate( cells(n_rows,n_cols) )
 			else
 				header_present = .true.
-				allocate( cells(nrows+1,ncols) )
-				label = trim(adjustl(header(1)))
-				do concurrent (j = lbound(x, dim=2):ubound(x, dim=2))
-					cells(1,j) = String(label//str(j))
+				allocate( cells(n_rows+1_int64,n_cols) )
+				label = trim(adjustl(header(1_int64)))
+				do concurrent (j = lbound(x, dim=2, kind=int64):ubound(x, dim=2, kind=int64))
+					cells(1_int64,j) = String(label//str(j))
 				end do
 			end if
 		else
 			header_present = .true.
-			allocate( cells(nrows+1,ncols) )
-			cells(1,:) = String(header)
+			allocate( cells(n_rows+1_int64,n_cols) )
+			cells(1_int64,:) = String(header)
 		end if
 
 		if ( header_present ) then
-			cells(2:,:) = String(x, fmt=fmt)
+			cells(2_int64:,:) = String(x, fmt=fmt)
 		else
 			cells = String(x, fmt=fmt)
 		end if
@@ -20116,32 +20143,32 @@ submodule (io_fortran_lib) text_io
 		type(String) :: text_file
 		type(String), allocatable, dimension(:,:) :: cells
 		character(len=:), allocatable :: label
-		integer :: nrows, ncols, j
+		integer(int64) :: n_rows, n_cols, j
 		logical :: header_present
 
-		nrows = size(x, dim=1)
-		ncols = size(x, dim=2)
+		n_rows = size(x, dim=1, kind=int64)
+		n_cols = size(x, dim=2, kind=int64)
 		header_present = .false.
 
-		if ( size(header) == 1 ) then
+		if ( size(header, kind=int64) == 1_int64 ) then
 			if ( all(header == EMPTY_STR) ) then
-				allocate( cells(nrows,ncols) )
+				allocate( cells(n_rows,n_cols) )
 			else
 				header_present = .true.
-				allocate( cells(nrows+1,ncols) )
-				label = trim(adjustl(header(1)))
-				do concurrent (j = lbound(x, dim=2):ubound(x, dim=2))
-					cells(1,j) = String(label//str(j))
+				allocate( cells(n_rows+1_int64,n_cols) )
+				label = trim(adjustl(header(1_int64)))
+				do concurrent (j = lbound(x, dim=2, kind=int64):ubound(x, dim=2, kind=int64))
+					cells(1_int64,j) = String(label//str(j))
 				end do
 			end if
 		else
 			header_present = .true.
-			allocate( cells(nrows+1,ncols) )
-			cells(1,:) = String(header)
+			allocate( cells(n_rows+1_int64,n_cols) )
+			cells(1_int64,:) = String(header)
 		end if
 
 		if ( header_present ) then
-			cells(2:,:) = String(x, fmt=fmt)
+			cells(2_int64:,:) = String(x, fmt=fmt)
 		else
 			cells = String(x, fmt=fmt)
 		end if
@@ -20152,32 +20179,32 @@ submodule (io_fortran_lib) text_io
 		type(String) :: text_file
 		type(String), allocatable, dimension(:,:) :: cells
 		character(len=:), allocatable :: label
-		integer :: nrows, ncols, j
+		integer(int64) :: n_rows, n_cols, j
 		logical :: header_present
 
-		nrows = size(x, dim=1)
-		ncols = size(x, dim=2)
+		n_rows = size(x, dim=1, kind=int64)
+		n_cols = size(x, dim=2, kind=int64)
 		header_present = .false.
 
-		if ( size(header) == 1 ) then
+		if ( size(header, kind=int64) == 1_int64 ) then
 			if ( all(header == EMPTY_STR) ) then
-				allocate( cells(nrows,ncols) )
+				allocate( cells(n_rows,n_cols) )
 			else
 				header_present = .true.
-				allocate( cells(nrows+1,ncols) )
-				label = trim(adjustl(header(1)))
-				do concurrent (j = lbound(x, dim=2):ubound(x, dim=2))
-					cells(1,j) = String(label//str(j))
+				allocate( cells(n_rows+1_int64,n_cols) )
+				label = trim(adjustl(header(1_int64)))
+				do concurrent (j = lbound(x, dim=2, kind=int64):ubound(x, dim=2, kind=int64))
+					cells(1_int64,j) = String(label//str(j))
 				end do
 			end if
 		else
 			header_present = .true.
-			allocate( cells(nrows+1,ncols) )
-			cells(1,:) = String(header)
+			allocate( cells(n_rows+1_int64,n_cols) )
+			cells(1_int64,:) = String(header)
 		end if
 
 		if ( header_present ) then
-			cells(2:,:) = String(x, fmt=fmt)
+			cells(2_int64:,:) = String(x, fmt=fmt)
 		else
 			cells = String(x, fmt=fmt)
 		end if
@@ -29503,17 +29530,17 @@ end submodule array_printing
 !======================================================================================================================
 !	List of workarounds for compiler bugs in ifx 2023.0.0 :
 !	-------------------------------------------------------
-!	1.	In read_file (line 4736), the internal subroutine split_because_ifxbug (line 4940) is called by the form
+!	1.	In read_file (line 4745), the internal subroutine split_because_ifxbug (line 4951) is called by the form
 !		|>	call split_because_ifxbug(substring, separator, tokens)
-!		where tokens is intent(out), to replace a functional call to split_string (line 10052) of the form
+!		where tokens is intent(out), to replace a functional call to split_string (line 10068) of the form
 !		|>	tokens = substring%split(separator)
 !		which induces a run-time segmentation fault in the program contained in benchmark.f90 not seen with the
 !		following compilers: ifort 2021.8.0, gfortran 11.3.0, gfortran 11.2.0. From investigation, the segmentation
-!		fault seems due entirely to the assignment of arrays of derived type, as the right-hand-side always evaluates
-!		as expected, and seems to only appear when "-heap-arrays 0" is specified, as required by the large arrays of
-!		the program contained in benchmark.f90. With small arrays, the same situation happens with the assignment on
-!		line 20 of benchmark.f90.
-!	2.	In glue_into_self (line 4614), the recursive call to glue_into_self at line 4642 induces a run-time
+!		fault seems due to the assignment of arrays of derived type, as the right-hand-side always evaluates as
+!		expected, and seems to only appear when "-heap-arrays 0" is specified, as required by the large arrays of
+!		the program contained in benchmark.f90. With small arrays, the same fault occurs with the assignment on line
+!		20 of benchmark.f90 as long as "-heap-arrays 0" is specified.
+!	2.	In glue_into_self (line 4623), the recursive call to glue_into_self at line 4651 induces a run-time
 !		segmentation fault in the program contained in benchmark.f90 not seen with the following compilers: ifort
 !		2021.8.0, gfortran 11.3.0, gfortran 11.2.0. From investigation, the segmentation fault seems due to the passing
 !		of the array of derived type. The fault occurs in a majority of runs, but not in every run. To avoid the fault,

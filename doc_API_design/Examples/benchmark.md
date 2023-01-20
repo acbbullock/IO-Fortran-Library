@@ -117,3 +117,51 @@ Data is exact match:  T
 After testing, it is clear that different compilers have different strengths and weaknesses, with some performing internal I/O more efficiently while others perform external I/O more efficiently. On Windows, the timings may be slower by a factor of 2-3 times.
 
 @note With the Intel Fortran compiler `ifx`/`ifort`, we must specify `-heap-arrays 0` to avoid a segmentation fault when reading a file of this size, as noted in [compiler-dependent behavior](../UserInfo/compilers.html).
+
+For a more extreme example, consider the following program to write every 32-bit signed integer and their corresponding hexadecimal representations to a csv file `int32.csv`:
+
+```fortran
+program main
+    use, intrinsic :: iso_fortran_env, only: ik=>int64, dp=>real64
+    use io_fortran_lib, only: String, str, operator(+)
+    implicit none (type,external)
+
+    type(String), allocatable :: ints
+    type(String), allocatable, dimension(:,:) :: int_array
+    integer(ik) :: largest, smallest, step, start, i, j, total_length
+
+    integer(ik) :: t1, t2
+    real(dp) :: wall_time, rate
+
+    largest = huge(1); smallest = - largest - 1; step = (largest - smallest)/64
+
+    write(*,'(a)')  'Writing integers from ' + str(smallest) + ' to ' + str(largest) + ' in chunks of ' + str(step)
+
+    total_length = 0
+
+    call system_clock(t1)
+
+    do j = 1, 64
+        start = smallest + (j-1)*step
+        if ( j < 64 ) then
+            allocate( int_array(start:start+step-1, 2) )
+        else
+            allocate( int_array(start:largest, 2) )
+        end if
+
+        do concurrent ( i = lbound(int_array, dim=1, kind=ik):ubound(int_array, dim=1, kind=ik) )
+            int_array(i,:) = [ String(int(i), fmt='i'), String(int(i), fmt='z') ]
+        end do
+
+        allocate(ints)
+        call ints%write_file(int_array, file_name='int32.csv', append=.true.); deallocate(int_array)
+        total_length = total_length + ints%len64(); deallocate(ints)
+        write(*,'(a)')  'File length: ' + str(total_length/1e9, fmt='f', decimals=3) + ' GB in cycle ' + str(j)
+    end do
+
+    call system_clock(t2, count_rate=rate); wall_time = real(t2-t1,dp)/rate
+    write(*,'(a)')  'Total time for write: ' + str(wall_time/60, fmt='f', decimals=3) + ' minutes'
+end program main
+```
+
+Here, we populate a two-column cell array in each cycle with a section of the 32-bit integers and write each chunk to `int32.csv` in succession. On Linux, this should take around 2 hours with `ifort`/`ifx` with highest optimizations enabled, and the resulting csv file size is `85.5 GB`. The program shouldn't use more than `20 GB` of RAM at maximum load.

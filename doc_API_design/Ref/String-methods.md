@@ -172,17 +172,18 @@ For `self` a scalar or array variable of any rank and of type `String`:
 For `self` a scalar variable of type `String`:
 
 ```fortran
-    call self%write_file(cell_array, file_name, row_separator, column_separator)
+    call self%write_file(cell_array, file_name, row_separator, column_separator, append)
 ```
 
 * `cell_array` is of type `type(String), dimension(:,:)`
 * `file_name` is of type `character(len=*)`
 * `row_separator` is `optional` and of type `character(len=*)` (default is `LF`)
 * `column_separator` is `optional` and of type `character(len=*)` (default is `','`)
+* `append` is `optional` and of type `logical` (default is `.false.`)
 
-*Description*: Writes the content of a cell array to a text file, consuming the cell array in the process. The cell array's entire contents are populated into `self` and then streamed to an external text file using the designated `row_separator` and `column_separator` whose default values are `LF` and `','` respectively.
+*Description*: Writes the content of a cell array to a text file, consuming the cell array's contents in the process. The cell array's entire contents are populated into `self` using the designated `row_separator` and `column_separator` whose default values are `LF` and `','` respectively, and then streamed to an external text file. The file will be created if it does not exist, and will be appended to if `append` is `.true.`.
 
-@note `file_name` may be a relative path, but absolute paths are not guaranteed to work on every platform. Additionally, the file will be created if it does not already exist and will be overwritten if it does exist.
+@note `file_name` may be a relative path, but absolute paths are not guaranteed to work on every platform.
 
 ### [write(formatted)](../../type/string.html#boundprocedure-write%28formatted%29)
 

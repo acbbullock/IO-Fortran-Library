@@ -3,7 +3,7 @@ title: Thread safety
 author: Austin C Bullock
 ---
 
-The IO-Fortran-Library explicitly enforces recursion with the `recursive` keyword on all module procedures. However, even with recursion enforced, some programs may not operate as expected when performing I/O in parallel regions. For instance, inspect the output of the following program with multiple coarray images:
+The IO-Fortran-Library promotes thread-safety by explicitly enforcing recursion with the `recursive` keyword on all module procedures. However, performing I/O in parallel regions has the tendency to result in unexpected behavior. For instance, inspect the output of the following program with multiple coarray images:
 
 ```fortran
 program main
@@ -14,9 +14,7 @@ program main
 end program main
 ```
 
-@warning Even with recursion, the above program will likely not behave as expected.
-
-The proper way to compose the above program is by nesting `echo` inside a `critical` block to enforce strict thread-safety in the region:
+This program will result in conflicts as multiple images attempt to write to the same file concurrently. The proper way to compose this program is by nesting `echo` inside a `critical` block to enforce strict thread-safety in the region:
 
 ```fortran
 program main
