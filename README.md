@@ -21,7 +21,7 @@ For a list of available interfaces and how to call them, see the [reference guid
 
 ### New features
 
-* The `String` type has been greatly extended and can now serve as an interface for advanced I/O and character manipulations. See the references for [type-bound procedures](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/string-methods.html) and the [tutorials](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Examples/index.html) for more information.
+* The `String` type has been greatly expanded and can now serve as an interface for advanced I/O and character manipulations. See the references for [type-bound procedures](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/string-methods.html) and the [tutorials](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Examples/index.html) for more information.
 * New [constants](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/constants.html) have been added for public use to facilitate file I/O consistently on a variety of platforms.
 * New interface [String](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/string.html) for an `elemental` version of `str` with a return type of `String`.
 * New interface [cast](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/cast.html) for casting `character` and `String` data into numeric variables.
@@ -30,8 +30,8 @@ For a list of available interfaces and how to call them, see the [reference guid
 
 ### Added
 
-* [echo](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/echo.html) now accepts an additional `optional` argument `terminator`: a `character` value which is used to terminate the input string. The default terminator is the line feed character `LF`, which is identical to previous behavior.
-* Test programs have been added in `/test`, which are all passing in the following configurations with lowest and highest optimizations enabled:
+* Slightly modified interfaces for [echo](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/echo.html) and [from_file](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/from_file.html) to accept an additional optional argument each.
+* Exhaustive test programs have been added in `/test`, which are all passing in the following configurations with lowest and highest optimizations enabled:
   * GNU Fortran Compiler v11.3.0 on Linux
   * Intel Fortran Compiler v2023.0.0 on Linux
   * Intel Fortran Compiler Classic v2021.8.0 on Linux
@@ -42,7 +42,7 @@ For a list of available interfaces and how to call them, see the [reference guid
 ### Improved
 
 * Removed vertical bars in [aprint](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/aprint.html) which were displayed incorrectly in terminals with display encoding different from UTF-8.
-* Text file I/O has been highly optimized.
+* Text file I/O has been highly optimized for performance and memory usage, and expanded to support processing of files larger than the 32-bit integer upper limit.
 
 ## License
 
