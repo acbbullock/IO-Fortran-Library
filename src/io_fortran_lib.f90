@@ -4828,6 +4828,8 @@ submodule (io_fortran_lib) String_procedures
 			character(len=:), allocatable :: row_separator_, column_separator_
 			integer(int64) :: n_rows, n_cols, i
 
+			logical, allocatable, dimension(:) :: quotes_exist
+
 			if ( .not. present(row_separator) ) then
 				row_separator_ = LF
 			else
@@ -4849,7 +4851,8 @@ submodule (io_fortran_lib) String_procedures
 				n_rows = size(rows, kind=int64)
 			end if
 
-			call process_quotes(rows, column_separator=column_separator_)
+			allocate( quotes_exist(n_rows), source=.false. )
+			call process_quotes(rows(:n_rows), column_separator=column_separator_, quotes_exist=quotes_exist)
 
 			! columns = rows(1_int64)%split(separator=column_separator_)
 			call split_because_ifxbug(rows(1_int64), separator=column_separator_, tokens=columns)
@@ -4870,13 +4873,16 @@ submodule (io_fortran_lib) String_procedures
 				call scrub(columns); deallocate(columns)
 			end if
 
-			call re_process_quotes(cell_array, column_separator=column_separator_)
+			do concurrent (i = 1_int64:n_rows)
+				if ( quotes_exist(i) ) call re_process_quotes(cell_array(i,:), column_separator=column_separator_)
+			end do
 		end block cell_block
 
 		contains
-		pure elemental recursive subroutine process_quotes(row, column_separator)
+		pure elemental recursive subroutine process_quotes(row, column_separator, quotes_exist)
 			type(String), intent(inout) :: row
 			character(len=*), intent(in) :: column_separator
+			logical, intent(inout) :: quotes_exist
 
 			character(len=:), allocatable :: replacement
 			logical :: in_quote
@@ -4896,6 +4902,7 @@ submodule (io_fortran_lib) String_procedures
 			replace_sep: do while ( i <= row%len64()-sep_len+1_int64 )
 				if ( row%s(i:i) == QQUOTE ) then
 					in_quote = ( .not. in_quote )
+					if ( .not. quotes_exist ) quotes_exist = .true.
 					i = i + 1_int64; cycle replace_sep
 				end if
 
@@ -4956,7 +4963,8 @@ submodule (io_fortran_lib) String_procedures
 			character(len=*), intent(in) :: separator
 			type(String), allocatable, dimension(:), intent(out) :: tokens
 
-			integer(int64) :: i, substring_len, sep_len, num_seps, l, current_sep
+			integer(int64) :: substring_len, sep_len, num_seps, i
+			integer(int64), allocatable, dimension(:) :: sep_positions
 
 			substring_len = substring%len64()
 
@@ -4965,13 +4973,15 @@ submodule (io_fortran_lib) String_procedures
 			end if
 
 			sep_len = len(separator, kind=int64)
-
 			num_seps = 0_int64
 			i = 1_int64
 
+			allocate( sep_positions(substring_len) )
+
 			count_seps: do while ( i <= substring_len-sep_len+1_int64 )
 				if ( substring%s(i:i+sep_len-1_int64) == separator ) then
-					num_seps = num_seps + 1_int64; i = i + sep_len; cycle count_seps
+					num_seps = num_seps + 1_int64; sep_positions(num_seps) = i
+					i = i + sep_len; cycle count_seps
 				else
 					i = i + 1_int64; cycle count_seps
 				end if
@@ -4983,31 +4993,29 @@ submodule (io_fortran_lib) String_procedures
 
 			allocate( tokens(num_seps + 1_int64) )
 
-			i = 1_int64
-			l = 1_int64
-			current_sep = 1_int64
-
-			splitting: do while ( i <= substring_len-sep_len+1_int64 )
-				if ( substring%s(i:i+sep_len-1_int64) == separator ) then
-					if ( l > i-1_int64 ) then
-						tokens(current_sep)%s = EMPTY_STR
+			positional_transfers: do concurrent (i = 1:num_seps)
+				if ( i == 1_int64 ) then
+					if ( sep_positions(i) == 1_int64 ) then
+						tokens(i)%s = EMPTY_STR
 					else
-						tokens(current_sep)%s = substring%s(l:i-1_int64)
+						tokens(i)%s = substring%s(1_int64:sep_positions(i)-1_int64)
 					end if
-
-					if ( current_sep == num_seps ) then
-						if ( i+sep_len > substring_len ) then
-							tokens(num_seps+1_int64)%s = EMPTY_STR; return
-						else
-							tokens(num_seps+1_int64)%s = substring%s(i+sep_len:); return
-						end if
-					end if
-
-					current_sep = current_sep + 1_int64; i = i + sep_len; l = i; cycle splitting
 				else
-					i = i + 1_int64; cycle splitting
+					if ( sep_positions(i) == sep_positions(i-1_int64)+sep_len ) then
+						tokens(i)%s = EMPTY_STR
+					else
+						tokens(i)%s = substring%s(sep_positions(i-1_int64)+sep_len:sep_positions(i)-1_int64)
+					end if
 				end if
-			end do splitting
+
+				if ( i == num_seps ) then
+					if ( sep_positions(i)+sep_len > substring_len ) then
+						tokens(i+1_int64)%s = EMPTY_STR
+					else
+						tokens(i+1_int64)%s = substring%s(sep_positions(i)+sep_len:)
+					end if
+				end if
+			end do positional_transfers
 		end subroutine split_because_ifxbug
 	end procedure read_file
 
@@ -10067,12 +10075,13 @@ submodule (io_fortran_lib) glue_split
 
 	module procedure split_string
 		character(len=:), allocatable :: separator_
-		integer(int64) :: i, substring_len, sep_len, num_seps, l, current_sep
+		integer(int64) :: substring_len, sep_len, num_seps, i
+		integer(int64), allocatable, dimension(:) :: sep_positions
 
 		substring_len = substring%len64()
 
 		if ( substring_len < 1_int64 ) then
-			tokens = [ String(EMPTY_STR) ]; return
+			allocate( tokens(1) ); tokens(1)%s = EMPTY_STR; return
 		end if
 
 		if ( .not. present(separator) ) then
@@ -10094,45 +10103,46 @@ submodule (io_fortran_lib) glue_split
 		num_seps = 0_int64
 		i = 1_int64
 
+		allocate( sep_positions(substring_len) )
+
 		count_seps: do while ( i <= substring_len-sep_len+1_int64 )
-				if ( substring%s(i:i+sep_len-1_int64) == separator_ ) then
-					num_seps = num_seps + 1_int64; i = i + sep_len; cycle count_seps
-				else
-					i = i + 1_int64; cycle count_seps
-				end if
+			if ( substring%s(i:i+sep_len-1_int64) == separator_ ) then
+				num_seps = num_seps + 1_int64; sep_positions(num_seps) = i
+				i = i + sep_len; cycle count_seps
+			else
+				i = i + 1_int64; cycle count_seps
+			end if
 		end do count_seps
 
 		if ( num_seps == 0_int64 ) then
-			tokens = [ substring ]; return
+			allocate( tokens(1) ); tokens(1)%s = substring%s; return
 		end if
 
 		allocate( tokens(num_seps + 1_int64) )
 
-		i = 1_int64
-		l = 1_int64
-		current_sep = 1_int64
-
-		splitting: do while ( i <= substring_len-sep_len+1_int64 )
-			if ( substring%s(i:i+sep_len-1_int64) == separator_ ) then
-				if ( l > i-1_int64 ) then
-					tokens(current_sep)%s = EMPTY_STR
+		positional_transfers: do concurrent (i = 1:num_seps)
+			if ( i == 1_int64 ) then
+				if ( sep_positions(i) == 1_int64 ) then
+					tokens(i)%s = EMPTY_STR
 				else
-					tokens(current_sep)%s = substring%s(l:i-1_int64)
+					tokens(i)%s = substring%s(1_int64:sep_positions(i)-1_int64)
 				end if
-
-				if ( current_sep == num_seps ) then
-					if ( i+sep_len > substring_len ) then
-						tokens(num_seps+1_int64)%s = EMPTY_STR; return
-					else
-						tokens(num_seps+1_int64)%s = substring%s(i+sep_len:); return
-					end if
-				end if
-
-				current_sep = current_sep + 1_int64; i = i + sep_len; l = i; cycle splitting
 			else
-				i = i + 1_int64; cycle splitting
+				if ( sep_positions(i) == sep_positions(i-1_int64)+sep_len ) then
+					tokens(i)%s = EMPTY_STR
+				else
+					tokens(i)%s = substring%s(sep_positions(i-1_int64)+sep_len:sep_positions(i)-1_int64)
+				end if
 			end if
-		end do splitting
+
+			if ( i == num_seps ) then
+				if ( sep_positions(i)+sep_len > substring_len ) then
+					tokens(i+1_int64)%s = EMPTY_STR
+				else
+					tokens(i+1_int64)%s = substring%s(sep_positions(i)+sep_len:)
+				end if
+			end if
+		end do positional_transfers
 	end procedure split_string
 end submodule glue_split
 
@@ -29530,9 +29540,9 @@ end submodule array_printing
 !======================================================================================================================
 !	List of workarounds for compiler bugs in ifx 2023.0.0 :
 !	-------------------------------------------------------
-!	1.	In read_file (line 4745), the internal subroutine split_because_ifxbug (line 4951) is called by the form
+!	1.	In read_file (line 4745), the internal subroutine split_because_ifxbug (line 4958) is called by the form
 !		|>	call split_because_ifxbug(substring, separator, tokens)
-!		where tokens is intent(out), to replace a functional call to split_string (line 10068) of the form
+!		where tokens is intent(out), to replace a functional call to split_string (line 10076) of the form
 !		|>	tokens = substring%split(separator)
 !		which induces a run-time segmentation fault in the program contained in benchmark.f90 not seen with the
 !		following compilers: ifort 2021.8.0, gfortran 11.3.0, gfortran 11.2.0. From investigation, the segmentation
