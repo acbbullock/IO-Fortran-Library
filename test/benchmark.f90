@@ -18,21 +18,21 @@ program main
 
 	call system_clock(t1)
 	cells = String(x, fmt='e')
-	call system_clock(t2, count_rate=rate); wall_time = real(t2-t1,rk)/rate
+	call system_clock(t2, count_rate=rate); wall_time = real(t2-t1,dp)/rate
 
 	write(*,'(a)')	'Wall time for String: ' + str(wall_time, fmt='f', decimals=3) + ' s'
 	write(*,'(a)')	'Number of string conversions/second: ' + str(nint(size(x)/wall_time)) + LF
 
 	call system_clock(t1)
-	call csv%write_file(cells, 'bigx.csv')
-	call system_clock(t2, count_rate=rate); wall_time = real(t2-t1,rk)/rate
+	call csv%write_file(cells, file_name='bigx.csv')
+	call system_clock(t2, count_rate=rate); wall_time = real(t2-t1,dp)/rate
 
 	write(*,'(a)')	'Wall time for write_file: ' + str(wall_time, fmt='f', decimals=3) + ' s'
 	write(*,'(a)')	'Estimated file size: ' + str(csv%len64()/1e9, fmt='f', decimals=6) + ' GB' + LF
 
 	call system_clock(t1)
 	call csv%read_file('bigx.csv', cell_array=cells)
-	call system_clock(t2, count_rate=rate); wall_time = real(t2-t1,rk)/rate
+	call system_clock(t2, count_rate=rate); wall_time = real(t2-t1,dp)/rate
 
 	write(*,'(a)')	'Wall time for read_file: ' + str(wall_time, fmt='f', decimals=3) + ' s' + LF
 
@@ -40,7 +40,7 @@ program main
 
 	call system_clock(t1)
 	call cells%cast(into=y, fmt='e')
-	call system_clock(t2, count_rate=rate); wall_time = real(t2-t1,rk)/rate
+	call system_clock(t2, count_rate=rate); wall_time = real(t2-t1,dp)/rate
 
 	write(*,'(a)')	'Wall time for cast: ' + str(wall_time, fmt='f', decimals=3) + ' s'
 	write(*,'(a)')	'Number of string casts/second: ' + str(nint(size(x)/wall_time))
