@@ -70,46 +70,46 @@ With highest optimizations enabled for each compiler on Linux (`-O3`), we observ
 Compiler version: GCC version 11.3.0
 Compiler options: -I build/gfortran_93B6DA15423670F8 -mtune=generic -march=x86-64 -O3 -J build/gfortran_93B6DA15423670F8 -fpre-include=/usr/include/finclude/math-vector-fortran.h
 
-Wall time for String: 189.034 s
-Number of string conversions/second: 529005
+Wall time for String: 188.560 s
+Number of string conversions/second: 530336
 
-Wall time for write_file: 14.219 s
-Estimated file size: 2.450003 GB
+Wall time for write_file: 19.222 s
+Estimated file size: 2.449998 GB
 
-Wall time for read_file: 64.513 s
+Wall time for read_file: 42.560 s
 
-Wall time for cast: 74.897 s
-Number of string casts/second: 1335170
+Wall time for cast: 75.005 s
+Number of string casts/second: 1333246
 Data is exact match: T
 ---
 Compiler version: Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201
 Compiler options: -Ibuild/ifx_810FD198DC3B0576 -c -O3 -heap-arrays 0 -module build/ifx_810FD198DC3B0576 -o build/ifx_810FD198DC3B0576/IO-Fortran-Library/test_benchmark.f90.o
 
-Wall time for String: 108.515 s
-Number of string conversions/second: 921534
+Wall time for String: 113.526 s
+Number of string conversions/second: 880856
 
-Wall time for write_file: 16.826 s
+Wall time for write_file: 19.720 s
 Estimated file size: 2.450004 GB
 
-Wall time for read_file: 84.971 s
+Wall time for read_file: 55.520 s
 
-Wall time for cast: 54.377 s
-Number of string casts/second: 1839022
+Wall time for cast: 51.061 s
+Number of string casts/second: 1958448
 Data is exact match:  T
 ---
 Compiler version: Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000
 Compiler options: -Ibuild/ifort_810FD198DC3B0576 -c -O3 -heap-arrays 0 -module build/ifort_810FD198DC3B0576 -o build/ifort_810FD198DC3B0576/IO-Fortran-Library/test_benchmark.f90.o
 
-Wall time for String: 110.145 s
-Number of string conversions/second: 907893
+Wall time for String: 111.815 s
+Number of string conversions/second: 894338
 
-Wall time for write_file: 14.261 s
+Wall time for write_file: 14.769 s
 Estimated file size: 2.450005 GB
 
-Wall time for read_file: 71.295 s
+Wall time for read_file: 41.683 s
 
-Wall time for cast: 55.172 s
-Number of string casts/second: 1812504
+Wall time for cast: 52.583 s
+Number of string casts/second: 1901771
 Data is exact match:  T
 ---
 ```

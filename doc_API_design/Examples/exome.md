@@ -41,13 +41,13 @@ The following sample output is observed on Linux with highest optimizations enab
 ```text
 ---
 New file and original are exact match: T
-Wall time: 0.177 s using compiler: "GCC version 11.3.0".
+Wall time: 0.147 s using compiler: "GCC version 11.3.0".
 ---
 New file and original are exact match:  T
-Wall time: 0.357 s using compiler: "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201".
+Wall time: 0.321 s using compiler: "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201".
 ---
 New file and original are exact match:  T
-Wall time: 0.347 s using compiler: "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000".
+Wall time: 0.324 s using compiler: "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000".
 ---
 ```
 
