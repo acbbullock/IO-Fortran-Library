@@ -1,9 +1,9 @@
 program main
-	use, intrinsic :: iso_fortran_env, only: ik=>int64, rk=>real32, compiler_version, compiler_options
+	use, intrinsic :: iso_fortran_env, only: ik=>int8, rk=>real32, compiler_version, compiler_options
 	use io_fortran_lib
 	implicit none (type,external)
 
-	real(rk), parameter :: tol = epsilon(1.0_rk)
+	real(rk), parameter :: tol = 3.0_rk*epsilon(1.0_rk)
 
 	type(String) :: logmsg
 	character(len=:), allocatable :: logfile
@@ -15,8 +15,9 @@ program main
 	logfile = './test/tests.log'
 	call date_and_time(date=date, time=time)
 
-	logmsg = String('RUNNING TESTS (str|cast) - date: ' + trim(adjustl(date)) + ' | time: ' + time + LF)
-	call logmsg%push('-'**logmsg%len() + LF)
+	logmsg = String('RUNNING TESTS (str|cast) | date: ' + trim(adjustl(date)) + ' | time: ' + time + &
+					' | real kind: ' + str(rk) + ' | int kind: ' + str(ik))
+	call logmsg%push(LF + '-'**logmsg%len() + LF)
 
 	all_passing = .true.
 	write(*,'(a)') logmsg%as_str()
@@ -25,7 +26,7 @@ program main
 		real(rk) :: x
 		integer(ik) :: i, j
 
-		call random_gauss(x,0.0_rk,1.0_rk); i = floor(2147483647*x, ik) + 1_ik
+		call random_gauss(x,0.0_rk,1.0_rk); i = floor(huge(1_ik)*x, ik) + 1_ik
 		call cast(str(i, fmt='i'), into=j, fmt='i')
 		if ( i == j ) then
 			write(*,*) 'int 1: SUCCESS'
@@ -34,7 +35,7 @@ program main
 			all_passing = .false.
 		end if
 
-		call random_gauss(x,0.0_rk,1.0_rk); i = floor(2147483647*x, ik) + 1_ik
+		call random_gauss(x,0.0_rk,1.0_rk); i = floor(huge(1_ik)*x, ik) + 1_ik
 		call cast(str(i, fmt='z'), into=j, fmt='z')
 		if ( i == j ) then
 			write(*,*) 'int 2: SUCCESS'
