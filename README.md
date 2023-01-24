@@ -21,7 +21,7 @@ For a list of available interfaces and how to call them, see the [reference guid
 
 ### New features
 
-* The `String` type has been greatly expanded and can now serve as an interface for advanced character manipulations and text file I/O. See the references for [type-bound procedures](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/string-methods.html) and the [tutorials](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Examples/index.html) for more information.
+* The `String` type has been greatly expanded and can now serve as an interface for advanced string manipulations and text file I/O. See the references for [type-bound procedures](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/string-methods.html) and the [tutorials](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Examples/index.html) for more information.
 * New [constants](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/constants.html) have been added for public use to facilitate file I/O consistently on a variety of platforms.
 * New interface [String](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/string.html) for an elemental version of `str` with a return type of `String`.
 * New interface [cast](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/cast.html) for casting `character` and `String` data into numeric variables.
@@ -31,7 +31,7 @@ For a list of available interfaces and how to call them, see the [reference guid
 ### Added
 
 * Slightly modified interfaces for [echo](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/echo.html) and [from_file](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/from_file.html) to accept an additional optional argument each.
-* Exhaustive test programs have been added in `/test`, which are all passing in the following configurations with lowest and highest optimizations enabled:
+* Test programs have been added in `/test`, which are all passing in the following configurations with lowest and highest optimizations enabled:
   * GNU Fortran Compiler v11.3.0 on Linux
   * Intel Fortran Compiler v2023.0.0 on Linux
   * Intel Fortran Compiler Classic v2021.8.0 on Linux
