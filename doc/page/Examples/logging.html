@@ -112,8 +112,8 @@
 <span class="w">    </span><span class="k">call </span><span class="nb">date_and_time</span><span class="p">(</span><span class="n">date</span><span class="o">=</span><span class="n">date</span><span class="p">,</span><span class="w"> </span><span class="nb">time</span><span class="o">=</span><span class="nb">time</span><span class="p">)</span><span class="w"></span>
 <span class="w">    </span><span class="n">logfile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;logfile_main_&#39;</span><span class="o">//</span><span class="nb">trim</span><span class="p">(</span><span class="nb">adjustl</span><span class="p">(</span><span class="n">date</span><span class="p">))</span><span class="o">//</span><span class="s1">&#39;_&#39;</span><span class="o">//</span><span class="nb">time</span><span class="o">//</span><span class="s1">&#39;.log&#39;</span><span class="w"></span>
 
-<span class="w">    </span><span class="n">logmsg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;PROGRAM MAIN - BEGINNING EXECUTION&#39;</span><span class="o">//</span><span class="n">LF</span><span class="w"></span>
-<span class="w">    </span><span class="k">call </span><span class="n">echo</span><span class="p">(</span><span class="n">logmsg</span><span class="o">//</span><span class="nb">repeat</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">ncopies</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">logmsg</span><span class="p">)),</span><span class="w"> </span><span class="n">file_name</span><span class="o">=</span><span class="n">logfile</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">logmsg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;PROGRAM MAIN - BEGINNING EXECUTION&#39;</span><span class="w"></span>
+<span class="w">    </span><span class="k">call </span><span class="n">echo</span><span class="p">(</span><span class="n">logmsg</span><span class="o">//</span><span class="n">LF</span><span class="o">//</span><span class="nb">repeat</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">ncopies</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">logmsg</span><span class="p">)),</span><span class="w"> </span><span class="n">file_name</span><span class="o">=</span><span class="n">logfile</span><span class="p">)</span><span class="w"></span>
 
 <span class="w">    </span><span class="c">! ...</span>
 
@@ -146,8 +146,8 @@
 <span class="w">    </span><span class="k">call </span><span class="nb">date_and_time</span><span class="p">(</span><span class="n">date</span><span class="o">=</span><span class="n">date</span><span class="p">,</span><span class="w"> </span><span class="nb">time</span><span class="o">=</span><span class="nb">time</span><span class="p">)</span><span class="w"></span>
 <span class="w">    </span><span class="n">logfile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;logfile_main_&#39;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nb">trim</span><span class="p">(</span><span class="nb">adjustl</span><span class="p">(</span><span class="n">date</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s1">&#39;_&#39;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nb">time</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s1">&#39;.log&#39;</span><span class="w"></span>
 
-<span class="w">    </span><span class="n">logmsg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">String</span><span class="p">(</span><span class="s1">&#39;PROGRAM MAIN - BEGINNING EXECUTION&#39;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">LF</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">call </span><span class="n">logmsg</span><span class="p">%</span><span class="n">push</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="o">**</span><span class="n">logmsg</span><span class="p">%</span><span class="nb">len</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">LF</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">logmsg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">String</span><span class="p">(</span><span class="s1">&#39;PROGRAM MAIN - BEGINNING EXECUTION&#39;</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">call </span><span class="n">logmsg</span><span class="p">%</span><span class="n">push</span><span class="p">(</span><span class="n">LF</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s1">&#39;-&#39;</span><span class="o">**</span><span class="n">logmsg</span><span class="p">%</span><span class="nb">len</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">LF</span><span class="p">)</span><span class="w"></span>
 
 <span class="w">    </span><span class="c">! ...</span>
 
@@ -252,7 +252,7 @@
             <a href='../../page/Examples/logging.html'>Handling log files</a>
             </li>
             <li role="presentation">
-            <a href='../../page/Examples/timestamp.html'>String manipulation</a>
+            <a href='../../page/Examples/manipulations.html'>String manipulations</a>
             </li>
             <li role="presentation">
             <a href='../../page/Examples/fizzbuzz.html'>FizzBuzz</a>
@@ -282,7 +282,7 @@
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-01-20 20:47            </p>
+ on 2023-01-23 18:22            </p>
         </div>
       </div>
       <br>

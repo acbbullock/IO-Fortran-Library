@@ -157,68 +157,68 @@
 <p>With highest optimizations enabled for each compiler on Linux (<code>-O3</code>), we observe the following sample output:</p>
 <div class="codehilite"><pre><span></span><code>---
 Compiler version: GCC version 11.3.0
-Compiler options: -I build/gfortran_93B6DA15423670F8 -mtune=generic -march=x86-64 -O3 -J build/gfortran_93B6DA15423670F8 -fpre-include=/usr/include/finclude/math-vector-fortran.h
+Compiler options: -I build/gfortran_93B6DA15423670F8 -mtune=generic -march=x86-64 -O3 -J build/gfortran_93B6DA15423670F8 -fpre-include=/usr/include/finclude/math-vector-fortran.h     
 
-Wall time for String: 188.560 s
-Number of string conversions/second: 530336
+Wall time for String: 92.604 s
+Number of string conversions/second: 1079860
 
-Wall time for write_file: 19.222 s
-Estimated file size: 2.449998 GB
+Wall time for write_file: 20.808 s
+Estimated file size: 2.549994 GB
 
-Wall time for read_file: 42.560 s
+Wall time for read_file: 44.910 s
 
-Wall time for cast: 75.005 s
-Number of string casts/second: 1333246
+Wall time for cast: 77.580 s
+Number of string casts/second: 1288986
 Data is exact match: T
 ---
 Compiler version: Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201
 Compiler options: -Ibuild/ifx_810FD198DC3B0576 -c -O3 -heap-arrays 0 -module build/ifx_810FD198DC3B0576 -o build/ifx_810FD198DC3B0576/IO-Fortran-Library/test_benchmark.f90.o
 
-Wall time for String: 113.526 s
-Number of string conversions/second: 880856
+Wall time for String: 59.280 s
+Number of string conversions/second: 1686893
 
-Wall time for write_file: 19.720 s
-Estimated file size: 2.450004 GB
+Wall time for write_file: 21.420 s
+Estimated file size: 2.550004 GB
 
-Wall time for read_file: 55.520 s
+Wall time for read_file: 53.557 s
 
-Wall time for cast: 51.061 s
-Number of string casts/second: 1958448
+Wall time for cast: 50.867 s
+Number of string casts/second: 1965883
 Data is exact match:  T
 ---
 Compiler version: Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000
-Compiler options: -Ibuild/ifort_810FD198DC3B0576 -c -O3 -heap-arrays 0 -module build/ifort_810FD198DC3B0576 -o build/ifort_810FD198DC3B0576/IO-Fortran-Library/test_benchmark.f90.o
+Compiler options: -Ibuild/ifort_810FD198DC3B0576 -c -O3 -heap-arrays 0 -module build/ifort_810FD198DC3B0576 -o build/ifort_810FD198DC3B0576/IO-Fortran-Library/test_benchmark.f90.o    
 
-Wall time for String: 111.815 s
-Number of string conversions/second: 894338
+Wall time for String: 57.567 s
+Number of string conversions/second: 1737098
 
-Wall time for write_file: 14.769 s
-Estimated file size: 2.450005 GB
+Wall time for write_file: 16.180 s
+Estimated file size: 2.550004 GB
 
-Wall time for read_file: 41.683 s
+Wall time for read_file: 45.013 s
 
-Wall time for cast: 52.583 s
-Number of string casts/second: 1901771
+Wall time for cast: 52.301 s
+Number of string casts/second: 1911984
 Data is exact match:  T
 ---
 </code></pre></div>
 
 <p>After testing, it is clear that different compilers have different strengths and weaknesses, with some performing internal I/O more efficiently while others perform external I/O more efficiently. On Windows, the timings may be slower by a factor of 2-3 times.</p>
 <p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>With the Intel Fortran compiler <code>ifx</code>/<code>ifort</code>, we must specify <code>-heap-arrays 0</code> to avoid a segmentation fault when reading a file of this size, as noted in <a href="../UserInfo/compilers.html">compiler-dependent behavior</a>.</p></div>
-<p>For a more extreme example, consider the following program to write every 32-bit signed integer and their corresponding hexadecimal representations to a csv file <code>int32.csv</code>:</p>
+<p>For a more extreme example, consider the following program to write every 32-bit hexadecimal integer to a text file <code>int32.txt</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="k">program </span><span class="n">main</span><span class="w"></span>
-<span class="w">    </span><span class="k">use</span><span class="p">,</span><span class="w"> </span><span class="k">intrinsic</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">iso_fortran_env</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="p">:</span><span class="w"> </span><span class="n">ik</span><span class="o">=&gt;</span><span class="n">int64</span><span class="p">,</span><span class="w"> </span><span class="n">dp</span><span class="o">=&gt;</span><span class="n">real64</span><span class="w"></span>
-<span class="w">    </span><span class="k">use </span><span class="n">io_fortran_lib</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="p">:</span><span class="w"> </span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">operator</span><span class="p">(</span><span class="o">+</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">use</span><span class="p">,</span><span class="w"> </span><span class="k">intrinsic</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">iso_fortran_env</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="p">:</span><span class="w"> </span><span class="n">int64</span><span class="p">,</span><span class="w"> </span><span class="n">real64</span><span class="w"></span>
+<span class="w">    </span><span class="k">use </span><span class="n">io_fortran_lib</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="p">:</span><span class="w"> </span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">LF</span><span class="p">,</span><span class="w"> </span><span class="n">operator</span><span class="p">(</span><span class="o">+</span><span class="p">)</span><span class="w"></span>
 <span class="w">    </span><span class="k">implicit none</span><span class="w"> </span><span class="p">(</span><span class="k">type</span><span class="p">,</span><span class="k">external</span><span class="p">)</span><span class="w"></span>
 
 <span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="n">String</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ints</span><span class="w"></span>
-<span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="n">String</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="p">,</span><span class="w"> </span><span class="k">dimension</span><span class="p">(:,:)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">int_array</span><span class="w"></span>
-<span class="w">    </span><span class="kt">integer</span><span class="p">(</span><span class="n">ik</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">largest</span><span class="p">,</span><span class="w"> </span><span class="n">smallest</span><span class="p">,</span><span class="w"> </span><span class="n">step</span><span class="p">,</span><span class="w"> </span><span class="n">start</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="n">total_length</span><span class="w"></span>
+<span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="n">String</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="p">,</span><span class="w"> </span><span class="k">dimension</span><span class="p">(:)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">int_array</span><span class="w"></span>
+<span class="w">    </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">largest</span><span class="p">,</span><span class="w"> </span><span class="n">smallest</span><span class="p">,</span><span class="w"> </span><span class="n">step</span><span class="p">,</span><span class="w"> </span><span class="n">start</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">j</span><span class="w"></span>
 
-<span class="w">    </span><span class="kt">integer</span><span class="p">(</span><span class="n">ik</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">t1</span><span class="p">,</span><span class="w"> </span><span class="n">t2</span><span class="w"></span>
-<span class="w">    </span><span class="kt">real</span><span class="p">(</span><span class="n">dp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">wall_time</span><span class="p">,</span><span class="w"> </span><span class="n">rate</span><span class="w"></span>
+<span class="w">    </span><span class="kt">integer</span><span class="p">(</span><span class="n">int64</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">t1</span><span class="p">,</span><span class="w"> </span><span class="n">t2</span><span class="p">,</span><span class="w"> </span><span class="n">total_length</span><span class="w"></span>
+<span class="w">    </span><span class="kt">real</span><span class="p">(</span><span class="n">real64</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">wall_time</span><span class="p">,</span><span class="w"> </span><span class="n">rate</span><span class="w"></span>
 
-<span class="w">    </span><span class="n">largest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">huge</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span><span class="w"> </span><span class="n">smallest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">largest</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="n">step</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">largest</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">smallest</span><span class="p">)</span><span class="o">/</span><span class="mi">64</span><span class="w"></span>
+<span class="w">    </span><span class="n">largest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">huge</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span><span class="w"> </span><span class="n">smallest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">largest</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="n">step</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">largest</span><span class="p">,</span><span class="n">int64</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">int</span><span class="p">(</span><span class="n">smallest</span><span class="p">,</span><span class="n">int64</span><span class="p">))</span><span class="o">/</span><span class="mi">128</span><span class="w"></span>
 
 <span class="w">    </span><span class="k">write</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="s1">&#39;(a)&#39;</span><span class="p">)</span><span class="w">  </span><span class="s1">&#39;Writing integers from &#39;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">str</span><span class="p">(</span><span class="n">smallest</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s1">&#39; to &#39;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">str</span><span class="p">(</span><span class="n">largest</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s1">&#39; in chunks of &#39;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">str</span><span class="p">(</span><span class="n">step</span><span class="p">)</span><span class="w"></span>
 
@@ -226,30 +226,39 @@ Data is exact match:  T
 
 <span class="w">    </span><span class="k">call </span><span class="nb">system_clock</span><span class="p">(</span><span class="n">t1</span><span class="p">)</span><span class="w"></span>
 
-<span class="w">    </span><span class="k">do </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">64</span><span class="w"></span>
+<span class="w">    </span><span class="k">do </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">128</span><span class="w"></span>
 <span class="w">        </span><span class="n">start</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">smallest</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">step</span><span class="w"></span>
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">64</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
-<span class="k">            allocate</span><span class="p">(</span><span class="w"> </span><span class="n">int_array</span><span class="p">(</span><span class="n">start</span><span class="p">:</span><span class="n">start</span><span class="o">+</span><span class="n">step</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="k">else</span>
-<span class="k">            allocate</span><span class="p">(</span><span class="w"> </span><span class="n">int_array</span><span class="p">(</span><span class="n">start</span><span class="p">:</span><span class="n">largest</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">128</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">            allocate</span><span class="p">(</span><span class="w"> </span><span class="n">int_array</span><span class="p">(</span><span class="n">start</span><span class="p">:</span><span class="n">start</span><span class="o">+</span><span class="n">step</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"></span>
+
+<span class="w">            </span><span class="k">do</span><span class="w"> </span><span class="k">concurrent</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">start</span><span class="p">:</span><span class="n">start</span><span class="o">+</span><span class="n">step</span><span class="o">-</span><span class="mi">1</span><span class="w"> </span><span class="p">)</span><span class="w"></span>
+<span class="w">                </span><span class="n">int_array</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">String</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;z&#39;</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="k">end do</span>
+<span class="k">        else</span>
+<span class="k">            allocate</span><span class="p">(</span><span class="w"> </span><span class="n">int_array</span><span class="p">(</span><span class="n">start</span><span class="p">:</span><span class="n">largest</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"></span>
+
+<span class="w">            </span><span class="k">do</span><span class="w"> </span><span class="k">concurrent</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">start</span><span class="p">:</span><span class="n">largest</span><span class="o">-</span><span class="mi">1</span><span class="w"> </span><span class="p">)</span><span class="w"></span>
+<span class="w">                </span><span class="n">int_array</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">String</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;z&#39;</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="k">end do</span>
+<span class="k">            </span><span class="n">int_array</span><span class="p">(</span><span class="n">largest</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">String</span><span class="p">(</span><span class="n">largest</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;z&#39;</span><span class="p">)</span><span class="w"></span>
 <span class="w">        </span><span class="k">end if</span>
 
-<span class="k">        do</span><span class="w"> </span><span class="k">concurrent</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">lbound</span><span class="p">(</span><span class="n">int_array</span><span class="p">,</span><span class="w"> </span><span class="nb">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nb">kind</span><span class="o">=</span><span class="n">ik</span><span class="p">):</span><span class="nb">ubound</span><span class="p">(</span><span class="n">int_array</span><span class="p">,</span><span class="w"> </span><span class="nb">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nb">kind</span><span class="o">=</span><span class="n">ik</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="n">int_array</span><span class="p">(</span><span class="n">i</span><span class="p">,:)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="n">String</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">),</span><span class="w"> </span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;i&#39;</span><span class="p">),</span><span class="w"> </span><span class="n">String</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">),</span><span class="w"> </span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;z&#39;</span><span class="p">)</span><span class="w"> </span><span class="p">]</span><span class="w"></span>
-<span class="w">        </span><span class="k">end do</span>
-
 <span class="k">        allocate</span><span class="p">(</span><span class="n">ints</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="k">call </span><span class="n">ints</span><span class="p">%</span><span class="n">write_file</span><span class="p">(</span><span class="n">int_array</span><span class="p">,</span><span class="w"> </span><span class="n">file_name</span><span class="o">=</span><span class="s1">&#39;int32.csv&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">append</span><span class="o">=</span><span class="p">.</span><span class="n">true</span><span class="p">.);</span><span class="w"> </span><span class="k">deallocate</span><span class="p">(</span><span class="n">int_array</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="n">total_length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">total_length</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">ints</span><span class="p">%</span><span class="n">len64</span><span class="p">();</span><span class="w"> </span><span class="k">deallocate</span><span class="p">(</span><span class="n">ints</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="k">call </span><span class="n">ints</span><span class="p">%</span><span class="n">glue</span><span class="p">(</span><span class="n">int_array</span><span class="p">,</span><span class="w"> </span><span class="n">separator</span><span class="o">=</span><span class="n">LF</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="k">call </span><span class="n">ints</span><span class="p">%</span><span class="n">echo</span><span class="p">(</span><span class="n">file_name</span><span class="o">=</span><span class="s1">&#39;int32.txt&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">append</span><span class="o">=</span><span class="p">.</span><span class="n">true</span><span class="p">.)</span><span class="w"></span>
+<span class="w">        </span><span class="n">total_length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">total_length</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">ints</span><span class="p">%</span><span class="n">len64</span><span class="p">()</span><span class="w"></span>
+<span class="w">        </span><span class="k">deallocate</span><span class="p">(</span><span class="n">ints</span><span class="p">,</span><span class="n">int_array</span><span class="p">)</span><span class="w"></span>
+
 <span class="w">        </span><span class="k">write</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="s1">&#39;(a)&#39;</span><span class="p">)</span><span class="w">  </span><span class="s1">&#39;File length: &#39;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">str</span><span class="p">(</span><span class="n">total_length</span><span class="o">/</span><span class="mf">1e9</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;f&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">decimals</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s1">&#39; GB in cycle &#39;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">str</span><span class="p">(</span><span class="n">j</span><span class="p">)</span><span class="w"></span>
 <span class="w">    </span><span class="k">end do</span>
 
-<span class="k">    call </span><span class="nb">system_clock</span><span class="p">(</span><span class="n">t2</span><span class="p">,</span><span class="w"> </span><span class="n">count_rate</span><span class="o">=</span><span class="n">rate</span><span class="p">);</span><span class="w"> </span><span class="n">wall_time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">real</span><span class="p">(</span><span class="n">t2</span><span class="o">-</span><span class="n">t1</span><span class="p">,</span><span class="n">dp</span><span class="p">)</span><span class="o">/</span><span class="n">rate</span><span class="w"></span>
+<span class="k">    call </span><span class="nb">system_clock</span><span class="p">(</span><span class="n">t2</span><span class="p">,</span><span class="w"> </span><span class="n">count_rate</span><span class="o">=</span><span class="n">rate</span><span class="p">);</span><span class="w"> </span><span class="n">wall_time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">real</span><span class="p">(</span><span class="n">t2</span><span class="o">-</span><span class="n">t1</span><span class="p">,</span><span class="n">real64</span><span class="p">)</span><span class="o">/</span><span class="n">rate</span><span class="w"></span>
 <span class="w">    </span><span class="k">write</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="s1">&#39;(a)&#39;</span><span class="p">)</span><span class="w">  </span><span class="s1">&#39;Total time for write: &#39;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">str</span><span class="p">(</span><span class="n">wall_time</span><span class="o">/</span><span class="mi">60</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;f&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">decimals</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s1">&#39; minutes&#39;</span><span class="w"></span>
 <span class="k">end program </span><span class="n">main</span><span class="w"></span>
 </code></pre></div>
 
-<p>Here, we populate a two-column cell array in each cycle with a section of the 32-bit integers and write each chunk to <code>int32.csv</code> in succession. On Linux, this should take around 2 hours with <code>ifort</code>/<code>ifx</code> with highest optimizations enabled, and the resulting csv file size is <code>85.5 GB</code>. The program shouldn't use more than <code>20 GB</code> of RAM at maximum load.</p>
+<p>On Linux, this should take around 50 minutes with <code>ifort</code>/<code>ifx</code> with highest optimizations enabled, and the resulting file size is <code>47.2 GB</code>.</p>
     </div>
     <div class="col-md-3 col-md-pull-9">
       <hr class="visible-xs visible-sm">
@@ -335,7 +344,7 @@ Data is exact match:  T
             <a href='../../page/Examples/logging.html'>Handling log files</a>
             </li>
             <li role="presentation">
-            <a href='../../page/Examples/timestamp.html'>String manipulation</a>
+            <a href='../../page/Examples/manipulations.html'>String manipulations</a>
             </li>
             <li role="presentation">
             <a href='../../page/Examples/fizzbuzz.html'>FizzBuzz</a>
@@ -365,7 +374,7 @@ Data is exact match:  T
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-01-20 20:47            </p>
+ on 2023-01-23 18:22            </p>
         </div>
       </div>
       <br>

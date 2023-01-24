@@ -68,48 +68,48 @@ With highest optimizations enabled for each compiler on Linux (`-O3`), we observ
 ```text
 ---
 Compiler version: GCC version 11.3.0
-Compiler options: -I build/gfortran_93B6DA15423670F8 -mtune=generic -march=x86-64 -O3 -J build/gfortran_93B6DA15423670F8 -fpre-include=/usr/include/finclude/math-vector-fortran.h
+Compiler options: -I build/gfortran_93B6DA15423670F8 -mtune=generic -march=x86-64 -O3 -J build/gfortran_93B6DA15423670F8 -fpre-include=/usr/include/finclude/math-vector-fortran.h     
 
-Wall time for String: 188.560 s
-Number of string conversions/second: 530336
+Wall time for String: 92.604 s
+Number of string conversions/second: 1079860
 
-Wall time for write_file: 19.222 s
-Estimated file size: 2.449998 GB
+Wall time for write_file: 20.808 s
+Estimated file size: 2.549994 GB
 
-Wall time for read_file: 42.560 s
+Wall time for read_file: 44.910 s
 
-Wall time for cast: 75.005 s
-Number of string casts/second: 1333246
+Wall time for cast: 77.580 s
+Number of string casts/second: 1288986
 Data is exact match: T
 ---
 Compiler version: Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201
 Compiler options: -Ibuild/ifx_810FD198DC3B0576 -c -O3 -heap-arrays 0 -module build/ifx_810FD198DC3B0576 -o build/ifx_810FD198DC3B0576/IO-Fortran-Library/test_benchmark.f90.o
 
-Wall time for String: 113.526 s
-Number of string conversions/second: 880856
+Wall time for String: 59.280 s
+Number of string conversions/second: 1686893
 
-Wall time for write_file: 19.720 s
-Estimated file size: 2.450004 GB
+Wall time for write_file: 21.420 s
+Estimated file size: 2.550004 GB
 
-Wall time for read_file: 55.520 s
+Wall time for read_file: 53.557 s
 
-Wall time for cast: 51.061 s
-Number of string casts/second: 1958448
+Wall time for cast: 50.867 s
+Number of string casts/second: 1965883
 Data is exact match:  T
 ---
 Compiler version: Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000
-Compiler options: -Ibuild/ifort_810FD198DC3B0576 -c -O3 -heap-arrays 0 -module build/ifort_810FD198DC3B0576 -o build/ifort_810FD198DC3B0576/IO-Fortran-Library/test_benchmark.f90.o
+Compiler options: -Ibuild/ifort_810FD198DC3B0576 -c -O3 -heap-arrays 0 -module build/ifort_810FD198DC3B0576 -o build/ifort_810FD198DC3B0576/IO-Fortran-Library/test_benchmark.f90.o    
 
-Wall time for String: 111.815 s
-Number of string conversions/second: 894338
+Wall time for String: 57.567 s
+Number of string conversions/second: 1737098
 
-Wall time for write_file: 14.769 s
-Estimated file size: 2.450005 GB
+Wall time for write_file: 16.180 s
+Estimated file size: 2.550004 GB
 
-Wall time for read_file: 41.683 s
+Wall time for read_file: 45.013 s
 
-Wall time for cast: 52.583 s
-Number of string casts/second: 1901771
+Wall time for cast: 52.301 s
+Number of string casts/second: 1911984
 Data is exact match:  T
 ---
 ```
@@ -118,22 +118,22 @@ After testing, it is clear that different compilers have different strengths and
 
 @note With the Intel Fortran compiler `ifx`/`ifort`, we must specify `-heap-arrays 0` to avoid a segmentation fault when reading a file of this size, as noted in [compiler-dependent behavior](../UserInfo/compilers.html).
 
-For a more extreme example, consider the following program to write every 32-bit signed integer and their corresponding hexadecimal representations to a csv file `int32.csv`:
+For a more extreme example, consider the following program to write every 32-bit hexadecimal integer to a text file `int32.txt`:
 
 ```fortran
 program main
-    use, intrinsic :: iso_fortran_env, only: ik=>int64, dp=>real64
-    use io_fortran_lib, only: String, str, operator(+)
+    use, intrinsic :: iso_fortran_env, only: int64, real64
+    use io_fortran_lib, only: String, str, LF, operator(+)
     implicit none (type,external)
 
     type(String), allocatable :: ints
-    type(String), allocatable, dimension(:,:) :: int_array
-    integer(ik) :: largest, smallest, step, start, i, j, total_length
+    type(String), allocatable, dimension(:) :: int_array
+    integer :: largest, smallest, step, start, i, j
 
-    integer(ik) :: t1, t2
-    real(dp) :: wall_time, rate
+    integer(int64) :: t1, t2, total_length
+    real(real64) :: wall_time, rate
 
-    largest = huge(1); smallest = - largest - 1; step = (largest - smallest)/64
+    largest = huge(1); smallest = - largest - 1; step = (int(largest,int64) - int(smallest,int64))/128
 
     write(*,'(a)')  'Writing integers from ' + str(smallest) + ' to ' + str(largest) + ' in chunks of ' + str(step)
 
@@ -141,27 +141,36 @@ program main
 
     call system_clock(t1)
 
-    do j = 1, 64
+    do j = 1, 128
         start = smallest + (j-1)*step
-        if ( j < 64 ) then
-            allocate( int_array(start:start+step-1, 2) )
+
+        if ( j < 128 ) then
+            allocate( int_array(start:start+step-1) )
+
+            do concurrent ( i = start:start+step-1 )
+                int_array(i) = String(i, fmt='z')
+            end do
         else
-            allocate( int_array(start:largest, 2) )
+            allocate( int_array(start:largest) )
+
+            do concurrent ( i = start:largest-1 )
+                int_array(i) = String(i, fmt='z')
+            end do
+            int_array(largest) = String(largest, fmt='z')
         end if
 
-        do concurrent ( i = lbound(int_array, dim=1, kind=ik):ubound(int_array, dim=1, kind=ik) )
-            int_array(i,:) = [ String(int(i), fmt='i'), String(int(i), fmt='z') ]
-        end do
-
         allocate(ints)
-        call ints%write_file(int_array, file_name='int32.csv', append=.true.); deallocate(int_array)
-        total_length = total_length + ints%len64(); deallocate(ints)
+        call ints%glue(int_array, separator=LF)
+        call ints%echo(file_name='int32.txt', append=.true.)
+        total_length = total_length + ints%len64()
+        deallocate(ints,int_array)
+
         write(*,'(a)')  'File length: ' + str(total_length/1e9, fmt='f', decimals=3) + ' GB in cycle ' + str(j)
     end do
 
-    call system_clock(t2, count_rate=rate); wall_time = real(t2-t1,dp)/rate
+    call system_clock(t2, count_rate=rate); wall_time = real(t2-t1,real64)/rate
     write(*,'(a)')  'Total time for write: ' + str(wall_time/60, fmt='f', decimals=3) + ' minutes'
 end program main
 ```
 
-Here, we populate a two-column cell array in each cycle with a section of the 32-bit integers and write each chunk to `int32.csv` in succession. On Linux, this should take around 2 hours with `ifort`/`ifx` with highest optimizations enabled, and the resulting csv file size is `85.5 GB`. The program shouldn't use more than `20 GB` of RAM at maximum load.
+On Linux, this should take around 50 minutes with `ifort`/`ifx` with highest optimizations enabled, and the resulting file size is `47.2 GB`.

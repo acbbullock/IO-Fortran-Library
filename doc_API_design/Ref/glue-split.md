@@ -44,5 +44,3 @@ result = substring%split(separator)
 ### Optional Arguments
 
 Separator (default is `SPACE`): the separator to use when gluing or splitting.
-
-@note Both `glue` and `split` are capable of handling large strings (those longer than 2,147,483,647 bytes).

@@ -21,8 +21,8 @@ program main
     call date_and_time(date=date, time=time)
     logfile = 'logfile_main_'//trim(adjustl(date))//'_'//time//'.log'
 
-    logmsg = 'PROGRAM MAIN - BEGINNING EXECUTION'//LF
-    call echo(logmsg//repeat('-', ncopies=len(logmsg)), file_name=logfile)
+    logmsg = 'PROGRAM MAIN - BEGINNING EXECUTION'
+    call echo(logmsg//LF//repeat('-', ncopies=len(logmsg)), file_name=logfile)
 
     ! ...
 
@@ -57,8 +57,8 @@ program main
     call date_and_time(date=date, time=time)
     logfile = 'logfile_main_' + trim(adjustl(date)) + '_' + time + '.log'
 
-    logmsg = String('PROGRAM MAIN - BEGINNING EXECUTION' + LF)
-    call logmsg%push('-'**logmsg%len() + LF)
+    logmsg = String('PROGRAM MAIN - BEGINNING EXECUTION')
+    call logmsg%push(LF + '-'**logmsg%len() + LF)
 
     ! ...
 
