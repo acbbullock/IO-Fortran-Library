@@ -30,18 +30,25 @@ module io_fortran_lib
 	character(len=1), parameter :: CNUL  = c_null_char			!! The C null character re-exported from iso_c_binding.
 	character(len=0), parameter :: EMPTY_STR = ''												   !! The empty string.
 
-	character(len=*),				parameter :: COMPILER	= compiler_version()
-	character(len=1),				parameter :: SEMICOLON	= achar(59)										! Semicolon
-	character(len=1),				parameter :: POINT		= achar(46)										! Full stop
-	character(len=1),				parameter :: COMMA		= achar(44)											! Comma
-	character(len=1),				parameter :: QQUOTE		= achar(34)									 ! Double quote
-	character(len=*), dimension(*), parameter :: INT_FMTS   = [ 'i', 'z' ]				 ! Allowed formats for integers
-	character(len=*), dimension(*), parameter :: REAL_FMTS  = [ 'e', 'f', 'z' ]			   ! Allowed formats for floats
-	character(len=*), dimension(*), parameter :: LOCALES    = [ 'US', 'EU' ]				! Allowed locale specifiers
-	character(len=*), dimension(*), parameter :: BINARY_EXT = [ 'dat', 'bin' ]				! Allowed binary extensions
-	character(len=*), dimension(*), parameter :: TEXT_EXT   = [ 'csv', 'txt', 'log', 'rtf', & ! Allowed text extensions
-																'odm', 'odt', 'ods', 'odf', 'xls', &
-																'doc', 'org', 'dbf', 'bed', 'gff', 'gtf' ]
+	character(len=*),					parameter :: COMPILER	= compiler_version()
+	character(len=1),					parameter :: SEMICOLON	= achar(59)									! Semicolon
+	character(len=1),					parameter :: POINT		= achar(46)									! Full stop
+	character(len=1),					parameter :: COMMA		= achar(44)										! Comma
+	character(len=1),					parameter :: QQUOTE		= achar(34)								 ! Double quote
+	character(len=1), dimension(*), 	parameter :: INT_FMTS   = [ 'i', 'z' ]			 ! Allowed formats for integers
+	character(len=1), dimension(*), 	parameter :: REAL_FMTS  = [ 'e', 'f', 'z' ]		   ! Allowed formats for floats
+	character(len=2), dimension(*), 	parameter :: LOCALES    = [ 'US', 'EU' ]			! Allowed locale specifiers
+	character(len=3), dimension(*), 	parameter :: BINARY_EXT = [ 'dat', 'bin' ]			! Allowed binary extensions
+	character(len=3), dimension(*), 	parameter :: TEXT_EXT   = [ 'csv', 'txt', 'log', &	  ! Allowed text extensions
+																	'rtf', 'odm', 'odt', &
+																	'ods', 'odf', 'xls', &
+																	'doc', 'org', 'dbf', &
+																	'bed', 'gff', 'gtf' ]
+	character(len=1), dimension(0:15),	parameter :: DIGITS_A	= [ '0', '1', '2', '3', '4', &
+																	'5', '6', '7', '8', '9', &
+																	'a', 'b', 'c', 'd', 'e', 'f' ]
+	integer,		  dimension(0:15),	parameter :: DIGITS_I	= [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, &
+																	10, 11, 12, 13, 14, 15 ]
 
 	type String
 		!--------------------------------------------------------------------------------------------------------------
@@ -7081,7 +7088,9 @@ submodule (io_fortran_lib) internal_io
 
 	module procedure new_Str_i64
 		character(len=1) :: fmt_
-		integer :: i
+		integer(int64) :: num
+		logical :: negative
+		integer :: num_len, i
 
 		if ( .not. present(fmt) ) then
 			fmt_ = 'i'
@@ -7093,23 +7102,84 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		allocate( character(len=40) :: new%s )
-
 		if ( fmt_ == 'i' ) then
-			write(unit=new%s, fmt='(i0)') x; new%s = trim(new%s); return
+			if ( x < 0 ) then
+				if ( x == -huge(1_int64)-1_int64 ) then
+					new%s = '-9223372036854775808'; return
+				end if
+				num_len = 2; num = abs(x); negative = .true.
+			else
+				num_len = 1; num = x; negative = .false.
+			end if
+		
+			count_digits: do
+				num = num/10
+				if ( num > 0 ) then
+					num_len = num_len + 1; cycle count_digits
+				else
+					exit count_digits
+				end if
+			end do count_digits
+	
+			allocate( character(len=num_len) :: new%s )
+	
+			if ( negative ) then
+				num = abs(x)
+				do i = num_len, 2, -1
+					new%s(i:i) = DIGITS_A( mod(num,10) ); num = num/10
+				end do
+				new%s(1:1) = '-'; return
+			else
+				num = x
+				do i = num_len, 1, -1
+					new%s(i:i) = DIGITS_A( mod(num,10) ); num = num/10
+				end do
+				return
+			end if
 		else if ( fmt_ == 'z' ) then
-			write(unit=new%s, fmt='(z0)') x
-
-			do concurrent (i = 1:40)
-				if ( (new%s(i:i) >= 'A') .and. (new%s(i:i) <= 'F') ) new%s(i:i) = achar(iachar(new%s(i:i)) + 32)
-			end do
-
-			new%s = '0x'//trim(new%s); return
+			if ( x < 0 ) then
+				num_len = 1; num = (x + 1_int64) + huge(1_int64); negative = .true.
+			else
+				num_len = 1; num = x; negative = .false.
+			end if
+			
+			count_hex_digits: do
+				num = num/16
+				if ( num > 0 ) then
+					num_len = num_len + 1; cycle count_hex_digits
+				else
+					exit count_hex_digits
+				end if
+			end do count_hex_digits
+		
+			if ( negative ) then
+				num = (x + 1_int64) + huge(1_int64)
+				new%s = '0x0000000000000000'
+			else
+				num = x
+				allocate( character(len=2+num_len) :: new%s ); new%s(1:2) = '0x'
+			end if
+		
+			insert_hex_characters: do i = len(new%s), len(new%s)-num_len+1, -1
+				new%s(i:i) = DIGITS_A( mod(num,16) ); num = num/16
+			end do insert_hex_characters
+		
+			if ( negative ) then
+				i = 0; do
+					if ( DIGITS_A(i) == new%s(3:3) ) exit
+					i = i + 1; cycle
+				end do
+				new%s(3:3) = DIGITS_A(i+8); return
+			else
+				return
+			end if
 		end if
 	end procedure new_Str_i64
 	module procedure new_Str_i32
 		character(len=1) :: fmt_
-		integer :: i
+		integer(int32) :: num
+		logical :: negative
+		integer :: num_len, i
 
 		if ( .not. present(fmt) ) then
 			fmt_ = 'i'
@@ -7121,23 +7191,84 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		allocate( character(len=25) :: new%s )
-
 		if ( fmt_ == 'i' ) then
-			write(unit=new%s, fmt='(i0)') x; new%s = trim(new%s); return
+			if ( x < 0 ) then
+				if ( x == -huge(1_int32)-1_int32 ) then
+					new%s = '-2147483648'; return
+				end if
+				num_len = 2; num = abs(x); negative = .true.
+			else
+				num_len = 1; num = x; negative = .false.
+			end if
+		
+			count_digits: do
+				num = num/10
+				if ( num > 0 ) then
+					num_len = num_len + 1; cycle count_digits
+				else
+					exit count_digits
+				end if
+			end do count_digits
+	
+			allocate( character(len=num_len) :: new%s )
+	
+			if ( negative ) then
+				num = abs(x)
+				do i = num_len, 2, -1
+					new%s(i:i) = DIGITS_A( mod(num,10) ); num = num/10
+				end do
+				new%s(1:1) = '-'; return
+			else
+				num = x
+				do i = num_len, 1, -1
+					new%s(i:i) = DIGITS_A( mod(num,10) ); num = num/10
+				end do
+				return
+			end if
 		else if ( fmt_ == 'z' ) then
-			write(unit=new%s, fmt='(z0)') x
-
-			do concurrent (i = 1:25)
-				if ( (new%s(i:i) >= 'A') .and. (new%s(i:i) <= 'F') ) new%s(i:i) = achar(iachar(new%s(i:i)) + 32)
-			end do
-
-			new%s = '0x'//trim(new%s); return
+			if ( x < 0 ) then
+				num_len = 1; num = (x + 1_int32) + huge(1_int32); negative = .true.
+			else
+				num_len = 1; num = x; negative = .false.
+			end if
+			
+			count_hex_digits: do
+				num = num/16
+				if ( num > 0 ) then
+					num_len = num_len + 1; cycle count_hex_digits
+				else
+					exit count_hex_digits
+				end if
+			end do count_hex_digits
+		
+			if ( negative ) then
+				num = (x + 1_int32) + huge(1_int32)
+				new%s = '0x00000000'
+			else
+				num = x
+				allocate( character(len=2+num_len) :: new%s ); new%s(1:2) = '0x'
+			end if
+		
+			insert_hex_characters: do i = len(new%s), len(new%s)-num_len+1, -1
+				new%s(i:i) = DIGITS_A( mod(num,16) ); num = num/16
+			end do insert_hex_characters
+		
+			if ( negative ) then
+				i = 0; do
+					if ( DIGITS_A(i) == new%s(3:3) ) exit
+					i = i + 1; cycle
+				end do
+				new%s(3:3) = DIGITS_A(i+8); return
+			else
+				return
+			end if
 		end if
 	end procedure new_Str_i32
 	module procedure new_Str_i16
 		character(len=1) :: fmt_
-		integer :: i
+		integer(int16) :: num
+		logical :: negative
+		integer :: num_len, i
 
 		if ( .not. present(fmt) ) then
 			fmt_ = 'i'
@@ -7149,23 +7280,84 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		allocate( character(len=15) :: new%s )
-
 		if ( fmt_ == 'i' ) then
-			write(unit=new%s, fmt='(i0)') x; new%s = trim(new%s); return
+			if ( x < 0 ) then
+				if ( x == -huge(1_int16)-1_int16 ) then
+					new%s = '-32768'; return
+				end if
+				num_len = 2; num = abs(x); negative = .true.
+			else
+				num_len = 1; num = x; negative = .false.
+			end if
+		
+			count_digits: do
+				num = num/10
+				if ( num > 0 ) then
+					num_len = num_len + 1; cycle count_digits
+				else
+					exit count_digits
+				end if
+			end do count_digits
+	
+			allocate( character(len=num_len) :: new%s )
+	
+			if ( negative ) then
+				num = abs(x)
+				do i = num_len, 2, -1
+					new%s(i:i) = DIGITS_A( mod(num,10) ); num = num/10
+				end do
+				new%s(1:1) = '-'; return
+			else
+				num = x
+				do i = num_len, 1, -1
+					new%s(i:i) = DIGITS_A( mod(num,10) ); num = num/10
+				end do
+				return
+			end if
 		else if ( fmt_ == 'z' ) then
-			write(unit=new%s, fmt='(z0)') x
-
-			do concurrent (i = 1:15)
-				if ( (new%s(i:i) >= 'A') .and. (new%s(i:i) <= 'F') ) new%s(i:i) = achar(iachar(new%s(i:i)) + 32)
-			end do
-
-			new%s = '0x'//trim(new%s); return
+			if ( x < 0 ) then
+				num_len = 1; num = (x + 1_int16) + huge(1_int16); negative = .true.
+			else
+				num_len = 1; num = x; negative = .false.
+			end if
+			
+			count_hex_digits: do
+				num = num/16
+				if ( num > 0 ) then
+					num_len = num_len + 1; cycle count_hex_digits
+				else
+					exit count_hex_digits
+				end if
+			end do count_hex_digits
+		
+			if ( negative ) then
+				num = (x + 1_int16) + huge(1_int16)
+				new%s = '0x0000'
+			else
+				num = x
+				allocate( character(len=2+num_len) :: new%s ); new%s(1:2) = '0x'
+			end if
+		
+			insert_hex_characters: do i = len(new%s), len(new%s)-num_len+1, -1
+				new%s(i:i) = DIGITS_A( mod(num,16) ); num = num/16
+			end do insert_hex_characters
+		
+			if ( negative ) then
+				i = 0; do
+					if ( DIGITS_A(i) == new%s(3:3) ) exit
+					i = i + 1; cycle
+				end do
+				new%s(3:3) = DIGITS_A(i+8); return
+			else
+				return
+			end if
 		end if
 	end procedure new_Str_i16
 	module procedure new_Str_i8
 		character(len=1) :: fmt_
-		integer :: i
+		integer(int8) :: num
+		logical :: negative
+		integer :: num_len, i
 
 		if ( .not. present(fmt) ) then
 			fmt_ = 'i'
@@ -7177,18 +7369,77 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		allocate( character(len=10) :: new%s )
-
 		if ( fmt_ == 'i' ) then
-			write(unit=new%s, fmt='(i0)') x; new%s = trim(new%s); return
+			if ( x < 0 ) then
+				if ( x == -huge(1_int8)-1_int8 ) then
+					new%s = '-128'; return
+				end if
+				num_len = 2; num = abs(x); negative = .true.
+			else
+				num_len = 1; num = x; negative = .false.
+			end if
+		
+			count_digits: do
+				num = num/10
+				if ( num > 0 ) then
+					num_len = num_len + 1; cycle count_digits
+				else
+					exit count_digits
+				end if
+			end do count_digits
+	
+			allocate( character(len=num_len) :: new%s )
+	
+			if ( negative ) then
+				num = abs(x)
+				do i = num_len, 2, -1
+					new%s(i:i) = DIGITS_A( mod(num,10) ); num = num/10
+				end do
+				new%s(1:1) = '-'; return
+			else
+				num = x
+				do i = num_len, 1, -1
+					new%s(i:i) = DIGITS_A( mod(num,10) ); num = num/10
+				end do
+				return
+			end if
 		else if ( fmt_ == 'z' ) then
-			write(unit=new%s, fmt='(z0)') x
-
-			do concurrent (i = 1:10)
-				if ( (new%s(i:i) >= 'A') .and. (new%s(i:i) <= 'F') ) new%s(i:i) = achar(iachar(new%s(i:i)) + 32)
-			end do
-
-			new%s = '0x'//trim(new%s); return
+			if ( x < 0 ) then
+				num_len = 1; num = (x + 1_int8) + huge(1_int8); negative = .true.
+			else
+				num_len = 1; num = x; negative = .false.
+			end if
+			
+			count_hex_digits: do
+				num = num/16
+				if ( num > 0 ) then
+					num_len = num_len + 1; cycle count_hex_digits
+				else
+					exit count_hex_digits
+				end if
+			end do count_hex_digits
+		
+			if ( negative ) then
+				num = (x + 1_int8) + huge(1_int8)
+				new%s = '0x00'
+			else
+				num = x
+				allocate( character(len=2+num_len) :: new%s ); new%s(1:2) = '0x'
+			end if
+		
+			insert_hex_characters: do i = len(new%s), len(new%s)-num_len+1, -1
+				new%s(i:i) = DIGITS_A( mod(num,16) ); num = num/16
+			end do insert_hex_characters
+		
+			if ( negative ) then
+				i = 0; do
+					if ( DIGITS_A(i) == new%s(3:3) ) exit
+					i = i + 1; cycle
+				end do
+				new%s(3:3) = DIGITS_A(i+8); return
+			end if
+		else
+			return
 		end if
 	end procedure new_Str_i8
 
@@ -7794,8 +8045,13 @@ submodule (io_fortran_lib) internal_io
 
 	module procedure cast_string_i64
 		character(len=1) :: fmt_
+		logical :: negative
+		integer :: substring_len, l, r, j
+		integer(int64) :: i
 
-		if ( substring%len() < 1 ) then
+		substring_len = substring%len()
+
+		if ( substring_len < 1 ) then
 			into = 0_int64; return
 		end if
 
@@ -7809,24 +8065,103 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		if ( fmt_ == 'z' ) then
-			if ( substring%len() > 2 ) then
-				if ( substring%s(1:2) == '0x' ) then
-					read(unit=substring%s(3:), fmt='(z100)') into; return
+		if ( fmt_ == 'i' ) then
+			l = 1; do while ( l <= substring_len )
+				if ( substring%s(l:l) /= SPACE ) exit
+				l = l + 1; cycle
+			end do
+
+			r = substring_len; do while ( r >= l )
+				if ( substring%s(r:r) /= SPACE ) exit
+				r = r - 1; cycle
+			end do
+
+			if ( substring%s(l:l) == '-' ) then
+				negative = .true.; l = l + 1
+			else
+				negative = .false.
+			end if
+
+			into = 0_int64
+
+			i = 1_int64; do
+				j = 0; do while ( j <= 9 )
+					if ( DIGITS_A(j) == substring%s(r:r) ) exit
+					j = j + 1; cycle
+				end do
+
+				into = into + i*int(DIGITS_I(j), kind=int64)
+
+				if ( r == l ) exit
+				i = 10_int64*i; r = r - 1; cycle
+			end do
+
+			if ( negative ) then
+				into = -into; return
+			else
+				return
+			end if
+		else if ( fmt_ == 'z' ) then
+			l = 1; do while ( l <= substring_len )
+				if ( substring%s(l:l) /= SPACE ) exit
+				l = l + 1; cycle
+			end do
+
+			if ( substring_len > 2 ) then
+				if ( substring%s(l:l+1) == '0x' ) l = l + 2
+			end if
+
+			r = substring_len; do while ( r >= l )
+				if ( substring%s(r:r) /= SPACE ) exit
+				r = r - 1; cycle
+			end do
+
+			if ( r-l+1 == 16 ) then
+				j = 0; do while ( j <= 15 )
+					if ( DIGITS_A(j) == substring%s(l:l) ) exit
+					j = j + 1; cycle
+				end do
+
+				if ( j >= 8 ) then
+					negative = .true.
 				else
-					read(unit=substring%s, fmt='(z100)') into; return
+					negative = .false.
 				end if
 			else
-				read(unit=substring%s, fmt='(z100)') into; return
+				negative = .false.
 			end if
-		end if
 
-		read(unit=substring%s, fmt=*) into
+			into = 0_int64
+
+			i = 1_int64; do
+				j = 0; do while ( j <= 15 )
+					if ( DIGITS_A(j) == substring%s(r:r) ) exit
+					j = j + 1; cycle
+				end do
+
+				if ( r > l ) then
+					into = into + i*int(DIGITS_I(j), kind=int64)
+				else if ( r == l ) then
+					if ( negative ) then
+						into = into + i*int(DIGITS_I(j-8), kind=int64); into = (into - 1_int64) - huge(1_int64); return
+					else
+						into = into + i*int(DIGITS_I(j), kind=int64); return
+					end if
+				end if
+
+				i = 16_int64*i; r = r - 1; cycle
+			end do
+		end if
 	end procedure cast_string_i64
 	module procedure cast_string_i32
 		character(len=1) :: fmt_
+		logical :: negative
+		integer :: substring_len, l, r, j
+		integer(int32) :: i
 
-		if ( substring%len() < 1 ) then
+		substring_len = substring%len()
+
+		if ( substring_len < 1 ) then
 			into = 0_int32; return
 		end if
 
@@ -7840,24 +8175,103 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		if ( fmt_ == 'z' ) then
-			if ( substring%len() > 2 ) then
-				if ( substring%s(1:2) == '0x' ) then
-					read(unit=substring%s(3:), fmt='(z100)') into; return
+		if ( fmt_ == 'i' ) then
+			l = 1; do while ( l <= substring_len )
+				if ( substring%s(l:l) /= SPACE ) exit
+				l = l + 1; cycle
+			end do
+
+			r = substring_len; do while ( r >= l )
+				if ( substring%s(r:r) /= SPACE ) exit
+				r = r - 1; cycle
+			end do
+
+			if ( substring%s(l:l) == '-' ) then
+				negative = .true.; l = l + 1
+			else
+				negative = .false.
+			end if
+
+			into = 0_int32
+
+			i = 1_int32; do
+				j = 0; do while ( j <= 9 )
+					if ( DIGITS_A(j) == substring%s(r:r) ) exit
+					j = j + 1; cycle
+				end do
+
+				into = into + i*DIGITS_I(j)
+
+				if ( r == l ) exit
+				i = 10_int32*i; r = r - 1; cycle
+			end do
+
+			if ( negative ) then
+				into = -into; return
+			else
+				return
+			end if
+		else if ( fmt_ == 'z' ) then
+			l = 1; do while ( l <= substring_len )
+				if ( substring%s(l:l) /= SPACE ) exit
+				l = l + 1; cycle
+			end do
+
+			if ( substring_len > 2 ) then
+				if ( substring%s(l:l+1) == '0x' ) l = l + 2
+			end if
+
+			r = substring_len; do while ( r >= l )
+				if ( substring%s(r:r) /= SPACE ) exit
+				r = r - 1; cycle
+			end do
+
+			if ( r-l+1 == 8 ) then
+				j = 0; do while ( j <= 15 )
+					if ( DIGITS_A(j) == substring%s(l:l) ) exit
+					j = j + 1; cycle
+				end do
+
+				if ( j >= 8 ) then
+					negative = .true.
 				else
-					read(unit=substring%s, fmt='(z100)') into; return
+					negative = .false.
 				end if
 			else
-				read(unit=substring%s, fmt='(z100)') into; return
+				negative = .false.
 			end if
-		end if
 
-		read(unit=substring%s, fmt=*) into
+			into = 0_int32
+
+			i = 1_int32; do
+				j = 0; do while ( j <= 15 )
+					if ( DIGITS_A(j) == substring%s(r:r) ) exit
+					j = j + 1; cycle
+				end do
+
+				if ( r > l ) then
+					into = into + i*DIGITS_I(j)
+				else if ( r == l ) then
+					if ( negative ) then
+						into = into + i*DIGITS_I(j-8); into = (into - 1_int32) - huge(1_int32); return
+					else
+						into = into + i*DIGITS_I(j); return
+					end if
+				end if
+
+				i = 16_int32*i; r = r - 1; cycle
+			end do
+		end if
 	end procedure cast_string_i32
 	module procedure cast_string_i16
 		character(len=1) :: fmt_
+		logical :: negative
+		integer :: substring_len, l, r, j
+		integer(int16) :: i
 
-		if ( substring%len() < 1 ) then
+		substring_len = substring%len()
+
+		if ( substring_len < 1 ) then
 			into = 0_int16; return
 		end if
 
@@ -7871,24 +8285,103 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		if ( fmt_ == 'z' ) then
-			if ( substring%len() > 2 ) then
-				if ( substring%s(1:2) == '0x' ) then
-					read(unit=substring%s(3:), fmt='(z100)') into; return
+		if ( fmt_ == 'i' ) then
+			l = 1; do while ( l <= substring_len )
+				if ( substring%s(l:l) /= SPACE ) exit
+				l = l + 1; cycle
+			end do
+
+			r = substring_len; do while ( r >= l )
+				if ( substring%s(r:r) /= SPACE ) exit
+				r = r - 1; cycle
+			end do
+
+			if ( substring%s(l:l) == '-' ) then
+				negative = .true.; l = l + 1
+			else
+				negative = .false.
+			end if
+
+			into = 0_int16
+
+			i = 1_int16; do
+				j = 0; do while ( j <= 9 )
+					if ( DIGITS_A(j) == substring%s(r:r) ) exit
+					j = j + 1; cycle
+				end do
+
+				into = into + i*int(DIGITS_I(j), kind=int16)
+
+				if ( r == l ) exit
+				i = 10_int16*i; r = r - 1; cycle
+			end do
+
+			if ( negative ) then
+				into = -into; return
+			else
+				return
+			end if
+		else if ( fmt_ == 'z' ) then
+			l = 1; do while ( l <= substring_len )
+				if ( substring%s(l:l) /= SPACE ) exit
+				l = l + 1; cycle
+			end do
+
+			if ( substring_len > 2 ) then
+				if ( substring%s(l:l+1) == '0x' ) l = l + 2
+			end if
+
+			r = substring_len; do while ( r >= l )
+				if ( substring%s(r:r) /= SPACE ) exit
+				r = r - 1; cycle
+			end do
+
+			if ( r-l+1 == 4 ) then
+				j = 0; do while ( j <= 15 )
+					if ( DIGITS_A(j) == substring%s(l:l) ) exit
+					j = j + 1; cycle
+				end do
+
+				if ( j >= 8 ) then
+					negative = .true.
 				else
-					read(unit=substring%s, fmt='(z100)') into; return
+					negative = .false.
 				end if
 			else
-				read(unit=substring%s, fmt='(z100)') into; return
+				negative = .false.
 			end if
-		end if
 
-		read(unit=substring%s, fmt=*) into
+			into = 0_int16
+
+			i = 1_int16; do
+				j = 0; do while ( j <= 15 )
+					if ( DIGITS_A(j) == substring%s(r:r) ) exit
+					j = j + 1; cycle
+				end do
+
+				if ( r > l ) then
+					into = into + i*int(DIGITS_I(j), kind=int16)
+				else if ( r == l ) then
+					if ( negative ) then
+						into = into + i*int(DIGITS_I(j-8), kind=int16); into = (into - 1_int16) - huge(1_int16); return
+					else
+						into = into + i*int(DIGITS_I(j), kind=int16); return
+					end if
+				end if
+
+				i = 16_int16*i; r = r - 1; cycle
+			end do
+		end if
 	end procedure cast_string_i16
 	module procedure cast_string_i8
 		character(len=1) :: fmt_
+		logical :: negative
+		integer :: substring_len, l, r, j
+		integer(int8) :: i
 
-		if ( substring%len() < 1 ) then
+		substring_len = substring%len()
+
+		if ( substring_len < 1 ) then
 			into = 0_int8; return
 		end if
 
@@ -7902,19 +8395,93 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		if ( fmt_ == 'z' ) then
-			if ( substring%len() > 2 ) then
-				if ( substring%s(1:2) == '0x' ) then
-					read(unit=substring%s(3:), fmt='(z100)') into; return
+		if ( fmt_ == 'i' ) then
+			l = 1; do while ( l <= substring_len )
+				if ( substring%s(l:l) /= SPACE ) exit
+				l = l + 1; cycle
+			end do
+
+			r = substring_len; do while ( r >= l )
+				if ( substring%s(r:r) /= SPACE ) exit
+				r = r - 1; cycle
+			end do
+
+			if ( substring%s(l:l) == '-' ) then
+				negative = .true.; l = l + 1
+			else
+				negative = .false.
+			end if
+
+			into = 0_int8
+
+			i = 1_int8; do
+				j = 0; do while ( j <= 9 )
+					if ( DIGITS_A(j) == substring%s(r:r) ) exit
+					j = j + 1; cycle
+				end do
+
+				into = into + i*int(DIGITS_I(j), kind=int8)
+
+				if ( r == l ) exit
+				i = 10_int8*i; r = r - 1; cycle
+			end do
+
+			if ( negative ) then
+				into = -into; return
+			else
+				return
+			end if
+		else if ( fmt_ == 'z' ) then
+			l = 1; do while ( l <= substring_len )
+				if ( substring%s(l:l) /= SPACE ) exit
+				l = l + 1; cycle
+			end do
+
+			if ( substring_len > 2 ) then
+				if ( substring%s(l:l+1) == '0x' ) l = l + 2
+			end if
+
+			r = substring_len; do while ( r >= l )
+				if ( substring%s(r:r) /= SPACE ) exit
+				r = r - 1; cycle
+			end do
+
+			if ( r-l+1 == 2 ) then
+				j = 0; do while ( j <= 15 )
+					if ( DIGITS_A(j) == substring%s(l:l) ) exit
+					j = j + 1; cycle
+				end do
+
+				if ( j >= 8 ) then
+					negative = .true.
 				else
-					read(unit=substring%s, fmt='(z100)') into; return
+					negative = .false.
 				end if
 			else
-				read(unit=substring%s, fmt='(z100)') into; return
+				negative = .false.
 			end if
-		end if
 
-		read(unit=substring%s, fmt=*) into
+			into = 0_int8
+
+			i = 1_int8; do
+				j = 0; do while ( j <= 15 )
+					if ( DIGITS_A(j) == substring%s(r:r) ) exit
+					j = j + 1; cycle
+				end do
+
+				if ( r > l ) then
+					into = into + i*int(DIGITS_I(j), kind=int8)
+				else if ( r == l ) then
+					if ( negative ) then
+						into = into + i*int(DIGITS_I(j-8), kind=int8); into = (into - 1_int8) - huge(1_int8); return
+					else
+						into = into + i*int(DIGITS_I(j), kind=int8); return
+					end if
+				end if
+
+				i = 16_int8*i; r = r - 1; cycle
+			end do
+		end if
 	end procedure cast_string_i8
 
 	module procedure str_c128
@@ -9091,7 +9658,9 @@ submodule (io_fortran_lib) internal_io
 
 	module procedure str_i64
 		character(len=1) :: fmt_
-		integer :: i
+		integer(int64) :: num
+		logical :: negative
+		integer :: num_len, i
 
 		if ( .not. present(fmt) ) then
 			fmt_ = 'i'
@@ -9103,23 +9672,84 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		allocate( character(len=40) :: x_str )
-
 		if ( fmt_ == 'i' ) then
-			write(unit=x_str, fmt='(i0)') x; x_str = trim(x_str); return
+			if ( x < 0 ) then
+				if ( x == -huge(1_int64)-1_int64 ) then
+					x_str = '-9223372036854775808'; return
+				end if
+				num_len = 2; num = abs(x); negative = .true.
+			else
+				num_len = 1; num = x; negative = .false.
+			end if
+		
+			count_digits: do
+				num = num/10
+				if ( num > 0 ) then
+					num_len = num_len + 1; cycle count_digits
+				else
+					exit count_digits
+				end if
+			end do count_digits
+	
+			allocate( character(len=num_len) :: x_str )
+	
+			if ( negative ) then
+				num = abs(x)
+				do i = num_len, 2, -1
+					x_str(i:i) = DIGITS_A( mod(num,10) ); num = num/10
+				end do
+				x_str(1:1) = '-'; return
+			else
+				num = x
+				do i = num_len, 1, -1
+					x_str(i:i) = DIGITS_A( mod(num,10) ); num = num/10
+				end do
+				return
+			end if
 		else if ( fmt_ == 'z' ) then
-			write(unit=x_str, fmt='(z0)') x
-
-			do concurrent (i = 1:40)
-				if ( (x_str(i:i) >= 'A') .and. (x_str(i:i) <= 'F') ) x_str(i:i) = achar(iachar(x_str(i:i)) + 32)
-			end do
-
-			x_str = '0x'//trim(x_str); return
+			if ( x < 0 ) then
+				num_len = 1; num = (x + 1_int64) + huge(1_int64); negative = .true.
+			else
+				num_len = 1; num = x; negative = .false.
+			end if
+			
+			count_hex_digits: do
+				num = num/16
+				if ( num > 0 ) then
+					num_len = num_len + 1; cycle count_hex_digits
+				else
+					exit count_hex_digits
+				end if
+			end do count_hex_digits
+		
+			if ( negative ) then
+				num = (x + 1_int64) + huge(1_int64)
+				x_str = '0x0000000000000000'
+			else
+				num = x
+				allocate( character(len=2+num_len) :: x_str ); x_str(1:2) = '0x'
+			end if
+		
+			insert_hex_characters: do i = len(x_str), len(x_str)-num_len+1, -1
+				x_str(i:i) = DIGITS_A( mod(num,16) ); num = num/16
+			end do insert_hex_characters
+		
+			if ( negative ) then
+				i = 0; do
+					if ( DIGITS_A(i) == x_str(3:3) ) exit
+					i = i + 1; cycle
+				end do
+				x_str(3:3) = DIGITS_A(i+8); return
+			else
+				return
+			end if
 		end if
 	end procedure str_i64
 	module procedure str_i32
 		character(len=1) :: fmt_
-		integer :: i
+		integer(int32) :: num
+		logical :: negative
+		integer :: num_len, i
 
 		if ( .not. present(fmt) ) then
 			fmt_ = 'i'
@@ -9131,23 +9761,84 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		allocate( character(len=25) :: x_str )
-
 		if ( fmt_ == 'i' ) then
-			write(unit=x_str, fmt='(i0)') x; x_str = trim(x_str); return
+			if ( x < 0 ) then
+				if ( x == -huge(1_int32)-1_int32 ) then
+					x_str = '-2147483648'; return
+				end if
+				num_len = 2; num = abs(x); negative = .true.
+			else
+				num_len = 1; num = x; negative = .false.
+			end if
+		
+			count_digits: do
+				num = num/10
+				if ( num > 0 ) then
+					num_len = num_len + 1; cycle count_digits
+				else
+					exit count_digits
+				end if
+			end do count_digits
+	
+			allocate( character(len=num_len) :: x_str )
+	
+			if ( negative ) then
+				num = abs(x)
+				do i = num_len, 2, -1
+					x_str(i:i) = DIGITS_A( mod(num,10) ); num = num/10
+				end do
+				x_str(1:1) = '-'; return
+			else
+				num = x
+				do i = num_len, 1, -1
+					x_str(i:i) = DIGITS_A( mod(num,10) ); num = num/10
+				end do
+				return
+			end if
 		else if ( fmt_ == 'z' ) then
-			write(unit=x_str, fmt='(z0)') x
-
-			do concurrent (i = 1:25)
-				if ( (x_str(i:i) >= 'A') .and. (x_str(i:i) <= 'F') ) x_str(i:i) = achar(iachar(x_str(i:i)) + 32)
-			end do
-
-			x_str = '0x'//trim(x_str); return
+			if ( x < 0 ) then
+				num_len = 1; num = (x + 1_int32) + huge(1_int32); negative = .true.
+			else
+				num_len = 1; num = x; negative = .false.
+			end if
+			
+			count_hex_digits: do
+				num = num/16
+				if ( num > 0 ) then
+					num_len = num_len + 1; cycle count_hex_digits
+				else
+					exit count_hex_digits
+				end if
+			end do count_hex_digits
+		
+			if ( negative ) then
+				num = (x + 1_int32) + huge(1_int32)
+				x_str = '0x00000000'
+			else
+				num = x
+				allocate( character(len=2+num_len) :: x_str ); x_str(1:2) = '0x'
+			end if
+		
+			insert_hex_characters: do i = len(x_str), len(x_str)-num_len+1, -1
+				x_str(i:i) = DIGITS_A( mod(num,16) ); num = num/16
+			end do insert_hex_characters
+		
+			if ( negative ) then
+				i = 0; do
+					if ( DIGITS_A(i) == x_str(3:3) ) exit
+					i = i + 1; cycle
+				end do
+				x_str(3:3) = DIGITS_A(i+8); return
+			else
+				return
+			end if
 		end if
 	end procedure str_i32
 	module procedure str_i16
 		character(len=1) :: fmt_
-		integer :: i
+		integer(int16) :: num
+		logical :: negative
+		integer :: num_len, i
 
 		if ( .not. present(fmt) ) then
 			fmt_ = 'i'
@@ -9159,23 +9850,84 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		allocate( character(len=15) :: x_str )
-
 		if ( fmt_ == 'i' ) then
-			write(unit=x_str, fmt='(i0)') x; x_str = trim(x_str); return
+			if ( x < 0 ) then
+				if ( x == -huge(1_int16)-1_int16 ) then
+					x_str = '-32768'; return
+				end if
+				num_len = 2; num = abs(x); negative = .true.
+			else
+				num_len = 1; num = x; negative = .false.
+			end if
+		
+			count_digits: do
+				num = num/10
+				if ( num > 0 ) then
+					num_len = num_len + 1; cycle count_digits
+				else
+					exit count_digits
+				end if
+			end do count_digits
+	
+			allocate( character(len=num_len) :: x_str )
+	
+			if ( negative ) then
+				num = abs(x)
+				do i = num_len, 2, -1
+					x_str(i:i) = DIGITS_A( mod(num,10) ); num = num/10
+				end do
+				x_str(1:1) = '-'; return
+			else
+				num = x
+				do i = num_len, 1, -1
+					x_str(i:i) = DIGITS_A( mod(num,10) ); num = num/10
+				end do
+				return
+			end if
 		else if ( fmt_ == 'z' ) then
-			write(unit=x_str, fmt='(z0)') x
-
-			do concurrent (i = 1:15)
-				if ( (x_str(i:i) >= 'A') .and. (x_str(i:i) <= 'F') ) x_str(i:i) = achar(iachar(x_str(i:i)) + 32)
-			end do
-
-			x_str = '0x'//trim(x_str); return
+			if ( x < 0 ) then
+				num_len = 1; num = (x + 1_int16) + huge(1_int16); negative = .true.
+			else
+				num_len = 1; num = x; negative = .false.
+			end if
+			
+			count_hex_digits: do
+				num = num/16
+				if ( num > 0 ) then
+					num_len = num_len + 1; cycle count_hex_digits
+				else
+					exit count_hex_digits
+				end if
+			end do count_hex_digits
+		
+			if ( negative ) then
+				num = (x + 1_int16) + huge(1_int16)
+				x_str = '0x0000'
+			else
+				num = x
+				allocate( character(len=2+num_len) :: x_str ); x_str(1:2) = '0x'
+			end if
+		
+			insert_hex_characters: do i = len(x_str), len(x_str)-num_len+1, -1
+				x_str(i:i) = DIGITS_A( mod(num,16) ); num = num/16
+			end do insert_hex_characters
+		
+			if ( negative ) then
+				i = 0; do
+					if ( DIGITS_A(i) == x_str(3:3) ) exit
+					i = i + 1; cycle
+				end do
+				x_str(3:3) = DIGITS_A(i+8); return
+			else
+				return
+			end if
 		end if
 	end procedure str_i16
 	module procedure str_i8
 		character(len=1) :: fmt_
-		integer :: i
+		integer(int8) :: num
+		logical :: negative
+		integer :: num_len, i
 
 		if ( .not. present(fmt) ) then
 			fmt_ = 'i'
@@ -9187,18 +9939,77 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		allocate( character(len=10) :: x_str )
-
 		if ( fmt_ == 'i' ) then
-			write(unit=x_str, fmt='(i0)') x; x_str = trim(x_str); return
+			if ( x < 0 ) then
+				if ( x == -huge(1_int8)-1_int8 ) then
+					x_str = '-128'; return
+				end if
+				num_len = 2; num = abs(x); negative = .true.
+			else
+				num_len = 1; num = x; negative = .false.
+			end if
+		
+			count_digits: do
+				num = num/10
+				if ( num > 0 ) then
+					num_len = num_len + 1; cycle count_digits
+				else
+					exit count_digits
+				end if
+			end do count_digits
+	
+			allocate( character(len=num_len) :: x_str )
+	
+			if ( negative ) then
+				num = abs(x)
+				do i = num_len, 2, -1
+					x_str(i:i) = DIGITS_A( mod(num,10) ); num = num/10
+				end do
+				x_str(1:1) = '-'; return
+			else
+				num = x
+				do i = num_len, 1, -1
+					x_str(i:i) = DIGITS_A( mod(num,10) ); num = num/10
+				end do
+				return
+			end if
 		else if ( fmt_ == 'z' ) then
-			write(unit=x_str, fmt='(z0)') x
-
-			do concurrent (i = 1:10)
-				if ( (x_str(i:i) >= 'A') .and. (x_str(i:i) <= 'F') ) x_str(i:i) = achar(iachar(x_str(i:i)) + 32)
-			end do
-
-			x_str = '0x'//trim(x_str); return
+			if ( x < 0 ) then
+				num_len = 1; num = (x + 1_int8) + huge(1_int8); negative = .true.
+			else
+				num_len = 1; num = x; negative = .false.
+			end if
+			
+			count_hex_digits: do
+				num = num/16
+				if ( num > 0 ) then
+					num_len = num_len + 1; cycle count_hex_digits
+				else
+					exit count_hex_digits
+				end if
+			end do count_hex_digits
+		
+			if ( negative ) then
+				num = (x + 1_int8) + huge(1_int8)
+				x_str = '0x00'
+			else
+				num = x
+				allocate( character(len=2+num_len) :: x_str ); x_str(1:2) = '0x'
+			end if
+		
+			insert_hex_characters: do i = len(x_str), len(x_str)-num_len+1, -1
+				x_str(i:i) = DIGITS_A( mod(num,16) ); num = num/16
+			end do insert_hex_characters
+		
+			if ( negative ) then
+				i = 0; do
+					if ( DIGITS_A(i) == x_str(3:3) ) exit
+					i = i + 1; cycle
+				end do
+				x_str(3:3) = DIGITS_A(i+8); return
+			end if
+		else
+			return
 		end if
 	end procedure str_i8
 
@@ -9804,8 +10615,13 @@ submodule (io_fortran_lib) internal_io
 
 	module procedure cast_i64
 		character(len=1) :: fmt_
+		logical :: negative
+		integer :: substring_len, l, r, j
+		integer(int64) :: i
 
-		if ( len(substring) == 0 ) then
+		substring_len = len(substring)
+
+		if ( substring_len < 1 ) then
 			into = 0_int64; return
 		end if
 
@@ -9819,24 +10635,103 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		if ( fmt_ == 'z' ) then
-			if ( len(substring) > 2 ) then
-				if ( substring(1:2) == '0x' ) then
-					read(unit=substring(3:), fmt='(z100)') into; return
+		if ( fmt_ == 'i' ) then
+			l = 1; do while ( l <= substring_len )
+				if ( substring(l:l) /= SPACE ) exit
+				l = l + 1; cycle
+			end do
+
+			r = substring_len; do while ( r >= l )
+				if ( substring(r:r) /= SPACE ) exit
+				r = r - 1; cycle
+			end do
+
+			if ( substring(l:l) == '-' ) then
+				negative = .true.; l = l + 1
+			else
+				negative = .false.
+			end if
+
+			into = 0_int64
+
+			i = 1_int64; do
+				j = 0; do while ( j <= 9 )
+					if ( DIGITS_A(j) == substring(r:r) ) exit
+					j = j + 1; cycle
+				end do
+
+				into = into + i*int(DIGITS_I(j), kind=int64)
+
+				if ( r == l ) exit
+				i = 10_int64*i; r = r - 1; cycle
+			end do
+
+			if ( negative ) then
+				into = -into; return
+			else
+				return
+			end if
+		else if ( fmt_ == 'z' ) then
+			l = 1; do while ( l <= substring_len )
+				if ( substring(l:l) /= SPACE ) exit
+				l = l + 1; cycle
+			end do
+
+			if ( substring_len > 2 ) then
+				if ( substring(l:l+1) == '0x' ) l = l + 2
+			end if
+
+			r = substring_len; do while ( r >= l )
+				if ( substring(r:r) /= SPACE ) exit
+				r = r - 1; cycle
+			end do
+
+			if ( r-l+1 == 16 ) then
+				j = 0; do while ( j <= 15 )
+					if ( DIGITS_A(j) == substring(l:l) ) exit
+					j = j + 1; cycle
+				end do
+
+				if ( j >= 8 ) then
+					negative = .true.
 				else
-					read(unit=substring, fmt='(z100)') into; return
+					negative = .false.
 				end if
 			else
-				read(unit=substring, fmt='(z100)') into; return
+				negative = .false.
 			end if
-		end if
 
-		read(unit=substring, fmt=*) into
+			into = 0_int64
+
+			i = 1_int64; do
+				j = 0; do while ( j <= 15 )
+					if ( DIGITS_A(j) == substring(r:r) ) exit
+					j = j + 1; cycle
+				end do
+
+				if ( r > l ) then
+					into = into + i*int(DIGITS_I(j), kind=int64)
+				else if ( r == l ) then
+					if ( negative ) then
+						into = into + i*int(DIGITS_I(j-8), kind=int64); into = (into - 1_int64) - huge(1_int64); return
+					else
+						into = into + i*int(DIGITS_I(j), kind=int64); return
+					end if
+				end if
+
+				i = 16_int64*i; r = r - 1; cycle
+			end do
+		end if
 	end procedure cast_i64
 	module procedure cast_i32
 		character(len=1) :: fmt_
+		logical :: negative
+		integer :: substring_len, l, r, j
+		integer(int32) :: i
 
-		if ( len(substring) == 0 ) then
+		substring_len = len(substring)
+
+		if ( substring_len < 1 ) then
 			into = 0_int32; return
 		end if
 
@@ -9850,24 +10745,103 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		if ( fmt_ == 'z' ) then
-			if ( len(substring) > 2 ) then
-				if ( substring(1:2) == '0x' ) then
-					read(unit=substring(3:), fmt='(z100)') into; return
+		if ( fmt_ == 'i' ) then
+			l = 1; do while ( l <= substring_len )
+				if ( substring(l:l) /= SPACE ) exit
+				l = l + 1; cycle
+			end do
+
+			r = substring_len; do while ( r >= l )
+				if ( substring(r:r) /= SPACE ) exit
+				r = r - 1; cycle
+			end do
+
+			if ( substring(l:l) == '-' ) then
+				negative = .true.; l = l + 1
+			else
+				negative = .false.
+			end if
+
+			into = 0_int32
+
+			i = 1_int32; do
+				j = 0; do while ( j <= 9 )
+					if ( DIGITS_A(j) == substring(r:r) ) exit
+					j = j + 1; cycle
+				end do
+
+				into = into + i*DIGITS_I(j)
+
+				if ( r == l ) exit
+				i = 10_int32*i; r = r - 1; cycle
+			end do
+
+			if ( negative ) then
+				into = -into; return
+			else
+				return
+			end if
+		else if ( fmt_ == 'z' ) then
+			l = 1; do while ( l <= substring_len )
+				if ( substring(l:l) /= SPACE ) exit
+				l = l + 1; cycle
+			end do
+
+			if ( substring_len > 2 ) then
+				if ( substring(l:l+1) == '0x' ) l = l + 2
+			end if
+
+			r = substring_len; do while ( r >= l )
+				if ( substring(r:r) /= SPACE ) exit
+				r = r - 1; cycle
+			end do
+
+			if ( r-l+1 == 8 ) then
+				j = 0; do while ( j <= 15 )
+					if ( DIGITS_A(j) == substring(l:l) ) exit
+					j = j + 1; cycle
+				end do
+
+				if ( j >= 8 ) then
+					negative = .true.
 				else
-					read(unit=substring, fmt='(z100)') into; return
+					negative = .false.
 				end if
 			else
-				read(unit=substring, fmt='(z100)') into; return
+				negative = .false.
 			end if
-		end if
 
-		read(unit=substring, fmt=*) into
+			into = 0_int32
+
+			i = 1_int32; do
+				j = 0; do while ( j <= 15 )
+					if ( DIGITS_A(j) == substring(r:r) ) exit
+					j = j + 1; cycle
+				end do
+
+				if ( r > l ) then
+					into = into + i*DIGITS_I(j)
+				else if ( r == l ) then
+					if ( negative ) then
+						into = into + i*DIGITS_I(j-8); into = (into - 1_int32) - huge(1_int32); return
+					else
+						into = into + i*DIGITS_I(j); return
+					end if
+				end if
+
+				i = 16_int32*i; r = r - 1; cycle
+			end do
+		end if
 	end procedure cast_i32
 	module procedure cast_i16
 		character(len=1) :: fmt_
+		logical :: negative
+		integer :: substring_len, l, r, j
+		integer(int16) :: i
 
-		if ( len(substring) == 0 ) then
+		substring_len = len(substring)
+
+		if ( substring_len < 1 ) then
 			into = 0_int16; return
 		end if
 
@@ -9881,24 +10855,103 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		if ( fmt_ == 'z' ) then
-			if ( len(substring) > 2 ) then
-				if ( substring(1:2) == '0x' ) then
-					read(unit=substring(3:), fmt='(z100)') into; return
+		if ( fmt_ == 'i' ) then
+			l = 1; do while ( l <= substring_len )
+				if ( substring(l:l) /= SPACE ) exit
+				l = l + 1; cycle
+			end do
+
+			r = substring_len; do while ( r >= l )
+				if ( substring(r:r) /= SPACE ) exit
+				r = r - 1; cycle
+			end do
+
+			if ( substring(l:l) == '-' ) then
+				negative = .true.; l = l + 1
+			else
+				negative = .false.
+			end if
+
+			into = 0_int16
+
+			i = 1_int16; do
+				j = 0; do while ( j <= 9 )
+					if ( DIGITS_A(j) == substring(r:r) ) exit
+					j = j + 1; cycle
+				end do
+
+				into = into + i*int(DIGITS_I(j), kind=int16)
+
+				if ( r == l ) exit
+				i = 10_int16*i; r = r - 1; cycle
+			end do
+
+			if ( negative ) then
+				into = -into; return
+			else
+				return
+			end if
+		else if ( fmt_ == 'z' ) then
+			l = 1; do while ( l <= substring_len )
+				if ( substring(l:l) /= SPACE ) exit
+				l = l + 1; cycle
+			end do
+
+			if ( substring_len > 2 ) then
+				if ( substring(l:l+1) == '0x' ) l = l + 2
+			end if
+
+			r = substring_len; do while ( r >= l )
+				if ( substring(r:r) /= SPACE ) exit
+				r = r - 1; cycle
+			end do
+
+			if ( r-l+1 == 4 ) then
+				j = 0; do while ( j <= 15 )
+					if ( DIGITS_A(j) == substring(l:l) ) exit
+					j = j + 1; cycle
+				end do
+
+				if ( j >= 8 ) then
+					negative = .true.
 				else
-					read(unit=substring, fmt='(z100)') into; return
+					negative = .false.
 				end if
 			else
-				read(unit=substring, fmt='(z100)') into; return
+				negative = .false.
 			end if
-		end if
 
-		read(unit=substring, fmt=*) into
+			into = 0_int16
+
+			i = 1_int16; do
+				j = 0; do while ( j <= 15 )
+					if ( DIGITS_A(j) == substring(r:r) ) exit
+					j = j + 1; cycle
+				end do
+
+				if ( r > l ) then
+					into = into + i*int(DIGITS_I(j), kind=int16)
+				else if ( r == l ) then
+					if ( negative ) then
+						into = into + i*int(DIGITS_I(j-8), kind=int16); into = (into - 1_int16) - huge(1_int16); return
+					else
+						into = into + i*int(DIGITS_I(j), kind=int16); return
+					end if
+				end if
+
+				i = 16_int16*i; r = r - 1; cycle
+			end do
+		end if
 	end procedure cast_i16
 	module procedure cast_i8
 		character(len=1) :: fmt_
+		logical :: negative
+		integer :: substring_len, l, r, j
+		integer(int8) :: i
 
-		if ( len(substring) == 0 ) then
+		substring_len = len(substring)
+
+		if ( substring_len < 1 ) then
 			into = 0_int8; return
 		end if
 
@@ -9912,19 +10965,93 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		if ( fmt_ == 'z' ) then
-			if ( len(substring) > 2 ) then
-				if ( substring(1:2) == '0x' ) then
-					read(unit=substring(3:), fmt='(z100)') into; return
+		if ( fmt_ == 'i' ) then
+			l = 1; do while ( l <= substring_len )
+				if ( substring(l:l) /= SPACE ) exit
+				l = l + 1; cycle
+			end do
+
+			r = substring_len; do while ( r >= l )
+				if ( substring(r:r) /= SPACE ) exit
+				r = r - 1; cycle
+			end do
+
+			if ( substring(l:l) == '-' ) then
+				negative = .true.; l = l + 1
+			else
+				negative = .false.
+			end if
+
+			into = 0_int8
+
+			i = 1_int8; do
+				j = 0; do while ( j <= 9 )
+					if ( DIGITS_A(j) == substring(r:r) ) exit
+					j = j + 1; cycle
+				end do
+
+				into = into + i*int(DIGITS_I(j), kind=int8)
+
+				if ( r == l ) exit
+				i = 10_int8*i; r = r - 1; cycle
+			end do
+
+			if ( negative ) then
+				into = -into; return
+			else
+				return
+			end if
+		else if ( fmt_ == 'z' ) then
+			l = 1; do while ( l <= substring_len )
+				if ( substring(l:l) /= SPACE ) exit
+				l = l + 1; cycle
+			end do
+
+			if ( substring_len > 2 ) then
+				if ( substring(l:l+1) == '0x' ) l = l + 2
+			end if
+
+			r = substring_len; do while ( r >= l )
+				if ( substring(r:r) /= SPACE ) exit
+				r = r - 1; cycle
+			end do
+
+			if ( r-l+1 == 2 ) then
+				j = 0; do while ( j <= 15 )
+					if ( DIGITS_A(j) == substring(l:l) ) exit
+					j = j + 1; cycle
+				end do
+
+				if ( j >= 8 ) then
+					negative = .true.
 				else
-					read(unit=substring, fmt='(z100)') into; return
+					negative = .false.
 				end if
 			else
-				read(unit=substring, fmt='(z100)') into; return
+				negative = .false.
 			end if
-		end if
 
-		read(unit=substring, fmt=*) into
+			into = 0_int8
+
+			i = 1_int8; do
+				j = 0; do while ( j <= 15 )
+					if ( DIGITS_A(j) == substring(r:r) ) exit
+					j = j + 1; cycle
+				end do
+
+				if ( r > l ) then
+					into = into + i*int(DIGITS_I(j), kind=int8)
+				else if ( r == l ) then
+					if ( negative ) then
+						into = into + i*int(DIGITS_I(j-8), kind=int8); into = (into - 1_int8) - huge(1_int8); return
+					else
+						into = into + i*int(DIGITS_I(j), kind=int8); return
+					end if
+				end if
+
+				i = 16_int8*i; r = r - 1; cycle
+			end do
+		end if
 	end procedure cast_i8
 end submodule internal_io
 
@@ -29460,7 +30587,7 @@ end submodule array_printing
 !	-------------------------------------------------------
 !	1.	In read_file (line 4745), the internal subroutine split_because_ifxbug (line 4958) is called by the form
 !		|>	call split_because_ifxbug(substring, separator, tokens)
-!		where tokens is intent(out), to replace a functional call to split_string (line 9994) of the form
+!		where tokens is intent(out), to replace a functional call to split_string (line 11121) of the form
 !		|>	tokens = substring%split(separator)
 !		which induces a run-time segmentation fault in the program contained in benchmark.f90 not seen with the
 !		following compilers: ifort 2021.8.0, gfortran 11.3.0, gfortran 11.2.0. From investigation, the segmentation
