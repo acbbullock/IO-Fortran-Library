@@ -6189,34 +6189,18 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if_z_re: if ( fmt_ == 'z' ) then
-			if ( x%re /= 0.0_real64 ) then
-				allocate( character(len=18) :: xre_str )
-			else
+			if ( x%re == 0.0_real64 ) then
 				xre_str = '0x0'; exit if_z_re
 			end if
 
-			write(unit=xre_str(3:), fmt='(z16)') x%re
-
-			do concurrent (i = 3:18)
-				if ( (xre_str(i:i) >= 'A') .and. (xre_str(i:i) <= 'F') ) xre_str(i:i) = achar(iachar(xre_str(i:i))+32)
-			end do
-
-			xre_str(1:2) = '0x'; exit if_z_re
+			xre_str = str( transfer(source=x%re, mold=1_int64), fmt='z' ); exit if_z_re
 		end if if_z_re
 		if_z_im: if ( fmt_ == 'z' ) then
-			if ( x%im /= 0.0_real64 ) then
-				allocate( character(len=18) :: xim_str )
-			else
+			if ( x%im == 0.0_real64 ) then
 				xim_str = '0x0'; exit if_z_im
 			end if
 
-			write(unit=xim_str(3:), fmt='(z16)') x%im
-
-			do concurrent (i = 3:18)
-				if ( (xim_str(i:i) >= 'A') .and. (xim_str(i:i) <= 'F') ) xim_str(i:i) = achar(iachar(xim_str(i:i))+32)
-			end do
-
-			xim_str(1:2) = '0x'; exit if_z_im
+			xim_str = str( transfer(source=x%im, mold=1_int64), fmt='z' ); exit if_z_im
 		end if if_z_im
 
 		if ( .not. present(locale) ) then
@@ -6447,34 +6431,18 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if_z_re: if ( fmt_ == 'z' ) then
-			if ( x%re /= 0.0_real32 ) then
-				allocate( character(len=10) :: xre_str )
-			else
+			if ( x%re == 0.0_real32 ) then
 				xre_str = '0x0'; exit if_z_re
 			end if
 
-			write(unit=xre_str(3:), fmt='(z8)') x%re
-
-			do concurrent (i = 3:10)
-				if ( (xre_str(i:i) >= 'A') .and. (xre_str(i:i) <= 'F') ) xre_str(i:i) = achar(iachar(xre_str(i:i))+32)
-			end do
-
-			xre_str(1:2) = '0x'; exit if_z_re
+			xre_str = str( transfer(source=x%re, mold=1_int32), fmt='z' ); exit if_z_re
 		end if if_z_re
 		if_z_im: if ( fmt_ == 'z' ) then
-			if ( x%im /= 0.0_real32 ) then
-				allocate( character(len=10) :: xim_str )
-			else
+			if ( x%im == 0.0_real32 ) then
 				xim_str = '0x0'; exit if_z_im
 			end if
 
-			write(unit=xim_str(3:), fmt='(z8)') x%im
-
-			do concurrent (i = 3:10)
-				if ( (xim_str(i:i) >= 'A') .and. (xim_str(i:i) <= 'F') ) xim_str(i:i) = achar(iachar(xim_str(i:i))+32)
-			end do
-
-			xim_str(1:2) = '0x'; exit if_z_im
+			xim_str = str( transfer(source=x%im, mold=1_int32), fmt='z' ); exit if_z_im
 		end if if_z_im
 
 		if ( .not. present(locale) ) then
@@ -6838,19 +6806,50 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if ( fmt_ == 'z' ) then
-			if ( x /= 0.0_real64 ) then
-				allocate( character(len=18) :: new%s )
-			else
+			if ( x == 0.0_real64 ) then
 				new%s = '0x0'; return
 			end if
 
-			write(unit=new%s(3:), fmt='(z16)') x
-
-			do concurrent (i = 3:18)
-				if ( (new%s(i:i) >= 'A') .and. (new%s(i:i) <= 'F') ) new%s(i:i) = achar(iachar(new%s(i:i)) + 32)
-			end do
-
-			new%s(1:2) = '0x'; return
+			inline_str_i64: block; integer(int64) :: x_int, num; logical :: negative; integer :: num_len, i
+				x_int = transfer(source=x, mold=x_int)
+				
+				if ( x_int < 0 ) then
+					num_len = 1; num = (x_int + 1_int64) + huge(1_int64); negative = .true.
+				else
+					num_len = 1; num = x_int; negative = .false.
+				end if
+				
+				count_hex_digits: do
+					num = num/16
+					if ( num > 0 ) then
+						num_len = num_len + 1; cycle count_hex_digits
+					else
+						exit count_hex_digits
+					end if
+				end do count_hex_digits
+			
+				if ( negative ) then
+					num = (x_int + 1_int64) + huge(1_int64)
+					new%s = '0x0000000000000000'
+				else
+					num = x_int
+					allocate( character(len=2+num_len) :: new%s ); new%s(1:2) = '0x'
+				end if
+			
+				insert_hex_characters: do i = len(new%s), len(new%s)-num_len+1, -1
+					new%s(i:i) = DIGITS_A( mod(num,16) ); num = num/16
+				end do insert_hex_characters
+			
+				if ( negative ) then
+					i = 0; do
+						if ( DIGITS_A(i) == new%s(3:3) ) exit
+						i = i + 1; cycle
+					end do
+					new%s(3:3) = DIGITS_A(i+8); return
+				else
+					return
+				end if
+			end block inline_str_i64
 		end if
 
 		if ( .not. present(locale) ) then
@@ -6970,19 +6969,50 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if ( fmt_ == 'z' ) then
-			if ( x /= 0.0_real32 ) then
-				allocate( character(len=10) :: new%s )
-			else
+			if ( x == 0.0_real32 ) then
 				new%s = '0x0'; return
 			end if
 
-			write(unit=new%s(3:), fmt='(z8)') x
+			inline_str_i32: block; integer(int32) :: x_int, num; logical :: negative; integer :: num_len, i
+				x_int = transfer(source=x, mold=x_int)
 
-			do concurrent (i = 3:10)
-				if ( (new%s(i:i) >= 'A') .and. (new%s(i:i) <= 'F') ) new%s(i:i) = achar(iachar(new%s(i:i)) + 32)
-			end do
-
-			new%s(1:2) = '0x'; return
+				if ( x_int < 0 ) then
+					num_len = 1; num = (x_int + 1_int32) + huge(1_int32); negative = .true.
+				else
+					num_len = 1; num = x_int; negative = .false.
+				end if
+				
+				count_hex_digits: do
+					num = num/16
+					if ( num > 0 ) then
+						num_len = num_len + 1; cycle count_hex_digits
+					else
+						exit count_hex_digits
+					end if
+				end do count_hex_digits
+			
+				if ( negative ) then
+					num = (x_int + 1_int32) + huge(1_int32)
+					new%s = '0x00000000'
+				else
+					num = x_int
+					allocate( character(len=2+num_len) :: new%s ); new%s(1:2) = '0x'
+				end if
+			
+				insert_hex_characters: do i = len(new%s), len(new%s)-num_len+1, -1
+					new%s(i:i) = DIGITS_A( mod(num,16) ); num = num/16
+				end do insert_hex_characters
+			
+				if ( negative ) then
+					i = 0; do
+						if ( DIGITS_A(i) == new%s(3:3) ) exit
+						i = i + 1; cycle
+					end do
+					new%s(3:3) = DIGITS_A(i+8); return
+				else
+					return
+				end if
+			end block inline_str_i32
 		end if
 
 		if ( .not. present(locale) ) then
@@ -7508,20 +7538,17 @@ submodule (io_fortran_lib) internal_io
 				seps = [ SEMICOLON ]
 			end if
 
-			l = 1
-			do while ( l <= substring_len )
+			l = 1; do while ( l <= substring_len )
 				if ( substring%s(l:l) == '(' ) exit
 				l = l + 1; cycle
 			end do
 
-			r = substring_len
-			do while ( r >= 1 )
+			r = substring_len; do while ( r >= 1 )
 				if ( substring%s(r:r) == ')' ) exit
 				r = r - 1; cycle
 			end do
 
-			i = l+1
-			do while ( i <= r )
+			i = l+1; do while ( i <= r )
 				if ( substring%s(i:i) == seps(1) ) exit
 				i = i + 1; cycle
 			end do
@@ -7557,20 +7584,17 @@ submodule (io_fortran_lib) internal_io
 
 		im_len = len(im_); seps = [ '+', '-' ]; e_chars = [ 'e', 'E' ]
 
-		l = 1
-		do while ( l <= substring_len )
+		l = 1; do while ( l <= substring_len )
 			if ( substring%s(l:l) /= SPACE ) exit
 			l = l + 1; cycle
 		end do
 
-		r = substring_len-im_len+1
-		do while ( r >= 1 )
+		r = substring_len-im_len+1; do while ( r >= 1 )
 			if ( substring%s(r:r+im_len-1) == im_ ) exit
 			r = r - 1; cycle
 		end do
 
-		i = l+1
-		do while ( i <= r )
+		i = l+1; do while ( i <= r )
 			if ( any(seps == substring%s(i:i)) ) then
 				if ( any(e_chars == substring%s(i-1:i-1)) .and. (fmt_ /= 'z') ) then
 					i = i + 1; cycle
@@ -7658,46 +7682,29 @@ submodule (io_fortran_lib) internal_io
 				seps = [ SEMICOLON ]
 			end if
 
-			l = 1
-			do while ( l <= substring_len )
+			l = 1; do while ( l <= substring_len )
 				if ( substring%s(l:l) == '(' ) exit
 				l = l + 1; cycle
 			end do
 
-			r = substring_len
-			do while ( r >= 1 )
+			r = substring_len; do while ( r >= 1 )
 				if ( substring%s(r:r) == ')' ) exit
 				r = r - 1; cycle
 			end do
 
-			i = l+1
-			do while ( i <= r )
+			i = l+1; do while ( i <= r )
 				if ( substring%s(i:i) == seps(1) ) exit
 				i = i + 1; cycle
 			end do
 
 			if ( fmt_ == 'z' ) then
-				if ( i-l-1 > 2 ) then
-					if ( substring%s(l+1:l+2) == '0x' ) then
-						read(unit=substring%s(l+3:i-1), fmt='(z100)') z_re
-					else
-						read(unit=substring%s(l+1:i-1), fmt='(z100)') z_re
-					end if
-				else
-					read(unit=substring%s(l+1:i-1), fmt='(z100)') z_re
-				end if
-
-				if ( r-i-1 > 2 ) then
-					if ( substring%s(i+1:i+2) == '0x' ) then
-						read(unit=substring%s(i+3:r-1), fmt='(z100)') z_im
-					else
-						read(unit=substring%s(i+1:r-1), fmt='(z100)') z_im
-					end if
-				else
-					read(unit=substring%s(i+1:r-1), fmt='(z100)') z_im
-				end if
-
-				into = cmplx(z_re, z_im, kind=real64); return
+				block; integer(int64) :: num; character(len=:), allocatable :: hex_str
+					hex_str = substring%s(l+1:i-1)
+					call cast(hex_str, into=num, fmt='z'); z_re = transfer(source=num, mold=z_re)
+					hex_str = substring%s(i+1:r-1)
+					call cast(hex_str, into=num, fmt='z'); z_im = transfer(source=num, mold=z_im)
+					into = cmplx(z_re, z_im, kind=real64); return
+				end block
 			else
 				read(unit=substring%s(l+1:i-1), fmt=*, decimal=decimal) z_re
 				read(unit=substring%s(i+1:r-1), fmt=*, decimal=decimal) z_im
@@ -7707,20 +7714,17 @@ submodule (io_fortran_lib) internal_io
 
 		im_len = len(im_); seps = [ '+', '-' ]; e_chars = [ 'e', 'E' ]
 
-		l = 1
-		do while ( l <= substring_len )
+		l = 1; do while ( l <= substring_len )
 			if ( substring%s(l:l) /= SPACE ) exit
 			l = l + 1; cycle
 		end do
 
-		r = substring_len-im_len+1
-		do while ( r >= 1 )
+		r = substring_len-im_len+1; do while ( r >= 1 )
 			if ( substring%s(r:r+im_len-1) == im_ ) exit
 			r = r - 1; cycle
 		end do
 
-		i = l+1
-		do while ( i <= r )
+		i = l+1; do while ( i <= r )
 			if ( any(seps == substring%s(i:i)) ) then
 				if ( any(e_chars == substring%s(i-1:i-1)) .and. (fmt_ /= 'z') ) then
 					i = i + 1; cycle
@@ -7732,27 +7736,13 @@ submodule (io_fortran_lib) internal_io
 		end do
 
 		if ( fmt_ == 'z' ) then
-			if ( i-l > 2 ) then
-				if ( substring%s(l:l+1) == '0x' ) then
-					read(unit=substring%s(l+2:i-1), fmt='(z100)') z_re
-				else
-					read(unit=substring%s(l:i-1), fmt='(z100)') z_re
-				end if
-			else
-				read(unit=substring%s(l:i-1), fmt='(z100)') z_re
-			end if
-
-			if ( r-i-1 > 2 ) then
-				if ( substring%s(i+1:i+2) == '0x' ) then
-					read(unit=substring%s(i+3:r-1), fmt='(z100)') z_im
-				else
-					read(unit=substring%s(i+1:r-1), fmt='(z100)') z_im
-				end if
-			else
-				read(unit=substring%s(i+1:r-1), fmt='(z100)') z_im
-			end if
-
-			into = cmplx(z_re, z_im, kind=real64); return
+			block; integer(int64) :: num; character(len=:), allocatable :: hex_str
+				hex_str = substring%s(l:i-1)
+				call cast(hex_str, into=num, fmt='z'); z_re = transfer(source=num, mold=z_re)
+				hex_str = substring%s(i+1:r-1)
+				call cast(hex_str, into=num, fmt='z'); z_im = transfer(source=num, mold=z_im)
+				into = cmplx(z_re, z_im, kind=real64); return
+			end block
 		else
 			read(unit=substring%s(l:i-1), fmt=*, decimal=decimal) z_re
 			read(unit=substring%s(i:r-1), fmt=*, decimal=decimal) z_im
@@ -7808,46 +7798,29 @@ submodule (io_fortran_lib) internal_io
 				seps = [ SEMICOLON ]
 			end if
 
-			l = 1
-			do while ( l <= substring_len )
+			l = 1; do while ( l <= substring_len )
 				if ( substring%s(l:l) == '(' ) exit
 				l = l + 1; cycle
 			end do
 
-			r = substring_len
-			do while ( r >= 1 )
+			r = substring_len; do while ( r >= 1 )
 				if ( substring%s(r:r) == ')' ) exit
 				r = r - 1; cycle
 			end do
 
-			i = l+1
-			do while ( i <= r )
+			i = l+1; do while ( i <= r )
 				if ( substring%s(i:i) == seps(1) ) exit
 				i = i + 1; cycle
 			end do
 
 			if ( fmt_ == 'z' ) then
-				if ( i-l-1 > 2 ) then
-					if ( substring%s(l+1:l+2) == '0x' ) then
-						read(unit=substring%s(l+3:i-1), fmt='(z100)') z_re
-					else
-						read(unit=substring%s(l+1:i-1), fmt='(z100)') z_re
-					end if
-				else
-					read(unit=substring%s(l+1:i-1), fmt='(z100)') z_re
-				end if
-
-				if ( r-i-1 > 2 ) then
-					if ( substring%s(i+1:i+2) == '0x' ) then
-						read(unit=substring%s(i+3:r-1), fmt='(z100)') z_im
-					else
-						read(unit=substring%s(i+1:r-1), fmt='(z100)') z_im
-					end if
-				else
-					read(unit=substring%s(i+1:r-1), fmt='(z100)') z_im
-				end if
-
-				into = cmplx(z_re, z_im, kind=real32); return
+				block; integer(int32) :: num; character(len=:), allocatable :: hex_str
+					hex_str = substring%s(l+1:i-1)
+					call cast(hex_str, into=num, fmt='z'); z_re = transfer(source=num, mold=z_re)
+					hex_str = substring%s(i+1:r-1)
+					call cast(hex_str, into=num, fmt='z'); z_im = transfer(source=num, mold=z_im)
+					into = cmplx(z_re, z_im, kind=real32); return
+				end block
 			else
 				read(unit=substring%s(l+1:i-1), fmt=*, decimal=decimal) z_re
 				read(unit=substring%s(i+1:r-1), fmt=*, decimal=decimal) z_im
@@ -7857,20 +7830,17 @@ submodule (io_fortran_lib) internal_io
 
 		im_len = len(im_); seps = [ '+', '-' ]; e_chars = [ 'e', 'E' ]
 
-		l = 1
-		do while ( l <= substring_len )
+		l = 1; do while ( l <= substring_len )
 			if ( substring%s(l:l) /= SPACE ) exit
 			l = l + 1; cycle
 		end do
 
-		r = substring_len-im_len+1
-		do while ( r >= 1 )
+		r = substring_len-im_len+1; do while ( r >= 1 )
 			if ( substring%s(r:r+im_len-1) == im_ ) exit
 			r = r - 1; cycle
 		end do
 
-		i = l+1
-		do while ( i <= r )
+		i = l+1; do while ( i <= r )
 			if ( any(seps == substring%s(i:i)) ) then
 				if ( any(e_chars == substring%s(i-1:i-1)) .and. (fmt_ /= 'z') ) then
 					i = i + 1; cycle
@@ -7882,27 +7852,13 @@ submodule (io_fortran_lib) internal_io
 		end do
 
 		if ( fmt_ == 'z' ) then
-			if ( i-l > 2 ) then
-				if ( substring%s(l:l+1) == '0x' ) then
-					read(unit=substring%s(l+2:i-1), fmt='(z100)') z_re
-				else
-					read(unit=substring%s(l:i-1), fmt='(z100)') z_re
-				end if
-			else
-				read(unit=substring%s(l:i-1), fmt='(z100)') z_re
-			end if
-
-			if ( r-i-1 > 2 ) then
-				if ( substring%s(i+1:i+2) == '0x' ) then
-					read(unit=substring%s(i+3:r-1), fmt='(z100)') z_im
-				else
-					read(unit=substring%s(i+1:r-1), fmt='(z100)') z_im
-				end if
-			else
-				read(unit=substring%s(i+1:r-1), fmt='(z100)') z_im
-			end if
-
-			into = cmplx(z_re, z_im, kind=real32); return
+			block; integer(int32) :: num; character(len=:), allocatable :: hex_str
+				hex_str = substring%s(l:i-1)
+				call cast(hex_str, into=num, fmt='z'); z_re = transfer(source=num, mold=z_re)
+				hex_str = substring%s(i+1:r-1)
+				call cast(hex_str, into=num, fmt='z'); z_im = transfer(source=num, mold=z_im)
+				into = cmplx(z_re, z_im, kind=real32); return
+			end block
 		else
 			read(unit=substring%s(l:i-1), fmt=*, decimal=decimal) z_re
 			read(unit=substring%s(i:r-1), fmt=*, decimal=decimal) z_im
@@ -7973,15 +7929,61 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if ( fmt_ == 'z' ) then
-			if ( substring%len() > 2 ) then
-				if ( substring%s(1:2) == '0x' ) then
-					read(unit=substring%s(3:), fmt='(z100)') into; return
-				else
-					read(unit=substring%s, fmt='(z100)') into; return
+			inline_cast_i64: block; integer(int64) :: num, i; logical :: negative; integer :: substring_len, l, r, j
+				substring_len = substring%len()
+
+				l = 1; do while ( l <= substring_len )
+					if ( substring%s(l:l) /= SPACE ) exit
+					l = l + 1; cycle
+				end do
+
+				if ( substring_len > 2 ) then
+					if ( substring%s(l:l+1) == '0x' ) l = l + 2
 				end if
-			else
-				read(unit=substring%s, fmt='(z100)') into; return
-			end if
+
+				r = substring_len; do while ( r >= l )
+					if ( substring%s(r:r) /= SPACE ) exit
+					r = r - 1; cycle
+				end do
+
+				if ( r-l+1 == 16 ) then
+					j = 0; do while ( j <= 15 )
+						if ( DIGITS_A(j) == substring%s(l:l) ) exit
+						j = j + 1; cycle
+					end do
+
+					if ( j >= 8 ) then
+						negative = .true.
+					else
+						negative = .false.
+					end if
+				else
+					negative = .false.
+				end if
+
+				num = 0_int64
+
+				i = 1_int64; do
+					j = 0; do while ( j <= 15 )
+						if ( DIGITS_A(j) == substring%s(r:r) ) exit
+						j = j + 1; cycle
+					end do
+
+					if ( r > l ) then
+						num = num + i*int(DIGITS_I(j), kind=int64)
+					else if ( r == l ) then
+						if ( negative ) then
+							num = num + i*int(DIGITS_I(j-8), kind=int64); num = (num - 1_int64) - huge(1_int64)
+							into = transfer(source=num, mold=into); return
+						else
+							num = num + i*int(DIGITS_I(j), kind=int64)
+							into = transfer(source=num, mold=into); return
+						end if
+					end if
+
+					i = 16_int64*i; r = r - 1; cycle
+				end do
+			end block inline_cast_i64
 		end if
 
 		if ( .not. present(locale) ) then
@@ -8017,15 +8019,61 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if ( fmt_ == 'z' ) then
-			if ( substring%len() > 2 ) then
-				if ( substring%s(1:2) == '0x' ) then
-					read(unit=substring%s(3:), fmt='(z100)') into; return
-				else
-					read(unit=substring%s, fmt='(z100)') into; return
+			inline_cast_i32: block; integer(int32) :: num, i; logical :: negative; integer :: substring_len, l, r, j
+				substring_len = substring%len()
+
+				l = 1; do while ( l <= substring_len )
+				if ( substring%s(l:l) /= SPACE ) exit
+					l = l + 1; cycle
+				end do
+
+				if ( substring_len > 2 ) then
+					if ( substring%s(l:l+1) == '0x' ) l = l + 2
 				end if
-			else
-				read(unit=substring%s, fmt='(z100)') into; return
-			end if
+
+				r = substring_len; do while ( r >= l )
+					if ( substring%s(r:r) /= SPACE ) exit
+					r = r - 1; cycle
+				end do
+
+				if ( r-l+1 == 8 ) then
+					j = 0; do while ( j <= 15 )
+						if ( DIGITS_A(j) == substring%s(l:l) ) exit
+						j = j + 1; cycle
+					end do
+
+					if ( j >= 8 ) then
+						negative = .true.
+					else
+						negative = .false.
+					end if
+				else
+					negative = .false.
+				end if
+
+				num = 0_int32
+
+				i = 1_int32; do
+					j = 0; do while ( j <= 15 )
+						if ( DIGITS_A(j) == substring%s(r:r) ) exit
+						j = j + 1; cycle
+					end do
+
+					if ( r > l ) then
+						num = num + i*DIGITS_I(j)
+					else if ( r == l ) then
+						if ( negative ) then
+							num = num + i*DIGITS_I(j-8); num = (num - 1_int32) - huge(1_int32)
+							into = transfer(source=num, mold=into); return
+						else
+							num = num + i*DIGITS_I(j)
+							into = transfer(source=num, mold=into); return
+						end if
+					end if
+
+					i = 16_int32*i; r = r - 1; cycle
+				end do
+			end block inline_cast_i32
 		end if
 
 		if ( .not. present(locale) ) then
@@ -8759,34 +8807,18 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if_z_re: if ( fmt_ == 'z' ) then
-			if ( x%re /= 0.0_real64 ) then
-				allocate( character(len=18) :: xre_str )
-			else
+			if ( x%re == 0.0_real64 ) then
 				xre_str = '0x0'; exit if_z_re
 			end if
 
-			write(unit=xre_str(3:), fmt='(z16)') x%re
-
-			do concurrent (i = 3:18)
-				if ( (xre_str(i:i) >= 'A') .and. (xre_str(i:i) <= 'F') ) xre_str(i:i) = achar(iachar(xre_str(i:i))+32)
-			end do
-
-			xre_str(1:2) = '0x'; exit if_z_re
+			xre_str = str( transfer(source=x%re, mold=1_int64), fmt='z' ); exit if_z_re
 		end if if_z_re
 		if_z_im: if ( fmt_ == 'z' ) then
-			if ( x%im /= 0.0_real64 ) then
-				allocate( character(len=18) :: xim_str )
-			else
+			if ( x%im == 0.0_real64 ) then
 				xim_str = '0x0'; exit if_z_im
 			end if
 
-			write(unit=xim_str(3:), fmt='(z16)') x%im
-
-			do concurrent (i = 3:18)
-				if ( (xim_str(i:i) >= 'A') .and. (xim_str(i:i) <= 'F') ) xim_str(i:i) = achar(iachar(xim_str(i:i))+32)
-			end do
-
-			xim_str(1:2) = '0x'; exit if_z_im
+			xim_str = str( transfer(source=x%im, mold=1_int64), fmt='z' ); exit if_z_im
 		end if if_z_im
 
 		if ( .not. present(locale) ) then
@@ -9017,34 +9049,18 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if_z_re: if ( fmt_ == 'z' ) then
-			if ( x%re /= 0.0_real32 ) then
-				allocate( character(len=10) :: xre_str )
-			else
+			if ( x%re == 0.0_real32 ) then
 				xre_str = '0x0'; exit if_z_re
 			end if
 
-			write(unit=xre_str(3:), fmt='(z8)') x%re
-
-			do concurrent (i = 3:10)
-				if ( (xre_str(i:i) >= 'A') .and. (xre_str(i:i) <= 'F') ) xre_str(i:i) = achar(iachar(xre_str(i:i))+32)
-			end do
-
-			xre_str(1:2) = '0x'; exit if_z_re
+			xre_str = str( transfer(source=x%re, mold=1_int32), fmt='z' ); exit if_z_re
 		end if if_z_re
 		if_z_im: if ( fmt_ == 'z' ) then
-			if ( x%im /= 0.0_real32 ) then
-				allocate( character(len=10) :: xim_str )
-			else
+			if ( x%im == 0.0_real32 ) then
 				xim_str = '0x0'; exit if_z_im
 			end if
 
-			write(unit=xim_str(3:), fmt='(z8)') x%im
-
-			do concurrent (i = 3:10)
-				if ( (xim_str(i:i) >= 'A') .and. (xim_str(i:i) <= 'F') ) xim_str(i:i) = achar(iachar(xim_str(i:i))+32)
-			end do
-
-			xim_str(1:2) = '0x'; exit if_z_im
+			xim_str = str( transfer(source=x%im, mold=1_int32), fmt='z' ); exit if_z_im
 		end if if_z_im
 
 		if ( .not. present(locale) ) then
@@ -9408,19 +9424,11 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if ( fmt_ == 'z' ) then
-			if ( x /= 0.0_real64 ) then
-				allocate( character(len=18) :: x_str )
-			else
+			if ( x == 0.0_real64 ) then
 				x_str = '0x0'; return
 			end if
 
-			write(unit=x_str(3:), fmt='(z16)') x
-
-			do concurrent (i = 3:18)
-				if ( (x_str(i:i) >= 'A') .and. (x_str(i:i) <= 'F') ) x_str(i:i) = achar(iachar(x_str(i:i)) + 32)
-			end do
-
-			x_str(1:2) = '0x'; return
+			x_str = str( transfer(source=x, mold=1_int64), fmt='z' ); return
 		end if
 
 		if ( .not. present(locale) ) then
@@ -9540,19 +9548,11 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if ( fmt_ == 'z' ) then
-			if ( x /= 0.0_real32 ) then
-				allocate( character(len=10) :: x_str )
-			else
+			if ( x == 0.0_real32 ) then
 				x_str = '0x0'; return
 			end if
 
-			write(unit=x_str(3:), fmt='(z8)') x
-
-			do concurrent (i = 3:10)
-				if ( (x_str(i:i) >= 'A') .and. (x_str(i:i) <= 'F') ) x_str(i:i) = achar(iachar(x_str(i:i)) + 32)
-			end do
-
-			x_str(1:2) = '0x'; return
+			x_str = str( transfer(source=x, mold=1_int32), fmt='z' ); return
 		end if
 
 		if ( .not. present(locale) ) then
@@ -10078,20 +10078,17 @@ submodule (io_fortran_lib) internal_io
 				seps = [ SEMICOLON ]
 			end if
 
-			l = 1
-			do while ( l <= substring_len )
+			l = 1; do while ( l <= substring_len )
 				if ( substring(l:l) == '(' ) exit
 				l = l + 1; cycle
 			end do
 
-			r = substring_len
-			do while ( r >= 1 )
+			r = substring_len; do while ( r >= 1 )
 				if ( substring(r:r) == ')' ) exit
 				r = r - 1; cycle
 			end do
 
-			i = l+1
-			do while ( i <= r )
+			i = l+1; do while ( i <= r )
 				if ( substring(i:i) == seps(1) ) exit
 				i = i + 1; cycle
 			end do
@@ -10127,20 +10124,17 @@ submodule (io_fortran_lib) internal_io
 
 		im_len = len(im_); seps = [ '+', '-' ]; e_chars = [ 'e', 'E' ]
 
-		l = 1
-		do while ( l <= substring_len )
+		l = 1; do while ( l <= substring_len )
 			if ( substring(l:l) /= SPACE ) exit
 			l = l + 1; cycle
 		end do
 
-		r = substring_len-im_len+1
-		do while ( r >= 1 )
+		r = substring_len-im_len+1; do while ( r >= 1 )
 			if ( substring(r:r+im_len-1) == im_ ) exit
 			r = r - 1; cycle
 		end do
 
-		i = l+1
-		do while ( i <= r )
+		i = l+1; do while ( i <= r )
 			if ( any(seps == substring(i:i)) ) then
 				if ( any(e_chars == substring(i-1:i-1)) .and. (fmt_ /= 'z') ) then
 					i = i + 1; cycle
@@ -10228,46 +10222,27 @@ submodule (io_fortran_lib) internal_io
 				seps = [ SEMICOLON ]
 			end if
 
-			l = 1
-			do while ( l <= substring_len )
+			l = 1; do while ( l <= substring_len )
 				if ( substring(l:l) == '(' ) exit
 				l = l + 1; cycle
 			end do
 
-			r = substring_len
-			do while ( r >= 1 )
+			r = substring_len; do while ( r >= 1 )
 				if ( substring(r:r) == ')' ) exit
 				r = r - 1; cycle
 			end do
 
-			i = l+1
-			do while ( i <= r )
+			i = l+1; do while ( i <= r )
 				if ( substring(i:i) == seps(1) ) exit
 				i = i + 1; cycle
 			end do
 
 			if ( fmt_ == 'z' ) then
-				if ( i-l-1 > 2 ) then
-					if ( substring(l+1:l+2) == '0x' ) then
-						read(unit=substring(l+3:i-1), fmt='(z100)') z_re
-					else
-						read(unit=substring(l+1:i-1), fmt='(z100)') z_re
-					end if
-				else
-					read(unit=substring(l+1:i-1), fmt='(z100)') z_re
-				end if
-
-				if ( r-i-1 > 2 ) then
-					if ( substring(i+1:i+2) == '0x' ) then
-						read(unit=substring(i+3:r-1), fmt='(z100)') z_im
-					else
-						read(unit=substring(i+1:r-1), fmt='(z100)') z_im
-					end if
-				else
-					read(unit=substring(i+1:r-1), fmt='(z100)') z_im
-				end if
-
-				into = cmplx(z_re, z_im, kind=real64); return
+				block; integer(int64) :: num
+					call cast(substring(l+1:i-1), into=num, fmt='z'); z_re = transfer(source=num, mold=z_re)
+					call cast(substring(i+1:r-1), into=num, fmt='z'); z_im = transfer(source=num, mold=z_im)
+					into = cmplx(z_re, z_im, kind=real64); return
+				end block
 			else
 				read(unit=substring(l+1:i-1), fmt=*, decimal=decimal) z_re
 				read(unit=substring(i+1:r-1), fmt=*, decimal=decimal) z_im
@@ -10277,20 +10252,17 @@ submodule (io_fortran_lib) internal_io
 
 		im_len = len(im_); seps = [ '+', '-' ]; e_chars = [ 'e', 'E' ]
 
-		l = 1
-		do while ( l <= substring_len )
+		l = 1; do while ( l <= substring_len )
 			if ( substring(l:l) /= SPACE ) exit
 			l = l + 1; cycle
 		end do
 
-		r = substring_len-im_len+1
-		do while ( r >= 1 )
+		r = substring_len-im_len+1; do while ( r >= 1 )
 			if ( substring(r:r+im_len-1) == im_ ) exit
 			r = r - 1; cycle
 		end do
 
-		i = l+1
-		do while ( i <= r )
+		i = l+1; do while ( i <= r )
 			if ( any(seps == substring(i:i)) ) then
 				if ( any(e_chars == substring(i-1:i-1)) .and. (fmt_ /= 'z') ) then
 					i = i + 1; cycle
@@ -10302,27 +10274,11 @@ submodule (io_fortran_lib) internal_io
 		end do
 
 		if ( fmt_ == 'z' ) then
-			if ( i-l > 2 ) then
-				if ( substring(l:l+1) == '0x' ) then
-					read(unit=substring(l+2:i-1), fmt='(z100)') z_re
-				else
-					read(unit=substring(l:i-1), fmt='(z100)') z_re
-				end if
-			else
-				read(unit=substring(l:i-1), fmt='(z100)') z_re
-			end if
-
-			if ( r-i-1 > 2 ) then
-				if ( substring(i+1:i+2) == '0x' ) then
-					read(unit=substring(i+3:r-1), fmt='(z100)') z_im
-				else
-					read(unit=substring(i+1:r-1), fmt='(z100)') z_im
-				end if
-			else
-				read(unit=substring(i+1:r-1), fmt='(z100)') z_im
-			end if
-
-			into = cmplx(z_re, z_im, kind=real64); return
+			block; integer(int64) :: num
+				call cast(substring(l:i-1), into=num, fmt='z'); z_re = transfer(source=num, mold=z_re)
+				call cast(substring(i+1:r-1), into=num, fmt='z'); z_im = transfer(source=num, mold=z_im)
+				into = cmplx(z_re, z_im, kind=real64); return
+			end block
 		else
 			read(unit=substring(l:i-1), fmt=*, decimal=decimal) z_re
 			read(unit=substring(i:r-1), fmt=*, decimal=decimal) z_im
@@ -10378,46 +10334,27 @@ submodule (io_fortran_lib) internal_io
 				seps = [ SEMICOLON ]
 			end if
 
-			l = 1
-			do while ( l <= substring_len )
+			l = 1; do while ( l <= substring_len )
 				if ( substring(l:l) == '(' ) exit
 				l = l + 1; cycle
 			end do
 
-			r = substring_len
-			do while ( r >= 1 )
+			r = substring_len; do while ( r >= 1 )
 				if ( substring(r:r) == ')' ) exit
 				r = r - 1; cycle
 			end do
 
-			i = l+1
-			do while ( i <= r )
+			i = l+1; do while ( i <= r )
 				if ( substring(i:i) == seps(1) ) exit
 				i = i + 1; cycle
 			end do
 
 			if ( fmt_ == 'z' ) then
-				if ( i-l-1 > 2 ) then
-					if ( substring(l+1:l+2) == '0x' ) then
-						read(unit=substring(l+3:i-1), fmt='(z100)') z_re
-					else
-						read(unit=substring(l+1:i-1), fmt='(z100)') z_re
-					end if
-				else
-					read(unit=substring(l+1:i-1), fmt='(z100)') z_re
-				end if
-
-				if ( r-i-1 > 2 ) then
-					if ( substring(i+1:i+2) == '0x' ) then
-						read(unit=substring(i+3:r-1), fmt='(z100)') z_im
-					else
-						read(unit=substring(i+1:r-1), fmt='(z100)') z_im
-					end if
-				else
-					read(unit=substring(i+1:r-1), fmt='(z100)') z_im
-				end if
-
-				into = cmplx(z_re, z_im, kind=real32); return
+				block; integer(int32) :: num
+					call cast(substring(l+1:i-1), into=num, fmt='z'); z_re = transfer(source=num, mold=z_re)
+					call cast(substring(i+1:r-1), into=num, fmt='z'); z_im = transfer(source=num, mold=z_im)
+					into = cmplx(z_re, z_im, kind=real32); return
+				end block
 			else
 				read(unit=substring(l+1:i-1), fmt=*, decimal=decimal) z_re
 				read(unit=substring(i+1:r-1), fmt=*, decimal=decimal) z_im
@@ -10427,20 +10364,17 @@ submodule (io_fortran_lib) internal_io
 
 		im_len = len(im_); seps = [ '+', '-' ]; e_chars = [ 'e', 'E' ]
 
-		l = 1
-		do while ( l <= substring_len )
+		l = 1; do while ( l <= substring_len )
 			if ( substring(l:l) /= SPACE ) exit
 			l = l + 1; cycle
 		end do
 
-		r = substring_len-im_len+1
-		do while ( r >= 1 )
+		r = substring_len-im_len+1; do while ( r >= 1 )
 			if ( substring(r:r+im_len-1) == im_ ) exit
 			r = r - 1; cycle
 		end do
 
-		i = l+1
-		do while ( i <= r )
+		i = l+1; do while ( i <= r )
 			if ( any(seps == substring(i:i)) ) then
 				if ( any(e_chars == substring(i-1:i-1)) .and. (fmt_ /= 'z') ) then
 					i = i + 1; cycle
@@ -10452,27 +10386,11 @@ submodule (io_fortran_lib) internal_io
 		end do
 
 		if ( fmt_ == 'z' ) then
-			if ( i-l > 2 ) then
-				if ( substring(l:l+1) == '0x' ) then
-					read(unit=substring(l+2:i-1), fmt='(z100)') z_re
-				else
-					read(unit=substring(l:i-1), fmt='(z100)') z_re
-				end if
-			else
-				read(unit=substring(l:i-1), fmt='(z100)') z_re
-			end if
-
-			if ( r-i-1 > 2 ) then
-				if ( substring(i+1:i+2) == '0x' ) then
-					read(unit=substring(i+3:r-1), fmt='(z100)') z_im
-				else
-					read(unit=substring(i+1:r-1), fmt='(z100)') z_im
-				end if
-			else
-				read(unit=substring(i+1:r-1), fmt='(z100)') z_im
-			end if
-
-			into = cmplx(z_re, z_im, kind=real32); return
+			block; integer(int32) :: num
+				call cast(substring(l:i-1), into=num, fmt='z'); z_re = transfer(source=num, mold=z_re)
+				call cast(substring(i+1:r-1), into=num, fmt='z'); z_im = transfer(source=num, mold=z_im)
+				into = cmplx(z_re, z_im, kind=real32); return
+			end block
 		else
 			read(unit=substring(l:i-1), fmt=*, decimal=decimal) z_re
 			read(unit=substring(i:r-1), fmt=*, decimal=decimal) z_im
@@ -10484,7 +10402,7 @@ submodule (io_fortran_lib) internal_io
 		character(len=1) :: fmt_
 		character(len=:), allocatable :: decimal
 
-		if ( len(substring) == 0 ) then
+		if ( len(substring) < 1 ) then
 			into = 0.0_real128; return
 		end if
 
@@ -10528,7 +10446,7 @@ submodule (io_fortran_lib) internal_io
 		character(len=1) :: fmt_
 		character(len=:), allocatable :: decimal
 
-		if ( len(substring) == 0 ) then
+		if ( len(substring) < 1 ) then
 			into = 0.0_real64; return
 		end if
 
@@ -10543,15 +10461,9 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if ( fmt_ == 'z' ) then
-			if ( len(substring) > 2 ) then
-				if ( substring(1:2) == '0x' ) then
-					read(unit=substring(3:), fmt='(z100)') into; return
-				else
-					read(unit=substring, fmt='(z100)') into; return
-				end if
-			else
-				read(unit=substring, fmt='(z100)') into; return
-			end if
+			block; integer(int64) :: num
+				call cast(substring, into=num, fmt='z'); into = transfer(source=num, mold=into); return
+			end block
 		end if
 
 		if ( .not. present(locale) ) then
@@ -10572,7 +10484,7 @@ submodule (io_fortran_lib) internal_io
 		character(len=1) :: fmt_
 		character(len=:), allocatable :: decimal
 
-		if ( len(substring) == 0 ) then
+		if ( len(substring) < 1 ) then
 			into = 0.0_real32; return
 		end if
 
@@ -10587,15 +10499,9 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if ( fmt_ == 'z' ) then
-			if ( len(substring) > 2 ) then
-				if ( substring(1:2) == '0x' ) then
-					read(unit=substring(3:), fmt='(z100)') into; return
-				else
-					read(unit=substring, fmt='(z100)') into; return
-				end if
-			else
-				read(unit=substring, fmt='(z100)') into; return
-			end if
+			block; integer(int32) :: num
+				call cast(substring, into=num, fmt='z'); into = transfer(source=num, mold=into); return
+			end block
 		end if
 
 		if ( .not. present(locale) ) then
@@ -30587,7 +30493,7 @@ end submodule array_printing
 !	-------------------------------------------------------
 !	1.	In read_file (line 4745), the internal subroutine split_because_ifxbug (line 4958) is called by the form
 !		|>	call split_because_ifxbug(substring, separator, tokens)
-!		where tokens is intent(out), to replace a functional call to split_string (line 11121) of the form
+!		where tokens is intent(out), to replace a functional call to split_string (line 11027) of the form
 !		|>	tokens = substring%split(separator)
 !		which induces a run-time segmentation fault in the program contained in benchmark.f90 not seen with the
 !		following compilers: ifort 2021.8.0, gfortran 11.3.0, gfortran 11.2.0. From investigation, the segmentation
