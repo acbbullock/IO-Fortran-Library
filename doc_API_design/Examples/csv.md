@@ -89,7 +89,7 @@ header = [(String('x'//str(i)), i = 1, 20)]
 
 and then construct the remainder of the cell array `cells` with an elemental assignment `cells(2:,:) = String(x, fmt)` before writing the array to a csv file. We then read the files back into `csv` and output the cells into `cells` (which is reallocated internally). Note that when casting the cell data into numeric arrays, we must pre-allocate the output arrays due to the restrictions on `intent(out)` arguments of `elemental` procedures. Note also that we must reassign the header row to `cells` before writing each time because `write_file` consumes the cell array.
 
-@note One may optionally specify the arguments of `row_separator` and `column_separator` when writing and reading text files with [write_file](../Ref/string-methods.html#write_file) and [read_file](../Ref/string-methods.html#read_file). The default `row_separator` is `LF`, and the default `column_separator` is `','`.
+@note One may optionally specify the arguments of `row_separator` and `column_separator` when writing and reading text files with [write_file](../Ref/String-methods.html#write_file) and [read_file](../Ref/String-methods.html#read_file). The default `row_separator` is `LF`, and the default `column_separator` is `','`.
 
 @warning When reading files with `CRLF` line endings, be sure to specify `row_separator=CR//LF` or pre-process the file to `LF`. Trying to cast data with a hidden `CR` character may result in an I/O syntax error.
 
@@ -128,6 +128,6 @@ Here, `file_name` is a relative path, and we use the extended operator `+` for [
 cells(2:,3)%replace('X','0') - 'chr'
 ```
 
-which first calls [replace](../Ref/string-methods.html#replace) to return an elemental copy of the given cells in which all instances of `X` have been replaced with `0`, and then calls the [excision operator](../Ref/operators.html#excision) `-` to remove all instances of `'chr'` elementally. The output of the `String` expression contains numeric characters only, which are then casted to the array `chromosome`.
+which first calls [replace](../Ref/String-methods.html#replace) to return an elemental copy of the given cells in which all instances of `X` have been replaced with `0`, and then calls the [excision operator](../Ref/operators.html#excision) `-` to remove all instances of `'chr'` elementally. The output of the `String` expression contains numeric characters only, which are then casted to the array `chromosome`.
 
 @note In general, for other [text file extensions](../UserInfo/file-ext.html), one would specify the `column_separator` associated with the given file. For instance, one would specify `column_separator=TAB` for the file formats `.bed`, `.gff`, and `.gtf`.

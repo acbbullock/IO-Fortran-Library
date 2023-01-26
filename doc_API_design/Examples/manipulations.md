@@ -5,7 +5,7 @@ author: Austin C Bullock
 
 ## String Queries
 
-Sometimes it is useful or necessary to write execution conditions based on compiler vendors or version, such as when a certain compiler version has a known bug or when a piece of code is required for a specific compiler. The following program shows how one may use the [count](../Ref/string-methods.html#count) procedure to determine a compiler at runtime:
+Sometimes it is useful or necessary to write execution conditions based on compiler vendors or version, such as when a certain compiler version has a known bug or when a piece of code is required for a specific compiler. The following program shows how one may use the [count](../Ref/String-methods.html#count) procedure to determine a compiler at runtime:
 
 ```fortran
 program main
@@ -43,9 +43,9 @@ end program main
 
 ## Dynamic string manipulation
 
-Using [operator](../Ref/operators.html) techniques and [string methods](../Ref/string-methods.html), we may easily perform complex string manipulations during run time.
+Using [operator](../Ref/operators.html) techniques and [string methods](../Ref/String-methods.html), we may easily perform complex string manipulations during run time.
 
-The following program demonstrates the use of the [String](../../type/string.html) type and some [type-bound procedures](../Ref/string-methods.html) for manipulating a timestamp:
+The following program demonstrates the use of the [String](../../type/string.html) type and some [type-bound procedures](../Ref/String-methods.html) for manipulating a timestamp:
 
 ```fortran
 program main

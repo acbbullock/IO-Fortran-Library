@@ -3,7 +3,7 @@ title: Locales
 author: Austin C Bullock
 ---
 
-When writing floating point numbers of type `real` or `complex` as strings with [String](../Ref/string.html), [str](../Ref/str.html), or [to_file](../Ref/to_file.html), any of the following locales may be used:
+When writing floating point numbers of type `real` or `complex` as strings with [String](../Ref/String.html), [str](../Ref/str.html), or [to_file](../Ref/to_file.html), any of the following locales may be used:
 
 ```fortran
 LOCALES = [ 'US', 'EU' ]

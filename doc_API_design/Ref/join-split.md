@@ -15,7 +15,7 @@ result = join(tokens, separator)
 
 * `separator` is `optional` and of type `character(len=*)`
 
-For a subroutine version of `join`, see [join](string-methods.html#join).
+For a subroutine version of `join`, see [join](String-methods.html#join).
 
 @note The return type of `join` is the same as the type of `tokens`.
 

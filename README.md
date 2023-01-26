@@ -21,9 +21,9 @@ For a list of available interfaces and how to call them, see the [reference guid
 
 ### New features
 
-* The `String` type has been greatly expanded and can now serve as an interface for advanced string manipulations and text file I/O. See the references for [type-bound procedures](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/string-methods.html) and the [tutorials](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Examples/index.html) for more information.
+* The `String` type has been greatly expanded and can now serve as an interface for advanced string manipulations and text file I/O. See the references for [type-bound procedures](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/String-methods.html) and the [tutorials](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Examples/index.html) for more information.
 * New [constants](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/constants.html) have been added for public use to facilitate file I/O consistently on a variety of platforms.
-* New interface [String](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/string.html) for an elemental version of `str` with a return type of `String`.
+* New interface [String](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/String.html) for an elemental version of `str` with a return type of `String`.
 * New interface [cast](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/cast.html) for casting `character` and `String` data into numeric variables.
 * New interfaces [join and split](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/join-split.html) for joining and splitting strings.
 * New [operator interfaces](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/operators.html) for string manipulations involving both `character` and `String` types.

@@ -42,7 +42,7 @@ program main
 end program main
 ```
 
-Depending on style, one may wish to accumulate log messages into a `String` and then call the type-bound procedure [echo](../Ref/string-methods.html#echo) conditionally:
+Depending on style, one may wish to accumulate log messages into a `String` and then call the type-bound procedure [echo](../Ref/String-methods.html#echo) conditionally:
 
 ```fortran
 program main
