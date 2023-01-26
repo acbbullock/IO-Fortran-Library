@@ -49,12 +49,12 @@ The following program demonstrates the use of the [String](../../type/string.htm
 
 ```fortran
 program main
-    use io_fortran_lib, only: String, LF, operator(+), operator(-)
+    use io_fortran_lib, only: String, join, split, LF, operator(+), operator(-)
     implicit none (type,external)
 
     type(String) :: time_stamp, new_time_stamp
     type(String), allocatable, dimension(:) :: tokens
-    
+
     character(len=10) :: date, time
 
     call date_and_time(date=date, time=time)
@@ -63,8 +63,8 @@ program main
 
     write(*,'(a)') 'ORIGINAL TIME STAMP:' + LF + time_stamp%as_str() + LF
 
-    tokens = time_stamp%split(separator=LF) - 'Date : ' - 'Time : ' + [' : Date', ' : Time']
-    call new_time_stamp%glue(tokens, separator=' | ')
+    tokens = split(time_stamp, separator=LF) - 'Date : ' - 'Time : ' + [' : Date', ' : Time']
+    new_time_stamp = join(tokens, separator=' | ')
 
     write(*,'(a)') 'RECONSTRUCTED TIME STAMP:' + LF + new_time_stamp%as_str()
 end program main

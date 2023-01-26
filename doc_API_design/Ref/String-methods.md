@@ -53,20 +53,20 @@ For `self` a scalar or array variable of any rank and of type `String`:
 
 *Description*: Sets the string slice component to the empty string elementally. This procedure is identical in function to the assignment `self = String()`.
 
-### [glue](../../type/string.html#boundprocedure-glue)
+### [join](../../type/string.html#boundprocedure-join)
 
 For `self` a scalar variable of type `String`:
 
 ```fortran
-    call self%glue(tokens, separator)
+    call self%join(tokens, separator)
 ```
 
 * `tokens` is of type `type(String), dimension(:)`
 * `separator` is `optional` and of type `character(len=*)` (default is `SPACE`)
 
-*Description*: Glues a `String` vector `tokens` into `self` with given separator. Default separator is `SPACE`. The string slice component will be replaced if already allocated.
+*Description*: Joins a `String` vector `tokens` into `self` with given separator. Default separator is `SPACE`. The string slice component will be replaced if already allocated.
 
-For a functional version of `glue`, see [glue](glue-split.html).
+For a functional version of `join`, see [join](join-split.html).
 
 ### [len](../../type/string.html#boundprocedure-len)
 

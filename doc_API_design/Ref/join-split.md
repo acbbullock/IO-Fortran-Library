@@ -1,23 +1,23 @@
 ---
-title: glue and split
+title: join and split
 author: Austin C Bullock
 ---
 
-## [interface glue](../../interface/glue.html)
+## [interface join](../../interface/join.html)
 
-*Description*: Function for gluing a vector of `tokens` into a scalar `character` or `String`.
+*Description*: Function for joining a vector of `tokens` into a scalar `character` or `String`.
 
-To glue a one-dimensional array `tokens` of type `character` or `String`:
+To join a one-dimensional array `tokens` of type `character` or `String`:
 
 ```fortran
-result = glue(tokens, separator)
+result = join(tokens, separator)
 ```
 
 * `separator` is `optional` and of type `character(len=*)`
 
-For a subroutine version of `glue`, see [glue](string-methods.html#glue).
+For a subroutine version of `join`, see [join](string-methods.html#join).
 
-@note The return type of `glue` is the same as the type of `tokens`.
+@note The return type of `join` is the same as the type of `tokens`.
 
 ## [interface split](../../interface/split.html)
 
@@ -43,4 +43,4 @@ result = substring%split(separator)
 
 ### Optional Arguments
 
-Separator (default is `SPACE`): the separator to use when gluing or splitting.
+Separator (default is `SPACE`): the separator to use when joining or splitting.

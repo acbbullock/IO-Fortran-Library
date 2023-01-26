@@ -90,7 +90,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title="17.1% of total for modules and submodules.">3997 statements</a>
+               title="16.2% of total for modules and submodules.">3999 statements</a>
           </li>
 
             <li id="source-file">
@@ -165,7 +165,7 @@
             <a class="list-group-item" href="../module/io_fortran_lib.html#interface-string">String</a>
             <a class="list-group-item" href="../module/io_fortran_lib.html#interface-str">str</a>
             <a class="list-group-item" href="../module/io_fortran_lib.html#interface-cast">cast</a>
-            <a class="list-group-item" href="../module/io_fortran_lib.html#interface-glue">glue</a>
+            <a class="list-group-item" href="../module/io_fortran_lib.html#interface-join">join</a>
             <a class="list-group-item" href="../module/io_fortran_lib.html#interface-split">split</a>
             <a class="list-group-item" href="../module/io_fortran_lib.html#interface-to_file">to_file</a>
             <a class="list-group-item" href="../module/io_fortran_lib.html#interface-from_file">from_file</a>
@@ -214,8 +214,8 @@ no external dependencies, and has a max line length of 120.</p>
       <ul class="list-group">
           <li class="list-group-item">
             <ul class="list-inline">
-                <li><a href="http://fortranwiki.org/fortran/show/iso_c_binding">iso_c_binding</a></li>
                 <li><a href="http://fortranwiki.org/fortran/show/iso_fortran_env">iso_fortran_env</a></li>
+                <li><a href="http://fortranwiki.org/fortran/show/iso_c_binding">iso_c_binding</a></li>
             </ul>
           </li>
       </ul>
@@ -232,8 +232,8 @@ no external dependencies, and has a max line length of 120.</p>
                 <li><a href='../module/array_printing.html'>array_printing</a></li>
                 <li><a href='../module/binary_io.html'>binary_io</a></li>
                 <li><a href='../module/file_io.html'>file_io</a></li>
-                <li><a href='../module/glue_split.html'>glue_split</a></li>
                 <li><a href='../module/internal_io.html'>internal_io</a></li>
+                <li><a href='../module/join_split.html'>join_split</a></li>
                 <li><a href='../module/operators.html'>operators</a></li>
                 <li><a href='../module/string_procedures.html'>String_procedures</a></li>
                 <li><a href='../module/text_io.html'>text_io</a></li>
@@ -294,7 +294,7 @@ no external dependencies, and has a max line length of 120.</p>
             <a class="list-group-item" href="../module/io_fortran_lib.html#interface-string">String</a>
             <a class="list-group-item" href="../module/io_fortran_lib.html#interface-str">str</a>
             <a class="list-group-item" href="../module/io_fortran_lib.html#interface-cast">cast</a>
-            <a class="list-group-item" href="../module/io_fortran_lib.html#interface-glue">glue</a>
+            <a class="list-group-item" href="../module/io_fortran_lib.html#interface-join">join</a>
             <a class="list-group-item" href="../module/io_fortran_lib.html#interface-split">split</a>
             <a class="list-group-item" href="../module/io_fortran_lib.html#interface-to_file">to_file</a>
             <a class="list-group-item" href="../module/io_fortran_lib.html#interface-from_file">from_file</a>
@@ -5246,19 +5246,19 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
 
        <div class="panel panel-default">
     <div class="panel-heading codesum">
-      <span class="anchor" id="interface-glue"></span>
-      <h3>public        interface <a href='../interface/glue.html'>glue</a> 
+      <span class="anchor" id="interface-join"></span>
+      <h3>public        interface <a href='../interface/join.html'>join</a> 
       </h3>
     </div>
       <div class="panel-body">
-        <p>Function for gluing a vector of <code>tokens</code> into a scalar <code>character</code> or <code>String</code>.</p>
-<p>For the complement of <code>glue</code>, see <a href="../page/Ref/glue-split.html">split</a>.</p>
-<p>For a user reference, see <a href="../page/Ref/glue-split.html">glue</a>.</p>
+        <p>Function for joining a vector of <code>tokens</code> into a scalar <code>character</code> or <code>String</code>.</p>
+<p>For the complement of <code>join</code>, see <a href="../page/Ref/join-split.html">split</a>.</p>
+<p>For a user reference, see <a href="../page/Ref/join-split.html">join</a>.</p>
       </div>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private pure recursive module function glue_char(tokens, separator) result(new)  
+    private pure recursive module function join_char(tokens, separator) result(new)  
 
     </h3>
   
@@ -5316,7 +5316,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure recursive module function glue_string(tokens, separator) result(new)  
+    private pure recursive module function join_string(tokens, separator) result(new)  
 
     </h3>
   
@@ -5383,8 +5383,8 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
     </div>
       <div class="panel-body">
         <p>Function for splitting a scalar <code>character</code> or <code>String</code> into a vector of <code>tokens</code>.</p>
-<p>For the complement of <code>split</code>, see <a href="../page/Ref/glue-split.html">glue</a>.</p>
-<p>For a user reference, see <a href="../page/Ref/glue-split.html">split</a>.</p>
+<p>For the complement of <code>split</code>, see <a href="../page/Ref/join-split.html">join</a>.</p>
+<p>For a user reference, see <a href="../page/Ref/join-split.html">split</a>.</p>
       </div>
     <ul class="list-group">
           <li class="list-group-item">
@@ -29382,9 +29382,9 @@ generic,
                 <td>
                     procedure
                     ,                  public
-, pass(self)                  :: <strong><a href='../type/string.html#boundprocedure-glue'>glue</a></strong>
+, pass(self)                  :: <strong><a href='../type/string.html#boundprocedure-join'>join</a></strong>
  =>
-                    glue_into_self
+                    join_into_self
 <small>Interface</small>                </td>
                 <td></td>
               </tr>
@@ -29469,7 +29469,7 @@ generic,
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-01-23 18:22            </p>
+ on 2023-01-25 20:36            </p>
         </div>
       </div>
       <br>

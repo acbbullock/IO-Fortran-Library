@@ -27,7 +27,7 @@ program main
     write(*,'(a)')  'Compiler options: ' + compiler_options() + LF
 
     call system_clock(t1)
-    cells = String(x, fmt='e')
+    cells = String(x, fmt='z')
     call system_clock(t2, count_rate=rate); wall_time = real(t2-t1,rk)/rate
 
     write(*,'(a)')  'Wall time for String: ' + str(wall_time, fmt='f', decimals=3) + ' s'
@@ -49,7 +49,7 @@ program main
     call csv%empty(); allocate( y(n,n) )
 
     call system_clock(t1)
-    call cells%cast(into=y, fmt='e')
+    call cells%cast(into=y, fmt='z')
     call system_clock(t2, count_rate=rate); wall_time = real(t2-t1,rk)/rate
 
     write(*,'(a)')  'Wall time for cast: ' + str(wall_time, fmt='f', decimals=3) + ' s'
@@ -61,60 +61,58 @@ program main
 end program main
 ```
 
-Here, we populate an `n`-by-`n` double-precision array `x` with samples from the standard Gaussian distribution and convert each to a `String` in normalized exponential format to populate a cell array, write the cell array to a text file `'bigx.csv'`, read the file back into the program to re-populate the cell array, then finally cast the cell data into `y` and compare with `x` to observe an exact match. For `n = 10000`, the total data size is `1e8` and the resulting csv file size is `2.45 GB`.
+Here, we populate an `n`-by-`n` double-precision array `x` with samples from the standard Gaussian distribution and convert each to a `String` in hexadecimal format to populate a cell array, write the cell array to a text file `'bigx.csv'`, read the file back into the program to re-populate the cell array, then finally cast the cell data into `y` and compare with `x` to observe an exact match. For `n = 10000`, the total data size is `1e8` and the resulting csv file size is `1.9 GB`.
 
 With highest optimizations enabled for each compiler on Linux (`-O3`), we observe the following sample output:
 
 ```text
 ---
 Compiler version: GCC version 11.3.0
-Compiler options: -I build/gfortran_93B6DA15423670F8 -mtune=generic -march=x86-64 -O3 -J build/gfortran_93B6DA15423670F8 -fpre-include=/usr/include/finclude/math-vector-fortran.h     
+Compiler options: -I build/gfortran_93B6DA15423670F8 -mtune=generic -march=x86-64 -O3 -J build/gfortran_93B6DA15423670F8 -fpre-include=/usr/include/finclude/math-vector-fortran.h
 
-Wall time for String: 92.604 s
-Number of string conversions/second: 1079860
+Wall time for String: 5.193 s
+Number of string conversions/second: 19254922
 
-Wall time for write_file: 20.808 s
-Estimated file size: 2.549994 GB
+Wall time for write_file: 18.617 s
+Estimated file size: 1.899999 GB
 
-Wall time for read_file: 44.910 s
+Wall time for read_file: 34.879 s
 
-Wall time for cast: 77.580 s
-Number of string casts/second: 1288986
+Wall time for cast: 14.287 s
+Number of string casts/second: 6998885
 Data is exact match: T
 ---
 Compiler version: Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201
 Compiler options: -Ibuild/ifx_810FD198DC3B0576 -c -O3 -heap-arrays 0 -module build/ifx_810FD198DC3B0576 -o build/ifx_810FD198DC3B0576/IO-Fortran-Library/test_benchmark.f90.o
 
-Wall time for String: 59.280 s
-Number of string conversions/second: 1686893
+Wall time for String: 17.301 s
+Number of string conversions/second: 5779995
 
-Wall time for write_file: 21.420 s
-Estimated file size: 2.550004 GB
+Wall time for write_file: 16.189 s
+Estimated file size: 1.899999 GB
 
-Wall time for read_file: 53.557 s
+Wall time for read_file: 45.590 s
 
-Wall time for cast: 50.867 s
-Number of string casts/second: 1965883
+Wall time for cast: 86.440 s
+Number of string casts/second: 1156869
 Data is exact match:  T
 ---
 Compiler version: Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000
-Compiler options: -Ibuild/ifort_810FD198DC3B0576 -c -O3 -heap-arrays 0 -module build/ifort_810FD198DC3B0576 -o build/ifort_810FD198DC3B0576/IO-Fortran-Library/test_benchmark.f90.o    
+Compiler options: -Ibuild/ifort_810FD198DC3B0576 -c -O3 -heap-arrays 0 -module build/ifort_810FD198DC3B0576 -o build/ifort_810FD198DC3B0576/IO-Fortran-Library/test_benchmark.f90.o
 
-Wall time for String: 57.567 s
-Number of string conversions/second: 1737098
+Wall time for String: 17.290 s
+Number of string conversions/second: 5783685
 
-Wall time for write_file: 16.180 s
-Estimated file size: 2.550004 GB
+Wall time for write_file: 12.690 s
+Estimated file size: 1.899999 GB
 
-Wall time for read_file: 45.013 s
+Wall time for read_file: 34.995 s
 
-Wall time for cast: 52.301 s
-Number of string casts/second: 1911984
+Wall time for cast: 15.417 s
+Number of string casts/second: 6486189
 Data is exact match:  T
 ---
 ```
-
-After testing, it is clear that different compilers have different strengths and weaknesses, with some performing internal I/O more efficiently while others perform external I/O more efficiently. On Windows, the timings may be slower by a factor of 2-3 times.
 
 @note With the Intel Fortran compiler `ifx`/`ifort`, we must specify `-heap-arrays 0` to avoid a segmentation fault when reading a file of this size, as noted in [compiler-dependent behavior](../UserInfo/compilers.html).
 
@@ -133,7 +131,7 @@ program main
     integer(int64) :: t1, t2, total_length
     real(real64) :: wall_time, rate
 
-    largest = huge(1); smallest = - largest - 1; step = (int(largest,int64) - int(smallest,int64))/128
+    largest = huge(1); smallest = - largest - 1; step = (int(largest,int64) - int(smallest,int64))/32
 
     write(*,'(a)')  'Writing integers from ' + str(smallest) + ' to ' + str(largest) + ' in chunks of ' + str(step)
 
@@ -141,10 +139,10 @@ program main
 
     call system_clock(t1)
 
-    do j = 1, 128
+    do j = 1, 32
         start = smallest + (j-1)*step
 
-        if ( j < 128 ) then
+        if ( j < 32 ) then
             allocate( int_array(start:start+step-1) )
 
             do concurrent ( i = start:start+step-1 )
@@ -173,4 +171,4 @@ program main
 end program main
 ```
 
-On Linux, this should take around 50 minutes with `ifort`/`ifx` with highest optimizations enabled, and the resulting file size is `47.2 GB`.
+On Linux, this should take around 25 minutes with `ifort`/`ifx` using highest optimizations, and the resulting file size is `47.2 GB`.
