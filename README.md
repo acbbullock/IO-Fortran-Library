@@ -50,4 +50,4 @@ All source code referenced is distributed under the [MIT license](https://github
 
 ## Contact
 
-For bug fixes or feature requests, feel free to open an issue at the [project repository](https://github.com/acbbullock/IO-Fortran-Library) or contact [acb.bullock@gmail.com](mailto:acb.bullock@gmail.com).
+For bug fixes or feature requests, feel free to open an issue at the [project repository](https://github.com/acbbullock/IO-Fortran-Library/issues) or contact [acb.bullock@gmail.com](mailto:acb.bullock@gmail.com).
