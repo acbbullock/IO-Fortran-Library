@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-   <meta name="description" content="A portable, standard IO library for Modern Fortran">
+   <meta name="description" content="A portable, standard I/O library for Modern Fortran">
     <meta name="author" content="Austin C Bullock" >
     <link rel="icon" href="../favicon.png">
 
@@ -39,7 +39,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="../index.html">IO-Fortran-Library <small>1.1.3</small></a>
+          <a class="navbar-brand" href="../index.html">IO-Fortran-Library <small>1.2.0</small></a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
@@ -105,14 +105,9 @@
 </code></pre></div>
 
 <p>which may be placed at the start of any compilation unit, immediately following the <code>program</code>, <code>module</code>, <code>function</code>, or <code>subroutine</code> statement, and before any <code>implicit</code> statement.</p>
-<p>The functionality provided by the API is distributed via a handful of <a href="../lists/procedures.html">generic interfaces</a> for routines that operate on numeric data and which take a minimal number of arguments with optional arguments to customize output for particular use cases. This ensures ease of use and flexibility for the end-user, without the need for any specific knowledge regarding the internal implementations. Object-oriented designs for file I/O are avoided, as these incur additional overhead for both users and programs, without much additional functionality.</p>
-<p>For convenience, two simple data structures are also provided:</p>
-<ul>
-<li><a href="../type/string.html">String</a></li>
-<li><a href="../module/io_fortran_lib.html#variable-nl">nl</a></li>
-</ul>
-<p>These data structures are not required to use any of the functionality provided by the interfaces.</p>
-<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>All external I/O (both text and binary) is conducted as unformatted, stream-access reads and writes as introduced in Fortran 2003, which is much more flexible and typically must faster than record-based I/O.</p></div>
+<p>The functionality provided by the API is distributed via a handful of <a href="../lists/procedures.html">generic interfaces</a> and a derived type <a href="../type/string.html">String</a>. The corresponding routines operate on numeric and string data, and take a minimal number of arguments with optional arguments to customize output for particular use cases. This ensures ease of use and flexibility for the end-user, without the need for any specific knowledge regarding the internal implementations. For advanced character handling, the <code>String</code> type provides extensive functionality through <a href="Ref/string-methods.html">type-bound procedures</a>. For convenience, a list of <a href="../module/io_fortran_lib.html#variable-nl">constants</a> are also provided.</p>
+<p>The design of <a href="../module/io_fortran_lib.html">io_fortran_lib</a> is dualistic in nature. That is, for each operation represented by an interface, there exists a transpose operation with a corresponding interface, such as <code>String ⇆ cast</code>, <code>str ⇆ cast</code>, <code>to_file ⇆ from_file</code>, <code>read_file ⇆ write_file</code>, <code>join ⇆ split</code>, and so on. Each pair of interfaces are designed to mirror each other in their arguments and assumptions of optional arguments.</p>
+<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>All file I/O (both text and binary) is conducted via unformatted, stream-access reads and writes as introduced in Fortran 2003.</p></div>
     </div>
     <div class="col-md-3 col-md-pull-9">
       <hr class="visible-xs visible-sm">
@@ -138,6 +133,9 @@
             <a href='../page/UserInfo/compilers.html'>Compiler-dependent behavior</a>
             </li>
             <li role="presentation">
+            <a href='../page/UserInfo/characters.html'>Character sets and kinds</a>
+            </li>
+            <li role="presentation">
             <a href='../page/UserInfo/thread-safety.html'>Thread safety</a>
             </li>
 
@@ -147,10 +145,19 @@
             <a href='../page/Ref/index.html'>Reference Guide</a>
             <ul class="nav nav-stacked nav-pills">
                           <li role="presentation">
+            <a href='../page/Ref/constants.html'>CONSTANTS</a>
+            </li>
+            <li role="presentation">
+            <a href='../page/Ref/String.html'>String</a>
+            </li>
+            <li role="presentation">
             <a href='../page/Ref/str.html'>str</a>
             </li>
             <li role="presentation">
-            <a href='../page/Ref/echo.html'>echo</a>
+            <a href='../page/Ref/cast.html'>cast</a>
+            </li>
+            <li role="presentation">
+            <a href='../page/Ref/join-split.html'>join and split</a>
             </li>
             <li role="presentation">
             <a href='../page/Ref/to_file.html'>to_file</a>
@@ -159,7 +166,16 @@
             <a href='../page/Ref/from_file.html'>from_file</a>
             </li>
             <li role="presentation">
+            <a href='../page/Ref/echo.html'>echo</a>
+            </li>
+            <li role="presentation">
             <a href='../page/Ref/aprint.html'>aprint</a>
+            </li>
+            <li role="presentation">
+            <a href='../page/Ref/String-methods.html'>String methods</a>
+            </li>
+            <li role="presentation">
+            <a href='../page/Ref/operators.html'>Operators</a>
             </li>
 
             </ul>
@@ -168,16 +184,25 @@
             <a href='../page/Examples/index.html'>Tutorials</a>
             <ul class="nav nav-stacked nav-pills">
                           <li role="presentation">
-            <a href='../page/Examples/csv.html'>csv file I/O</a>
+            <a href='../page/Examples/csv.html'>Handling csv files</a>
             </li>
             <li role="presentation">
-            <a href='../page/Examples/binary.html'>binary file I/O</a>
+            <a href='../page/Examples/binary.html'>Handling dat files</a>
             </li>
             <li role="presentation">
-            <a href='../page/Examples/logging.html'>log file output</a>
+            <a href='../page/Examples/logging.html'>Handling log files</a>
             </li>
             <li role="presentation">
-            <a href='../page/Examples/fizzbuzz.html'>fizzbuzz</a>
+            <a href='../page/Examples/manipulations.html'>String manipulations</a>
+            </li>
+            <li role="presentation">
+            <a href='../page/Examples/fizzbuzz.html'>FizzBuzz</a>
+            </li>
+            <li role="presentation">
+            <a href='../page/Examples/exome.html'>NGS Human Core Exome Panel</a>
+            </li>
+            <li role="presentation">
+            <a href='../page/Examples/benchmark.html'>Benchmarking</a>
             </li>
 
             </ul>
@@ -191,14 +216,14 @@
     <footer>
       <div class="container">
       <div class="row">
-        <div class="col-xs-6 col-md-6"><p>IO-Fortran-Library was developed by Austin C Bullock<br>&copy; 2022 <a rel="license" href="https://opensource.org/licenses/MIT">MIT</a>
+        <div class="col-xs-6 col-md-6"><p>IO-Fortran-Library was developed by Austin C Bullock<br>&copy; 2023 <a rel="license" href="https://opensource.org/licenses/MIT">MIT</a>
 </p>
         </div>
         <div class="col-xs-6 col-md-6">
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2022-12-31 13:49            </p>
+ on 2023-01-25 22:05            </p>
         </div>
       </div>
       <br>

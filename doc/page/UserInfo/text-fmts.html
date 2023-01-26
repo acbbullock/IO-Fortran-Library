@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-   <meta name="description" content="A portable, standard IO library for Modern Fortran">
+   <meta name="description" content="A portable, standard I/O library for Modern Fortran">
     <meta name="author" content="Austin C Bullock" >
     <link rel="icon" href="../../favicon.png">
 
@@ -39,7 +39,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="../../index.html">IO-Fortran-Library <small>1.1.3</small></a>
+          <a class="navbar-brand" href="../../index.html">IO-Fortran-Library <small>1.2.0</small></a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
@@ -98,24 +98,27 @@
   
   <div class="row">
     <div class="col-md-9 col-md-push-3" id='text'>
-      <p>When writing <code>integer</code> data as strings with <a href="../Ref/str.html">str</a> or <a href="../Ref/to_file.html">to_file</a>, any of the following text formats may be used:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">int_fmts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s1">&#39;i&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;z&#39;</span><span class="w"> </span><span class="p">]</span><span class="w"></span>
+      <p>When writing <code>integer</code> data as strings with <a href="../Ref/string.html">String</a>, <a href="../Ref/str.html">str</a>, or <a href="../Ref/to_file.html">to_file</a>, any of the following text formats may be used:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">INT_FMTS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s1">&#39;i&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;z&#39;</span><span class="w"> </span><span class="p">]</span><span class="w"></span>
 </code></pre></div>
 
 <ul>
 <li><code>'i'</code>: integer format (default), e.g. <code>123456</code></li>
-<li><code>'z'</code>: hexadecimal format, e.g. <code>1E240</code></li>
+<li><code>'z'</code>: hexadecimal format, e.g. <code>0x1e240</code></li>
 </ul>
-<p>When writing floating point numbers of type <code>real</code> or <code>complex</code> as strings with <a href="../Ref/str.html">str</a> or <a href="../Ref/to_file.html">to_file</a>, any of the following text formats may be used:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">real_fmts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s1">&#39;e&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;f&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;z&#39;</span><span class="w"> </span><span class="p">]</span><span class="w"></span>
+<p>When writing floating point numbers of type <code>real</code> or <code>complex</code> as strings with <a href="../Ref/string.html">String</a>, <a href="../Ref/str.html">str</a>, or <a href="../Ref/to_file.html">to_file</a>, any of the following text formats may be used:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">REAL_FMTS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s1">&#39;e&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;f&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;z&#39;</span><span class="w"> </span><span class="p">]</span><span class="w"></span>
 </code></pre></div>
 
 <ul>
-<li><code>'e'</code>: normalized exponential format (default), e.g. <code>1.2345678901234567E+005</code></li>
-<li><code>'f'</code>: decimal format, e.g. <code>123456.78901234567</code></li>
-<li><code>'z'</code>: hexadecimal format, e.g. <code>40FE240C9FCB68CD</code></li>
+<li><code>'e'</code>: normalized exponential format (default), e.g. <code>1.23456789012345675e+005</code></li>
+<li><code>'f'</code>: decimal format, e.g. <code>123456.789012345674</code></li>
+<li><code>'z'</code>: hexadecimal format, e.g. <code>0x40fe240c9fcb68cd</code></li>
 </ul>
-<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>The <code>'z'</code> hexadecimal format is an integer format and may be used for <code>integer</code>, <code>real</code>, or <code>complex</code> data. Floating point numbers are interpreted bit-wise as integers when written with the <code>'z'</code> format, preventing any loss of precision in a round-trip conversion. This format is preferred for portable data transfers for which precision losses are intolerable.</p></div>
+<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>The <code>'z'</code> hexadecimal format is an unsigned integer format and may be used for <code>integer</code>, <code>real</code>, or <code>complex</code> data. Floating point numbers are interpreted bit-wise as unsigned integers when written with the <code>'z'</code> format, preventing any loss of precision in a round-trip conversion. This format is preferred in data transfers for which precision losses are intolerable. The <code>'z'</code> format may also be preferred for faster read/write times and more compact storage.</p></div>
+<p>When moving data in the opposite direction with the complementary procedures <a href="../Ref/cast.html">cast</a> or <a href="../Ref/from_file.html">from_file</a>, the same <code>fmt</code> is required to properly cast the data. Specifying a <code>fmt</code> that is different from what is actually present may result in an I/O syntax error.</p>
+<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>By default, <code>real</code> and <code>complex</code> data will be written with a number of significant digits required for a lossless round-trip conversion of the form <code>numeric -&gt; string -&gt; numeric</code>. In general, one may expect the <code>f</code> format to produce losses in round-trip conversion of up to a few <code>epsilon</code> in as many as a fifth of transfers. However, the <code>e</code> format is not expected to produce any losses, and the <code>z</code> format will never produce losses as it involves direct bit transfer (no base-10 ⇆ base-2 conversions are involved).</p></div>
+<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>For negative integers, the hexadecimal format <code>'z'</code> produces ambiguities across storage sizes. For instance, the integer <code>0xff</code> equates to <code>-1</code> in <code>int8</code> storage but equates to <code>255</code> in larger storage sizes. Similarly, the integer <code>0xffff</code> equates to <code>-1</code> in <code>int16</code> storage but equates to <code>65535</code> in larger storage sizes, and so on. It is the responsibility of the programmer to cast hexadecimal strings into variables with the proper storage size.</p></div>
     </div>
     <div class="col-md-3 col-md-pull-9">
       <hr class="visible-xs visible-sm">
@@ -141,6 +144,9 @@
             <a href='../../page/UserInfo/compilers.html'>Compiler-dependent behavior</a>
             </li>
             <li role="presentation">
+            <a href='../../page/UserInfo/characters.html'>Character sets and kinds</a>
+            </li>
+            <li role="presentation">
             <a href='../../page/UserInfo/thread-safety.html'>Thread safety</a>
             </li>
 
@@ -150,10 +156,19 @@
             <a href='../../page/Ref/index.html'>Reference Guide</a>
             <ul class="nav nav-stacked nav-pills">
                           <li role="presentation">
+            <a href='../../page/Ref/constants.html'>CONSTANTS</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Ref/String.html'>String</a>
+            </li>
+            <li role="presentation">
             <a href='../../page/Ref/str.html'>str</a>
             </li>
             <li role="presentation">
-            <a href='../../page/Ref/echo.html'>echo</a>
+            <a href='../../page/Ref/cast.html'>cast</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Ref/join-split.html'>join and split</a>
             </li>
             <li role="presentation">
             <a href='../../page/Ref/to_file.html'>to_file</a>
@@ -162,7 +177,16 @@
             <a href='../../page/Ref/from_file.html'>from_file</a>
             </li>
             <li role="presentation">
+            <a href='../../page/Ref/echo.html'>echo</a>
+            </li>
+            <li role="presentation">
             <a href='../../page/Ref/aprint.html'>aprint</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Ref/String-methods.html'>String methods</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Ref/operators.html'>Operators</a>
             </li>
 
             </ul>
@@ -171,16 +195,25 @@
             <a href='../../page/Examples/index.html'>Tutorials</a>
             <ul class="nav nav-stacked nav-pills">
                           <li role="presentation">
-            <a href='../../page/Examples/csv.html'>csv file I/O</a>
+            <a href='../../page/Examples/csv.html'>Handling csv files</a>
             </li>
             <li role="presentation">
-            <a href='../../page/Examples/binary.html'>binary file I/O</a>
+            <a href='../../page/Examples/binary.html'>Handling dat files</a>
             </li>
             <li role="presentation">
-            <a href='../../page/Examples/logging.html'>log file output</a>
+            <a href='../../page/Examples/logging.html'>Handling log files</a>
             </li>
             <li role="presentation">
-            <a href='../../page/Examples/fizzbuzz.html'>fizzbuzz</a>
+            <a href='../../page/Examples/manipulations.html'>String manipulations</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Examples/fizzbuzz.html'>FizzBuzz</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Examples/exome.html'>NGS Human Core Exome Panel</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Examples/benchmark.html'>Benchmarking</a>
             </li>
 
             </ul>
@@ -194,14 +227,14 @@
     <footer>
       <div class="container">
       <div class="row">
-        <div class="col-xs-6 col-md-6"><p>IO-Fortran-Library was developed by Austin C Bullock<br>&copy; 2022 <a rel="license" href="https://opensource.org/licenses/MIT">MIT</a>
+        <div class="col-xs-6 col-md-6"><p>IO-Fortran-Library was developed by Austin C Bullock<br>&copy; 2023 <a rel="license" href="https://opensource.org/licenses/MIT">MIT</a>
 </p>
         </div>
         <div class="col-xs-6 col-md-6">
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2022-12-31 13:49            </p>
+ on 2023-01-25 22:05            </p>
         </div>
       </div>
       <br>

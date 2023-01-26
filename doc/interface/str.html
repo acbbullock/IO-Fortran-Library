@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-   <meta name="description" content="A portable, standard IO library for Modern Fortran">
+   <meta name="description" content="A portable, standard I/O library for Modern Fortran">
     <meta name="author" content="Austin C Bullock" >
     <link rel="icon" href="../favicon.png">
 
@@ -39,7 +39,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="../index.html">IO-Fortran-Library <small>1.1.3</small></a>
+          <a class="navbar-brand" href="../index.html">IO-Fortran-Library <small>1.2.0</small></a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
@@ -90,7 +90,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title="<p> 3.8% of total for procedures.</p>Including implementation: 67 statements,  3.8% of total for procedures.">67 statements</a>
+               title="<p> 3.7% of total for procedures.</p>Including implementation: 78 statements,  3.7% of total for procedures.">78 statements</a>
           </li>
 
             <li id="source-file">
@@ -147,6 +147,9 @@
             <a class="list-group-item" href="../interface/str.html#proc-str_i32">str_i32</a>
             <a class="list-group-item" href="../interface/str.html#proc-str_i16">str_i16</a>
             <a class="list-group-item" href="../interface/str.html#proc-str_i8">str_i8</a>
+            <a class="list-group-item" href="../interface/str.html#proc-str_string">str_string</a>
+            <a class="list-group-item" href="../interface/str.html#proc-str_char">str_char</a>
+            <a class="list-group-item" href="../interface/str.html#proc-str_empty">str_empty</a>
         </div>
       </div>
     </div>
@@ -166,10 +169,10 @@
     
     <div class="col-md-9" id='text'>
       <h2>public interface str</h2>
-   <p>Function for representing a number as a string.</p>
+   <p>Function for representing a scalar number as a <code>character</code> string.</p>
 <p>By default behavior, <code>str</code> will write a <code>real</code> or <code>complex</code> number using a number of significant digits
 required in the worst case for a lossless round-trip conversion starting with the internal model
-representation of <code>x</code>.</p>
+representation of <code>x</code>. For the complement of <code>str</code>, see <a href="../page/Ref/cast.html">cast</a>.</p>
 <p>For a user reference, see <a href="../page/Ref/str.html">str</a>.</p>
 <br>
      <section class="visible-xs visible-sm hidden-md">
@@ -203,6 +206,9 @@ representation of <code>x</code>.</p>
             <a class="list-group-item" href="../interface/str.html#proc-str_i32">str_i32</a>
             <a class="list-group-item" href="../interface/str.html#proc-str_i16">str_i16</a>
             <a class="list-group-item" href="../interface/str.html#proc-str_i8">str_i8</a>
+            <a class="list-group-item" href="../interface/str.html#proc-str_string">str_string</a>
+            <a class="list-group-item" href="../interface/str.html#proc-str_char">str_char</a>
+            <a class="list-group-item" href="../interface/str.html#proc-str_empty">str_empty</a>
         </div>
       </div>
     </div>
@@ -1035,6 +1041,111 @@ representation of <code>x</code>.</p>
     </div>
   </div>
 
+      <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="proc-str_string"></span><h3>private pure recursive module function str_string(x) result(x_str)  
+</h3></div>
+    <div class="panel-body">
+        
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>x</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>character(len=:), allocatable</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+      <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="proc-str_char"></span><h3>private pure recursive module function str_char(x) result(x_str)  
+</h3></div>
+    <div class="panel-body">
+        
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>x</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>character(len=:), allocatable</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+      <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="proc-str_empty"></span><h3>private pure recursive module function str_empty() result(x_str)  
+</h3></div>
+    <div class="panel-body">
+        
+
+  <h4>Arguments</h4>
+    <em>None</em>
+    <h4>
+    Return Value
+    <small>character(len=:), allocatable</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
 
 
 
@@ -1046,14 +1157,14 @@ representation of <code>x</code>.</p>
     <footer>
       <div class="container">
       <div class="row">
-        <div class="col-xs-6 col-md-6"><p>IO-Fortran-Library was developed by Austin C Bullock<br>&copy; 2022 <a rel="license" href="https://opensource.org/licenses/MIT">MIT</a>
+        <div class="col-xs-6 col-md-6"><p>IO-Fortran-Library was developed by Austin C Bullock<br>&copy; 2023 <a rel="license" href="https://opensource.org/licenses/MIT">MIT</a>
 </p>
         </div>
         <div class="col-xs-6 col-md-6">
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2022-12-31 13:49            </p>
+ on 2023-01-25 22:05            </p>
         </div>
       </div>
       <br>

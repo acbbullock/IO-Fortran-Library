@@ -5,53 +5,69 @@ author: Austin C Bullock
 
 ## [interface str](../../interface/str.html)
 
-For `x` of type `integer`:
+*Description*: Function for representing a scalar number as a `character` string.
+
+To return the [empty string](../../module/io_fortran_lib.html#variable-empty_str), use no arguments:
+
+```fortran
+result = str()
+```
+
+For `x` a scalar of type `String`:
+
+```fortran
+result = str(x)
+```
+
+For `x` a scalar of type `integer`:
 
 ```fortran
 result = str(x, fmt)
 ```
 
-* `fmt` is `optional`, may be one of `int_fmts`
+* `fmt` is `optional`, may be one of `INT_FMTS`
 
-For `x` of type `real`:
+For `x` a scalar of type `real`:
 
 ```fortran
 result = str(x, locale, fmt, decimals)
 ```
 
-* `locale` is `optional`, may be one of `locales`
-* `fmt` is `optional`, may be one of `real_fmts`
+* `locale` is `optional`, may be one of `LOCALES`
+* `fmt` is `optional`, may be one of `REAL_FMTS`
 * `decimals` is `optional` and of type `integer`
 
-For `x` of type `complex`:
+For `x` a scalar of type `complex`:
 
 ```fortran
 result = str(x, locale, fmt, decimals, im)
 ```
 
-* `locale` is `optional`, may be one of `locales`
-* `fmt` is `optional`, may be one of `real_fmts`
+* `locale` is `optional`, may be one of `LOCALES`
+* `fmt` is `optional`, may be one of `REAL_FMTS`
 * `decimals` is `optional` and of type `integer`
 * `im` is `optional` and of type `character(len=*)`
+
+@note Note that `str` operates on scalars only. For elemental functionality, see [String](string.html).
 
 ### Optional Arguments
 
 Integer formats (default is `'i'`):
 
 ```fortran
-int_fmts = [ 'i', 'z' ]
+INT_FMTS = [ 'i', 'z' ]
 ```
 
 Real formats (default is `'e'`):
 
 ```fortran
-real_fmts = [ 'e', 'f', 'z' ]
+REAL_FMTS = [ 'e', 'f', 'z' ]
 ```
 
 Locales (default is `'US'`):
 
 ```fortran
-locales = [ 'US', 'EU' ]
+LOCALES = [ 'US', 'EU' ]
 ```
 
 Decimals: `decimals` specifies the number of digits on the rhs of the radix point, with a default determined internally based on the [text format](../UserInfo/text-fmts.html) and precision.

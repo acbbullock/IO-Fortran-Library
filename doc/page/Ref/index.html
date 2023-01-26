@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-   <meta name="description" content="A portable, standard IO library for Modern Fortran">
+   <meta name="description" content="A portable, standard I/O library for Modern Fortran">
     <meta name="author" content="Austin C Bullock" >
     <link rel="icon" href="../../favicon.png">
 
@@ -39,7 +39,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="../../index.html">IO-Fortran-Library <small>1.1.3</small></a>
+          <a class="navbar-brand" href="../../index.html">IO-Fortran-Library <small>1.2.0</small></a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
@@ -85,11 +85,17 @@
         <li><i class="fa fa-pencil"></i> Austin C Bullock</li>
 <!--
         <li><i class="fa fa-sitemap"></i> Subsections:</li>
+        <li><a href='../../page/Ref/constants.html'>CONSTANTS</a></li>
+        <li><a href='../../page/Ref/String.html'>String</a></li>
         <li><a href='../../page/Ref/str.html'>str</a></li>
-        <li><a href='../../page/Ref/echo.html'>echo</a></li>
+        <li><a href='../../page/Ref/cast.html'>cast</a></li>
+        <li><a href='../../page/Ref/join-split.html'>join and split</a></li>
         <li><a href='../../page/Ref/to_file.html'>to_file</a></li>
         <li><a href='../../page/Ref/from_file.html'>from_file</a></li>
+        <li><a href='../../page/Ref/echo.html'>echo</a></li>
         <li><a href='../../page/Ref/aprint.html'>aprint</a></li>
+        <li><a href='../../page/Ref/String-methods.html'>String methods</a></li>
+        <li><a href='../../page/Ref/operators.html'>Operators</a></li>
 -->
       </ul>
         <ol class="breadcrumb in-well">
@@ -105,11 +111,16 @@
     <div class="col-md-9 col-md-push-3" id='text'>
       <p>The following subsections provide user instructions for each of the publicly accessible <a href="../../lists/procedures.html">interfaces</a>:</p>
 <ul>
-<li><a href="str.html">str</a>: A function for representing a number as a string.</li>
-<li><a href="echo.html">echo</a>: A subroutine for recording a string to an external file.</li>
-<li><a href="to_file.html">to_file</a>: A subroutine for recording an array to an external file.</li>
-<li><a href="from_file.html">from_file</a>: A subroutine for reading an external file into an array.</li>
-<li><a href="aprint.html">aprint</a>: A subroutine for printing arrays and array sections to stdout.</li>
+<li><a href="string.html">String</a>: Function for transforming numeric or <code>character</code> data into a <a href="../../type/string.html">String</a> type.</li>
+<li><a href="str.html">str</a>: Function for representing a scalar number as a <code>character</code> string.</li>
+<li><a href="cast.html">cast</a>: Subroutine for casting a <code>character</code> or <code>String</code> into a number.</li>
+<li><a href="join-split.html">join and split</a>: Functions for joining and splitting strings.</li>
+<li><a href="to_file.html">to_file</a>: Subroutine for writing an array of uniform numeric data type to an external file.</li>
+<li><a href="from_file.html">from_file</a>: Subroutine for reading an external file of uniform numeric data type and format into an array.</li>
+<li><a href="echo.html">echo</a>: Subroutine for writing a scalar <code>character</code> or <code>String</code> to an external text file.</li>
+<li><a href="aprint.html">aprint</a>: Subroutine for printing arrays and array sections to stdout.</li>
+<li><a href="string-methods.html">String methods</a>: Type-bound procedures for <a href="../../type/string.html">String</a>.</li>
+<li><a href="operators.html">Operators</a>: Extended operators for convenient string manipulations.</li>
 </ul>
     </div>
     <div class="col-md-3 col-md-pull-9">
@@ -136,6 +147,9 @@
             <a href='../../page/UserInfo/compilers.html'>Compiler-dependent behavior</a>
             </li>
             <li role="presentation">
+            <a href='../../page/UserInfo/characters.html'>Character sets and kinds</a>
+            </li>
+            <li role="presentation">
             <a href='../../page/UserInfo/thread-safety.html'>Thread safety</a>
             </li>
 
@@ -145,10 +159,19 @@
             <a href='../../page/Ref/index.html'>Reference Guide</a>
             <ul class="nav nav-stacked nav-pills">
                           <li role="presentation">
+            <a href='../../page/Ref/constants.html'>CONSTANTS</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Ref/String.html'>String</a>
+            </li>
+            <li role="presentation">
             <a href='../../page/Ref/str.html'>str</a>
             </li>
             <li role="presentation">
-            <a href='../../page/Ref/echo.html'>echo</a>
+            <a href='../../page/Ref/cast.html'>cast</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Ref/join-split.html'>join and split</a>
             </li>
             <li role="presentation">
             <a href='../../page/Ref/to_file.html'>to_file</a>
@@ -157,7 +180,16 @@
             <a href='../../page/Ref/from_file.html'>from_file</a>
             </li>
             <li role="presentation">
+            <a href='../../page/Ref/echo.html'>echo</a>
+            </li>
+            <li role="presentation">
             <a href='../../page/Ref/aprint.html'>aprint</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Ref/String-methods.html'>String methods</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Ref/operators.html'>Operators</a>
             </li>
 
             </ul>
@@ -166,16 +198,25 @@
             <a href='../../page/Examples/index.html'>Tutorials</a>
             <ul class="nav nav-stacked nav-pills">
                           <li role="presentation">
-            <a href='../../page/Examples/csv.html'>csv file I/O</a>
+            <a href='../../page/Examples/csv.html'>Handling csv files</a>
             </li>
             <li role="presentation">
-            <a href='../../page/Examples/binary.html'>binary file I/O</a>
+            <a href='../../page/Examples/binary.html'>Handling dat files</a>
             </li>
             <li role="presentation">
-            <a href='../../page/Examples/logging.html'>log file output</a>
+            <a href='../../page/Examples/logging.html'>Handling log files</a>
             </li>
             <li role="presentation">
-            <a href='../../page/Examples/fizzbuzz.html'>fizzbuzz</a>
+            <a href='../../page/Examples/manipulations.html'>String manipulations</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Examples/fizzbuzz.html'>FizzBuzz</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Examples/exome.html'>NGS Human Core Exome Panel</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Examples/benchmark.html'>Benchmarking</a>
             </li>
 
             </ul>
@@ -189,14 +230,14 @@
     <footer>
       <div class="container">
       <div class="row">
-        <div class="col-xs-6 col-md-6"><p>IO-Fortran-Library was developed by Austin C Bullock<br>&copy; 2022 <a rel="license" href="https://opensource.org/licenses/MIT">MIT</a>
+        <div class="col-xs-6 col-md-6"><p>IO-Fortran-Library was developed by Austin C Bullock<br>&copy; 2023 <a rel="license" href="https://opensource.org/licenses/MIT">MIT</a>
 </p>
         </div>
         <div class="col-xs-6 col-md-6">
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2022-12-31 13:49            </p>
+ on 2023-01-25 22:05            </p>
         </div>
       </div>
       <br>

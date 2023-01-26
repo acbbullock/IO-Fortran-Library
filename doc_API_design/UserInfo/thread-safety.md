@@ -3,20 +3,18 @@ title: Thread safety
 author: Austin C Bullock
 ---
 
-As of Fortran 2018, all functions and subroutines are recursive by default without having to specify the `recursive` keyword. However, at the time of writing, the implementation of this behavior remains unfinished by major compilers, and this may result in catastrophic race conditions when multiple threads attempt to write to the same file in a parallel region. The [IO Fortran Library](../../index.html) avoids this by explicitly enforcing recursion with the `recursive` keyword on all functions and subroutines, private and public. However, even with recursion enforced, some programs may not operate as expected when performing I/O in parallel regions. For instance, inspect the output of the following program with multiple coarray images:
+The IO-Fortran-Library promotes thread-safety by explicitly enforcing recursion with the `recursive` keyword on all module procedures. However, performing I/O in parallel regions has the tendency to result in unexpected behavior. For instance, inspect the output of the following program with multiple coarray images:
 
 ```fortran
 program main
     use io_fortran_lib
     implicit none (type,external)
 
-    call echo(string='Hello from image '//str(this_image()), file_name='hello.txt')
+    call echo('Hello from image '//str(this_image()), file_name='hello.txt')
 end program main
 ```
 
-@warning Even with recursion, the above program will likely not behave as expected.
-
-The proper way to compose the above program is by nesting `echo` inside a `critical` block to enforce strict thread-safety in the region:
+This program will result in conflicts as multiple images attempt to write to the same file concurrently. The proper way to compose this program is by nesting `echo` inside a `critical` block to enforce strict thread-safety in the region:
 
 ```fortran
 program main
@@ -24,7 +22,7 @@ program main
     implicit none (type,external)
 
     critical
-        call echo(string='Hello from image '//str(this_image()), file_name='hello.txt')
+        call echo('Hello from image '//str(this_image()), file_name='hello.txt')
     end critical
 end program main
 ```
@@ -37,7 +35,7 @@ program main
     implicit none (type,external)
 
     if ( this_image() == 1 ) then
-        call echo(string='Hello from image '//str(this_image()), file_name='hello.txt')
+        call echo('Hello from image '//str(this_image()), file_name='hello.txt')
     end if
 end program main
 ```

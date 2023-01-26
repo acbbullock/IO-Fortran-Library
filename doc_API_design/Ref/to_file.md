@@ -5,7 +5,9 @@ author: Austin C Bullock
 
 ## [interface to_file](../../interface/to_file.html)
 
-For `x` of type `integer` and of rank `1`, `2`:
+*Description*: Subroutine for writing an array of uniform numeric data type to an external file.
+
+For `x` an array of rank `1`, `2` and of type `integer`:
 
 ```fortran
 call to_file(x, file_name, header, dim, delim, fmt)
@@ -17,11 +19,11 @@ call to_file(x, file_name, header, delim, fmt)
 
 * `file_name` is of type `character(len=*)`
 * `header` is `optional` and of type `character(len=*), dimension(:)`
-* `dim` is `optional` and of type `integer`
+* `dim` is `optional` and of type `integer` (available only if `x` has rank `1`)
 * `delim` is `optional` and of type `character(len=*)`
-* `fmt` is `optional`, may be one of `int_fmts`
+* `fmt` is `optional`, may be one of `INT_FMTS`
 
-For `x` of type `real` and of rank `1`, `2`:
+For `x` an array of rank `1`, `2` and of type `real`:
 
 ```fortran
 call to_file(x, file_name, header, dim, locale, delim, fmt, decimals)
@@ -33,13 +35,13 @@ call to_file(x, file_name, header, locale, delim, fmt, decimals)
 
 * `file_name` is of type `character(len=*)`
 * `header` is `optional` and of type `character(len=*), dimension(:)`
-* `dim` is `optional` and of type `integer`
-* `locale` is `optional`, may be one of `locales`
+* `dim` is `optional` and of type `integer` (available only if `x` has rank `1`)
+* `locale` is `optional`, may be one of `LOCALES`
 * `delim` is `optional` and of type `character(len=*)`
-* `fmt` is `optional`, may be one of `real_fmts`
+* `fmt` is `optional`, may be one of `REAL_FMTS`
 * `decimals` is `optional` and of type `integer`
 
-For `x` of type `complex` and of rank `1`, `2`:
+For `x` an array of rank `1`, `2` and of type of type `complex`:
 
 ```fortran
 call to_file(x, file_name, header, dim, locale, delim, fmt, decimals, im)
@@ -51,14 +53,14 @@ call to_file(x, file_name, header, locale, delim, fmt, decimals, im)
 
 * `file_name` is of type `character(len=*)`
 * `header` is `optional` and of type `character(len=*), dimension(:)`
-* `dim` is `optional` and of type `integer`
-* `locale` is `optional`, may be one of `locales`
+* `dim` is `optional` and of type `integer` (available only if `x` has rank `1`)
+* `locale` is `optional`, may be one of `LOCALES`
 * `delim` is `optional` and of type `character(len=*)`
-* `fmt` is `optional`, may be one of `real_fmts`
+* `fmt` is `optional`, may be one of `REAL_FMTS`
 * `decimals` is `optional` and of type `integer`
 * `im` is `optional` and of type `character(len=*)`
 
-For `x` of any rank `3`-`15` and of type `integer`, `real`, `complex`:
+For `x` an array of any rank `3`-`15` and of type `integer`, `real`, `complex`:
 
 ```fortran
 call to_file(x, file_name)
@@ -66,32 +68,34 @@ call to_file(x, file_name)
 
 * `file_name` is of type `character(len=*)`
 
-@warning `file_name` may be a relative path, but absolute paths are not guaranteed to work on every platform.
+@note `file_name` may be a relative path, but absolute paths are not guaranteed to work on every platform.
+
+@note `to_file` will always use the `NL` line ending when writing text files (which on most systems equates to `LF`).
 
 ### Optional Arguments
 
 Header (default is none): `header` is a [character array literal](../UserInfo/compilers.html). For `x` of rank `1`, `header` may be of size `1` or `size(x)`. For `x` of rank `2`, `header` may be of size `1` or `size(x, dim=2)`.
 
-Dimension: `dim` specifies whether to write along the rows (`dim=1`) or along the columns (`dim=2`), choosing the former by default unless `size(header)` is `size(x)`.
+Dimension: `dim` specifies whether to write along the rows (`dim=1`) or along the columns (`dim=2`), choosing the former by default unless `size(header)` is `size(x)`. This option is available only if `x` has rank `1`.
 
 Locales (default is `'US'`):
 
 ```fortran
-locales = [ 'US', 'EU' ]
+LOCALES = [ 'US', 'EU' ]
 ```
 
-Delimiter (default is `','`): data separator. Default is `','` for `'US'` locale and `';'` for `'EU'` locale. It is always recommended to omit the delimiter argument for default unless a custom delimiter is really necessary.
+Delimiter: data separator. Default is `','` for `integer` data and for `real`/`complex` data with `'US'` locale, and `';'` for `real`/`complex` data with `'EU'` locale. It is always recommended to omit the delimiter argument for default unless a custom delimiter is really necessary. If `x` has rank `1` and `dim=1`, then the `delim` argument is ignored.
 
 Integer formats (default is `'i'`):
 
 ```fortran
-int_fmts = [ 'i', 'z' ]
+INT_FMTS = [ 'i', 'z' ]
 ```
 
 Real formats (default is `'e'`):
 
 ```fortran
-real_fmts = [ 'e', 'f', 'z' ]
+REAL_FMTS = [ 'e', 'f', 'z' ]
 ```
 
 Decimals: `decimals` specifies the number of digits on the rhs of the radix point, with a default determined internally based on the [text format](../UserInfo/text-fmts.html) and precision.

@@ -4,11 +4,11 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-   <meta name="description" content="A portable, standard IO library for Modern Fortran">
+   <meta name="description" content="A portable, standard I/O library for Modern Fortran">
     <meta name="author" content="Austin C Bullock" >
     <link rel="icon" href="../../favicon.png">
 
-    <title>csv file I/O &ndash; IO-Fortran-Library</title>
+    <title>Handling csv files &ndash; IO-Fortran-Library</title>
 
     <link href="../../css/bootstrap.min.css" rel="stylesheet">
     <link href="../../css/pygments.css" rel="stylesheet">
@@ -39,7 +39,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="../../index.html">IO-Fortran-Library <small>1.1.3</small></a>
+          <a class="navbar-brand" href="../../index.html">IO-Fortran-Library <small>1.2.0</small></a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
@@ -77,7 +77,7 @@
 
     <div class="container">
   <div class="row">
-    <h1>csv file I/O</h1>
+    <h1>Handling csv files</h1>
     <div class="row">
     <div class="col-lg-12">
     <div class="well well-sm" style="min-height: 40px;">
@@ -89,7 +89,7 @@
         <ol class="breadcrumb in-well">
          <li><a href='../../page/index.html'>API Design</a></li>
          <li><a href='../../page/Examples/index.html'>Tutorials</a></li>
-         <li class="active">csv file I/O</li>
+         <li class="active">Handling csv files</li>
       </ol>
     </div>
     </div>
@@ -98,7 +98,9 @@
   
   <div class="row">
     <div class="col-md-9 col-md-push-3" id='text'>
-      <p>The following program demonstrates the use of <a href="../Ref/to_file.html">to_file</a> and <a href="../Ref/from_file.html">from_file</a> for writing <code>real</code> data to a <code>.csv</code> file in each possible <a href="../UserInfo/text-fmts.html">text format</a>, reading each file back into the program, and testing for exact equality to ensure that there has been no loss in precision:</p>
+      <h2 id="basic-csv-file-io">Basic csv file I/O</h2>
+<p>The routines <a href="../Ref/to_file.html">to_file</a> and <a href="../Ref/from_file.html">from_file</a> are the preferred method for handling I/O for numeric data of uniform type and format. Typical use cases involve writing whole arrays to file and reading files of uniform type and format directly into an array of numeric type.</p>
+<p>The following program demonstrates the use of <code>to_file</code> and <code>from_file</code> for writing an array of <code>real</code> data to a csv file in each possible <a href="../UserInfo/text-fmts.html">text format</a>, reading each file back into the program, and testing for exact equality to ensure that there has been no loss in precision:</p>
 <div class="codehilite"><pre><span></span><code><span class="k">program </span><span class="n">main</span><span class="w"></span>
 <span class="w">    </span><span class="k">use </span><span class="n">io_fortran_lib</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="p">:</span><span class="w"> </span><span class="n">to_file</span><span class="p">,</span><span class="w"> </span><span class="n">from_file</span><span class="w"></span>
 <span class="w">    </span><span class="k">implicit none</span><span class="w"> </span><span class="p">(</span><span class="k">type</span><span class="p">,</span><span class="k">external</span><span class="p">)</span><span class="w"></span>
@@ -122,8 +124,85 @@
 <span class="k">end program </span><span class="n">main</span><span class="w"></span>
 </code></pre></div>
 
-<p></p><div class="alert alert-warning" role="alert"><h4>Warning</h4><p>Default text format for writing and reading is <code>'e'</code> for data of type <code>real</code> or <code>complex</code>, and <code>'i'</code> for data of type <code>integer</code>. Attempting to read data with a format that does not correspond to the format in the file will result in an I/O syntax error.</p></div>
-<p></p><div class="alert alert-warning" role="alert"><h4>Warning</h4><p>Default value for <code>header</code> when reading is <code>.false.</code>. If a header is actually present, the output array will have an extra row with default initialized values.</p></div>
+<p>Here we use the simple header <code>header=['x']</code>, which produces a header of the form:</p>
+<div class="codehilite"><pre><span></span><code>x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12,x13,x14,x15,x16,x17,x18,x19,x20
+</code></pre></div>
+
+<p>Note that the default value for <code>header</code> when reading is <code>.false.</code>. If a header is actually present, the output array will have an extra row with default initialized values.</p>
+<p></p><div class="alert alert-warning" role="alert"><h4>Warning</h4><p>Default text format for writing and reading is <code>'e'</code> for data of type <code>real</code> or <code>complex</code>, and <code>'i'</code> for data of type <code>integer</code>. Attempting to read data with a format that does not correspond to the format in the file may result in an I/O syntax error.</p></div>
+<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>Reading into arrays of a different <code>kind</code> than the array that was written is a type conversion, and will fail the equality test.</p></div>
+<h2 id="advanced-csv-file-io">Advanced csv file I/O</h2>
+<p>The routines <a href="../Ref/String-methods.html#write_file">write_file</a> and <a href="../Ref/String-methods.html#read_file">read_file</a> are the preferred method for handling I/O for general text files. Typical use cases involve writing cell arrays of type <code>String</code> to delimited files, and reading delimited files into a cell array. For reading and writing non-delimited text files, one would use <code>read_file</code> without the <code>cell_array</code> argument and <a href="../Ref/echo.html">echo</a>.</p>
+<p>The same program as above can be recast in an object-oriented fashion that is generalizable for processing data of mixed type:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">program </span><span class="n">main</span><span class="w"></span>
+<span class="w">    </span><span class="k">use </span><span class="n">io_fortran_lib</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="p">:</span><span class="w"> </span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="w"></span>
+<span class="w">    </span><span class="k">implicit none</span><span class="w"> </span><span class="p">(</span><span class="k">type</span><span class="p">,</span><span class="k">external</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="n">String</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">csv</span><span class="w"></span>
+<span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="n">String</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="p">,</span><span class="w"> </span><span class="k">dimension</span><span class="p">(:)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">header</span><span class="w"></span>
+<span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="n">String</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="p">,</span><span class="w"> </span><span class="k">dimension</span><span class="p">(:,:)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">cells</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">real</span><span class="p">,</span><span class="w"> </span><span class="k">dimension</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span><span class="mi">20</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">x</span><span class="w"></span>
+<span class="w">    </span><span class="kt">real</span><span class="p">,</span><span class="w"> </span><span class="k">allocatable</span><span class="p">,</span><span class="w"> </span><span class="k">dimension</span><span class="p">(:,:)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">x_e</span><span class="p">,</span><span class="w"> </span><span class="n">x_f</span><span class="p">,</span><span class="w"> </span><span class="n">x_z</span><span class="w"></span>
+<span class="w">    </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">i</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">call </span><span class="nb">random_number</span><span class="p">(</span><span class="n">x</span><span class="p">);</span><span class="w"> </span><span class="k">allocate</span><span class="p">(</span><span class="w"> </span><span class="n">cells</span><span class="p">(</span><span class="mi">1001</span><span class="p">,</span><span class="mi">20</span><span class="p">)</span><span class="w"> </span><span class="p">);</span><span class="w"> </span><span class="n">header</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[(</span><span class="n">String</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="o">//</span><span class="n">str</span><span class="p">(</span><span class="n">i</span><span class="p">)),</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">)]</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">cells</span><span class="p">(</span><span class="mi">1</span><span class="p">,:)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">header</span><span class="p">;</span><span class="w"> </span><span class="n">cells</span><span class="p">(</span><span class="mi">2</span><span class="p">:,:)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">String</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;e&#39;</span><span class="p">);</span><span class="w"> </span><span class="k">call </span><span class="n">csv</span><span class="p">%</span><span class="n">write_file</span><span class="p">(</span><span class="n">cells</span><span class="p">,</span><span class="w"> </span><span class="n">file_name</span><span class="o">=</span><span class="s1">&#39;x_e.csv&#39;</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">cells</span><span class="p">(</span><span class="mi">1</span><span class="p">,:)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">header</span><span class="p">;</span><span class="w"> </span><span class="n">cells</span><span class="p">(</span><span class="mi">2</span><span class="p">:,:)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">String</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;f&#39;</span><span class="p">);</span><span class="w"> </span><span class="k">call </span><span class="n">csv</span><span class="p">%</span><span class="n">write_file</span><span class="p">(</span><span class="n">cells</span><span class="p">,</span><span class="w"> </span><span class="n">file_name</span><span class="o">=</span><span class="s1">&#39;x_f.csv&#39;</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">cells</span><span class="p">(</span><span class="mi">1</span><span class="p">,:)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">header</span><span class="p">;</span><span class="w"> </span><span class="n">cells</span><span class="p">(</span><span class="mi">2</span><span class="p">:,:)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">String</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;z&#39;</span><span class="p">);</span><span class="w"> </span><span class="k">call </span><span class="n">csv</span><span class="p">%</span><span class="n">write_file</span><span class="p">(</span><span class="n">cells</span><span class="p">,</span><span class="w"> </span><span class="n">file_name</span><span class="o">=</span><span class="s1">&#39;x_z.csv&#39;</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">allocate</span><span class="p">(</span><span class="w"> </span><span class="n">x_e</span><span class="p">,</span><span class="w"> </span><span class="n">x_f</span><span class="p">,</span><span class="w"> </span><span class="n">x_z</span><span class="p">,</span><span class="w"> </span><span class="n">mold</span><span class="o">=</span><span class="n">x</span><span class="w"> </span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">call </span><span class="n">csv</span><span class="p">%</span><span class="n">read_file</span><span class="p">(</span><span class="s1">&#39;x_e.csv&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">cell_array</span><span class="o">=</span><span class="n">cells</span><span class="p">);</span><span class="w"> </span><span class="k">call </span><span class="n">cells</span><span class="p">(</span><span class="mi">2</span><span class="p">:,:)%</span><span class="n">cast</span><span class="p">(</span><span class="n">into</span><span class="o">=</span><span class="n">x_e</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;e&#39;</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">call </span><span class="n">csv</span><span class="p">%</span><span class="n">read_file</span><span class="p">(</span><span class="s1">&#39;x_f.csv&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">cell_array</span><span class="o">=</span><span class="n">cells</span><span class="p">);</span><span class="w"> </span><span class="k">call </span><span class="n">cells</span><span class="p">(</span><span class="mi">2</span><span class="p">:,:)%</span><span class="n">cast</span><span class="p">(</span><span class="n">into</span><span class="o">=</span><span class="n">x_f</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;f&#39;</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">call </span><span class="n">csv</span><span class="p">%</span><span class="n">read_file</span><span class="p">(</span><span class="s1">&#39;x_z.csv&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">cell_array</span><span class="o">=</span><span class="n">cells</span><span class="p">);</span><span class="w"> </span><span class="k">call </span><span class="n">cells</span><span class="p">(</span><span class="mi">2</span><span class="p">:,:)%</span><span class="n">cast</span><span class="p">(</span><span class="n">into</span><span class="o">=</span><span class="n">x_z</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;z&#39;</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">write</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="s1">&#39;x == x_e : &#39;</span><span class="p">,</span><span class="w"> </span><span class="k">all</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">x_e</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">write</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="s1">&#39;x == x_f : &#39;</span><span class="p">,</span><span class="w"> </span><span class="k">all</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">x_f</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">write</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="s1">&#39;x == x_z : &#39;</span><span class="p">,</span><span class="w"> </span><span class="k">all</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">x_z</span><span class="p">)</span><span class="w"></span>
+<span class="k">end program </span><span class="n">main</span><span class="w"></span>
+</code></pre></div>
+
+<p>Here, we construct the same header as before with the implicit loop</p>
+<div class="codehilite"><pre><span></span><code><span class="n">header</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[(</span><span class="n">String</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="o">//</span><span class="n">str</span><span class="p">(</span><span class="n">i</span><span class="p">)),</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">)]</span><span class="w"></span>
+</code></pre></div>
+
+<p>and then construct the remainder of the cell array <code>cells</code> with an elemental assignment <code>cells(2:,:) = String(x, fmt)</code> before writing the array to a csv file. We then read the files back into <code>csv</code> and output the cells into <code>cells</code> (which is reallocated internally). Note that when casting the cell data into numeric arrays, we must pre-allocate the output arrays due to the restrictions on <code>intent(out)</code> arguments of <code>elemental</code> procedures. Note also that we must reassign the header row to <code>cells</code> before writing each time because <code>write_file</code> consumes the cell array.</p>
+<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>One may optionally specify the arguments of <code>row_separator</code> and <code>column_separator</code> when writing and reading text files with <a href="../Ref/string-methods.html#write_file">write_file</a> and <a href="../Ref/string-methods.html#read_file">read_file</a>. The default <code>row_separator</code> is <code>LF</code>, and the default <code>column_separator</code> is <code>','</code>.</p></div>
+<p></p><div class="alert alert-warning" role="alert"><h4>Warning</h4><p>When reading files with <code>CRLF</code> line endings, be sure to specify <code>row_separator=CR//LF</code> or pre-process the file to <code>LF</code>. Trying to cast data with a hidden <code>CR</code> character may result in an I/O syntax error.</p></div>
+<p>For a slightly more advanced example, consider the following program to read in and cast the data of mixed type contained in the example data <code>/data/ancestry_comp.csv</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">program </span><span class="n">main</span><span class="w"></span>
+<span class="w">    </span><span class="k">use</span><span class="p">,</span><span class="w"> </span><span class="k">intrinsic</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">iso_fortran_env</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="p">:</span><span class="w"> </span><span class="n">int8</span><span class="p">,</span><span class="w"> </span><span class="n">int64</span><span class="w"></span>
+<span class="w">    </span><span class="k">use </span><span class="n">io_fortran_lib</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="p">:</span><span class="w"> </span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">cast</span><span class="p">,</span><span class="w"> </span><span class="n">CR</span><span class="p">,</span><span class="w"> </span><span class="n">LF</span><span class="p">,</span><span class="w"> </span><span class="n">operator</span><span class="p">(</span><span class="o">+</span><span class="p">),</span><span class="w"> </span><span class="n">operator</span><span class="p">(</span><span class="o">-</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">implicit none</span><span class="w"> </span><span class="p">(</span><span class="k">type</span><span class="p">,</span><span class="k">external</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="n">String</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">csv</span><span class="w"></span>
+<span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="n">String</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="p">,</span><span class="w"> </span><span class="k">dimension</span><span class="p">(:,:)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">cells</span><span class="w"></span>
+
+<span class="w">    </span><span class="kt">integer</span><span class="p">(</span><span class="n">int8</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="p">,</span><span class="w"> </span><span class="k">dimension</span><span class="p">(:)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">copy</span><span class="p">,</span><span class="w"> </span><span class="n">chromosome</span><span class="w"></span>
+<span class="w">    </span><span class="kt">integer</span><span class="p">(</span><span class="n">int64</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="p">,</span><span class="w"> </span><span class="k">dimension</span><span class="p">(:)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">start_point</span><span class="p">,</span><span class="w"> </span><span class="n">end_point</span><span class="w"></span>
+<span class="w">    </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nrows</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">call </span><span class="n">csv</span><span class="p">%</span><span class="n">read_file</span><span class="p">(</span><span class="s1">&#39;./data/ancestry_comp.csv&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">cell_array</span><span class="o">=</span><span class="n">cells</span><span class="p">,</span><span class="w"> </span><span class="n">row_separator</span><span class="o">=</span><span class="n">CR</span><span class="o">+</span><span class="n">LF</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">write</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="n">csv</span><span class="w"></span>
+
+<span class="w">    </span><span class="n">nrows</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">size</span><span class="p">(</span><span class="n">cells</span><span class="p">,</span><span class="w"> </span><span class="nb">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">allocate</span><span class="p">(</span><span class="w"> </span><span class="n">copy</span><span class="p">(</span><span class="n">nrows</span><span class="p">),</span><span class="w"> </span><span class="n">chromosome</span><span class="p">(</span><span class="n">nrows</span><span class="p">),</span><span class="w"> </span><span class="n">start_point</span><span class="p">(</span><span class="n">nrows</span><span class="p">),</span><span class="w"> </span><span class="n">end_point</span><span class="p">(</span><span class="n">nrows</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"></span>
+
+<span class="w">    </span><span class="k">call </span><span class="n">cells</span><span class="p">(</span><span class="mi">2</span><span class="p">:,</span><span class="mi">2</span><span class="p">)%</span><span class="n">cast</span><span class="p">(</span><span class="n">into</span><span class="o">=</span><span class="n">copy</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">call </span><span class="n">cast</span><span class="p">(</span><span class="n">cells</span><span class="p">(</span><span class="mi">2</span><span class="p">:,</span><span class="mi">3</span><span class="p">)%</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">,</span><span class="s1">&#39;0&#39;</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="s1">&#39;chr&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">into</span><span class="o">=</span><span class="n">chromosome</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">call </span><span class="n">cells</span><span class="p">(</span><span class="mi">2</span><span class="p">:,</span><span class="mi">4</span><span class="p">)%</span><span class="n">cast</span><span class="p">(</span><span class="n">into</span><span class="o">=</span><span class="n">start_point</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">call </span><span class="n">cells</span><span class="p">(</span><span class="mi">2</span><span class="p">:,</span><span class="mi">5</span><span class="p">)%</span><span class="n">cast</span><span class="p">(</span><span class="n">into</span><span class="o">=</span><span class="n">end_point</span><span class="p">)</span><span class="w"></span>
+<span class="k">end program </span><span class="n">main</span><span class="w"></span>
+</code></pre></div>
+
+<p>Here, <code>file_name</code> is a relative path, and we use the extended operator <code>+</code> for <a href="../Ref/operators.html#concatenation">concatenation</a> in the <code>character</code> expression <code>CR+LF</code>. We then allocate data arrays and cast each column into respective arrays. Note that we must use <a href="../Ref/cast.html">cast</a> as a standalone subroutine to accept the <code>String</code>-valued expression</p>
+<div class="codehilite"><pre><span></span><code><span class="n">cells</span><span class="p">(</span><span class="mi">2</span><span class="p">:,</span><span class="mi">3</span><span class="p">)%</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">,</span><span class="s1">&#39;0&#39;</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="s1">&#39;chr&#39;</span><span class="w"></span>
+</code></pre></div>
+
+<p>which first calls <a href="../Ref/string-methods.html#replace">replace</a> to return an elemental copy of the given cells in which all instances of <code>X</code> have been replaced with <code>0</code>, and then calls the <a href="../Ref/operators.html#excision">excision operator</a> <code>-</code> to remove all instances of <code>'chr'</code> elementally. The output of the <code>String</code> expression contains numeric characters only, which are then casted to the array <code>chromosome</code>.</p>
+<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>In general, for other <a href="../UserInfo/file-ext.html">text file extensions</a>, one would specify the <code>column_separator</code> associated with the given file. For instance, one would specify <code>column_separator=TAB</code> for the file formats <code>.bed</code>, <code>.gff</code>, and <code>.gtf</code>.</p></div>
     </div>
     <div class="col-md-3 col-md-pull-9">
       <hr class="visible-xs visible-sm">
@@ -149,6 +228,9 @@
             <a href='../../page/UserInfo/compilers.html'>Compiler-dependent behavior</a>
             </li>
             <li role="presentation">
+            <a href='../../page/UserInfo/characters.html'>Character sets and kinds</a>
+            </li>
+            <li role="presentation">
             <a href='../../page/UserInfo/thread-safety.html'>Thread safety</a>
             </li>
 
@@ -158,10 +240,19 @@
             <a href='../../page/Ref/index.html'>Reference Guide</a>
             <ul class="nav nav-stacked nav-pills">
                           <li role="presentation">
+            <a href='../../page/Ref/constants.html'>CONSTANTS</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Ref/String.html'>String</a>
+            </li>
+            <li role="presentation">
             <a href='../../page/Ref/str.html'>str</a>
             </li>
             <li role="presentation">
-            <a href='../../page/Ref/echo.html'>echo</a>
+            <a href='../../page/Ref/cast.html'>cast</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Ref/join-split.html'>join and split</a>
             </li>
             <li role="presentation">
             <a href='../../page/Ref/to_file.html'>to_file</a>
@@ -170,7 +261,16 @@
             <a href='../../page/Ref/from_file.html'>from_file</a>
             </li>
             <li role="presentation">
+            <a href='../../page/Ref/echo.html'>echo</a>
+            </li>
+            <li role="presentation">
             <a href='../../page/Ref/aprint.html'>aprint</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Ref/String-methods.html'>String methods</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Ref/operators.html'>Operators</a>
             </li>
 
             </ul>
@@ -179,16 +279,25 @@
             <a href='../../page/Examples/index.html'>Tutorials</a>
             <ul class="nav nav-stacked nav-pills">
                           <li role="presentation" class="disabled">
-            <a href='../../page/Examples/csv.html'>csv file I/O</a>
+            <a href='../../page/Examples/csv.html'>Handling csv files</a>
             </li>
             <li role="presentation">
-            <a href='../../page/Examples/binary.html'>binary file I/O</a>
+            <a href='../../page/Examples/binary.html'>Handling dat files</a>
             </li>
             <li role="presentation">
-            <a href='../../page/Examples/logging.html'>log file output</a>
+            <a href='../../page/Examples/logging.html'>Handling log files</a>
             </li>
             <li role="presentation">
-            <a href='../../page/Examples/fizzbuzz.html'>fizzbuzz</a>
+            <a href='../../page/Examples/manipulations.html'>String manipulations</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Examples/fizzbuzz.html'>FizzBuzz</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Examples/exome.html'>NGS Human Core Exome Panel</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/Examples/benchmark.html'>Benchmarking</a>
             </li>
 
             </ul>
@@ -202,14 +311,14 @@
     <footer>
       <div class="container">
       <div class="row">
-        <div class="col-xs-6 col-md-6"><p>IO-Fortran-Library was developed by Austin C Bullock<br>&copy; 2022 <a rel="license" href="https://opensource.org/licenses/MIT">MIT</a>
+        <div class="col-xs-6 col-md-6"><p>IO-Fortran-Library was developed by Austin C Bullock<br>&copy; 2023 <a rel="license" href="https://opensource.org/licenses/MIT">MIT</a>
 </p>
         </div>
         <div class="col-xs-6 col-md-6">
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2022-12-31 13:49            </p>
+ on 2023-01-25 22:05            </p>
         </div>
       </div>
       <br>
