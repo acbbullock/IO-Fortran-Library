@@ -61,7 +61,7 @@ program main
 end program main
 ```
 
-Here, we populate an `n`-by-`n` double-precision array `x` with samples from the standard Gaussian distribution and convert each to a `String` in hexadecimal format to populate a cell array, write the cell array to a text file `'bigx.csv'`, read the file back into the program to re-populate the cell array, then finally cast the cell data into `y` and compare with `x` to observe an exact match. For `n = 10000`, the total data size is `1e8` and the resulting csv file size is `1.9 GB`.
+Here, we populate an `n`-by-`n` double-precision array `x` with samples from the standard Gaussian distribution and convert each to a hexadecimal string to populate a cell array, write the cell array to a text file `'bigx.csv'`, read the file back into the program to re-populate the cell array, then finally cast the cell data into `y` and compare with `x` to observe an exact match. For `n = 10000`, the total data size is `1e8` and the resulting csv file size is `1.9 GB`.
 
 With highest optimizations enabled for each compiler on Linux (`-O3`), we observe the following sample output:
 

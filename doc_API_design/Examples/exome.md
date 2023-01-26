@@ -51,4 +51,4 @@ Wall time: 0.324 s using compiler: "Intel(R) Fortran Intel(R) 64 Compiler Classi
 ---
 ```
 
-@note With the Intel Fortran compiler `ifx`/`ifort`, we must specify `-heap-arrays 0` to avoid a segmentation fault when reading a file of this size, as noted in [compiler-dependent behavior](../UserInfo/compilers.html).
+@note With the Intel Fortran compiler `ifx`/`ifort`, we may need to specify `-heap-arrays 0` to avoid a segmentation fault when reading a file of this size, as noted in [compiler-dependent behavior](../UserInfo/compilers.html).
