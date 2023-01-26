@@ -1,6 +1,6 @@
 # IO-Fortran-Library
 
-The [IO-Fortran-Library](https://acbbullock.github.io/IO-Fortran-Library/doc/index.html) is a Fortran module `io_fortran_lib` which provides high level routines for doing internal and external I/O. In particular, the module provides a handful of generic interfaces and a simple derived type for doing string-based and array-based I/O that are useful for recording program data, reading data into programs, writing formatted logs and output, and for doing advanced character manipulations. For instance, one may read and write data from/to `.csv` and `.dat` files, represent numbers as strings inside of a string expression, efficiently stream text data to a `.log` file, and dynamically manipulate strings with a `String` type (including casting between numeric and character data).
+The [IO-Fortran-Library](https://acbbullock.github.io/IO-Fortran-Library/doc/index.html) is a Fortran module `io_fortran_lib` which provides high level routines for doing internal and external I/O. In particular, the module provides a handful of generic interfaces and a simple derived type for doing string-based and array-based I/O that are useful for recording program data, reading data into programs, writing formatted logs and output, and for doing advanced string manipulations. For instance, one may read and write data from/to `.csv` and `.dat` files, represent numbers as strings inside of a string expression, efficiently stream text data to a `.log` file, and dynamically manipulate strings with a `String` type (including casting between numeric and string data).
 
 To use `io_fortran_lib` with your [fpm](https://github.com/fortran-lang/fpm) project, add the following lines to your `fpm.toml` file and `use` the module in your program units to access the routines:
 
@@ -25,8 +25,8 @@ For a list of available interfaces and how to call them, see the [reference guid
 * New [constants](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/constants.html) have been added for public use to facilitate file I/O consistently on a variety of platforms.
 * New interface [String](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/string.html) for an elemental version of `str` with a return type of `String`.
 * New interface [cast](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/cast.html) for casting `character` and `String` data into numeric variables.
-* New interfaces [glue and split](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/glue-split.html) for gluing and splitting strings.
-* New [operator interfaces](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/operators.html) for character manipulations involving both `character` and `String` types.
+* New interfaces [join and split](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/join-split.html) for joining and splitting strings.
+* New [operator interfaces](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Ref/operators.html) for string manipulations involving both `character` and `String` types.
 
 ### Added
 
