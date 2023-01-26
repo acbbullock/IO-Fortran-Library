@@ -16,7 +16,7 @@ ordered_subpage: operators.md
 
 The following subsections provide user instructions for each of the publicly accessible [interfaces](../../lists/procedures.html):
 
-* [String](string.html): Function for transforming numeric or `character` data into a [String](../../type/string.html) type.
+* [String](String.html): Function for transforming numeric or `character` data into a [String](../../type/string.html) type.
 * [str](str.html): Function for representing a scalar number as a `character` string.
 * [cast](cast.html): Subroutine for casting a `character` or `String` into a number.
 * [join and split](join-split.html): Functions for joining and splitting strings.
@@ -24,5 +24,5 @@ The following subsections provide user instructions for each of the publicly acc
 * [from_file](from_file.html): Subroutine for reading an external file of uniform numeric data type and format into an array.
 * [echo](echo.html): Subroutine for writing a scalar `character` or `String` to an external text file.
 * [aprint](aprint.html): Subroutine for printing arrays and array sections to stdout.
-* [String methods](string-methods.html): Type-bound procedures for [String](../../type/string.html).
+* [String methods](String-methods.html): Type-bound procedures for [String](../../type/string.html).
 * [Operators](operators.html): Extended operators for convenient string manipulations.

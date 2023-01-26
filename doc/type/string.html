@@ -198,8 +198,8 @@
     <div class="col-md-9" id='text'>
       <h2>type, public :: String</h2>
     <p>A growable string type for advanced character handling and text file I/O.</p>
-<p>For a user reference, see <a href="../page/Ref/string.html">String</a>,
-<a href="../page/Ref/string-methods.html">String methods</a>, and <a href="../page/Ref/operators.html">Operators</a>.</p>
+<p>For a user reference, see <a href="../page/Ref/String.html">String</a>,
+<a href="../page/Ref/String-methods.html">String methods</a>, and <a href="../page/Ref/operators.html">Operators</a>.</p>
 <p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>TECHNICAL NOTE: The <code>String</code> type is memory safe. The user will never need to be concerned about
 accessing invalid memory when using the <code>String</code> type. Any operation defined in this documentation for the
 <code>String</code> type which may involve a <code>String</code> with an unallocated component, or arrays of <code>String</code>s in which
@@ -299,8 +299,8 @@ treated as the <a href="../module/io_fortran_lib.html#variable-empty_str">empty 
 <p>The interface for <code>String</code> is identical to that of <code>str</code> but with a return type of <code>String</code>, allowing for
 elemental assignments and access to the various <code>String</code> methods for advanced character handling. For the
 complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.</p>
-<p>For a user reference, see <a href="../page/Ref/string.html">String</a>,
-<a href="../page/Ref/string-methods.html">String methods</a>, and <a href="../page/Ref/operators.html">Operators</a>.</p>
+<p>For a user reference, see <a href="../page/Ref/String.html">String</a>,
+<a href="../page/Ref/String-methods.html">String methods</a>, and <a href="../page/Ref/operators.html">Operators</a>.</p>
       </div>
     <ul class="list-group">
           <li class="list-group-item">
@@ -2389,7 +2389,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
     private pure recursive module function as_str(self) result(string_slice)  
 </h3>
   <p>Returns a copy of the string slice component of a scalar <code>String</code>.</p>
-<p>For a user reference, see <a href="../page/Ref/string-methods.html#as_str">as_str</a>.</p>
+<p>For a user reference, see <a href="../page/Ref/String-methods.html#as_str">as_str</a>.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -2443,7 +2443,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
 </h3>
   <p>Sets the string slice component to the empty string elementally. This procedure is identical in function
 to the assignment <code>self = String()</code>.</p>
-<p>For a user reference, see <a href="../page/Ref/string-methods.html#empty">empty</a>.</p>
+<p>For a user reference, see <a href="../page/Ref/String-methods.html#empty">empty</a>.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -2492,7 +2492,7 @@ to the assignment <code>self = String()</code>.</p>
 </h3>
   <p>Joins a <code>String</code> vector <code>tokens</code> into <code>self</code> with given separator. Default separator is SPACE. The
 string slice component will be replaced if already allocated.</p>
-<p>For a user reference, see <a href="../page/Ref/string-methods.html#join">join</a>.</p>
+<p>For a user reference, see <a href="../page/Ref/String-methods.html#join">join</a>.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -2570,7 +2570,7 @@ string slice component will be replaced if already allocated.</p>
     private pure elemental recursive module function length(self) result(self_len)  
 </h3>
   <p>Returns the length of the string slice component elementally. Unallocated components return <code>-1</code>.</p>
-<p>For a user reference, see <a href="../page/Ref/string-methods.html#len">len</a>.</p>
+<p>For a user reference, see <a href="../page/Ref/String-methods.html#len">len</a>.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -2624,7 +2624,7 @@ string slice component will be replaced if already allocated.</p>
 </h3>
   <p>Returns the length of the string slice component elementally. Unallocated components return <code>-1</code>. This
 function is identical to <code>len</code> for strings of 2,147,483,647 bytes or smaller.</p>
-<p>For a user reference, see <a href="../page/Ref/string-methods.html#len">len</a>.</p>
+<p>For a user reference, see <a href="../page/Ref/String-methods.html#len">len</a>.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -2678,7 +2678,7 @@ function is identical to <code>len</code> for strings of 2,147,483,647 bytes or 
 </h3>
   <p>Reads raw text file contents into <code>self</code> and optionally populates a cell array using the designated
 <code>row_separator</code> and <code>column_separator</code> whose default values are <code>LF</code> and <code>COMMA</code> respectively.</p>
-<p>For a user reference, see <a href="../page/Ref/string-methods.html#read_file">read_file</a>.</p>
+<p>For a user reference, see <a href="../page/Ref/String-methods.html#read_file">read_file</a>.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -2787,7 +2787,7 @@ function is identical to <code>len</code> for strings of 2,147,483,647 bytes or 
 </h3>
   <p>Returns a copy of a <code>String</code> elementally in which each string slice component has been trimmed of any
 leading or trailing whitespace.</p>
-<p>For a user reference, see <a href="../page/Ref/string-methods.html#trim">trim</a>.</p>
+<p>For a user reference, see <a href="../page/Ref/String-methods.html#trim">trim</a>.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -2841,7 +2841,7 @@ leading or trailing whitespace.</p>
 </h3>
   <p>Removes any leading or trailing whitespace of the string slice component of a <code>String</code> elementally and
 in place.</p>
-<p>For a user reference, see <a href="../page/Ref/string-methods.html#trim_inplace">trim_inplace</a>.</p>
+<p>For a user reference, see <a href="../page/Ref/String-methods.html#trim_inplace">trim_inplace</a>.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -2891,7 +2891,7 @@ in place.</p>
   <p>Writes the content of a cell array to a text file. The cell array's entire contents are populated into
 <code>self</code> and then streamed to an external text file using the designated <code>row_separator</code> and
 <code>column_separator</code> whose default values are <code>LF</code> and <code>COMMA</code> respectively.</p>
-<p>For a user reference, see <a href="../page/Ref/string-methods.html#write_file">write_file</a>.</p>
+<p>For a user reference, see <a href="../page/Ref/String-methods.html#write_file">write_file</a>.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -3020,7 +3020,7 @@ in place.</p>
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-01-25 22:05            </p>
+ on 2023-01-26 02:18            </p>
         </div>
       </div>
       <br>

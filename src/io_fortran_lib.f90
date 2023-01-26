@@ -54,8 +54,8 @@ module io_fortran_lib
 		!--------------------------------------------------------------------------------------------------------------
 		!! A growable string type for advanced character handling and text file I/O.
 		!!
-		!! For a user reference, see [String](../page/Ref/string.html),
-		!! [String methods](../page/Ref/string-methods.html), and [Operators](../page/Ref/operators.html).
+		!! For a user reference, see [String](../page/Ref/String.html),
+		!! [String methods](../page/Ref/String-methods.html), and [Operators](../page/Ref/operators.html).
 		!!
 		!! @note TECHNICAL NOTE: The `String` type is memory safe. The user will never need to be concerned about
 		!! accessing invalid memory when using the `String` type. Any operation defined in this documentation for the
@@ -114,7 +114,7 @@ module io_fortran_lib
 			!----------------------------------------------------------------------------------------------------------
 			!! Returns a copy of the string slice component of a scalar `String`.
 			!!
-			!! For a user reference, see [as_str](../page/Ref/string-methods.html#as_str).
+			!! For a user reference, see [as_str](../page/Ref/String-methods.html#as_str).
 			!----------------------------------------------------------------------------------------------------------
 			class(String), intent(in) :: self
 			character(len=:), allocatable :: string_slice
@@ -141,7 +141,7 @@ module io_fortran_lib
 			!! Sets the string slice component to the empty string elementally. This procedure is identical in function
 			!! to the assignment `self = String()`.
 			!!
-			!! For a user reference, see [empty](../page/Ref/string-methods.html#empty).
+			!! For a user reference, see [empty](../page/Ref/String-methods.html#empty).
 			!----------------------------------------------------------------------------------------------------------
 			class(String), intent(inout) :: self
 		end subroutine empty
@@ -151,7 +151,7 @@ module io_fortran_lib
 			!! Joins a `String` vector `tokens` into `self` with given separator. Default separator is SPACE. The
 			!! string slice component will be replaced if already allocated.
 			!!
-			!! For a user reference, see [join](../page/Ref/string-methods.html#join).
+			!! For a user reference, see [join](../page/Ref/String-methods.html#join).
 			!----------------------------------------------------------------------------------------------------------
 			class(String), intent(inout) :: self
 			type(String), dimension(:), intent(in) :: tokens
@@ -171,7 +171,7 @@ module io_fortran_lib
 			!----------------------------------------------------------------------------------------------------------
 			!! Returns the length of the string slice component elementally. Unallocated components return `-1`.
 			!!
-			!! For a user reference, see [len](../page/Ref/string-methods.html#len).
+			!! For a user reference, see [len](../page/Ref/String-methods.html#len).
 			!----------------------------------------------------------------------------------------------------------
 			class(String), intent(in) :: self
 		end function length
@@ -181,7 +181,7 @@ module io_fortran_lib
 			!! Returns the length of the string slice component elementally. Unallocated components return `-1`. This
 			!! function is identical to `len` for strings of 2,147,483,647 bytes or smaller.
 			!!
-			!! For a user reference, see [len](../page/Ref/string-methods.html#len).
+			!! For a user reference, see [len](../page/Ref/String-methods.html#len).
 			!----------------------------------------------------------------------------------------------------------
 			class(String), intent(in) :: self
 		end function length64
@@ -207,7 +207,7 @@ module io_fortran_lib
 			!! Reads raw text file contents into `self` and optionally populates a cell array using the designated
 			!! `row_separator` and `column_separator` whose default values are `LF` and `COMMA` respectively.
 			!!
-			!! For a user reference, see [read_file](../page/Ref/string-methods.html#read_file).
+			!! For a user reference, see [read_file](../page/Ref/String-methods.html#read_file).
 			!----------------------------------------------------------------------------------------------------------
 			class(String), intent(inout) :: self
 			character(len=*), intent(in) :: file_name
@@ -296,7 +296,7 @@ module io_fortran_lib
 			!! Returns a copy of a `String` elementally in which each string slice component has been trimmed of any
 			!! leading or trailing whitespace.
 			!!
-			!! For a user reference, see [trim](../page/Ref/string-methods.html#trim).
+			!! For a user reference, see [trim](../page/Ref/String-methods.html#trim).
 			!----------------------------------------------------------------------------------------------------------
 			class(String), intent(in) :: self
 		end function trim_copy
@@ -306,7 +306,7 @@ module io_fortran_lib
 			!! Removes any leading or trailing whitespace of the string slice component of a `String` elementally and
 			!! in place.
 			!!
-			!! For a user reference, see [trim_inplace](../page/Ref/string-methods.html#trim_inplace).
+			!! For a user reference, see [trim_inplace](../page/Ref/String-methods.html#trim_inplace).
 			!----------------------------------------------------------------------------------------------------------
 			class(String), intent(inout) :: self
 		end subroutine trim_inplace
@@ -317,7 +317,7 @@ module io_fortran_lib
 			!! `self` and then streamed to an external text file using the designated `row_separator` and
 			!! `column_separator` whose default values are `LF` and `COMMA` respectively.
 			!!
-			!! For a user reference, see [write_file](../page/Ref/string-methods.html#write_file).
+			!! For a user reference, see [write_file](../page/Ref/String-methods.html#write_file).
 			!----------------------------------------------------------------------------------------------------------
 			class(String), intent(inout) :: self
 			type(String), dimension(:,:), intent(inout) :: cell_array
@@ -495,8 +495,8 @@ module io_fortran_lib
 		!! elemental assignments and access to the various `String` methods for advanced character handling. For the
 		!! complement of `String`, see [cast](../page/Ref/cast.html).
 		!!
-		!! For a user reference, see [String](../page/Ref/string.html),
-		!! [String methods](../page/Ref/string-methods.html), and [Operators](../page/Ref/operators.html).
+		!! For a user reference, see [String](../page/Ref/String.html),
+		!! [String methods](../page/Ref/String-methods.html), and [Operators](../page/Ref/operators.html).
 		!--------------------------------------------------------------------------------------------------------------
 		pure elemental recursive type(String) module function new_Str_c128(x, locale, fmt, decimals, im) result(new)
 			complex(real128), intent(in) :: x
@@ -666,7 +666,7 @@ module io_fortran_lib
 		!--------------------------------------------------------------------------------------------------------------
 		!! Subroutine for casting a `character` or `String` into a number.
 		!!
-		!! For the complement of `cast`, see [String](../page/Ref/string.html) and [str](../page/Ref/str.html).
+		!! For the complement of `cast`, see [String](../page/Ref/String.html) and [str](../page/Ref/str.html).
 		!!
 		!! For a user reference, see [cast](../page/Ref/cast.html).
 		!--------------------------------------------------------------------------------------------------------------

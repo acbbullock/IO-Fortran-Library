@@ -48,7 +48,7 @@ result = str(x, locale, fmt, decimals, im)
 * `decimals` is `optional` and of type `integer`
 * `im` is `optional` and of type `character(len=*)`
 
-@note Note that `str` operates on scalars only. For elemental functionality, see [String](string.html).
+@note Note that `str` operates on scalars only. For elemental functionality, see [String](String.html).
 
 ### Optional Arguments
 
