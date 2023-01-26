@@ -17,7 +17,7 @@ program main
 	write(*,'(a)')	'Compiler options: ' + compiler_options() + LF
 
 	call system_clock(t1)
-	cells = String(x, fmt='e')
+	cells = String(x, fmt='z')
 	call system_clock(t2, count_rate=rate); wall_time = real(t2-t1,dp)/rate
 
 	write(*,'(a)')	'Wall time for String: ' + str(wall_time, fmt='f', decimals=3) + ' s'
@@ -39,7 +39,7 @@ program main
 	call csv%empty(); allocate( y(n,n) )
 
 	call system_clock(t1)
-	call cells%cast(into=y, fmt='e')
+	call cells%cast(into=y, fmt='z')
 	call system_clock(t2, count_rate=rate); wall_time = real(t2-t1,dp)/rate
 
 	write(*,'(a)')	'Wall time for cast: ' + str(wall_time, fmt='f', decimals=3) + ' s'
