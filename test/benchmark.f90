@@ -1,6 +1,6 @@
 program main
 	use, intrinsic :: iso_fortran_env, only: int64, rk=>real64, dp=>real64, compiler_version, compiler_options
-	use io_fortran_lib, only: String, str, LF, operator(+)
+	use io_fortran_lib, only: String, cast, str, LF, operator(+)
 	implicit none (type,external)
 
 	type(String) :: csv
@@ -12,12 +12,12 @@ program main
 	integer, parameter :: n = 10000
 	real(rk), allocatable, dimension(:,:) :: x, y
 
-	allocate( x(n,n) ); call random_gauss(x,0.0_rk,1.0_rk)
+	allocate( x(n,n), cells(n,n) ); call random_gauss(x,0.0_rk,1.0_rk)
 	write(*,'(a)')	'Compiler version: ' + compiler_version()
 	write(*,'(a)')	'Compiler options: ' + compiler_options() + LF
 
 	call system_clock(t1)
-	cells = String(x, fmt='z')
+	call cast(x, into=cells, fmt='z')
 	call system_clock(t2, count_rate=rate); wall_time = real(t2-t1,dp)/rate
 
 	write(*,'(a)')	'Wall time for String: ' + str(wall_time, fmt='f', decimals=3) + ' s'
@@ -39,7 +39,7 @@ program main
 	call csv%empty(); allocate( y(n,n) )
 
 	call system_clock(t1)
-	call cells%cast(into=y, fmt='z')
+	call cast(cells, into=y, fmt='z')
 	call system_clock(t2, count_rate=rate); wall_time = real(t2-t1,dp)/rate
 
 	write(*,'(a)')	'Wall time for cast: ' + str(wall_time, fmt='f', decimals=3) + ' s'

@@ -25,6 +25,7 @@ program main
 	test_int: block
 		real(rk) :: x
 		integer(ik) :: i, j
+		character(len=:), allocatable :: char_var
 
 		call random_gauss(x,0.0_rk,1.0_rk); i = floor(huge(1_ik)*x, ik) + 1_ik
 		call cast(str(i, fmt='i'), into=j, fmt='i')
@@ -43,10 +44,29 @@ program main
 			write(*,*) 'int 2: FAILURE'
 			all_passing = .false.
 		end if
+
+		call random_gauss(x,0.0_rk,1.0_rk); i = floor(huge(1_ik)*x, ik) + 1_ik
+		call cast(i, into=char_var, fmt='i'); call cast(char_var, into=j, fmt='i')
+		if ( i == j ) then
+			write(*,*) 'int 3: SUCCESS'
+		else
+			write(*,*) 'int 3: FAILURE'
+			all_passing = .false.
+		end if
+
+		call random_gauss(x,0.0_rk,1.0_rk); i = floor(huge(1_ik)*x, ik) + 1_ik
+		call cast(i, into=char_var, fmt='z'); call cast(char_var, into=j, fmt='z')
+		if ( i == j ) then
+			write(*,*) 'int 4: SUCCESS'
+		else
+			write(*,*) 'int 4: FAILURE'
+			all_passing = .false.
+		end if
 	end block test_int
 
 	test_real: block
 		real(rk) :: x, y
+		character(len=:), allocatable :: char_var
 
 		call random_gauss(x,0.0_rk,1.0_rk)
 		call cast(str(x, locale='US', fmt='e'), into=y, locale='US', fmt='e')
@@ -101,11 +121,66 @@ program main
 			write(*,*) 'real 6: FAILURE'
 			all_passing = .false.
 		end if
+
+		call random_gauss(x,0.0_rk,1.0_rk)
+		call cast(x, into=char_var, locale='US', fmt='e'); call cast(char_var, into=y, locale='US', fmt='e')
+		if ( abs(x-y)/abs(x) < tol ) then
+			write(*,*) 'real 7: SUCCESS'
+		else
+			write(*,*) 'real 7: FAILURE'
+			all_passing = .false.
+		end if
+
+		call random_gauss(x,0.0_rk,1.0_rk)
+		call cast(x, into=char_var, locale='US', fmt='f'); call cast(char_var, into=y, locale='US', fmt='f')
+		if ( abs(x-y)/abs(x) < tol ) then
+			write(*,*) 'real 8: SUCCESS'
+		else
+			write(*,*) 'real 8: FAILURE'
+			all_passing = .false.
+		end if
+
+		call random_gauss(x,0.0_rk,1.0_rk)
+		call cast(x, into=char_var, locale='US', fmt='z'); call cast(char_var, into=y, locale='US', fmt='z')
+		if ( abs(x-y)/abs(x) < tol ) then
+			write(*,*) 'real 9: SUCCESS'
+		else
+			write(*,*) 'real 9: FAILURE'
+			all_passing = .false.
+		end if
+
+		call random_gauss(x,0.0_rk,1.0_rk)
+		call cast(x, into=char_var, locale='EU', fmt='e'); call cast(char_var, into=y, locale='EU', fmt='e')
+		if ( abs(x-y)/abs(x) < tol ) then
+			write(*,*) 'real 10: SUCCESS'
+		else
+			write(*,*) 'real 10: FAILURE'
+			all_passing = .false.
+		end if
+
+		call random_gauss(x,0.0_rk,1.0_rk)
+		call cast(x, into=char_var, locale='EU', fmt='f'); call cast(char_var, into=y, locale='EU', fmt='f')
+		if ( abs(x-y)/abs(x) < tol ) then
+			write(*,*) 'real 11: SUCCESS'
+		else
+			write(*,*) 'real 11: FAILURE'
+			all_passing = .false.
+		end if
+
+		call random_gauss(x,0.0_rk,1.0_rk)
+		call cast(x, into=char_var, locale='EU', fmt='z'); call cast(char_var, into=y, locale='EU', fmt='z')
+		if ( abs(x-y)/abs(x) < tol ) then
+			write(*,*) 'real 12: SUCCESS'
+		else
+			write(*,*) 'real 12: FAILURE'
+			all_passing = .false.
+		end if
 	end block test_real
 
 	test_complex: block
 		real(rk) :: x, y
 		complex(rk) :: z1, z2
+		character(len=:), allocatable :: char_var
 
 		call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
 		call cast(str(z1, locale='US', fmt='e', im=''), into=z2, locale='US', fmt='e', im='')
@@ -266,6 +341,186 @@ program main
 			write(*,*) 'complex 18: SUCCESS'
 		else
 			write(*,*) 'complex 18: FAILURE'
+			all_passing = .false.
+		end if
+
+		call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+		call cast(z1, into=char_var, locale='US', fmt='e', im='')
+		call cast(char_var, into=z2, locale='US', fmt='e', im='')
+		if ( abs(z1-z2)/abs(z1) < tol ) then
+			write(*,*) 'complex 19: SUCCESS'
+		else
+			write(*,*) 'complex 19: FAILURE'
+			all_passing = .false.
+		end if
+
+		call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+		call cast(z1, into=char_var, locale='US', fmt='f', im='')
+		call cast(char_var, into=z2, locale='US', fmt='f', im='')
+		if ( abs(z1-z2)/abs(z1) < tol ) then
+			write(*,*) 'complex 20: SUCCESS'
+		else
+			write(*,*) 'complex 20: FAILURE'
+			all_passing = .false.
+		end if
+
+		call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+		call cast(z1, into=char_var, locale='US', fmt='z', im='')
+		call cast(char_var, into=z2, locale='US', fmt='z', im='')
+		if ( abs(z1-z2)/abs(z1) < tol ) then
+			write(*,*) 'complex 21: SUCCESS'
+		else
+			write(*,*) 'complex 21: FAILURE'
+			all_passing = .false.
+		end if
+
+		call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+		call cast(z1, into=char_var, locale='US', fmt='e', im='j')
+		call cast(char_var, into=z2, locale='US', fmt='e', im='j')
+		if ( abs(z1-z2)/abs(z1) < tol ) then
+			write(*,*) 'complex 22: SUCCESS'
+		else
+			write(*,*) 'complex 22: FAILURE'
+			all_passing = .false.
+		end if
+
+		call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+		call cast(z1, into=char_var, locale='US', fmt='f', im='j')
+		call cast(char_var, into=z2, locale='US', fmt='f', im='j')
+		if ( abs(z1-z2)/abs(z1) < tol ) then
+			write(*,*) 'complex 23: SUCCESS'
+		else
+			write(*,*) 'complex 23: FAILURE'
+			all_passing = .false.
+		end if
+
+		call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+		call cast(z1, into=char_var, locale='US', fmt='z', im='j')
+		call cast(char_var, into=z2, locale='US', fmt='z', im='j')
+		if ( abs(z1-z2)/abs(z1) < tol ) then
+			write(*,*) 'complex 24: SUCCESS'
+		else
+			write(*,*) 'complex 24: FAILURE'
+			all_passing = .false.
+		end if
+
+		call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+		call cast(z1, into=char_var, locale='US', fmt='e', im='*1i')
+		call cast(char_var, into=z2, locale='US', fmt='e', im='*1i')
+		if ( abs(z1-z2)/abs(z1) < tol ) then
+			write(*,*) 'complex 25: SUCCESS'
+		else
+			write(*,*) 'complex 25: FAILURE'
+			all_passing = .false.
+		end if
+
+		call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+		call cast(z1, into=char_var, locale='US', fmt='f', im='*1i')
+		call cast(char_var, into=z2, locale='US', fmt='f', im='*1i')
+		if ( abs(z1-z2)/abs(z1) < tol ) then
+			write(*,*) 'complex 26: SUCCESS'
+		else
+			write(*,*) 'complex 26: FAILURE'
+			all_passing = .false.
+		end if
+
+		call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+		call cast(z1, into=char_var, locale='US', fmt='z', im='*1i')
+		call cast(char_var, into=z2, locale='US', fmt='z', im='*1i')
+		if ( abs(z1-z2)/abs(z1) < tol ) then
+			write(*,*) 'complex 27: SUCCESS'
+		else
+			write(*,*) 'complex 27: FAILURE'
+			all_passing = .false.
+		end if
+
+		call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+		call cast(z1, into=char_var, locale='EU', fmt='e', im='')
+		call cast(char_var, into=z2, locale='EU', fmt='e', im='')
+		if ( abs(z1-z2)/abs(z1) < tol ) then
+			write(*,*) 'complex 28: SUCCESS'
+		else
+			write(*,*) 'complex 28: FAILURE'
+			all_passing = .false.
+		end if
+
+		call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+		call cast(z1, into=char_var, locale='EU', fmt='f', im='')
+		call cast(char_var, into=z2, locale='EU', fmt='f', im='')
+		if ( abs(z1-z2)/abs(z1) < tol ) then
+			write(*,*) 'complex 29: SUCCESS'
+		else
+			write(*,*) 'complex 29: FAILURE'
+			all_passing = .false.
+		end if
+
+		call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+		call cast(z1, into=char_var, locale='EU', fmt='z', im='')
+		call cast(char_var, into=z2, locale='EU', fmt='z', im='')
+		if ( abs(z1-z2)/abs(z1) < tol ) then
+			write(*,*) 'complex 30: SUCCESS'
+		else
+			write(*,*) 'complex 30: FAILURE'
+			all_passing = .false.
+		end if
+
+		call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+		call cast(z1, into=char_var, locale='EU', fmt='e', im='j')
+		call cast(char_var, into=z2, locale='EU', fmt='e', im='j')
+		if ( abs(z1-z2)/abs(z1) < tol ) then
+			write(*,*) 'complex 31: SUCCESS'
+		else
+			write(*,*) 'complex 31: FAILURE'
+			all_passing = .false.
+		end if
+
+		call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+		call cast(z1, into=char_var, locale='EU', fmt='f', im='j')
+		call cast(char_var, into=z2, locale='EU', fmt='f', im='j')
+		if ( abs(z1-z2)/abs(z1) < tol ) then
+			write(*,*) 'complex 32: SUCCESS'
+		else
+			write(*,*) 'complex 32: FAILURE'
+			all_passing = .false.
+		end if
+
+		call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+		call cast(z1, into=char_var, locale='EU', fmt='z', im='j')
+		call cast(char_var, into=z2, locale='EU', fmt='z', im='j')
+		if ( abs(z1-z2)/abs(z1) < tol ) then
+			write(*,*) 'complex 33: SUCCESS'
+		else
+			write(*,*) 'complex 33: FAILURE'
+			all_passing = .false.
+		end if
+
+		call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+		call cast(z1, into=char_var, locale='EU', fmt='e', im='*1i')
+		call cast(char_var, into=z2, locale='EU', fmt='e', im='*1i')
+		if ( abs(z1-z2)/abs(z1) < tol ) then
+			write(*,*) 'complex 34: SUCCESS'
+		else
+			write(*,*) 'complex 34: FAILURE'
+			all_passing = .false.
+		end if
+
+		call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+		call cast(z1, into=char_var, locale='EU', fmt='f', im='*1i')
+		call cast(char_var, into=z2, locale='EU', fmt='f', im='*1i')
+		if ( abs(z1-z2)/abs(z1) < tol ) then
+			write(*,*) 'complex 35: SUCCESS'
+		else
+			write(*,*) 'complex 35: FAILURE'
+			all_passing = .false.
+		end if
+
+		call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+		call cast(z1, into=char_var, locale='EU', fmt='z', im='*1i')
+		call cast(char_var, into=z2, locale='EU', fmt='z', im='*1i')
+		if ( abs(z1-z2)/abs(z1) < tol ) then
+			write(*,*) 'complex 36: SUCCESS'
+		else
+			write(*,*) 'complex 36: FAILURE'
 			all_passing = .false.
 		end if
 	end block test_complex
