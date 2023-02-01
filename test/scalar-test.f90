@@ -15,7 +15,7 @@ program main
 	logfile = './test/tests.log'
 	call date_and_time(date=date, time=time)
 
-	logmsg = String('RUNNING TESTS (str|cast) | date: ' + trim(adjustl(date)) + ' | time: ' + time + &
+	logmsg = String('RUNNING TESTS (scalar) | date: ' + trim(adjustl(date)) + ' | time: ' + time + &
 					' | real kind: ' + str(rk) + ' | int kind: ' + str(ik))
 	call logmsg%push(LF + '-'**logmsg%len() + LF)
 

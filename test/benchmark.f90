@@ -20,7 +20,7 @@ program main
 	call cast(x, into=cells, fmt='z')
 	call system_clock(t2, count_rate=rate); wall_time = real(t2-t1,dp)/rate
 
-	write(*,'(a)')	'Wall time for String: ' + str(wall_time, fmt='f', decimals=3) + ' s'
+	write(*,'(a)')	'Wall time for cast: ' + str(wall_time, fmt='f', decimals=3) + ' s'
 	write(*,'(a)')	'Number of string conversions/second: ' + str(nint(size(x)/wall_time)) + LF
 
 	call system_clock(t1)
