@@ -6046,7 +6046,21 @@ submodule (io_fortran_lib) internal_io
 	integer(int16),	parameter :: largest_int16	= huge(1_int16)
 	integer(int8),	parameter :: largest_int8	= huge(1_int8)
 
-	integer, dimension(0:15), parameter :: DIGITS_I	= [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 ]
+	integer(int64), dimension(0:18), parameter :: TENS_i64 = int([ 1d0, 1d1, 1d2, 1d3, 1d4, 1d5, 1d6, 1d7, 1d8, 1d9, &
+																   1d10, 1d11, 1d12, 1d13, 1d14, 1d15, 1d16, 1d17, &
+																   1d18 ], kind=int64)
+	integer(int32), dimension(0:9),  parameter :: TENS_i32 = int([ 1e0, 1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9 ])
+	integer(int16), dimension(0:4),  parameter :: TENS_i16 = int([ 1e0, 1e1, 1e2, 1e3, 1e4 ], kind=int16)
+	integer(int8),  dimension(0:2),  parameter :: TENS_i8  = int([ 1e0, 1e1, 1e2 ], kind=int8)
+
+	integer(int64), dimension(0:15), parameter :: SIXTEENS_i64 = [ 1_int64, 16_int64, 16_int64**2, 16_int64**3, &
+																   16_int64**4, 16_int64**5, 16_int64**6, 16_int64**7,&
+																   16_int64**8, 16_int64**9, 16_int64**10, &
+																   16_int64**11, 16_int64**12, 16_int64**13, &
+																   16_int64**14, 16_int64**15 ]
+	integer(int32), dimension(0:7),  parameter :: SIXTEENS_i32 = [ 1, 16, 16**2, 16**3, 16**4, 16**5, 16**6, 16**7 ]
+	integer(int16), dimension(0:3),  parameter :: SIXTEENS_i16 = [ 1_int16, 16_int16, 256_int16, 4096_int16 ]
+	integer(int8),  dimension(0:1),  parameter :: SIXTEENS_i8  = [ 1_int8, 16_int8 ]
 
 	character(len=1), dimension(0:15), parameter :: DIGITS_A = [ '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', &
 																 'a', 'b', 'c', 'd', 'e', 'f' ]
@@ -11422,10 +11436,9 @@ submodule (io_fortran_lib) internal_io
 		character(len=1) :: fmt_
 		character(len=5) :: decimal
 		character(len=:), allocatable :: im_
-		character(len=:), allocatable, dimension(:) :: seps, e_chars
 
 		real(real128) :: z_re, z_im
-		integer, allocatable :: substring_len, i, l, r, im_len
+		integer :: substring_len, l, r, i, sep_code, e_code, im_len
 
 		substring_len = substring%len()
 
@@ -11463,23 +11476,23 @@ submodule (io_fortran_lib) internal_io
 
 		if ( len(im_) == 0 ) then
 			if ( decimal == 'POINT' ) then
-				seps = [ COMMA ]
+				sep_code = iachar(COMMA)
 			else
-				seps = [ SEMICOLON ]
+				sep_code = iachar(SEMICOLON)
 			end if
 
-			l = 1; do while ( l <= substring_len )
-				if ( substring%s(l:l) == '(' ) exit
+			l = 1; do
+				if ( iachar(substring%s(l:l)) == 40 ) exit
 				l = l + 1; cycle
 			end do
 
-			r = substring_len; do while ( r >= 1 )
-				if ( substring%s(r:r) == ')' ) exit
+			r = substring_len; do
+				if ( iachar(substring%s(r:r)) == 41 ) exit
 				r = r - 1; cycle
 			end do
 
-			i = l+1; do while ( i <= r )
-				if ( substring%s(i:i) == seps(1) ) exit
+			i = l+1; do
+				if ( iachar(substring%s(i:i)) == sep_code ) exit
 				i = i + 1; cycle
 			end do
 
@@ -11512,28 +11525,35 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		im_len = len(im_); seps = [ '+', '-' ]; e_chars = [ 'e', 'E' ]
+		sep_code = iachar('+'); e_code = iachar('e'); im_len = len(im_)
 
-		l = 1; do while ( l <= substring_len )
-			if ( substring%s(l:l) /= SPACE ) exit
+		l = 1; do
+			if ( iachar(substring%s(l:l)) > sep_code ) exit
 			l = l + 1; cycle
 		end do
 
-		r = substring_len-im_len+1; do while ( r >= 1 )
+		r = substring_len-im_len+1; do
 			if ( substring%s(r:r+im_len-1) == im_ ) exit
 			r = r - 1; cycle
 		end do
 
-		i = l+1; do while ( i <= r )
-			if ( any(seps == substring%s(i:i)) ) then
-				if ( any(e_chars == substring%s(i-1:i-1)) .and. (fmt_ /= 'z') ) then
-					i = i + 1; cycle
-				else
-					exit
+		if ( fmt_ == 'z' ) then
+			i = l+1; do
+				if ( iachar(substring%s(i:i)) == sep_code ) exit
+				i = i + 1; cycle
+			end do
+		else
+			i = l+1; do
+				if ( (iachar(substring%s(i:i)) == sep_code) .or. (iachar(substring%s(i:i)) == sep_code+2) ) then
+					if ( (iachar(substring%s(i-1:i-1)) == e_code).or.(iachar(substring%s(i-1:i-1)) == e_code-32) ) then
+						i = i + 1; cycle
+					else
+						exit
+					end if
 				end if
-			end if
-			i = i + 1; cycle
-		end do
+				i = i + 1; cycle
+			end do
+		end if
 
 		if ( fmt_ == 'z' ) then
 			if ( i-l > 2 ) then
@@ -11567,10 +11587,9 @@ submodule (io_fortran_lib) internal_io
 		character(len=1) :: fmt_
 		character(len=5) :: decimal
 		character(len=:), allocatable :: im_
-		character(len=:), allocatable, dimension(:) :: seps, e_chars
 
 		real(real64) :: z_re, z_im
-		integer, allocatable :: substring_len, i, l, r, im_len
+		integer :: substring_len, l, r, i, sep_code, e_code, im_len
 
 		substring_len = substring%len()
 
@@ -11608,32 +11627,31 @@ submodule (io_fortran_lib) internal_io
 
 		if ( len(im_) == 0 ) then
 			if ( decimal == 'POINT' ) then
-				seps = [ COMMA ]
+				sep_code = iachar(COMMA)
 			else
-				seps = [ SEMICOLON ]
+				sep_code = iachar(SEMICOLON)
 			end if
 
-			l = 1; do while ( l <= substring_len )
-				if ( substring%s(l:l) == '(' ) exit
+			l = 1; do
+				if ( iachar(substring%s(l:l)) == 40 ) exit
 				l = l + 1; cycle
 			end do
 
-			r = substring_len; do while ( r >= 1 )
-				if ( substring%s(r:r) == ')' ) exit
+			r = substring_len; do
+				if ( iachar(substring%s(r:r)) == 41 ) exit
 				r = r - 1; cycle
 			end do
 
-			i = l+1; do while ( i <= r )
-				if ( substring%s(i:i) == seps(1) ) exit
+			i = l+1; do
+				if ( iachar(substring%s(i:i)) == sep_code ) exit
 				i = i + 1; cycle
 			end do
 
 			if ( fmt_ == 'z' ) then
-				block; integer(int64) :: num; character(len=:), allocatable :: hex_str
-					hex_str = substring%s(l+1:i-1)
-					call cast(hex_str, into=num, fmt='z'); z_re = transfer(source=num, mold=z_re)
-					hex_str = substring%s(i+1:r-1)
-					call cast(hex_str, into=num, fmt='z'); z_im = transfer(source=num, mold=z_im)
+				block; integer(int64) :: num; character(len=i-l-1) :: hex_str_re; character(len=r-i-1) :: hex_str_im
+					hex_str_re = substring%s(l+1:i-1); hex_str_im = substring%s(i+1:r-1)
+					call cast(hex_str_re, into=num, fmt='z'); z_re = transfer(source=num, mold=z_re)
+					call cast(hex_str_im, into=num, fmt='z'); z_im = transfer(source=num, mold=z_im)
 					into = cmplx(z_re, z_im, kind=real64); return
 				end block
 			else
@@ -11643,35 +11661,41 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		im_len = len(im_); seps = [ '+', '-' ]; e_chars = [ 'e', 'E' ]
+		sep_code = iachar('+'); e_code = iachar('e'); im_len = len(im_)
 
-		l = 1; do while ( l <= substring_len )
-			if ( substring%s(l:l) /= SPACE ) exit
+		l = 1; do
+			if ( iachar(substring%s(l:l)) > sep_code ) exit
 			l = l + 1; cycle
 		end do
 
-		r = substring_len-im_len+1; do while ( r >= 1 )
+		r = substring_len-im_len+1; do
 			if ( substring%s(r:r+im_len-1) == im_ ) exit
 			r = r - 1; cycle
 		end do
 
-		i = l+1; do while ( i <= r )
-			if ( any(seps == substring%s(i:i)) ) then
-				if ( any(e_chars == substring%s(i-1:i-1)) .and. (fmt_ /= 'z') ) then
-					i = i + 1; cycle
-				else
-					exit
+		if ( fmt_ == 'z' ) then
+			i = l+1; do
+				if ( iachar(substring%s(i:i)) == sep_code ) exit
+				i = i + 1; cycle
+			end do
+		else
+			i = l+1; do
+				if ( (iachar(substring%s(i:i)) == sep_code) .or. (iachar(substring%s(i:i)) == sep_code+2) ) then
+					if ( (iachar(substring%s(i-1:i-1)) == e_code).or.(iachar(substring%s(i-1:i-1)) == e_code-32) ) then
+						i = i + 1; cycle
+					else
+						exit
+					end if
 				end if
-			end if
-			i = i + 1; cycle
-		end do
+				i = i + 1; cycle
+			end do
+		end if
 
 		if ( fmt_ == 'z' ) then
-			block; integer(int64) :: num; character(len=:), allocatable :: hex_str
-				hex_str = substring%s(l:i-1)
-				call cast(hex_str, into=num, fmt='z'); z_re = transfer(source=num, mold=z_re)
-				hex_str = substring%s(i+1:r-1)
-				call cast(hex_str, into=num, fmt='z'); z_im = transfer(source=num, mold=z_im)
+			block; integer(int64) :: num; character(len=i-l) :: hex_str_re; character(len=r-i-1) :: hex_str_im
+				hex_str_re = substring%s(l:i-1); hex_str_im = substring%s(i+1:r-1)
+				call cast(hex_str_re, into=num, fmt='z'); z_re = transfer(source=num, mold=z_re)
+				call cast(hex_str_im, into=num, fmt='z'); z_im = transfer(source=num, mold=z_im)
 				into = cmplx(z_re, z_im, kind=real64); return
 			end block
 		else
@@ -11684,10 +11708,9 @@ submodule (io_fortran_lib) internal_io
 		character(len=1) :: fmt_
 		character(len=5) :: decimal
 		character(len=:), allocatable :: im_
-		character(len=:), allocatable, dimension(:) :: seps, e_chars
 
 		real(real32) :: z_re, z_im
-		integer, allocatable :: substring_len, i, l, r, im_len
+		integer :: substring_len, l, r, i, sep_code, e_code, im_len
 
 		substring_len = substring%len()
 
@@ -11725,32 +11748,31 @@ submodule (io_fortran_lib) internal_io
 
 		if ( len(im_) == 0 ) then
 			if ( decimal == 'POINT' ) then
-				seps = [ COMMA ]
+				sep_code = iachar(COMMA)
 			else
-				seps = [ SEMICOLON ]
+				sep_code = iachar(SEMICOLON)
 			end if
 
-			l = 1; do while ( l <= substring_len )
-				if ( substring%s(l:l) == '(' ) exit
+			l = 1; do
+				if ( iachar(substring%s(l:l)) == 40 ) exit
 				l = l + 1; cycle
 			end do
 
-			r = substring_len; do while ( r >= 1 )
-				if ( substring%s(r:r) == ')' ) exit
+			r = substring_len; do
+				if ( iachar(substring%s(r:r)) == 41 ) exit
 				r = r - 1; cycle
 			end do
 
-			i = l+1; do while ( i <= r )
-				if ( substring%s(i:i) == seps(1) ) exit
+			i = l+1; do
+				if ( iachar(substring%s(i:i)) == sep_code ) exit
 				i = i + 1; cycle
 			end do
 
 			if ( fmt_ == 'z' ) then
-				block; integer(int32) :: num; character(len=:), allocatable :: hex_str
-					hex_str = substring%s(l+1:i-1)
-					call cast(hex_str, into=num, fmt='z'); z_re = transfer(source=num, mold=z_re)
-					hex_str = substring%s(i+1:r-1)
-					call cast(hex_str, into=num, fmt='z'); z_im = transfer(source=num, mold=z_im)
+				block; integer :: num; character(len=i-l-1) :: hex_str_re; character(len=r-i-1) :: hex_str_im
+					hex_str_re = substring%s(l+1:i-1); hex_str_im = substring%s(i+1:r-1)
+					call cast(hex_str_re, into=num, fmt='z'); z_re = transfer(source=num, mold=z_re)
+					call cast(hex_str_im, into=num, fmt='z'); z_im = transfer(source=num, mold=z_im)
 					into = cmplx(z_re, z_im, kind=real32); return
 				end block
 			else
@@ -11760,35 +11782,41 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		im_len = len(im_); seps = [ '+', '-' ]; e_chars = [ 'e', 'E' ]
+		sep_code = iachar('+'); e_code = iachar('e'); im_len = len(im_)
 
-		l = 1; do while ( l <= substring_len )
-			if ( substring%s(l:l) /= SPACE ) exit
+		l = 1; do
+			if ( iachar(substring%s(l:l)) > sep_code ) exit
 			l = l + 1; cycle
 		end do
 
-		r = substring_len-im_len+1; do while ( r >= 1 )
+		r = substring_len-im_len+1; do
 			if ( substring%s(r:r+im_len-1) == im_ ) exit
 			r = r - 1; cycle
 		end do
 
-		i = l+1; do while ( i <= r )
-			if ( any(seps == substring%s(i:i)) ) then
-				if ( any(e_chars == substring%s(i-1:i-1)) .and. (fmt_ /= 'z') ) then
-					i = i + 1; cycle
-				else
-					exit
+		if ( fmt_ == 'z' ) then
+			i = l+1; do
+				if ( iachar(substring%s(i:i)) == sep_code ) exit
+				i = i + 1; cycle
+			end do
+		else
+			i = l+1; do
+				if ( (iachar(substring%s(i:i)) == sep_code) .or. (iachar(substring%s(i:i)) == sep_code+2) ) then
+					if ( (iachar(substring%s(i-1:i-1)) == e_code).or.(iachar(substring%s(i-1:i-1)) == e_code-32) ) then
+						i = i + 1; cycle
+					else
+						exit
+					end if
 				end if
-			end if
-			i = i + 1; cycle
-		end do
+				i = i + 1; cycle
+			end do
+		end if
 
 		if ( fmt_ == 'z' ) then
-			block; integer(int32) :: num; character(len=:), allocatable :: hex_str
-				hex_str = substring%s(l:i-1)
-				call cast(hex_str, into=num, fmt='z'); z_re = transfer(source=num, mold=z_re)
-				hex_str = substring%s(i+1:r-1)
-				call cast(hex_str, into=num, fmt='z'); z_im = transfer(source=num, mold=z_im)
+			block; integer :: num; character(len=i-l) :: hex_str_re; character(len=r-i-1) :: hex_str_im
+				hex_str_re = substring%s(l:i-1); hex_str_im = substring%s(i+1:r-1)
+				call cast(hex_str_re, into=num, fmt='z'); z_re = transfer(source=num, mold=z_re)
+				call cast(hex_str_im, into=num, fmt='z'); z_im = transfer(source=num, mold=z_im)
 				into = cmplx(z_re, z_im, kind=real32); return
 			end block
 		else
@@ -11861,61 +11889,57 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if ( fmt_ == 'z' ) then
-			inline_cast_i64: block; integer(int64) :: num, i; logical :: negative; integer :: substring_len, l, r, j
+			inline_cast: block; integer(int64) :: num; integer :: substring_len, r, l, i, digit; logical ::negative
 				substring_len = substring%len()
 
-				l = 1; do while ( l <= substring_len )
-					if ( substring%s(l:l) /= SPACE ) exit
-					l = l + 1; cycle
-				end do
-
-				if ( substring_len > 2 ) then
-					if ( substring%s(l:l+1) == '0x' ) l = l + 2
-				end if
-
-				r = substring_len; do while ( r >= l )
-					if ( substring%s(r:r) /= SPACE ) exit
+				r = substring_len; do
+					if ( (iachar(substring%s(r:r)) > 47) .or. (r == 1) ) exit
 					r = r - 1; cycle
 				end do
 
-				if ( r-l+1 == 16 ) then
-					j = 0; do while ( j <= 15 )
-						if ( DIGITS_A(j) == substring%s(l:l) ) exit
-						j = j + 1; cycle
-					end do
-
-					if ( j >= 8 ) then
-						negative = .true.
-					else
-						negative = .false.
+				l = 1; do
+					if ( (iachar(substring%s(l:l)) > 47) .or. (l == substring_len) ) then
+						if ( r-l+1 > 2 ) then
+							if ( iachar(substring%s(l+1:l+1)) == 120 ) l = l + 2
+						end if
+						exit
 					end if
+					l = l + 1; cycle
+				end do
+
+				if ( (r-l+1 == 16) .and. (iachar(substring%s(l:l)) > 55) ) then
+					negative = .true.
 				else
 					negative = .false.
 				end if
 
 				num = 0_int64
 
-				i = 1_int64; do
-					j = 0; do while ( j <= 15 )
-						if ( DIGITS_A(j) == substring%s(r:r) ) exit
-						j = j + 1; cycle
-					end do
+				do i = 0, ubound(SIXTEENS_i64, dim=1)
+					digit = iachar(substring%s(r:r)) - 48
 
-					if ( r > l ) then
-						num = num + i*int(DIGITS_I(j), kind=int64)
-					else if ( r == l ) then
-						if ( negative ) then
-							num = num + i*int(DIGITS_I(j-8), kind=int64); num = (num - 1_int64) - huge(1_int64)
-							into = transfer(source=num, mold=into); return
+					if ( digit > 16 ) then
+						if ( digit < 23 ) then
+							digit = digit - 7
 						else
-							num = num + i*int(DIGITS_I(j), kind=int64)
-							into = transfer(source=num, mold=into); return
+							digit = digit - 39
 						end if
 					end if
 
-					i = 16_int64*i; r = r - 1; cycle
+					if ( r > l ) then
+						num = num + int(digit,int64)*SIXTEENS_i64(i); r = r - 1; cycle
+					else
+						if ( negative ) then
+							digit = digit - 8; num = num + int(digit,int64)*SIXTEENS_i64(i)
+							num = (num - 1_int64) - largest_int64
+							into = transfer(source=num, mold=into); return
+						else
+							num = num + int(digit,int64)*SIXTEENS_i64(i)
+							into = transfer(source=num, mold=into); return
+						end if
+					end if
 				end do
-			end block inline_cast_i64
+			end block inline_cast
 		end if
 
 		if ( .not. present(locale) ) then
@@ -11951,61 +11975,57 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if ( fmt_ == 'z' ) then
-			inline_cast_i32: block; integer(int32) :: num, i; logical :: negative; integer :: substring_len, l, r, j
+			inline_cast: block; integer :: num, substring_len, r, l, i, digit; logical :: negative
 				substring_len = substring%len()
 
-				l = 1; do while ( l <= substring_len )
-				if ( substring%s(l:l) /= SPACE ) exit
-					l = l + 1; cycle
-				end do
-
-				if ( substring_len > 2 ) then
-					if ( substring%s(l:l+1) == '0x' ) l = l + 2
-				end if
-
-				r = substring_len; do while ( r >= l )
-					if ( substring%s(r:r) /= SPACE ) exit
+				r = substring_len; do
+					if ( (iachar(substring%s(r:r)) > 47) .or. (r == 1) ) exit
 					r = r - 1; cycle
 				end do
 
-				if ( r-l+1 == 8 ) then
-					j = 0; do while ( j <= 15 )
-						if ( DIGITS_A(j) == substring%s(l:l) ) exit
-						j = j + 1; cycle
-					end do
-
-					if ( j >= 8 ) then
-						negative = .true.
-					else
-						negative = .false.
+				l = 1; do
+					if ( (iachar(substring%s(l:l)) > 47) .or. (l == substring_len) ) then
+						if ( r-l+1 > 2 ) then
+							if ( iachar(substring%s(l+1:l+1)) == 120 ) l = l + 2
+						end if
+						exit
 					end if
+					l = l + 1; cycle
+				end do
+
+				if ( (r-l+1 == 8) .and. (iachar(substring%s(l:l)) > 55) ) then
+					negative = .true.
 				else
 					negative = .false.
 				end if
 
-				num = 0_int32
+				num = 0
 
-				i = 1_int32; do
-					j = 0; do while ( j <= 15 )
-						if ( DIGITS_A(j) == substring%s(r:r) ) exit
-						j = j + 1; cycle
-					end do
+				do i = 0, ubound(SIXTEENS_i32, dim=1)
+					digit = iachar(substring%s(r:r)) - 48
 
-					if ( r > l ) then
-						num = num + i*DIGITS_I(j)
-					else if ( r == l ) then
-						if ( negative ) then
-							num = num + i*DIGITS_I(j-8); num = (num - 1_int32) - huge(1_int32)
-							into = transfer(source=num, mold=into); return
+					if ( digit > 16 ) then
+						if ( digit < 23 ) then
+							digit = digit - 7
 						else
-							num = num + i*DIGITS_I(j)
-							into = transfer(source=num, mold=into); return
+							digit = digit - 39
 						end if
 					end if
 
-					i = 16_int32*i; r = r - 1; cycle
+					if ( r > l ) then
+						num = num + digit*SIXTEENS_i32(i); r = r - 1; cycle
+					else
+						if ( negative ) then
+							digit = digit - 8; num = num + digit*SIXTEENS_i32(i)
+							num = (num - 1) - largest_int32
+							into = transfer(source=num, mold=into); return
+						else
+							num = num + digit*SIXTEENS_i32(i)
+							into = transfer(source=num, mold=into); return
+						end if
+					end if
 				end do
-			end block inline_cast_i32
+			end block inline_cast
 		end if
 
 		if ( .not. present(locale) ) then
@@ -12025,9 +12045,8 @@ submodule (io_fortran_lib) internal_io
 
 	module procedure cast_string_to_i64
 		character(len=1) :: fmt_
+		integer :: substring_len, r, l, i, digit
 		logical :: negative
-		integer :: substring_len, l, r, j
-		integer(int64) :: i
 
 		substring_len = substring%len()
 
@@ -12046,17 +12065,17 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if ( fmt_ == 'i' ) then
-			l = 1; do while ( l <= substring_len )
-				if ( substring%s(l:l) /= SPACE ) exit
-				l = l + 1; cycle
-			end do
-
-			r = substring_len; do while ( r >= l )
-				if ( substring%s(r:r) /= SPACE ) exit
+			r = substring_len; do
+				if ( (iachar(substring%s(r:r)) > 44) .or. (r == 1) ) exit
 				r = r - 1; cycle
 			end do
 
-			if ( substring%s(l:l) == '-' ) then
+			l = 1; do
+				if ( (iachar(substring%s(l:l)) > 44) .or. (l == substring_len) ) exit
+				l = l + 1; cycle
+			end do
+
+			if ( iachar(substring%s(l:l)) == 45 ) then
 				negative = .true.; l = l + 1
 			else
 				negative = .false.
@@ -12064,80 +12083,66 @@ submodule (io_fortran_lib) internal_io
 
 			into = 0_int64
 
-			i = 1_int64; do
-				j = 0; do while ( j <= 9 )
-					if ( DIGITS_A(j) == substring%s(r:r) ) exit
-					j = j + 1; cycle
-				end do
-
-				into = into + i*int(DIGITS_I(j), kind=int64)
-
-				if ( r == l ) exit
-				i = 10_int64*i; r = r - 1; cycle
-			end do
-
-			if ( negative ) then
-				into = -into; return
-			else
-				return
-			end if
-		else if ( fmt_ == 'z' ) then
-			l = 1; do while ( l <= substring_len )
-				if ( substring%s(l:l) /= SPACE ) exit
-				l = l + 1; cycle
-			end do
-
-			if ( substring_len > 2 ) then
-				if ( substring%s(l:l+1) == '0x' ) l = l + 2
-			end if
-
-			r = substring_len; do while ( r >= l )
-				if ( substring%s(r:r) /= SPACE ) exit
+			do i = 0, ubound(TENS_i64, dim=1)
+				into = into + int(iachar(substring%s(r:r)) - 48,int64)*TENS_i64(i); if ( r == l ) exit
 				r = r - 1; cycle
 			end do
 
-			if ( r-l+1 == 16 ) then
-				j = 0; do while ( j <= 15 )
-					if ( DIGITS_A(j) == substring%s(l:l) ) exit
-					j = j + 1; cycle
-				end do
+			if ( .not. negative ) return
 
-				if ( j >= 8 ) then
-					negative = .true.
-				else
-					negative = .false.
+			into = -into; return
+		else
+			r = substring_len; do
+				if ( (iachar(substring%s(r:r)) > 47) .or. (r == 1) ) exit
+				r = r - 1; cycle
+			end do
+
+			l = 1; do
+				if ( (iachar(substring%s(l:l)) > 47) .or. (l == substring_len) ) then
+					if ( r-l+1 > 2 ) then
+						if ( iachar(substring%s(l+1:l+1)) == 120 ) l = l + 2
+					end if
+					exit
 				end if
+				l = l + 1; cycle
+			end do
+
+			if ( (r-l+1 == 16) .and. (iachar(substring%s(l:l)) > 55) ) then
+				negative = .true.
 			else
 				negative = .false.
 			end if
 
 			into = 0_int64
 
-			i = 1_int64; do
-				j = 0; do while ( j <= 15 )
-					if ( DIGITS_A(j) == substring%s(r:r) ) exit
-					j = j + 1; cycle
-				end do
+			do i = 0, ubound(SIXTEENS_i64, dim=1)
+				digit = iachar(substring%s(r:r)) - 48
 
-				if ( r > l ) then
-					into = into + i*int(DIGITS_I(j), kind=int64)
-				else if ( r == l ) then
-					if ( negative ) then
-						into = into + i*int(DIGITS_I(j-8), kind=int64); into = (into - 1_int64) - huge(1_int64); return
+				if ( digit > 16 ) then
+					if ( digit < 23 ) then
+						digit = digit - 7
 					else
-						into = into + i*int(DIGITS_I(j), kind=int64); return
+						digit = digit - 39
 					end if
 				end if
 
-				i = 16_int64*i; r = r - 1; cycle
+				if ( r > l ) then
+					into = into + int(digit,int64)*SIXTEENS_i64(i); r = r - 1; cycle
+				else
+					if ( negative ) then
+						digit = digit - 8; into = into + int(digit,int64)*SIXTEENS_i64(i)
+						into = (into - 1_int64) - largest_int64; return
+					else
+						into = into + int(digit,int64)*SIXTEENS_i64(i); return
+					end if
+				end if
 			end do
 		end if
 	end procedure cast_string_to_i64
 	module procedure cast_string_to_i32
 		character(len=1) :: fmt_
+		integer :: substring_len, r, l, i, digit
 		logical :: negative
-		integer :: substring_len, l, r, j
-		integer(int32) :: i
 
 		substring_len = substring%len()
 
@@ -12156,98 +12161,84 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if ( fmt_ == 'i' ) then
-			l = 1; do while ( l <= substring_len )
-				if ( substring%s(l:l) /= SPACE ) exit
-				l = l + 1; cycle
-			end do
-
-			r = substring_len; do while ( r >= l )
-				if ( substring%s(r:r) /= SPACE ) exit
+			r = substring_len; do
+				if ( (iachar(substring%s(r:r)) > 44) .or. (r == 1) ) exit
 				r = r - 1; cycle
 			end do
 
-			if ( substring%s(l:l) == '-' ) then
+			l = 1; do
+				if ( (iachar(substring%s(l:l)) > 44) .or. (l == substring_len) ) exit
+				l = l + 1; cycle
+			end do
+
+			if ( iachar(substring%s(l:l)) == 45 ) then
 				negative = .true.; l = l + 1
 			else
 				negative = .false.
 			end if
 
-			into = 0_int32
+			into = 0
 
-			i = 1_int32; do
-				j = 0; do while ( j <= 9 )
-					if ( DIGITS_A(j) == substring%s(r:r) ) exit
-					j = j + 1; cycle
-				end do
-
-				into = into + i*DIGITS_I(j)
-
-				if ( r == l ) exit
-				i = 10_int32*i; r = r - 1; cycle
-			end do
-
-			if ( negative ) then
-				into = -into; return
-			else
-				return
-			end if
-		else if ( fmt_ == 'z' ) then
-			l = 1; do while ( l <= substring_len )
-				if ( substring%s(l:l) /= SPACE ) exit
-				l = l + 1; cycle
-			end do
-
-			if ( substring_len > 2 ) then
-				if ( substring%s(l:l+1) == '0x' ) l = l + 2
-			end if
-
-			r = substring_len; do while ( r >= l )
-				if ( substring%s(r:r) /= SPACE ) exit
+			do i = 0, ubound(TENS_i32, dim=1)
+				into = into + (iachar(substring%s(r:r)) - 48)*TENS_i32(i); if ( r == l ) exit
 				r = r - 1; cycle
 			end do
 
-			if ( r-l+1 == 8 ) then
-				j = 0; do while ( j <= 15 )
-					if ( DIGITS_A(j) == substring%s(l:l) ) exit
-					j = j + 1; cycle
-				end do
+			if ( .not. negative ) return
 
-				if ( j >= 8 ) then
-					negative = .true.
-				else
-					negative = .false.
+			into = -into; return
+		else
+			r = substring_len; do
+				if ( (iachar(substring%s(r:r)) > 47) .or. (r == 1) ) exit
+				r = r - 1; cycle
+			end do
+
+			l = 1; do
+				if ( (iachar(substring%s(l:l)) > 47) .or. (l == substring_len) ) then
+					if ( r-l+1 > 2 ) then
+						if ( iachar(substring%s(l+1:l+1)) == 120 ) l = l + 2
+					end if
+					exit
 				end if
+				l = l + 1; cycle
+			end do
+
+			if ( (r-l+1 == 8) .and. (iachar(substring%s(l:l)) > 55) ) then
+				negative = .true.
 			else
 				negative = .false.
 			end if
 
-			into = 0_int32
+			into = 0
 
-			i = 1_int32; do
-				j = 0; do while ( j <= 15 )
-					if ( DIGITS_A(j) == substring%s(r:r) ) exit
-					j = j + 1; cycle
-				end do
+			do i = 0, ubound(SIXTEENS_i32, dim=1)
+				digit = iachar(substring%s(r:r)) - 48
 
-				if ( r > l ) then
-					into = into + i*DIGITS_I(j)
-				else if ( r == l ) then
-					if ( negative ) then
-						into = into + i*DIGITS_I(j-8); into = (into - 1_int32) - huge(1_int32); return
+				if ( digit > 16 ) then
+					if ( digit < 23 ) then
+						digit = digit - 7
 					else
-						into = into + i*DIGITS_I(j); return
+						digit = digit - 39
 					end if
 				end if
 
-				i = 16_int32*i; r = r - 1; cycle
+				if ( r > l ) then
+					into = into + digit*SIXTEENS_i32(i); r = r - 1; cycle
+				else
+					if ( negative ) then
+						digit = digit - 8; into = into + digit*SIXTEENS_i32(i)
+						into = (into - 1) - largest_int32; return
+					else
+						into = into + digit*SIXTEENS_i32(i); return
+					end if
+				end if
 			end do
 		end if
 	end procedure cast_string_to_i32
 	module procedure cast_string_to_i16
 		character(len=1) :: fmt_
+		integer :: substring_len, r, l, i, digit
 		logical :: negative
-		integer :: substring_len, l, r, j
-		integer(int16) :: i
 
 		substring_len = substring%len()
 
@@ -12266,17 +12257,17 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if ( fmt_ == 'i' ) then
-			l = 1; do while ( l <= substring_len )
-				if ( substring%s(l:l) /= SPACE ) exit
-				l = l + 1; cycle
-			end do
-
-			r = substring_len; do while ( r >= l )
-				if ( substring%s(r:r) /= SPACE ) exit
+			r = substring_len; do
+				if ( (iachar(substring%s(r:r)) > 44) .or. (r == 1) ) exit
 				r = r - 1; cycle
 			end do
 
-			if ( substring%s(l:l) == '-' ) then
+			l = 1; do
+				if ( (iachar(substring%s(l:l)) > 44) .or. (l == substring_len) ) exit
+				l = l + 1; cycle
+			end do
+
+			if ( iachar(substring%s(l:l)) == 45 ) then
 				negative = .true.; l = l + 1
 			else
 				negative = .false.
@@ -12284,80 +12275,66 @@ submodule (io_fortran_lib) internal_io
 
 			into = 0_int16
 
-			i = 1_int16; do
-				j = 0; do while ( j <= 9 )
-					if ( DIGITS_A(j) == substring%s(r:r) ) exit
-					j = j + 1; cycle
-				end do
-
-				into = into + i*int(DIGITS_I(j), kind=int16)
-
-				if ( r == l ) exit
-				i = 10_int16*i; r = r - 1; cycle
-			end do
-
-			if ( negative ) then
-				into = -into; return
-			else
-				return
-			end if
-		else if ( fmt_ == 'z' ) then
-			l = 1; do while ( l <= substring_len )
-				if ( substring%s(l:l) /= SPACE ) exit
-				l = l + 1; cycle
-			end do
-
-			if ( substring_len > 2 ) then
-				if ( substring%s(l:l+1) == '0x' ) l = l + 2
-			end if
-
-			r = substring_len; do while ( r >= l )
-				if ( substring%s(r:r) /= SPACE ) exit
+			do i = 0, ubound(TENS_i16, dim=1)
+				into = into + int(iachar(substring%s(r:r)) - 48,int16)*TENS_i16(i); if ( r == l ) exit
 				r = r - 1; cycle
 			end do
 
-			if ( r-l+1 == 4 ) then
-				j = 0; do while ( j <= 15 )
-					if ( DIGITS_A(j) == substring%s(l:l) ) exit
-					j = j + 1; cycle
-				end do
+			if ( .not. negative ) return
 
-				if ( j >= 8 ) then
-					negative = .true.
-				else
-					negative = .false.
+			into = -into; return
+		else
+			r = substring_len; do
+				if ( (iachar(substring%s(r:r)) > 47) .or. (r == 1) ) exit
+				r = r - 1; cycle
+			end do
+
+			l = 1; do
+				if ( (iachar(substring%s(l:l)) > 47) .or. (l == substring_len) ) then
+					if ( r-l+1 > 2 ) then
+						if ( iachar(substring%s(l+1:l+1)) == 120 ) l = l + 2
+					end if
+					exit
 				end if
+				l = l + 1; cycle
+			end do
+
+			if ( (r-l+1 == 4) .and. (iachar(substring%s(l:l)) > 55) ) then
+				negative = .true.
 			else
 				negative = .false.
 			end if
 
 			into = 0_int16
 
-			i = 1_int16; do
-				j = 0; do while ( j <= 15 )
-					if ( DIGITS_A(j) == substring%s(r:r) ) exit
-					j = j + 1; cycle
-				end do
+			do i = 0, ubound(SIXTEENS_i16, dim=1)
+				digit = iachar(substring%s(r:r)) - 48
 
-				if ( r > l ) then
-					into = into + i*int(DIGITS_I(j), kind=int16)
-				else if ( r == l ) then
-					if ( negative ) then
-						into = into + i*int(DIGITS_I(j-8), kind=int16); into = (into - 1_int16) - huge(1_int16); return
+				if ( digit > 16 ) then
+					if ( digit < 23 ) then
+						digit = digit - 7
 					else
-						into = into + i*int(DIGITS_I(j), kind=int16); return
+						digit = digit - 39
 					end if
 				end if
 
-				i = 16_int16*i; r = r - 1; cycle
+				if ( r > l ) then
+					into = into + int(digit,int16)*SIXTEENS_i16(i); r = r - 1; cycle
+				else
+					if ( negative ) then
+						digit = digit - 8; into = into + int(digit,int16)*SIXTEENS_i16(i)
+						into = (into - 1_int16) - largest_int16; return
+					else
+						into = into + int(digit,int16)*SIXTEENS_i16(i); return
+					end if
+				end if
 			end do
 		end if
 	end procedure cast_string_to_i16
 	module procedure cast_string_to_i8
 		character(len=1) :: fmt_
+		integer :: substring_len, r, l, i, digit
 		logical :: negative
-		integer :: substring_len, l, r, j
-		integer(int8) :: i
 
 		substring_len = substring%len()
 
@@ -12376,17 +12353,17 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if ( fmt_ == 'i' ) then
-			l = 1; do while ( l <= substring_len )
-				if ( substring%s(l:l) /= SPACE ) exit
-				l = l + 1; cycle
-			end do
-
-			r = substring_len; do while ( r >= l )
-				if ( substring%s(r:r) /= SPACE ) exit
+			r = substring_len; do
+				if ( (iachar(substring%s(r:r)) > 44) .or. (r == 1) ) exit
 				r = r - 1; cycle
 			end do
 
-			if ( substring%s(l:l) == '-' ) then
+			l = 1; do
+				if ( (iachar(substring%s(l:l)) > 44) .or. (l == substring_len) ) exit
+				l = l + 1; cycle
+			end do
+
+			if ( iachar(substring%s(l:l)) == 45 ) then
 				negative = .true.; l = l + 1
 			else
 				negative = .false.
@@ -12394,72 +12371,59 @@ submodule (io_fortran_lib) internal_io
 
 			into = 0_int8
 
-			i = 1_int8; do
-				j = 0; do while ( j <= 9 )
-					if ( DIGITS_A(j) == substring%s(r:r) ) exit
-					j = j + 1; cycle
-				end do
-
-				into = into + i*int(DIGITS_I(j), kind=int8)
-
-				if ( r == l ) exit
-				i = 10_int8*i; r = r - 1; cycle
-			end do
-
-			if ( negative ) then
-				into = -into; return
-			else
-				return
-			end if
-		else if ( fmt_ == 'z' ) then
-			l = 1; do while ( l <= substring_len )
-				if ( substring%s(l:l) /= SPACE ) exit
-				l = l + 1; cycle
-			end do
-
-			if ( substring_len > 2 ) then
-				if ( substring%s(l:l+1) == '0x' ) l = l + 2
-			end if
-
-			r = substring_len; do while ( r >= l )
-				if ( substring%s(r:r) /= SPACE ) exit
+			do i = 0, ubound(TENS_i16, dim=1)
+				into = into + int(iachar(substring%s(r:r)) - 48,int16)*TENS_i16(i); if ( r == l ) exit
 				r = r - 1; cycle
 			end do
 
-			if ( r-l+1 == 2 ) then
-				j = 0; do while ( j <= 15 )
-					if ( DIGITS_A(j) == substring%s(l:l) ) exit
-					j = j + 1; cycle
-				end do
+			if ( .not. negative ) return
 
-				if ( j >= 8 ) then
-					negative = .true.
-				else
-					negative = .false.
+			into = -into; return
+		else
+			r = substring_len; do
+				if ( (iachar(substring%s(r:r)) > 47) .or. (r == 1) ) exit
+				r = r - 1; cycle
+			end do
+
+			l = 1; do
+				if ( (iachar(substring%s(l:l)) > 47) .or. (l == substring_len) ) then
+					if ( r-l+1 > 2 ) then
+						if ( iachar(substring%s(l+1:l+1)) == 120 ) l = l + 2
+					end if
+					exit
 				end if
+				l = l + 1; cycle
+			end do
+
+			if ( (r-l+1 == 2) .and. (iachar(substring%s(l:l)) > 55) ) then
+				negative = .true.
 			else
 				negative = .false.
 			end if
 
 			into = 0_int8
 
-			i = 1_int8; do
-				j = 0; do while ( j <= 15 )
-					if ( DIGITS_A(j) == substring%s(r:r) ) exit
-					j = j + 1; cycle
-				end do
+			do i = 0, ubound(SIXTEENS_i8, dim=1)
+				digit = iachar(substring%s(r:r)) - 48
 
-				if ( r > l ) then
-					into = into + i*int(DIGITS_I(j), kind=int8)
-				else if ( r == l ) then
-					if ( negative ) then
-						into = into + i*int(DIGITS_I(j-8), kind=int8); into = (into - 1_int8) - huge(1_int8); return
+				if ( digit > 16 ) then
+					if ( digit < 23 ) then
+						digit = digit - 7
 					else
-						into = into + i*int(DIGITS_I(j), kind=int8); return
+						digit = digit - 39
 					end if
 				end if
 
-				i = 16_int8*i; r = r - 1; cycle
+				if ( r > l ) then
+					into = into + int(digit,int8)*SIXTEENS_i8(i); r = r - 1; cycle
+				else
+					if ( negative ) then
+						digit = digit - 8; into = into + int(digit,int8)*SIXTEENS_i8(i)
+						into = (into - 1_int8) - largest_int8; return
+					else
+						into = into + int(digit,int8)*SIXTEENS_i8(i); return
+					end if
+				end if
 			end do
 		end if
 	end procedure cast_string_to_i8
@@ -12468,10 +12432,9 @@ submodule (io_fortran_lib) internal_io
 		character(len=1) :: fmt_
 		character(len=5) :: decimal
 		character(len=:), allocatable :: im_
-		character(len=:), allocatable, dimension(:) :: seps, e_chars
 
 		real(real128) :: z_re, z_im
-		integer, allocatable :: substring_len, i, l, r, im_len
+		integer :: substring_len, l, r, i, sep_code, e_code, im_len
 
 		substring_len = len(substring)
 
@@ -12509,23 +12472,23 @@ submodule (io_fortran_lib) internal_io
 
 		if ( len(im_) == 0 ) then
 			if ( decimal == 'POINT' ) then
-				seps = [ COMMA ]
+				sep_code = iachar(COMMA)
 			else
-				seps = [ SEMICOLON ]
+				sep_code = iachar(SEMICOLON)
 			end if
 
-			l = 1; do while ( l <= substring_len )
-				if ( substring(l:l) == '(' ) exit
+			l = 1; do
+				if ( iachar(substring(l:l)) == 40 ) exit
 				l = l + 1; cycle
 			end do
 
-			r = substring_len; do while ( r >= 1 )
-				if ( substring(r:r) == ')' ) exit
+			r = substring_len; do
+				if ( iachar(substring(r:r)) == 41 ) exit
 				r = r - 1; cycle
 			end do
 
-			i = l+1; do while ( i <= r )
-				if ( substring(i:i) == seps(1) ) exit
+			i = l+1; do
+				if ( iachar(substring(i:i)) == sep_code ) exit
 				i = i + 1; cycle
 			end do
 
@@ -12558,28 +12521,35 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		im_len = len(im_); seps = [ '+', '-' ]; e_chars = [ 'e', 'E' ]
+		sep_code = iachar('+'); e_code = iachar('e'); im_len = len(im_)
 
-		l = 1; do while ( l <= substring_len )
-			if ( substring(l:l) /= SPACE ) exit
+		l = 1; do
+			if ( iachar(substring(l:l)) > sep_code ) exit
 			l = l + 1; cycle
 		end do
 
-		r = substring_len-im_len+1; do while ( r >= 1 )
+		r = substring_len-im_len+1; do
 			if ( substring(r:r+im_len-1) == im_ ) exit
 			r = r - 1; cycle
 		end do
 
-		i = l+1; do while ( i <= r )
-			if ( any(seps == substring(i:i)) ) then
-				if ( any(e_chars == substring(i-1:i-1)) .and. (fmt_ /= 'z') ) then
-					i = i + 1; cycle
-				else
-					exit
+		if ( fmt_ == 'z' ) then
+			i = l+1; do
+				if ( iachar(substring(i:i)) == sep_code ) exit
+				i = i + 1; cycle
+			end do
+		else
+			i = l+1; do
+				if ( (iachar(substring(i:i)) == sep_code) .or. (iachar(substring(i:i)) == sep_code+2) ) then
+					if ( (iachar(substring(i-1:i-1)) == e_code).or.(iachar(substring(i-1:i-1)) == e_code-32) ) then
+						i = i + 1; cycle
+					else
+						exit
+					end if
 				end if
-			end if
-			i = i + 1; cycle
-		end do
+				i = i + 1; cycle
+			end do
+		end if
 
 		if ( fmt_ == 'z' ) then
 			if ( i-l > 2 ) then
@@ -12613,10 +12583,9 @@ submodule (io_fortran_lib) internal_io
 		character(len=1) :: fmt_
 		character(len=5) :: decimal
 		character(len=:), allocatable :: im_
-		character(len=:), allocatable, dimension(:) :: seps, e_chars
 
 		real(real64) :: z_re, z_im
-		integer, allocatable :: substring_len, i, l, r, im_len
+		integer :: substring_len, l, r, i, sep_code, e_code, im_len
 
 		substring_len = len(substring)
 
@@ -12654,30 +12623,31 @@ submodule (io_fortran_lib) internal_io
 
 		if ( len(im_) == 0 ) then
 			if ( decimal == 'POINT' ) then
-				seps = [ COMMA ]
+				sep_code = iachar(COMMA)
 			else
-				seps = [ SEMICOLON ]
+				sep_code = iachar(SEMICOLON)
 			end if
 
-			l = 1; do while ( l <= substring_len )
-				if ( substring(l:l) == '(' ) exit
+			l = 1; do
+				if ( iachar(substring(l:l)) == 40 ) exit
 				l = l + 1; cycle
 			end do
 
-			r = substring_len; do while ( r >= 1 )
-				if ( substring(r:r) == ')' ) exit
+			r = substring_len; do
+				if ( iachar(substring(r:r)) == 41 ) exit
 				r = r - 1; cycle
 			end do
 
-			i = l+1; do while ( i <= r )
-				if ( substring(i:i) == seps(1) ) exit
+			i = l+1; do
+				if ( iachar(substring(i:i)) == sep_code ) exit
 				i = i + 1; cycle
 			end do
 
 			if ( fmt_ == 'z' ) then
-				block; integer(int64) :: num
-					call cast(substring(l+1:i-1), into=num, fmt='z'); z_re = transfer(source=num, mold=z_re)
-					call cast(substring(i+1:r-1), into=num, fmt='z'); z_im = transfer(source=num, mold=z_im)
+				block; integer(int64) :: num; character(len=i-l-1) :: hex_str_re; character(len=r-i-1) :: hex_str_im
+					hex_str_re = substring(l+1:i-1); hex_str_im = substring(i+1:r-1)
+					call cast(hex_str_re, into=num, fmt='z'); z_re = transfer(source=num, mold=z_re)
+					call cast(hex_str_im, into=num, fmt='z'); z_im = transfer(source=num, mold=z_im)
 					into = cmplx(z_re, z_im, kind=real64); return
 				end block
 			else
@@ -12687,33 +12657,41 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		im_len = len(im_); seps = [ '+', '-' ]; e_chars = [ 'e', 'E' ]
+		sep_code = iachar('+'); e_code = iachar('e'); im_len = len(im_)
 
-		l = 1; do while ( l <= substring_len )
-			if ( substring(l:l) /= SPACE ) exit
+		l = 1; do
+			if ( iachar(substring(l:l)) > sep_code ) exit
 			l = l + 1; cycle
 		end do
 
-		r = substring_len-im_len+1; do while ( r >= 1 )
+		r = substring_len-im_len+1; do
 			if ( substring(r:r+im_len-1) == im_ ) exit
 			r = r - 1; cycle
 		end do
 
-		i = l+1; do while ( i <= r )
-			if ( any(seps == substring(i:i)) ) then
-				if ( any(e_chars == substring(i-1:i-1)) .and. (fmt_ /= 'z') ) then
-					i = i + 1; cycle
-				else
-					exit
+		if ( fmt_ == 'z' ) then
+			i = l+1; do
+				if ( iachar(substring(i:i)) == sep_code ) exit
+				i = i + 1; cycle
+			end do
+		else
+			i = l+1; do
+				if ( (iachar(substring(i:i)) == sep_code) .or. (iachar(substring(i:i)) == sep_code+2) ) then
+					if ( (iachar(substring(i-1:i-1)) == e_code).or.(iachar(substring(i-1:i-1)) == e_code-32) ) then
+						i = i + 1; cycle
+					else
+						exit
+					end if
 				end if
-			end if
-			i = i + 1; cycle
-		end do
+				i = i + 1; cycle
+			end do
+		end if
 
 		if ( fmt_ == 'z' ) then
-			block; integer(int64) :: num
-				call cast(substring(l:i-1), into=num, fmt='z'); z_re = transfer(source=num, mold=z_re)
-				call cast(substring(i+1:r-1), into=num, fmt='z'); z_im = transfer(source=num, mold=z_im)
+			block; integer(int64) :: num; character(len=i-l) :: hex_str_re; character(len=r-i-1) :: hex_str_im
+				hex_str_re = substring(l:i-1); hex_str_im = substring(i+1:r-1)
+				call cast(hex_str_re, into=num, fmt='z'); z_re = transfer(source=num, mold=z_re)
+				call cast(hex_str_im, into=num, fmt='z'); z_im = transfer(source=num, mold=z_im)
 				into = cmplx(z_re, z_im, kind=real64); return
 			end block
 		else
@@ -12726,10 +12704,9 @@ submodule (io_fortran_lib) internal_io
 		character(len=1) :: fmt_
 		character(len=5) :: decimal
 		character(len=:), allocatable :: im_
-		character(len=:), allocatable, dimension(:) :: seps, e_chars
 
 		real(real32) :: z_re, z_im
-		integer, allocatable :: substring_len, i, l, r, im_len
+		integer :: substring_len, l, r, i, sep_code, e_code, im_len
 
 		substring_len = len(substring)
 
@@ -12767,30 +12744,31 @@ submodule (io_fortran_lib) internal_io
 
 		if ( len(im_) == 0 ) then
 			if ( decimal == 'POINT' ) then
-				seps = [ COMMA ]
+				sep_code = iachar(COMMA)
 			else
-				seps = [ SEMICOLON ]
+				sep_code = iachar(SEMICOLON)
 			end if
 
-			l = 1; do while ( l <= substring_len )
-				if ( substring(l:l) == '(' ) exit
+			l = 1; do
+				if ( iachar(substring(l:l)) == 40 ) exit
 				l = l + 1; cycle
 			end do
 
-			r = substring_len; do while ( r >= 1 )
-				if ( substring(r:r) == ')' ) exit
+			r = substring_len; do
+				if ( iachar(substring(r:r)) == 41 ) exit
 				r = r - 1; cycle
 			end do
 
-			i = l+1; do while ( i <= r )
-				if ( substring(i:i) == seps(1) ) exit
+			i = l+1; do
+				if ( iachar(substring(i:i)) == sep_code ) exit
 				i = i + 1; cycle
 			end do
 
 			if ( fmt_ == 'z' ) then
-				block; integer(int32) :: num
-					call cast(substring(l+1:i-1), into=num, fmt='z'); z_re = transfer(source=num, mold=z_re)
-					call cast(substring(i+1:r-1), into=num, fmt='z'); z_im = transfer(source=num, mold=z_im)
+				block; integer :: num; character(len=i-l-1) :: hex_str_re; character(len=r-i-1) :: hex_str_im
+					hex_str_re = substring(l+1:i-1); hex_str_im = substring(i+1:r-1)
+					call cast(hex_str_re, into=num, fmt='z'); z_re = transfer(source=num, mold=z_re)
+					call cast(hex_str_im, into=num, fmt='z'); z_im = transfer(source=num, mold=z_im)
 					into = cmplx(z_re, z_im, kind=real32); return
 				end block
 			else
@@ -12800,33 +12778,41 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		im_len = len(im_); seps = [ '+', '-' ]; e_chars = [ 'e', 'E' ]
+		sep_code = iachar('+'); e_code = iachar('e'); im_len = len(im_)
 
-		l = 1; do while ( l <= substring_len )
-			if ( substring(l:l) /= SPACE ) exit
+		l = 1; do
+			if ( iachar(substring(l:l)) > sep_code ) exit
 			l = l + 1; cycle
 		end do
 
-		r = substring_len-im_len+1; do while ( r >= 1 )
+		r = substring_len-im_len+1; do
 			if ( substring(r:r+im_len-1) == im_ ) exit
 			r = r - 1; cycle
 		end do
 
-		i = l+1; do while ( i <= r )
-			if ( any(seps == substring(i:i)) ) then
-				if ( any(e_chars == substring(i-1:i-1)) .and. (fmt_ /= 'z') ) then
-					i = i + 1; cycle
-				else
-					exit
+		if ( fmt_ == 'z' ) then
+			i = l+1; do
+				if ( iachar(substring(i:i)) == sep_code ) exit
+				i = i + 1; cycle
+			end do
+		else
+			i = l+1; do
+				if ( (iachar(substring(i:i)) == sep_code) .or. (iachar(substring(i:i)) == sep_code+2) ) then
+					if ( (iachar(substring(i-1:i-1)) == e_code).or.(iachar(substring(i-1:i-1)) == e_code-32) ) then
+						i = i + 1; cycle
+					else
+						exit
+					end if
 				end if
-			end if
-			i = i + 1; cycle
-		end do
+				i = i + 1; cycle
+			end do
+		end if
 
 		if ( fmt_ == 'z' ) then
-			block; integer(int32) :: num
-				call cast(substring(l:i-1), into=num, fmt='z'); z_re = transfer(source=num, mold=z_re)
-				call cast(substring(i+1:r-1), into=num, fmt='z'); z_im = transfer(source=num, mold=z_im)
+			block; integer :: num; character(len=i-l) :: hex_str_re; character(len=r-i-1) :: hex_str_im
+				hex_str_re = substring(l:i-1); hex_str_im = substring(i+1:r-1)
+				call cast(hex_str_re, into=num, fmt='z'); z_re = transfer(source=num, mold=z_re)
+				call cast(hex_str_im, into=num, fmt='z'); z_im = transfer(source=num, mold=z_im)
 				into = cmplx(z_re, z_im, kind=real32); return
 			end block
 		else
@@ -12959,9 +12945,8 @@ submodule (io_fortran_lib) internal_io
 
 	module procedure cast_char_to_i64
 		character(len=1) :: fmt_
+		integer :: substring_len, r, l, i, digit
 		logical :: negative
-		integer :: substring_len, l, r, j
-		integer(int64) :: i
 
 		substring_len = len(substring)
 
@@ -12980,17 +12965,17 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if ( fmt_ == 'i' ) then
-			l = 1; do while ( l <= substring_len )
-				if ( substring(l:l) /= SPACE ) exit
-				l = l + 1; cycle
-			end do
-
-			r = substring_len; do while ( r >= l )
-				if ( substring(r:r) /= SPACE ) exit
+			r = substring_len; do
+				if ( (iachar(substring(r:r)) > 44) .or. (r == 1) ) exit
 				r = r - 1; cycle
 			end do
 
-			if ( substring(l:l) == '-' ) then
+			l = 1; do
+				if ( (iachar(substring(l:l)) > 44) .or. (l == substring_len) ) exit
+				l = l + 1; cycle
+			end do
+
+			if ( iachar(substring(l:l)) == 45 ) then
 				negative = .true.; l = l + 1
 			else
 				negative = .false.
@@ -12998,80 +12983,66 @@ submodule (io_fortran_lib) internal_io
 
 			into = 0_int64
 
-			i = 1_int64; do
-				j = 0; do while ( j <= 9 )
-					if ( DIGITS_A(j) == substring(r:r) ) exit
-					j = j + 1; cycle
-				end do
-
-				into = into + i*int(DIGITS_I(j), kind=int64)
-
-				if ( r == l ) exit
-				i = 10_int64*i; r = r - 1; cycle
-			end do
-
-			if ( negative ) then
-				into = -into; return
-			else
-				return
-			end if
-		else if ( fmt_ == 'z' ) then
-			l = 1; do while ( l <= substring_len )
-				if ( substring(l:l) /= SPACE ) exit
-				l = l + 1; cycle
-			end do
-
-			if ( substring_len > 2 ) then
-				if ( substring(l:l+1) == '0x' ) l = l + 2
-			end if
-
-			r = substring_len; do while ( r >= l )
-				if ( substring(r:r) /= SPACE ) exit
+			do i = 0, ubound(TENS_i64, dim=1)
+				into = into + int(iachar(substring(r:r)) - 48,int64)*TENS_i64(i); if ( r == l ) exit
 				r = r - 1; cycle
 			end do
 
-			if ( r-l+1 == 16 ) then
-				j = 0; do while ( j <= 15 )
-					if ( DIGITS_A(j) == substring(l:l) ) exit
-					j = j + 1; cycle
-				end do
+			if ( .not. negative ) return
 
-				if ( j >= 8 ) then
-					negative = .true.
-				else
-					negative = .false.
+			into = -into; return
+		else
+			r = substring_len; do
+				if ( (iachar(substring(r:r)) > 47) .or. (r == 1) ) exit
+				r = r - 1; cycle
+			end do
+
+			l = 1; do
+				if ( (iachar(substring(l:l)) > 47) .or. (l == substring_len) ) then
+					if ( r-l+1 > 2 ) then
+						if ( iachar(substring(l+1:l+1)) == 120 ) l = l + 2
+					end if
+					exit
 				end if
+				l = l + 1; cycle
+			end do
+
+			if ( (r-l+1 == 16) .and. (iachar(substring(l:l)) > 55) ) then
+				negative = .true.
 			else
 				negative = .false.
 			end if
 
 			into = 0_int64
 
-			i = 1_int64; do
-				j = 0; do while ( j <= 15 )
-					if ( DIGITS_A(j) == substring(r:r) ) exit
-					j = j + 1; cycle
-				end do
+			do i = 0, ubound(SIXTEENS_i64, dim=1)
+				digit = iachar(substring(r:r)) - 48
 
-				if ( r > l ) then
-					into = into + i*int(DIGITS_I(j), kind=int64)
-				else if ( r == l ) then
-					if ( negative ) then
-						into = into + i*int(DIGITS_I(j-8), kind=int64); into = (into - 1_int64) - huge(1_int64); return
+				if ( digit > 16 ) then
+					if ( digit < 23 ) then
+						digit = digit - 7
 					else
-						into = into + i*int(DIGITS_I(j), kind=int64); return
+						digit = digit - 39
 					end if
 				end if
 
-				i = 16_int64*i; r = r - 1; cycle
+				if ( r > l ) then
+					into = into + int(digit,int64)*SIXTEENS_i64(i); r = r - 1; cycle
+				else
+					if ( negative ) then
+						digit = digit - 8; into = into + int(digit,int64)*SIXTEENS_i64(i)
+						into = (into - 1_int64) - largest_int64; return
+					else
+						into = into + int(digit,int64)*SIXTEENS_i64(i); return
+					end if
+				end if
 			end do
 		end if
 	end procedure cast_char_to_i64
 	module procedure cast_char_to_i32
 		character(len=1) :: fmt_
+		integer :: substring_len, r, l, i, digit
 		logical :: negative
-		integer :: substring_len, l, r, j
-		integer(int32) :: i
 
 		substring_len = len(substring)
 
@@ -13090,98 +13061,84 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if ( fmt_ == 'i' ) then
-			l = 1; do while ( l <= substring_len )
-				if ( substring(l:l) /= SPACE ) exit
-				l = l + 1; cycle
-			end do
-
-			r = substring_len; do while ( r >= l )
-				if ( substring(r:r) /= SPACE ) exit
+			r = substring_len; do
+				if ( (iachar(substring(r:r)) > 44) .or. (r == 1) ) exit
 				r = r - 1; cycle
 			end do
 
-			if ( substring(l:l) == '-' ) then
+			l = 1; do
+				if ( (iachar(substring(l:l)) > 44) .or. (l == substring_len) ) exit
+				l = l + 1; cycle
+			end do
+
+			if ( iachar(substring(l:l)) == 45 ) then
 				negative = .true.; l = l + 1
 			else
 				negative = .false.
 			end if
 
-			into = 0_int32
+			into = 0
 
-			i = 1_int32; do
-				j = 0; do while ( j <= 9 )
-					if ( DIGITS_A(j) == substring(r:r) ) exit
-					j = j + 1; cycle
-				end do
-
-				into = into + i*DIGITS_I(j)
-
-				if ( r == l ) exit
-				i = 10_int32*i; r = r - 1; cycle
-			end do
-
-			if ( negative ) then
-				into = -into; return
-			else
-				return
-			end if
-		else if ( fmt_ == 'z' ) then
-			l = 1; do while ( l <= substring_len )
-				if ( substring(l:l) /= SPACE ) exit
-				l = l + 1; cycle
-			end do
-
-			if ( substring_len > 2 ) then
-				if ( substring(l:l+1) == '0x' ) l = l + 2
-			end if
-
-			r = substring_len; do while ( r >= l )
-				if ( substring(r:r) /= SPACE ) exit
+			do i = 0, ubound(TENS_i32, dim=1)
+				into = into + (iachar(substring(r:r)) - 48)*TENS_i32(i); if ( r == l ) exit
 				r = r - 1; cycle
 			end do
 
-			if ( r-l+1 == 8 ) then
-				j = 0; do while ( j <= 15 )
-					if ( DIGITS_A(j) == substring(l:l) ) exit
-					j = j + 1; cycle
-				end do
+			if ( .not. negative ) return
 
-				if ( j >= 8 ) then
-					negative = .true.
-				else
-					negative = .false.
+			into = -into; return
+		else
+			r = substring_len; do
+				if ( (iachar(substring(r:r)) > 47) .or. (r == 1) ) exit
+				r = r - 1; cycle
+			end do
+
+			l = 1; do
+				if ( (iachar(substring(l:l)) > 47) .or. (l == substring_len) ) then
+					if ( r-l+1 > 2 ) then
+						if ( iachar(substring(l+1:l+1)) == 120 ) l = l + 2
+					end if
+					exit
 				end if
+				l = l + 1; cycle
+			end do
+
+			if ( (r-l+1 == 8) .and. (iachar(substring(l:l)) > 55) ) then
+				negative = .true.
 			else
 				negative = .false.
 			end if
 
-			into = 0_int32
+			into = 0
 
-			i = 1_int32; do
-				j = 0; do while ( j <= 15 )
-					if ( DIGITS_A(j) == substring(r:r) ) exit
-					j = j + 1; cycle
-				end do
+			do i = 0, ubound(SIXTEENS_i32, dim=1)
+				digit = iachar(substring(r:r)) - 48
 
-				if ( r > l ) then
-					into = into + i*DIGITS_I(j)
-				else if ( r == l ) then
-					if ( negative ) then
-						into = into + i*DIGITS_I(j-8); into = (into - 1_int32) - huge(1_int32); return
+				if ( digit > 16 ) then
+					if ( digit < 23 ) then
+						digit = digit - 7
 					else
-						into = into + i*DIGITS_I(j); return
+						digit = digit - 39
 					end if
 				end if
 
-				i = 16_int32*i; r = r - 1; cycle
+				if ( r > l ) then
+					into = into + digit*SIXTEENS_i32(i); r = r - 1; cycle
+				else
+					if ( negative ) then
+						digit = digit - 8; into = into + digit*SIXTEENS_i32(i)
+						into = (into - 1) - largest_int32; return
+					else
+						into = into + digit*SIXTEENS_i32(i); return
+					end if
+				end if
 			end do
 		end if
 	end procedure cast_char_to_i32
 	module procedure cast_char_to_i16
 		character(len=1) :: fmt_
+		integer :: substring_len, r, l, i, digit
 		logical :: negative
-		integer :: substring_len, l, r, j
-		integer(int16) :: i
 
 		substring_len = len(substring)
 
@@ -13200,17 +13157,17 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if ( fmt_ == 'i' ) then
-			l = 1; do while ( l <= substring_len )
-				if ( substring(l:l) /= SPACE ) exit
-				l = l + 1; cycle
-			end do
-
-			r = substring_len; do while ( r >= l )
-				if ( substring(r:r) /= SPACE ) exit
+			r = substring_len; do
+				if ( (iachar(substring(r:r)) > 44) .or. (r == 1) ) exit
 				r = r - 1; cycle
 			end do
 
-			if ( substring(l:l) == '-' ) then
+			l = 1; do
+				if ( (iachar(substring(l:l)) > 44) .or. (l == substring_len) ) exit
+				l = l + 1; cycle
+			end do
+
+			if ( iachar(substring(l:l)) == 45 ) then
 				negative = .true.; l = l + 1
 			else
 				negative = .false.
@@ -13218,80 +13175,66 @@ submodule (io_fortran_lib) internal_io
 
 			into = 0_int16
 
-			i = 1_int16; do
-				j = 0; do while ( j <= 9 )
-					if ( DIGITS_A(j) == substring(r:r) ) exit
-					j = j + 1; cycle
-				end do
-
-				into = into + i*int(DIGITS_I(j), kind=int16)
-
-				if ( r == l ) exit
-				i = 10_int16*i; r = r - 1; cycle
-			end do
-
-			if ( negative ) then
-				into = -into; return
-			else
-				return
-			end if
-		else if ( fmt_ == 'z' ) then
-			l = 1; do while ( l <= substring_len )
-				if ( substring(l:l) /= SPACE ) exit
-				l = l + 1; cycle
-			end do
-
-			if ( substring_len > 2 ) then
-				if ( substring(l:l+1) == '0x' ) l = l + 2
-			end if
-
-			r = substring_len; do while ( r >= l )
-				if ( substring(r:r) /= SPACE ) exit
+			do i = 0, ubound(TENS_i16, dim=1)
+				into = into + int(iachar(substring(r:r)) - 48,int16)*TENS_i16(i); if ( r == l ) exit
 				r = r - 1; cycle
 			end do
 
-			if ( r-l+1 == 4 ) then
-				j = 0; do while ( j <= 15 )
-					if ( DIGITS_A(j) == substring(l:l) ) exit
-					j = j + 1; cycle
-				end do
+			if ( .not. negative ) return
 
-				if ( j >= 8 ) then
-					negative = .true.
-				else
-					negative = .false.
+			into = -into; return
+		else
+			r = substring_len; do
+				if ( (iachar(substring(r:r)) > 47) .or. (r == 1) ) exit
+				r = r - 1; cycle
+			end do
+
+			l = 1; do
+				if ( (iachar(substring(l:l)) > 47) .or. (l == substring_len) ) then
+					if ( r-l+1 > 2 ) then
+						if ( iachar(substring(l+1:l+1)) == 120 ) l = l + 2
+					end if
+					exit
 				end if
+				l = l + 1; cycle
+			end do
+
+			if ( (r-l+1 == 4) .and. (iachar(substring(l:l)) > 55) ) then
+				negative = .true.
 			else
 				negative = .false.
 			end if
 
 			into = 0_int16
 
-			i = 1_int16; do
-				j = 0; do while ( j <= 15 )
-					if ( DIGITS_A(j) == substring(r:r) ) exit
-					j = j + 1; cycle
-				end do
+			do i = 0, ubound(SIXTEENS_i16, dim=1)
+				digit = iachar(substring(r:r)) - 48
 
-				if ( r > l ) then
-					into = into + i*int(DIGITS_I(j), kind=int16)
-				else if ( r == l ) then
-					if ( negative ) then
-						into = into + i*int(DIGITS_I(j-8), kind=int16); into = (into - 1_int16) - huge(1_int16); return
+				if ( digit > 16 ) then
+					if ( digit < 23 ) then
+						digit = digit - 7
 					else
-						into = into + i*int(DIGITS_I(j), kind=int16); return
+						digit = digit - 39
 					end if
 				end if
 
-				i = 16_int16*i; r = r - 1; cycle
+				if ( r > l ) then
+					into = into + int(digit,int16)*SIXTEENS_i16(i); r = r - 1; cycle
+				else
+					if ( negative ) then
+						digit = digit - 8; into = into + int(digit,int16)*SIXTEENS_i16(i)
+						into = (into - 1_int16) - largest_int16; return
+					else
+						into = into + int(digit,int16)*SIXTEENS_i16(i); return
+					end if
+				end if
 			end do
 		end if
 	end procedure cast_char_to_i16
 	module procedure cast_char_to_i8
 		character(len=1) :: fmt_
+		integer :: substring_len, r, l, i, digit
 		logical :: negative
-		integer :: substring_len, l, r, j
-		integer(int8) :: i
 
 		substring_len = len(substring)
 
@@ -13310,17 +13253,17 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if ( fmt_ == 'i' ) then
-			l = 1; do while ( l <= substring_len )
-				if ( substring(l:l) /= SPACE ) exit
-				l = l + 1; cycle
-			end do
-
-			r = substring_len; do while ( r >= l )
-				if ( substring(r:r) /= SPACE ) exit
+			r = substring_len; do
+				if ( (iachar(substring(r:r)) > 44) .or. (r == 1) ) exit
 				r = r - 1; cycle
 			end do
 
-			if ( substring(l:l) == '-' ) then
+			l = 1; do
+				if ( (iachar(substring(l:l)) > 44) .or. (l == substring_len) ) exit
+				l = l + 1; cycle
+			end do
+
+			if ( iachar(substring(l:l)) == 45 ) then
 				negative = .true.; l = l + 1
 			else
 				negative = .false.
@@ -13328,72 +13271,59 @@ submodule (io_fortran_lib) internal_io
 
 			into = 0_int8
 
-			i = 1_int8; do
-				j = 0; do while ( j <= 9 )
-					if ( DIGITS_A(j) == substring(r:r) ) exit
-					j = j + 1; cycle
-				end do
-
-				into = into + i*int(DIGITS_I(j), kind=int8)
-
-				if ( r == l ) exit
-				i = 10_int8*i; r = r - 1; cycle
-			end do
-
-			if ( negative ) then
-				into = -into; return
-			else
-				return
-			end if
-		else if ( fmt_ == 'z' ) then
-			l = 1; do while ( l <= substring_len )
-				if ( substring(l:l) /= SPACE ) exit
-				l = l + 1; cycle
-			end do
-
-			if ( substring_len > 2 ) then
-				if ( substring(l:l+1) == '0x' ) l = l + 2
-			end if
-
-			r = substring_len; do while ( r >= l )
-				if ( substring(r:r) /= SPACE ) exit
+			do i = 0, ubound(TENS_i16, dim=1)
+				into = into + int(iachar(substring(r:r)) - 48,int16)*TENS_i16(i); if ( r == l ) exit
 				r = r - 1; cycle
 			end do
 
-			if ( r-l+1 == 2 ) then
-				j = 0; do while ( j <= 15 )
-					if ( DIGITS_A(j) == substring(l:l) ) exit
-					j = j + 1; cycle
-				end do
+			if ( .not. negative ) return
 
-				if ( j >= 8 ) then
-					negative = .true.
-				else
-					negative = .false.
+			into = -into; return
+		else
+			r = substring_len; do
+				if ( (iachar(substring(r:r)) > 47) .or. (r == 1) ) exit
+				r = r - 1; cycle
+			end do
+
+			l = 1; do
+				if ( (iachar(substring(l:l)) > 47) .or. (l == substring_len) ) then
+					if ( r-l+1 > 2 ) then
+						if ( iachar(substring(l+1:l+1)) == 120 ) l = l + 2
+					end if
+					exit
 				end if
+				l = l + 1; cycle
+			end do
+
+			if ( (r-l+1 == 2) .and. (iachar(substring(l:l)) > 55) ) then
+				negative = .true.
 			else
 				negative = .false.
 			end if
 
 			into = 0_int8
 
-			i = 1_int8; do
-				j = 0; do while ( j <= 15 )
-					if ( DIGITS_A(j) == substring(r:r) ) exit
-					j = j + 1; cycle
-				end do
+			do i = 0, ubound(SIXTEENS_i8, dim=1)
+				digit = iachar(substring(r:r)) - 48
 
-				if ( r > l ) then
-					into = into + i*int(DIGITS_I(j), kind=int8)
-				else if ( r == l ) then
-					if ( negative ) then
-						into = into + i*int(DIGITS_I(j-8), kind=int8); into = (into - 1_int8) - huge(1_int8); return
+				if ( digit > 16 ) then
+					if ( digit < 23 ) then
+						digit = digit - 7
 					else
-						into = into + i*int(DIGITS_I(j), kind=int8); return
+						digit = digit - 39
 					end if
 				end if
 
-				i = 16_int8*i; r = r - 1; cycle
+				if ( r > l ) then
+					into = into + int(digit,int8)*SIXTEENS_i8(i); r = r - 1; cycle
+				else
+					if ( negative ) then
+						digit = digit - 8; into = into + int(digit,int8)*SIXTEENS_i8(i)
+						into = (into - 1_int8) - largest_int8; return
+					else
+						into = into + int(digit,int8)*SIXTEENS_i8(i); return
+					end if
+				end if
 			end do
 		end if
 	end procedure cast_char_to_i8
