@@ -59,7 +59,7 @@ module io_fortran_lib
 		!! treated as the [empty string](../module/io_fortran_lib.html#variable-empty_str).
 		!--------------------------------------------------------------------------------------------------------------
 		private
-		character(len=:), allocatable :: s                                               !! Component is a string slice
+		character(len=:), allocatable :: s												 !! Component is a string slice
 		contains
 			private
 			! Generics ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -4660,12 +4660,12 @@ submodule (io_fortran_lib) String_procedures
 	end procedure as_str
 
 	module procedure count_substring_chars
-		integer :: self_len, match_len, i
+		integer(int64) :: self_len, match_len, i
 
-		self_len = self%len()
-		match_len = len(match)
+		self_len = self%len64()
+		match_len = len(match, kind=int64)
 
-		if ( self_len < 1 ) then
+		if ( self_len < 1_int64 ) then
 			if ( self_len == match_len ) then
 				occurrences = 1; return
 			else
@@ -4673,38 +4673,30 @@ submodule (io_fortran_lib) String_procedures
 			end if
 		end if
 
-		if ( (match_len == 0) .or. (match_len > self_len) ) then
+		if ( (match_len == 0_int64) .or. (match_len > self_len) ) then
 			occurrences = 0; return
 		end if
 
-		i = 1
 		occurrences = 0
 
-		counting: do while ( i <= self_len )
-			if ( self%s(i:i) == match(1:1) ) then
-				if ( i+match_len-1 > self_len ) exit counting
-
-				if ( self%s(i:i+match_len-1) == match ) then
-					occurrences = occurrences + 1
-					i = i + match_len; cycle counting
-				else
-					i = i + 1; cycle counting
-				end if
+		i = 1_int64; do while ( i <= self_len-match_len+1_int64 )
+			if ( self%s(i:i+match_len-1_int64) == match ) then
+				occurrences = occurrences + 1; i = i + match_len; cycle
 			else
-				i = i + 1; cycle counting
+				i = i + 1_int64; cycle
 			end if
-		end do counting
+		end do
 	end procedure count_substring_chars
 
 	module procedure count_substring_string
-		integer :: self_len, match_len, i
+		integer(int64) :: self_len, match_len, i
 
-		self_len = self%len()
-		match_len = match%len()
+		self_len = self%len64()
+		match_len = match%len64()
 
-		if ( self_len < 1 ) then
+		if ( self_len < 1_int64 ) then
 			if ( self_len == match_len ) then
-				if ( self_len == 0 ) then
+				if ( self_len == 0_int64 ) then
 					occurrences = 1; return
 				else
 					occurrences = 0; return
@@ -4714,27 +4706,19 @@ submodule (io_fortran_lib) String_procedures
 			end if
 		end if
 
-		if ( (match_len < 1) .or. (match_len > self_len) ) then
+		if ( (match_len < 1_int64) .or. (match_len > self_len) ) then
 			occurrences = 0; return
 		end if
 
-		i = 1
 		occurrences = 0
 
-		counting: do while ( i <= self_len )
-			if ( self%s(i:i) == match%s(1:1) ) then
-				if ( i+match_len-1 > self_len ) exit counting
-
-				if ( self%s(i:i+match_len-1) == match%s ) then
-					occurrences = occurrences + 1
-					i = i + match_len; cycle counting
-				else
-					i = i + 1; cycle counting
-				end if
+		i = 1_int64; do while ( i <= self_len-match_len+1_int64 )
+			if ( self%s(i:i+match_len-1_int64) == match%s ) then
+				occurrences = occurrences + 1; i = i + match_len; cycle
 			else
-				i = i + 1; cycle counting
+				i = i + 1_int64; cycle
 			end if
-		end do counting
+		end do
 	end procedure count_substring_string
 
 	module procedure empty
