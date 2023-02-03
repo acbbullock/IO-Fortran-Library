@@ -90,7 +90,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title="16.2% of total for modules and submodules.">3999 statements</a>
+               title="15.2% of total for modules and submodules.">4127 statements</a>
           </li>
 
             <li id="source-file">
@@ -1757,17 +1757,14 @@ explicitly defined.</p>
       </h3>
     </div>
       <div class="panel-body">
-        <p>Function for transforming numeric or <code>character</code> data into a <a href="../type/string.html">String</a> type.</p>
-<p>The interface for <code>String</code> is identical to that of <code>str</code> but with a return type of <code>String</code>, allowing for
-elemental assignments and access to the various <code>String</code> methods for advanced character handling. For the
-complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.</p>
+        <p>Function for returning a <a href="../type/string.html">String</a> representation of numbers.</p>
 <p>For a user reference, see <a href="../page/Ref/String.html">String</a>,
 <a href="../page/Ref/String-methods.html">String methods</a>, and <a href="../page/Ref/operators.html">Operators</a>.</p>
       </div>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_c128(x, locale, fmt, decimals, im) result(new)  
+    private pure elemental recursive module function new_string_from_c128(x, locale, fmt, decimals, im) result(new)  
 
     </h3>
   
@@ -1870,7 +1867,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_c64(x, locale, fmt, decimals, im) result(new)  
+    private pure elemental recursive module function new_string_from_c64(x, locale, fmt, decimals, im) result(new)  
 
     </h3>
   
@@ -1973,7 +1970,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_c32(x, locale, fmt, decimals, im) result(new)  
+    private pure elemental recursive module function new_string_from_c32(x, locale, fmt, decimals, im) result(new)  
 
     </h3>
   
@@ -2076,7 +2073,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_r128(x, locale, fmt, decimals) result(new)  
+    private pure elemental recursive module function new_string_from_r128(x, locale, fmt, decimals) result(new)  
 
     </h3>
   
@@ -2164,7 +2161,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_r64(x, locale, fmt, decimals) result(new)  
+    private pure elemental recursive module function new_string_from_r64(x, locale, fmt, decimals) result(new)  
 
     </h3>
   
@@ -2252,7 +2249,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_r32(x, locale, fmt, decimals) result(new)  
+    private pure elemental recursive module function new_string_from_r32(x, locale, fmt, decimals) result(new)  
 
     </h3>
   
@@ -2340,7 +2337,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_i64(x, fmt) result(new)  
+    private pure elemental recursive module function new_string_from_i64(x, fmt) result(new)  
 
     </h3>
   
@@ -2398,7 +2395,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_i32(x, fmt) result(new)  
+    private pure elemental recursive module function new_string_from_i32(x, fmt) result(new)  
 
     </h3>
   
@@ -2456,7 +2453,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_i16(x, fmt) result(new)  
+    private pure elemental recursive module function new_string_from_i16(x, fmt) result(new)  
 
     </h3>
   
@@ -2514,7 +2511,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_i8(x, fmt) result(new)  
+    private pure elemental recursive module function new_string_from_i8(x, fmt) result(new)  
 
     </h3>
   
@@ -2572,7 +2569,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_string(x) result(new)  
+    private pure elemental recursive module function new_string_from_string(x) result(new)  
 
     </h3>
   
@@ -2615,7 +2612,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_char(x) result(new)  
+    private pure elemental recursive module function new_string_from_char(x) result(new)  
 
     </h3>
   
@@ -2658,7 +2655,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_empty() result(new)  
+    private pure elemental recursive module function new_string_from_empty() result(new)  
 
     </h3>
   
@@ -2682,16 +2679,13 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
       </h3>
     </div>
       <div class="panel-body">
-        <p>Function for representing a scalar number as a <code>character</code> string.</p>
-<p>By default behavior, <code>str</code> will write a <code>real</code> or <code>complex</code> number using a number of significant digits
-required in the worst case for a lossless round-trip conversion starting with the internal model
-representation of <code>x</code>. For the complement of <code>str</code>, see <a href="../page/Ref/cast.html">cast</a>.</p>
+        <p>Function for returning a <code>character</code> representation of a number.</p>
 <p>For a user reference, see <a href="../page/Ref/str.html">str</a>.</p>
       </div>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private pure recursive module function str_c128(x, locale, fmt, decimals, im) result(x_str)  
+    private pure recursive module function str_from_c128(x, locale, fmt, decimals, im) result(x_str)  
 
     </h3>
   
@@ -2794,7 +2788,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure recursive module function str_c64(x, locale, fmt, decimals, im) result(x_str)  
+    private pure recursive module function str_from_c64(x, locale, fmt, decimals, im) result(x_str)  
 
     </h3>
   
@@ -2897,7 +2891,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure recursive module function str_c32(x, locale, fmt, decimals, im) result(x_str)  
+    private pure recursive module function str_from_c32(x, locale, fmt, decimals, im) result(x_str)  
 
     </h3>
   
@@ -3000,7 +2994,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure recursive module function str_r128(x, locale, fmt, decimals) result(x_str)  
+    private pure recursive module function str_from_r128(x, locale, fmt, decimals) result(x_str)  
 
     </h3>
   
@@ -3088,7 +3082,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure recursive module function str_r64(x, locale, fmt, decimals) result(x_str)  
+    private pure recursive module function str_from_r64(x, locale, fmt, decimals) result(x_str)  
 
     </h3>
   
@@ -3176,7 +3170,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure recursive module function str_r32(x, locale, fmt, decimals) result(x_str)  
+    private pure recursive module function str_from_r32(x, locale, fmt, decimals) result(x_str)  
 
     </h3>
   
@@ -3264,7 +3258,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure recursive module function str_i64(x, fmt) result(x_str)  
+    private pure recursive module function str_from_i64(x, fmt) result(x_str)  
 
     </h3>
   
@@ -3322,7 +3316,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure recursive module function str_i32(x, fmt) result(x_str)  
+    private pure recursive module function str_from_i32(x, fmt) result(x_str)  
 
     </h3>
   
@@ -3380,7 +3374,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure recursive module function str_i16(x, fmt) result(x_str)  
+    private pure recursive module function str_from_i16(x, fmt) result(x_str)  
 
     </h3>
   
@@ -3438,7 +3432,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure recursive module function str_i8(x, fmt) result(x_str)  
+    private pure recursive module function str_from_i8(x, fmt) result(x_str)  
 
     </h3>
   
@@ -3496,7 +3490,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure recursive module function str_string(x) result(x_str)  
+    private pure recursive module function str_from_string(x) result(x_str)  
 
     </h3>
   
@@ -3539,7 +3533,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure recursive module function str_char(x) result(x_str)  
+    private pure recursive module function str_from_char(x) result(x_str)  
 
     </h3>
   
@@ -3582,7 +3576,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure recursive module function str_empty() result(x_str)  
+    private pure recursive module function str_from_empty() result(x_str)  
 
     </h3>
   
@@ -3606,14 +3600,1823 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
       </h3>
     </div>
       <div class="panel-body">
-        <p>Subroutine for casting a <code>character</code> or <code>String</code> into a number.</p>
-<p>For the complement of <code>cast</code>, see <a href="../page/Ref/String.html">String</a> and <a href="../page/Ref/str.html">str</a>.</p>
+        <p>Subroutine for casting between numeric and string data.</p>
 <p>For a user reference, see <a href="../page/Ref/cast.html">cast</a>.</p>
       </div>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module subroutine cast_string_c128(substring, into, locale, fmt, im)  
+    private pure elemental recursive module subroutine cast_c128_to_string(x, into, locale, fmt, decimals, im)  
+
+    </h3>
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              complex(kind=real128),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>x</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>into</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>locale</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>fmt</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>decimals</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>im</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private pure elemental recursive module subroutine cast_c64_to_string(x, into, locale, fmt, decimals, im)  
+
+    </h3>
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              complex(kind=real64),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>x</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>into</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>locale</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>fmt</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>decimals</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>im</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private pure elemental recursive module subroutine cast_c32_to_string(x, into, locale, fmt, decimals, im)  
+
+    </h3>
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              complex(kind=real32),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>x</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>into</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>locale</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>fmt</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>decimals</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>im</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private pure elemental recursive module subroutine cast_r128_to_string(x, into, locale, fmt, decimals)  
+
+    </h3>
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=real128),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>x</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>into</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>locale</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>fmt</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>decimals</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private pure elemental recursive module subroutine cast_r64_to_string(x, into, locale, fmt, decimals)  
+
+    </h3>
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=real64),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>x</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>into</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>locale</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>fmt</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>decimals</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private pure elemental recursive module subroutine cast_r32_to_string(x, into, locale, fmt, decimals)  
+
+    </h3>
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=real32),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>x</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>into</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>locale</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>fmt</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>decimals</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private pure elemental recursive module subroutine cast_i64_to_string(x, into, fmt)  
+
+    </h3>
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer(kind=int64),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>x</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>into</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>fmt</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private pure elemental recursive module subroutine cast_i32_to_string(x, into, fmt)  
+
+    </h3>
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer(kind=int32),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>x</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>into</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>fmt</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private pure elemental recursive module subroutine cast_i16_to_string(x, into, fmt)  
+
+    </h3>
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer(kind=int16),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>x</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>into</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>fmt</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private pure elemental recursive module subroutine cast_i8_to_string(x, into, fmt)  
+
+    </h3>
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer(kind=int8),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>x</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>into</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>fmt</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private pure recursive module subroutine cast_c128_to_char(x, into, locale, fmt, decimals, im)  
+
+    </h3>
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              complex(kind=real128),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>x</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=:),
+            </td>
+<td>intent(inout),</td>
+              <td></td>            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>into</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>locale</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>fmt</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>decimals</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>im</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private pure recursive module subroutine cast_c64_to_char(x, into, locale, fmt, decimals, im)  
+
+    </h3>
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              complex(kind=real64),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>x</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=:),
+            </td>
+<td>intent(inout),</td>
+              <td></td>            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>into</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>locale</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>fmt</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>decimals</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>im</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private pure recursive module subroutine cast_c32_to_char(x, into, locale, fmt, decimals, im)  
+
+    </h3>
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              complex(kind=real32),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>x</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=:),
+            </td>
+<td>intent(inout),</td>
+              <td></td>            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>into</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>locale</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>fmt</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>decimals</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>im</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private pure recursive module subroutine cast_r128_to_char(x, into, locale, fmt, decimals)  
+
+    </h3>
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=real128),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>x</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=:),
+            </td>
+<td>intent(inout),</td>
+              <td></td>            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>into</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>locale</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>fmt</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>decimals</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private pure recursive module subroutine cast_r64_to_char(x, into, locale, fmt, decimals)  
+
+    </h3>
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=real64),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>x</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=:),
+            </td>
+<td>intent(inout),</td>
+              <td></td>            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>into</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>locale</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>fmt</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>decimals</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private pure recursive module subroutine cast_r32_to_char(x, into, locale, fmt, decimals)  
+
+    </h3>
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=real32),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>x</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=:),
+            </td>
+<td>intent(inout),</td>
+              <td></td>            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>into</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>locale</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>fmt</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>decimals</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private pure recursive module subroutine cast_i64_to_char(x, into, fmt)  
+
+    </h3>
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer(kind=int64),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>x</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=:),
+            </td>
+<td>intent(inout),</td>
+              <td></td>            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>into</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>fmt</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private pure recursive module subroutine cast_i32_to_char(x, into, fmt)  
+
+    </h3>
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer(kind=int32),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>x</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=:),
+            </td>
+<td>intent(inout),</td>
+              <td></td>            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>into</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>fmt</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private pure recursive module subroutine cast_i16_to_char(x, into, fmt)  
+
+    </h3>
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer(kind=int16),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>x</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=:),
+            </td>
+<td>intent(inout),</td>
+              <td></td>            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>into</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>fmt</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private pure recursive module subroutine cast_i8_to_char(x, into, fmt)  
+
+    </h3>
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer(kind=int8),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>x</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=:),
+            </td>
+<td>intent(inout),</td>
+              <td></td>            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>into</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>fmt</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private pure elemental recursive module subroutine cast_string_to_c128(substring, into, locale, fmt, im)  
 
     </h3>
   
@@ -3649,7 +5452,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
               <span class="anchor" ></span>
               complex(kind=real128),
             </td>
-<td>intent(out)</td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
@@ -3711,7 +5514,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module subroutine cast_string_c64(substring, into, locale, fmt, im)  
+    private pure elemental recursive module subroutine cast_string_to_c64(substring, into, locale, fmt, im)  
 
     </h3>
   
@@ -3747,7 +5550,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
               <span class="anchor" ></span>
               complex(kind=real64),
             </td>
-<td>intent(out)</td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
@@ -3809,7 +5612,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module subroutine cast_string_c32(substring, into, locale, fmt, im)  
+    private pure elemental recursive module subroutine cast_string_to_c32(substring, into, locale, fmt, im)  
 
     </h3>
   
@@ -3845,7 +5648,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
               <span class="anchor" ></span>
               complex(kind=real32),
             </td>
-<td>intent(out)</td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
@@ -3907,7 +5710,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module subroutine cast_string_r128(substring, into, locale, fmt)  
+    private pure elemental recursive module subroutine cast_string_to_r128(substring, into, locale, fmt)  
 
     </h3>
   
@@ -3943,7 +5746,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
               <span class="anchor" ></span>
               real(kind=real128),
             </td>
-<td>intent(out)</td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
@@ -3990,7 +5793,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module subroutine cast_string_r64(substring, into, locale, fmt)  
+    private pure elemental recursive module subroutine cast_string_to_r64(substring, into, locale, fmt)  
 
     </h3>
   
@@ -4026,7 +5829,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
               <span class="anchor" ></span>
               real(kind=real64),
             </td>
-<td>intent(out)</td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
@@ -4073,7 +5876,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module subroutine cast_string_r32(substring, into, locale, fmt)  
+    private pure elemental recursive module subroutine cast_string_to_r32(substring, into, locale, fmt)  
 
     </h3>
   
@@ -4109,7 +5912,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
               <span class="anchor" ></span>
               real(kind=real32),
             </td>
-<td>intent(out)</td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
@@ -4156,7 +5959,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module subroutine cast_string_i64(substring, into, fmt)  
+    private pure elemental recursive module subroutine cast_string_to_i64(substring, into, fmt)  
 
     </h3>
   
@@ -4192,7 +5995,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
               <span class="anchor" ></span>
               integer(kind=int64),
             </td>
-<td>intent(out)</td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
@@ -4224,7 +6027,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module subroutine cast_string_i32(substring, into, fmt)  
+    private pure elemental recursive module subroutine cast_string_to_i32(substring, into, fmt)  
 
     </h3>
   
@@ -4260,7 +6063,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
               <span class="anchor" ></span>
               integer(kind=int32),
             </td>
-<td>intent(out)</td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
@@ -4292,7 +6095,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module subroutine cast_string_i16(substring, into, fmt)  
+    private pure elemental recursive module subroutine cast_string_to_i16(substring, into, fmt)  
 
     </h3>
   
@@ -4328,7 +6131,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
               <span class="anchor" ></span>
               integer(kind=int16),
             </td>
-<td>intent(out)</td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
@@ -4360,7 +6163,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module subroutine cast_string_i8(substring, into, fmt)  
+    private pure elemental recursive module subroutine cast_string_to_i8(substring, into, fmt)  
 
     </h3>
   
@@ -4396,7 +6199,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
               <span class="anchor" ></span>
               integer(kind=int8),
             </td>
-<td>intent(out)</td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
@@ -4428,7 +6231,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure recursive module subroutine cast_c128(substring, into, locale, fmt, im)  
+    private pure recursive module subroutine cast_char_to_c128(substring, into, locale, fmt, im)  
 
     </h3>
   
@@ -4464,7 +6267,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
               <span class="anchor" ></span>
               complex(kind=real128),
             </td>
-<td>intent(out)</td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
@@ -4526,7 +6329,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure recursive module subroutine cast_c64(substring, into, locale, fmt, im)  
+    private pure recursive module subroutine cast_char_to_c64(substring, into, locale, fmt, im)  
 
     </h3>
   
@@ -4562,7 +6365,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
               <span class="anchor" ></span>
               complex(kind=real64),
             </td>
-<td>intent(out)</td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
@@ -4624,7 +6427,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure recursive module subroutine cast_c32(substring, into, locale, fmt, im)  
+    private pure recursive module subroutine cast_char_to_c32(substring, into, locale, fmt, im)  
 
     </h3>
   
@@ -4660,7 +6463,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
               <span class="anchor" ></span>
               complex(kind=real32),
             </td>
-<td>intent(out)</td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
@@ -4722,7 +6525,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure recursive module subroutine cast_r128(substring, into, locale, fmt)  
+    private pure recursive module subroutine cast_char_to_r128(substring, into, locale, fmt)  
 
     </h3>
   
@@ -4758,7 +6561,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
               <span class="anchor" ></span>
               real(kind=real128),
             </td>
-<td>intent(out)</td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
@@ -4805,7 +6608,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure recursive module subroutine cast_r64(substring, into, locale, fmt)  
+    private pure recursive module subroutine cast_char_to_r64(substring, into, locale, fmt)  
 
     </h3>
   
@@ -4841,7 +6644,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
               <span class="anchor" ></span>
               real(kind=real64),
             </td>
-<td>intent(out)</td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
@@ -4888,7 +6691,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure recursive module subroutine cast_r32(substring, into, locale, fmt)  
+    private pure recursive module subroutine cast_char_to_r32(substring, into, locale, fmt)  
 
     </h3>
   
@@ -4924,7 +6727,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
               <span class="anchor" ></span>
               real(kind=real32),
             </td>
-<td>intent(out)</td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
@@ -4971,7 +6774,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure recursive module subroutine cast_i64(substring, into, fmt)  
+    private pure recursive module subroutine cast_char_to_i64(substring, into, fmt)  
 
     </h3>
   
@@ -5007,7 +6810,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
               <span class="anchor" ></span>
               integer(kind=int64),
             </td>
-<td>intent(out)</td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
@@ -5039,7 +6842,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure recursive module subroutine cast_i32(substring, into, fmt)  
+    private pure recursive module subroutine cast_char_to_i32(substring, into, fmt)  
 
     </h3>
   
@@ -5075,7 +6878,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
               <span class="anchor" ></span>
               integer(kind=int32),
             </td>
-<td>intent(out)</td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
@@ -5107,7 +6910,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure recursive module subroutine cast_i16(substring, into, fmt)  
+    private pure recursive module subroutine cast_char_to_i16(substring, into, fmt)  
 
     </h3>
   
@@ -5143,7 +6946,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
               <span class="anchor" ></span>
               integer(kind=int16),
             </td>
-<td>intent(out)</td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
@@ -5175,7 +6978,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure recursive module subroutine cast_i8(substring, into, fmt)  
+    private pure recursive module subroutine cast_char_to_i8(substring, into, fmt)  
 
     </h3>
   
@@ -5211,7 +7014,7 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
               <span class="anchor" ></span>
               integer(kind=int8),
             </td>
-<td>intent(out)</td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
@@ -5252,7 +7055,6 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
     </div>
       <div class="panel-body">
         <p>Function for joining a vector of <code>tokens</code> into a scalar <code>character</code> or <code>String</code>.</p>
-<p>For the complement of <code>join</code>, see <a href="../page/Ref/join-split.html">split</a>.</p>
 <p>For a user reference, see <a href="../page/Ref/join-split.html">join</a>.</p>
       </div>
     <ul class="list-group">
@@ -5383,7 +7185,6 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
     </div>
       <div class="panel-body">
         <p>Function for splitting a scalar <code>character</code> or <code>String</code> into a vector of <code>tokens</code>.</p>
-<p>For the complement of <code>split</code>, see <a href="../page/Ref/join-split.html">join</a>.</p>
 <p>For a user reference, see <a href="../page/Ref/join-split.html">split</a>.</p>
       </div>
     <ul class="list-group">
@@ -5514,10 +7315,6 @@ representation of <code>x</code>. For the complement of <code>str</code>, see <a
     </div>
       <div class="panel-body">
         <p>Subroutine for writing an array of uniform numeric data type to an external file.</p>
-<p>The file <code>file_name</code> will be created if it does not already exist and will be overwritten if it does exist.
-Writing to text is allowed for arrays of rank <code>1</code> or <code>2</code>, and writing to binary is allowed for arrays of any
-rank <code>1</code>-<code>15</code>. Any invalid actual arguments will be ignored, defaults will be assumed, and a warning message
-will be issued on stdout.</p>
 <p>For a user reference, see <a href="../page/Ref/to_file.html">to_file</a>.</p>
       </div>
     <ul class="list-group">
@@ -14982,10 +16779,6 @@ will be issued on stdout.</p>
     </div>
       <div class="panel-body">
         <p>Subroutine for reading an external file of uniform numeric data type and format into an array.</p>
-<p>In the event that any actual arguments provided to <code>from_file</code> are invalid, the subprogram will not allow
-progression of execution of the caller and will issue an <code>error stop</code>. This is due to the critical nature of
-reads and the fact that the procedure may not be able to make the proper assumptions about the data being
-read.</p>
 <p>For a user reference, see <a href="../page/Ref/from_file.html">from_file</a>.</p>
       </div>
     <ul class="list-group">
@@ -27430,8 +29223,6 @@ read.</p>
     </div>
       <div class="panel-body">
         <p>Subroutine for writing a scalar <code>character</code> or <code>String</code> to an external text file.</p>
-<p>The file <code>file_name</code> will be created if it does not already exist and will be overwritten if <code>append</code> is
-<code>.false.</code> (if it already exists). The default terminator is <code>LF</code> (line feed).</p>
 <p>For a user reference, see <a href="../page/Ref/echo.html">echo</a>.</p>
       </div>
     <ul class="list-group">
@@ -29120,7 +30911,7 @@ read.</p>
 
 
         <h4>Constructor</h4>
-          <p>Function for transforming numeric or <code>character</code> data into a <a href="../type/string.html">String</a> type.</p><a href="../interface/string.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+          <p>Function for returning a <a href="../type/string.html">String</a> representation of numbers.</p><a href="../interface/string.html" class="pull-right"><emph>Read more&hellip;</emph></a>
         <table class="table table-striped varlist">
           <tbody>
                 <tr>
@@ -29129,7 +30920,7 @@ read.</p>
 
                     pure, elemental, recursive, module
                     function
-                    <strong>new_Str_c128</strong>
+                    <strong>new_string_from_c128</strong>
                     (x, locale, fmt, decimals, im)
                   </td>
                   <td></td>
@@ -29140,7 +30931,7 @@ read.</p>
 
                     pure, elemental, recursive, module
                     function
-                    <strong>new_Str_c64</strong>
+                    <strong>new_string_from_c64</strong>
                     (x, locale, fmt, decimals, im)
                   </td>
                   <td></td>
@@ -29151,7 +30942,7 @@ read.</p>
 
                     pure, elemental, recursive, module
                     function
-                    <strong>new_Str_c32</strong>
+                    <strong>new_string_from_c32</strong>
                     (x, locale, fmt, decimals, im)
                   </td>
                   <td></td>
@@ -29162,7 +30953,7 @@ read.</p>
 
                     pure, elemental, recursive, module
                     function
-                    <strong>new_Str_r128</strong>
+                    <strong>new_string_from_r128</strong>
                     (x, locale, fmt, decimals)
                   </td>
                   <td></td>
@@ -29173,7 +30964,7 @@ read.</p>
 
                     pure, elemental, recursive, module
                     function
-                    <strong>new_Str_r64</strong>
+                    <strong>new_string_from_r64</strong>
                     (x, locale, fmt, decimals)
                   </td>
                   <td></td>
@@ -29184,7 +30975,7 @@ read.</p>
 
                     pure, elemental, recursive, module
                     function
-                    <strong>new_Str_r32</strong>
+                    <strong>new_string_from_r32</strong>
                     (x, locale, fmt, decimals)
                   </td>
                   <td></td>
@@ -29195,7 +30986,7 @@ read.</p>
 
                     pure, elemental, recursive, module
                     function
-                    <strong>new_Str_i64</strong>
+                    <strong>new_string_from_i64</strong>
                     (x, fmt)
                   </td>
                   <td></td>
@@ -29206,7 +30997,7 @@ read.</p>
 
                     pure, elemental, recursive, module
                     function
-                    <strong>new_Str_i32</strong>
+                    <strong>new_string_from_i32</strong>
                     (x, fmt)
                   </td>
                   <td></td>
@@ -29217,7 +31008,7 @@ read.</p>
 
                     pure, elemental, recursive, module
                     function
-                    <strong>new_Str_i16</strong>
+                    <strong>new_string_from_i16</strong>
                     (x, fmt)
                   </td>
                   <td></td>
@@ -29228,7 +31019,7 @@ read.</p>
 
                     pure, elemental, recursive, module
                     function
-                    <strong>new_Str_i8</strong>
+                    <strong>new_string_from_i8</strong>
                     (x, fmt)
                   </td>
                   <td></td>
@@ -29239,7 +31030,7 @@ read.</p>
 
                     pure, elemental, recursive, module
                     function
-                    <strong>new_Str_string</strong>
+                    <strong>new_string_from_string</strong>
                     (x)
                   </td>
                   <td></td>
@@ -29250,7 +31041,7 @@ read.</p>
 
                     pure, elemental, recursive, module
                     function
-                    <strong>new_Str_char</strong>
+                    <strong>new_string_from_char</strong>
                     (x)
                   </td>
                   <td></td>
@@ -29261,7 +31052,7 @@ read.</p>
 
                     pure, elemental, recursive, module
                     function
-                    <strong>new_Str_empty</strong>
+                    <strong>new_string_from_empty</strong>
                     ()
                   </td>
                   <td></td>
@@ -29288,7 +31079,7 @@ generic,
                   public
                   :: <strong><a href='../type/string.html#boundprocedure-cast'>cast</a></strong>
  =>
-                    cast_string_c128, cast_string_c64, cast_string_c32, cast_string_r128, cast_string_r64, cast_string_r32, cast_string_i64, cast_string_i32, cast_string_i16, cast_string_i8
+                    cast_string_to_c128, cast_string_to_c64, cast_string_to_c32, cast_string_to_r128, cast_string_to_r64, cast_string_to_r32, cast_string_to_i64, cast_string_to_i32, cast_string_to_i16, cast_string_to_i8
                 </td>
                 <td></td>
               </tr>
@@ -29469,7 +31260,7 @@ generic,
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-01-26 02:18            </p>
+ on 2023-02-02 19:50            </p>
         </div>
       </div>
       <br>

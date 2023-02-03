@@ -16,9 +16,9 @@ ordered_subpage: operators.md
 
 The following subsections provide user instructions for each of the publicly accessible [interfaces](../../lists/procedures.html):
 
-* [String](String.html): Function for transforming numeric or `character` data into a [String](../../type/string.html) type.
-* [str](str.html): Function for representing a scalar number as a `character` string.
-* [cast](cast.html): Subroutine for casting a `character` or `String` into a number.
+* [String](String.html): Function for returning a [String](../../type/string.html) representation of numbers.
+* [str](str.html): Function for returning a `character` representation of a number.
+* [cast](cast.html): Subroutine for casting between numeric and string data.
 * [join and split](join-split.html): Functions for joining and splitting strings.
 * [to_file](to_file.html): Subroutine for writing an array of uniform numeric data type to an external file.
 * [from_file](from_file.html): Subroutine for reading an external file of uniform numeric data type and format into an array.

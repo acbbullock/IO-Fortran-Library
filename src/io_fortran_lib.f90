@@ -486,7 +486,7 @@ module io_fortran_lib
 
 	interface String                                                                            ! Submodule internal_io
 		!--------------------------------------------------------------------------------------------------------------
-		!! Function for transforming numeric or `character` data into a [String](../type/string.html) type.
+		!! Function for returning a [String](../type/string.html) representation of numbers.
 		!!
 		!! For a user reference, see [String](../page/Ref/String.html),
 		!! [String methods](../page/Ref/String-methods.html), and [Operators](../page/Ref/operators.html).
@@ -562,7 +562,7 @@ module io_fortran_lib
 
 	interface str                                                                               ! Submodule internal_io
 		!--------------------------------------------------------------------------------------------------------------
-		!! Function for representing a scalar number as a `character` string.
+		!! Function for returning a `character` representation of a number.
 		!!
 		!! For a user reference, see [str](../page/Ref/str.html).
 		!--------------------------------------------------------------------------------------------------------------
@@ -32755,7 +32755,11 @@ submodule (io_fortran_lib) array_printing
 
 		do concurrent(i = lbound(x, dim=1):ubound(x, dim=1))
 			if ( i == lbound(x, dim=1) ) then
-				rows(i)%s = LF//'    '//adjustl( x(i) )
+				if ( i == ubound(x, dim=1) ) then
+					rows(i)%s = LF//'    '//adjustl( x(i) )//LF
+				else
+					rows(i)%s = LF//'    '//adjustl( x(i) )
+				end if
 			else if ( i == ubound(x, dim=1) ) then
 				rows(i)%s = '    '//adjustl( x(i) )//LF
 			else
@@ -32776,7 +32780,11 @@ submodule (io_fortran_lib) array_printing
 
 		do concurrent(i = lbound(x, dim=1):ubound(x, dim=1))
 			if ( i == lbound(x, dim=1) ) then
-				rows(i)%s = LF//'    '//accum( x(i,:) )
+				if ( i == ubound(x, dim=1) ) then
+					rows(i)%s = LF//'    '//accum( x(i,:) )//LF
+				else
+					rows(i)%s = LF//'    '//accum( x(i,:) )
+				end if
 			else if ( i == ubound(x, dim=1) ) then
 				rows(i)%s = '    '//accum( x(i,:) )//LF
 			else
@@ -32863,9 +32871,9 @@ end submodule array_printing
 !======================================================================================================================
 !	List of workarounds for compiler bugs in ifx 2023.0.0 :
 !	-------------------------------------------------------
-!	1.	In read_file (line 4752), the internal subroutine split_because_ifxbug (line 4965) is called by the form
+!	1.	In read_file (line 4850), the internal subroutine split_because_ifxbug (line 5063) is called by the form
 !		|>	call split_because_ifxbug(substring, separator, tokens)
-!		where tokens is intent(out), to replace a functional call to split_string (line 11027) of the form
+!		where tokens is intent(out), to replace a functional call to split_string (line 13383) of the form
 !		|>	tokens = substring%split(separator)
 !		which induces a run-time segmentation fault in the program contained in benchmark.f90 not seen with the
 !		following compilers: ifort 2021.8.0, gfortran 11.3.0, gfortran 11.2.0. From investigation, the segmentation
@@ -32873,7 +32881,7 @@ end submodule array_printing
 !		expected, and seems to only appear when "-heap-arrays 0" is specified, as required by the large arrays of
 !		the program contained in benchmark.f90. With small arrays, the same fault occurs with the assignment on line
 !		20 of benchmark.f90 as long as "-heap-arrays 0" is specified.
-!	2.	In join_into_self (line 4630), the recursive call to join_into_self at line 4658 induces a run-time
+!	2.	In join_into_self (line 4728), the recursive call to join_into_self at line 4756 induces a run-time
 !		segmentation fault in the program contained in benchmark.f90 not seen with the following compilers: ifort
 !		2021.8.0, gfortran 11.3.0, gfortran 11.2.0. From investigation, the segmentation fault seems due to the passing
 !		of the array of derived type. The fault occurs in a majority of runs, but not in every run. To avoid the fault,

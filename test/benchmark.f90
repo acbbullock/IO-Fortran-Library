@@ -1,5 +1,5 @@
 program main
-	use, intrinsic :: iso_fortran_env, only: int64, rk=>real64, dp=>real64, compiler_version, compiler_options
+	use, intrinsic :: iso_fortran_env, only: int64, rk=>real32, dp=>real64, compiler_version, compiler_options
 	use io_fortran_lib, only: String, cast, str, LF, operator(+)
 	implicit none (type,external)
 
@@ -9,7 +9,7 @@ program main
 	integer(int64) :: t1, t2
 	real(dp) :: wall_time, rate
 
-	integer, parameter :: n = 10000
+	integer, parameter :: n = 15000
 	real(rk), allocatable, dimension(:,:) :: x, y
 
 	allocate( x(n,n), cells(n,n) ); call random_gauss(x,0.0_rk,1.0_rk)

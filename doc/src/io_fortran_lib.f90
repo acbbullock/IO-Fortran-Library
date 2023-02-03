@@ -44,11 +44,6 @@ module io_fortran_lib
 																	'ods', 'odf', 'xls', &
 																	'doc', 'org', 'dbf', &
 																	'bed', 'gff', 'gtf' ]
-	character(len=1), dimension(0:15),	parameter :: DIGITS_A	= [ '0', '1', '2', '3', '4', &
-																	'5', '6', '7', '8', '9', &
-																	'a', 'b', 'c', 'd', 'e', 'f' ]
-	integer,		  dimension(0:15),	parameter :: DIGITS_I	= [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, &
-																	10, 11, 12, 13, 14, 15 ]
 
 	type String
 		!--------------------------------------------------------------------------------------------------------------
@@ -64,13 +59,14 @@ module io_fortran_lib
 		!! treated as the [empty string](../module/io_fortran_lib.html#variable-empty_str).
 		!--------------------------------------------------------------------------------------------------------------
 		private
-		character(len=:), allocatable :: s                                               !! Component is a string slice
+		character(len=:), allocatable :: s												 !! Component is a string slice
 		contains
 			private
 			! Generics ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-			generic, public :: cast  			=>	cast_string_c128, cast_string_c64, cast_string_c32, &
-													cast_string_r128, cast_string_r64, cast_string_r32, &
-													cast_string_i64, cast_string_i32, cast_string_i16, cast_string_i8
+			generic, public :: cast  			=>	cast_string_to_c128, cast_string_to_c64, cast_string_to_c32, &
+													cast_string_to_r128, cast_string_to_r64, cast_string_to_r32, &
+													cast_string_to_i64, cast_string_to_i32, cast_string_to_i16, &
+													cast_string_to_i8
 			generic, public :: count 			=>	count_substring_chars, count_substring_string
 			generic, public :: echo				=>	echo_string
 			generic, public :: push  			=>	push_chars, push_string
@@ -83,9 +79,10 @@ module io_fortran_lib
 
 			! Specifics ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 			procedure, pass(self), public	::	as_str
-			procedure, pass(substring)		::	cast_string_c128, cast_string_c64, cast_string_c32, &
-												cast_string_r128, cast_string_r64, cast_string_r32, &
-												cast_string_i64, cast_string_i32, cast_string_i16, cast_string_i8
+			procedure, pass(substring)		::	cast_string_to_c128, cast_string_to_c64, cast_string_to_c32, &
+												cast_string_to_r128, cast_string_to_r64, cast_string_to_r32, &
+												cast_string_to_i64, cast_string_to_i32, cast_string_to_i16, &
+												cast_string_to_i8
 			procedure, pass(self)			::	count_substring_chars, count_substring_string
 			procedure, pass(substring)		::	echo_string
 			procedure, pass(self), public	::	empty
@@ -489,317 +486,437 @@ module io_fortran_lib
 
 	interface String                                                                            ! Submodule internal_io
 		!--------------------------------------------------------------------------------------------------------------
-		!! Function for transforming numeric or `character` data into a [String](../type/string.html) type.
-		!!
-		!! The interface for `String` is identical to that of `str` but with a return type of `String`, allowing for
-		!! elemental assignments and access to the various `String` methods for advanced character handling. For the
-		!! complement of `String`, see [cast](../page/Ref/cast.html).
+		!! Function for returning a [String](../type/string.html) representation of numbers.
 		!!
 		!! For a user reference, see [String](../page/Ref/String.html),
 		!! [String methods](../page/Ref/String-methods.html), and [Operators](../page/Ref/operators.html).
 		!--------------------------------------------------------------------------------------------------------------
-		pure elemental recursive type(String) module function new_Str_c128(x, locale, fmt, decimals, im) result(new)
+		pure elemental recursive type(String) module function new_string_from_c128(x,locale,fmt,decimals,im)result(new)
 			complex(real128), intent(in) :: x
 			character(len=*), intent(in), optional :: locale
 			character(len=*), intent(in), optional :: fmt
 			integer, intent(in), optional :: decimals
 			character(len=*), intent(in), optional :: im
-		end function new_Str_c128
-		pure elemental recursive type(String) module function new_Str_c64(x, locale, fmt, decimals, im) result(new)
+		end function new_string_from_c128
+		pure elemental recursive type(String) module function new_string_from_c64(x,locale,fmt,decimals,im) result(new)
 			complex(real64), intent(in) :: x
 			character(len=*), intent(in), optional :: locale
 			character(len=*), intent(in), optional :: fmt
 			integer, intent(in), optional :: decimals
 			character(len=*), intent(in), optional :: im
-		end function new_Str_c64
-		pure elemental recursive type(String) module function new_Str_c32(x, locale, fmt, decimals, im) result(new)
+		end function new_string_from_c64
+		pure elemental recursive type(String) module function new_string_from_c32(x,locale,fmt,decimals,im) result(new)
 			complex(real32), intent(in) :: x
 			character(len=*), intent(in), optional :: locale
 			character(len=*), intent(in), optional :: fmt
 			integer, intent(in), optional :: decimals
 			character(len=*), intent(in), optional :: im
-		end function new_Str_c32
+		end function new_string_from_c32
 
-		pure elemental recursive type(String) module function new_Str_r128(x, locale, fmt, decimals) result(new)
+		pure elemental recursive type(String) module function new_string_from_r128(x, locale, fmt, decimals)result(new)
 			real(real128), intent(in) :: x
 			character(len=*), intent(in), optional :: locale
 			character(len=*), intent(in), optional :: fmt
 			integer, intent(in), optional :: decimals
-		end function new_Str_r128
-		pure elemental recursive type(String) module function new_Str_r64(x, locale, fmt, decimals) result(new)
+		end function new_string_from_r128
+		pure elemental recursive type(String) module function new_string_from_r64(x, locale, fmt, decimals) result(new)
 			real(real64), intent(in) :: x
 			character(len=*), intent(in), optional :: locale
 			character(len=*), intent(in), optional :: fmt
 			integer, intent(in), optional :: decimals
-		end function new_Str_r64
-		pure elemental recursive type(String) module function new_Str_r32(x, locale, fmt, decimals) result(new)
+		end function new_string_from_r64
+		pure elemental recursive type(String) module function new_string_from_r32(x, locale, fmt, decimals) result(new)
 			real(real32), intent(in) :: x
 			character(len=*), intent(in), optional :: locale
 			character(len=*), intent(in), optional :: fmt
 			integer, intent(in), optional :: decimals
-		end function new_Str_r32
+		end function new_string_from_r32
 
-		pure elemental recursive type(String) module function new_Str_i64(x, fmt) result(new)
+		pure elemental recursive type(String) module function new_string_from_i64(x, fmt) result(new)
 			integer(int64), intent(in) :: x
 			character(len=*), intent(in), optional :: fmt
-		end function new_Str_i64
-		pure elemental recursive type(String) module function new_Str_i32(x, fmt) result(new)
+		end function new_string_from_i64
+		pure elemental recursive type(String) module function new_string_from_i32(x, fmt) result(new)
 			integer(int32), intent(in) :: x
 			character(len=*), intent(in), optional :: fmt
-		end function new_Str_i32
-		pure elemental recursive type(String) module function new_Str_i16(x, fmt) result(new)
+		end function new_string_from_i32
+		pure elemental recursive type(String) module function new_string_from_i16(x, fmt) result(new)
 			integer(int16), intent(in) :: x
 			character(len=*), intent(in), optional :: fmt
-		end function new_Str_i16
-		pure elemental recursive type(String) module function new_Str_i8(x, fmt) result(new)
+		end function new_string_from_i16
+		pure elemental recursive type(String) module function new_string_from_i8(x, fmt) result(new)
 			integer(int8), intent(in) :: x
 			character(len=*), intent(in), optional :: fmt
-		end function new_Str_i8
+		end function new_string_from_i8
 
-		pure elemental recursive type(String) module function new_Str_string(x) result(new)
+		pure elemental recursive type(String) module function new_string_from_string(x) result(new)
 			class(String), intent(in) :: x
-		end function new_Str_string
-
-		pure elemental recursive type(String) module function new_Str_char(x) result(new)
+		end function new_string_from_string
+		pure elemental recursive type(String) module function new_string_from_char(x) result(new)
 			character(len=*), intent(in) :: x
-		end function new_Str_char
-
-		pure elemental recursive type(String) module function new_Str_empty() result(new)
+		end function new_string_from_char
+		pure elemental recursive type(String) module function new_string_from_empty() result(new)
 			! No arguments
-		end function new_Str_empty
+		end function new_string_from_empty
 	end interface
 
 	interface str                                                                               ! Submodule internal_io
 		!--------------------------------------------------------------------------------------------------------------
-		!! Function for representing a scalar number as a `character` string.
-		!!
-		!! By default behavior, `str` will write a `real` or `complex` number using a number of significant digits
-		!! required in the worst case for a lossless round-trip conversion starting with the internal model
-		!! representation of `x`. For the complement of `str`, see [cast](../page/Ref/cast.html).
+		!! Function for returning a `character` representation of a number.
 		!!
 		!! For a user reference, see [str](../page/Ref/str.html).
 		!--------------------------------------------------------------------------------------------------------------
-		pure recursive module function str_c128(x, locale, fmt, decimals, im) result(x_str)
+		pure recursive module function str_from_c128(x, locale, fmt, decimals, im) result(x_str)
 			complex(real128), intent(in) :: x
 			character(len=*), intent(in), optional :: locale
 			character(len=*), intent(in), optional :: fmt
 			integer, intent(in), optional :: decimals
 			character(len=*), intent(in), optional :: im
 			character(len=:), allocatable :: x_str
-		end function str_c128
-		pure recursive module function str_c64(x, locale, fmt, decimals, im) result(x_str)
+		end function str_from_c128
+		pure recursive module function str_from_c64(x, locale, fmt, decimals, im) result(x_str)
 			complex(real64), intent(in) :: x
 			character(len=*), intent(in), optional :: locale
 			character(len=*), intent(in), optional :: fmt
 			integer, intent(in), optional :: decimals
 			character(len=*), intent(in), optional :: im
 			character(len=:), allocatable :: x_str
-		end function str_c64
-		pure recursive module function str_c32(x, locale, fmt, decimals, im) result(x_str)
+		end function str_from_c64
+		pure recursive module function str_from_c32(x, locale, fmt, decimals, im) result(x_str)
 			complex(real32), intent(in) :: x
 			character(len=*), intent(in), optional :: locale
 			character(len=*), intent(in), optional :: fmt
 			integer, intent(in), optional :: decimals
 			character(len=*), intent(in), optional :: im
 			character(len=:), allocatable :: x_str
-		end function str_c32
+		end function str_from_c32
 
-		pure recursive module function str_r128(x, locale, fmt, decimals) result(x_str)
+		pure recursive module function str_from_r128(x, locale, fmt, decimals) result(x_str)
 			real(real128), intent(in) :: x
 			character(len=*), intent(in), optional :: locale
 			character(len=*), intent(in), optional :: fmt
 			integer, intent(in), optional :: decimals
 			character(len=:), allocatable :: x_str
-		end function str_r128
-		pure recursive module function str_r64(x, locale, fmt, decimals) result(x_str)
+		end function str_from_r128
+		pure recursive module function str_from_r64(x, locale, fmt, decimals) result(x_str)
 			real(real64), intent(in) :: x
 			character(len=*), intent(in), optional :: locale
 			character(len=*), intent(in), optional :: fmt
 			integer, intent(in), optional :: decimals
 			character(len=:), allocatable :: x_str
-		end function str_r64
-		pure recursive module function str_r32(x, locale, fmt, decimals) result(x_str)
+		end function str_from_r64
+		pure recursive module function str_from_r32(x, locale, fmt, decimals) result(x_str)
 			real(real32), intent(in) :: x
 			character(len=*), intent(in), optional :: locale
 			character(len=*), intent(in), optional :: fmt
 			integer, intent(in), optional :: decimals
 			character(len=:), allocatable :: x_str
-		end function str_r32
+		end function str_from_r32
 
-		pure recursive module function str_i64(x, fmt) result(x_str)
+		pure recursive module function str_from_i64(x, fmt) result(x_str)
 			integer(int64), intent(in) :: x
 			character(len=*), intent(in), optional :: fmt
 			character(len=:), allocatable :: x_str
-		end function str_i64
-		pure recursive module function str_i32(x, fmt) result(x_str)
+		end function str_from_i64
+		pure recursive module function str_from_i32(x, fmt) result(x_str)
 			integer(int32), intent(in) :: x
 			character(len=*), intent(in), optional :: fmt
 			character(len=:), allocatable :: x_str
-		end function str_i32
-		pure recursive module function str_i16(x, fmt) result(x_str)
+		end function str_from_i32
+		pure recursive module function str_from_i16(x, fmt) result(x_str)
 			integer(int16), intent(in) :: x
 			character(len=*), intent(in), optional :: fmt
 			character(len=:), allocatable :: x_str
-		end function str_i16
-		pure recursive module function str_i8(x, fmt) result(x_str)
+		end function str_from_i16
+		pure recursive module function str_from_i8(x, fmt) result(x_str)
 			integer(int8), intent(in) :: x
 			character(len=*), intent(in), optional :: fmt
 			character(len=:), allocatable :: x_str
-		end function str_i8
+		end function str_from_i8
 
-		pure recursive module function str_string(x) result(x_str)
+		pure recursive module function str_from_string(x) result(x_str)
 			class(String), intent(in) :: x
 			character(len=:), allocatable :: x_str
-		end function str_string
-
-		pure recursive module function str_char(x) result(x_str)
+		end function str_from_string
+		pure recursive module function str_from_char(x) result(x_str)
 			character(len=*), intent(in) :: x
 			character(len=:), allocatable :: x_str
-		end function str_char
-
-		pure recursive module function str_empty() result(x_str)
+		end function str_from_char
+		pure recursive module function str_from_empty() result(x_str)
 			character(len=:), allocatable :: x_str
-		end function str_empty
+		end function str_from_empty
 	end interface
 
 	interface cast                                                                              ! Submodule internal_io
 		!--------------------------------------------------------------------------------------------------------------
-		!! Subroutine for casting a `character` or `String` into a number.
-		!!
-		!! For the complement of `cast`, see [String](../page/Ref/String.html) and [str](../page/Ref/str.html).
+		!! Subroutine for casting between numeric and string data.
 		!!
 		!! For a user reference, see [cast](../page/Ref/cast.html).
 		!--------------------------------------------------------------------------------------------------------------
-		pure elemental recursive module subroutine cast_string_c128(substring, into, locale, fmt, im)
-			class(String), intent(in) :: substring
-			complex(real128), intent(out) :: into
+		pure elemental recursive module subroutine cast_c128_to_string(x, into, locale, fmt, decimals, im)
+			complex(real128), intent(in) :: x
+			type(String), intent(inout) :: into
 			character(len=*), intent(in), optional :: locale
 			character(len=*), intent(in), optional :: fmt
+			integer, intent(in), optional :: decimals
 			character(len=*), intent(in), optional :: im
-		end subroutine cast_string_c128
-		pure elemental recursive module subroutine cast_string_c64(substring, into, locale, fmt, im)
-			class(String), intent(in) :: substring
-			complex(real64), intent(out) :: into
+		end subroutine cast_c128_to_string
+		pure elemental recursive module subroutine cast_c64_to_string(x, into, locale, fmt, decimals, im)
+			complex(real64), intent(in) :: x
+			type(String), intent(inout) :: into
 			character(len=*), intent(in), optional :: locale
 			character(len=*), intent(in), optional :: fmt
+			integer, intent(in), optional :: decimals
 			character(len=*), intent(in), optional :: im
-		end subroutine cast_string_c64
-		pure elemental recursive module subroutine cast_string_c32(substring, into, locale, fmt, im)
-			class(String), intent(in) :: substring
-			complex(real32), intent(out) :: into
+		end subroutine cast_c64_to_string
+		pure elemental recursive module subroutine cast_c32_to_string(x, into, locale, fmt, decimals, im)
+			complex(real32), intent(in) :: x
+			type(String), intent(inout) :: into
 			character(len=*), intent(in), optional :: locale
 			character(len=*), intent(in), optional :: fmt
+			integer, intent(in), optional :: decimals
 			character(len=*), intent(in), optional :: im
-		end subroutine cast_string_c32
+		end subroutine cast_c32_to_string
 
-		pure elemental recursive module subroutine cast_string_r128(substring, into, locale, fmt)
-			class(String), intent(in) :: substring
-			real(real128), intent(out) :: into
+		pure elemental recursive module subroutine cast_r128_to_string(x, into, locale, fmt, decimals)
+			real(real128), intent(in) :: x
+			type(String), intent(inout) :: into
 			character(len=*), intent(in), optional :: locale
 			character(len=*), intent(in), optional :: fmt
-		end subroutine cast_string_r128
-		pure elemental recursive module subroutine cast_string_r64(substring, into, locale, fmt)
-			class(String), intent(in) :: substring
-			real(real64), intent(out) :: into
+			integer, intent(in), optional :: decimals
+		end subroutine cast_r128_to_string
+		pure elemental recursive module subroutine cast_r64_to_string(x, into, locale, fmt, decimals)
+			real(real64), intent(in) :: x
+			type(String), intent(inout) :: into
 			character(len=*), intent(in), optional :: locale
 			character(len=*), intent(in), optional :: fmt
-		end subroutine cast_string_r64
-		pure elemental recursive module subroutine cast_string_r32(substring, into, locale, fmt)
-			class(String), intent(in) :: substring
-			real(real32), intent(out) :: into
+			integer, intent(in), optional :: decimals
+		end subroutine cast_r64_to_string
+		pure elemental recursive module subroutine cast_r32_to_string(x, into, locale, fmt, decimals)
+			real(real32), intent(in) :: x
+			type(String), intent(inout) :: into
 			character(len=*), intent(in), optional :: locale
 			character(len=*), intent(in), optional :: fmt
-		end subroutine cast_string_r32
+			integer, intent(in), optional :: decimals
+		end subroutine cast_r32_to_string
 
-		pure elemental recursive module subroutine cast_string_i64(substring, into, fmt)
-			class(String), intent(in) :: substring
-			integer(int64), intent(out) :: into
+		pure elemental recursive module subroutine cast_i64_to_string(x, into, fmt)
+			integer(int64), intent(in) :: x
+			type(String), intent(inout) :: into
 			character(len=*), intent(in), optional :: fmt
-		end subroutine cast_string_i64
-		pure elemental recursive module subroutine cast_string_i32(substring, into, fmt)
-			class(String), intent(in) :: substring
-			integer(int32), intent(out) :: into
+		end subroutine cast_i64_to_string
+		pure elemental recursive module subroutine cast_i32_to_string(x, into, fmt)
+			integer(int32), intent(in) :: x
+			type(String), intent(inout) :: into
 			character(len=*), intent(in), optional :: fmt
-		end subroutine cast_string_i32
-		pure elemental recursive module subroutine cast_string_i16(substring, into, fmt)
-			class(String), intent(in) :: substring
-			integer(int16), intent(out) :: into
+		end subroutine cast_i32_to_string
+		pure elemental recursive module subroutine cast_i16_to_string(x, into, fmt)
+			integer(int16), intent(in) :: x
+			type(String), intent(inout) :: into
 			character(len=*), intent(in), optional :: fmt
-		end subroutine cast_string_i16
-		pure elemental recursive module subroutine cast_string_i8(substring, into, fmt)
-			class(String), intent(in) :: substring
-			integer(int8), intent(out) :: into
+		end subroutine cast_i16_to_string
+		pure elemental recursive module subroutine cast_i8_to_string(x, into, fmt)
+			integer(int8), intent(in) :: x
+			type(String), intent(inout) :: into
 			character(len=*), intent(in), optional :: fmt
-		end subroutine cast_string_i8
+		end subroutine cast_i8_to_string
 
-		pure recursive module subroutine cast_c128(substring, into, locale, fmt, im)
-			character(len=*), intent(in) :: substring
-			complex(real128), intent(out) :: into
+		pure recursive module subroutine cast_c128_to_char(x, into, locale, fmt, decimals, im)
+			complex(real128), intent(in) :: x
+			character(len=:), allocatable, intent(inout) :: into
+			character(len=*), intent(in), optional :: locale
+			character(len=*), intent(in), optional :: fmt
+			integer, intent(in), optional :: decimals
+			character(len=*), intent(in), optional :: im
+		end subroutine cast_c128_to_char
+		pure recursive module subroutine cast_c64_to_char(x, into, locale, fmt, decimals, im)
+			complex(real64), intent(in) :: x
+			character(len=:), allocatable, intent(inout) :: into
+			character(len=*), intent(in), optional :: locale
+			character(len=*), intent(in), optional :: fmt
+			integer, intent(in), optional :: decimals
+			character(len=*), intent(in), optional :: im
+		end subroutine cast_c64_to_char
+		pure recursive module subroutine cast_c32_to_char(x, into, locale, fmt, decimals, im)
+			complex(real32), intent(in) :: x
+			character(len=:), allocatable, intent(inout) :: into
+			character(len=*), intent(in), optional :: locale
+			character(len=*), intent(in), optional :: fmt
+			integer, intent(in), optional :: decimals
+			character(len=*), intent(in), optional :: im
+		end subroutine cast_c32_to_char
+
+		pure recursive module subroutine cast_r128_to_char(x, into, locale, fmt, decimals)
+			real(real128), intent(in) :: x
+			character(len=:), allocatable, intent(inout) :: into
+			character(len=*), intent(in), optional :: locale
+			character(len=*), intent(in), optional :: fmt
+			integer, intent(in), optional :: decimals
+		end subroutine cast_r128_to_char
+		pure recursive module subroutine cast_r64_to_char(x, into, locale, fmt, decimals)
+			real(real64), intent(in) :: x
+			character(len=:), allocatable, intent(inout) :: into
+			character(len=*), intent(in), optional :: locale
+			character(len=*), intent(in), optional :: fmt
+			integer, intent(in), optional :: decimals
+		end subroutine cast_r64_to_char
+		pure recursive module subroutine cast_r32_to_char(x, into, locale, fmt, decimals)
+			real(real32), intent(in) :: x
+			character(len=:), allocatable, intent(inout) :: into
+			character(len=*), intent(in), optional :: locale
+			character(len=*), intent(in), optional :: fmt
+			integer, intent(in), optional :: decimals
+		end subroutine cast_r32_to_char
+
+		pure recursive module subroutine cast_i64_to_char(x, into, fmt)
+			integer(int64), intent(in) :: x
+			character(len=:), allocatable, intent(inout) :: into
+			character(len=*), intent(in), optional :: fmt
+		end subroutine cast_i64_to_char
+		pure recursive module subroutine cast_i32_to_char(x, into, fmt)
+			integer(int32), intent(in) :: x
+			character(len=:), allocatable, intent(inout) :: into
+			character(len=*), intent(in), optional :: fmt
+		end subroutine cast_i32_to_char
+		pure recursive module subroutine cast_i16_to_char(x, into, fmt)
+			integer(int16), intent(in) :: x
+			character(len=:), allocatable, intent(inout) :: into
+			character(len=*), intent(in), optional :: fmt
+		end subroutine cast_i16_to_char
+		pure recursive module subroutine cast_i8_to_char(x, into, fmt)
+			integer(int8), intent(in) :: x
+			character(len=:), allocatable, intent(inout) :: into
+			character(len=*), intent(in), optional :: fmt
+		end subroutine cast_i8_to_char
+
+		pure elemental recursive module subroutine cast_string_to_c128(substring, into, locale, fmt, im)
+			class(String), intent(in) :: substring
+			complex(real128), intent(inout) :: into
 			character(len=*), intent(in), optional :: locale
 			character(len=*), intent(in), optional :: fmt
 			character(len=*), intent(in), optional :: im
-		end subroutine cast_c128
-		pure recursive module subroutine cast_c64(substring, into, locale, fmt, im)
-			character(len=*), intent(in) :: substring
-			complex(real64), intent(out) :: into
+		end subroutine cast_string_to_c128
+		pure elemental recursive module subroutine cast_string_to_c64(substring, into, locale, fmt, im)
+			class(String), intent(in) :: substring
+			complex(real64), intent(inout) :: into
 			character(len=*), intent(in), optional :: locale
 			character(len=*), intent(in), optional :: fmt
 			character(len=*), intent(in), optional :: im
-		end subroutine cast_c64
-		pure recursive module subroutine cast_c32(substring, into, locale, fmt, im)
-			character(len=*), intent(in) :: substring
-			complex(real32), intent(out) :: into
+		end subroutine cast_string_to_c64
+		pure elemental recursive module subroutine cast_string_to_c32(substring, into, locale, fmt, im)
+			class(String), intent(in) :: substring
+			complex(real32), intent(inout) :: into
 			character(len=*), intent(in), optional :: locale
 			character(len=*), intent(in), optional :: fmt
 			character(len=*), intent(in), optional :: im
-		end subroutine cast_c32
+		end subroutine cast_string_to_c32
 
-		pure recursive module subroutine cast_r128(substring, into, locale, fmt)
-			character(len=*), intent(in) :: substring
-			real(real128), intent(out) :: into
+		pure elemental recursive module subroutine cast_string_to_r128(substring, into, locale, fmt)
+			class(String), intent(in) :: substring
+			real(real128), intent(inout) :: into
 			character(len=*), intent(in), optional :: locale
 			character(len=*), intent(in), optional :: fmt
-		end subroutine cast_r128
-		pure recursive module subroutine cast_r64(substring, into, locale, fmt)
-			character(len=*), intent(in) :: substring
-			real(real64), intent(out) :: into
+		end subroutine cast_string_to_r128
+		pure elemental recursive module subroutine cast_string_to_r64(substring, into, locale, fmt)
+			class(String), intent(in) :: substring
+			real(real64), intent(inout) :: into
 			character(len=*), intent(in), optional :: locale
 			character(len=*), intent(in), optional :: fmt
-		end subroutine cast_r64
-		pure recursive module subroutine cast_r32(substring, into, locale, fmt)
-			character(len=*), intent(in) :: substring
-			real(real32), intent(out) :: into
+		end subroutine cast_string_to_r64
+		pure elemental recursive module subroutine cast_string_to_r32(substring, into, locale, fmt)
+			class(String), intent(in) :: substring
+			real(real32), intent(inout) :: into
 			character(len=*), intent(in), optional :: locale
 			character(len=*), intent(in), optional :: fmt
-		end subroutine cast_r32
+		end subroutine cast_string_to_r32
 
-		pure recursive module subroutine cast_i64(substring, into, fmt)
-			character(len=*), intent(in) :: substring
-			integer(int64), intent(out) :: into
+		pure elemental recursive module subroutine cast_string_to_i64(substring, into, fmt)
+			class(String), intent(in) :: substring
+			integer(int64), intent(inout) :: into
 			character(len=*), intent(in), optional :: fmt
-		end subroutine cast_i64
-		pure recursive module subroutine cast_i32(substring, into, fmt)
-			character(len=*), intent(in) :: substring
-			integer(int32), intent(out) :: into
+		end subroutine cast_string_to_i64
+		pure elemental recursive module subroutine cast_string_to_i32(substring, into, fmt)
+			class(String), intent(in) :: substring
+			integer(int32), intent(inout) :: into
 			character(len=*), intent(in), optional :: fmt
-		end subroutine cast_i32
-		pure recursive module subroutine cast_i16(substring, into, fmt)
-			character(len=*), intent(in) :: substring
-			integer(int16), intent(out) :: into
+		end subroutine cast_string_to_i32
+		pure elemental recursive module subroutine cast_string_to_i16(substring, into, fmt)
+			class(String), intent(in) :: substring
+			integer(int16), intent(inout) :: into
 			character(len=*), intent(in), optional :: fmt
-		end subroutine cast_i16
-		pure recursive module subroutine cast_i8(substring, into, fmt)
-			character(len=*), intent(in) :: substring
-			integer(int8), intent(out) :: into
+		end subroutine cast_string_to_i16
+		pure elemental recursive module subroutine cast_string_to_i8(substring, into, fmt)
+			class(String), intent(in) :: substring
+			integer(int8), intent(inout) :: into
 			character(len=*), intent(in), optional :: fmt
-		end subroutine cast_i8
+		end subroutine cast_string_to_i8
+
+		pure recursive module subroutine cast_char_to_c128(substring, into, locale, fmt, im)
+			character(len=*), intent(in) :: substring
+			complex(real128), intent(inout) :: into
+			character(len=*), intent(in), optional :: locale
+			character(len=*), intent(in), optional :: fmt
+			character(len=*), intent(in), optional :: im
+		end subroutine cast_char_to_c128
+		pure recursive module subroutine cast_char_to_c64(substring, into, locale, fmt, im)
+			character(len=*), intent(in) :: substring
+			complex(real64), intent(inout) :: into
+			character(len=*), intent(in), optional :: locale
+			character(len=*), intent(in), optional :: fmt
+			character(len=*), intent(in), optional :: im
+		end subroutine cast_char_to_c64
+		pure recursive module subroutine cast_char_to_c32(substring, into, locale, fmt, im)
+			character(len=*), intent(in) :: substring
+			complex(real32), intent(inout) :: into
+			character(len=*), intent(in), optional :: locale
+			character(len=*), intent(in), optional :: fmt
+			character(len=*), intent(in), optional :: im
+		end subroutine cast_char_to_c32
+
+		pure recursive module subroutine cast_char_to_r128(substring, into, locale, fmt)
+			character(len=*), intent(in) :: substring
+			real(real128), intent(inout) :: into
+			character(len=*), intent(in), optional :: locale
+			character(len=*), intent(in), optional :: fmt
+		end subroutine cast_char_to_r128
+		pure recursive module subroutine cast_char_to_r64(substring, into, locale, fmt)
+			character(len=*), intent(in) :: substring
+			real(real64), intent(inout) :: into
+			character(len=*), intent(in), optional :: locale
+			character(len=*), intent(in), optional :: fmt
+		end subroutine cast_char_to_r64
+		pure recursive module subroutine cast_char_to_r32(substring, into, locale, fmt)
+			character(len=*), intent(in) :: substring
+			real(real32), intent(inout) :: into
+			character(len=*), intent(in), optional :: locale
+			character(len=*), intent(in), optional :: fmt
+		end subroutine cast_char_to_r32
+
+		pure recursive module subroutine cast_char_to_i64(substring, into, fmt)
+			character(len=*), intent(in) :: substring
+			integer(int64), intent(inout) :: into
+			character(len=*), intent(in), optional :: fmt
+		end subroutine cast_char_to_i64
+		pure recursive module subroutine cast_char_to_i32(substring, into, fmt)
+			character(len=*), intent(in) :: substring
+			integer(int32), intent(inout) :: into
+			character(len=*), intent(in), optional :: fmt
+		end subroutine cast_char_to_i32
+		pure recursive module subroutine cast_char_to_i16(substring, into, fmt)
+			character(len=*), intent(in) :: substring
+			integer(int16), intent(inout) :: into
+			character(len=*), intent(in), optional :: fmt
+		end subroutine cast_char_to_i16
+		pure recursive module subroutine cast_char_to_i8(substring, into, fmt)
+			character(len=*), intent(in) :: substring
+			integer(int8), intent(inout) :: into
+			character(len=*), intent(in), optional :: fmt
+		end subroutine cast_char_to_i8
 	end interface
 
 	interface join																				 ! Submodule join_split
 		!--------------------------------------------------------------------------------------------------------------
 		!! Function for joining a vector of `tokens` into a scalar `character` or `String`.
-		!!
-		!! For the complement of `join`, see [split](../page/Ref/join-split.html).
 		!!
 		!! For a user reference, see [join](../page/Ref/join-split.html).
 		!--------------------------------------------------------------------------------------------------------------
@@ -819,8 +936,6 @@ module io_fortran_lib
 		!--------------------------------------------------------------------------------------------------------------
 		!! Function for splitting a scalar `character` or `String` into a vector of `tokens`.
 		!!
-		!! For the complement of `split`, see [join](../page/Ref/join-split.html).
-		!!
 		!! For a user reference, see [split](../page/Ref/join-split.html).
 		!--------------------------------------------------------------------------------------------------------------
 		pure recursive module function split_char(substring, separator) result(tokens)
@@ -839,11 +954,6 @@ module io_fortran_lib
 	interface to_file                                                                               ! Submodule file_io
 		!--------------------------------------------------------------------------------------------------------------
 		!! Subroutine for writing an array of uniform numeric data type to an external file.
-		!!
-		!! The file `file_name` will be created if it does not already exist and will be overwritten if it does exist.
-		!! Writing to text is allowed for arrays of rank `1` or `2`, and writing to binary is allowed for arrays of any
-		!! rank `1`-`15`. Any invalid actual arguments will be ignored, defaults will be assumed, and a warning message
-		!! will be issued on stdout.
 		!!
 		!! For a user reference, see [to_file](../page/Ref/to_file.html).
 		!--------------------------------------------------------------------------------------------------------------
@@ -1596,11 +1706,6 @@ module io_fortran_lib
 	interface from_file                                                                             ! Submodule file_io
 		!--------------------------------------------------------------------------------------------------------------
 		!! Subroutine for reading an external file of uniform numeric data type and format into an array.
-		!!
-		!! In the event that any actual arguments provided to `from_file` are invalid, the subprogram will not allow
-		!! progression of execution of the caller and will issue an `error stop`. This is due to the critical nature of
-		!! reads and the fact that the procedure may not be able to make the proper assumptions about the data being
-		!! read.
 		!!
 		!! For a user reference, see [from_file](../page/Ref/from_file.html).
 		!--------------------------------------------------------------------------------------------------------------
@@ -2562,9 +2667,6 @@ module io_fortran_lib
 		!--------------------------------------------------------------------------------------------------------------
 		!! Subroutine for writing a scalar `character` or `String` to an external text file.
 		!!
-		!! The file `file_name` will be created if it does not already exist and will be overwritten if `append` is
-		!! `.false.` (if it already exists). The default terminator is `LF` (line feed).
-		!!
 		!! For a user reference, see [echo](../page/Ref/echo.html).
 		!--------------------------------------------------------------------------------------------------------------
 		impure recursive module subroutine echo_chars(substring, file_name, append, terminator)
@@ -2583,7 +2685,9 @@ module io_fortran_lib
 	end interface
 
 	interface to_text                                                                               ! Submodule text_io
+		!--------------------------------------------------------------------------------------------------------------
 		!! Private interface for writing an array to an external text file.
+		!--------------------------------------------------------------------------------------------------------------
 		impure recursive module subroutine to_text_1dc128(x, file_name, header, dim, locale, delim, fmt, decimals, im)
 			complex(real128), dimension(:), intent(in) :: x
 			character(len=*), intent(in) :: file_name
@@ -2772,7 +2876,9 @@ module io_fortran_lib
 	end interface
 
 	interface from_text                                                                             ! Submodule text_io
+		!--------------------------------------------------------------------------------------------------------------
 		!! Private interface for reading an external text file into an array.
+		!--------------------------------------------------------------------------------------------------------------
 		impure recursive module subroutine from_text_1dc128(file_name, into, header, locale, delim, fmt, im)
 			character(len=*), intent(in) :: file_name
 			complex(real128), allocatable, dimension(:), intent(out) :: into
@@ -2939,7 +3045,9 @@ module io_fortran_lib
 	end interface
 
 	interface to_binary                                                                           ! Submodule binary_io
+		!--------------------------------------------------------------------------------------------------------------
 		!! Private interface for writing an array to an external binary file.
+		!--------------------------------------------------------------------------------------------------------------
 		impure recursive module subroutine to_binary_1dc128(x, file_name)
 			complex(real128), dimension(:), intent(in) :: x
 			character(len=*), intent(in) :: file_name
@@ -3587,7 +3695,9 @@ module io_fortran_lib
 	end interface
 
 	interface from_binary                                                                         ! Submodule binary_io
+		!--------------------------------------------------------------------------------------------------------------
 		!! Private interface for reading an external binary file into an array.
+		!--------------------------------------------------------------------------------------------------------------
 		impure recursive module subroutine from_binary_1dc128(file_name, into, data_shape)
 			character(len=*), intent(in) :: file_name
 			complex(real128), allocatable, dimension(:), intent(out) :: into
@@ -4535,7 +4645,11 @@ module io_fortran_lib
 end module io_fortran_lib
 
 submodule (io_fortran_lib) String_procedures
+	!------------------------------------------------------------------------------------------------------------------
 	!! This submodule provides module procedure implementations for the **type-bound procedures** of type `String`.
+	!------------------------------------------------------------------------------------------------------------------
+	implicit none (type,external)
+
 	contains
 	module procedure as_str
 		if ( self%len() < 1 ) then
@@ -4546,12 +4660,12 @@ submodule (io_fortran_lib) String_procedures
 	end procedure as_str
 
 	module procedure count_substring_chars
-		integer :: self_len, match_len, i
+		integer(int64) :: self_len, match_len, i
 
-		self_len = self%len()
-		match_len = len(match)
+		self_len = self%len64()
+		match_len = len(match, kind=int64)
 
-		if ( self_len < 1 ) then
+		if ( self_len < 1_int64 ) then
 			if ( self_len == match_len ) then
 				occurrences = 1; return
 			else
@@ -4559,38 +4673,30 @@ submodule (io_fortran_lib) String_procedures
 			end if
 		end if
 
-		if ( (match_len == 0) .or. (match_len > self_len) ) then
+		if ( (match_len == 0_int64) .or. (match_len > self_len) ) then
 			occurrences = 0; return
 		end if
 
-		i = 1
 		occurrences = 0
 
-		counting: do while ( i <= self_len )
-			if ( self%s(i:i) == match(1:1) ) then
-				if ( i+match_len-1 > self_len ) exit counting
-
-				if ( self%s(i:i+match_len-1) == match ) then
-					occurrences = occurrences + 1
-					i = i + match_len; cycle counting
-				else
-					i = i + 1; cycle counting
-				end if
+		i = 1_int64; do while ( i <= self_len-match_len+1_int64 )
+			if ( self%s(i:i+match_len-1_int64) == match ) then
+				occurrences = occurrences + 1; i = i + match_len; cycle
 			else
-				i = i + 1; cycle counting
+				i = i + 1_int64; cycle
 			end if
-		end do counting
+		end do
 	end procedure count_substring_chars
 
 	module procedure count_substring_string
-		integer :: self_len, match_len, i
+		integer(int64) :: self_len, match_len, i
 
-		self_len = self%len()
-		match_len = match%len()
+		self_len = self%len64()
+		match_len = match%len64()
 
-		if ( self_len < 1 ) then
+		if ( self_len < 1_int64 ) then
 			if ( self_len == match_len ) then
-				if ( self_len == 0 ) then
+				if ( self_len == 0_int64 ) then
 					occurrences = 1; return
 				else
 					occurrences = 0; return
@@ -4600,27 +4706,19 @@ submodule (io_fortran_lib) String_procedures
 			end if
 		end if
 
-		if ( (match_len < 1) .or. (match_len > self_len) ) then
+		if ( (match_len < 1_int64) .or. (match_len > self_len) ) then
 			occurrences = 0; return
 		end if
 
-		i = 1
 		occurrences = 0
 
-		counting: do while ( i <= self_len )
-			if ( self%s(i:i) == match%s(1:1) ) then
-				if ( i+match_len-1 > self_len ) exit counting
-
-				if ( self%s(i:i+match_len-1) == match%s ) then
-					occurrences = occurrences + 1
-					i = i + match_len; cycle counting
-				else
-					i = i + 1; cycle counting
-				end if
+		i = 1_int64; do while ( i <= self_len-match_len+1_int64 )
+			if ( self%s(i:i+match_len-1_int64) == match%s ) then
+				occurrences = occurrences + 1; i = i + match_len; cycle
 			else
-				i = i + 1; cycle counting
+				i = i + 1_int64; cycle
 			end if
-		end do counting
+		end do
 	end procedure count_substring_string
 
 	module procedure empty
@@ -5636,8 +5734,12 @@ submodule (io_fortran_lib) String_procedures
 end submodule String_procedures
 
 submodule (io_fortran_lib) operators
+	!------------------------------------------------------------------------------------------------------------------
 	!! This submodule provides module procedure implementations for the **public interfaces** `operator(//)`,
 	!! `operator(+)`, `operator(-)`, `operator(**)`, `operator(==)`, and `operator(/=)`.
+	!------------------------------------------------------------------------------------------------------------------
+	implicit none (type,external)
+
 	contains
 	module procedure string_concatenation
 		if ( Stringl%len() < 1 ) then
@@ -5911,14 +6013,49 @@ submodule (io_fortran_lib) operators
 end submodule operators
 
 submodule (io_fortran_lib) internal_io
+	!------------------------------------------------------------------------------------------------------------------
 	!! This submodule provides module procedure implementations for the **public interfaces** `String`, `str`, and
 	!! `cast`.
+	!------------------------------------------------------------------------------------------------------------------
+	implicit none (type,external)
+
+	! Submodule variables ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	integer(int64),	parameter :: smallest_int64	= -huge(1_int64)-1_int64
+	integer(int32),	parameter :: smallest_int32	= -huge(1_int32)-1_int32
+	integer(int16),	parameter :: smallest_int16	= -huge(1_int16)-1_int16
+	integer(int8),	parameter :: smallest_int8	= -huge(1_int8)-1_int8
+
+	integer(int64),	parameter :: largest_int64	= huge(1_int64)
+	integer(int32),	parameter :: largest_int32	= huge(1_int32)
+	integer(int16),	parameter :: largest_int16	= huge(1_int16)
+	integer(int8),	parameter :: largest_int8	= huge(1_int8)
+
+	integer(int64), dimension(0:18), parameter :: TENS_i64 = int([ 1d0, 1d1, 1d2, 1d3, 1d4, 1d5, 1d6, 1d7, 1d8, 1d9, &
+																   1d10, 1d11, 1d12, 1d13, 1d14, 1d15, 1d16, 1d17, &
+																   1d18 ], kind=int64)
+	integer(int32), dimension(0:9),  parameter :: TENS_i32 = int([ 1e0, 1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9 ])
+	integer(int16), dimension(0:4),  parameter :: TENS_i16 = int([ 1e0, 1e1, 1e2, 1e3, 1e4 ], kind=int16)
+	integer(int8),  dimension(0:2),  parameter :: TENS_i8  = int([ 1e0, 1e1, 1e2 ], kind=int8)
+
+	integer(int64), dimension(0:15), parameter :: SIXTEENS_i64 = [ 1_int64, 16_int64, 16_int64**2, 16_int64**3, &
+																   16_int64**4, 16_int64**5, 16_int64**6, 16_int64**7,&
+																   16_int64**8, 16_int64**9, 16_int64**10, &
+																   16_int64**11, 16_int64**12, 16_int64**13, &
+																   16_int64**14, 16_int64**15 ]
+	integer(int32), dimension(0:7),  parameter :: SIXTEENS_i32 = [ 1, 16, 16**2, 16**3, 16**4, 16**5, 16**6, 16**7 ]
+	integer(int16), dimension(0:3),  parameter :: SIXTEENS_i16 = [ 1_int16, 16_int16, 256_int16, 4096_int16 ]
+	integer(int8),  dimension(0:1),  parameter :: SIXTEENS_i8  = [ 1_int8, 16_int8 ]
+
+	character(len=1), dimension(0:15), parameter :: DIGITS_A = [ '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', &
+																 'a', 'b', 'c', 'd', 'e', 'f' ]
+
 	contains
-	module procedure new_Str_c128
+	! String ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	module procedure new_string_from_c128
 		character(len=1) :: fmt_
-		character(len=:), allocatable :: decimal, xre_str, xim_str, im_
-		integer, allocatable :: e, decimals_
-		integer :: i
+		character(len=5) :: decimal
+		character(len=:), allocatable :: xre_str, xim_str, im_
+		integer :: e, decimals_, i
 
 		if ( .not. present(fmt) ) then
 			fmt_ = 'e'
@@ -5932,7 +6069,7 @@ submodule (io_fortran_lib) internal_io
 
 		if_z_re: if ( fmt_ == 'z' ) then
 			if ( x%re /= 0.0_real128 ) then
-				allocate( character(len=34) :: xre_str )
+				xre_str = '0x00000000000000000000000000000000'
 			else
 				xre_str = '0x0'; exit if_z_re
 			end if
@@ -5942,12 +6079,10 @@ submodule (io_fortran_lib) internal_io
 			do concurrent (i = 3:34)
 				if ( (xre_str(i:i) >= 'A') .and. (xre_str(i:i) <= 'F') ) xre_str(i:i) = achar(iachar(xre_str(i:i))+32)
 			end do
-
-			xre_str(1:2) = '0x'; exit if_z_re
 		end if if_z_re
 		if_z_im: if ( fmt_ == 'z' ) then
 			if ( x%im /= 0.0_real128 ) then
-				allocate( character(len=34) :: xim_str )
+				xim_str = '0x00000000000000000000000000000000'
 			else
 				xim_str = '0x0'; exit if_z_im
 			end if
@@ -5957,8 +6092,6 @@ submodule (io_fortran_lib) internal_io
 			do concurrent (i = 3:34)
 				if ( (xim_str(i:i) >= 'A') .and. (xim_str(i:i) <= 'F') ) xim_str(i:i) = achar(iachar(xim_str(i:i))+32)
 			end do
-
-			xim_str(1:2) = '0x'; exit if_z_im
 		end if if_z_im
 
 		if ( .not. present(locale) ) then
@@ -5979,21 +6112,13 @@ submodule (io_fortran_lib) internal_io
 			end if
 
 			if ( x%re < 0.0_real128 ) then
-				allocate( character(len=44) :: xre_str )
+				xre_str = '00000000000000000000000000000000000000000000'
 				write(unit=xre_str, fmt='(es44.35e4)', decimal=decimal) x%re
-				do i = 44, 1, -1
-					if ( xre_str(i:i) == 'E' ) then
-						xre_str(i:i) = 'e'; exit
-					end if
-				end do
+				xre_str(39:39) = 'e'
 			else
-				allocate( character(len=43) :: xre_str )
+				xre_str = '0000000000000000000000000000000000000000000'
 				write(unit=xre_str, fmt='(es43.35e4)', decimal=decimal) x%re
-				do i = 43, 1, -1
-					if ( xre_str(i:i) == 'E' ) then
-						xre_str(i:i) = 'e'; exit
-					end if
-				end do
+				xre_str(38:38) = 'e'
 			end if
 
 			if ( .not. present(decimals) ) exit if_eorf_re
@@ -6006,10 +6131,11 @@ submodule (io_fortran_lib) internal_io
 				decimals_ = decimals
 			end if
 
-			do i = 1, 43
+			i = 1; do
 				if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) then
 					xre_str = xre_str(:i+decimals_)//xre_str(i+36:); exit if_eorf_re
 				end if
+				i = i + 1; cycle
 			end do
 		else if ( fmt_ == 'f' ) then
 			if ( abs(x%re) /= 0.0_real128 ) then
@@ -6032,8 +6158,7 @@ submodule (io_fortran_lib) internal_io
 				write(unit=xre_str, fmt='(f0.100)', decimal=decimal) x%re
 			end if
 
-			i = 1
-			do while ( i <= 125 )
+			i = 1; do
 				if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) exit
 				i = i + 1; cycle
 			end do
@@ -6043,7 +6168,7 @@ submodule (io_fortran_lib) internal_io
 			end if
 
 			if ( i > 36 ) then
-				xre_str = xre_str(:i)//'0'; exit if_eorf_re
+				xre_str = xre_str(:i); exit if_eorf_re
 			end if
 
 			if ( .not. present(decimals) ) then
@@ -6051,7 +6176,7 @@ submodule (io_fortran_lib) internal_io
 			end if
 
 			if ( decimals <= 0 ) then
-				xre_str = xre_str(:i)//'0'; exit if_eorf_re
+				xre_str = xre_str(:i); exit if_eorf_re
 			end if
 
 			if ( decimals >= 36-e ) then
@@ -6066,21 +6191,13 @@ submodule (io_fortran_lib) internal_io
 			end if
 
 			if ( x%im < 0.0_real128 ) then
-				allocate( character(len=44) :: xim_str )
+				xim_str = '00000000000000000000000000000000000000000000'
 				write(unit=xim_str, fmt='(es44.35e4)', decimal=decimal) x%im
-				do i = 44, 1, -1
-					if ( xim_str(i:i) == 'E' ) then
-						xim_str(i:i) = 'e'; exit
-					end if
-				end do
+				xim_str(39:39) = 'e'
 			else
-				allocate( character(len=43) :: xim_str )
+				xim_str = '0000000000000000000000000000000000000000000'
 				write(unit=xim_str, fmt='(es43.35e4)', decimal=decimal) x%im
-				do i = 43, 1, -1
-					if ( xim_str(i:i) == 'E' ) then
-						xim_str(i:i) = 'e'; exit
-					end if
-				end do
+				xim_str(38:38) = 'e'
 			end if
 
 			if ( .not. present(decimals) ) exit if_eorf_im
@@ -6093,10 +6210,11 @@ submodule (io_fortran_lib) internal_io
 				decimals_ = decimals
 			end if
 
-			do i = 1, 43
+			i = 1; do
 				if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) then
 					xim_str = xim_str(:i+decimals_)//xim_str(i+36:); exit if_eorf_im
 				end if
+				i = i + 1; cycle
 			end do
 		else if ( fmt_ == 'f' ) then
 			if ( abs(x%im) /= 0.0_real128 ) then
@@ -6119,8 +6237,7 @@ submodule (io_fortran_lib) internal_io
 				write(unit=xim_str, fmt='(f0.100)', decimal=decimal) x%im
 			end if
 
-			i = 1
-			do while ( i <= 125 )
+			i = 1; do
 				if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) exit
 				i = i + 1; cycle
 			end do
@@ -6130,7 +6247,7 @@ submodule (io_fortran_lib) internal_io
 			end if
 
 			if ( i > 36 ) then
-				xim_str = xim_str(:i)//'0'; exit if_eorf_im
+				xim_str = xim_str(:i); exit if_eorf_im
 			end if
 
 			if ( .not. present(decimals) ) then
@@ -6138,7 +6255,7 @@ submodule (io_fortran_lib) internal_io
 			end if
 
 			if ( decimals <= 0 ) then
-				xim_str = xim_str(:i)//'0'; exit if_eorf_im
+				xim_str = xim_str(:i); exit if_eorf_im
 			end if
 
 			if ( decimals >= 36-e ) then
@@ -6171,12 +6288,12 @@ submodule (io_fortran_lib) internal_io
 		else
 			new%s = xre_str//'+'//xim_str//im_
 		end if
-	end procedure new_Str_c128
-	module procedure new_Str_c64
+	end procedure new_string_from_c128
+	module procedure new_string_from_c64
 		character(len=1) :: fmt_
-		character(len=:), allocatable :: decimal, xre_str, xim_str, im_
-		integer, allocatable :: e, decimals_
-		integer :: i
+		character(len=5) :: decimal
+		character(len=:), allocatable :: xre_str, xim_str, im_
+		integer :: e, decimals_, i
 
 		if ( .not. present(fmt) ) then
 			fmt_ = 'e'
@@ -6193,14 +6310,14 @@ submodule (io_fortran_lib) internal_io
 				xre_str = '0x0'; exit if_z_re
 			end if
 
-			xre_str = str( transfer(source=x%re, mold=1_int64), fmt='z' ); exit if_z_re
+			call cast(transfer(source=x%re, mold=1_int64), into=xre_str, fmt='z'); exit if_z_re
 		end if if_z_re
 		if_z_im: if ( fmt_ == 'z' ) then
 			if ( x%im == 0.0_real64 ) then
 				xim_str = '0x0'; exit if_z_im
 			end if
 
-			xim_str = str( transfer(source=x%im, mold=1_int64), fmt='z' ); exit if_z_im
+			call cast(transfer(source=x%im, mold=1_int64), into=xim_str, fmt='z'); exit if_z_im
 		end if if_z_im
 
 		if ( .not. present(locale) ) then
@@ -6221,21 +6338,13 @@ submodule (io_fortran_lib) internal_io
 			end if
 
 			if ( x%re < 0.0_real64 ) then
-				allocate( character(len=25) :: xre_str )
+				xre_str = '0000000000000000000000000'
 				write(unit=xre_str, fmt='(es25.17e3)', decimal=decimal) x%re
-				do i = 25, 1, -1
-					if ( xre_str(i:i) == 'E' ) then
-						xre_str(i:i) = 'e'; exit
-					end if
-				end do
+				xre_str(21:21) = 'e'
 			else
-				allocate( character(len=24) :: xre_str )
+				xre_str = '000000000000000000000000'
 				write(unit=xre_str, fmt='(es24.17e3)', decimal=decimal) x%re
-				do i = 24, 1, -1
-					if ( xre_str(i:i) == 'E' ) then
-						xre_str(i:i) = 'e'; exit
-					end if
-				end do
+				xre_str(20:20) = 'e'
 			end if
 
 			if ( .not. present(decimals) ) exit if_eorf_re
@@ -6248,10 +6357,11 @@ submodule (io_fortran_lib) internal_io
 				decimals_ = decimals
 			end if
 
-			do i = 1, 24
+			i = 1; do
 				if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) then
 					xre_str = xre_str(:i+decimals_)//xre_str(i+18:); exit if_eorf_re
 				end if
+				i = i + 1; cycle
 			end do
 		else if ( fmt_ == 'f' ) then
 			if ( abs(x%re) /= 0.0_real64 ) then
@@ -6274,8 +6384,7 @@ submodule (io_fortran_lib) internal_io
 				write(unit=xre_str, fmt='(f0.80)', decimal=decimal) x%re
 			end if
 
-			i = 1
-			do while ( i <= 100 )
+			i = 1; do
 				if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) exit
 				i = i + 1; cycle
 			end do
@@ -6285,7 +6394,7 @@ submodule (io_fortran_lib) internal_io
 			end if
 
 			if ( i > 18 ) then
-				xre_str = xre_str(:i)//'0'; exit if_eorf_re
+				xre_str = xre_str(:i); exit if_eorf_re
 			end if
 
 			if ( .not. present(decimals) ) then
@@ -6293,7 +6402,7 @@ submodule (io_fortran_lib) internal_io
 			end if
 
 			if ( decimals <= 0 ) then
-				xre_str = xre_str(:i)//'0'; exit if_eorf_re
+				xre_str = xre_str(:i); exit if_eorf_re
 			end if
 
 			if ( decimals >= 18-e ) then
@@ -6308,21 +6417,13 @@ submodule (io_fortran_lib) internal_io
 			end if
 
 			if ( x%im < 0.0_real64 ) then
-				allocate( character(len=25) :: xim_str )
+				xim_str = '0000000000000000000000000'
 				write(unit=xim_str, fmt='(es25.17e3)', decimal=decimal) x%im
-				do i = 25, 1, -1
-					if ( xim_str(i:i) == 'E' ) then
-						xim_str(i:i) = 'e'; exit
-					end if
-				end do
+				xim_str(21:21) = 'e'
 			else
-				allocate( character(len=24) :: xim_str )
+				xim_str = '000000000000000000000000'
 				write(unit=xim_str, fmt='(es24.17e3)', decimal=decimal) x%im
-				do i = 24, 1, -1
-					if ( xim_str(i:i) == 'E' ) then
-						xim_str(i:i) = 'e'; exit
-					end if
-				end do
+				xim_str(20:20) = 'e'
 			end if
 
 			if ( .not. present(decimals) ) exit if_eorf_im
@@ -6335,10 +6436,11 @@ submodule (io_fortran_lib) internal_io
 				decimals_ = decimals
 			end if
 
-			do i = 1, 24
+			i = 1; do
 				if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) then
 					xim_str = xim_str(:i+decimals_)//xim_str(i+18:); exit if_eorf_im
 				end if
+				i = i + 1; cycle
 			end do
 		else if ( fmt_ == 'f' ) then
 			if ( abs(x%im) /= 0.0_real64 ) then
@@ -6361,8 +6463,7 @@ submodule (io_fortran_lib) internal_io
 				write(unit=xim_str, fmt='(f0.80)', decimal=decimal) x%im
 			end if
 
-			i = 1
-			do while ( i <= 100 )
+			i = 1; do
 				if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) exit
 				i = i + 1; cycle
 			end do
@@ -6372,7 +6473,7 @@ submodule (io_fortran_lib) internal_io
 			end if
 
 			if ( i > 18 ) then
-				xim_str = xim_str(:i)//'0'; exit if_eorf_im
+				xim_str = xim_str(:i); exit if_eorf_im
 			end if
 
 			if ( .not. present(decimals) ) then
@@ -6380,7 +6481,7 @@ submodule (io_fortran_lib) internal_io
 			end if
 
 			if ( decimals <= 0 ) then
-				xim_str = xim_str(:i)//'0'; exit if_eorf_im
+				xim_str = xim_str(:i); exit if_eorf_im
 			end if
 
 			if ( decimals >= 18-e ) then
@@ -6413,12 +6514,12 @@ submodule (io_fortran_lib) internal_io
 		else
 			new%s = xre_str//'+'//xim_str//im_
 		end if
-	end procedure new_Str_c64
-	module procedure new_Str_c32
+	end procedure new_string_from_c64
+	module procedure new_string_from_c32
 		character(len=1) :: fmt_
-		character(len=:), allocatable :: decimal, xre_str, xim_str, im_
-		integer, allocatable :: e, decimals_
-		integer :: i
+		character(len=5) :: decimal
+		character(len=:), allocatable :: xre_str, xim_str, im_
+		integer :: e, decimals_, i
 
 		if ( .not. present(fmt) ) then
 			fmt_ = 'e'
@@ -6435,14 +6536,14 @@ submodule (io_fortran_lib) internal_io
 				xre_str = '0x0'; exit if_z_re
 			end if
 
-			xre_str = str( transfer(source=x%re, mold=1_int32), fmt='z' ); exit if_z_re
+			call cast(transfer(source=x%re, mold=1_int32), into=xre_str, fmt='z'); exit if_z_re
 		end if if_z_re
 		if_z_im: if ( fmt_ == 'z' ) then
 			if ( x%im == 0.0_real32 ) then
 				xim_str = '0x0'; exit if_z_im
 			end if
 
-			xim_str = str( transfer(source=x%im, mold=1_int32), fmt='z' ); exit if_z_im
+			call cast(transfer(source=x%im, mold=1_int32), into=xim_str, fmt='z'); exit if_z_im
 		end if if_z_im
 
 		if ( .not. present(locale) ) then
@@ -6463,21 +6564,13 @@ submodule (io_fortran_lib) internal_io
 			end if
 
 			if ( x%re < 0.0_real32 ) then
-				allocate( character(len=15) :: xre_str )
+				xre_str = '000000000000000'
 				write(unit=xre_str, fmt='(es15.8e2)', decimal=decimal) x%re
-				do i = 15, 1, -1
-					if ( xre_str(i:i) == 'E' ) then
-						xre_str(i:i) = 'e'; exit
-					end if
-				end do
+				xre_str(12:12) = 'e'
 			else
-				allocate( character(len=14) :: xre_str )
+				xre_str = '00000000000000'
 				write(unit=xre_str, fmt='(es14.8e2)', decimal=decimal) x%re
-				do i = 14, 1, -1
-					if ( xre_str(i:i) == 'E' ) then
-						xre_str(i:i) = 'e'; exit
-					end if
-				end do
+				xre_str(11:11) = 'e'
 			end if
 
 			if ( .not. present(decimals) ) exit if_eorf_re
@@ -6490,10 +6583,11 @@ submodule (io_fortran_lib) internal_io
 				decimals_ = decimals
 			end if
 
-			do i = 1, 14
+			i = 1; do
 				if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) then
 					xre_str = xre_str(:i+decimals_)//xre_str(i+9:); exit if_eorf_re
 				end if
+				i = i + 1; cycle
 			end do
 		else if ( fmt_ == 'f' ) then
 			if ( abs(x%re) /= 0.0_real32 ) then
@@ -6516,8 +6610,7 @@ submodule (io_fortran_lib) internal_io
 				write(unit=xre_str, fmt='(f0.70)', decimal=decimal) x%re
 			end if
 
-			i = 1
-			do while ( i <= 75 )
+			i = 1; do
 				if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) exit
 				i = i + 1; cycle
 			end do
@@ -6527,7 +6620,7 @@ submodule (io_fortran_lib) internal_io
 			end if
 
 			if ( i > 9 ) then
-				xre_str = xre_str(:i)//'0'; exit if_eorf_re
+				xre_str = xre_str(:i); exit if_eorf_re
 			end if
 
 			if ( .not. present(decimals) ) then
@@ -6535,7 +6628,7 @@ submodule (io_fortran_lib) internal_io
 			end if
 
 			if ( decimals <= 0 ) then
-				xre_str = xre_str(:i)//'0'; exit if_eorf_re
+				xre_str = xre_str(:i); exit if_eorf_re
 			end if
 
 			if ( decimals >= 9-e ) then
@@ -6550,21 +6643,13 @@ submodule (io_fortran_lib) internal_io
 			end if
 
 			if ( x%im < 0.0_real32 ) then
-				allocate( character(len=15) :: xim_str )
+				xim_str = '000000000000000'
 				write(unit=xim_str, fmt='(es15.8e2)', decimal=decimal) x%im
-				do i = 15, 1, -1
-					if ( xim_str(i:i) == 'E' ) then
-						xim_str(i:i) = 'e'; exit
-					end if
-				end do
+				xim_str(12:12) = 'e'
 			else
-				allocate( character(len=14) :: xim_str )
+				xim_str = '00000000000000'
 				write(unit=xim_str, fmt='(es14.8e2)', decimal=decimal) x%im
-				do i = 14, 1, -1
-					if ( xim_str(i:i) == 'E' ) then
-						xim_str(i:i) = 'e'; exit
-					end if
-				end do
+				xim_str(11:11) = 'e'
 			end if
 
 			if ( .not. present(decimals) ) exit if_eorf_im
@@ -6577,10 +6662,11 @@ submodule (io_fortran_lib) internal_io
 				decimals_ = decimals
 			end if
 
-			do i = 1, 14
+			i = 1; do
 				if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) then
 					xim_str = xim_str(:i+decimals_)//xim_str(i+9:); exit if_eorf_im
 				end if
+				i = i + 1; cycle
 			end do
 		else if ( fmt_ == 'f' ) then
 			if ( abs(x%im) /= 0.0_real32 ) then
@@ -6603,8 +6689,7 @@ submodule (io_fortran_lib) internal_io
 				write(unit=xim_str, fmt='(f0.70)', decimal=decimal) x%im
 			end if
 
-			i = 1
-			do while ( i <= 75 )
+			i = 1; do
 				if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) exit
 				i = i + 1; cycle
 			end do
@@ -6614,7 +6699,7 @@ submodule (io_fortran_lib) internal_io
 			end if
 
 			if ( i > 9 ) then
-				xim_str = xim_str(:i)//'0'; exit if_eorf_im
+				xim_str = xim_str(:i); exit if_eorf_im
 			end if
 
 			if ( .not. present(decimals) ) then
@@ -6622,7 +6707,7 @@ submodule (io_fortran_lib) internal_io
 			end if
 
 			if ( decimals <= 0 ) then
-				xim_str = xim_str(:i)//'0'; exit if_eorf_im
+				xim_str = xim_str(:i); exit if_eorf_im
 			end if
 
 			if ( decimals >= 9-e ) then
@@ -6655,13 +6740,12 @@ submodule (io_fortran_lib) internal_io
 		else
 			new%s = xre_str//'+'//xim_str//im_
 		end if
-	end procedure new_Str_c32
+	end procedure new_string_from_c32
 
-	module procedure new_Str_r128
+	module procedure new_string_from_r128
 		character(len=1) :: fmt_
-		character(len=:), allocatable :: decimal
-		integer, allocatable :: e, decimals_
-		integer :: i
+		character(len=5) :: decimal
+		integer :: e, decimals_, i
 
 		if ( .not. present(fmt) ) then
 			fmt_ = 'e'
@@ -6675,7 +6759,7 @@ submodule (io_fortran_lib) internal_io
 
 		if ( fmt_ == 'z' ) then
 			if ( x /= 0.0_real128 ) then
-				allocate( character(len=34) :: new%s )
+				new%s = '0x00000000000000000000000000000000'
 			else
 				new%s = '0x0'; return
 			end if
@@ -6686,7 +6770,7 @@ submodule (io_fortran_lib) internal_io
 				if ( (new%s(i:i) >= 'A') .and. (new%s(i:i) <= 'F') ) new%s(i:i) = achar(iachar(new%s(i:i)) + 32)
 			end do
 
-			new%s(1:2) = '0x'; return
+			return
 		end if
 
 		if ( .not. present(locale) ) then
@@ -6707,21 +6791,13 @@ submodule (io_fortran_lib) internal_io
 			end if
 
 			if ( x < 0.0_real128 ) then
-				allocate( character(len=44) :: new%s )
+				new%s = '00000000000000000000000000000000000000000000'
 				write(unit=new%s, fmt='(es44.35e4)', decimal=decimal) x
-				do i = 44, 1, -1
-					if ( new%s(i:i) == 'E' ) then
-						new%s(i:i) = 'e'; exit
-					end if
-				end do
+				new%s(39:39) = 'e'
 			else
-				allocate( character(len=43) :: new%s )
+				new%s = '0000000000000000000000000000000000000000000'
 				write(unit=new%s, fmt='(es43.35e4)', decimal=decimal) x
-				do i = 43, 1, -1
-					if ( new%s(i:i) == 'E' ) then
-						new%s(i:i) = 'e'; exit
-					end if
-				end do
+				new%s(38:38) = 'e'
 			end if
 
 			if ( .not. present(decimals) ) return
@@ -6734,10 +6810,11 @@ submodule (io_fortran_lib) internal_io
 				decimals_ = decimals
 			end if
 
-			do i = 1, 43
+			i = 1; do
 				if ( (new%s(i:i) == POINT) .or. (new%s(i:i) == COMMA) ) then
 					new%s = new%s(:i+decimals_)//new%s(i+36:); return
 				end if
+				i = i + 1; cycle
 			end do
 		else if ( fmt_ == 'f' ) then
 			if ( abs(x) /= 0.0_real128 ) then
@@ -6760,8 +6837,7 @@ submodule (io_fortran_lib) internal_io
 				write(unit=new%s, fmt='(f0.100)', decimal=decimal) x
 			end if
 
-			i = 1
-			do while ( i <= 125 )
+			i = 1; do
 				if ( (new%s(i:i) == POINT) .or. (new%s(i:i) == COMMA) ) exit
 				i = i + 1; cycle
 			end do
@@ -6771,7 +6847,7 @@ submodule (io_fortran_lib) internal_io
 			end if
 
 			if ( i > 36 ) then
-				new%s = new%s(:i)//'0'; return
+				new%s = new%s(:i); return
 			end if
 
 			if ( .not. present(decimals) ) then
@@ -6779,7 +6855,7 @@ submodule (io_fortran_lib) internal_io
 			end if
 
 			if ( decimals <= 0 ) then
-				new%s = new%s(:i)//'0'; return
+				new%s = new%s(:i); return
 			end if
 
 			if ( decimals >= 36-e ) then
@@ -6788,12 +6864,11 @@ submodule (io_fortran_lib) internal_io
 
 			new%s = new%s(:i+decimals); return
 		end if
-	end procedure new_Str_r128
-	module procedure new_Str_r64
+	end procedure new_string_from_r128
+	module procedure new_string_from_r64
 		character(len=1) :: fmt_
-		character(len=:), allocatable :: decimal
-		integer, allocatable :: e, decimals_
-		integer :: i
+		character(len=5) :: decimal
+		integer :: e, decimals_, i
 
 		if ( .not. present(fmt) ) then
 			fmt_ = 'e'
@@ -6810,46 +6885,35 @@ submodule (io_fortran_lib) internal_io
 				new%s = '0x0'; return
 			end if
 
-			inline_str_i64: block; integer(int64) :: x_int, num; logical :: negative; integer :: num_len, i
+			inline_cast: block
+				integer(int64) :: x_int, num, next; character(len=18) :: buffer; integer :: ascii_code
+				logical :: negative
+
 				x_int = transfer(source=x, mold=x_int)
 				
-				if ( x_int < 0 ) then
-					num_len = 1; num = (x_int + 1_int64) + huge(1_int64); negative = .true.
+				if ( x_int < 0_int64 ) then
+					num = (x_int + 1_int64) + largest_int64; negative = .true.; buffer(1:) = '0x0000000000000000'
 				else
-					num_len = 1; num = x_int; negative = .false.
+					num = x_int; negative = .false.
 				end if
-				
-				count_hex_digits: do
-					num = num/16
-					if ( num > 0 ) then
-						num_len = num_len + 1; cycle count_hex_digits
+
+				i = len(buffer); extract_hex_digits: do
+					next = num/16_int64; buffer(i:i) = DIGITS_A(num - 16_int64*next); if ( next == 0_int64 ) exit
+					num = next; i = i - 1; cycle
+				end do extract_hex_digits
+
+				if ( negative ) then
+					ascii_code = iachar(buffer(3:3))
+					if ( ascii_code < 50 ) then
+						buffer(3:3) = achar(ascii_code + 8)
 					else
-						exit count_hex_digits
+						buffer(3:3) = achar(ascii_code + 47)
 					end if
-				end do count_hex_digits
-			
-				if ( negative ) then
-					num = (x_int + 1_int64) + huge(1_int64)
-					new%s = '0x0000000000000000'
+					new%s = buffer(1:); return
 				else
-					num = x_int
-					allocate( character(len=2+num_len) :: new%s ); new%s(1:2) = '0x'
+					buffer(i-2:i-1) = '0x'; new%s = buffer(i-2:); return
 				end if
-			
-				insert_hex_characters: do i = len(new%s), len(new%s)-num_len+1, -1
-					new%s(i:i) = DIGITS_A( mod(num,16) ); num = num/16
-				end do insert_hex_characters
-			
-				if ( negative ) then
-					i = 0; do
-						if ( DIGITS_A(i) == new%s(3:3) ) exit
-						i = i + 1; cycle
-					end do
-					new%s(3:3) = DIGITS_A(i+8); return
-				else
-					return
-				end if
-			end block inline_str_i64
+			end block inline_cast
 		end if
 
 		if ( .not. present(locale) ) then
@@ -6870,21 +6934,13 @@ submodule (io_fortran_lib) internal_io
 			end if
 
 			if ( x < 0.0_real64 ) then
-				allocate( character(len=25) :: new%s )
+				new%s = '0000000000000000000000000'
 				write(unit=new%s, fmt='(es25.17e3)', decimal=decimal) x
-				do i = 25, 1, -1
-					if ( new%s(i:i) == 'E' ) then
-						new%s(i:i) = 'e'; exit
-					end if
-				end do
+				new%s(21:21) = 'e'
 			else
-				allocate( character(len=24) :: new%s )
+				new%s = '000000000000000000000000'
 				write(unit=new%s, fmt='(es24.17e3)', decimal=decimal) x
-				do i = 24, 1, -1
-					if ( new%s(i:i) == 'E' ) then
-						new%s(i:i) = 'e'; exit
-					end if
-				end do
+				new%s(20:20) = 'e'
 			end if
 
 			if ( .not. present(decimals) ) return
@@ -6897,10 +6953,11 @@ submodule (io_fortran_lib) internal_io
 				decimals_ = decimals
 			end if
 
-			do i = 1, 24
+			i = 1; do
 				if ( (new%s(i:i) == POINT) .or. (new%s(i:i) == COMMA) ) then
 					new%s = new%s(:i+decimals_)//new%s(i+18:); return
 				end if
+				i = i + 1; cycle
 			end do
 		else if ( fmt_ == 'f' ) then
 			if ( abs(x) /= 0.0_real64 ) then
@@ -6923,8 +6980,7 @@ submodule (io_fortran_lib) internal_io
 				write(unit=new%s, fmt='(f0.80)', decimal=decimal) x
 			end if
 
-			i = 1
-			do while ( i <= 100 )
+			i = 1; do
 				if ( (new%s(i:i) == POINT) .or. (new%s(i:i) == COMMA) ) exit
 				i = i + 1; cycle
 			end do
@@ -6934,7 +6990,7 @@ submodule (io_fortran_lib) internal_io
 			end if
 
 			if ( i > 18 ) then
-				new%s = new%s(:i)//'0'; return
+				new%s = new%s(:i); return
 			end if
 
 			if ( .not. present(decimals) ) then
@@ -6942,7 +6998,7 @@ submodule (io_fortran_lib) internal_io
 			end if
 
 			if ( decimals <= 0 ) then
-				new%s = new%s(:i)//'0'; return
+				new%s = new%s(:i); return
 			end if
 
 			if ( decimals >= 18-e ) then
@@ -6951,12 +7007,11 @@ submodule (io_fortran_lib) internal_io
 
 			new%s = new%s(:i+decimals); return
 		end if
-	end procedure new_Str_r64
-	module procedure new_Str_r32
+	end procedure new_string_from_r64
+	module procedure new_string_from_r32
 		character(len=1) :: fmt_
-		character(len=:), allocatable :: decimal
-		integer, allocatable :: e, decimals_
-		integer :: i
+		character(len=5) :: decimal
+		integer :: e, decimals_, i
 
 		if ( .not. present(fmt) ) then
 			fmt_ = 'e'
@@ -6973,46 +7028,34 @@ submodule (io_fortran_lib) internal_io
 				new%s = '0x0'; return
 			end if
 
-			inline_str_i32: block; integer(int32) :: x_int, num; logical :: negative; integer :: num_len, i
+			inline_cast: block
+				integer :: x_int, num, next; character(len=10) :: buffer; integer :: ascii_code; logical :: negative
+
 				x_int = transfer(source=x, mold=x_int)
 
 				if ( x_int < 0 ) then
-					num_len = 1; num = (x_int + 1_int32) + huge(1_int32); negative = .true.
+					num = (x_int + 1) + largest_int32; negative = .true.; buffer(1:) = '0x00000000'
 				else
-					num_len = 1; num = x_int; negative = .false.
+					num = x_int; negative = .false.
 				end if
-				
-				count_hex_digits: do
-					num = num/16
-					if ( num > 0 ) then
-						num_len = num_len + 1; cycle count_hex_digits
+	
+				i = len(buffer); extract_hex_digits: do
+					next = num/16; buffer(i:i) = DIGITS_A(num - 16*next); if ( next == 0 ) exit
+					num = next; i = i - 1; cycle
+				end do extract_hex_digits
+	
+				if ( negative ) then
+					ascii_code = iachar(buffer(3:3))
+					if ( ascii_code < 50 ) then
+						buffer(3:3) = achar(ascii_code + 8)
 					else
-						exit count_hex_digits
+						buffer(3:3) = achar(ascii_code + 47)
 					end if
-				end do count_hex_digits
-			
-				if ( negative ) then
-					num = (x_int + 1_int32) + huge(1_int32)
-					new%s = '0x00000000'
+					new%s = buffer(1:); return
 				else
-					num = x_int
-					allocate( character(len=2+num_len) :: new%s ); new%s(1:2) = '0x'
+					buffer(i-2:i-1) = '0x'; new%s = buffer(i-2:); return
 				end if
-			
-				insert_hex_characters: do i = len(new%s), len(new%s)-num_len+1, -1
-					new%s(i:i) = DIGITS_A( mod(num,16) ); num = num/16
-				end do insert_hex_characters
-			
-				if ( negative ) then
-					i = 0; do
-						if ( DIGITS_A(i) == new%s(3:3) ) exit
-						i = i + 1; cycle
-					end do
-					new%s(3:3) = DIGITS_A(i+8); return
-				else
-					return
-				end if
-			end block inline_str_i32
+			end block inline_cast
 		end if
 
 		if ( .not. present(locale) ) then
@@ -7033,21 +7076,13 @@ submodule (io_fortran_lib) internal_io
 			end if
 
 			if ( x < 0.0_real32 ) then
-				allocate( character(len=15) :: new%s )
+				new%s = '000000000000000'
 				write(unit=new%s, fmt='(es15.8e2)', decimal=decimal) x
-				do i = 15, 1, -1
-					if ( new%s(i:i) == 'E' ) then
-						new%s(i:i) = 'e'; exit
-					end if
-				end do
+				new%s(12:12) = 'e'
 			else
-				allocate( character(len=14) :: new%s )
+				new%s = '00000000000000'
 				write(unit=new%s, fmt='(es14.8e2)', decimal=decimal) x
-				do i = 14, 1, -1
-					if ( new%s(i:i) == 'E' ) then
-						new%s(i:i) = 'e'; exit
-					end if
-				end do
+				new%s(11:11) = 'e'
 			end if
 
 			if ( .not. present(decimals) ) return
@@ -7060,10 +7095,11 @@ submodule (io_fortran_lib) internal_io
 				decimals_ = decimals
 			end if
 
-			do i = 1, 14
+			i = 1; do
 				if ( (new%s(i:i) == POINT) .or. (new%s(i:i) == COMMA) ) then
 					new%s = new%s(:i+decimals_)//new%s(i+9:); return
 				end if
+				i = i + 1; cycle
 			end do
 		else if ( fmt_ == 'f' ) then
 			if ( abs(x) /= 0.0_real32 ) then
@@ -7086,8 +7122,7 @@ submodule (io_fortran_lib) internal_io
 				write(unit=new%s, fmt='(f0.70)', decimal=decimal) x
 			end if
 
-			i = 1
-			do while ( i <= 75 )
+			i = 1; do
 				if ( (new%s(i:i) == POINT) .or. (new%s(i:i) == COMMA) ) exit
 				i = i + 1; cycle
 			end do
@@ -7097,7 +7132,7 @@ submodule (io_fortran_lib) internal_io
 			end if
 
 			if ( i > 9 ) then
-				new%s = new%s(:i)//'0'; return
+				new%s = new%s(:i); return
 			end if
 
 			if ( .not. present(decimals) ) then
@@ -7105,7 +7140,7 @@ submodule (io_fortran_lib) internal_io
 			end if
 
 			if ( decimals <= 0 ) then
-				new%s = new%s(:i)//'0'; return
+				new%s = new%s(:i); return
 			end if
 
 			if ( decimals >= 9-e ) then
@@ -7114,13 +7149,14 @@ submodule (io_fortran_lib) internal_io
 
 			new%s = new%s(:i+decimals); return
 		end if
-	end procedure new_Str_r32
+	end procedure new_string_from_r32
 
-	module procedure new_Str_i64
+	module procedure new_string_from_i64
 		character(len=1) :: fmt_
-		integer(int64) :: num
+		character(len=20) :: buffer
+		integer(int64) :: num, next
+		integer :: ascii_code, i
 		logical :: negative
-		integer :: num_len, i
 
 		if ( .not. present(fmt) ) then
 			fmt_ = 'i'
@@ -7133,83 +7169,55 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if ( fmt_ == 'i' ) then
-			if ( x < 0 ) then
-				if ( x == -huge(1_int64)-1_int64 ) then
+			if ( x < 0_int64 ) then
+				if ( x == smallest_int64 ) then
 					new%s = '-9223372036854775808'; return
 				end if
-				num_len = 2; num = abs(x); negative = .true.
+				num = -x; negative = .true.
 			else
-				num_len = 1; num = x; negative = .false.
+				num = x; negative = .false.
 			end if
-		
-			count_digits: do
-				num = num/10
-				if ( num > 0 ) then
-					num_len = num_len + 1; cycle count_digits
+
+			i = len(buffer); extract_digits: do
+				next = num/10_int64; buffer(i:i) = achar(num - 10_int64*next + 48_int64); if ( next == 0_int64 ) exit
+				num = next; i = i - 1; cycle
+			end do extract_digits
+
+			if ( negative ) then
+				buffer(i-1:i-1) = '-'; new%s = buffer(i-1:); return
+			else
+				new%s = buffer(i:); return
+			end if
+		else
+			if ( x < 0_int64 ) then
+				num = (x + 1_int64) + largest_int64; negative = .true.; buffer(3:) = '0x0000000000000000'
+			else
+				num = x; negative = .false.
+			end if
+
+			i = len(buffer); extract_hex_digits: do
+				next = num/16_int64; buffer(i:i) = DIGITS_A(num - 16_int64*next); if ( next == 0_int64 ) exit
+				num = next; i = i - 1; cycle
+			end do extract_hex_digits
+
+			if ( negative ) then
+				ascii_code = iachar(buffer(5:5))
+				if ( ascii_code < 50 ) then
+					buffer(5:5) = achar(ascii_code + 8)
 				else
-					exit count_digits
+					buffer(5:5) = achar(ascii_code + 47)
 				end if
-			end do count_digits
-	
-			allocate( character(len=num_len) :: new%s )
-	
-			if ( negative ) then
-				num = abs(x)
-				do i = num_len, 2, -1
-					new%s(i:i) = DIGITS_A( mod(num,10) ); num = num/10
-				end do
-				new%s(1:1) = '-'; return
+				new%s = buffer(3:); return
 			else
-				num = x
-				do i = num_len, 1, -1
-					new%s(i:i) = DIGITS_A( mod(num,10) ); num = num/10
-				end do
-				return
-			end if
-		else if ( fmt_ == 'z' ) then
-			if ( x < 0 ) then
-				num_len = 1; num = (x + 1_int64) + huge(1_int64); negative = .true.
-			else
-				num_len = 1; num = x; negative = .false.
-			end if
-			
-			count_hex_digits: do
-				num = num/16
-				if ( num > 0 ) then
-					num_len = num_len + 1; cycle count_hex_digits
-				else
-					exit count_hex_digits
-				end if
-			end do count_hex_digits
-		
-			if ( negative ) then
-				num = (x + 1_int64) + huge(1_int64)
-				new%s = '0x0000000000000000'
-			else
-				num = x
-				allocate( character(len=2+num_len) :: new%s ); new%s(1:2) = '0x'
-			end if
-		
-			insert_hex_characters: do i = len(new%s), len(new%s)-num_len+1, -1
-				new%s(i:i) = DIGITS_A( mod(num,16) ); num = num/16
-			end do insert_hex_characters
-		
-			if ( negative ) then
-				i = 0; do
-					if ( DIGITS_A(i) == new%s(3:3) ) exit
-					i = i + 1; cycle
-				end do
-				new%s(3:3) = DIGITS_A(i+8); return
-			else
-				return
+				buffer(i-2:i-1) = '0x'; new%s = buffer(i-2:); return
 			end if
 		end if
-	end procedure new_Str_i64
-	module procedure new_Str_i32
+	end procedure new_string_from_i64
+	module procedure new_string_from_i32
 		character(len=1) :: fmt_
-		integer(int32) :: num
+		character(len=11) :: buffer
+		integer :: num, next, ascii_code, i
 		logical :: negative
-		integer :: num_len, i
 
 		if ( .not. present(fmt) ) then
 			fmt_ = 'i'
@@ -7223,82 +7231,54 @@ submodule (io_fortran_lib) internal_io
 
 		if ( fmt_ == 'i' ) then
 			if ( x < 0 ) then
-				if ( x == -huge(1_int32)-1_int32 ) then
+				if ( x == smallest_int32 ) then
 					new%s = '-2147483648'; return
 				end if
-				num_len = 2; num = abs(x); negative = .true.
+				num = -x; negative = .true.
 			else
-				num_len = 1; num = x; negative = .false.
+				num = x; negative = .false.
 			end if
-		
-			count_digits: do
-				num = num/10
-				if ( num > 0 ) then
-					num_len = num_len + 1; cycle count_digits
-				else
-					exit count_digits
-				end if
-			end do count_digits
-	
-			allocate( character(len=num_len) :: new%s )
-	
+
+			i = len(buffer); extract_digits: do
+				next = num/10; buffer(i:i) = achar(num - 10*next + 48); if ( next == 0 ) exit
+				num = next; i = i - 1; cycle
+			end do extract_digits
+
 			if ( negative ) then
-				num = abs(x)
-				do i = num_len, 2, -1
-					new%s(i:i) = DIGITS_A( mod(num,10) ); num = num/10
-				end do
-				new%s(1:1) = '-'; return
+				buffer(i-1:i-1) = '-'; new%s = buffer(i-1:); return
 			else
-				num = x
-				do i = num_len, 1, -1
-					new%s(i:i) = DIGITS_A( mod(num,10) ); num = num/10
-				end do
-				return
+				new%s = buffer(i:); return
 			end if
-		else if ( fmt_ == 'z' ) then
+		else
 			if ( x < 0 ) then
-				num_len = 1; num = (x + 1_int32) + huge(1_int32); negative = .true.
+				num = (x + 1) + largest_int32; negative = .true.; buffer(2:) = '0x00000000'
 			else
-				num_len = 1; num = x; negative = .false.
+				num = x; negative = .false.
 			end if
-			
-			count_hex_digits: do
-				num = num/16
-				if ( num > 0 ) then
-					num_len = num_len + 1; cycle count_hex_digits
+
+			i = len(buffer); extract_hex_digits: do
+				next = num/16; buffer(i:i) = DIGITS_A(num - 16*next); if ( next == 0 ) exit
+				num = next; i = i - 1; cycle
+			end do extract_hex_digits
+
+			if ( negative ) then
+				ascii_code = iachar(buffer(4:4))
+				if ( ascii_code < 50 ) then
+					buffer(4:4) = achar(ascii_code + 8)
 				else
-					exit count_hex_digits
+					buffer(4:4) = achar(ascii_code + 47)
 				end if
-			end do count_hex_digits
-		
-			if ( negative ) then
-				num = (x + 1_int32) + huge(1_int32)
-				new%s = '0x00000000'
+				new%s = buffer(2:); return
 			else
-				num = x
-				allocate( character(len=2+num_len) :: new%s ); new%s(1:2) = '0x'
-			end if
-		
-			insert_hex_characters: do i = len(new%s), len(new%s)-num_len+1, -1
-				new%s(i:i) = DIGITS_A( mod(num,16) ); num = num/16
-			end do insert_hex_characters
-		
-			if ( negative ) then
-				i = 0; do
-					if ( DIGITS_A(i) == new%s(3:3) ) exit
-					i = i + 1; cycle
-				end do
-				new%s(3:3) = DIGITS_A(i+8); return
-			else
-				return
+				buffer(i-2:i-1) = '0x'; new%s = buffer(i-2:); return
 			end if
 		end if
-	end procedure new_Str_i32
-	module procedure new_Str_i16
+	end procedure new_string_from_i32
+	module procedure new_string_from_i16
 		character(len=1) :: fmt_
-		integer(int16) :: num
+		character(len=6) :: buffer
+		integer :: num, next, ascii_code, i
 		logical :: negative
-		integer :: num_len, i
 
 		if ( .not. present(fmt) ) then
 			fmt_ = 'i'
@@ -7311,83 +7291,55 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if ( fmt_ == 'i' ) then
-			if ( x < 0 ) then
-				if ( x == -huge(1_int16)-1_int16 ) then
+			if ( x < 0_int16 ) then
+				if ( x == smallest_int16 ) then
 					new%s = '-32768'; return
 				end if
-				num_len = 2; num = abs(x); negative = .true.
+				num = int(-x); negative = .true.
 			else
-				num_len = 1; num = x; negative = .false.
+				num = int(x); negative = .false.
 			end if
-		
-			count_digits: do
-				num = num/10
-				if ( num > 0 ) then
-					num_len = num_len + 1; cycle count_digits
+
+			i = len(buffer); extract_digits: do
+				next = num/10; buffer(i:i) = achar(num - 10*next + 48); if ( next == 0 ) exit
+				num = next; i = i - 1; cycle
+			end do extract_digits
+
+			if ( negative ) then
+				buffer(i-1:i-1) = '-'; new%s = buffer(i-1:); return
+			else
+				new%s = buffer(i:); return
+			end if
+		else
+			if ( x < 0_int16 ) then
+				num = int((x + 1_int16) + largest_int16); negative = .true.; buffer(1:) = '0x0000'
+			else
+				num = int(x); negative = .false.
+			end if
+
+			i = len(buffer); extract_hex_digits: do
+				next = num/16; buffer(i:i) = DIGITS_A(num - 16*next); if ( next == 0 ) exit
+				num = next; i = i - 1; cycle
+			end do extract_hex_digits
+
+			if ( negative ) then
+				ascii_code = iachar(buffer(3:3))
+				if ( ascii_code < 50 ) then
+					buffer(3:3) = achar(ascii_code + 8)
 				else
-					exit count_digits
+					buffer(3:3) = achar(ascii_code + 47)
 				end if
-			end do count_digits
-	
-			allocate( character(len=num_len) :: new%s )
-	
-			if ( negative ) then
-				num = abs(x)
-				do i = num_len, 2, -1
-					new%s(i:i) = DIGITS_A( mod(num,10) ); num = num/10
-				end do
-				new%s(1:1) = '-'; return
+				new%s = buffer(1:); return
 			else
-				num = x
-				do i = num_len, 1, -1
-					new%s(i:i) = DIGITS_A( mod(num,10) ); num = num/10
-				end do
-				return
-			end if
-		else if ( fmt_ == 'z' ) then
-			if ( x < 0 ) then
-				num_len = 1; num = (x + 1_int16) + huge(1_int16); negative = .true.
-			else
-				num_len = 1; num = x; negative = .false.
-			end if
-			
-			count_hex_digits: do
-				num = num/16
-				if ( num > 0 ) then
-					num_len = num_len + 1; cycle count_hex_digits
-				else
-					exit count_hex_digits
-				end if
-			end do count_hex_digits
-		
-			if ( negative ) then
-				num = (x + 1_int16) + huge(1_int16)
-				new%s = '0x0000'
-			else
-				num = x
-				allocate( character(len=2+num_len) :: new%s ); new%s(1:2) = '0x'
-			end if
-		
-			insert_hex_characters: do i = len(new%s), len(new%s)-num_len+1, -1
-				new%s(i:i) = DIGITS_A( mod(num,16) ); num = num/16
-			end do insert_hex_characters
-		
-			if ( negative ) then
-				i = 0; do
-					if ( DIGITS_A(i) == new%s(3:3) ) exit
-					i = i + 1; cycle
-				end do
-				new%s(3:3) = DIGITS_A(i+8); return
-			else
-				return
+				buffer(i-2:i-1) = '0x'; new%s = buffer(i-2:); return
 			end if
 		end if
-	end procedure new_Str_i16
-	module procedure new_Str_i8
+	end procedure new_string_from_i16
+	module procedure new_string_from_i8
 		character(len=1) :: fmt_
-		integer(int8) :: num
+		character(len=4) :: buffer
+		integer :: num, next, ascii_code, i
 		logical :: negative
-		integer :: num_len, i
 
 		if ( .not. present(fmt) ) then
 			fmt_ = 'i'
@@ -7400,102 +7352,4077 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if ( fmt_ == 'i' ) then
-			if ( x < 0 ) then
-				if ( x == -huge(1_int8)-1_int8 ) then
+			if ( x < 0_int8 ) then
+				if ( x == smallest_int8 ) then
 					new%s = '-128'; return
 				end if
-				num_len = 2; num = abs(x); negative = .true.
+				num = int(-x); negative = .true.
 			else
-				num_len = 1; num = x; negative = .false.
+				num = int(x); negative = .false.
 			end if
-		
-			count_digits: do
-				num = num/10
-				if ( num > 0 ) then
-					num_len = num_len + 1; cycle count_digits
-				else
-					exit count_digits
-				end if
-			end do count_digits
-	
-			allocate( character(len=num_len) :: new%s )
-	
+
+			i = len(buffer); extract_digits: do
+				next = num/10; buffer(i:i) = achar(num - 10*next + 48); if ( next == 0 ) exit
+				num = next; i = i - 1; cycle
+			end do extract_digits
+
 			if ( negative ) then
-				num = abs(x)
-				do i = num_len, 2, -1
-					new%s(i:i) = DIGITS_A( mod(num,10) ); num = num/10
-				end do
-				new%s(1:1) = '-'; return
+				buffer(i-1:i-1) = '-'; new%s = buffer(i-1:); return
 			else
-				num = x
-				do i = num_len, 1, -1
-					new%s(i:i) = DIGITS_A( mod(num,10) ); num = num/10
-				end do
-				return
-			end if
-		else if ( fmt_ == 'z' ) then
-			if ( x < 0 ) then
-				num_len = 1; num = (x + 1_int8) + huge(1_int8); negative = .true.
-			else
-				num_len = 1; num = x; negative = .false.
-			end if
-			
-			count_hex_digits: do
-				num = num/16
-				if ( num > 0 ) then
-					num_len = num_len + 1; cycle count_hex_digits
-				else
-					exit count_hex_digits
-				end if
-			end do count_hex_digits
-		
-			if ( negative ) then
-				num = (x + 1_int8) + huge(1_int8)
-				new%s = '0x00'
-			else
-				num = x
-				allocate( character(len=2+num_len) :: new%s ); new%s(1:2) = '0x'
-			end if
-		
-			insert_hex_characters: do i = len(new%s), len(new%s)-num_len+1, -1
-				new%s(i:i) = DIGITS_A( mod(num,16) ); num = num/16
-			end do insert_hex_characters
-		
-			if ( negative ) then
-				i = 0; do
-					if ( DIGITS_A(i) == new%s(3:3) ) exit
-					i = i + 1; cycle
-				end do
-				new%s(3:3) = DIGITS_A(i+8); return
+				new%s = buffer(i:); return
 			end if
 		else
-			return
-		end if
-	end procedure new_Str_i8
+			if ( x < 0_int8 ) then
+				num = int((x + 1_int8) + largest_int8); negative = .true.; buffer(1:) = '0x00'
+			else
+				num = int(x); negative = .false.
+			end if
 
-	module procedure new_Str_string
+			i = len(buffer); extract_hex_digits: do
+				next = num/16; buffer(i:i) = DIGITS_A(num - 16*next); if ( next == 0 ) exit
+				num = next; i = i - 1; cycle
+			end do extract_hex_digits
+
+			if ( negative ) then
+				ascii_code = iachar(buffer(3:3))
+				if ( ascii_code < 50 ) then
+					buffer(3:3) = achar(ascii_code + 8)
+				else
+					buffer(3:3) = achar(ascii_code + 47)
+				end if
+				new%s = buffer(1:); return
+			else
+				buffer(i-2:i-1) = '0x'; new%s = buffer(i-2:); return
+			end if
+		end if
+	end procedure new_string_from_i8
+
+	module procedure new_string_from_string
 		if ( x%len() < 1 ) then
 			new%s = EMPTY_STR
 		else
 			new%s = x%s
 		end if
-	end procedure new_Str_string
-
-	module procedure new_Str_char
+	end procedure new_string_from_string
+	module procedure new_string_from_char
 		new%s = x
-	end procedure new_Str_char
-
-	module procedure new_Str_empty
+	end procedure new_string_from_char
+	module procedure new_string_from_empty
 		new%s = EMPTY_STR
-	end procedure new_Str_empty
+	end procedure new_string_from_empty
 
-	module procedure cast_string_c128
+	! str ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	module procedure str_from_c128
 		character(len=1) :: fmt_
-		character(len=:), allocatable :: im_, decimal
-		character(len=:), allocatable, dimension(:) :: seps, e_chars
+		character(len=5) :: decimal
+		character(len=:), allocatable :: xre_str, xim_str, im_
+		integer :: e, decimals_, i
+
+		if ( .not. present(fmt) ) then
+			fmt_ = 'e'
+		else
+			if ( any(REAL_FMTS == fmt) ) then
+				fmt_ = fmt
+			else
+				x_str = EMPTY_STR; return
+			end if
+		end if
+
+		if_z_re: if ( fmt_ == 'z' ) then
+			if ( x%re /= 0.0_real128 ) then
+				xre_str = '0x00000000000000000000000000000000'
+			else
+				xre_str = '0x0'; exit if_z_re
+			end if
+
+			write(unit=xre_str(3:), fmt='(z32)') x%re
+
+			do concurrent (i = 3:34)
+				if ( (xre_str(i:i) >= 'A') .and. (xre_str(i:i) <= 'F') ) xre_str(i:i) = achar(iachar(xre_str(i:i))+32)
+			end do
+		end if if_z_re
+		if_z_im: if ( fmt_ == 'z' ) then
+			if ( x%im /= 0.0_real128 ) then
+				xim_str = '0x00000000000000000000000000000000'
+			else
+				xim_str = '0x0'; exit if_z_im
+			end if
+
+			write(unit=xim_str(3:), fmt='(z32)') x%im
+
+			do concurrent (i = 3:34)
+				if ( (xim_str(i:i) >= 'A') .and. (xim_str(i:i) <= 'F') ) xim_str(i:i) = achar(iachar(xim_str(i:i))+32)
+			end do
+		end if if_z_im
+
+		if ( .not. present(locale) ) then
+			decimal = 'POINT'
+		else
+			if ( locale == 'US' ) then
+				decimal = 'POINT'
+			else if ( locale == 'EU' ) then
+				decimal = 'COMMA'
+			else
+				x_str = EMPTY_STR; return
+			end if
+		end if
+
+		if_eorf_re: if ( fmt_ == 'e' ) then
+			if ( x%re == 0.0_real128 ) then
+				xre_str = '0.0e+0000'; exit if_eorf_re
+			end if
+
+			if ( x%re < 0.0_real128 ) then
+				xre_str = '00000000000000000000000000000000000000000000'
+				write(unit=xre_str, fmt='(es44.35e4)', decimal=decimal) x%re
+				xre_str(39:39) = 'e'
+			else
+				xre_str = '0000000000000000000000000000000000000000000'
+				write(unit=xre_str, fmt='(es43.35e4)', decimal=decimal) x%re
+				xre_str(38:38) = 'e'
+			end if
+
+			if ( .not. present(decimals) ) exit if_eorf_re
+			
+			if ( decimals >= 35 ) exit if_eorf_re
+
+			if ( decimals < 0 ) then
+				decimals_ = 0
+			else
+				decimals_ = decimals
+			end if
+
+			i = 1; do
+				if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) then
+					xre_str = xre_str(:i+decimals_)//xre_str(i+36:); exit if_eorf_re
+				end if
+				i = i + 1; cycle
+			end do
+		else if ( fmt_ == 'f' ) then
+			if ( abs(x%re) /= 0.0_real128 ) then
+				e = int(log10(abs(x%re)))
+			else
+				xre_str = '0.0'; exit if_eorf_re
+			end if
+
+			if ( e == 0 ) then
+				if ( floor(x%re) > 0 ) e = 1 + e
+			else if ( e > 0 ) then
+				e = 1 + e
+			end if
+
+			allocate( character(len=125) :: xre_str )
+
+			if ( e > 0 ) then
+				write(unit=xre_str, fmt='(f0.36)', decimal=decimal) x%re
+			else
+				write(unit=xre_str, fmt='(f0.100)', decimal=decimal) x%re
+			end if
+
+			i = 1; do
+				if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) exit
+				i = i + 1; cycle
+			end do
+
+			if ( (i == 1) .or. ( (i == 2) .and. (xre_str(1:1) == '-') ) ) then
+				xre_str(i+1:125) = xre_str(i:124); xre_str(i:i) = '0'; i = i + 1
+			end if
+
+			if ( i > 36 ) then
+				xre_str = xre_str(:i); exit if_eorf_re
+			end if
+
+			if ( .not. present(decimals) ) then
+				xre_str = xre_str(:i+36-e); exit if_eorf_re
+			end if
+
+			if ( decimals <= 0 ) then
+				xre_str = xre_str(:i); exit if_eorf_re
+			end if
+
+			if ( decimals >= 36-e ) then
+				xre_str = xre_str(:i+36-e); exit if_eorf_re
+			end if
+
+			xre_str = xre_str(:i+decimals); exit if_eorf_re
+		end if if_eorf_re
+		if_eorf_im: if ( fmt_ == 'e' ) then
+			if ( x%im == 0.0_real128 ) then
+				xim_str = '0.0e+0000'; exit if_eorf_im
+			end if
+
+			if ( x%im < 0.0_real128 ) then
+				xim_str = '00000000000000000000000000000000000000000000'
+				write(unit=xim_str, fmt='(es44.35e4)', decimal=decimal) x%im
+				xim_str(39:39) = 'e'
+			else
+				xim_str = '0000000000000000000000000000000000000000000'
+				write(unit=xim_str, fmt='(es43.35e4)', decimal=decimal) x%im
+				xim_str(38:38) = 'e'
+			end if
+
+			if ( .not. present(decimals) ) exit if_eorf_im
+			
+			if ( decimals >= 35 ) exit if_eorf_im
+
+			if ( decimals < 0 ) then
+				decimals_ = 0
+			else
+				decimals_ = decimals
+			end if
+
+			i = 1; do
+				if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) then
+					xim_str = xim_str(:i+decimals_)//xim_str(i+36:); exit if_eorf_im
+				end if
+				i = i + 1; cycle
+			end do
+		else if ( fmt_ == 'f' ) then
+			if ( abs(x%im) /= 0.0_real128 ) then
+				e = int(log10(abs(x%im)))
+			else
+				xim_str = '0.0'; exit if_eorf_im
+			end if
+
+			if ( e == 0 ) then
+				if ( floor(x%im) > 0 ) e = 1 + e
+			else if ( e > 0 ) then
+				e = 1 + e
+			end if
+
+			allocate( character(len=125) :: xim_str )
+
+			if ( e > 0 ) then
+				write(unit=xim_str, fmt='(f0.36)', decimal=decimal) x%im
+			else
+				write(unit=xim_str, fmt='(f0.100)', decimal=decimal) x%im
+			end if
+
+			i = 1; do
+				if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) exit
+				i = i + 1; cycle
+			end do
+
+			if ( (i == 1) .or. ( (i == 2) .and. (xim_str(1:1) == '-') ) ) then
+				xim_str(i+1:125) = xim_str(i:124); xim_str(i:i) = '0'; i = i + 1
+			end if
+
+			if ( i > 36 ) then
+				xim_str = xim_str(:i); exit if_eorf_im
+			end if
+
+			if ( .not. present(decimals) ) then
+				xim_str = xim_str(:i+36-e); exit if_eorf_im
+			end if
+
+			if ( decimals <= 0 ) then
+				xim_str = xim_str(:i); exit if_eorf_im
+			end if
+
+			if ( decimals >= 36-e ) then
+				xim_str = xim_str(:i+36-e); exit if_eorf_im
+			end if
+
+			xim_str = xim_str(:i+decimals); exit if_eorf_im
+		end if if_eorf_im
+
+		if ( .not. present(im) ) then
+			im_ = EMPTY_STR
+		else
+			im_ = im
+		end if
+
+		if ( im_ == EMPTY_STR ) then
+			if ( decimal == 'POINT' ) then
+				x_str = '('//xre_str//COMMA//xim_str//')'; return
+			else
+				x_str = '('//xre_str//SEMICOLON//xim_str//')'; return
+			end if
+		end if
+
+		if ( fmt_ == 'z' ) then
+			x_str = xre_str//'+'//xim_str//im_; return
+		end if
+
+		if ( x%im < 0.0_real128 ) then
+			x_str = xre_str//xim_str//im_
+		else
+			x_str = xre_str//'+'//xim_str//im_
+		end if
+	end procedure str_from_c128
+	module procedure str_from_c64
+		character(len=1) :: fmt_
+		character(len=5) :: decimal
+		character(len=:), allocatable :: xre_str, xim_str, im_
+		integer :: e, decimals_, i
+
+		if ( .not. present(fmt) ) then
+			fmt_ = 'e'
+		else
+			if ( any(REAL_FMTS == fmt) ) then
+				fmt_ = fmt
+			else
+				x_str = EMPTY_STR; return
+			end if
+		end if
+
+		if_z_re: if ( fmt_ == 'z' ) then
+			if ( x%re == 0.0_real64 ) then
+				xre_str = '0x0'; exit if_z_re
+			end if
+
+			call cast(transfer(source=x%re, mold=1_int64), into=xre_str, fmt='z'); exit if_z_re
+		end if if_z_re
+		if_z_im: if ( fmt_ == 'z' ) then
+			if ( x%im == 0.0_real64 ) then
+				xim_str = '0x0'; exit if_z_im
+			end if
+
+			call cast(transfer(source=x%im, mold=1_int64), into=xim_str, fmt='z'); exit if_z_im
+		end if if_z_im
+
+		if ( .not. present(locale) ) then
+			decimal = 'POINT'
+		else
+			if ( locale == 'US' ) then
+				decimal = 'POINT'
+			else if ( locale == 'EU' ) then
+				decimal = 'COMMA'
+			else
+				x_str = EMPTY_STR; return
+			end if
+		end if
+
+		if_eorf_re: if ( fmt_ == 'e' ) then
+			if ( x%re == 0.0_real64 ) then
+				xre_str = '0.0e+000'; exit if_eorf_re
+			end if
+
+			if ( x%re < 0.0_real64 ) then
+				xre_str = '0000000000000000000000000'
+				write(unit=xre_str, fmt='(es25.17e3)', decimal=decimal) x%re
+				xre_str(21:21) = 'e'
+			else
+				xre_str = '000000000000000000000000'
+				write(unit=xre_str, fmt='(es24.17e3)', decimal=decimal) x%re
+				xre_str(20:20) = 'e'
+			end if
+
+			if ( .not. present(decimals) ) exit if_eorf_re
+			
+			if ( decimals >= 17 ) exit if_eorf_re
+
+			if ( decimals < 0 ) then
+				decimals_ = 0
+			else
+				decimals_ = decimals
+			end if
+
+			i = 1; do
+				if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) then
+					xre_str = xre_str(:i+decimals_)//xre_str(i+18:); exit if_eorf_re
+				end if
+				i = i + 1; cycle
+			end do
+		else if ( fmt_ == 'f' ) then
+			if ( abs(x%re) /= 0.0_real64 ) then
+				e = int(log10(abs(x%re)))
+			else
+				xre_str = '0.0'; return
+			end if
+
+			if ( e == 0 ) then
+				if ( floor(x%re) > 0 ) e = 1 + e
+			else if ( e > 0 ) then
+				e = 1 + e
+			end if
+
+			allocate( character(len=100) :: xre_str )
+
+			if ( e > 0 ) then
+				write(unit=xre_str, fmt='(f0.18)', decimal=decimal) x%re
+			else
+				write(unit=xre_str, fmt='(f0.80)', decimal=decimal) x%re
+			end if
+
+			i = 1; do
+				if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) exit
+				i = i + 1; cycle
+			end do
+
+			if ( (i == 1) .or. ( (i == 2) .and. (xre_str(1:1) == '-') ) ) then
+				xre_str(i+1:100) = xre_str(i:99); xre_str(i:i) = '0'; i = i + 1
+			end if
+
+			if ( i > 18 ) then
+				xre_str = xre_str(:i); exit if_eorf_re
+			end if
+
+			if ( .not. present(decimals) ) then
+				xre_str = xre_str(:i+18-e); exit if_eorf_re
+			end if
+
+			if ( decimals <= 0 ) then
+				xre_str = xre_str(:i); exit if_eorf_re
+			end if
+
+			if ( decimals >= 18-e ) then
+				xre_str = xre_str(:i+18-e); exit if_eorf_re
+			end if
+
+			xre_str = xre_str(:i+decimals); exit if_eorf_re
+		end if if_eorf_re
+		if_eorf_im: if ( fmt_ == 'e' ) then
+			if ( x%im == 0.0_real64 ) then
+				xim_str = '0.0e+000'; exit if_eorf_im
+			end if
+
+			if ( x%im < 0.0_real64 ) then
+				xim_str = '0000000000000000000000000'
+				write(unit=xim_str, fmt='(es25.17e3)', decimal=decimal) x%im
+				xim_str(21:21) = 'e'
+			else
+				xim_str = '000000000000000000000000'
+				write(unit=xim_str, fmt='(es24.17e3)', decimal=decimal) x%im
+				xim_str(20:20) = 'e'
+			end if
+
+			if ( .not. present(decimals) ) exit if_eorf_im
+			
+			if ( decimals >= 17 ) exit if_eorf_im
+
+			if ( decimals < 0 ) then
+				decimals_ = 0
+			else
+				decimals_ = decimals
+			end if
+
+			i = 1; do
+				if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) then
+					xim_str = xim_str(:i+decimals_)//xim_str(i+18:); exit if_eorf_im
+				end if
+				i = i + 1; cycle
+			end do
+		else if ( fmt_ == 'f' ) then
+			if ( abs(x%im) /= 0.0_real64 ) then
+				e = int(log10(abs(x%im)))
+			else
+				xim_str = '0.0'; return
+			end if
+
+			if ( e == 0 ) then
+				if ( floor(x%im) > 0 ) e = 1 + e
+			else if ( e > 0 ) then
+				e = 1 + e
+			end if
+
+			allocate( character(len=100) :: xim_str )
+
+			if ( e > 0 ) then
+				write(unit=xim_str, fmt='(f0.18)', decimal=decimal) x%im
+			else
+				write(unit=xim_str, fmt='(f0.80)', decimal=decimal) x%im
+			end if
+
+			i = 1; do
+				if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) exit
+				i = i + 1; cycle
+			end do
+
+			if ( (i == 1) .or. ( (i == 2) .and. (xim_str(1:1) == '-') ) ) then
+				xim_str(i+1:100) = xim_str(i:99); xim_str(i:i) = '0'; i = i + 1
+			end if
+
+			if ( i > 18 ) then
+				xim_str = xim_str(:i); exit if_eorf_im
+			end if
+
+			if ( .not. present(decimals) ) then
+				xim_str = xim_str(:i+18-e); exit if_eorf_im
+			end if
+
+			if ( decimals <= 0 ) then
+				xim_str = xim_str(:i); exit if_eorf_im
+			end if
+
+			if ( decimals >= 18-e ) then
+				xim_str = xim_str(:i+18-e); exit if_eorf_im
+			end if
+
+			xim_str = xim_str(:i+decimals); exit if_eorf_im
+		end if if_eorf_im
+
+		if ( .not. present(im) ) then
+			im_ = EMPTY_STR
+		else
+			im_ = im
+		end if
+
+		if ( im_ == EMPTY_STR ) then
+			if ( decimal == 'POINT' ) then
+				x_str = '('//xre_str//COMMA//xim_str//')'; return
+			else
+				x_str = '('//xre_str//SEMICOLON//xim_str//')'; return
+			end if
+		end if
+
+		if ( fmt_ == 'z' ) then
+			x_str = xre_str//'+'//xim_str//im_; return
+		end if
+
+		if ( x%im < 0.0_real64 ) then
+			x_str = xre_str//xim_str//im_
+		else
+			x_str = xre_str//'+'//xim_str//im_
+		end if
+	end procedure str_from_c64
+	module procedure str_from_c32
+		character(len=1) :: fmt_
+		character(len=5) :: decimal
+		character(len=:), allocatable :: xre_str, xim_str, im_
+		integer :: e, decimals_, i
+
+		if ( .not. present(fmt) ) then
+			fmt_ = 'e'
+		else
+			if ( any(REAL_FMTS == fmt) ) then
+				fmt_ = fmt
+			else
+				x_str = EMPTY_STR; return
+			end if
+		end if
+
+		if_z_re: if ( fmt_ == 'z' ) then
+			if ( x%re == 0.0_real32 ) then
+				xre_str = '0x0'; exit if_z_re
+			end if
+
+			call cast(transfer(source=x%re, mold=1_int32), into=xre_str, fmt='z'); exit if_z_re
+		end if if_z_re
+		if_z_im: if ( fmt_ == 'z' ) then
+			if ( x%im == 0.0_real32 ) then
+				xim_str = '0x0'; exit if_z_im
+			end if
+
+			call cast(transfer(source=x%im, mold=1_int32), into=xim_str, fmt='z'); exit if_z_im
+		end if if_z_im
+
+		if ( .not. present(locale) ) then
+			decimal = 'POINT'
+		else
+			if ( locale == 'US' ) then
+				decimal = 'POINT'
+			else if ( locale == 'EU' ) then
+				decimal = 'COMMA'
+			else
+				x_str = EMPTY_STR; return
+			end if
+		end if
+
+		if_eorf_re: if ( fmt_ == 'e' ) then
+			if ( x%re == 0.0_real32 ) then
+				xre_str = '0.0e+00'; exit if_eorf_re
+			end if
+
+			if ( x%re < 0.0_real32 ) then
+				xre_str = '000000000000000'
+				write(unit=xre_str, fmt='(es15.8e2)', decimal=decimal) x%re
+				xre_str(12:12) = 'e'
+			else
+				xre_str = '00000000000000'
+				write(unit=xre_str, fmt='(es14.8e2)', decimal=decimal) x%re
+				xre_str(11:11) = 'e'
+			end if
+
+			if ( .not. present(decimals) ) exit if_eorf_re
+			
+			if ( decimals >= 8 ) exit if_eorf_re
+
+			if ( decimals < 0 ) then
+				decimals_ = 0
+			else
+				decimals_ = decimals
+			end if
+
+			i = 1; do
+				if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) then
+					xre_str = xre_str(:i+decimals_)//xre_str(i+9:); exit if_eorf_re
+				end if
+				i = i + 1; cycle
+			end do
+		else if ( fmt_ == 'f' ) then
+			if ( abs(x%re) /= 0.0_real32 ) then
+				e = int(log10(abs(x%re)))
+			else
+				xre_str = '0.0'; exit if_eorf_re
+			end if
+
+			if ( e == 0 ) then
+				if ( floor(x%re) > 0 ) e = 1 + e
+			else if ( e > 0 ) then
+				e = 1 + e
+			end if
+
+			allocate( character(len=75) :: xre_str )
+
+			if ( e > 0 ) then
+				write(unit=xre_str, fmt='(f0.9)', decimal=decimal) x%re
+			else
+				write(unit=xre_str, fmt='(f0.70)', decimal=decimal) x%re
+			end if
+
+			i = 1; do
+				if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) exit
+				i = i + 1; cycle
+			end do
+
+			if ( (i == 1) .or. ( (i == 2) .and. (xre_str(1:1) == '-') ) ) then
+				xre_str(i+1:75) = xre_str(i:74); xre_str(i:i) = '0'; i = i + 1
+			end if
+
+			if ( i > 9 ) then
+				xre_str = xre_str(:i); exit if_eorf_re
+			end if
+
+			if ( .not. present(decimals) ) then
+				xre_str = xre_str(:i+9-e); exit if_eorf_re
+			end if
+
+			if ( decimals <= 0 ) then
+				xre_str = xre_str(:i); exit if_eorf_re
+			end if
+
+			if ( decimals >= 9-e ) then
+				xre_str = xre_str(:i+9-e); exit if_eorf_re
+			end if
+
+			xre_str = xre_str(:i+decimals); exit if_eorf_re
+		end if if_eorf_re
+		if_eorf_im: if ( fmt_ == 'e' ) then
+			if ( x%im == 0.0_real32 ) then
+				xim_str = '0.0e+00'; exit if_eorf_im
+			end if
+
+			if ( x%im < 0.0_real32 ) then
+				xim_str = '000000000000000'
+				write(unit=xim_str, fmt='(es15.8e2)', decimal=decimal) x%im
+				xim_str(12:12) = 'e'
+			else
+				xim_str = '00000000000000'
+				write(unit=xim_str, fmt='(es14.8e2)', decimal=decimal) x%im
+				xim_str(11:11) = 'e'
+			end if
+
+			if ( .not. present(decimals) ) exit if_eorf_im
+			
+			if ( decimals >= 8 ) exit if_eorf_im
+
+			if ( decimals < 0 ) then
+				decimals_ = 0
+			else
+				decimals_ = decimals
+			end if
+
+			i = 1; do
+				if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) then
+					xim_str = xim_str(:i+decimals_)//xim_str(i+9:); exit if_eorf_im
+				end if
+				i = i + 1; cycle
+			end do
+		else if ( fmt_ == 'f' ) then
+			if ( abs(x%im) /= 0.0_real32 ) then
+				e = int(log10(abs(x%im)))
+			else
+				xim_str = '0.0'; exit if_eorf_im
+			end if
+
+			if ( e == 0 ) then
+				if ( floor(x%im) > 0 ) e = 1 + e
+			else if ( e > 0 ) then
+				e = 1 + e
+			end if
+
+			allocate( character(len=75) :: xim_str )
+
+			if ( e > 0 ) then
+				write(unit=xim_str, fmt='(f0.9)', decimal=decimal) x%im
+			else
+				write(unit=xim_str, fmt='(f0.70)', decimal=decimal) x%im
+			end if
+
+			i = 1; do
+				if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) exit
+				i = i + 1; cycle
+			end do
+
+			if ( (i == 1) .or. ( (i == 2) .and. (xim_str(1:1) == '-') ) ) then
+				xim_str(i+1:75) = xim_str(i:74); xim_str(i:i) = '0'; i = i + 1
+			end if
+
+			if ( i > 9 ) then
+				xim_str = xim_str(:i); exit if_eorf_im
+			end if
+
+			if ( .not. present(decimals) ) then
+				xim_str = xim_str(:i+9-e); exit if_eorf_im
+			end if
+
+			if ( decimals <= 0 ) then
+				xim_str = xim_str(:i); exit if_eorf_im
+			end if
+
+			if ( decimals >= 9-e ) then
+				xim_str = xim_str(:i+9-e); exit if_eorf_im
+			end if
+
+			xim_str = xim_str(:i+decimals); exit if_eorf_im
+		end if if_eorf_im
+
+		if ( .not. present(im) ) then
+			im_ = EMPTY_STR
+		else
+			im_ = im
+		end if
+
+		if ( im_ == EMPTY_STR ) then
+			if ( decimal == 'POINT' ) then
+				x_str = '('//xre_str//COMMA//xim_str//')'; return
+			else
+				x_str = '('//xre_str//SEMICOLON//xim_str//')'; return
+			end if
+		end if
+
+		if ( fmt_ == 'z' ) then
+			x_str = xre_str//'+'//xim_str//im_; return
+		end if
+
+		if ( x%im < 0.0_real32 ) then
+			x_str = xre_str//xim_str//im_
+		else
+			x_str = xre_str//'+'//xim_str//im_
+		end if
+	end procedure str_from_c32
+
+	module procedure str_from_r128
+		character(len=1) :: fmt_
+		character(len=5) :: decimal
+		integer :: e, decimals_, i
+
+		if ( .not. present(fmt) ) then
+			fmt_ = 'e'
+		else
+			if ( any(REAL_FMTS == fmt) ) then
+				fmt_ = fmt
+			else
+				x_str = EMPTY_STR; return
+			end if
+		end if
+
+		if ( fmt_ == 'z' ) then
+			if ( x /= 0.0_real128 ) then
+				x_str = '0x00000000000000000000000000000000'
+			else
+				x_str = '0x0'; return
+			end if
+
+			write(unit=x_str(3:), fmt='(z32)') x
+
+			do concurrent (i = 3:34)
+				if ( (x_str(i:i) >= 'A') .and. (x_str(i:i) <= 'F') ) x_str(i:i) = achar(iachar(x_str(i:i)) + 32)
+			end do
+
+			return
+		end if
+
+		if ( .not. present(locale) ) then
+			decimal = 'POINT'
+		else
+			if ( locale == 'US' ) then
+				decimal = 'POINT'
+			else if ( locale == 'EU' ) then
+				decimal = 'COMMA'
+			else
+				x_str = EMPTY_STR; return
+			end if
+		end if
+
+		if ( fmt_ == 'e' ) then
+			if ( x == 0.0_real128 ) then
+				x_str = '0.0e+0000'; return
+			end if
+
+			if ( x < 0.0_real128 ) then
+				x_str = '00000000000000000000000000000000000000000000'
+				write(unit=x_str, fmt='(es44.35e4)', decimal=decimal) x
+				x_str(39:39) = 'e'
+			else
+				x_str = '0000000000000000000000000000000000000000000'
+				write(unit=x_str, fmt='(es43.35e4)', decimal=decimal) x
+				x_str(38:38) = 'e'
+			end if
+
+			if ( .not. present(decimals) ) return
+			
+			if ( decimals >= 35 ) return
+
+			if ( decimals < 0 ) then
+				decimals_ = 0
+			else
+				decimals_ = decimals
+			end if
+
+			i = 1; do
+				if ( (x_str(i:i) == POINT) .or. (x_str(i:i) == COMMA) ) then
+					x_str = x_str(:i+decimals_)//x_str(i+36:); return
+				end if
+				i = i + 1; cycle
+			end do
+		else if ( fmt_ == 'f' ) then
+			if ( abs(x) /= 0.0_real128 ) then
+				e = int(log10(abs(x)))
+			else
+				x_str = '0.0'; return
+			end if
+
+			if ( e == 0 ) then
+				if ( floor(x) > 0 ) e = 1 + e
+			else if ( e > 0 ) then
+				e = 1 + e
+			end if
+
+			allocate( character(len=125) :: x_str )
+
+			if ( e > 0 ) then
+				write(unit=x_str, fmt='(f0.36)', decimal=decimal) x
+			else
+				write(unit=x_str, fmt='(f0.100)', decimal=decimal) x
+			end if
+
+			i = 1; do
+				if ( (x_str(i:i) == POINT) .or. (x_str(i:i) == COMMA) ) exit
+				i = i + 1; cycle
+			end do
+
+			if ( (i == 1) .or. ( (i == 2) .and. (x_str(1:1) == '-') ) ) then
+				x_str(i+1:125) = x_str(i:124); x_str(i:i) = '0'; i = i + 1
+			end if
+
+			if ( i > 36 ) then
+				x_str = x_str(:i); return
+			end if
+
+			if ( .not. present(decimals) ) then
+				x_str = x_str(:i+36-e); return
+			end if
+
+			if ( decimals <= 0 ) then
+				x_str = x_str(:i); return
+			end if
+
+			if ( decimals >= 36-e ) then
+				x_str = x_str(:i+36-e); return
+			end if
+
+			x_str = x_str(:i+decimals); return
+		end if
+	end procedure str_from_r128
+	module procedure str_from_r64
+		character(len=1) :: fmt_
+		character(len=5) :: decimal
+		integer :: e, decimals_, i
+
+		if ( .not. present(fmt) ) then
+			fmt_ = 'e'
+		else
+			if ( any(REAL_FMTS == fmt) ) then
+				fmt_ = fmt
+			else
+				x_str = EMPTY_STR; return
+			end if
+		end if
+
+		if ( fmt_ == 'z' ) then
+			if ( x == 0.0_real64 ) then
+				x_str = '0x0'; return
+			end if
+
+			call cast(transfer(source=x, mold=1_int64), into=x_str, fmt='z'); return
+		end if
+
+		if ( .not. present(locale) ) then
+			decimal = 'POINT'
+		else
+			if ( locale == 'US' ) then
+				decimal = 'POINT'
+			else if ( locale == 'EU' ) then
+				decimal = 'COMMA'
+			else
+				x_str = EMPTY_STR; return
+			end if
+		end if
+
+		if ( fmt_ == 'e' ) then
+			if ( x == 0.0_real64 ) then
+				x_str = '0.0e+000'; return
+			end if
+
+			if ( x < 0.0_real64 ) then
+				x_str = '0000000000000000000000000'
+				write(unit=x_str, fmt='(es25.17e3)', decimal=decimal) x
+				x_str(21:21) = 'e'
+			else
+				x_str = '000000000000000000000000'
+				write(unit=x_str, fmt='(es24.17e3)', decimal=decimal) x
+				x_str(20:20) = 'e'
+			end if
+
+			if ( .not. present(decimals) ) return
+			
+			if ( decimals >= 17 ) return
+
+			if ( decimals < 0 ) then
+				decimals_ = 0
+			else
+				decimals_ = decimals
+			end if
+
+			i = 1; do
+				if ( (x_str(i:i) == POINT) .or. (x_str(i:i) == COMMA) ) then
+					x_str = x_str(:i+decimals_)//x_str(i+18:); return
+				end if
+				i = i + 1; cycle
+			end do
+		else if ( fmt_ == 'f' ) then
+			if ( abs(x) /= 0.0_real64 ) then
+				e = int(log10(abs(x)))
+			else
+				x_str = '0.0'; return
+			end if
+
+			if ( e == 0 ) then
+				if ( floor(x) > 0 ) e = 1 + e
+			else if ( e > 0 ) then
+				e = 1 + e
+			end if
+
+			allocate( character(len=100) :: x_str )
+
+			if ( e > 0 ) then
+				write(unit=x_str, fmt='(f0.18)', decimal=decimal) x
+			else
+				write(unit=x_str, fmt='(f0.80)', decimal=decimal) x
+			end if
+
+			i = 1; do
+				if ( (x_str(i:i) == POINT) .or. (x_str(i:i) == COMMA) ) exit
+				i = i + 1; cycle
+			end do
+
+			if ( (i == 1) .or. ( (i == 2) .and. (x_str(1:1) == '-') ) ) then
+				x_str(i+1:100) = x_str(i:99); x_str(i:i) = '0'; i = i + 1
+			end if
+
+			if ( i > 18 ) then
+				x_str = x_str(:i); return
+			end if
+
+			if ( .not. present(decimals) ) then
+				x_str = x_str(:i+18-e); return
+			end if
+
+			if ( decimals <= 0 ) then
+				x_str = x_str(:i); return
+			end if
+
+			if ( decimals >= 18-e ) then
+				x_str = x_str(:i+18-e); return
+			end if
+
+			x_str = x_str(:i+decimals); return
+		end if
+	end procedure str_from_r64
+	module procedure str_from_r32
+		character(len=1) :: fmt_
+		character(len=5) :: decimal
+		integer :: e, decimals_, i
+
+		if ( .not. present(fmt) ) then
+			fmt_ = 'e'
+		else
+			if ( any(REAL_FMTS == fmt) ) then
+				fmt_ = fmt
+			else
+				x_str = EMPTY_STR; return
+			end if
+		end if
+
+		if ( fmt_ == 'z' ) then
+			if ( x == 0.0_real32 ) then
+				x_str = '0x0'; return
+			end if
+
+			call cast(transfer(source=x, mold=1_int32), into=x_str, fmt='z'); return
+		end if
+
+		if ( .not. present(locale) ) then
+			decimal = 'POINT'
+		else
+			if ( locale == 'US' ) then
+				decimal = 'POINT'
+			else if ( locale == 'EU' ) then
+				decimal = 'COMMA'
+			else
+				x_str = EMPTY_STR; return
+			end if
+		end if
+
+		if ( fmt_ == 'e' ) then
+			if ( x == 0.0_real32 ) then
+				x_str = '0.0e+00'; return
+			end if
+
+			if ( x < 0.0_real32 ) then
+				x_str = '000000000000000'
+				write(unit=x_str, fmt='(es15.8e2)', decimal=decimal) x
+				x_str(12:12) = 'e'
+			else
+				x_str = '00000000000000'
+				write(unit=x_str, fmt='(es14.8e2)', decimal=decimal) x
+				x_str(11:11) = 'e'
+			end if
+
+			if ( .not. present(decimals) ) return
+			
+			if ( decimals >= 8 ) return
+
+			if ( decimals < 0 ) then
+				decimals_ = 0
+			else
+				decimals_ = decimals
+			end if
+
+			i = 1; do
+				if ( (x_str(i:i) == POINT) .or. (x_str(i:i) == COMMA) ) then
+					x_str = x_str(:i+decimals_)//x_str(i+9:); return
+				end if
+				i = i + 1; cycle
+			end do
+		else if ( fmt_ == 'f' ) then
+			if ( abs(x) /= 0.0_real32 ) then
+				e = int(log10(abs(x)))
+			else
+				x_str = '0.0'; return
+			end if
+
+			if ( e == 0 ) then
+				if ( floor(x) > 0 ) e = 1 + e
+			else if ( e > 0 ) then
+				e = 1 + e
+			end if
+
+			allocate( character(len=75) :: x_str )
+
+			if ( e > 0 ) then
+				write(unit=x_str, fmt='(f0.9)', decimal=decimal) x
+			else
+				write(unit=x_str, fmt='(f0.70)', decimal=decimal) x
+			end if
+
+			i = 1; do
+				if ( (x_str(i:i) == POINT) .or. (x_str(i:i) == COMMA) ) exit
+				i = i + 1; cycle
+			end do
+
+			if ( (i == 1) .or. ( (i == 2) .and. (x_str(1:1) == '-') ) ) then
+				x_str(i+1:75) = x_str(i:74); x_str(i:i) = '0'; i = i + 1
+			end if
+
+			if ( i > 9 ) then
+				x_str = x_str(:i); return
+			end if
+
+			if ( .not. present(decimals) ) then
+				x_str = x_str(:i+9-e); return
+			end if
+
+			if ( decimals <= 0 ) then
+				x_str = x_str(:i); return
+			end if
+
+			if ( decimals >= 9-e ) then
+				x_str = x_str(:i+9-e); return
+			end if
+
+			x_str = x_str(:i+decimals); return
+		end if
+	end procedure str_from_r32
+
+	module procedure str_from_i64
+		character(len=1) :: fmt_
+		character(len=20) :: buffer
+		integer(int64) :: num, next
+		integer :: ascii_code, i
+		logical :: negative
+
+		if ( .not. present(fmt) ) then
+			fmt_ = 'i'
+		else
+			if ( any(INT_FMTS == fmt) ) then
+				fmt_ = fmt
+			else
+				x_str = EMPTY_STR; return
+			end if
+		end if
+
+		if ( fmt_ == 'i' ) then
+			if ( x < 0_int64 ) then
+				if ( x == smallest_int64 ) then
+					x_str = '-9223372036854775808'; return
+				end if
+				num = -x; negative = .true.
+			else
+				num = x; negative = .false.
+			end if
+
+			i = len(buffer); extract_digits: do
+				next = num/10_int64; buffer(i:i) = achar(num - 10_int64*next + 48_int64); if ( next == 0_int64 ) exit
+				num = next; i = i - 1; cycle
+			end do extract_digits
+
+			if ( negative ) then
+				buffer(i-1:i-1) = '-'; x_str = buffer(i-1:); return
+			else
+				x_str = buffer(i:); return
+			end if
+		else
+			if ( x < 0_int64 ) then
+				num = (x + 1_int64) + largest_int64; negative = .true.; buffer(3:) = '0x0000000000000000'
+			else
+				num = x; negative = .false.
+			end if
+
+			i = len(buffer); extract_hex_digits: do
+				next = num/16_int64; buffer(i:i) = DIGITS_A(num - 16_int64*next); if ( next == 0_int64 ) exit
+				num = next; i = i - 1; cycle
+			end do extract_hex_digits
+
+			if ( negative ) then
+				ascii_code = iachar(buffer(5:5))
+				if ( ascii_code < 50 ) then
+					buffer(5:5) = achar(ascii_code + 8)
+				else
+					buffer(5:5) = achar(ascii_code + 47)
+				end if
+				x_str = buffer(3:); return
+			else
+				buffer(i-2:i-1) = '0x'; x_str = buffer(i-2:); return
+			end if
+		end if
+	end procedure str_from_i64
+	module procedure str_from_i32
+		character(len=1) :: fmt_
+		character(len=11) :: buffer
+		integer :: num, next, ascii_code, i
+		logical :: negative
+
+		if ( .not. present(fmt) ) then
+			fmt_ = 'i'
+		else
+			if ( (any(INT_FMTS == fmt)) ) then
+				fmt_ = fmt
+			else
+				x_str = EMPTY_STR; return
+			end if
+		end if
+
+		if ( fmt_ == 'i' ) then
+			if ( x < 0 ) then
+				if ( x == smallest_int32 ) then
+					x_str = '-2147483648'; return
+				end if
+				num = -x; negative = .true.
+			else
+				num = x; negative = .false.
+			end if
+
+			i = len(buffer); extract_digits: do
+				next = num/10; buffer(i:i) = achar(num - 10*next + 48); if ( next == 0 ) exit
+				num = next; i = i - 1; cycle
+			end do extract_digits
+
+			if ( negative ) then
+				buffer(i-1:i-1) = '-'; x_str = buffer(i-1:); return
+			else
+				x_str = buffer(i:); return
+			end if
+		else
+			if ( x < 0 ) then
+				num = (x + 1) + largest_int32; negative = .true.; buffer(2:) = '0x00000000'
+			else
+				num = x; negative = .false.
+			end if
+
+			i = len(buffer); extract_hex_digits: do
+				next = num/16; buffer(i:i) = DIGITS_A(num - 16*next); if ( next == 0 ) exit
+				num = next; i = i - 1; cycle
+			end do extract_hex_digits
+
+			if ( negative ) then
+				ascii_code = iachar(buffer(4:4))
+				if ( ascii_code < 50 ) then
+					buffer(4:4) = achar(ascii_code + 8)
+				else
+					buffer(4:4) = achar(ascii_code + 47)
+				end if
+				x_str = buffer(2:); return
+			else
+				buffer(i-2:i-1) = '0x'; x_str = buffer(i-2:); return
+			end if
+		end if
+	end procedure str_from_i32
+	module procedure str_from_i16
+		character(len=1) :: fmt_
+		character(len=6) :: buffer
+		integer :: num, next, ascii_code, i
+		logical :: negative
+
+		if ( .not. present(fmt) ) then
+			fmt_ = 'i'
+		else
+			if ( any(INT_FMTS == fmt) ) then
+				fmt_ = fmt
+			else
+				x_str = EMPTY_STR; return
+			end if
+		end if
+
+		if ( fmt_ == 'i' ) then
+			if ( x < 0_int16 ) then
+				if ( x == smallest_int16 ) then
+					x_str = '-32768'; return
+				end if
+				num = int(-x); negative = .true.
+			else
+				num = int(x); negative = .false.
+			end if
+
+			i = len(buffer); extract_digits: do
+				next = num/10; buffer(i:i) = achar(num - 10*next + 48); if ( next == 0 ) exit
+				num = next; i = i - 1; cycle
+			end do extract_digits
+
+			if ( negative ) then
+				buffer(i-1:i-1) = '-'; x_str = buffer(i-1:); return
+			else
+				x_str = buffer(i:); return
+			end if
+		else
+			if ( x < 0_int16 ) then
+				num = int((x + 1_int16) + largest_int16); negative = .true.; buffer(1:) = '0x0000'
+			else
+				num = int(x); negative = .false.
+			end if
+
+			i = len(buffer); extract_hex_digits: do
+				next = num/16; buffer(i:i) = DIGITS_A(num - 16*next); if ( next == 0 ) exit
+				num = next; i = i - 1; cycle
+			end do extract_hex_digits
+
+			if ( negative ) then
+				ascii_code = iachar(buffer(3:3))
+				if ( ascii_code < 50 ) then
+					buffer(3:3) = achar(ascii_code + 8)
+				else
+					buffer(3:3) = achar(ascii_code + 47)
+				end if
+				x_str = buffer(1:); return
+			else
+				buffer(i-2:i-1) = '0x'; x_str = buffer(i-2:); return
+			end if
+		end if
+	end procedure str_from_i16
+	module procedure str_from_i8
+		character(len=1) :: fmt_
+		character(len=4) :: buffer
+		integer :: num, next, ascii_code, i
+		logical :: negative
+
+		if ( .not. present(fmt) ) then
+			fmt_ = 'i'
+		else
+			if ( any(INT_FMTS == fmt) ) then
+				fmt_ = fmt
+			else
+				x_str = EMPTY_STR; return
+			end if
+		end if
+
+		if ( fmt_ == 'i' ) then
+			if ( x < 0_int8 ) then
+				if ( x == smallest_int8 ) then
+					x_str = '-128'; return
+				end if
+				num = int(-x); negative = .true.
+			else
+				num = int(x); negative = .false.
+			end if
+
+			i = len(buffer); extract_digits: do
+				next = num/10; buffer(i:i) = achar(num - 10*next + 48); if ( next == 0 ) exit
+				num = next; i = i - 1; cycle
+			end do extract_digits
+
+			if ( negative ) then
+				buffer(i-1:i-1) = '-'; x_str = buffer(i-1:); return
+			else
+				x_str = buffer(i:); return
+			end if
+		else
+			if ( x < 0_int8 ) then
+				num = int((x + 1_int8) + largest_int8); negative = .true.; buffer(1:) = '0x00'
+			else
+				num = int(x); negative = .false.
+			end if
+
+			i = len(buffer); extract_hex_digits: do
+				next = num/16; buffer(i:i) = DIGITS_A(num - 16*next); if ( next == 0 ) exit
+				num = next; i = i - 1; cycle
+			end do extract_hex_digits
+
+			if ( negative ) then
+				ascii_code = iachar(buffer(3:3))
+				if ( ascii_code < 50 ) then
+					buffer(3:3) = achar(ascii_code + 8)
+				else
+					buffer(3:3) = achar(ascii_code + 47)
+				end if
+				x_str = buffer(1:); return
+			else
+				buffer(i-2:i-1) = '0x'; x_str = buffer(i-2:); return
+			end if
+		end if
+	end procedure str_from_i8
+
+	module procedure str_from_string
+		if ( x%len() < 1 ) then
+			x_str = EMPTY_STR
+		else
+			x_str = x%s
+		end if
+	end procedure str_from_string
+	module procedure str_from_char
+		x_str = x
+	end procedure str_from_char
+	module procedure str_from_empty
+		x_str = EMPTY_STR
+	end procedure str_from_empty
+
+	! cast ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	module procedure cast_c128_to_string
+		character(len=1) :: fmt_
+		character(len=5) :: decimal
+		character(len=:), allocatable :: xre_str, xim_str, im_
+		integer :: e, decimals_, i
+
+		if ( .not. present(fmt) ) then
+			fmt_ = 'e'
+		else
+			if ( any(REAL_FMTS == fmt) ) then
+				fmt_ = fmt
+			else
+				into%s = EMPTY_STR; return
+			end if
+		end if
+
+		if_z_re: if ( fmt_ == 'z' ) then
+			if ( x%re /= 0.0_real128 ) then
+				xre_str = '0x00000000000000000000000000000000'
+			else
+				xre_str = '0x0'; exit if_z_re
+			end if
+
+			write(unit=xre_str(3:), fmt='(z32)') x%re
+
+			do concurrent (i = 3:34)
+				if ( (xre_str(i:i) >= 'A') .and. (xre_str(i:i) <= 'F') ) xre_str(i:i) = achar(iachar(xre_str(i:i))+32)
+			end do
+		end if if_z_re
+		if_z_im: if ( fmt_ == 'z' ) then
+			if ( x%im /= 0.0_real128 ) then
+				xim_str = '0x00000000000000000000000000000000'
+			else
+				xim_str = '0x0'; exit if_z_im
+			end if
+
+			write(unit=xim_str(3:), fmt='(z32)') x%im
+
+			do concurrent (i = 3:34)
+				if ( (xim_str(i:i) >= 'A') .and. (xim_str(i:i) <= 'F') ) xim_str(i:i) = achar(iachar(xim_str(i:i))+32)
+			end do
+		end if if_z_im
+
+		if ( .not. present(locale) ) then
+			decimal = 'POINT'
+		else
+			if ( locale == 'US' ) then
+				decimal = 'POINT'
+			else if ( locale == 'EU' ) then
+				decimal = 'COMMA'
+			else
+				into%s = EMPTY_STR; return
+			end if
+		end if
+
+		if_eorf_re: if ( fmt_ == 'e' ) then
+			if ( x%re == 0.0_real128 ) then
+				xre_str = '0.0e+0000'; exit if_eorf_re
+			end if
+
+			if ( x%re < 0.0_real128 ) then
+				xre_str = '00000000000000000000000000000000000000000000'
+				write(unit=xre_str, fmt='(es44.35e4)', decimal=decimal) x%re
+				xre_str(39:39) = 'e'
+			else
+				xre_str = '0000000000000000000000000000000000000000000'
+				write(unit=xre_str, fmt='(es43.35e4)', decimal=decimal) x%re
+				xre_str(38:38) = 'e'
+			end if
+
+			if ( .not. present(decimals) ) exit if_eorf_re
+			
+			if ( decimals >= 35 ) exit if_eorf_re
+
+			if ( decimals < 0 ) then
+				decimals_ = 0
+			else
+				decimals_ = decimals
+			end if
+
+			i = 1; do
+				if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) then
+					xre_str = xre_str(:i+decimals_)//xre_str(i+36:); exit if_eorf_re
+				end if
+				i = i + 1; cycle
+			end do
+		else if ( fmt_ == 'f' ) then
+			if ( abs(x%re) /= 0.0_real128 ) then
+				e = int(log10(abs(x%re)))
+			else
+				xre_str = '0.0'; exit if_eorf_re
+			end if
+
+			if ( e == 0 ) then
+				if ( floor(x%re) > 0 ) e = 1 + e
+			else if ( e > 0 ) then
+				e = 1 + e
+			end if
+
+			allocate( character(len=125) :: xre_str )
+
+			if ( e > 0 ) then
+				write(unit=xre_str, fmt='(f0.36)', decimal=decimal) x%re
+			else
+				write(unit=xre_str, fmt='(f0.100)', decimal=decimal) x%re
+			end if
+
+			i = 1; do
+				if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) exit
+				i = i + 1; cycle
+			end do
+
+			if ( (i == 1) .or. ( (i == 2) .and. (xre_str(1:1) == '-') ) ) then
+				xre_str(i+1:125) = xre_str(i:124); xre_str(i:i) = '0'; i = i + 1
+			end if
+
+			if ( i > 36 ) then
+				xre_str = xre_str(:i); exit if_eorf_re
+			end if
+
+			if ( .not. present(decimals) ) then
+				xre_str = xre_str(:i+36-e); exit if_eorf_re
+			end if
+
+			if ( decimals <= 0 ) then
+				xre_str = xre_str(:i); exit if_eorf_re
+			end if
+
+			if ( decimals >= 36-e ) then
+				xre_str = xre_str(:i+36-e); exit if_eorf_re
+			end if
+
+			xre_str = xre_str(:i+decimals); exit if_eorf_re
+		end if if_eorf_re
+		if_eorf_im: if ( fmt_ == 'e' ) then
+			if ( x%im == 0.0_real128 ) then
+				xim_str = '0.0e+0000'; exit if_eorf_im
+			end if
+
+			if ( x%im < 0.0_real128 ) then
+				xim_str = '00000000000000000000000000000000000000000000'
+				write(unit=xim_str, fmt='(es44.35e4)', decimal=decimal) x%im
+				xim_str(39:39) = 'e'
+			else
+				xim_str = '0000000000000000000000000000000000000000000'
+				write(unit=xim_str, fmt='(es43.35e4)', decimal=decimal) x%im
+				xim_str(38:38) = 'e'
+			end if
+
+			if ( .not. present(decimals) ) exit if_eorf_im
+			
+			if ( decimals >= 35 ) exit if_eorf_im
+
+			if ( decimals < 0 ) then
+				decimals_ = 0
+			else
+				decimals_ = decimals
+			end if
+
+			i = 1; do
+				if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) then
+					xim_str = xim_str(:i+decimals_)//xim_str(i+36:); exit if_eorf_im
+				end if
+				i = i + 1; cycle
+			end do
+		else if ( fmt_ == 'f' ) then
+			if ( abs(x%im) /= 0.0_real128 ) then
+				e = int(log10(abs(x%im)))
+			else
+				xim_str = '0.0'; exit if_eorf_im
+			end if
+
+			if ( e == 0 ) then
+				if ( floor(x%im) > 0 ) e = 1 + e
+			else if ( e > 0 ) then
+				e = 1 + e
+			end if
+
+			allocate( character(len=125) :: xim_str )
+
+			if ( e > 0 ) then
+				write(unit=xim_str, fmt='(f0.36)', decimal=decimal) x%im
+			else
+				write(unit=xim_str, fmt='(f0.100)', decimal=decimal) x%im
+			end if
+
+			i = 1; do
+				if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) exit
+				i = i + 1; cycle
+			end do
+
+			if ( (i == 1) .or. ( (i == 2) .and. (xim_str(1:1) == '-') ) ) then
+				xim_str(i+1:125) = xim_str(i:124); xim_str(i:i) = '0'; i = i + 1
+			end if
+
+			if ( i > 36 ) then
+				xim_str = xim_str(:i); exit if_eorf_im
+			end if
+
+			if ( .not. present(decimals) ) then
+				xim_str = xim_str(:i+36-e); exit if_eorf_im
+			end if
+
+			if ( decimals <= 0 ) then
+				xim_str = xim_str(:i); exit if_eorf_im
+			end if
+
+			if ( decimals >= 36-e ) then
+				xim_str = xim_str(:i+36-e); exit if_eorf_im
+			end if
+
+			xim_str = xim_str(:i+decimals); exit if_eorf_im
+		end if if_eorf_im
+
+		if ( .not. present(im) ) then
+			im_ = EMPTY_STR
+		else
+			im_ = im
+		end if
+
+		if ( im_ == EMPTY_STR ) then
+			if ( decimal == 'POINT' ) then
+				into%s = '('//xre_str//COMMA//xim_str//')'; return
+			else
+				into%s = '('//xre_str//SEMICOLON//xim_str//')'; return
+			end if
+		end if
+
+		if ( fmt_ == 'z' ) then
+			into%s = xre_str//'+'//xim_str//im_; return
+		end if
+
+		if ( x%im < 0.0_real128 ) then
+			into%s = xre_str//xim_str//im_
+		else
+			into%s = xre_str//'+'//xim_str//im_
+		end if
+	end procedure cast_c128_to_string
+	module procedure cast_c64_to_string
+		character(len=1) :: fmt_
+		character(len=5) :: decimal
+		character(len=:), allocatable :: xre_str, xim_str, im_
+		integer :: e, decimals_, i
+
+		if ( .not. present(fmt) ) then
+			fmt_ = 'e'
+		else
+			if ( any(REAL_FMTS == fmt) ) then
+				fmt_ = fmt
+			else
+				into%s = EMPTY_STR; return
+			end if
+		end if
+
+		if_z_re: if ( fmt_ == 'z' ) then
+			if ( x%re == 0.0_real64 ) then
+				xre_str = '0x0'; exit if_z_re
+			end if
+
+			call cast(transfer(source=x%re, mold=1_int64), into=xre_str, fmt='z'); exit if_z_re
+		end if if_z_re
+		if_z_im: if ( fmt_ == 'z' ) then
+			if ( x%im == 0.0_real64 ) then
+				xim_str = '0x0'; exit if_z_im
+			end if
+
+			call cast(transfer(source=x%im, mold=1_int64), into=xim_str, fmt='z'); exit if_z_im
+		end if if_z_im
+
+		if ( .not. present(locale) ) then
+			decimal = 'POINT'
+		else
+			if ( locale == 'US' ) then
+				decimal = 'POINT'
+			else if ( locale == 'EU' ) then
+				decimal = 'COMMA'
+			else
+				into%s = EMPTY_STR; return
+			end if
+		end if
+
+		if_eorf_re: if ( fmt_ == 'e' ) then
+			if ( x%re == 0.0_real64 ) then
+				xre_str = '0.0e+000'; exit if_eorf_re
+			end if
+
+			if ( x%re < 0.0_real64 ) then
+				xre_str = '0000000000000000000000000'
+				write(unit=xre_str, fmt='(es25.17e3)', decimal=decimal) x%re
+				xre_str(21:21) = 'e'
+			else
+				xre_str = '000000000000000000000000'
+				write(unit=xre_str, fmt='(es24.17e3)', decimal=decimal) x%re
+				xre_str(20:20) = 'e'
+			end if
+
+			if ( .not. present(decimals) ) exit if_eorf_re
+			
+			if ( decimals >= 17 ) exit if_eorf_re
+
+			if ( decimals < 0 ) then
+				decimals_ = 0
+			else
+				decimals_ = decimals
+			end if
+
+			i = 1; do
+				if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) then
+					xre_str = xre_str(:i+decimals_)//xre_str(i+18:); exit if_eorf_re
+				end if
+				i = i + 1; cycle
+			end do
+		else if ( fmt_ == 'f' ) then
+			if ( abs(x%re) /= 0.0_real64 ) then
+				e = int(log10(abs(x%re)))
+			else
+				xre_str = '0.0'; return
+			end if
+
+			if ( e == 0 ) then
+				if ( floor(x%re) > 0 ) e = 1 + e
+			else if ( e > 0 ) then
+				e = 1 + e
+			end if
+
+			allocate( character(len=100) :: xre_str )
+
+			if ( e > 0 ) then
+				write(unit=xre_str, fmt='(f0.18)', decimal=decimal) x%re
+			else
+				write(unit=xre_str, fmt='(f0.80)', decimal=decimal) x%re
+			end if
+
+			i = 1; do
+				if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) exit
+				i = i + 1; cycle
+			end do
+
+			if ( (i == 1) .or. ( (i == 2) .and. (xre_str(1:1) == '-') ) ) then
+				xre_str(i+1:100) = xre_str(i:99); xre_str(i:i) = '0'; i = i + 1
+			end if
+
+			if ( i > 18 ) then
+				xre_str = xre_str(:i); exit if_eorf_re
+			end if
+
+			if ( .not. present(decimals) ) then
+				xre_str = xre_str(:i+18-e); exit if_eorf_re
+			end if
+
+			if ( decimals <= 0 ) then
+				xre_str = xre_str(:i); exit if_eorf_re
+			end if
+
+			if ( decimals >= 18-e ) then
+				xre_str = xre_str(:i+18-e); exit if_eorf_re
+			end if
+
+			xre_str = xre_str(:i+decimals); exit if_eorf_re
+		end if if_eorf_re
+		if_eorf_im: if ( fmt_ == 'e' ) then
+			if ( x%im == 0.0_real64 ) then
+				xim_str = '0.0e+000'; exit if_eorf_im
+			end if
+
+			if ( x%im < 0.0_real64 ) then
+				xim_str = '0000000000000000000000000'
+				write(unit=xim_str, fmt='(es25.17e3)', decimal=decimal) x%im
+				xim_str(21:21) = 'e'
+			else
+				xim_str = '000000000000000000000000'
+				write(unit=xim_str, fmt='(es24.17e3)', decimal=decimal) x%im
+				xim_str(20:20) = 'e'
+			end if
+
+			if ( .not. present(decimals) ) exit if_eorf_im
+			
+			if ( decimals >= 17 ) exit if_eorf_im
+
+			if ( decimals < 0 ) then
+				decimals_ = 0
+			else
+				decimals_ = decimals
+			end if
+
+			i = 1; do
+				if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) then
+					xim_str = xim_str(:i+decimals_)//xim_str(i+18:); exit if_eorf_im
+				end if
+				i = i + 1; cycle
+			end do
+		else if ( fmt_ == 'f' ) then
+			if ( abs(x%im) /= 0.0_real64 ) then
+				e = int(log10(abs(x%im)))
+			else
+				xim_str = '0.0'; return
+			end if
+
+			if ( e == 0 ) then
+				if ( floor(x%im) > 0 ) e = 1 + e
+			else if ( e > 0 ) then
+				e = 1 + e
+			end if
+
+			allocate( character(len=100) :: xim_str )
+
+			if ( e > 0 ) then
+				write(unit=xim_str, fmt='(f0.18)', decimal=decimal) x%im
+			else
+				write(unit=xim_str, fmt='(f0.80)', decimal=decimal) x%im
+			end if
+
+			i = 1; do
+				if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) exit
+				i = i + 1; cycle
+			end do
+
+			if ( (i == 1) .or. ( (i == 2) .and. (xim_str(1:1) == '-') ) ) then
+				xim_str(i+1:100) = xim_str(i:99); xim_str(i:i) = '0'; i = i + 1
+			end if
+
+			if ( i > 18 ) then
+				xim_str = xim_str(:i); exit if_eorf_im
+			end if
+
+			if ( .not. present(decimals) ) then
+				xim_str = xim_str(:i+18-e); exit if_eorf_im
+			end if
+
+			if ( decimals <= 0 ) then
+				xim_str = xim_str(:i); exit if_eorf_im
+			end if
+
+			if ( decimals >= 18-e ) then
+				xim_str = xim_str(:i+18-e); exit if_eorf_im
+			end if
+
+			xim_str = xim_str(:i+decimals); exit if_eorf_im
+		end if if_eorf_im
+
+		if ( .not. present(im) ) then
+			im_ = EMPTY_STR
+		else
+			im_ = im
+		end if
+
+		if ( im_ == EMPTY_STR ) then
+			if ( decimal == 'POINT' ) then
+				into%s = '('//xre_str//COMMA//xim_str//')'; return
+			else
+				into%s = '('//xre_str//SEMICOLON//xim_str//')'; return
+			end if
+		end if
+
+		if ( fmt_ == 'z' ) then
+			into%s = xre_str//'+'//xim_str//im_; return
+		end if
+
+		if ( x%im < 0.0_real64 ) then
+			into%s = xre_str//xim_str//im_
+		else
+			into%s = xre_str//'+'//xim_str//im_
+		end if
+	end procedure cast_c64_to_string
+	module procedure cast_c32_to_string
+		character(len=1) :: fmt_
+		character(len=5) :: decimal
+		character(len=:), allocatable :: xre_str, xim_str, im_
+		integer :: e, decimals_, i
+
+		if ( .not. present(fmt) ) then
+			fmt_ = 'e'
+		else
+			if ( any(REAL_FMTS == fmt) ) then
+				fmt_ = fmt
+			else
+				into%s = EMPTY_STR; return
+			end if
+		end if
+
+		if_z_re: if ( fmt_ == 'z' ) then
+			if ( x%re == 0.0_real32 ) then
+				xre_str = '0x0'; exit if_z_re
+			end if
+
+			call cast(transfer(source=x%re, mold=1_int32), into=xre_str, fmt='z'); exit if_z_re
+		end if if_z_re
+		if_z_im: if ( fmt_ == 'z' ) then
+			if ( x%im == 0.0_real32 ) then
+				xim_str = '0x0'; exit if_z_im
+			end if
+
+			call cast(transfer(source=x%im, mold=1_int32), into=xim_str, fmt='z'); exit if_z_im
+		end if if_z_im
+
+		if ( .not. present(locale) ) then
+			decimal = 'POINT'
+		else
+			if ( locale == 'US' ) then
+				decimal = 'POINT'
+			else if ( locale == 'EU' ) then
+				decimal = 'COMMA'
+			else
+				into%s = EMPTY_STR; return
+			end if
+		end if
+
+		if_eorf_re: if ( fmt_ == 'e' ) then
+			if ( x%re == 0.0_real32 ) then
+				xre_str = '0.0e+00'; exit if_eorf_re
+			end if
+
+			if ( x%re < 0.0_real32 ) then
+				xre_str = '000000000000000'
+				write(unit=xre_str, fmt='(es15.8e2)', decimal=decimal) x%re
+				xre_str(12:12) = 'e'
+			else
+				xre_str = '00000000000000'
+				write(unit=xre_str, fmt='(es14.8e2)', decimal=decimal) x%re
+				xre_str(11:11) = 'e'
+			end if
+
+			if ( .not. present(decimals) ) exit if_eorf_re
+			
+			if ( decimals >= 8 ) exit if_eorf_re
+
+			if ( decimals < 0 ) then
+				decimals_ = 0
+			else
+				decimals_ = decimals
+			end if
+
+			i = 1; do
+				if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) then
+					xre_str = xre_str(:i+decimals_)//xre_str(i+9:); exit if_eorf_re
+				end if
+				i = i + 1; cycle
+			end do
+		else if ( fmt_ == 'f' ) then
+			if ( abs(x%re) /= 0.0_real32 ) then
+				e = int(log10(abs(x%re)))
+			else
+				xre_str = '0.0'; exit if_eorf_re
+			end if
+
+			if ( e == 0 ) then
+				if ( floor(x%re) > 0 ) e = 1 + e
+			else if ( e > 0 ) then
+				e = 1 + e
+			end if
+
+			allocate( character(len=75) :: xre_str )
+
+			if ( e > 0 ) then
+				write(unit=xre_str, fmt='(f0.9)', decimal=decimal) x%re
+			else
+				write(unit=xre_str, fmt='(f0.70)', decimal=decimal) x%re
+			end if
+
+			i = 1; do
+				if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) exit
+				i = i + 1; cycle
+			end do
+
+			if ( (i == 1) .or. ( (i == 2) .and. (xre_str(1:1) == '-') ) ) then
+				xre_str(i+1:75) = xre_str(i:74); xre_str(i:i) = '0'; i = i + 1
+			end if
+
+			if ( i > 9 ) then
+				xre_str = xre_str(:i); exit if_eorf_re
+			end if
+
+			if ( .not. present(decimals) ) then
+				xre_str = xre_str(:i+9-e); exit if_eorf_re
+			end if
+
+			if ( decimals <= 0 ) then
+				xre_str = xre_str(:i); exit if_eorf_re
+			end if
+
+			if ( decimals >= 9-e ) then
+				xre_str = xre_str(:i+9-e); exit if_eorf_re
+			end if
+
+			xre_str = xre_str(:i+decimals); exit if_eorf_re
+		end if if_eorf_re
+		if_eorf_im: if ( fmt_ == 'e' ) then
+			if ( x%im == 0.0_real32 ) then
+				xim_str = '0.0e+00'; exit if_eorf_im
+			end if
+
+			if ( x%im < 0.0_real32 ) then
+				xim_str = '000000000000000'
+				write(unit=xim_str, fmt='(es15.8e2)', decimal=decimal) x%im
+				xim_str(12:12) = 'e'
+			else
+				xim_str = '00000000000000'
+				write(unit=xim_str, fmt='(es14.8e2)', decimal=decimal) x%im
+				xim_str(11:11) = 'e'
+			end if
+
+			if ( .not. present(decimals) ) exit if_eorf_im
+			
+			if ( decimals >= 8 ) exit if_eorf_im
+
+			if ( decimals < 0 ) then
+				decimals_ = 0
+			else
+				decimals_ = decimals
+			end if
+
+			i = 1; do
+				if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) then
+					xim_str = xim_str(:i+decimals_)//xim_str(i+9:); exit if_eorf_im
+				end if
+				i = i + 1; cycle
+			end do
+		else if ( fmt_ == 'f' ) then
+			if ( abs(x%im) /= 0.0_real32 ) then
+				e = int(log10(abs(x%im)))
+			else
+				xim_str = '0.0'; exit if_eorf_im
+			end if
+
+			if ( e == 0 ) then
+				if ( floor(x%im) > 0 ) e = 1 + e
+			else if ( e > 0 ) then
+				e = 1 + e
+			end if
+
+			allocate( character(len=75) :: xim_str )
+
+			if ( e > 0 ) then
+				write(unit=xim_str, fmt='(f0.9)', decimal=decimal) x%im
+			else
+				write(unit=xim_str, fmt='(f0.70)', decimal=decimal) x%im
+			end if
+
+			i = 1; do
+				if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) exit
+				i = i + 1; cycle
+			end do
+
+			if ( (i == 1) .or. ( (i == 2) .and. (xim_str(1:1) == '-') ) ) then
+				xim_str(i+1:75) = xim_str(i:74); xim_str(i:i) = '0'; i = i + 1
+			end if
+
+			if ( i > 9 ) then
+				xim_str = xim_str(:i); exit if_eorf_im
+			end if
+
+			if ( .not. present(decimals) ) then
+				xim_str = xim_str(:i+9-e); exit if_eorf_im
+			end if
+
+			if ( decimals <= 0 ) then
+				xim_str = xim_str(:i); exit if_eorf_im
+			end if
+
+			if ( decimals >= 9-e ) then
+				xim_str = xim_str(:i+9-e); exit if_eorf_im
+			end if
+
+			xim_str = xim_str(:i+decimals); exit if_eorf_im
+		end if if_eorf_im
+
+		if ( .not. present(im) ) then
+			im_ = EMPTY_STR
+		else
+			im_ = im
+		end if
+
+		if ( im_ == EMPTY_STR ) then
+			if ( decimal == 'POINT' ) then
+				into%s = '('//xre_str//COMMA//xim_str//')'; return
+			else
+				into%s = '('//xre_str//SEMICOLON//xim_str//')'; return
+			end if
+		end if
+
+		if ( fmt_ == 'z' ) then
+			into%s = xre_str//'+'//xim_str//im_; return
+		end if
+
+		if ( x%im < 0.0_real32 ) then
+			into%s = xre_str//xim_str//im_
+		else
+			into%s = xre_str//'+'//xim_str//im_
+		end if
+	end procedure cast_c32_to_string
+
+	module procedure cast_r128_to_string
+		character(len=1) :: fmt_
+		character(len=5) :: decimal
+		integer :: e, decimals_, i
+
+		if ( .not. present(fmt) ) then
+			fmt_ = 'e'
+		else
+			if ( any(REAL_FMTS == fmt) ) then
+				fmt_ = fmt
+			else
+				into%s = EMPTY_STR; return
+			end if
+		end if
+
+		if ( fmt_ == 'z' ) then
+			if ( x /= 0.0_real128 ) then
+				into%s = '0x00000000000000000000000000000000'
+			else
+				into%s = '0x0'; return
+			end if
+
+			write(unit=into%s(3:), fmt='(z32)') x
+
+			do concurrent (i = 3:34)
+				if ( (into%s(i:i) >= 'A') .and. (into%s(i:i) <= 'F') ) into%s(i:i) = achar(iachar(into%s(i:i)) + 32)
+			end do
+
+			return
+		end if
+
+		if ( .not. present(locale) ) then
+			decimal = 'POINT'
+		else
+			if ( locale == 'US' ) then
+				decimal = 'POINT'
+			else if ( locale == 'EU' ) then
+				decimal = 'COMMA'
+			else
+				into%s = EMPTY_STR; return
+			end if
+		end if
+
+		if ( fmt_ == 'e' ) then
+			if ( x == 0.0_real128 ) then
+				into%s = '0.0e+0000'; return
+			end if
+
+			if ( x < 0.0_real128 ) then
+				into%s = '00000000000000000000000000000000000000000000'
+				write(unit=into%s, fmt='(es44.35e4)', decimal=decimal) x
+				into%s(39:39) = 'e'
+			else
+				into%s = '0000000000000000000000000000000000000000000'
+				write(unit=into%s, fmt='(es43.35e4)', decimal=decimal) x
+				into%s(38:38) = 'e'
+			end if
+
+			if ( .not. present(decimals) ) return
+			
+			if ( decimals >= 35 ) return
+
+			if ( decimals < 0 ) then
+				decimals_ = 0
+			else
+				decimals_ = decimals
+			end if
+
+			i = 1; do
+				if ( (into%s(i:i) == POINT) .or. (into%s(i:i) == COMMA) ) then
+					into%s = into%s(:i+decimals_)//into%s(i+36:); return
+				end if
+				i = i + 1; cycle
+			end do
+		else if ( fmt_ == 'f' ) then
+			if ( abs(x) /= 0.0_real128 ) then
+				e = int(log10(abs(x)))
+			else
+				into%s = '0.0'; return
+			end if
+
+			if ( e == 0 ) then
+				if ( floor(x) > 0 ) e = 1 + e
+			else if ( e > 0 ) then
+				e = 1 + e
+			end if
+
+			if ( allocated(into%s) ) deallocate(into%s)
+			allocate( character(len=125) :: into%s )
+
+			if ( e > 0 ) then
+				write(unit=into%s, fmt='(f0.36)', decimal=decimal) x
+			else
+				write(unit=into%s, fmt='(f0.100)', decimal=decimal) x
+			end if
+
+			i = 1; do
+				if ( (into%s(i:i) == POINT) .or. (into%s(i:i) == COMMA) ) exit
+				i = i + 1; cycle
+			end do
+
+			if ( (i == 1) .or. ( (i == 2) .and. (into%s(1:1) == '-') ) ) then
+				into%s(i+1:125) = into%s(i:124); into%s(i:i) = '0'; i = i + 1
+			end if
+
+			if ( i > 36 ) then
+				into%s = into%s(:i); return
+			end if
+
+			if ( .not. present(decimals) ) then
+				into%s = into%s(:i+36-e); return
+			end if
+
+			if ( decimals <= 0 ) then
+				into%s = into%s(:i); return
+			end if
+
+			if ( decimals >= 36-e ) then
+				into%s = into%s(:i+36-e); return
+			end if
+
+			into%s = into%s(:i+decimals); return
+		end if
+	end procedure cast_r128_to_string
+	module procedure cast_r64_to_string
+		character(len=1) :: fmt_
+		character(len=5) :: decimal
+		integer :: e, decimals_, i
+
+		if ( .not. present(fmt) ) then
+			fmt_ = 'e'
+		else
+			if ( any(REAL_FMTS == fmt) ) then
+				fmt_ = fmt
+			else
+				into%s = EMPTY_STR; return
+			end if
+		end if
+
+		if ( fmt_ == 'z' ) then
+			if ( x == 0.0_real64 ) then
+				into%s = '0x0'; return
+			end if
+
+			inline_cast: block
+				integer(int64) :: x_int, num, next; character(len=18) :: buffer; integer :: ascii_code
+				logical :: negative
+
+				x_int = transfer(source=x, mold=x_int)
+				
+				if ( x_int < 0_int64 ) then
+					num = (x_int + 1_int64) + largest_int64; negative = .true.; buffer(1:) = '0x0000000000000000'
+				else
+					num = x_int; negative = .false.
+				end if
+
+				i = len(buffer); extract_hex_digits: do
+					next = num/16_int64; buffer(i:i) = DIGITS_A(num - 16_int64*next); if ( next == 0_int64 ) exit
+					num = next; i = i - 1; cycle
+				end do extract_hex_digits
+
+				if ( negative ) then
+					ascii_code = iachar(buffer(3:3))
+					if ( ascii_code < 50 ) then
+						buffer(3:3) = achar(ascii_code + 8)
+					else
+						buffer(3:3) = achar(ascii_code + 47)
+					end if
+					into%s = buffer(1:); return
+				else
+					buffer(i-2:i-1) = '0x'; into%s = buffer(i-2:); return
+				end if
+			end block inline_cast
+		end if
+
+		if ( .not. present(locale) ) then
+			decimal = 'POINT'
+		else
+			if ( locale == 'US' ) then
+				decimal = 'POINT'
+			else if ( locale == 'EU' ) then
+				decimal = 'COMMA'
+			else
+				into%s = EMPTY_STR; return
+			end if
+		end if
+
+		if ( fmt_ == 'e' ) then
+			if ( x == 0.0_real64 ) then
+				into%s = '0.0e+000'; return
+			end if
+
+			if ( x < 0.0_real64 ) then
+				into%s = '0000000000000000000000000'
+				write(unit=into%s, fmt='(es25.17e3)', decimal=decimal) x
+				into%s(21:21) = 'e'
+			else
+				into%s = '000000000000000000000000'
+				write(unit=into%s, fmt='(es24.17e3)', decimal=decimal) x
+				into%s(20:20) = 'e'
+			end if
+
+			if ( .not. present(decimals) ) return
+			
+			if ( decimals >= 17 ) return
+
+			if ( decimals < 0 ) then
+				decimals_ = 0
+			else
+				decimals_ = decimals
+			end if
+
+			i = 1; do
+				if ( (into%s(i:i) == POINT) .or. (into%s(i:i) == COMMA) ) then
+					into%s = into%s(:i+decimals_)//into%s(i+18:); return
+				end if
+				i = i + 1; cycle
+			end do
+		else if ( fmt_ == 'f' ) then
+			if ( abs(x) /= 0.0_real64 ) then
+				e = int(log10(abs(x)))
+			else
+				into%s = '0.0'; return
+			end if
+
+			if ( e == 0 ) then
+				if ( floor(x) > 0 ) e = 1 + e
+			else if ( e > 0 ) then
+				e = 1 + e
+			end if
+
+			if ( allocated(into%s) ) deallocate(into%s)
+			allocate( character(len=100) :: into%s )
+
+			if ( e > 0 ) then
+				write(unit=into%s, fmt='(f0.18)', decimal=decimal) x
+			else
+				write(unit=into%s, fmt='(f0.80)', decimal=decimal) x
+			end if
+
+			i = 1; do
+				if ( (into%s(i:i) == POINT) .or. (into%s(i:i) == COMMA) ) exit
+				i = i + 1; cycle
+			end do
+
+			if ( (i == 1) .or. ( (i == 2) .and. (into%s(1:1) == '-') ) ) then
+				into%s(i+1:100) = into%s(i:99); into%s(i:i) = '0'; i = i + 1
+			end if
+
+			if ( i > 18 ) then
+				into%s = into%s(:i); return
+			end if
+
+			if ( .not. present(decimals) ) then
+				into%s = into%s(:i+18-e); return
+			end if
+
+			if ( decimals <= 0 ) then
+				into%s = into%s(:i); return
+			end if
+
+			if ( decimals >= 18-e ) then
+				into%s = into%s(:i+18-e); return
+			end if
+
+			into%s = into%s(:i+decimals); return
+		end if
+	end procedure cast_r64_to_string
+	module procedure cast_r32_to_string
+		character(len=1) :: fmt_
+		character(len=5) :: decimal
+		integer :: e, decimals_, i
+
+		if ( .not. present(fmt) ) then
+			fmt_ = 'e'
+		else
+			if ( any(REAL_FMTS == fmt) ) then
+				fmt_ = fmt
+			else
+				into%s = EMPTY_STR; return
+			end if
+		end if
+
+		if ( fmt_ == 'z' ) then
+			if ( x == 0.0_real32 ) then
+				into%s = '0x0'; return
+			end if
+
+			inline_cast: block
+				integer :: x_int, num, next; character(len=10) :: buffer; integer :: ascii_code; logical :: negative
+
+				x_int = transfer(source=x, mold=x_int)
+
+				if ( x_int < 0 ) then
+					num = (x_int + 1) + largest_int32; negative = .true.; buffer(1:) = '0x00000000'
+				else
+					num = x_int; negative = .false.
+				end if
+	
+				i = len(buffer); extract_hex_digits: do
+					next = num/16; buffer(i:i) = DIGITS_A(num - 16*next); if ( next == 0 ) exit
+					num = next; i = i - 1; cycle
+				end do extract_hex_digits
+	
+				if ( negative ) then
+					ascii_code = iachar(buffer(3:3))
+					if ( ascii_code < 50 ) then
+						buffer(3:3) = achar(ascii_code + 8)
+					else
+						buffer(3:3) = achar(ascii_code + 47)
+					end if
+					into%s = buffer(1:); return
+				else
+					buffer(i-2:i-1) = '0x'; into%s = buffer(i-2:); return
+				end if
+			end block inline_cast
+		end if
+
+		if ( .not. present(locale) ) then
+			decimal = 'POINT'
+		else
+			if ( locale == 'US' ) then
+				decimal = 'POINT'
+			else if ( locale == 'EU' ) then
+				decimal = 'COMMA'
+			else
+				into%s = EMPTY_STR; return
+			end if
+		end if
+
+		if ( fmt_ == 'e' ) then
+			if ( x == 0.0_real32 ) then
+				into%s = '0.0e+00'; return
+			end if
+
+			if ( x < 0.0_real32 ) then
+				into%s = '000000000000000'
+				write(unit=into%s, fmt='(es15.8e2)', decimal=decimal) x
+				into%s(12:12) = 'e'
+			else
+				into%s = '00000000000000'
+				write(unit=into%s, fmt='(es14.8e2)', decimal=decimal) x
+				into%s(11:11) = 'e'
+			end if
+
+			if ( .not. present(decimals) ) return
+			
+			if ( decimals >= 8 ) return
+
+			if ( decimals < 0 ) then
+				decimals_ = 0
+			else
+				decimals_ = decimals
+			end if
+
+			i = 1; do
+				if ( (into%s(i:i) == POINT) .or. (into%s(i:i) == COMMA) ) then
+					into%s = into%s(:i+decimals_)//into%s(i+9:); return
+				end if
+				i = i + 1; cycle
+			end do
+		else if ( fmt_ == 'f' ) then
+			if ( abs(x) /= 0.0_real32 ) then
+				e = int(log10(abs(x)))
+			else
+				into%s = '0.0'; return
+			end if
+
+			if ( e == 0 ) then
+				if ( floor(x) > 0 ) e = 1 + e
+			else if ( e > 0 ) then
+				e = 1 + e
+			end if
+
+			if ( allocated(into%s) ) deallocate(into%s)
+			allocate( character(len=75) :: into%s )
+
+			if ( e > 0 ) then
+				write(unit=into%s, fmt='(f0.9)', decimal=decimal) x
+			else
+				write(unit=into%s, fmt='(f0.70)', decimal=decimal) x
+			end if
+
+			i = 1; do
+				if ( (into%s(i:i) == POINT) .or. (into%s(i:i) == COMMA) ) exit
+				i = i + 1; cycle
+			end do
+
+			if ( (i == 1) .or. ( (i == 2) .and. (into%s(1:1) == '-') ) ) then
+				into%s(i+1:75) = into%s(i:74); into%s(i:i) = '0'; i = i + 1
+			end if
+
+			if ( i > 9 ) then
+				into%s = into%s(:i); return
+			end if
+
+			if ( .not. present(decimals) ) then
+				into%s = into%s(:i+9-e); return
+			end if
+
+			if ( decimals <= 0 ) then
+				into%s = into%s(:i); return
+			end if
+
+			if ( decimals >= 9-e ) then
+				into%s = into%s(:i+9-e); return
+			end if
+
+			into%s = into%s(:i+decimals); return
+		end if
+	end procedure cast_r32_to_string
+
+	module procedure cast_i64_to_string
+		character(len=1) :: fmt_
+		character(len=20) :: buffer
+		integer(int64) :: num, next
+		integer :: ascii_code, i
+		logical :: negative
+
+		if ( .not. present(fmt) ) then
+			fmt_ = 'i'
+		else
+			if ( any(INT_FMTS == fmt) ) then
+				fmt_ = fmt
+			else
+				into%s = EMPTY_STR; return
+			end if
+		end if
+
+		if ( fmt_ == 'i' ) then
+			if ( x < 0_int64 ) then
+				if ( x == smallest_int64 ) then
+					into%s = '-9223372036854775808'; return
+				end if
+				num = -x; negative = .true.
+			else
+				num = x; negative = .false.
+			end if
+
+			i = len(buffer); extract_digits: do
+				next = num/10_int64; buffer(i:i) = achar(num - 10_int64*next + 48_int64); if ( next == 0_int64 ) exit
+				num = next; i = i - 1; cycle
+			end do extract_digits
+
+			if ( negative ) then
+				buffer(i-1:i-1) = '-'; into%s = buffer(i-1:); return
+			else
+				into%s = buffer(i:); return
+			end if
+		else
+			if ( x < 0_int64 ) then
+				num = (x + 1_int64) + largest_int64; negative = .true.; buffer(3:) = '0x0000000000000000'
+			else
+				num = x; negative = .false.
+			end if
+
+			i = len(buffer); extract_hex_digits: do
+				next = num/16_int64; buffer(i:i) = DIGITS_A(num - 16_int64*next); if ( next == 0_int64 ) exit
+				num = next; i = i - 1; cycle
+			end do extract_hex_digits
+
+			if ( negative ) then
+				ascii_code = iachar(buffer(5:5))
+				if ( ascii_code < 50 ) then
+					buffer(5:5) = achar(ascii_code + 8)
+				else
+					buffer(5:5) = achar(ascii_code + 47)
+				end if
+				into%s = buffer(3:); return
+			else
+				buffer(i-2:i-1) = '0x'; into%s = buffer(i-2:); return
+			end if
+		end if
+	end procedure cast_i64_to_string
+	module procedure cast_i32_to_string
+		character(len=1) :: fmt_
+		character(len=11) :: buffer
+		integer :: num, next, ascii_code, i
+		logical :: negative
+
+		if ( .not. present(fmt) ) then
+			fmt_ = 'i'
+		else
+			if ( any(INT_FMTS == fmt) ) then
+				fmt_ = fmt
+			else
+				into%s = EMPTY_STR; return
+			end if
+		end if
+
+		if ( fmt_ == 'i' ) then
+			if ( x < 0 ) then
+				if ( x == smallest_int32 ) then
+					into%s = '-2147483648'; return
+				end if
+				num = -x; negative = .true.
+			else
+				num = x; negative = .false.
+			end if
+
+			i = len(buffer); extract_digits: do
+				next = num/10; buffer(i:i) = achar(num - 10*next + 48); if ( next == 0 ) exit
+				num = next; i = i - 1; cycle
+			end do extract_digits
+
+			if ( negative ) then
+				buffer(i-1:i-1) = '-'; into%s = buffer(i-1:); return
+			else
+				into%s = buffer(i:); return
+			end if
+		else
+			if ( x < 0 ) then
+				num = (x + 1) + largest_int32; negative = .true.; buffer(2:) = '0x00000000'
+			else
+				num = x; negative = .false.
+			end if
+
+			i = len(buffer); extract_hex_digits: do
+				next = num/16; buffer(i:i) = DIGITS_A(num - 16*next); if ( next == 0 ) exit
+				num = next; i = i - 1; cycle
+			end do extract_hex_digits
+
+			if ( negative ) then
+				ascii_code = iachar(buffer(4:4))
+				if ( ascii_code < 50 ) then
+					buffer(4:4) = achar(ascii_code + 8)
+				else
+					buffer(4:4) = achar(ascii_code + 47)
+				end if
+				into%s = buffer(2:); return
+			else
+				buffer(i-2:i-1) = '0x'; into%s = buffer(i-2:); return
+			end if
+		end if
+	end procedure cast_i32_to_string
+	module procedure cast_i16_to_string
+		character(len=1) :: fmt_
+		character(len=6) :: buffer
+		integer :: num, next, ascii_code, i
+		logical :: negative
+
+		if ( .not. present(fmt) ) then
+			fmt_ = 'i'
+		else
+			if ( any(INT_FMTS == fmt) ) then
+				fmt_ = fmt
+			else
+				into%s = EMPTY_STR; return
+			end if
+		end if
+
+		if ( fmt_ == 'i' ) then
+			if ( x < 0_int16 ) then
+				if ( x == smallest_int16 ) then
+					into%s = '-32768'; return
+				end if
+				num = int(-x); negative = .true.
+			else
+				num = int(x); negative = .false.
+			end if
+
+			i = len(buffer); extract_digits: do
+				next = num/10; buffer(i:i) = achar(num - 10*next + 48); if ( next == 0 ) exit
+				num = next; i = i - 1; cycle
+			end do extract_digits
+
+			if ( negative ) then
+				buffer(i-1:i-1) = '-'; into%s = buffer(i-1:); return
+			else
+				into%s = buffer(i:); return
+			end if
+		else
+			if ( x < 0_int16 ) then
+				num = int((x + 1_int16) + largest_int16); negative = .true.; buffer(1:) = '0x0000'
+			else
+				num = int(x); negative = .false.
+			end if
+
+			i = len(buffer); extract_hex_digits: do
+				next = num/16; buffer(i:i) = DIGITS_A(num - 16*next); if ( next == 0 ) exit
+				num = next; i = i - 1; cycle
+			end do extract_hex_digits
+
+			if ( negative ) then
+				ascii_code = iachar(buffer(3:3))
+				if ( ascii_code < 50 ) then
+					buffer(3:3) = achar(ascii_code + 8)
+				else
+					buffer(3:3) = achar(ascii_code + 47)
+				end if
+				into%s = buffer(1:); return
+			else
+				buffer(i-2:i-1) = '0x'; into%s = buffer(i-2:); return
+			end if
+		end if
+	end procedure cast_i16_to_string
+	module procedure cast_i8_to_string
+		character(len=1) :: fmt_
+		character(len=4) :: buffer
+		integer :: num, next, ascii_code, i
+		logical :: negative
+
+		if ( .not. present(fmt) ) then
+			fmt_ = 'i'
+		else
+			if ( any(INT_FMTS == fmt) ) then
+				fmt_ = fmt
+			else
+				into%s = EMPTY_STR; return
+			end if
+		end if
+
+		if ( fmt_ == 'i' ) then
+			if ( x < 0_int8 ) then
+				if ( x == smallest_int8 ) then
+					into%s = '-128'; return
+				end if
+				num = int(-x); negative = .true.
+			else
+				num = int(x); negative = .false.
+			end if
+
+			i = len(buffer); extract_digits: do
+				next = num/10; buffer(i:i) = achar(num - 10*next + 48); if ( next == 0 ) exit
+				num = next; i = i - 1; cycle
+			end do extract_digits
+
+			if ( negative ) then
+				buffer(i-1:i-1) = '-'; into%s = buffer(i-1:); return
+			else
+				into%s = buffer(i:); return
+			end if
+		else
+			if ( x < 0_int8 ) then
+				num = int((x + 1_int8) + largest_int8); negative = .true.; buffer(1:) = '0x00'
+			else
+				num = int(x); negative = .false.
+			end if
+
+			i = len(buffer); extract_hex_digits: do
+				next = num/16; buffer(i:i) = DIGITS_A(num - 16*next); if ( next == 0 ) exit
+				num = next; i = i - 1; cycle
+			end do extract_hex_digits
+
+			if ( negative ) then
+				ascii_code = iachar(buffer(3:3))
+				if ( ascii_code < 50 ) then
+					buffer(3:3) = achar(ascii_code + 8)
+				else
+					buffer(3:3) = achar(ascii_code + 47)
+				end if
+				into%s = buffer(1:); return
+			else
+				buffer(i-2:i-1) = '0x'; into%s = buffer(i-2:); return
+			end if
+		end if
+	end procedure cast_i8_to_string
+
+	module procedure cast_c128_to_char
+		character(len=1) :: fmt_
+		character(len=5) :: decimal
+		character(len=:), allocatable :: xre_str, xim_str, im_
+		integer :: e, decimals_, i
+
+		if ( .not. present(fmt) ) then
+			fmt_ = 'e'
+		else
+			if ( any(REAL_FMTS == fmt) ) then
+				fmt_ = fmt
+			else
+				into = EMPTY_STR; return
+			end if
+		end if
+
+		if_z_re: if ( fmt_ == 'z' ) then
+			if ( x%re /= 0.0_real128 ) then
+				xre_str = '0x00000000000000000000000000000000'
+			else
+				xre_str = '0x0'; exit if_z_re
+			end if
+
+			write(unit=xre_str(3:), fmt='(z32)') x%re
+
+			do concurrent (i = 3:34)
+				if ( (xre_str(i:i) >= 'A') .and. (xre_str(i:i) <= 'F') ) xre_str(i:i) = achar(iachar(xre_str(i:i))+32)
+			end do
+		end if if_z_re
+		if_z_im: if ( fmt_ == 'z' ) then
+			if ( x%im /= 0.0_real128 ) then
+				xim_str = '0x00000000000000000000000000000000'
+			else
+				xim_str = '0x0'; exit if_z_im
+			end if
+
+			write(unit=xim_str(3:), fmt='(z32)') x%im
+
+			do concurrent (i = 3:34)
+				if ( (xim_str(i:i) >= 'A') .and. (xim_str(i:i) <= 'F') ) xim_str(i:i) = achar(iachar(xim_str(i:i))+32)
+			end do
+		end if if_z_im
+
+		if ( .not. present(locale) ) then
+			decimal = 'POINT'
+		else
+			if ( locale == 'US' ) then
+				decimal = 'POINT'
+			else if ( locale == 'EU' ) then
+				decimal = 'COMMA'
+			else
+				into = EMPTY_STR; return
+			end if
+		end if
+
+		if_eorf_re: if ( fmt_ == 'e' ) then
+			if ( x%re == 0.0_real128 ) then
+				xre_str = '0.0e+0000'; exit if_eorf_re
+			end if
+
+			if ( x%re < 0.0_real128 ) then
+				xre_str = '00000000000000000000000000000000000000000000'
+				write(unit=xre_str, fmt='(es44.35e4)', decimal=decimal) x%re
+				xre_str(39:39) = 'e'
+			else
+				xre_str = '0000000000000000000000000000000000000000000'
+				write(unit=xre_str, fmt='(es43.35e4)', decimal=decimal) x%re
+				xre_str(38:38) = 'e'
+			end if
+
+			if ( .not. present(decimals) ) exit if_eorf_re
+			
+			if ( decimals >= 35 ) exit if_eorf_re
+
+			if ( decimals < 0 ) then
+				decimals_ = 0
+			else
+				decimals_ = decimals
+			end if
+
+			i = 1; do
+				if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) then
+					xre_str = xre_str(:i+decimals_)//xre_str(i+36:); exit if_eorf_re
+				end if
+				i = i + 1; cycle
+			end do
+		else if ( fmt_ == 'f' ) then
+			if ( abs(x%re) /= 0.0_real128 ) then
+				e = int(log10(abs(x%re)))
+			else
+				xre_str = '0.0'; exit if_eorf_re
+			end if
+
+			if ( e == 0 ) then
+				if ( floor(x%re) > 0 ) e = 1 + e
+			else if ( e > 0 ) then
+				e = 1 + e
+			end if
+
+			allocate( character(len=125) :: xre_str )
+
+			if ( e > 0 ) then
+				write(unit=xre_str, fmt='(f0.36)', decimal=decimal) x%re
+			else
+				write(unit=xre_str, fmt='(f0.100)', decimal=decimal) x%re
+			end if
+
+			i = 1; do
+				if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) exit
+				i = i + 1; cycle
+			end do
+
+			if ( (i == 1) .or. ( (i == 2) .and. (xre_str(1:1) == '-') ) ) then
+				xre_str(i+1:125) = xre_str(i:124); xre_str(i:i) = '0'; i = i + 1
+			end if
+
+			if ( i > 36 ) then
+				xre_str = xre_str(:i); exit if_eorf_re
+			end if
+
+			if ( .not. present(decimals) ) then
+				xre_str = xre_str(:i+36-e); exit if_eorf_re
+			end if
+
+			if ( decimals <= 0 ) then
+				xre_str = xre_str(:i); exit if_eorf_re
+			end if
+
+			if ( decimals >= 36-e ) then
+				xre_str = xre_str(:i+36-e); exit if_eorf_re
+			end if
+
+			xre_str = xre_str(:i+decimals); exit if_eorf_re
+		end if if_eorf_re
+		if_eorf_im: if ( fmt_ == 'e' ) then
+			if ( x%im == 0.0_real128 ) then
+				xim_str = '0.0e+0000'; exit if_eorf_im
+			end if
+
+			if ( x%im < 0.0_real128 ) then
+				xim_str = '00000000000000000000000000000000000000000000'
+				write(unit=xim_str, fmt='(es44.35e4)', decimal=decimal) x%im
+				xim_str(39:39) = 'e'
+			else
+				xim_str = '0000000000000000000000000000000000000000000'
+				write(unit=xim_str, fmt='(es43.35e4)', decimal=decimal) x%im
+				xim_str(38:38) = 'e'
+			end if
+
+			if ( .not. present(decimals) ) exit if_eorf_im
+			
+			if ( decimals >= 35 ) exit if_eorf_im
+
+			if ( decimals < 0 ) then
+				decimals_ = 0
+			else
+				decimals_ = decimals
+			end if
+
+			i = 1; do
+				if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) then
+					xim_str = xim_str(:i+decimals_)//xim_str(i+36:); exit if_eorf_im
+				end if
+				i = i + 1; cycle
+			end do
+		else if ( fmt_ == 'f' ) then
+			if ( abs(x%im) /= 0.0_real128 ) then
+				e = int(log10(abs(x%im)))
+			else
+				xim_str = '0.0'; exit if_eorf_im
+			end if
+
+			if ( e == 0 ) then
+				if ( floor(x%im) > 0 ) e = 1 + e
+			else if ( e > 0 ) then
+				e = 1 + e
+			end if
+
+			allocate( character(len=125) :: xim_str )
+
+			if ( e > 0 ) then
+				write(unit=xim_str, fmt='(f0.36)', decimal=decimal) x%im
+			else
+				write(unit=xim_str, fmt='(f0.100)', decimal=decimal) x%im
+			end if
+
+			i = 1; do
+				if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) exit
+				i = i + 1; cycle
+			end do
+
+			if ( (i == 1) .or. ( (i == 2) .and. (xim_str(1:1) == '-') ) ) then
+				xim_str(i+1:125) = xim_str(i:124); xim_str(i:i) = '0'; i = i + 1
+			end if
+
+			if ( i > 36 ) then
+				xim_str = xim_str(:i); exit if_eorf_im
+			end if
+
+			if ( .not. present(decimals) ) then
+				xim_str = xim_str(:i+36-e); exit if_eorf_im
+			end if
+
+			if ( decimals <= 0 ) then
+				xim_str = xim_str(:i); exit if_eorf_im
+			end if
+
+			if ( decimals >= 36-e ) then
+				xim_str = xim_str(:i+36-e); exit if_eorf_im
+			end if
+
+			xim_str = xim_str(:i+decimals); exit if_eorf_im
+		end if if_eorf_im
+
+		if ( .not. present(im) ) then
+			im_ = EMPTY_STR
+		else
+			im_ = im
+		end if
+
+		if ( im_ == EMPTY_STR ) then
+			if ( decimal == 'POINT' ) then
+				into = '('//xre_str//COMMA//xim_str//')'; return
+			else
+				into = '('//xre_str//SEMICOLON//xim_str//')'; return
+			end if
+		end if
+
+		if ( fmt_ == 'z' ) then
+			into = xre_str//'+'//xim_str//im_; return
+		end if
+
+		if ( x%im < 0.0_real128 ) then
+			into = xre_str//xim_str//im_
+		else
+			into = xre_str//'+'//xim_str//im_
+		end if
+	end procedure cast_c128_to_char
+	module procedure cast_c64_to_char
+		character(len=1) :: fmt_
+		character(len=5) :: decimal
+		character(len=:), allocatable :: xre_str, xim_str, im_
+		integer :: e, decimals_, i
+
+		if ( .not. present(fmt) ) then
+			fmt_ = 'e'
+		else
+			if ( any(REAL_FMTS == fmt) ) then
+				fmt_ = fmt
+			else
+				into = EMPTY_STR; return
+			end if
+		end if
+
+		if_z_re: if ( fmt_ == 'z' ) then
+			if ( x%re == 0.0_real64 ) then
+				xre_str = '0x0'; exit if_z_re
+			end if
+
+			call cast(transfer(source=x%re, mold=1_int64), into=xre_str, fmt='z'); exit if_z_re
+		end if if_z_re
+		if_z_im: if ( fmt_ == 'z' ) then
+			if ( x%im == 0.0_real64 ) then
+				xim_str = '0x0'; exit if_z_im
+			end if
+
+			call cast(transfer(source=x%im, mold=1_int64), into=xim_str, fmt='z'); exit if_z_im
+		end if if_z_im
+
+		if ( .not. present(locale) ) then
+			decimal = 'POINT'
+		else
+			if ( locale == 'US' ) then
+				decimal = 'POINT'
+			else if ( locale == 'EU' ) then
+				decimal = 'COMMA'
+			else
+				into = EMPTY_STR; return
+			end if
+		end if
+
+		if_eorf_re: if ( fmt_ == 'e' ) then
+			if ( x%re == 0.0_real64 ) then
+				xre_str = '0.0e+000'; exit if_eorf_re
+			end if
+
+			if ( x%re < 0.0_real64 ) then
+				xre_str = '0000000000000000000000000'
+				write(unit=xre_str, fmt='(es25.17e3)', decimal=decimal) x%re
+				xre_str(21:21) = 'e'
+			else
+				xre_str = '000000000000000000000000'
+				write(unit=xre_str, fmt='(es24.17e3)', decimal=decimal) x%re
+				xre_str(20:20) = 'e'
+			end if
+
+			if ( .not. present(decimals) ) exit if_eorf_re
+			
+			if ( decimals >= 17 ) exit if_eorf_re
+
+			if ( decimals < 0 ) then
+				decimals_ = 0
+			else
+				decimals_ = decimals
+			end if
+
+			i = 1; do
+				if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) then
+					xre_str = xre_str(:i+decimals_)//xre_str(i+18:); exit if_eorf_re
+				end if
+				i = i + 1; cycle
+			end do
+		else if ( fmt_ == 'f' ) then
+			if ( abs(x%re) /= 0.0_real64 ) then
+				e = int(log10(abs(x%re)))
+			else
+				xre_str = '0.0'; return
+			end if
+
+			if ( e == 0 ) then
+				if ( floor(x%re) > 0 ) e = 1 + e
+			else if ( e > 0 ) then
+				e = 1 + e
+			end if
+
+			allocate( character(len=100) :: xre_str )
+
+			if ( e > 0 ) then
+				write(unit=xre_str, fmt='(f0.18)', decimal=decimal) x%re
+			else
+				write(unit=xre_str, fmt='(f0.80)', decimal=decimal) x%re
+			end if
+
+			i = 1; do
+				if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) exit
+				i = i + 1; cycle
+			end do
+
+			if ( (i == 1) .or. ( (i == 2) .and. (xre_str(1:1) == '-') ) ) then
+				xre_str(i+1:100) = xre_str(i:99); xre_str(i:i) = '0'; i = i + 1
+			end if
+
+			if ( i > 18 ) then
+				xre_str = xre_str(:i); exit if_eorf_re
+			end if
+
+			if ( .not. present(decimals) ) then
+				xre_str = xre_str(:i+18-e); exit if_eorf_re
+			end if
+
+			if ( decimals <= 0 ) then
+				xre_str = xre_str(:i); exit if_eorf_re
+			end if
+
+			if ( decimals >= 18-e ) then
+				xre_str = xre_str(:i+18-e); exit if_eorf_re
+			end if
+
+			xre_str = xre_str(:i+decimals); exit if_eorf_re
+		end if if_eorf_re
+		if_eorf_im: if ( fmt_ == 'e' ) then
+			if ( x%im == 0.0_real64 ) then
+				xim_str = '0.0e+000'; exit if_eorf_im
+			end if
+
+			if ( x%im < 0.0_real64 ) then
+				xim_str = '0000000000000000000000000'
+				write(unit=xim_str, fmt='(es25.17e3)', decimal=decimal) x%im
+				xim_str(21:21) = 'e'
+			else
+				xim_str = '000000000000000000000000'
+				write(unit=xim_str, fmt='(es24.17e3)', decimal=decimal) x%im
+				xim_str(20:20) = 'e'
+			end if
+
+			if ( .not. present(decimals) ) exit if_eorf_im
+			
+			if ( decimals >= 17 ) exit if_eorf_im
+
+			if ( decimals < 0 ) then
+				decimals_ = 0
+			else
+				decimals_ = decimals
+			end if
+
+			i = 1; do
+				if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) then
+					xim_str = xim_str(:i+decimals_)//xim_str(i+18:); exit if_eorf_im
+				end if
+				i = i + 1; cycle
+			end do
+		else if ( fmt_ == 'f' ) then
+			if ( abs(x%im) /= 0.0_real64 ) then
+				e = int(log10(abs(x%im)))
+			else
+				xim_str = '0.0'; return
+			end if
+
+			if ( e == 0 ) then
+				if ( floor(x%im) > 0 ) e = 1 + e
+			else if ( e > 0 ) then
+				e = 1 + e
+			end if
+
+			allocate( character(len=100) :: xim_str )
+
+			if ( e > 0 ) then
+				write(unit=xim_str, fmt='(f0.18)', decimal=decimal) x%im
+			else
+				write(unit=xim_str, fmt='(f0.80)', decimal=decimal) x%im
+			end if
+
+			i = 1; do
+				if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) exit
+				i = i + 1; cycle
+			end do
+
+			if ( (i == 1) .or. ( (i == 2) .and. (xim_str(1:1) == '-') ) ) then
+				xim_str(i+1:100) = xim_str(i:99); xim_str(i:i) = '0'; i = i + 1
+			end if
+
+			if ( i > 18 ) then
+				xim_str = xim_str(:i); exit if_eorf_im
+			end if
+
+			if ( .not. present(decimals) ) then
+				xim_str = xim_str(:i+18-e); exit if_eorf_im
+			end if
+
+			if ( decimals <= 0 ) then
+				xim_str = xim_str(:i); exit if_eorf_im
+			end if
+
+			if ( decimals >= 18-e ) then
+				xim_str = xim_str(:i+18-e); exit if_eorf_im
+			end if
+
+			xim_str = xim_str(:i+decimals); exit if_eorf_im
+		end if if_eorf_im
+
+		if ( .not. present(im) ) then
+			im_ = EMPTY_STR
+		else
+			im_ = im
+		end if
+
+		if ( im_ == EMPTY_STR ) then
+			if ( decimal == 'POINT' ) then
+				into = '('//xre_str//COMMA//xim_str//')'; return
+			else
+				into = '('//xre_str//SEMICOLON//xim_str//')'; return
+			end if
+		end if
+
+		if ( fmt_ == 'z' ) then
+			into = xre_str//'+'//xim_str//im_; return
+		end if
+
+		if ( x%im < 0.0_real64 ) then
+			into = xre_str//xim_str//im_
+		else
+			into = xre_str//'+'//xim_str//im_
+		end if
+	end procedure cast_c64_to_char
+	module procedure cast_c32_to_char
+		character(len=1) :: fmt_
+		character(len=5) :: decimal
+		character(len=:), allocatable :: xre_str, xim_str, im_
+		integer :: e, decimals_, i
+
+		if ( .not. present(fmt) ) then
+			fmt_ = 'e'
+		else
+			if ( any(REAL_FMTS == fmt) ) then
+				fmt_ = fmt
+			else
+				into = EMPTY_STR; return
+			end if
+		end if
+
+		if_z_re: if ( fmt_ == 'z' ) then
+			if ( x%re == 0.0_real32 ) then
+				xre_str = '0x0'; exit if_z_re
+			end if
+
+			call cast(transfer(source=x%re, mold=1_int32), into=xre_str, fmt='z'); exit if_z_re
+		end if if_z_re
+		if_z_im: if ( fmt_ == 'z' ) then
+			if ( x%im == 0.0_real32 ) then
+				xim_str = '0x0'; exit if_z_im
+			end if
+
+			call cast(transfer(source=x%im, mold=1_int32), into=xim_str, fmt='z'); exit if_z_im
+		end if if_z_im
+
+		if ( .not. present(locale) ) then
+			decimal = 'POINT'
+		else
+			if ( locale == 'US' ) then
+				decimal = 'POINT'
+			else if ( locale == 'EU' ) then
+				decimal = 'COMMA'
+			else
+				into = EMPTY_STR; return
+			end if
+		end if
+
+		if_eorf_re: if ( fmt_ == 'e' ) then
+			if ( x%re == 0.0_real32 ) then
+				xre_str = '0.0e+00'; exit if_eorf_re
+			end if
+
+			if ( x%re < 0.0_real32 ) then
+				xre_str = '000000000000000'
+				write(unit=xre_str, fmt='(es15.8e2)', decimal=decimal) x%re
+				xre_str(12:12) = 'e'
+			else
+				xre_str = '00000000000000'
+				write(unit=xre_str, fmt='(es14.8e2)', decimal=decimal) x%re
+				xre_str(11:11) = 'e'
+			end if
+
+			if ( .not. present(decimals) ) exit if_eorf_re
+			
+			if ( decimals >= 8 ) exit if_eorf_re
+
+			if ( decimals < 0 ) then
+				decimals_ = 0
+			else
+				decimals_ = decimals
+			end if
+
+			i = 1; do
+				if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) then
+					xre_str = xre_str(:i+decimals_)//xre_str(i+9:); exit if_eorf_re
+				end if
+				i = i + 1; cycle
+			end do
+		else if ( fmt_ == 'f' ) then
+			if ( abs(x%re) /= 0.0_real32 ) then
+				e = int(log10(abs(x%re)))
+			else
+				xre_str = '0.0'; exit if_eorf_re
+			end if
+
+			if ( e == 0 ) then
+				if ( floor(x%re) > 0 ) e = 1 + e
+			else if ( e > 0 ) then
+				e = 1 + e
+			end if
+
+			allocate( character(len=75) :: xre_str )
+
+			if ( e > 0 ) then
+				write(unit=xre_str, fmt='(f0.9)', decimal=decimal) x%re
+			else
+				write(unit=xre_str, fmt='(f0.70)', decimal=decimal) x%re
+			end if
+
+			i = 1; do
+				if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) exit
+				i = i + 1; cycle
+			end do
+
+			if ( (i == 1) .or. ( (i == 2) .and. (xre_str(1:1) == '-') ) ) then
+				xre_str(i+1:75) = xre_str(i:74); xre_str(i:i) = '0'; i = i + 1
+			end if
+
+			if ( i > 9 ) then
+				xre_str = xre_str(:i); exit if_eorf_re
+			end if
+
+			if ( .not. present(decimals) ) then
+				xre_str = xre_str(:i+9-e); exit if_eorf_re
+			end if
+
+			if ( decimals <= 0 ) then
+				xre_str = xre_str(:i); exit if_eorf_re
+			end if
+
+			if ( decimals >= 9-e ) then
+				xre_str = xre_str(:i+9-e); exit if_eorf_re
+			end if
+
+			xre_str = xre_str(:i+decimals); exit if_eorf_re
+		end if if_eorf_re
+		if_eorf_im: if ( fmt_ == 'e' ) then
+			if ( x%im == 0.0_real32 ) then
+				xim_str = '0.0e+00'; exit if_eorf_im
+			end if
+
+			if ( x%im < 0.0_real32 ) then
+				xim_str = '000000000000000'
+				write(unit=xim_str, fmt='(es15.8e2)', decimal=decimal) x%im
+				xim_str(12:12) = 'e'
+			else
+				xim_str = '00000000000000'
+				write(unit=xim_str, fmt='(es14.8e2)', decimal=decimal) x%im
+				xim_str(11:11) = 'e'
+			end if
+
+			if ( .not. present(decimals) ) exit if_eorf_im
+			
+			if ( decimals >= 8 ) exit if_eorf_im
+
+			if ( decimals < 0 ) then
+				decimals_ = 0
+			else
+				decimals_ = decimals
+			end if
+
+			i = 1; do
+				if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) then
+					xim_str = xim_str(:i+decimals_)//xim_str(i+9:); exit if_eorf_im
+				end if
+				i = i + 1; cycle
+			end do
+		else if ( fmt_ == 'f' ) then
+			if ( abs(x%im) /= 0.0_real32 ) then
+				e = int(log10(abs(x%im)))
+			else
+				xim_str = '0.0'; exit if_eorf_im
+			end if
+
+			if ( e == 0 ) then
+				if ( floor(x%im) > 0 ) e = 1 + e
+			else if ( e > 0 ) then
+				e = 1 + e
+			end if
+
+			allocate( character(len=75) :: xim_str )
+
+			if ( e > 0 ) then
+				write(unit=xim_str, fmt='(f0.9)', decimal=decimal) x%im
+			else
+				write(unit=xim_str, fmt='(f0.70)', decimal=decimal) x%im
+			end if
+
+			i = 1; do
+				if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) exit
+				i = i + 1; cycle
+			end do
+
+			if ( (i == 1) .or. ( (i == 2) .and. (xim_str(1:1) == '-') ) ) then
+				xim_str(i+1:75) = xim_str(i:74); xim_str(i:i) = '0'; i = i + 1
+			end if
+
+			if ( i > 9 ) then
+				xim_str = xim_str(:i); exit if_eorf_im
+			end if
+
+			if ( .not. present(decimals) ) then
+				xim_str = xim_str(:i+9-e); exit if_eorf_im
+			end if
+
+			if ( decimals <= 0 ) then
+				xim_str = xim_str(:i); exit if_eorf_im
+			end if
+
+			if ( decimals >= 9-e ) then
+				xim_str = xim_str(:i+9-e); exit if_eorf_im
+			end if
+
+			xim_str = xim_str(:i+decimals); exit if_eorf_im
+		end if if_eorf_im
+
+		if ( .not. present(im) ) then
+			im_ = EMPTY_STR
+		else
+			im_ = im
+		end if
+
+		if ( im_ == EMPTY_STR ) then
+			if ( decimal == 'POINT' ) then
+				into = '('//xre_str//COMMA//xim_str//')'; return
+			else
+				into = '('//xre_str//SEMICOLON//xim_str//')'; return
+			end if
+		end if
+
+		if ( fmt_ == 'z' ) then
+			into = xre_str//'+'//xim_str//im_; return
+		end if
+
+		if ( x%im < 0.0_real32 ) then
+			into = xre_str//xim_str//im_
+		else
+			into = xre_str//'+'//xim_str//im_
+		end if
+	end procedure cast_c32_to_char
+
+	module procedure cast_r128_to_char
+		character(len=1) :: fmt_
+		character(len=5) :: decimal
+		integer :: e, decimals_, i
+
+		if ( .not. present(fmt) ) then
+			fmt_ = 'e'
+		else
+			if ( any(REAL_FMTS == fmt) ) then
+				fmt_ = fmt
+			else
+				into = EMPTY_STR; return
+			end if
+		end if
+
+		if ( fmt_ == 'z' ) then
+			if ( x /= 0.0_real128 ) then
+				into = '0x00000000000000000000000000000000'
+			else
+				into = '0x0'; return
+			end if
+
+			write(unit=into(3:), fmt='(z32)') x
+
+			do concurrent (i = 3:34)
+				if ( (into(i:i) >= 'A') .and. (into(i:i) <= 'F') ) into(i:i) = achar(iachar(into(i:i)) + 32)
+			end do
+
+			return
+		end if
+
+		if ( .not. present(locale) ) then
+			decimal = 'POINT'
+		else
+			if ( locale == 'US' ) then
+				decimal = 'POINT'
+			else if ( locale == 'EU' ) then
+				decimal = 'COMMA'
+			else
+				into = EMPTY_STR; return
+			end if
+		end if
+
+		if ( fmt_ == 'e' ) then
+			if ( x == 0.0_real128 ) then
+				into = '0.0e+0000'; return
+			end if
+
+			if ( x < 0.0_real128 ) then
+				into = '00000000000000000000000000000000000000000000'
+				write(unit=into, fmt='(es44.35e4)', decimal=decimal) x
+				into(39:39) = 'e'
+			else
+				into = '0000000000000000000000000000000000000000000'
+				write(unit=into, fmt='(es43.35e4)', decimal=decimal) x
+				into(38:38) = 'e'
+			end if
+
+			if ( .not. present(decimals) ) return
+			
+			if ( decimals >= 35 ) return
+
+			if ( decimals < 0 ) then
+				decimals_ = 0
+			else
+				decimals_ = decimals
+			end if
+
+			i = 1; do
+				if ( (into(i:i) == POINT) .or. (into(i:i) == COMMA) ) then
+					into = into(:i+decimals_)//into(i+36:); return
+				end if
+				i = i + 1; cycle
+			end do
+		else if ( fmt_ == 'f' ) then
+			if ( abs(x) /= 0.0_real128 ) then
+				e = int(log10(abs(x)))
+			else
+				into = '0.0'; return
+			end if
+
+			if ( e == 0 ) then
+				if ( floor(x) > 0 ) e = 1 + e
+			else if ( e > 0 ) then
+				e = 1 + e
+			end if
+
+			if ( allocated(into) ) deallocate(into)
+			allocate( character(len=125) :: into )
+
+			if ( e > 0 ) then
+				write(unit=into, fmt='(f0.36)', decimal=decimal) x
+			else
+				write(unit=into, fmt='(f0.100)', decimal=decimal) x
+			end if
+
+			i = 1; do
+				if ( (into(i:i) == POINT) .or. (into(i:i) == COMMA) ) exit
+				i = i + 1; cycle
+			end do
+
+			if ( (i == 1) .or. ( (i == 2) .and. (into(1:1) == '-') ) ) then
+				into(i+1:125) = into(i:124); into(i:i) = '0'; i = i + 1
+			end if
+
+			if ( i > 36 ) then
+				into = into(:i); return
+			end if
+
+			if ( .not. present(decimals) ) then
+				into = into(:i+36-e); return
+			end if
+
+			if ( decimals <= 0 ) then
+				into = into(:i); return
+			end if
+
+			if ( decimals >= 36-e ) then
+				into = into(:i+36-e); return
+			end if
+
+			into = into(:i+decimals); return
+		end if
+	end procedure cast_r128_to_char
+	module procedure cast_r64_to_char
+		character(len=1) :: fmt_
+		character(len=5) :: decimal
+		integer :: e, decimals_, i
+
+		if ( .not. present(fmt) ) then
+			fmt_ = 'e'
+		else
+			if ( any(REAL_FMTS == fmt) ) then
+				fmt_ = fmt
+			else
+				into = EMPTY_STR; return
+			end if
+		end if
+
+		if ( fmt_ == 'z' ) then
+			if ( x == 0.0_real64 ) then
+				into = '0x0'; return
+			end if
+
+			inline_cast: block
+				integer(int64) :: x_int, num, next; character(len=18) :: buffer; integer :: ascii_code
+				logical :: negative
+
+				x_int = transfer(source=x, mold=x_int)
+				
+				if ( x_int < 0_int64 ) then
+					num = (x_int + 1_int64) + largest_int64; negative = .true.; buffer(1:) = '0x0000000000000000'
+				else
+					num = x_int; negative = .false.
+				end if
+
+				i = len(buffer); extract_hex_digits: do
+					next = num/16_int64; buffer(i:i) = DIGITS_A(num - 16_int64*next); if ( next == 0_int64 ) exit
+					num = next; i = i - 1; cycle
+				end do extract_hex_digits
+
+				if ( negative ) then
+					ascii_code = iachar(buffer(3:3))
+					if ( ascii_code < 50 ) then
+						buffer(3:3) = achar(ascii_code + 8)
+					else
+						buffer(3:3) = achar(ascii_code + 47)
+					end if
+					into = buffer(1:); return
+				else
+					buffer(i-2:i-1) = '0x'; into = buffer(i-2:); return
+				end if
+			end block inline_cast
+		end if
+
+		if ( .not. present(locale) ) then
+			decimal = 'POINT'
+		else
+			if ( locale == 'US' ) then
+				decimal = 'POINT'
+			else if ( locale == 'EU' ) then
+				decimal = 'COMMA'
+			else
+				into = EMPTY_STR; return
+			end if
+		end if
+
+		if ( fmt_ == 'e' ) then
+			if ( x == 0.0_real64 ) then
+				into = '0.0e+000'; return
+			end if
+
+			if ( x < 0.0_real64 ) then
+				into = '0000000000000000000000000'
+				write(unit=into, fmt='(es25.17e3)', decimal=decimal) x
+				into(21:21) = 'e'
+			else
+				into = '000000000000000000000000'
+				write(unit=into, fmt='(es24.17e3)', decimal=decimal) x
+				into(20:20) = 'e'
+			end if
+
+			if ( .not. present(decimals) ) return
+			
+			if ( decimals >= 17 ) return
+
+			if ( decimals < 0 ) then
+				decimals_ = 0
+			else
+				decimals_ = decimals
+			end if
+
+			i = 1; do
+				if ( (into(i:i) == POINT) .or. (into(i:i) == COMMA) ) then
+					into = into(:i+decimals_)//into(i+18:); return
+				end if
+				i = i + 1; cycle
+			end do
+		else if ( fmt_ == 'f' ) then
+			if ( abs(x) /= 0.0_real64 ) then
+				e = int(log10(abs(x)))
+			else
+				into = '0.0'; return
+			end if
+
+			if ( e == 0 ) then
+				if ( floor(x) > 0 ) e = 1 + e
+			else if ( e > 0 ) then
+				e = 1 + e
+			end if
+
+			if ( allocated(into) ) deallocate(into)
+			allocate( character(len=100) :: into )
+
+			if ( e > 0 ) then
+				write(unit=into, fmt='(f0.18)', decimal=decimal) x
+			else
+				write(unit=into, fmt='(f0.80)', decimal=decimal) x
+			end if
+
+			i = 1; do
+				if ( (into(i:i) == POINT) .or. (into(i:i) == COMMA) ) exit
+				i = i + 1; cycle
+			end do
+
+			if ( (i == 1) .or. ( (i == 2) .and. (into(1:1) == '-') ) ) then
+				into(i+1:100) = into(i:99); into(i:i) = '0'; i = i + 1
+			end if
+
+			if ( i > 18 ) then
+				into = into(:i); return
+			end if
+
+			if ( .not. present(decimals) ) then
+				into = into(:i+18-e); return
+			end if
+
+			if ( decimals <= 0 ) then
+				into = into(:i); return
+			end if
+
+			if ( decimals >= 18-e ) then
+				into = into(:i+18-e); return
+			end if
+
+			into = into(:i+decimals); return
+		end if
+	end procedure cast_r64_to_char
+	module procedure cast_r32_to_char
+		character(len=1) :: fmt_
+		character(len=5) :: decimal
+		integer :: e, decimals_, i
+
+		if ( .not. present(fmt) ) then
+			fmt_ = 'e'
+		else
+			if ( any(REAL_FMTS == fmt) ) then
+				fmt_ = fmt
+			else
+				into = EMPTY_STR; return
+			end if
+		end if
+
+		if ( fmt_ == 'z' ) then
+			if ( x == 0.0_real32 ) then
+				into = '0x0'; return
+			end if
+
+			inline_cast: block
+				integer :: x_int, num, next; character(len=10) :: buffer; integer :: ascii_code; logical :: negative
+
+				x_int = transfer(source=x, mold=x_int)
+
+				if ( x_int < 0 ) then
+					num = (x_int + 1) + largest_int32; negative = .true.; buffer(1:) = '0x00000000'
+				else
+					num = x_int; negative = .false.
+				end if
+	
+				i = len(buffer); extract_hex_digits: do
+					next = num/16; buffer(i:i) = DIGITS_A(num - 16*next); if ( next == 0 ) exit
+					num = next; i = i - 1; cycle
+				end do extract_hex_digits
+	
+				if ( negative ) then
+					ascii_code = iachar(buffer(3:3))
+					if ( ascii_code < 50 ) then
+						buffer(3:3) = achar(ascii_code + 8)
+					else
+						buffer(3:3) = achar(ascii_code + 47)
+					end if
+					into = buffer(1:); return
+				else
+					buffer(i-2:i-1) = '0x'; into = buffer(i-2:); return
+				end if
+			end block inline_cast
+		end if
+
+		if ( .not. present(locale) ) then
+			decimal = 'POINT'
+		else
+			if ( locale == 'US' ) then
+				decimal = 'POINT'
+			else if ( locale == 'EU' ) then
+				decimal = 'COMMA'
+			else
+				into = EMPTY_STR; return
+			end if
+		end if
+
+		if ( fmt_ == 'e' ) then
+			if ( x == 0.0_real32 ) then
+				into = '0.0e+00'; return
+			end if
+
+			if ( x < 0.0_real32 ) then
+				into = '000000000000000'
+				write(unit=into, fmt='(es15.8e2)', decimal=decimal) x
+				into(12:12) = 'e'
+			else
+				into = '00000000000000'
+				write(unit=into, fmt='(es14.8e2)', decimal=decimal) x
+				into(11:11) = 'e'
+			end if
+
+			if ( .not. present(decimals) ) return
+			
+			if ( decimals >= 8 ) return
+
+			if ( decimals < 0 ) then
+				decimals_ = 0
+			else
+				decimals_ = decimals
+			end if
+
+			i = 1; do
+				if ( (into(i:i) == POINT) .or. (into(i:i) == COMMA) ) then
+					into = into(:i+decimals_)//into(i+9:); return
+				end if
+				i = i + 1; cycle
+			end do
+		else if ( fmt_ == 'f' ) then
+			if ( abs(x) /= 0.0_real32 ) then
+				e = int(log10(abs(x)))
+			else
+				into = '0.0'; return
+			end if
+
+			if ( e == 0 ) then
+				if ( floor(x) > 0 ) e = 1 + e
+			else if ( e > 0 ) then
+				e = 1 + e
+			end if
+
+			if ( allocated(into) ) deallocate(into)
+			allocate( character(len=75) :: into )
+
+			if ( e > 0 ) then
+				write(unit=into, fmt='(f0.9)', decimal=decimal) x
+			else
+				write(unit=into, fmt='(f0.70)', decimal=decimal) x
+			end if
+
+			i = 1; do
+				if ( (into(i:i) == POINT) .or. (into(i:i) == COMMA) ) exit
+				i = i + 1; cycle
+			end do
+
+			if ( (i == 1) .or. ( (i == 2) .and. (into(1:1) == '-') ) ) then
+				into(i+1:75) = into(i:74); into(i:i) = '0'; i = i + 1
+			end if
+
+			if ( i > 9 ) then
+				into = into(:i); return
+			end if
+
+			if ( .not. present(decimals) ) then
+				into = into(:i+9-e); return
+			end if
+
+			if ( decimals <= 0 ) then
+				into = into(:i); return
+			end if
+
+			if ( decimals >= 9-e ) then
+				into = into(:i+9-e); return
+			end if
+
+			into = into(:i+decimals); return
+		end if
+	end procedure cast_r32_to_char
+
+	module procedure cast_i64_to_char
+		character(len=1) :: fmt_
+		character(len=20) :: buffer
+		integer(int64) :: num, next
+		integer :: ascii_code, i
+		logical :: negative
+
+		if ( .not. present(fmt) ) then
+			fmt_ = 'i'
+		else
+			if ( any(INT_FMTS == fmt) ) then
+				fmt_ = fmt
+			else
+				into = EMPTY_STR; return
+			end if
+		end if
+
+		if ( fmt_ == 'i' ) then
+			if ( x < 0_int64 ) then
+				if ( x == smallest_int64 ) then
+					into = '-9223372036854775808'; return
+				end if
+				num = -x; negative = .true.
+			else
+				num = x; negative = .false.
+			end if
+
+			i = len(buffer); extract_digits: do
+				next = num/10_int64; buffer(i:i) = achar(num - 10_int64*next + 48_int64); if ( next == 0_int64 ) exit
+				num = next; i = i - 1; cycle
+			end do extract_digits
+
+			if ( negative ) then
+				buffer(i-1:i-1) = '-'; into = buffer(i-1:); return
+			else
+				into = buffer(i:); return
+			end if
+		else
+			if ( x < 0_int64 ) then
+				num = (x + 1_int64) + largest_int64; negative = .true.; buffer(3:) = '0x0000000000000000'
+			else
+				num = x; negative = .false.
+			end if
+
+			i = len(buffer); extract_hex_digits: do
+				next = num/16_int64; buffer(i:i) = DIGITS_A(num - 16_int64*next); if ( next == 0_int64 ) exit
+				num = next; i = i - 1; cycle
+			end do extract_hex_digits
+
+			if ( negative ) then
+				ascii_code = iachar(buffer(5:5))
+				if ( ascii_code < 50 ) then
+					buffer(5:5) = achar(ascii_code + 8)
+				else
+					buffer(5:5) = achar(ascii_code + 47)
+				end if
+				into = buffer(3:); return
+			else
+				buffer(i-2:i-1) = '0x'; into = buffer(i-2:); return
+			end if
+		end if
+	end procedure cast_i64_to_char
+	module procedure cast_i32_to_char
+		character(len=1) :: fmt_
+		character(len=11) :: buffer
+		integer :: num, next, ascii_code, i
+		logical :: negative
+
+		if ( .not. present(fmt) ) then
+			fmt_ = 'i'
+		else
+			if ( any(INT_FMTS == fmt) ) then
+				fmt_ = fmt
+			else
+				into = EMPTY_STR; return
+			end if
+		end if
+
+		if ( fmt_ == 'i' ) then
+			if ( x < 0 ) then
+				if ( x == smallest_int32 ) then
+					into = '-2147483648'; return
+				end if
+				num = -x; negative = .true.
+			else
+				num = x; negative = .false.
+			end if
+
+			i = len(buffer); extract_digits: do
+				next = num/10; buffer(i:i) = achar(num - 10*next + 48); if ( next == 0 ) exit
+				num = next; i = i - 1; cycle
+			end do extract_digits
+
+			if ( negative ) then
+				buffer(i-1:i-1) = '-'; into = buffer(i-1:); return
+			else
+				into = buffer(i:); return
+			end if
+		else
+			if ( x < 0 ) then
+				num = (x + 1) + largest_int32; negative = .true.; buffer(2:) = '0x00000000'
+			else
+				num = x; negative = .false.
+			end if
+
+			i = len(buffer); extract_hex_digits: do
+				next = num/16; buffer(i:i) = DIGITS_A(num - 16*next); if ( next == 0 ) exit
+				num = next; i = i - 1; cycle
+			end do extract_hex_digits
+
+			if ( negative ) then
+				ascii_code = iachar(buffer(4:4))
+				if ( ascii_code < 50 ) then
+					buffer(4:4) = achar(ascii_code + 8)
+				else
+					buffer(4:4) = achar(ascii_code + 47)
+				end if
+				into = buffer(2:); return
+			else
+				buffer(i-2:i-1) = '0x'; into = buffer(i-2:); return
+			end if
+		end if
+	end procedure cast_i32_to_char
+	module procedure cast_i16_to_char
+		character(len=1) :: fmt_
+		character(len=6) :: buffer
+		integer :: num, next, ascii_code, i
+		logical :: negative
+
+		if ( .not. present(fmt) ) then
+			fmt_ = 'i'
+		else
+			if ( any(INT_FMTS == fmt) ) then
+				fmt_ = fmt
+			else
+				into = EMPTY_STR; return
+			end if
+		end if
+
+		if ( fmt_ == 'i' ) then
+			if ( x < 0_int16 ) then
+				if ( x == smallest_int16 ) then
+					into = '-32768'; return
+				end if
+				num = int(-x); negative = .true.
+			else
+				num = int(x); negative = .false.
+			end if
+
+			i = len(buffer); extract_digits: do
+				next = num/10; buffer(i:i) = achar(num - 10*next + 48); if ( next == 0 ) exit
+				num = next; i = i - 1; cycle
+			end do extract_digits
+
+			if ( negative ) then
+				buffer(i-1:i-1) = '-'; into = buffer(i-1:); return
+			else
+				into = buffer(i:); return
+			end if
+		else
+			if ( x < 0_int16 ) then
+				num = int((x + 1_int16) + largest_int16); negative = .true.; buffer(1:) = '0x0000'
+			else
+				num = int(x); negative = .false.
+			end if
+
+			i = len(buffer); extract_hex_digits: do
+				next = num/16; buffer(i:i) = DIGITS_A(num - 16*next); if ( next == 0 ) exit
+				num = next; i = i - 1; cycle
+			end do extract_hex_digits
+
+			if ( negative ) then
+				ascii_code = iachar(buffer(3:3))
+				if ( ascii_code < 50 ) then
+					buffer(3:3) = achar(ascii_code + 8)
+				else
+					buffer(3:3) = achar(ascii_code + 47)
+				end if
+				into = buffer(1:); return
+			else
+				buffer(i-2:i-1) = '0x'; into = buffer(i-2:); return
+			end if
+		end if
+	end procedure cast_i16_to_char
+	module procedure cast_i8_to_char
+		character(len=1) :: fmt_
+		character(len=4) :: buffer
+		integer :: num, next, ascii_code, i
+		logical :: negative
+
+		if ( .not. present(fmt) ) then
+			fmt_ = 'i'
+		else
+			if ( any(INT_FMTS == fmt) ) then
+				fmt_ = fmt
+			else
+				into = EMPTY_STR; return
+			end if
+		end if
+
+		if ( fmt_ == 'i' ) then
+			if ( x < 0_int8 ) then
+				if ( x == smallest_int8 ) then
+					into = '-128'; return
+				end if
+				num = int(-x); negative = .true.
+			else
+				num = int(x); negative = .false.
+			end if
+
+			i = len(buffer); extract_digits: do
+				next = num/10; buffer(i:i) = achar(num - 10*next + 48); if ( next == 0 ) exit
+				num = next; i = i - 1; cycle
+			end do extract_digits
+
+			if ( negative ) then
+				buffer(i-1:i-1) = '-'; into = buffer(i-1:); return
+			else
+				into = buffer(i:); return
+			end if
+		else
+			if ( x < 0_int8 ) then
+				num = int((x + 1_int8) + largest_int8); negative = .true.; buffer(1:) = '0x00'
+			else
+				num = int(x); negative = .false.
+			end if
+
+			i = len(buffer); extract_hex_digits: do
+				next = num/16; buffer(i:i) = DIGITS_A(num - 16*next); if ( next == 0 ) exit
+				num = next; i = i - 1; cycle
+			end do extract_hex_digits
+
+			if ( negative ) then
+				ascii_code = iachar(buffer(3:3))
+				if ( ascii_code < 50 ) then
+					buffer(3:3) = achar(ascii_code + 8)
+				else
+					buffer(3:3) = achar(ascii_code + 47)
+				end if
+				into = buffer(1:); return
+			else
+				buffer(i-2:i-1) = '0x'; into = buffer(i-2:); return
+			end if
+		end if
+	end procedure cast_i8_to_char
+
+	module procedure cast_string_to_c128
+		character(len=1) :: fmt_
+		character(len=5) :: decimal
+		character(len=:), allocatable :: im_
 
 		real(real128) :: z_re, z_im
-		integer, allocatable :: substring_len, i, l, r, im_len
+		integer :: substring_len, l, r, i, sep_code, e_code, im_len
 
 		substring_len = substring%len()
 
@@ -7533,23 +11460,23 @@ submodule (io_fortran_lib) internal_io
 
 		if ( len(im_) == 0 ) then
 			if ( decimal == 'POINT' ) then
-				seps = [ COMMA ]
+				sep_code = iachar(COMMA)
 			else
-				seps = [ SEMICOLON ]
+				sep_code = iachar(SEMICOLON)
 			end if
 
-			l = 1; do while ( l <= substring_len )
-				if ( substring%s(l:l) == '(' ) exit
+			l = 1; do
+				if ( iachar(substring%s(l:l)) == 40 ) exit
 				l = l + 1; cycle
 			end do
 
-			r = substring_len; do while ( r >= 1 )
-				if ( substring%s(r:r) == ')' ) exit
+			r = substring_len; do
+				if ( iachar(substring%s(r:r)) == 41 ) exit
 				r = r - 1; cycle
 			end do
 
-			i = l+1; do while ( i <= r )
-				if ( substring%s(i:i) == seps(1) ) exit
+			i = l+1; do
+				if ( iachar(substring%s(i:i)) == sep_code ) exit
 				i = i + 1; cycle
 			end do
 
@@ -7582,28 +11509,35 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		im_len = len(im_); seps = [ '+', '-' ]; e_chars = [ 'e', 'E' ]
+		sep_code = iachar('+'); e_code = iachar('e'); im_len = len(im_)
 
-		l = 1; do while ( l <= substring_len )
-			if ( substring%s(l:l) /= SPACE ) exit
+		l = 1; do
+			if ( iachar(substring%s(l:l)) > sep_code ) exit
 			l = l + 1; cycle
 		end do
 
-		r = substring_len-im_len+1; do while ( r >= 1 )
+		r = substring_len-im_len+1; do
 			if ( substring%s(r:r+im_len-1) == im_ ) exit
 			r = r - 1; cycle
 		end do
 
-		i = l+1; do while ( i <= r )
-			if ( any(seps == substring%s(i:i)) ) then
-				if ( any(e_chars == substring%s(i-1:i-1)) .and. (fmt_ /= 'z') ) then
-					i = i + 1; cycle
-				else
-					exit
+		if ( fmt_ == 'z' ) then
+			i = l+1; do
+				if ( iachar(substring%s(i:i)) == sep_code ) exit
+				i = i + 1; cycle
+			end do
+		else
+			i = l+1; do
+				if ( (iachar(substring%s(i:i)) == sep_code) .or. (iachar(substring%s(i:i)) == sep_code+2) ) then
+					if ( (iachar(substring%s(i-1:i-1)) == e_code).or.(iachar(substring%s(i-1:i-1)) == e_code-32) ) then
+						i = i + 1; cycle
+					else
+						exit
+					end if
 				end if
-			end if
-			i = i + 1; cycle
-		end do
+				i = i + 1; cycle
+			end do
+		end if
 
 		if ( fmt_ == 'z' ) then
 			if ( i-l > 2 ) then
@@ -7632,14 +11566,14 @@ submodule (io_fortran_lib) internal_io
 			read(unit=substring%s(i:r-1), fmt=*, decimal=decimal) z_im
 			into = cmplx(z_re, z_im, kind=real128); return
 		end if
-	end procedure cast_string_c128
-	module procedure cast_string_c64
+	end procedure cast_string_to_c128
+	module procedure cast_string_to_c64
 		character(len=1) :: fmt_
-		character(len=:), allocatable :: im_, decimal
-		character(len=:), allocatable, dimension(:) :: seps, e_chars
+		character(len=5) :: decimal
+		character(len=:), allocatable :: im_
 
 		real(real64) :: z_re, z_im
-		integer, allocatable :: substring_len, i, l, r, im_len
+		integer :: substring_len, l, r, i, sep_code, e_code, im_len
 
 		substring_len = substring%len()
 
@@ -7677,32 +11611,31 @@ submodule (io_fortran_lib) internal_io
 
 		if ( len(im_) == 0 ) then
 			if ( decimal == 'POINT' ) then
-				seps = [ COMMA ]
+				sep_code = iachar(COMMA)
 			else
-				seps = [ SEMICOLON ]
+				sep_code = iachar(SEMICOLON)
 			end if
 
-			l = 1; do while ( l <= substring_len )
-				if ( substring%s(l:l) == '(' ) exit
+			l = 1; do
+				if ( iachar(substring%s(l:l)) == 40 ) exit
 				l = l + 1; cycle
 			end do
 
-			r = substring_len; do while ( r >= 1 )
-				if ( substring%s(r:r) == ')' ) exit
+			r = substring_len; do
+				if ( iachar(substring%s(r:r)) == 41 ) exit
 				r = r - 1; cycle
 			end do
 
-			i = l+1; do while ( i <= r )
-				if ( substring%s(i:i) == seps(1) ) exit
+			i = l+1; do
+				if ( iachar(substring%s(i:i)) == sep_code ) exit
 				i = i + 1; cycle
 			end do
 
 			if ( fmt_ == 'z' ) then
-				block; integer(int64) :: num; character(len=:), allocatable :: hex_str
-					hex_str = substring%s(l+1:i-1)
-					call cast(hex_str, into=num, fmt='z'); z_re = transfer(source=num, mold=z_re)
-					hex_str = substring%s(i+1:r-1)
-					call cast(hex_str, into=num, fmt='z'); z_im = transfer(source=num, mold=z_im)
+				block; integer(int64) :: num; character(len=i-l-1) :: hex_str_re; character(len=r-i-1) :: hex_str_im
+					hex_str_re = substring%s(l+1:i-1); hex_str_im = substring%s(i+1:r-1)
+					call cast(hex_str_re, into=num, fmt='z'); z_re = transfer(source=num, mold=z_re)
+					call cast(hex_str_im, into=num, fmt='z'); z_im = transfer(source=num, mold=z_im)
 					into = cmplx(z_re, z_im, kind=real64); return
 				end block
 			else
@@ -7712,35 +11645,41 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		im_len = len(im_); seps = [ '+', '-' ]; e_chars = [ 'e', 'E' ]
+		sep_code = iachar('+'); e_code = iachar('e'); im_len = len(im_)
 
-		l = 1; do while ( l <= substring_len )
-			if ( substring%s(l:l) /= SPACE ) exit
+		l = 1; do
+			if ( iachar(substring%s(l:l)) > sep_code ) exit
 			l = l + 1; cycle
 		end do
 
-		r = substring_len-im_len+1; do while ( r >= 1 )
+		r = substring_len-im_len+1; do
 			if ( substring%s(r:r+im_len-1) == im_ ) exit
 			r = r - 1; cycle
 		end do
 
-		i = l+1; do while ( i <= r )
-			if ( any(seps == substring%s(i:i)) ) then
-				if ( any(e_chars == substring%s(i-1:i-1)) .and. (fmt_ /= 'z') ) then
-					i = i + 1; cycle
-				else
-					exit
+		if ( fmt_ == 'z' ) then
+			i = l+1; do
+				if ( iachar(substring%s(i:i)) == sep_code ) exit
+				i = i + 1; cycle
+			end do
+		else
+			i = l+1; do
+				if ( (iachar(substring%s(i:i)) == sep_code) .or. (iachar(substring%s(i:i)) == sep_code+2) ) then
+					if ( (iachar(substring%s(i-1:i-1)) == e_code).or.(iachar(substring%s(i-1:i-1)) == e_code-32) ) then
+						i = i + 1; cycle
+					else
+						exit
+					end if
 				end if
-			end if
-			i = i + 1; cycle
-		end do
+				i = i + 1; cycle
+			end do
+		end if
 
 		if ( fmt_ == 'z' ) then
-			block; integer(int64) :: num; character(len=:), allocatable :: hex_str
-				hex_str = substring%s(l:i-1)
-				call cast(hex_str, into=num, fmt='z'); z_re = transfer(source=num, mold=z_re)
-				hex_str = substring%s(i+1:r-1)
-				call cast(hex_str, into=num, fmt='z'); z_im = transfer(source=num, mold=z_im)
+			block; integer(int64) :: num; character(len=i-l) :: hex_str_re; character(len=r-i-1) :: hex_str_im
+				hex_str_re = substring%s(l:i-1); hex_str_im = substring%s(i+1:r-1)
+				call cast(hex_str_re, into=num, fmt='z'); z_re = transfer(source=num, mold=z_re)
+				call cast(hex_str_im, into=num, fmt='z'); z_im = transfer(source=num, mold=z_im)
 				into = cmplx(z_re, z_im, kind=real64); return
 			end block
 		else
@@ -7748,14 +11687,14 @@ submodule (io_fortran_lib) internal_io
 			read(unit=substring%s(i:r-1), fmt=*, decimal=decimal) z_im
 			into = cmplx(z_re, z_im, kind=real64); return
 		end if
-	end procedure cast_string_c64
-	module procedure cast_string_c32
+	end procedure cast_string_to_c64
+	module procedure cast_string_to_c32
 		character(len=1) :: fmt_
-		character(len=:), allocatable :: im_, decimal
-		character(len=:), allocatable, dimension(:) :: seps, e_chars
+		character(len=5) :: decimal
+		character(len=:), allocatable :: im_
 
 		real(real32) :: z_re, z_im
-		integer, allocatable :: substring_len, i, l, r, im_len
+		integer :: substring_len, l, r, i, sep_code, e_code, im_len
 
 		substring_len = substring%len()
 
@@ -7793,32 +11732,31 @@ submodule (io_fortran_lib) internal_io
 
 		if ( len(im_) == 0 ) then
 			if ( decimal == 'POINT' ) then
-				seps = [ COMMA ]
+				sep_code = iachar(COMMA)
 			else
-				seps = [ SEMICOLON ]
+				sep_code = iachar(SEMICOLON)
 			end if
 
-			l = 1; do while ( l <= substring_len )
-				if ( substring%s(l:l) == '(' ) exit
+			l = 1; do
+				if ( iachar(substring%s(l:l)) == 40 ) exit
 				l = l + 1; cycle
 			end do
 
-			r = substring_len; do while ( r >= 1 )
-				if ( substring%s(r:r) == ')' ) exit
+			r = substring_len; do
+				if ( iachar(substring%s(r:r)) == 41 ) exit
 				r = r - 1; cycle
 			end do
 
-			i = l+1; do while ( i <= r )
-				if ( substring%s(i:i) == seps(1) ) exit
+			i = l+1; do
+				if ( iachar(substring%s(i:i)) == sep_code ) exit
 				i = i + 1; cycle
 			end do
 
 			if ( fmt_ == 'z' ) then
-				block; integer(int32) :: num; character(len=:), allocatable :: hex_str
-					hex_str = substring%s(l+1:i-1)
-					call cast(hex_str, into=num, fmt='z'); z_re = transfer(source=num, mold=z_re)
-					hex_str = substring%s(i+1:r-1)
-					call cast(hex_str, into=num, fmt='z'); z_im = transfer(source=num, mold=z_im)
+				block; integer :: num; character(len=i-l-1) :: hex_str_re; character(len=r-i-1) :: hex_str_im
+					hex_str_re = substring%s(l+1:i-1); hex_str_im = substring%s(i+1:r-1)
+					call cast(hex_str_re, into=num, fmt='z'); z_re = transfer(source=num, mold=z_re)
+					call cast(hex_str_im, into=num, fmt='z'); z_im = transfer(source=num, mold=z_im)
 					into = cmplx(z_re, z_im, kind=real32); return
 				end block
 			else
@@ -7828,35 +11766,41 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		im_len = len(im_); seps = [ '+', '-' ]; e_chars = [ 'e', 'E' ]
+		sep_code = iachar('+'); e_code = iachar('e'); im_len = len(im_)
 
-		l = 1; do while ( l <= substring_len )
-			if ( substring%s(l:l) /= SPACE ) exit
+		l = 1; do
+			if ( iachar(substring%s(l:l)) > sep_code ) exit
 			l = l + 1; cycle
 		end do
 
-		r = substring_len-im_len+1; do while ( r >= 1 )
+		r = substring_len-im_len+1; do
 			if ( substring%s(r:r+im_len-1) == im_ ) exit
 			r = r - 1; cycle
 		end do
 
-		i = l+1; do while ( i <= r )
-			if ( any(seps == substring%s(i:i)) ) then
-				if ( any(e_chars == substring%s(i-1:i-1)) .and. (fmt_ /= 'z') ) then
-					i = i + 1; cycle
-				else
-					exit
+		if ( fmt_ == 'z' ) then
+			i = l+1; do
+				if ( iachar(substring%s(i:i)) == sep_code ) exit
+				i = i + 1; cycle
+			end do
+		else
+			i = l+1; do
+				if ( (iachar(substring%s(i:i)) == sep_code) .or. (iachar(substring%s(i:i)) == sep_code+2) ) then
+					if ( (iachar(substring%s(i-1:i-1)) == e_code).or.(iachar(substring%s(i-1:i-1)) == e_code-32) ) then
+						i = i + 1; cycle
+					else
+						exit
+					end if
 				end if
-			end if
-			i = i + 1; cycle
-		end do
+				i = i + 1; cycle
+			end do
+		end if
 
 		if ( fmt_ == 'z' ) then
-			block; integer(int32) :: num; character(len=:), allocatable :: hex_str
-				hex_str = substring%s(l:i-1)
-				call cast(hex_str, into=num, fmt='z'); z_re = transfer(source=num, mold=z_re)
-				hex_str = substring%s(i+1:r-1)
-				call cast(hex_str, into=num, fmt='z'); z_im = transfer(source=num, mold=z_im)
+			block; integer :: num; character(len=i-l) :: hex_str_re; character(len=r-i-1) :: hex_str_im
+				hex_str_re = substring%s(l:i-1); hex_str_im = substring%s(i+1:r-1)
+				call cast(hex_str_re, into=num, fmt='z'); z_re = transfer(source=num, mold=z_re)
+				call cast(hex_str_im, into=num, fmt='z'); z_im = transfer(source=num, mold=z_im)
 				into = cmplx(z_re, z_im, kind=real32); return
 			end block
 		else
@@ -7864,11 +11808,11 @@ submodule (io_fortran_lib) internal_io
 			read(unit=substring%s(i:r-1), fmt=*, decimal=decimal) z_im
 			into = cmplx(z_re, z_im, kind=real32); return
 		end if
-	end procedure cast_string_c32
+	end procedure cast_string_to_c32
 
-	module procedure cast_string_r128
+	module procedure cast_string_to_r128
 		character(len=1) :: fmt_
-		character(len=:), allocatable :: decimal
+		character(len=5) :: decimal
 
 		if ( substring%len() < 1 ) then
 			into = 0.0_real128; return
@@ -7909,10 +11853,10 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		read(unit=substring%s, fmt=*, decimal=decimal) into
-	end procedure cast_string_r128
-	module procedure cast_string_r64
+	end procedure cast_string_to_r128
+	module procedure cast_string_to_r64
 		character(len=1) :: fmt_
-		character(len=:), allocatable :: decimal
+		character(len=5) :: decimal
 
 		if ( substring%len() < 1 ) then
 			into = 0.0_real64; return
@@ -7929,61 +11873,57 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if ( fmt_ == 'z' ) then
-			inline_cast_i64: block; integer(int64) :: num, i; logical :: negative; integer :: substring_len, l, r, j
+			inline_cast: block; integer(int64) :: num; integer :: substring_len, r, l, i, digit; logical ::negative
 				substring_len = substring%len()
 
-				l = 1; do while ( l <= substring_len )
-					if ( substring%s(l:l) /= SPACE ) exit
-					l = l + 1; cycle
-				end do
-
-				if ( substring_len > 2 ) then
-					if ( substring%s(l:l+1) == '0x' ) l = l + 2
-				end if
-
-				r = substring_len; do while ( r >= l )
-					if ( substring%s(r:r) /= SPACE ) exit
+				r = substring_len; do
+					if ( (iachar(substring%s(r:r)) > 47) .or. (r == 1) ) exit
 					r = r - 1; cycle
 				end do
 
-				if ( r-l+1 == 16 ) then
-					j = 0; do while ( j <= 15 )
-						if ( DIGITS_A(j) == substring%s(l:l) ) exit
-						j = j + 1; cycle
-					end do
-
-					if ( j >= 8 ) then
-						negative = .true.
-					else
-						negative = .false.
+				l = 1; do
+					if ( (iachar(substring%s(l:l)) > 47) .or. (l == substring_len) ) then
+						if ( r-l+1 > 2 ) then
+							if ( iachar(substring%s(l+1:l+1)) == 120 ) l = l + 2
+						end if
+						exit
 					end if
+					l = l + 1; cycle
+				end do
+
+				if ( (r-l+1 == 16) .and. (iachar(substring%s(l:l)) > 55) ) then
+					negative = .true.
 				else
 					negative = .false.
 				end if
 
 				num = 0_int64
 
-				i = 1_int64; do
-					j = 0; do while ( j <= 15 )
-						if ( DIGITS_A(j) == substring%s(r:r) ) exit
-						j = j + 1; cycle
-					end do
+				do i = 0, ubound(SIXTEENS_i64, dim=1)
+					digit = iachar(substring%s(r:r)) - 48
 
-					if ( r > l ) then
-						num = num + i*int(DIGITS_I(j), kind=int64)
-					else if ( r == l ) then
-						if ( negative ) then
-							num = num + i*int(DIGITS_I(j-8), kind=int64); num = (num - 1_int64) - huge(1_int64)
-							into = transfer(source=num, mold=into); return
+					if ( digit > 16 ) then
+						if ( digit < 23 ) then
+							digit = digit - 7
 						else
-							num = num + i*int(DIGITS_I(j), kind=int64)
-							into = transfer(source=num, mold=into); return
+							digit = digit - 39
 						end if
 					end if
 
-					i = 16_int64*i; r = r - 1; cycle
+					if ( r > l ) then
+						num = num + int(digit,int64)*SIXTEENS_i64(i); r = r - 1; cycle
+					else
+						if ( negative ) then
+							digit = digit - 8; num = num + int(digit,int64)*SIXTEENS_i64(i)
+							num = (num - 1_int64) - largest_int64
+							into = transfer(source=num, mold=into); return
+						else
+							num = num + int(digit,int64)*SIXTEENS_i64(i)
+							into = transfer(source=num, mold=into); return
+						end if
+					end if
 				end do
-			end block inline_cast_i64
+			end block inline_cast
 		end if
 
 		if ( .not. present(locale) ) then
@@ -7999,10 +11939,10 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		read(unit=substring%s, fmt=*, decimal=decimal) into
-	end procedure cast_string_r64
-	module procedure cast_string_r32
+	end procedure cast_string_to_r64
+	module procedure cast_string_to_r32
 		character(len=1) :: fmt_
-		character(len=:), allocatable :: decimal
+		character(len=5) :: decimal
 
 		if ( substring%len() < 1 ) then
 			into = 0.0_real32; return
@@ -8019,61 +11959,57 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if ( fmt_ == 'z' ) then
-			inline_cast_i32: block; integer(int32) :: num, i; logical :: negative; integer :: substring_len, l, r, j
+			inline_cast: block; integer :: num, substring_len, r, l, i, digit; logical :: negative
 				substring_len = substring%len()
 
-				l = 1; do while ( l <= substring_len )
-				if ( substring%s(l:l) /= SPACE ) exit
-					l = l + 1; cycle
-				end do
-
-				if ( substring_len > 2 ) then
-					if ( substring%s(l:l+1) == '0x' ) l = l + 2
-				end if
-
-				r = substring_len; do while ( r >= l )
-					if ( substring%s(r:r) /= SPACE ) exit
+				r = substring_len; do
+					if ( (iachar(substring%s(r:r)) > 47) .or. (r == 1) ) exit
 					r = r - 1; cycle
 				end do
 
-				if ( r-l+1 == 8 ) then
-					j = 0; do while ( j <= 15 )
-						if ( DIGITS_A(j) == substring%s(l:l) ) exit
-						j = j + 1; cycle
-					end do
-
-					if ( j >= 8 ) then
-						negative = .true.
-					else
-						negative = .false.
+				l = 1; do
+					if ( (iachar(substring%s(l:l)) > 47) .or. (l == substring_len) ) then
+						if ( r-l+1 > 2 ) then
+							if ( iachar(substring%s(l+1:l+1)) == 120 ) l = l + 2
+						end if
+						exit
 					end if
+					l = l + 1; cycle
+				end do
+
+				if ( (r-l+1 == 8) .and. (iachar(substring%s(l:l)) > 55) ) then
+					negative = .true.
 				else
 					negative = .false.
 				end if
 
-				num = 0_int32
+				num = 0
 
-				i = 1_int32; do
-					j = 0; do while ( j <= 15 )
-						if ( DIGITS_A(j) == substring%s(r:r) ) exit
-						j = j + 1; cycle
-					end do
+				do i = 0, ubound(SIXTEENS_i32, dim=1)
+					digit = iachar(substring%s(r:r)) - 48
 
-					if ( r > l ) then
-						num = num + i*DIGITS_I(j)
-					else if ( r == l ) then
-						if ( negative ) then
-							num = num + i*DIGITS_I(j-8); num = (num - 1_int32) - huge(1_int32)
-							into = transfer(source=num, mold=into); return
+					if ( digit > 16 ) then
+						if ( digit < 23 ) then
+							digit = digit - 7
 						else
-							num = num + i*DIGITS_I(j)
-							into = transfer(source=num, mold=into); return
+							digit = digit - 39
 						end if
 					end if
 
-					i = 16_int32*i; r = r - 1; cycle
+					if ( r > l ) then
+						num = num + digit*SIXTEENS_i32(i); r = r - 1; cycle
+					else
+						if ( negative ) then
+							digit = digit - 8; num = num + digit*SIXTEENS_i32(i)
+							num = (num - 1) - largest_int32
+							into = transfer(source=num, mold=into); return
+						else
+							num = num + digit*SIXTEENS_i32(i)
+							into = transfer(source=num, mold=into); return
+						end if
+					end if
 				end do
-			end block inline_cast_i32
+			end block inline_cast
 		end if
 
 		if ( .not. present(locale) ) then
@@ -8089,13 +12025,12 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		read(unit=substring%s, fmt=*, decimal=decimal) into
-	end procedure cast_string_r32
+	end procedure cast_string_to_r32
 
-	module procedure cast_string_i64
+	module procedure cast_string_to_i64
 		character(len=1) :: fmt_
+		integer :: substring_len, r, l, i, digit
 		logical :: negative
-		integer :: substring_len, l, r, j
-		integer(int64) :: i
 
 		substring_len = substring%len()
 
@@ -8114,17 +12049,17 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if ( fmt_ == 'i' ) then
-			l = 1; do while ( l <= substring_len )
-				if ( substring%s(l:l) /= SPACE ) exit
-				l = l + 1; cycle
-			end do
-
-			r = substring_len; do while ( r >= l )
-				if ( substring%s(r:r) /= SPACE ) exit
+			r = substring_len; do
+				if ( (iachar(substring%s(r:r)) > 44) .or. (r == 1) ) exit
 				r = r - 1; cycle
 			end do
 
-			if ( substring%s(l:l) == '-' ) then
+			l = 1; do
+				if ( (iachar(substring%s(l:l)) > 44) .or. (l == substring_len) ) exit
+				l = l + 1; cycle
+			end do
+
+			if ( iachar(substring%s(l:l)) == 45 ) then
 				negative = .true.; l = l + 1
 			else
 				negative = .false.
@@ -8132,80 +12067,66 @@ submodule (io_fortran_lib) internal_io
 
 			into = 0_int64
 
-			i = 1_int64; do
-				j = 0; do while ( j <= 9 )
-					if ( DIGITS_A(j) == substring%s(r:r) ) exit
-					j = j + 1; cycle
-				end do
-
-				into = into + i*int(DIGITS_I(j), kind=int64)
-
-				if ( r == l ) exit
-				i = 10_int64*i; r = r - 1; cycle
-			end do
-
-			if ( negative ) then
-				into = -into; return
-			else
-				return
-			end if
-		else if ( fmt_ == 'z' ) then
-			l = 1; do while ( l <= substring_len )
-				if ( substring%s(l:l) /= SPACE ) exit
-				l = l + 1; cycle
-			end do
-
-			if ( substring_len > 2 ) then
-				if ( substring%s(l:l+1) == '0x' ) l = l + 2
-			end if
-
-			r = substring_len; do while ( r >= l )
-				if ( substring%s(r:r) /= SPACE ) exit
+			do i = 0, ubound(TENS_i64, dim=1)
+				into = into + int(iachar(substring%s(r:r)) - 48,int64)*TENS_i64(i); if ( r == l ) exit
 				r = r - 1; cycle
 			end do
 
-			if ( r-l+1 == 16 ) then
-				j = 0; do while ( j <= 15 )
-					if ( DIGITS_A(j) == substring%s(l:l) ) exit
-					j = j + 1; cycle
-				end do
+			if ( .not. negative ) return
 
-				if ( j >= 8 ) then
-					negative = .true.
-				else
-					negative = .false.
+			into = -into; return
+		else
+			r = substring_len; do
+				if ( (iachar(substring%s(r:r)) > 47) .or. (r == 1) ) exit
+				r = r - 1; cycle
+			end do
+
+			l = 1; do
+				if ( (iachar(substring%s(l:l)) > 47) .or. (l == substring_len) ) then
+					if ( r-l+1 > 2 ) then
+						if ( iachar(substring%s(l+1:l+1)) == 120 ) l = l + 2
+					end if
+					exit
 				end if
+				l = l + 1; cycle
+			end do
+
+			if ( (r-l+1 == 16) .and. (iachar(substring%s(l:l)) > 55) ) then
+				negative = .true.
 			else
 				negative = .false.
 			end if
 
 			into = 0_int64
 
-			i = 1_int64; do
-				j = 0; do while ( j <= 15 )
-					if ( DIGITS_A(j) == substring%s(r:r) ) exit
-					j = j + 1; cycle
-				end do
+			do i = 0, ubound(SIXTEENS_i64, dim=1)
+				digit = iachar(substring%s(r:r)) - 48
 
-				if ( r > l ) then
-					into = into + i*int(DIGITS_I(j), kind=int64)
-				else if ( r == l ) then
-					if ( negative ) then
-						into = into + i*int(DIGITS_I(j-8), kind=int64); into = (into - 1_int64) - huge(1_int64); return
+				if ( digit > 16 ) then
+					if ( digit < 23 ) then
+						digit = digit - 7
 					else
-						into = into + i*int(DIGITS_I(j), kind=int64); return
+						digit = digit - 39
 					end if
 				end if
 
-				i = 16_int64*i; r = r - 1; cycle
+				if ( r > l ) then
+					into = into + int(digit,int64)*SIXTEENS_i64(i); r = r - 1; cycle
+				else
+					if ( negative ) then
+						digit = digit - 8; into = into + int(digit,int64)*SIXTEENS_i64(i)
+						into = (into - 1_int64) - largest_int64; return
+					else
+						into = into + int(digit,int64)*SIXTEENS_i64(i); return
+					end if
+				end if
 			end do
 		end if
-	end procedure cast_string_i64
-	module procedure cast_string_i32
+	end procedure cast_string_to_i64
+	module procedure cast_string_to_i32
 		character(len=1) :: fmt_
+		integer :: substring_len, r, l, i, digit
 		logical :: negative
-		integer :: substring_len, l, r, j
-		integer(int32) :: i
 
 		substring_len = substring%len()
 
@@ -8224,98 +12145,84 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if ( fmt_ == 'i' ) then
-			l = 1; do while ( l <= substring_len )
-				if ( substring%s(l:l) /= SPACE ) exit
-				l = l + 1; cycle
-			end do
-
-			r = substring_len; do while ( r >= l )
-				if ( substring%s(r:r) /= SPACE ) exit
+			r = substring_len; do
+				if ( (iachar(substring%s(r:r)) > 44) .or. (r == 1) ) exit
 				r = r - 1; cycle
 			end do
 
-			if ( substring%s(l:l) == '-' ) then
+			l = 1; do
+				if ( (iachar(substring%s(l:l)) > 44) .or. (l == substring_len) ) exit
+				l = l + 1; cycle
+			end do
+
+			if ( iachar(substring%s(l:l)) == 45 ) then
 				negative = .true.; l = l + 1
 			else
 				negative = .false.
 			end if
 
-			into = 0_int32
+			into = 0
 
-			i = 1_int32; do
-				j = 0; do while ( j <= 9 )
-					if ( DIGITS_A(j) == substring%s(r:r) ) exit
-					j = j + 1; cycle
-				end do
-
-				into = into + i*DIGITS_I(j)
-
-				if ( r == l ) exit
-				i = 10_int32*i; r = r - 1; cycle
-			end do
-
-			if ( negative ) then
-				into = -into; return
-			else
-				return
-			end if
-		else if ( fmt_ == 'z' ) then
-			l = 1; do while ( l <= substring_len )
-				if ( substring%s(l:l) /= SPACE ) exit
-				l = l + 1; cycle
-			end do
-
-			if ( substring_len > 2 ) then
-				if ( substring%s(l:l+1) == '0x' ) l = l + 2
-			end if
-
-			r = substring_len; do while ( r >= l )
-				if ( substring%s(r:r) /= SPACE ) exit
+			do i = 0, ubound(TENS_i32, dim=1)
+				into = into + (iachar(substring%s(r:r)) - 48)*TENS_i32(i); if ( r == l ) exit
 				r = r - 1; cycle
 			end do
 
-			if ( r-l+1 == 8 ) then
-				j = 0; do while ( j <= 15 )
-					if ( DIGITS_A(j) == substring%s(l:l) ) exit
-					j = j + 1; cycle
-				end do
+			if ( .not. negative ) return
 
-				if ( j >= 8 ) then
-					negative = .true.
-				else
-					negative = .false.
+			into = -into; return
+		else
+			r = substring_len; do
+				if ( (iachar(substring%s(r:r)) > 47) .or. (r == 1) ) exit
+				r = r - 1; cycle
+			end do
+
+			l = 1; do
+				if ( (iachar(substring%s(l:l)) > 47) .or. (l == substring_len) ) then
+					if ( r-l+1 > 2 ) then
+						if ( iachar(substring%s(l+1:l+1)) == 120 ) l = l + 2
+					end if
+					exit
 				end if
+				l = l + 1; cycle
+			end do
+
+			if ( (r-l+1 == 8) .and. (iachar(substring%s(l:l)) > 55) ) then
+				negative = .true.
 			else
 				negative = .false.
 			end if
 
-			into = 0_int32
+			into = 0
 
-			i = 1_int32; do
-				j = 0; do while ( j <= 15 )
-					if ( DIGITS_A(j) == substring%s(r:r) ) exit
-					j = j + 1; cycle
-				end do
+			do i = 0, ubound(SIXTEENS_i32, dim=1)
+				digit = iachar(substring%s(r:r)) - 48
 
-				if ( r > l ) then
-					into = into + i*DIGITS_I(j)
-				else if ( r == l ) then
-					if ( negative ) then
-						into = into + i*DIGITS_I(j-8); into = (into - 1_int32) - huge(1_int32); return
+				if ( digit > 16 ) then
+					if ( digit < 23 ) then
+						digit = digit - 7
 					else
-						into = into + i*DIGITS_I(j); return
+						digit = digit - 39
 					end if
 				end if
 
-				i = 16_int32*i; r = r - 1; cycle
+				if ( r > l ) then
+					into = into + digit*SIXTEENS_i32(i); r = r - 1; cycle
+				else
+					if ( negative ) then
+						digit = digit - 8; into = into + digit*SIXTEENS_i32(i)
+						into = (into - 1) - largest_int32; return
+					else
+						into = into + digit*SIXTEENS_i32(i); return
+					end if
+				end if
 			end do
 		end if
-	end procedure cast_string_i32
-	module procedure cast_string_i16
+	end procedure cast_string_to_i32
+	module procedure cast_string_to_i16
 		character(len=1) :: fmt_
+		integer :: substring_len, r, l, i, digit
 		logical :: negative
-		integer :: substring_len, l, r, j
-		integer(int16) :: i
 
 		substring_len = substring%len()
 
@@ -8334,17 +12241,17 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if ( fmt_ == 'i' ) then
-			l = 1; do while ( l <= substring_len )
-				if ( substring%s(l:l) /= SPACE ) exit
-				l = l + 1; cycle
-			end do
-
-			r = substring_len; do while ( r >= l )
-				if ( substring%s(r:r) /= SPACE ) exit
+			r = substring_len; do
+				if ( (iachar(substring%s(r:r)) > 44) .or. (r == 1) ) exit
 				r = r - 1; cycle
 			end do
 
-			if ( substring%s(l:l) == '-' ) then
+			l = 1; do
+				if ( (iachar(substring%s(l:l)) > 44) .or. (l == substring_len) ) exit
+				l = l + 1; cycle
+			end do
+
+			if ( iachar(substring%s(l:l)) == 45 ) then
 				negative = .true.; l = l + 1
 			else
 				negative = .false.
@@ -8352,80 +12259,66 @@ submodule (io_fortran_lib) internal_io
 
 			into = 0_int16
 
-			i = 1_int16; do
-				j = 0; do while ( j <= 9 )
-					if ( DIGITS_A(j) == substring%s(r:r) ) exit
-					j = j + 1; cycle
-				end do
-
-				into = into + i*int(DIGITS_I(j), kind=int16)
-
-				if ( r == l ) exit
-				i = 10_int16*i; r = r - 1; cycle
-			end do
-
-			if ( negative ) then
-				into = -into; return
-			else
-				return
-			end if
-		else if ( fmt_ == 'z' ) then
-			l = 1; do while ( l <= substring_len )
-				if ( substring%s(l:l) /= SPACE ) exit
-				l = l + 1; cycle
-			end do
-
-			if ( substring_len > 2 ) then
-				if ( substring%s(l:l+1) == '0x' ) l = l + 2
-			end if
-
-			r = substring_len; do while ( r >= l )
-				if ( substring%s(r:r) /= SPACE ) exit
+			do i = 0, ubound(TENS_i16, dim=1)
+				into = into + int(iachar(substring%s(r:r)) - 48,int16)*TENS_i16(i); if ( r == l ) exit
 				r = r - 1; cycle
 			end do
 
-			if ( r-l+1 == 4 ) then
-				j = 0; do while ( j <= 15 )
-					if ( DIGITS_A(j) == substring%s(l:l) ) exit
-					j = j + 1; cycle
-				end do
+			if ( .not. negative ) return
 
-				if ( j >= 8 ) then
-					negative = .true.
-				else
-					negative = .false.
+			into = -into; return
+		else
+			r = substring_len; do
+				if ( (iachar(substring%s(r:r)) > 47) .or. (r == 1) ) exit
+				r = r - 1; cycle
+			end do
+
+			l = 1; do
+				if ( (iachar(substring%s(l:l)) > 47) .or. (l == substring_len) ) then
+					if ( r-l+1 > 2 ) then
+						if ( iachar(substring%s(l+1:l+1)) == 120 ) l = l + 2
+					end if
+					exit
 				end if
+				l = l + 1; cycle
+			end do
+
+			if ( (r-l+1 == 4) .and. (iachar(substring%s(l:l)) > 55) ) then
+				negative = .true.
 			else
 				negative = .false.
 			end if
 
 			into = 0_int16
 
-			i = 1_int16; do
-				j = 0; do while ( j <= 15 )
-					if ( DIGITS_A(j) == substring%s(r:r) ) exit
-					j = j + 1; cycle
-				end do
+			do i = 0, ubound(SIXTEENS_i16, dim=1)
+				digit = iachar(substring%s(r:r)) - 48
 
-				if ( r > l ) then
-					into = into + i*int(DIGITS_I(j), kind=int16)
-				else if ( r == l ) then
-					if ( negative ) then
-						into = into + i*int(DIGITS_I(j-8), kind=int16); into = (into - 1_int16) - huge(1_int16); return
+				if ( digit > 16 ) then
+					if ( digit < 23 ) then
+						digit = digit - 7
 					else
-						into = into + i*int(DIGITS_I(j), kind=int16); return
+						digit = digit - 39
 					end if
 				end if
 
-				i = 16_int16*i; r = r - 1; cycle
+				if ( r > l ) then
+					into = into + int(digit,int16)*SIXTEENS_i16(i); r = r - 1; cycle
+				else
+					if ( negative ) then
+						digit = digit - 8; into = into + int(digit,int16)*SIXTEENS_i16(i)
+						into = (into - 1_int16) - largest_int16; return
+					else
+						into = into + int(digit,int16)*SIXTEENS_i16(i); return
+					end if
+				end if
 			end do
 		end if
-	end procedure cast_string_i16
-	module procedure cast_string_i8
+	end procedure cast_string_to_i16
+	module procedure cast_string_to_i8
 		character(len=1) :: fmt_
+		integer :: substring_len, r, l, i, digit
 		logical :: negative
-		integer :: substring_len, l, r, j
-		integer(int8) :: i
 
 		substring_len = substring%len()
 
@@ -8444,17 +12337,17 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if ( fmt_ == 'i' ) then
-			l = 1; do while ( l <= substring_len )
-				if ( substring%s(l:l) /= SPACE ) exit
-				l = l + 1; cycle
-			end do
-
-			r = substring_len; do while ( r >= l )
-				if ( substring%s(r:r) /= SPACE ) exit
+			r = substring_len; do
+				if ( (iachar(substring%s(r:r)) > 44) .or. (r == 1) ) exit
 				r = r - 1; cycle
 			end do
 
-			if ( substring%s(l:l) == '-' ) then
+			l = 1; do
+				if ( (iachar(substring%s(l:l)) > 44) .or. (l == substring_len) ) exit
+				l = l + 1; cycle
+			end do
+
+			if ( iachar(substring%s(l:l)) == 45 ) then
 				negative = .true.; l = l + 1
 			else
 				negative = .false.
@@ -8462,1580 +12355,70 @@ submodule (io_fortran_lib) internal_io
 
 			into = 0_int8
 
-			i = 1_int8; do
-				j = 0; do while ( j <= 9 )
-					if ( DIGITS_A(j) == substring%s(r:r) ) exit
-					j = j + 1; cycle
-				end do
-
-				into = into + i*int(DIGITS_I(j), kind=int8)
-
-				if ( r == l ) exit
-				i = 10_int8*i; r = r - 1; cycle
-			end do
-
-			if ( negative ) then
-				into = -into; return
-			else
-				return
-			end if
-		else if ( fmt_ == 'z' ) then
-			l = 1; do while ( l <= substring_len )
-				if ( substring%s(l:l) /= SPACE ) exit
-				l = l + 1; cycle
-			end do
-
-			if ( substring_len > 2 ) then
-				if ( substring%s(l:l+1) == '0x' ) l = l + 2
-			end if
-
-			r = substring_len; do while ( r >= l )
-				if ( substring%s(r:r) /= SPACE ) exit
+			do i = 0, ubound(TENS_i16, dim=1)
+				into = into + int(iachar(substring%s(r:r)) - 48,int16)*TENS_i16(i); if ( r == l ) exit
 				r = r - 1; cycle
 			end do
 
-			if ( r-l+1 == 2 ) then
-				j = 0; do while ( j <= 15 )
-					if ( DIGITS_A(j) == substring%s(l:l) ) exit
-					j = j + 1; cycle
-				end do
+			if ( .not. negative ) return
 
-				if ( j >= 8 ) then
-					negative = .true.
-				else
-					negative = .false.
+			into = -into; return
+		else
+			r = substring_len; do
+				if ( (iachar(substring%s(r:r)) > 47) .or. (r == 1) ) exit
+				r = r - 1; cycle
+			end do
+
+			l = 1; do
+				if ( (iachar(substring%s(l:l)) > 47) .or. (l == substring_len) ) then
+					if ( r-l+1 > 2 ) then
+						if ( iachar(substring%s(l+1:l+1)) == 120 ) l = l + 2
+					end if
+					exit
 				end if
+				l = l + 1; cycle
+			end do
+
+			if ( (r-l+1 == 2) .and. (iachar(substring%s(l:l)) > 55) ) then
+				negative = .true.
 			else
 				negative = .false.
 			end if
 
 			into = 0_int8
 
-			i = 1_int8; do
-				j = 0; do while ( j <= 15 )
-					if ( DIGITS_A(j) == substring%s(r:r) ) exit
-					j = j + 1; cycle
-				end do
+			do i = 0, ubound(SIXTEENS_i8, dim=1)
+				digit = iachar(substring%s(r:r)) - 48
+
+				if ( digit > 16 ) then
+					if ( digit < 23 ) then
+						digit = digit - 7
+					else
+						digit = digit - 39
+					end if
+				end if
 
 				if ( r > l ) then
-					into = into + i*int(DIGITS_I(j), kind=int8)
-				else if ( r == l ) then
+					into = into + int(digit,int8)*SIXTEENS_i8(i); r = r - 1; cycle
+				else
 					if ( negative ) then
-						into = into + i*int(DIGITS_I(j-8), kind=int8); into = (into - 1_int8) - huge(1_int8); return
+						digit = digit - 8; into = into + int(digit,int8)*SIXTEENS_i8(i)
+						into = (into - 1_int8) - largest_int8; return
 					else
-						into = into + i*int(DIGITS_I(j), kind=int8); return
+						into = into + int(digit,int8)*SIXTEENS_i8(i); return
 					end if
 				end if
-
-				i = 16_int8*i; r = r - 1; cycle
 			end do
 		end if
-	end procedure cast_string_i8
+	end procedure cast_string_to_i8
 
-	module procedure str_c128
+	module procedure cast_char_to_c128
 		character(len=1) :: fmt_
-		character(len=:), allocatable :: decimal, xre_str, xim_str, im_
-		integer, allocatable :: e, decimals_
-		integer :: i
-
-		if ( .not. present(fmt) ) then
-			fmt_ = 'e'
-		else
-			if ( any(REAL_FMTS == fmt) ) then
-				fmt_ = fmt
-			else
-				x_str = EMPTY_STR; return
-			end if
-		end if
-
-		if_z_re: if ( fmt_ == 'z' ) then
-			if ( x%re /= 0.0_real128 ) then
-				allocate( character(len=34) :: xre_str )
-			else
-				xre_str = '0x0'; exit if_z_re
-			end if
-
-			write(unit=xre_str(3:), fmt='(z32)') x%re
-
-			do concurrent (i = 3:34)
-				if ( (xre_str(i:i) >= 'A') .and. (xre_str(i:i) <= 'F') ) xre_str(i:i) = achar(iachar(xre_str(i:i))+32)
-			end do
-
-			xre_str(1:2) = '0x'; exit if_z_re
-		end if if_z_re
-		if_z_im: if ( fmt_ == 'z' ) then
-			if ( x%im /= 0.0_real128 ) then
-				allocate( character(len=34) :: xim_str )
-			else
-				xim_str = '0x0'; exit if_z_im
-			end if
-
-			write(unit=xim_str(3:), fmt='(z32)') x%im
-
-			do concurrent (i = 3:34)
-				if ( (xim_str(i:i) >= 'A') .and. (xim_str(i:i) <= 'F') ) xim_str(i:i) = achar(iachar(xim_str(i:i))+32)
-			end do
-
-			xim_str(1:2) = '0x'; exit if_z_im
-		end if if_z_im
-
-		if ( .not. present(locale) ) then
-			decimal = 'POINT'
-		else
-			if ( locale == 'US' ) then
-				decimal = 'POINT'
-			else if ( locale == 'EU' ) then
-				decimal = 'COMMA'
-			else
-				x_str = EMPTY_STR; return
-			end if
-		end if
-
-		if_eorf_re: if ( fmt_ == 'e' ) then
-			if ( x%re == 0.0_real128 ) then
-				xre_str = '0.0e+0000'; exit if_eorf_re
-			end if
-
-			if ( x%re < 0.0_real128 ) then
-				allocate( character(len=44) :: xre_str )
-				write(unit=xre_str, fmt='(es44.35e4)', decimal=decimal) x%re
-				do i = 44, 1, -1
-					if ( xre_str(i:i) == 'E' ) then
-						xre_str(i:i) = 'e'; exit
-					end if
-				end do
-			else
-				allocate( character(len=43) :: xre_str )
-				write(unit=xre_str, fmt='(es43.35e4)', decimal=decimal) x%re
-				do i = 43, 1, -1
-					if ( xre_str(i:i) == 'E' ) then
-						xre_str(i:i) = 'e'; exit
-					end if
-				end do
-			end if
-
-			if ( .not. present(decimals) ) exit if_eorf_re
-			
-			if ( decimals >= 35 ) exit if_eorf_re
-
-			if ( decimals < 0 ) then
-				decimals_ = 0
-			else
-				decimals_ = decimals
-			end if
-
-			do i = 1, 43
-				if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) then
-					xre_str = xre_str(:i+decimals_)//xre_str(i+36:); exit if_eorf_re
-				end if
-			end do
-		else if ( fmt_ == 'f' ) then
-			if ( abs(x%re) /= 0.0_real128 ) then
-				e = int(log10(abs(x%re)))
-			else
-				xre_str = '0.0'; exit if_eorf_re
-			end if
-
-			if ( e == 0 ) then
-				if ( floor(x%re) > 0 ) e = 1 + e
-			else if ( e > 0 ) then
-				e = 1 + e
-			end if
-
-			allocate( character(len=125) :: xre_str )
-
-			if ( e > 0 ) then
-				write(unit=xre_str, fmt='(f0.36)', decimal=decimal) x%re
-			else
-				write(unit=xre_str, fmt='(f0.100)', decimal=decimal) x%re
-			end if
-
-			i = 1
-			do while ( i <= 125 )
-				if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) exit
-				i = i + 1; cycle
-			end do
-
-			if ( (i == 1) .or. ( (i == 2) .and. (xre_str(1:1) == '-') ) ) then
-				xre_str(i+1:125) = xre_str(i:124); xre_str(i:i) = '0'; i = i + 1
-			end if
-
-			if ( i > 36 ) then
-				xre_str = xre_str(:i)//'0'; exit if_eorf_re
-			end if
-
-			if ( .not. present(decimals) ) then
-				xre_str = xre_str(:i+36-e); exit if_eorf_re
-			end if
-
-			if ( decimals <= 0 ) then
-				xre_str = xre_str(:i)//'0'; exit if_eorf_re
-			end if
-
-			if ( decimals >= 36-e ) then
-				xre_str = xre_str(:i+36-e); exit if_eorf_re
-			end if
-
-			xre_str = xre_str(:i+decimals); exit if_eorf_re
-		end if if_eorf_re
-		if_eorf_im: if ( fmt_ == 'e' ) then
-			if ( x%im == 0.0_real128 ) then
-				xim_str = '0.0e+0000'; exit if_eorf_im
-			end if
-
-			if ( x%im < 0.0_real128 ) then
-				allocate( character(len=44) :: xim_str )
-				write(unit=xim_str, fmt='(es44.35e4)', decimal=decimal) x%im
-				do i = 44, 1, -1
-					if ( xim_str(i:i) == 'E' ) then
-						xim_str(i:i) = 'e'; exit
-					end if
-				end do
-			else
-				allocate( character(len=43) :: xim_str )
-				write(unit=xim_str, fmt='(es43.35e4)', decimal=decimal) x%im
-				do i = 43, 1, -1
-					if ( xim_str(i:i) == 'E' ) then
-						xim_str(i:i) = 'e'; exit
-					end if
-				end do
-			end if
-
-			if ( .not. present(decimals) ) exit if_eorf_im
-			
-			if ( decimals >= 35 ) exit if_eorf_im
-
-			if ( decimals < 0 ) then
-				decimals_ = 0
-			else
-				decimals_ = decimals
-			end if
-
-			do i = 1, 43
-				if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) then
-					xim_str = xim_str(:i+decimals_)//xim_str(i+36:); exit if_eorf_im
-				end if
-			end do
-		else if ( fmt_ == 'f' ) then
-			if ( abs(x%im) /= 0.0_real128 ) then
-				e = int(log10(abs(x%im)))
-			else
-				xim_str = '0.0'; exit if_eorf_im
-			end if
-
-			if ( e == 0 ) then
-				if ( floor(x%im) > 0 ) e = 1 + e
-			else if ( e > 0 ) then
-				e = 1 + e
-			end if
-
-			allocate( character(len=125) :: xim_str )
-
-			if ( e > 0 ) then
-				write(unit=xim_str, fmt='(f0.36)', decimal=decimal) x%im
-			else
-				write(unit=xim_str, fmt='(f0.100)', decimal=decimal) x%im
-			end if
-
-			i = 1
-			do while ( i <= 125 )
-				if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) exit
-				i = i + 1; cycle
-			end do
-
-			if ( (i == 1) .or. ( (i == 2) .and. (xim_str(1:1) == '-') ) ) then
-				xim_str(i+1:125) = xim_str(i:124); xim_str(i:i) = '0'; i = i + 1
-			end if
-
-			if ( i > 36 ) then
-				xim_str = xim_str(:i)//'0'; exit if_eorf_im
-			end if
-
-			if ( .not. present(decimals) ) then
-				xim_str = xim_str(:i+36-e); exit if_eorf_im
-			end if
-
-			if ( decimals <= 0 ) then
-				xim_str = xim_str(:i)//'0'; exit if_eorf_im
-			end if
-
-			if ( decimals >= 36-e ) then
-				xim_str = xim_str(:i+36-e); exit if_eorf_im
-			end if
-
-			xim_str = xim_str(:i+decimals); exit if_eorf_im
-		end if if_eorf_im
-
-		if ( .not. present(im) ) then
-			im_ = EMPTY_STR
-		else
-			im_ = im
-		end if
-
-		if ( im_ == EMPTY_STR ) then
-			if ( decimal == 'POINT' ) then
-				x_str = '('//xre_str//COMMA//xim_str//')'; return
-			else
-				x_str = '('//xre_str//SEMICOLON//xim_str//')'; return
-			end if
-		end if
-
-		if ( fmt_ == 'z' ) then
-			x_str = xre_str//'+'//xim_str//im_; return
-		end if
-
-		if ( x%im < 0.0_real128 ) then
-			x_str = xre_str//xim_str//im_
-		else
-			x_str = xre_str//'+'//xim_str//im_
-		end if
-	end procedure str_c128
-	module procedure str_c64
-		character(len=1) :: fmt_
-		character(len=:), allocatable :: decimal, xre_str, xim_str, im_
-		integer, allocatable :: e, decimals_
-		integer :: i
-
-		if ( .not. present(fmt) ) then
-			fmt_ = 'e'
-		else
-			if ( any(REAL_FMTS == fmt) ) then
-				fmt_ = fmt
-			else
-				x_str = EMPTY_STR; return
-			end if
-		end if
-
-		if_z_re: if ( fmt_ == 'z' ) then
-			if ( x%re == 0.0_real64 ) then
-				xre_str = '0x0'; exit if_z_re
-			end if
-
-			xre_str = str( transfer(source=x%re, mold=1_int64), fmt='z' ); exit if_z_re
-		end if if_z_re
-		if_z_im: if ( fmt_ == 'z' ) then
-			if ( x%im == 0.0_real64 ) then
-				xim_str = '0x0'; exit if_z_im
-			end if
-
-			xim_str = str( transfer(source=x%im, mold=1_int64), fmt='z' ); exit if_z_im
-		end if if_z_im
-
-		if ( .not. present(locale) ) then
-			decimal = 'POINT'
-		else
-			if ( locale == 'US' ) then
-				decimal = 'POINT'
-			else if ( locale == 'EU' ) then
-				decimal = 'COMMA'
-			else
-				x_str = EMPTY_STR; return
-			end if
-		end if
-
-		if_eorf_re: if ( fmt_ == 'e' ) then
-			if ( x%re == 0.0_real64 ) then
-				xre_str = '0.0e+000'; exit if_eorf_re
-			end if
-
-			if ( x%re < 0.0_real64 ) then
-				allocate( character(len=25) :: xre_str )
-				write(unit=xre_str, fmt='(es25.17e3)', decimal=decimal) x%re
-				do i = 25, 1, -1
-					if ( xre_str(i:i) == 'E' ) then
-						xre_str(i:i) = 'e'; exit
-					end if
-				end do
-			else
-				allocate( character(len=24) :: xre_str )
-				write(unit=xre_str, fmt='(es24.17e3)', decimal=decimal) x%re
-				do i = 24, 1, -1
-					if ( xre_str(i:i) == 'E' ) then
-						xre_str(i:i) = 'e'; exit
-					end if
-				end do
-			end if
-
-			if ( .not. present(decimals) ) exit if_eorf_re
-			
-			if ( decimals >= 17 ) exit if_eorf_re
-
-			if ( decimals < 0 ) then
-				decimals_ = 0
-			else
-				decimals_ = decimals
-			end if
-
-			do i = 1, 24
-				if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) then
-					xre_str = xre_str(:i+decimals_)//xre_str(i+18:); exit if_eorf_re
-				end if
-			end do
-		else if ( fmt_ == 'f' ) then
-			if ( abs(x%re) /= 0.0_real64 ) then
-				e = int(log10(abs(x%re)))
-			else
-				xre_str = '0.0'; return
-			end if
-
-			if ( e == 0 ) then
-				if ( floor(x%re) > 0 ) e = 1 + e
-			else if ( e > 0 ) then
-				e = 1 + e
-			end if
-
-			allocate( character(len=100) :: xre_str )
-
-			if ( e > 0 ) then
-				write(unit=xre_str, fmt='(f0.18)', decimal=decimal) x%re
-			else
-				write(unit=xre_str, fmt='(f0.80)', decimal=decimal) x%re
-			end if
-
-			i = 1
-			do while ( i <= 100 )
-				if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) exit
-				i = i + 1; cycle
-			end do
-
-			if ( (i == 1) .or. ( (i == 2) .and. (xre_str(1:1) == '-') ) ) then
-				xre_str(i+1:100) = xre_str(i:99); xre_str(i:i) = '0'; i = i + 1
-			end if
-
-			if ( i > 18 ) then
-				xre_str = xre_str(:i)//'0'; exit if_eorf_re
-			end if
-
-			if ( .not. present(decimals) ) then
-				xre_str = xre_str(:i+18-e); exit if_eorf_re
-			end if
-
-			if ( decimals <= 0 ) then
-				xre_str = xre_str(:i)//'0'; exit if_eorf_re
-			end if
-
-			if ( decimals >= 18-e ) then
-				xre_str = xre_str(:i+18-e); exit if_eorf_re
-			end if
-
-			xre_str = xre_str(:i+decimals); exit if_eorf_re
-		end if if_eorf_re
-		if_eorf_im: if ( fmt_ == 'e' ) then
-			if ( x%im == 0.0_real64 ) then
-				xim_str = '0.0e+000'; exit if_eorf_im
-			end if
-
-			if ( x%im < 0.0_real64 ) then
-				allocate( character(len=25) :: xim_str )
-				write(unit=xim_str, fmt='(es25.17e3)', decimal=decimal) x%im
-				do i = 25, 1, -1
-					if ( xim_str(i:i) == 'E' ) then
-						xim_str(i:i) = 'e'; exit
-					end if
-				end do
-			else
-				allocate( character(len=24) :: xim_str )
-				write(unit=xim_str, fmt='(es24.17e3)', decimal=decimal) x%im
-				do i = 24, 1, -1
-					if ( xim_str(i:i) == 'E' ) then
-						xim_str(i:i) = 'e'; exit
-					end if
-				end do
-			end if
-
-			if ( .not. present(decimals) ) exit if_eorf_im
-			
-			if ( decimals >= 17 ) exit if_eorf_im
-
-			if ( decimals < 0 ) then
-				decimals_ = 0
-			else
-				decimals_ = decimals
-			end if
-
-			do i = 1, 24
-				if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) then
-					xim_str = xim_str(:i+decimals_)//xim_str(i+18:); exit if_eorf_im
-				end if
-			end do
-		else if ( fmt_ == 'f' ) then
-			if ( abs(x%im) /= 0.0_real64 ) then
-				e = int(log10(abs(x%im)))
-			else
-				xim_str = '0.0'; return
-			end if
-
-			if ( e == 0 ) then
-				if ( floor(x%im) > 0 ) e = 1 + e
-			else if ( e > 0 ) then
-				e = 1 + e
-			end if
-
-			allocate( character(len=100) :: xim_str )
-
-			if ( e > 0 ) then
-				write(unit=xim_str, fmt='(f0.18)', decimal=decimal) x%im
-			else
-				write(unit=xim_str, fmt='(f0.80)', decimal=decimal) x%im
-			end if
-
-			i = 1
-			do while ( i <= 100 )
-				if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) exit
-				i = i + 1; cycle
-			end do
-
-			if ( (i == 1) .or. ( (i == 2) .and. (xim_str(1:1) == '-') ) ) then
-				xim_str(i+1:100) = xim_str(i:99); xim_str(i:i) = '0'; i = i + 1
-			end if
-
-			if ( i > 18 ) then
-				xim_str = xim_str(:i)//'0'; exit if_eorf_im
-			end if
-
-			if ( .not. present(decimals) ) then
-				xim_str = xim_str(:i+18-e); exit if_eorf_im
-			end if
-
-			if ( decimals <= 0 ) then
-				xim_str = xim_str(:i)//'0'; exit if_eorf_im
-			end if
-
-			if ( decimals >= 18-e ) then
-				xim_str = xim_str(:i+18-e); exit if_eorf_im
-			end if
-
-			xim_str = xim_str(:i+decimals); exit if_eorf_im
-		end if if_eorf_im
-
-		if ( .not. present(im) ) then
-			im_ = EMPTY_STR
-		else
-			im_ = im
-		end if
-
-		if ( im_ == EMPTY_STR ) then
-			if ( decimal == 'POINT' ) then
-				x_str = '('//xre_str//COMMA//xim_str//')'; return
-			else
-				x_str = '('//xre_str//SEMICOLON//xim_str//')'; return
-			end if
-		end if
-
-		if ( fmt_ == 'z' ) then
-			x_str = xre_str//'+'//xim_str//im_; return
-		end if
-
-		if ( x%im < 0.0_real64 ) then
-			x_str = xre_str//xim_str//im_
-		else
-			x_str = xre_str//'+'//xim_str//im_
-		end if
-	end procedure str_c64
-	module procedure str_c32
-		character(len=1) :: fmt_
-		character(len=:), allocatable :: decimal, xre_str, xim_str, im_
-		integer, allocatable :: e, decimals_
-		integer :: i
-
-		if ( .not. present(fmt) ) then
-			fmt_ = 'e'
-		else
-			if ( any(REAL_FMTS == fmt) ) then
-				fmt_ = fmt
-			else
-				x_str = EMPTY_STR; return
-			end if
-		end if
-
-		if_z_re: if ( fmt_ == 'z' ) then
-			if ( x%re == 0.0_real32 ) then
-				xre_str = '0x0'; exit if_z_re
-			end if
-
-			xre_str = str( transfer(source=x%re, mold=1_int32), fmt='z' ); exit if_z_re
-		end if if_z_re
-		if_z_im: if ( fmt_ == 'z' ) then
-			if ( x%im == 0.0_real32 ) then
-				xim_str = '0x0'; exit if_z_im
-			end if
-
-			xim_str = str( transfer(source=x%im, mold=1_int32), fmt='z' ); exit if_z_im
-		end if if_z_im
-
-		if ( .not. present(locale) ) then
-			decimal = 'POINT'
-		else
-			if ( locale == 'US' ) then
-				decimal = 'POINT'
-			else if ( locale == 'EU' ) then
-				decimal = 'COMMA'
-			else
-				x_str = EMPTY_STR; return
-			end if
-		end if
-
-		if_eorf_re: if ( fmt_ == 'e' ) then
-			if ( x%re == 0.0_real32 ) then
-				xre_str = '0.0e+00'; exit if_eorf_re
-			end if
-
-			if ( x%re < 0.0_real32 ) then
-				allocate( character(len=15) :: xre_str )
-				write(unit=xre_str, fmt='(es15.8e2)', decimal=decimal) x%re
-				do i = 15, 1, -1
-					if ( xre_str(i:i) == 'E' ) then
-						xre_str(i:i) = 'e'; exit
-					end if
-				end do
-			else
-				allocate( character(len=14) :: xre_str )
-				write(unit=xre_str, fmt='(es14.8e2)', decimal=decimal) x%re
-				do i = 14, 1, -1
-					if ( xre_str(i:i) == 'E' ) then
-						xre_str(i:i) = 'e'; exit
-					end if
-				end do
-			end if
-
-			if ( .not. present(decimals) ) exit if_eorf_re
-			
-			if ( decimals >= 8 ) exit if_eorf_re
-
-			if ( decimals < 0 ) then
-				decimals_ = 0
-			else
-				decimals_ = decimals
-			end if
-
-			do i = 1, 14
-				if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) then
-					xre_str = xre_str(:i+decimals_)//xre_str(i+9:); exit if_eorf_re
-				end if
-			end do
-		else if ( fmt_ == 'f' ) then
-			if ( abs(x%re) /= 0.0_real32 ) then
-				e = int(log10(abs(x%re)))
-			else
-				xre_str = '0.0'; exit if_eorf_re
-			end if
-
-			if ( e == 0 ) then
-				if ( floor(x%re) > 0 ) e = 1 + e
-			else if ( e > 0 ) then
-				e = 1 + e
-			end if
-
-			allocate( character(len=75) :: xre_str )
-
-			if ( e > 0 ) then
-				write(unit=xre_str, fmt='(f0.9)', decimal=decimal) x%re
-			else
-				write(unit=xre_str, fmt='(f0.70)', decimal=decimal) x%re
-			end if
-
-			i = 1
-			do while ( i <= 75 )
-				if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) exit
-				i = i + 1; cycle
-			end do
-
-			if ( (i == 1) .or. ( (i == 2) .and. (xre_str(1:1) == '-') ) ) then
-				xre_str(i+1:75) = xre_str(i:74); xre_str(i:i) = '0'; i = i + 1
-			end if
-
-			if ( i > 9 ) then
-				xre_str = xre_str(:i)//'0'; exit if_eorf_re
-			end if
-
-			if ( .not. present(decimals) ) then
-				xre_str = xre_str(:i+9-e); exit if_eorf_re
-			end if
-
-			if ( decimals <= 0 ) then
-				xre_str = xre_str(:i)//'0'; exit if_eorf_re
-			end if
-
-			if ( decimals >= 9-e ) then
-				xre_str = xre_str(:i+9-e); exit if_eorf_re
-			end if
-
-			xre_str = xre_str(:i+decimals); exit if_eorf_re
-		end if if_eorf_re
-		if_eorf_im: if ( fmt_ == 'e' ) then
-			if ( x%im == 0.0_real32 ) then
-				xim_str = '0.0e+00'; exit if_eorf_im
-			end if
-
-			if ( x%im < 0.0_real32 ) then
-				allocate( character(len=15) :: xim_str )
-				write(unit=xim_str, fmt='(es15.8e2)', decimal=decimal) x%im
-				do i = 15, 1, -1
-					if ( xim_str(i:i) == 'E' ) then
-						xim_str(i:i) = 'e'; exit
-					end if
-				end do
-			else
-				allocate( character(len=14) :: xim_str )
-				write(unit=xim_str, fmt='(es14.8e2)', decimal=decimal) x%im
-				do i = 14, 1, -1
-					if ( xim_str(i:i) == 'E' ) then
-						xim_str(i:i) = 'e'; exit
-					end if
-				end do
-			end if
-
-			if ( .not. present(decimals) ) exit if_eorf_im
-			
-			if ( decimals >= 8 ) exit if_eorf_im
-
-			if ( decimals < 0 ) then
-				decimals_ = 0
-			else
-				decimals_ = decimals
-			end if
-
-			do i = 1, 14
-				if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) then
-					xim_str = xim_str(:i+decimals_)//xim_str(i+9:); exit if_eorf_im
-				end if
-			end do
-		else if ( fmt_ == 'f' ) then
-			if ( abs(x%im) /= 0.0_real32 ) then
-				e = int(log10(abs(x%im)))
-			else
-				xim_str = '0.0'; exit if_eorf_im
-			end if
-
-			if ( e == 0 ) then
-				if ( floor(x%im) > 0 ) e = 1 + e
-			else if ( e > 0 ) then
-				e = 1 + e
-			end if
-
-			allocate( character(len=75) :: xim_str )
-
-			if ( e > 0 ) then
-				write(unit=xim_str, fmt='(f0.9)', decimal=decimal) x%im
-			else
-				write(unit=xim_str, fmt='(f0.70)', decimal=decimal) x%im
-			end if
-
-			i = 1
-			do while ( i <= 75 )
-				if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) exit
-				i = i + 1; cycle
-			end do
-
-			if ( (i == 1) .or. ( (i == 2) .and. (xim_str(1:1) == '-') ) ) then
-				xim_str(i+1:75) = xim_str(i:74); xim_str(i:i) = '0'; i = i + 1
-			end if
-
-			if ( i > 9 ) then
-				xim_str = xim_str(:i)//'0'; exit if_eorf_im
-			end if
-
-			if ( .not. present(decimals) ) then
-				xim_str = xim_str(:i+9-e); exit if_eorf_im
-			end if
-
-			if ( decimals <= 0 ) then
-				xim_str = xim_str(:i)//'0'; exit if_eorf_im
-			end if
-
-			if ( decimals >= 9-e ) then
-				xim_str = xim_str(:i+9-e); exit if_eorf_im
-			end if
-
-			xim_str = xim_str(:i+decimals); exit if_eorf_im
-		end if if_eorf_im
-
-		if ( .not. present(im) ) then
-			im_ = EMPTY_STR
-		else
-			im_ = im
-		end if
-
-		if ( im_ == EMPTY_STR ) then
-			if ( decimal == 'POINT' ) then
-				x_str = '('//xre_str//COMMA//xim_str//')'; return
-			else
-				x_str = '('//xre_str//SEMICOLON//xim_str//')'; return
-			end if
-		end if
-
-		if ( fmt_ == 'z' ) then
-			x_str = xre_str//'+'//xim_str//im_; return
-		end if
-
-		if ( x%im < 0.0_real32 ) then
-			x_str = xre_str//xim_str//im_
-		else
-			x_str = xre_str//'+'//xim_str//im_
-		end if
-	end procedure str_c32
-
-	module procedure str_r128
-		character(len=1) :: fmt_
-		character(len=:), allocatable :: decimal
-		integer, allocatable :: e, decimals_
-		integer :: i
-
-		if ( .not. present(fmt) ) then
-			fmt_ = 'e'
-		else
-			if ( any(REAL_FMTS == fmt) ) then
-				fmt_ = fmt
-			else
-				x_str = EMPTY_STR; return
-			end if
-		end if
-
-		if ( fmt_ == 'z' ) then
-			if ( x /= 0.0_real128 ) then
-				allocate( character(len=34) :: x_str )
-			else
-				x_str = '0x0'; return
-			end if
-
-			write(unit=x_str(3:), fmt='(z32)') x
-
-			do concurrent (i = 3:34)
-				if ( (x_str(i:i) >= 'A') .and. (x_str(i:i) <= 'F') ) x_str(i:i) = achar(iachar(x_str(i:i)) + 32)
-			end do
-
-			x_str(1:2) = '0x'; return
-		end if
-
-		if ( .not. present(locale) ) then
-			decimal = 'POINT'
-		else
-			if ( locale == 'US' ) then
-				decimal = 'POINT'
-			else if ( locale == 'EU' ) then
-				decimal = 'COMMA'
-			else
-				x_str = EMPTY_STR; return
-			end if
-		end if
-
-		if ( fmt_ == 'e' ) then
-			if ( x == 0.0_real128 ) then
-				x_str = '0.0e+0000'; return
-			end if
-
-			if ( x < 0.0_real128 ) then
-				allocate( character(len=44) :: x_str )
-				write(unit=x_str, fmt='(es44.35e4)', decimal=decimal) x
-				do i = 44, 1, -1
-					if ( x_str(i:i) == 'E' ) then
-						x_str(i:i) = 'e'; exit
-					end if
-				end do
-			else
-				allocate( character(len=43) :: x_str )
-				write(unit=x_str, fmt='(es43.35e4)', decimal=decimal) x
-				do i = 43, 1, -1
-					if ( x_str(i:i) == 'E' ) then
-						x_str(i:i) = 'e'; exit
-					end if
-				end do
-			end if
-
-			if ( .not. present(decimals) ) return
-			
-			if ( decimals >= 35 ) return
-
-			if ( decimals < 0 ) then
-				decimals_ = 0
-			else
-				decimals_ = decimals
-			end if
-
-			do i = 1, 43
-				if ( (x_str(i:i) == POINT) .or. (x_str(i:i) == COMMA) ) then
-					x_str = x_str(:i+decimals_)//x_str(i+36:); return
-				end if
-			end do
-		else if ( fmt_ == 'f' ) then
-			if ( abs(x) /= 0.0_real128 ) then
-				e = int(log10(abs(x)))
-			else
-				x_str = '0.0'; return
-			end if
-
-			if ( e == 0 ) then
-				if ( floor(x) > 0 ) e = 1 + e
-			else if ( e > 0 ) then
-				e = 1 + e
-			end if
-
-			allocate( character(len=125) :: x_str )
-
-			if ( e > 0 ) then
-				write(unit=x_str, fmt='(f0.36)', decimal=decimal) x
-			else
-				write(unit=x_str, fmt='(f0.100)', decimal=decimal) x
-			end if
-
-			i = 1
-			do while ( i <= 125 )
-				if ( (x_str(i:i) == POINT) .or. (x_str(i:i) == COMMA) ) exit
-				i = i + 1; cycle
-			end do
-
-			if ( (i == 1) .or. ( (i == 2) .and. (x_str(1:1) == '-') ) ) then
-				x_str(i+1:125) = x_str(i:124); x_str(i:i) = '0'; i = i + 1
-			end if
-
-			if ( i > 36 ) then
-				x_str = x_str(:i)//'0'; return
-			end if
-
-			if ( .not. present(decimals) ) then
-				x_str = x_str(:i+36-e); return
-			end if
-
-			if ( decimals <= 0 ) then
-				x_str = x_str(:i)//'0'; return
-			end if
-
-			if ( decimals >= 36-e ) then
-				x_str = x_str(:i+36-e); return
-			end if
-
-			x_str = x_str(:i+decimals); return
-		end if
-	end procedure str_r128
-	module procedure str_r64
-		character(len=1) :: fmt_
-		character(len=:), allocatable :: decimal
-		integer, allocatable :: e, decimals_
-		integer :: i
-
-		if ( .not. present(fmt) ) then
-			fmt_ = 'e'
-		else
-			if ( any(REAL_FMTS == fmt) ) then
-				fmt_ = fmt
-			else
-				x_str = EMPTY_STR; return
-			end if
-		end if
-
-		if ( fmt_ == 'z' ) then
-			if ( x == 0.0_real64 ) then
-				x_str = '0x0'; return
-			end if
-
-			x_str = str( transfer(source=x, mold=1_int64), fmt='z' ); return
-		end if
-
-		if ( .not. present(locale) ) then
-			decimal = 'POINT'
-		else
-			if ( locale == 'US' ) then
-				decimal = 'POINT'
-			else if ( locale == 'EU' ) then
-				decimal = 'COMMA'
-			else
-				x_str = EMPTY_STR; return
-			end if
-		end if
-
-		if ( fmt_ == 'e' ) then
-			if ( x == 0.0_real64 ) then
-				x_str = '0.0e+000'; return
-			end if
-
-			if ( x < 0.0_real64 ) then
-				allocate( character(len=25) :: x_str )
-				write(unit=x_str, fmt='(es25.17e3)', decimal=decimal) x
-				do i = 25, 1, -1
-					if ( x_str(i:i) == 'E' ) then
-						x_str(i:i) = 'e'; exit
-					end if
-				end do
-			else
-				allocate( character(len=24) :: x_str )
-				write(unit=x_str, fmt='(es24.17e3)', decimal=decimal) x
-				do i = 24, 1, -1
-					if ( x_str(i:i) == 'E' ) then
-						x_str(i:i) = 'e'; exit
-					end if
-				end do
-			end if
-
-			if ( .not. present(decimals) ) return
-			
-			if ( decimals >= 17 ) return
-
-			if ( decimals < 0 ) then
-				decimals_ = 0
-			else
-				decimals_ = decimals
-			end if
-
-			do i = 1, 24
-				if ( (x_str(i:i) == POINT) .or. (x_str(i:i) == COMMA) ) then
-					x_str = x_str(:i+decimals_)//x_str(i+18:); return
-				end if
-			end do
-		else if ( fmt_ == 'f' ) then
-			if ( abs(x) /= 0.0_real64 ) then
-				e = int(log10(abs(x)))
-			else
-				x_str = '0.0'; return
-			end if
-
-			if ( e == 0 ) then
-				if ( floor(x) > 0 ) e = 1 + e
-			else if ( e > 0 ) then
-				e = 1 + e
-			end if
-
-			allocate( character(len=100) :: x_str )
-
-			if ( e > 0 ) then
-				write(unit=x_str, fmt='(f0.18)', decimal=decimal) x
-			else
-				write(unit=x_str, fmt='(f0.80)', decimal=decimal) x
-			end if
-
-			i = 1
-			do while ( i <= 100 )
-				if ( (x_str(i:i) == POINT) .or. (x_str(i:i) == COMMA) ) exit
-				i = i + 1; cycle
-			end do
-
-			if ( (i == 1) .or. ( (i == 2) .and. (x_str(1:1) == '-') ) ) then
-				x_str(i+1:100) = x_str(i:99); x_str(i:i) = '0'; i = i + 1
-			end if
-
-			if ( i > 18 ) then
-				x_str = x_str(:i)//'0'; return
-			end if
-
-			if ( .not. present(decimals) ) then
-				x_str = x_str(:i+18-e); return
-			end if
-
-			if ( decimals <= 0 ) then
-				x_str = x_str(:i)//'0'; return
-			end if
-
-			if ( decimals >= 18-e ) then
-				x_str = x_str(:i+18-e); return
-			end if
-
-			x_str = x_str(:i+decimals); return
-		end if
-	end procedure str_r64
-	module procedure str_r32
-		character(len=1) :: fmt_
-		character(len=:), allocatable :: decimal
-		integer, allocatable :: e, decimals_
-		integer :: i
-
-		if ( .not. present(fmt) ) then
-			fmt_ = 'e'
-		else
-			if ( any(REAL_FMTS == fmt) ) then
-				fmt_ = fmt
-			else
-				x_str = EMPTY_STR; return
-			end if
-		end if
-
-		if ( fmt_ == 'z' ) then
-			if ( x == 0.0_real32 ) then
-				x_str = '0x0'; return
-			end if
-
-			x_str = str( transfer(source=x, mold=1_int32), fmt='z' ); return
-		end if
-
-		if ( .not. present(locale) ) then
-			decimal = 'POINT'
-		else
-			if ( locale == 'US' ) then
-				decimal = 'POINT'
-			else if ( locale == 'EU' ) then
-				decimal = 'COMMA'
-			else
-				x_str = EMPTY_STR; return
-			end if
-		end if
-
-		if ( fmt_ == 'e' ) then
-			if ( x == 0.0_real32 ) then
-				x_str = '0.0e+00'; return
-			end if
-
-			if ( x < 0.0_real32 ) then
-				allocate( character(len=15) :: x_str )
-				write(unit=x_str, fmt='(es15.8e2)', decimal=decimal) x
-				do i = 15, 1, -1
-					if ( x_str(i:i) == 'E' ) then
-						x_str(i:i) = 'e'; exit
-					end if
-				end do
-			else
-				allocate( character(len=14) :: x_str )
-				write(unit=x_str, fmt='(es14.8e2)', decimal=decimal) x
-				do i = 14, 1, -1
-					if ( x_str(i:i) == 'E' ) then
-						x_str(i:i) = 'e'; exit
-					end if
-				end do
-			end if
-
-			if ( .not. present(decimals) ) return
-			
-			if ( decimals >= 8 ) return
-
-			if ( decimals < 0 ) then
-				decimals_ = 0
-			else
-				decimals_ = decimals
-			end if
-
-			do i = 1, 14
-				if ( (x_str(i:i) == POINT) .or. (x_str(i:i) == COMMA) ) then
-					x_str = x_str(:i+decimals_)//x_str(i+9:); return
-				end if
-			end do
-		else if ( fmt_ == 'f' ) then
-			if ( abs(x) /= 0.0_real32 ) then
-				e = int(log10(abs(x)))
-			else
-				x_str = '0.0'; return
-			end if
-
-			if ( e == 0 ) then
-				if ( floor(x) > 0 ) e = 1 + e
-			else if ( e > 0 ) then
-				e = 1 + e
-			end if
-
-			allocate( character(len=75) :: x_str )
-
-			if ( e > 0 ) then
-				write(unit=x_str, fmt='(f0.9)', decimal=decimal) x
-			else
-				write(unit=x_str, fmt='(f0.70)', decimal=decimal) x
-			end if
-
-			i = 1
-			do while ( i <= 75 )
-				if ( (x_str(i:i) == POINT) .or. (x_str(i:i) == COMMA) ) exit
-				i = i + 1; cycle
-			end do
-
-			if ( (i == 1) .or. ( (i == 2) .and. (x_str(1:1) == '-') ) ) then
-				x_str(i+1:75) = x_str(i:74); x_str(i:i) = '0'; i = i + 1
-			end if
-
-			if ( i > 9 ) then
-				x_str = x_str(:i)//'0'; return
-			end if
-
-			if ( .not. present(decimals) ) then
-				x_str = x_str(:i+9-e); return
-			end if
-
-			if ( decimals <= 0 ) then
-				x_str = x_str(:i)//'0'; return
-			end if
-
-			if ( decimals >= 9-e ) then
-				x_str = x_str(:i+9-e); return
-			end if
-
-			x_str = x_str(:i+decimals); return
-		end if
-	end procedure str_r32
-
-	module procedure str_i64
-		character(len=1) :: fmt_
-		integer(int64) :: num
-		logical :: negative
-		integer :: num_len, i
-
-		if ( .not. present(fmt) ) then
-			fmt_ = 'i'
-		else
-			if ( any(INT_FMTS == fmt) ) then
-				fmt_ = fmt
-			else
-				x_str = EMPTY_STR; return
-			end if
-		end if
-
-		if ( fmt_ == 'i' ) then
-			if ( x < 0 ) then
-				if ( x == -huge(1_int64)-1_int64 ) then
-					x_str = '-9223372036854775808'; return
-				end if
-				num_len = 2; num = abs(x); negative = .true.
-			else
-				num_len = 1; num = x; negative = .false.
-			end if
-		
-			count_digits: do
-				num = num/10
-				if ( num > 0 ) then
-					num_len = num_len + 1; cycle count_digits
-				else
-					exit count_digits
-				end if
-			end do count_digits
-	
-			allocate( character(len=num_len) :: x_str )
-	
-			if ( negative ) then
-				num = abs(x)
-				do i = num_len, 2, -1
-					x_str(i:i) = DIGITS_A( mod(num,10) ); num = num/10
-				end do
-				x_str(1:1) = '-'; return
-			else
-				num = x
-				do i = num_len, 1, -1
-					x_str(i:i) = DIGITS_A( mod(num,10) ); num = num/10
-				end do
-				return
-			end if
-		else if ( fmt_ == 'z' ) then
-			if ( x < 0 ) then
-				num_len = 1; num = (x + 1_int64) + huge(1_int64); negative = .true.
-			else
-				num_len = 1; num = x; negative = .false.
-			end if
-			
-			count_hex_digits: do
-				num = num/16
-				if ( num > 0 ) then
-					num_len = num_len + 1; cycle count_hex_digits
-				else
-					exit count_hex_digits
-				end if
-			end do count_hex_digits
-		
-			if ( negative ) then
-				num = (x + 1_int64) + huge(1_int64)
-				x_str = '0x0000000000000000'
-			else
-				num = x
-				allocate( character(len=2+num_len) :: x_str ); x_str(1:2) = '0x'
-			end if
-		
-			insert_hex_characters: do i = len(x_str), len(x_str)-num_len+1, -1
-				x_str(i:i) = DIGITS_A( mod(num,16) ); num = num/16
-			end do insert_hex_characters
-		
-			if ( negative ) then
-				i = 0; do
-					if ( DIGITS_A(i) == x_str(3:3) ) exit
-					i = i + 1; cycle
-				end do
-				x_str(3:3) = DIGITS_A(i+8); return
-			else
-				return
-			end if
-		end if
-	end procedure str_i64
-	module procedure str_i32
-		character(len=1) :: fmt_
-		integer(int32) :: num
-		logical :: negative
-		integer :: num_len, i
-
-		if ( .not. present(fmt) ) then
-			fmt_ = 'i'
-		else
-			if ( any(INT_FMTS == fmt) ) then
-				fmt_ = fmt
-			else
-				x_str = EMPTY_STR; return
-			end if
-		end if
-
-		if ( fmt_ == 'i' ) then
-			if ( x < 0 ) then
-				if ( x == -huge(1_int32)-1_int32 ) then
-					x_str = '-2147483648'; return
-				end if
-				num_len = 2; num = abs(x); negative = .true.
-			else
-				num_len = 1; num = x; negative = .false.
-			end if
-		
-			count_digits: do
-				num = num/10
-				if ( num > 0 ) then
-					num_len = num_len + 1; cycle count_digits
-				else
-					exit count_digits
-				end if
-			end do count_digits
-	
-			allocate( character(len=num_len) :: x_str )
-	
-			if ( negative ) then
-				num = abs(x)
-				do i = num_len, 2, -1
-					x_str(i:i) = DIGITS_A( mod(num,10) ); num = num/10
-				end do
-				x_str(1:1) = '-'; return
-			else
-				num = x
-				do i = num_len, 1, -1
-					x_str(i:i) = DIGITS_A( mod(num,10) ); num = num/10
-				end do
-				return
-			end if
-		else if ( fmt_ == 'z' ) then
-			if ( x < 0 ) then
-				num_len = 1; num = (x + 1_int32) + huge(1_int32); negative = .true.
-			else
-				num_len = 1; num = x; negative = .false.
-			end if
-			
-			count_hex_digits: do
-				num = num/16
-				if ( num > 0 ) then
-					num_len = num_len + 1; cycle count_hex_digits
-				else
-					exit count_hex_digits
-				end if
-			end do count_hex_digits
-		
-			if ( negative ) then
-				num = (x + 1_int32) + huge(1_int32)
-				x_str = '0x00000000'
-			else
-				num = x
-				allocate( character(len=2+num_len) :: x_str ); x_str(1:2) = '0x'
-			end if
-		
-			insert_hex_characters: do i = len(x_str), len(x_str)-num_len+1, -1
-				x_str(i:i) = DIGITS_A( mod(num,16) ); num = num/16
-			end do insert_hex_characters
-		
-			if ( negative ) then
-				i = 0; do
-					if ( DIGITS_A(i) == x_str(3:3) ) exit
-					i = i + 1; cycle
-				end do
-				x_str(3:3) = DIGITS_A(i+8); return
-			else
-				return
-			end if
-		end if
-	end procedure str_i32
-	module procedure str_i16
-		character(len=1) :: fmt_
-		integer(int16) :: num
-		logical :: negative
-		integer :: num_len, i
-
-		if ( .not. present(fmt) ) then
-			fmt_ = 'i'
-		else
-			if ( any(INT_FMTS == fmt) ) then
-				fmt_ = fmt
-			else
-				x_str = EMPTY_STR; return
-			end if
-		end if
-
-		if ( fmt_ == 'i' ) then
-			if ( x < 0 ) then
-				if ( x == -huge(1_int16)-1_int16 ) then
-					x_str = '-32768'; return
-				end if
-				num_len = 2; num = abs(x); negative = .true.
-			else
-				num_len = 1; num = x; negative = .false.
-			end if
-		
-			count_digits: do
-				num = num/10
-				if ( num > 0 ) then
-					num_len = num_len + 1; cycle count_digits
-				else
-					exit count_digits
-				end if
-			end do count_digits
-	
-			allocate( character(len=num_len) :: x_str )
-	
-			if ( negative ) then
-				num = abs(x)
-				do i = num_len, 2, -1
-					x_str(i:i) = DIGITS_A( mod(num,10) ); num = num/10
-				end do
-				x_str(1:1) = '-'; return
-			else
-				num = x
-				do i = num_len, 1, -1
-					x_str(i:i) = DIGITS_A( mod(num,10) ); num = num/10
-				end do
-				return
-			end if
-		else if ( fmt_ == 'z' ) then
-			if ( x < 0 ) then
-				num_len = 1; num = (x + 1_int16) + huge(1_int16); negative = .true.
-			else
-				num_len = 1; num = x; negative = .false.
-			end if
-			
-			count_hex_digits: do
-				num = num/16
-				if ( num > 0 ) then
-					num_len = num_len + 1; cycle count_hex_digits
-				else
-					exit count_hex_digits
-				end if
-			end do count_hex_digits
-		
-			if ( negative ) then
-				num = (x + 1_int16) + huge(1_int16)
-				x_str = '0x0000'
-			else
-				num = x
-				allocate( character(len=2+num_len) :: x_str ); x_str(1:2) = '0x'
-			end if
-		
-			insert_hex_characters: do i = len(x_str), len(x_str)-num_len+1, -1
-				x_str(i:i) = DIGITS_A( mod(num,16) ); num = num/16
-			end do insert_hex_characters
-		
-			if ( negative ) then
-				i = 0; do
-					if ( DIGITS_A(i) == x_str(3:3) ) exit
-					i = i + 1; cycle
-				end do
-				x_str(3:3) = DIGITS_A(i+8); return
-			else
-				return
-			end if
-		end if
-	end procedure str_i16
-	module procedure str_i8
-		character(len=1) :: fmt_
-		integer(int8) :: num
-		logical :: negative
-		integer :: num_len, i
-
-		if ( .not. present(fmt) ) then
-			fmt_ = 'i'
-		else
-			if ( any(INT_FMTS == fmt) ) then
-				fmt_ = fmt
-			else
-				x_str = EMPTY_STR; return
-			end if
-		end if
-
-		if ( fmt_ == 'i' ) then
-			if ( x < 0 ) then
-				if ( x == -huge(1_int8)-1_int8 ) then
-					x_str = '-128'; return
-				end if
-				num_len = 2; num = abs(x); negative = .true.
-			else
-				num_len = 1; num = x; negative = .false.
-			end if
-		
-			count_digits: do
-				num = num/10
-				if ( num > 0 ) then
-					num_len = num_len + 1; cycle count_digits
-				else
-					exit count_digits
-				end if
-			end do count_digits
-	
-			allocate( character(len=num_len) :: x_str )
-	
-			if ( negative ) then
-				num = abs(x)
-				do i = num_len, 2, -1
-					x_str(i:i) = DIGITS_A( mod(num,10) ); num = num/10
-				end do
-				x_str(1:1) = '-'; return
-			else
-				num = x
-				do i = num_len, 1, -1
-					x_str(i:i) = DIGITS_A( mod(num,10) ); num = num/10
-				end do
-				return
-			end if
-		else if ( fmt_ == 'z' ) then
-			if ( x < 0 ) then
-				num_len = 1; num = (x + 1_int8) + huge(1_int8); negative = .true.
-			else
-				num_len = 1; num = x; negative = .false.
-			end if
-			
-			count_hex_digits: do
-				num = num/16
-				if ( num > 0 ) then
-					num_len = num_len + 1; cycle count_hex_digits
-				else
-					exit count_hex_digits
-				end if
-			end do count_hex_digits
-		
-			if ( negative ) then
-				num = (x + 1_int8) + huge(1_int8)
-				x_str = '0x00'
-			else
-				num = x
-				allocate( character(len=2+num_len) :: x_str ); x_str(1:2) = '0x'
-			end if
-		
-			insert_hex_characters: do i = len(x_str), len(x_str)-num_len+1, -1
-				x_str(i:i) = DIGITS_A( mod(num,16) ); num = num/16
-			end do insert_hex_characters
-		
-			if ( negative ) then
-				i = 0; do
-					if ( DIGITS_A(i) == x_str(3:3) ) exit
-					i = i + 1; cycle
-				end do
-				x_str(3:3) = DIGITS_A(i+8); return
-			end if
-		else
-			return
-		end if
-	end procedure str_i8
-
-	module procedure str_string
-		if ( x%len() < 1 ) then
-			x_str = EMPTY_STR
-		else
-			x_str = x%s
-		end if
-	end procedure str_string
-
-	module procedure str_char
-		x_str = x
-	end procedure str_char
-
-	module procedure str_empty
-		x_str = EMPTY_STR
-	end procedure str_empty
-
-	module procedure cast_c128
-		character(len=1) :: fmt_
-		character(len=:), allocatable :: im_, decimal
-		character(len=:), allocatable, dimension(:) :: seps, e_chars
+		character(len=5) :: decimal
+		character(len=:), allocatable :: im_
 
 		real(real128) :: z_re, z_im
-		integer, allocatable :: substring_len, i, l, r, im_len
+		integer :: substring_len, l, r, i, sep_code, e_code, im_len
 
 		substring_len = len(substring)
 
@@ -10073,23 +12456,23 @@ submodule (io_fortran_lib) internal_io
 
 		if ( len(im_) == 0 ) then
 			if ( decimal == 'POINT' ) then
-				seps = [ COMMA ]
+				sep_code = iachar(COMMA)
 			else
-				seps = [ SEMICOLON ]
+				sep_code = iachar(SEMICOLON)
 			end if
 
-			l = 1; do while ( l <= substring_len )
-				if ( substring(l:l) == '(' ) exit
+			l = 1; do
+				if ( iachar(substring(l:l)) == 40 ) exit
 				l = l + 1; cycle
 			end do
 
-			r = substring_len; do while ( r >= 1 )
-				if ( substring(r:r) == ')' ) exit
+			r = substring_len; do
+				if ( iachar(substring(r:r)) == 41 ) exit
 				r = r - 1; cycle
 			end do
 
-			i = l+1; do while ( i <= r )
-				if ( substring(i:i) == seps(1) ) exit
+			i = l+1; do
+				if ( iachar(substring(i:i)) == sep_code ) exit
 				i = i + 1; cycle
 			end do
 
@@ -10122,28 +12505,35 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		im_len = len(im_); seps = [ '+', '-' ]; e_chars = [ 'e', 'E' ]
+		sep_code = iachar('+'); e_code = iachar('e'); im_len = len(im_)
 
-		l = 1; do while ( l <= substring_len )
-			if ( substring(l:l) /= SPACE ) exit
+		l = 1; do
+			if ( iachar(substring(l:l)) > sep_code ) exit
 			l = l + 1; cycle
 		end do
 
-		r = substring_len-im_len+1; do while ( r >= 1 )
+		r = substring_len-im_len+1; do
 			if ( substring(r:r+im_len-1) == im_ ) exit
 			r = r - 1; cycle
 		end do
 
-		i = l+1; do while ( i <= r )
-			if ( any(seps == substring(i:i)) ) then
-				if ( any(e_chars == substring(i-1:i-1)) .and. (fmt_ /= 'z') ) then
-					i = i + 1; cycle
-				else
-					exit
+		if ( fmt_ == 'z' ) then
+			i = l+1; do
+				if ( iachar(substring(i:i)) == sep_code ) exit
+				i = i + 1; cycle
+			end do
+		else
+			i = l+1; do
+				if ( (iachar(substring(i:i)) == sep_code) .or. (iachar(substring(i:i)) == sep_code+2) ) then
+					if ( (iachar(substring(i-1:i-1)) == e_code).or.(iachar(substring(i-1:i-1)) == e_code-32) ) then
+						i = i + 1; cycle
+					else
+						exit
+					end if
 				end if
-			end if
-			i = i + 1; cycle
-		end do
+				i = i + 1; cycle
+			end do
+		end if
 
 		if ( fmt_ == 'z' ) then
 			if ( i-l > 2 ) then
@@ -10172,14 +12562,14 @@ submodule (io_fortran_lib) internal_io
 			read(unit=substring(i:r-1), fmt=*, decimal=decimal) z_im
 			into = cmplx(z_re, z_im, kind=real128); return
 		end if
-	end procedure cast_c128
-	module procedure cast_c64
+	end procedure cast_char_to_c128
+	module procedure cast_char_to_c64
 		character(len=1) :: fmt_
-		character(len=:), allocatable :: im_, decimal
-		character(len=:), allocatable, dimension(:) :: seps, e_chars
+		character(len=5) :: decimal
+		character(len=:), allocatable :: im_
 
 		real(real64) :: z_re, z_im
-		integer, allocatable :: substring_len, i, l, r, im_len
+		integer :: substring_len, l, r, i, sep_code, e_code, im_len
 
 		substring_len = len(substring)
 
@@ -10217,30 +12607,31 @@ submodule (io_fortran_lib) internal_io
 
 		if ( len(im_) == 0 ) then
 			if ( decimal == 'POINT' ) then
-				seps = [ COMMA ]
+				sep_code = iachar(COMMA)
 			else
-				seps = [ SEMICOLON ]
+				sep_code = iachar(SEMICOLON)
 			end if
 
-			l = 1; do while ( l <= substring_len )
-				if ( substring(l:l) == '(' ) exit
+			l = 1; do
+				if ( iachar(substring(l:l)) == 40 ) exit
 				l = l + 1; cycle
 			end do
 
-			r = substring_len; do while ( r >= 1 )
-				if ( substring(r:r) == ')' ) exit
+			r = substring_len; do
+				if ( iachar(substring(r:r)) == 41 ) exit
 				r = r - 1; cycle
 			end do
 
-			i = l+1; do while ( i <= r )
-				if ( substring(i:i) == seps(1) ) exit
+			i = l+1; do
+				if ( iachar(substring(i:i)) == sep_code ) exit
 				i = i + 1; cycle
 			end do
 
 			if ( fmt_ == 'z' ) then
-				block; integer(int64) :: num
-					call cast(substring(l+1:i-1), into=num, fmt='z'); z_re = transfer(source=num, mold=z_re)
-					call cast(substring(i+1:r-1), into=num, fmt='z'); z_im = transfer(source=num, mold=z_im)
+				block; integer(int64) :: num; character(len=i-l-1) :: hex_str_re; character(len=r-i-1) :: hex_str_im
+					hex_str_re = substring(l+1:i-1); hex_str_im = substring(i+1:r-1)
+					call cast(hex_str_re, into=num, fmt='z'); z_re = transfer(source=num, mold=z_re)
+					call cast(hex_str_im, into=num, fmt='z'); z_im = transfer(source=num, mold=z_im)
 					into = cmplx(z_re, z_im, kind=real64); return
 				end block
 			else
@@ -10250,33 +12641,41 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		im_len = len(im_); seps = [ '+', '-' ]; e_chars = [ 'e', 'E' ]
+		sep_code = iachar('+'); e_code = iachar('e'); im_len = len(im_)
 
-		l = 1; do while ( l <= substring_len )
-			if ( substring(l:l) /= SPACE ) exit
+		l = 1; do
+			if ( iachar(substring(l:l)) > sep_code ) exit
 			l = l + 1; cycle
 		end do
 
-		r = substring_len-im_len+1; do while ( r >= 1 )
+		r = substring_len-im_len+1; do
 			if ( substring(r:r+im_len-1) == im_ ) exit
 			r = r - 1; cycle
 		end do
 
-		i = l+1; do while ( i <= r )
-			if ( any(seps == substring(i:i)) ) then
-				if ( any(e_chars == substring(i-1:i-1)) .and. (fmt_ /= 'z') ) then
-					i = i + 1; cycle
-				else
-					exit
+		if ( fmt_ == 'z' ) then
+			i = l+1; do
+				if ( iachar(substring(i:i)) == sep_code ) exit
+				i = i + 1; cycle
+			end do
+		else
+			i = l+1; do
+				if ( (iachar(substring(i:i)) == sep_code) .or. (iachar(substring(i:i)) == sep_code+2) ) then
+					if ( (iachar(substring(i-1:i-1)) == e_code).or.(iachar(substring(i-1:i-1)) == e_code-32) ) then
+						i = i + 1; cycle
+					else
+						exit
+					end if
 				end if
-			end if
-			i = i + 1; cycle
-		end do
+				i = i + 1; cycle
+			end do
+		end if
 
 		if ( fmt_ == 'z' ) then
-			block; integer(int64) :: num
-				call cast(substring(l:i-1), into=num, fmt='z'); z_re = transfer(source=num, mold=z_re)
-				call cast(substring(i+1:r-1), into=num, fmt='z'); z_im = transfer(source=num, mold=z_im)
+			block; integer(int64) :: num; character(len=i-l) :: hex_str_re; character(len=r-i-1) :: hex_str_im
+				hex_str_re = substring(l:i-1); hex_str_im = substring(i+1:r-1)
+				call cast(hex_str_re, into=num, fmt='z'); z_re = transfer(source=num, mold=z_re)
+				call cast(hex_str_im, into=num, fmt='z'); z_im = transfer(source=num, mold=z_im)
 				into = cmplx(z_re, z_im, kind=real64); return
 			end block
 		else
@@ -10284,14 +12683,14 @@ submodule (io_fortran_lib) internal_io
 			read(unit=substring(i:r-1), fmt=*, decimal=decimal) z_im
 			into = cmplx(z_re, z_im, kind=real64); return
 		end if
-	end procedure cast_c64
-	module procedure cast_c32
+	end procedure cast_char_to_c64
+	module procedure cast_char_to_c32
 		character(len=1) :: fmt_
-		character(len=:), allocatable :: im_, decimal
-		character(len=:), allocatable, dimension(:) :: seps, e_chars
+		character(len=5) :: decimal
+		character(len=:), allocatable :: im_
 
 		real(real32) :: z_re, z_im
-		integer, allocatable :: substring_len, i, l, r, im_len
+		integer :: substring_len, l, r, i, sep_code, e_code, im_len
 
 		substring_len = len(substring)
 
@@ -10329,30 +12728,31 @@ submodule (io_fortran_lib) internal_io
 
 		if ( len(im_) == 0 ) then
 			if ( decimal == 'POINT' ) then
-				seps = [ COMMA ]
+				sep_code = iachar(COMMA)
 			else
-				seps = [ SEMICOLON ]
+				sep_code = iachar(SEMICOLON)
 			end if
 
-			l = 1; do while ( l <= substring_len )
-				if ( substring(l:l) == '(' ) exit
+			l = 1; do
+				if ( iachar(substring(l:l)) == 40 ) exit
 				l = l + 1; cycle
 			end do
 
-			r = substring_len; do while ( r >= 1 )
-				if ( substring(r:r) == ')' ) exit
+			r = substring_len; do
+				if ( iachar(substring(r:r)) == 41 ) exit
 				r = r - 1; cycle
 			end do
 
-			i = l+1; do while ( i <= r )
-				if ( substring(i:i) == seps(1) ) exit
+			i = l+1; do
+				if ( iachar(substring(i:i)) == sep_code ) exit
 				i = i + 1; cycle
 			end do
 
 			if ( fmt_ == 'z' ) then
-				block; integer(int32) :: num
-					call cast(substring(l+1:i-1), into=num, fmt='z'); z_re = transfer(source=num, mold=z_re)
-					call cast(substring(i+1:r-1), into=num, fmt='z'); z_im = transfer(source=num, mold=z_im)
+				block; integer :: num; character(len=i-l-1) :: hex_str_re; character(len=r-i-1) :: hex_str_im
+					hex_str_re = substring(l+1:i-1); hex_str_im = substring(i+1:r-1)
+					call cast(hex_str_re, into=num, fmt='z'); z_re = transfer(source=num, mold=z_re)
+					call cast(hex_str_im, into=num, fmt='z'); z_im = transfer(source=num, mold=z_im)
 					into = cmplx(z_re, z_im, kind=real32); return
 				end block
 			else
@@ -10362,33 +12762,41 @@ submodule (io_fortran_lib) internal_io
 			end if
 		end if
 
-		im_len = len(im_); seps = [ '+', '-' ]; e_chars = [ 'e', 'E' ]
+		sep_code = iachar('+'); e_code = iachar('e'); im_len = len(im_)
 
-		l = 1; do while ( l <= substring_len )
-			if ( substring(l:l) /= SPACE ) exit
+		l = 1; do
+			if ( iachar(substring(l:l)) > sep_code ) exit
 			l = l + 1; cycle
 		end do
 
-		r = substring_len-im_len+1; do while ( r >= 1 )
+		r = substring_len-im_len+1; do
 			if ( substring(r:r+im_len-1) == im_ ) exit
 			r = r - 1; cycle
 		end do
 
-		i = l+1; do while ( i <= r )
-			if ( any(seps == substring(i:i)) ) then
-				if ( any(e_chars == substring(i-1:i-1)) .and. (fmt_ /= 'z') ) then
-					i = i + 1; cycle
-				else
-					exit
+		if ( fmt_ == 'z' ) then
+			i = l+1; do
+				if ( iachar(substring(i:i)) == sep_code ) exit
+				i = i + 1; cycle
+			end do
+		else
+			i = l+1; do
+				if ( (iachar(substring(i:i)) == sep_code) .or. (iachar(substring(i:i)) == sep_code+2) ) then
+					if ( (iachar(substring(i-1:i-1)) == e_code).or.(iachar(substring(i-1:i-1)) == e_code-32) ) then
+						i = i + 1; cycle
+					else
+						exit
+					end if
 				end if
-			end if
-			i = i + 1; cycle
-		end do
+				i = i + 1; cycle
+			end do
+		end if
 
 		if ( fmt_ == 'z' ) then
-			block; integer(int32) :: num
-				call cast(substring(l:i-1), into=num, fmt='z'); z_re = transfer(source=num, mold=z_re)
-				call cast(substring(i+1:r-1), into=num, fmt='z'); z_im = transfer(source=num, mold=z_im)
+			block; integer :: num; character(len=i-l) :: hex_str_re; character(len=r-i-1) :: hex_str_im
+				hex_str_re = substring(l:i-1); hex_str_im = substring(i+1:r-1)
+				call cast(hex_str_re, into=num, fmt='z'); z_re = transfer(source=num, mold=z_re)
+				call cast(hex_str_im, into=num, fmt='z'); z_im = transfer(source=num, mold=z_im)
 				into = cmplx(z_re, z_im, kind=real32); return
 			end block
 		else
@@ -10396,11 +12804,11 @@ submodule (io_fortran_lib) internal_io
 			read(unit=substring(i:r-1), fmt=*, decimal=decimal) z_im
 			into = cmplx(z_re, z_im, kind=real32); return
 		end if
-	end procedure cast_c32
+	end procedure cast_char_to_c32
 
-	module procedure cast_r128
+	module procedure cast_char_to_r128
 		character(len=1) :: fmt_
-		character(len=:), allocatable :: decimal
+		character(len=5) :: decimal
 
 		if ( len(substring) < 1 ) then
 			into = 0.0_real128; return
@@ -10441,10 +12849,10 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		read(unit=substring, fmt=*, decimal=decimal) into
-	end procedure cast_r128
-	module procedure cast_r64
+	end procedure cast_char_to_r128
+	module procedure cast_char_to_r64
 		character(len=1) :: fmt_
-		character(len=:), allocatable :: decimal
+		character(len=5) :: decimal
 
 		if ( len(substring) < 1 ) then
 			into = 0.0_real64; return
@@ -10479,10 +12887,10 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		read(unit=substring, fmt=*, decimal=decimal) into
-	end procedure cast_r64
-	module procedure cast_r32
+	end procedure cast_char_to_r64
+	module procedure cast_char_to_r32
 		character(len=1) :: fmt_
-		character(len=:), allocatable :: decimal
+		character(len=5) :: decimal
 
 		if ( len(substring) < 1 ) then
 			into = 0.0_real32; return
@@ -10517,13 +12925,12 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		read(unit=substring, fmt=*, decimal=decimal) into
-	end procedure cast_r32
+	end procedure cast_char_to_r32
 
-	module procedure cast_i64
+	module procedure cast_char_to_i64
 		character(len=1) :: fmt_
+		integer :: substring_len, r, l, i, digit
 		logical :: negative
-		integer :: substring_len, l, r, j
-		integer(int64) :: i
 
 		substring_len = len(substring)
 
@@ -10542,17 +12949,17 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if ( fmt_ == 'i' ) then
-			l = 1; do while ( l <= substring_len )
-				if ( substring(l:l) /= SPACE ) exit
-				l = l + 1; cycle
-			end do
-
-			r = substring_len; do while ( r >= l )
-				if ( substring(r:r) /= SPACE ) exit
+			r = substring_len; do
+				if ( (iachar(substring(r:r)) > 44) .or. (r == 1) ) exit
 				r = r - 1; cycle
 			end do
 
-			if ( substring(l:l) == '-' ) then
+			l = 1; do
+				if ( (iachar(substring(l:l)) > 44) .or. (l == substring_len) ) exit
+				l = l + 1; cycle
+			end do
+
+			if ( iachar(substring(l:l)) == 45 ) then
 				negative = .true.; l = l + 1
 			else
 				negative = .false.
@@ -10560,80 +12967,66 @@ submodule (io_fortran_lib) internal_io
 
 			into = 0_int64
 
-			i = 1_int64; do
-				j = 0; do while ( j <= 9 )
-					if ( DIGITS_A(j) == substring(r:r) ) exit
-					j = j + 1; cycle
-				end do
-
-				into = into + i*int(DIGITS_I(j), kind=int64)
-
-				if ( r == l ) exit
-				i = 10_int64*i; r = r - 1; cycle
-			end do
-
-			if ( negative ) then
-				into = -into; return
-			else
-				return
-			end if
-		else if ( fmt_ == 'z' ) then
-			l = 1; do while ( l <= substring_len )
-				if ( substring(l:l) /= SPACE ) exit
-				l = l + 1; cycle
-			end do
-
-			if ( substring_len > 2 ) then
-				if ( substring(l:l+1) == '0x' ) l = l + 2
-			end if
-
-			r = substring_len; do while ( r >= l )
-				if ( substring(r:r) /= SPACE ) exit
+			do i = 0, ubound(TENS_i64, dim=1)
+				into = into + int(iachar(substring(r:r)) - 48,int64)*TENS_i64(i); if ( r == l ) exit
 				r = r - 1; cycle
 			end do
 
-			if ( r-l+1 == 16 ) then
-				j = 0; do while ( j <= 15 )
-					if ( DIGITS_A(j) == substring(l:l) ) exit
-					j = j + 1; cycle
-				end do
+			if ( .not. negative ) return
 
-				if ( j >= 8 ) then
-					negative = .true.
-				else
-					negative = .false.
+			into = -into; return
+		else
+			r = substring_len; do
+				if ( (iachar(substring(r:r)) > 47) .or. (r == 1) ) exit
+				r = r - 1; cycle
+			end do
+
+			l = 1; do
+				if ( (iachar(substring(l:l)) > 47) .or. (l == substring_len) ) then
+					if ( r-l+1 > 2 ) then
+						if ( iachar(substring(l+1:l+1)) == 120 ) l = l + 2
+					end if
+					exit
 				end if
+				l = l + 1; cycle
+			end do
+
+			if ( (r-l+1 == 16) .and. (iachar(substring(l:l)) > 55) ) then
+				negative = .true.
 			else
 				negative = .false.
 			end if
 
 			into = 0_int64
 
-			i = 1_int64; do
-				j = 0; do while ( j <= 15 )
-					if ( DIGITS_A(j) == substring(r:r) ) exit
-					j = j + 1; cycle
-				end do
+			do i = 0, ubound(SIXTEENS_i64, dim=1)
+				digit = iachar(substring(r:r)) - 48
 
-				if ( r > l ) then
-					into = into + i*int(DIGITS_I(j), kind=int64)
-				else if ( r == l ) then
-					if ( negative ) then
-						into = into + i*int(DIGITS_I(j-8), kind=int64); into = (into - 1_int64) - huge(1_int64); return
+				if ( digit > 16 ) then
+					if ( digit < 23 ) then
+						digit = digit - 7
 					else
-						into = into + i*int(DIGITS_I(j), kind=int64); return
+						digit = digit - 39
 					end if
 				end if
 
-				i = 16_int64*i; r = r - 1; cycle
+				if ( r > l ) then
+					into = into + int(digit,int64)*SIXTEENS_i64(i); r = r - 1; cycle
+				else
+					if ( negative ) then
+						digit = digit - 8; into = into + int(digit,int64)*SIXTEENS_i64(i)
+						into = (into - 1_int64) - largest_int64; return
+					else
+						into = into + int(digit,int64)*SIXTEENS_i64(i); return
+					end if
+				end if
 			end do
 		end if
-	end procedure cast_i64
-	module procedure cast_i32
+	end procedure cast_char_to_i64
+	module procedure cast_char_to_i32
 		character(len=1) :: fmt_
+		integer :: substring_len, r, l, i, digit
 		logical :: negative
-		integer :: substring_len, l, r, j
-		integer(int32) :: i
 
 		substring_len = len(substring)
 
@@ -10652,98 +13045,84 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if ( fmt_ == 'i' ) then
-			l = 1; do while ( l <= substring_len )
-				if ( substring(l:l) /= SPACE ) exit
-				l = l + 1; cycle
-			end do
-
-			r = substring_len; do while ( r >= l )
-				if ( substring(r:r) /= SPACE ) exit
+			r = substring_len; do
+				if ( (iachar(substring(r:r)) > 44) .or. (r == 1) ) exit
 				r = r - 1; cycle
 			end do
 
-			if ( substring(l:l) == '-' ) then
+			l = 1; do
+				if ( (iachar(substring(l:l)) > 44) .or. (l == substring_len) ) exit
+				l = l + 1; cycle
+			end do
+
+			if ( iachar(substring(l:l)) == 45 ) then
 				negative = .true.; l = l + 1
 			else
 				negative = .false.
 			end if
 
-			into = 0_int32
+			into = 0
 
-			i = 1_int32; do
-				j = 0; do while ( j <= 9 )
-					if ( DIGITS_A(j) == substring(r:r) ) exit
-					j = j + 1; cycle
-				end do
-
-				into = into + i*DIGITS_I(j)
-
-				if ( r == l ) exit
-				i = 10_int32*i; r = r - 1; cycle
-			end do
-
-			if ( negative ) then
-				into = -into; return
-			else
-				return
-			end if
-		else if ( fmt_ == 'z' ) then
-			l = 1; do while ( l <= substring_len )
-				if ( substring(l:l) /= SPACE ) exit
-				l = l + 1; cycle
-			end do
-
-			if ( substring_len > 2 ) then
-				if ( substring(l:l+1) == '0x' ) l = l + 2
-			end if
-
-			r = substring_len; do while ( r >= l )
-				if ( substring(r:r) /= SPACE ) exit
+			do i = 0, ubound(TENS_i32, dim=1)
+				into = into + (iachar(substring(r:r)) - 48)*TENS_i32(i); if ( r == l ) exit
 				r = r - 1; cycle
 			end do
 
-			if ( r-l+1 == 8 ) then
-				j = 0; do while ( j <= 15 )
-					if ( DIGITS_A(j) == substring(l:l) ) exit
-					j = j + 1; cycle
-				end do
+			if ( .not. negative ) return
 
-				if ( j >= 8 ) then
-					negative = .true.
-				else
-					negative = .false.
+			into = -into; return
+		else
+			r = substring_len; do
+				if ( (iachar(substring(r:r)) > 47) .or. (r == 1) ) exit
+				r = r - 1; cycle
+			end do
+
+			l = 1; do
+				if ( (iachar(substring(l:l)) > 47) .or. (l == substring_len) ) then
+					if ( r-l+1 > 2 ) then
+						if ( iachar(substring(l+1:l+1)) == 120 ) l = l + 2
+					end if
+					exit
 				end if
+				l = l + 1; cycle
+			end do
+
+			if ( (r-l+1 == 8) .and. (iachar(substring(l:l)) > 55) ) then
+				negative = .true.
 			else
 				negative = .false.
 			end if
 
-			into = 0_int32
+			into = 0
 
-			i = 1_int32; do
-				j = 0; do while ( j <= 15 )
-					if ( DIGITS_A(j) == substring(r:r) ) exit
-					j = j + 1; cycle
-				end do
+			do i = 0, ubound(SIXTEENS_i32, dim=1)
+				digit = iachar(substring(r:r)) - 48
 
-				if ( r > l ) then
-					into = into + i*DIGITS_I(j)
-				else if ( r == l ) then
-					if ( negative ) then
-						into = into + i*DIGITS_I(j-8); into = (into - 1_int32) - huge(1_int32); return
+				if ( digit > 16 ) then
+					if ( digit < 23 ) then
+						digit = digit - 7
 					else
-						into = into + i*DIGITS_I(j); return
+						digit = digit - 39
 					end if
 				end if
 
-				i = 16_int32*i; r = r - 1; cycle
+				if ( r > l ) then
+					into = into + digit*SIXTEENS_i32(i); r = r - 1; cycle
+				else
+					if ( negative ) then
+						digit = digit - 8; into = into + digit*SIXTEENS_i32(i)
+						into = (into - 1) - largest_int32; return
+					else
+						into = into + digit*SIXTEENS_i32(i); return
+					end if
+				end if
 			end do
 		end if
-	end procedure cast_i32
-	module procedure cast_i16
+	end procedure cast_char_to_i32
+	module procedure cast_char_to_i16
 		character(len=1) :: fmt_
+		integer :: substring_len, r, l, i, digit
 		logical :: negative
-		integer :: substring_len, l, r, j
-		integer(int16) :: i
 
 		substring_len = len(substring)
 
@@ -10762,17 +13141,17 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if ( fmt_ == 'i' ) then
-			l = 1; do while ( l <= substring_len )
-				if ( substring(l:l) /= SPACE ) exit
-				l = l + 1; cycle
-			end do
-
-			r = substring_len; do while ( r >= l )
-				if ( substring(r:r) /= SPACE ) exit
+			r = substring_len; do
+				if ( (iachar(substring(r:r)) > 44) .or. (r == 1) ) exit
 				r = r - 1; cycle
 			end do
 
-			if ( substring(l:l) == '-' ) then
+			l = 1; do
+				if ( (iachar(substring(l:l)) > 44) .or. (l == substring_len) ) exit
+				l = l + 1; cycle
+			end do
+
+			if ( iachar(substring(l:l)) == 45 ) then
 				negative = .true.; l = l + 1
 			else
 				negative = .false.
@@ -10780,80 +13159,66 @@ submodule (io_fortran_lib) internal_io
 
 			into = 0_int16
 
-			i = 1_int16; do
-				j = 0; do while ( j <= 9 )
-					if ( DIGITS_A(j) == substring(r:r) ) exit
-					j = j + 1; cycle
-				end do
-
-				into = into + i*int(DIGITS_I(j), kind=int16)
-
-				if ( r == l ) exit
-				i = 10_int16*i; r = r - 1; cycle
-			end do
-
-			if ( negative ) then
-				into = -into; return
-			else
-				return
-			end if
-		else if ( fmt_ == 'z' ) then
-			l = 1; do while ( l <= substring_len )
-				if ( substring(l:l) /= SPACE ) exit
-				l = l + 1; cycle
-			end do
-
-			if ( substring_len > 2 ) then
-				if ( substring(l:l+1) == '0x' ) l = l + 2
-			end if
-
-			r = substring_len; do while ( r >= l )
-				if ( substring(r:r) /= SPACE ) exit
+			do i = 0, ubound(TENS_i16, dim=1)
+				into = into + int(iachar(substring(r:r)) - 48,int16)*TENS_i16(i); if ( r == l ) exit
 				r = r - 1; cycle
 			end do
 
-			if ( r-l+1 == 4 ) then
-				j = 0; do while ( j <= 15 )
-					if ( DIGITS_A(j) == substring(l:l) ) exit
-					j = j + 1; cycle
-				end do
+			if ( .not. negative ) return
 
-				if ( j >= 8 ) then
-					negative = .true.
-				else
-					negative = .false.
+			into = -into; return
+		else
+			r = substring_len; do
+				if ( (iachar(substring(r:r)) > 47) .or. (r == 1) ) exit
+				r = r - 1; cycle
+			end do
+
+			l = 1; do
+				if ( (iachar(substring(l:l)) > 47) .or. (l == substring_len) ) then
+					if ( r-l+1 > 2 ) then
+						if ( iachar(substring(l+1:l+1)) == 120 ) l = l + 2
+					end if
+					exit
 				end if
+				l = l + 1; cycle
+			end do
+
+			if ( (r-l+1 == 4) .and. (iachar(substring(l:l)) > 55) ) then
+				negative = .true.
 			else
 				negative = .false.
 			end if
 
 			into = 0_int16
 
-			i = 1_int16; do
-				j = 0; do while ( j <= 15 )
-					if ( DIGITS_A(j) == substring(r:r) ) exit
-					j = j + 1; cycle
-				end do
+			do i = 0, ubound(SIXTEENS_i16, dim=1)
+				digit = iachar(substring(r:r)) - 48
 
-				if ( r > l ) then
-					into = into + i*int(DIGITS_I(j), kind=int16)
-				else if ( r == l ) then
-					if ( negative ) then
-						into = into + i*int(DIGITS_I(j-8), kind=int16); into = (into - 1_int16) - huge(1_int16); return
+				if ( digit > 16 ) then
+					if ( digit < 23 ) then
+						digit = digit - 7
 					else
-						into = into + i*int(DIGITS_I(j), kind=int16); return
+						digit = digit - 39
 					end if
 				end if
 
-				i = 16_int16*i; r = r - 1; cycle
+				if ( r > l ) then
+					into = into + int(digit,int16)*SIXTEENS_i16(i); r = r - 1; cycle
+				else
+					if ( negative ) then
+						digit = digit - 8; into = into + int(digit,int16)*SIXTEENS_i16(i)
+						into = (into - 1_int16) - largest_int16; return
+					else
+						into = into + int(digit,int16)*SIXTEENS_i16(i); return
+					end if
+				end if
 			end do
 		end if
-	end procedure cast_i16
-	module procedure cast_i8
+	end procedure cast_char_to_i16
+	module procedure cast_char_to_i8
 		character(len=1) :: fmt_
+		integer :: substring_len, r, l, i, digit
 		logical :: negative
-		integer :: substring_len, l, r, j
-		integer(int8) :: i
 
 		substring_len = len(substring)
 
@@ -10872,17 +13237,17 @@ submodule (io_fortran_lib) internal_io
 		end if
 
 		if ( fmt_ == 'i' ) then
-			l = 1; do while ( l <= substring_len )
-				if ( substring(l:l) /= SPACE ) exit
-				l = l + 1; cycle
-			end do
-
-			r = substring_len; do while ( r >= l )
-				if ( substring(r:r) /= SPACE ) exit
+			r = substring_len; do
+				if ( (iachar(substring(r:r)) > 44) .or. (r == 1) ) exit
 				r = r - 1; cycle
 			end do
 
-			if ( substring(l:l) == '-' ) then
+			l = 1; do
+				if ( (iachar(substring(l:l)) > 44) .or. (l == substring_len) ) exit
+				l = l + 1; cycle
+			end do
+
+			if ( iachar(substring(l:l)) == 45 ) then
 				negative = .true.; l = l + 1
 			else
 				negative = .false.
@@ -10890,79 +13255,70 @@ submodule (io_fortran_lib) internal_io
 
 			into = 0_int8
 
-			i = 1_int8; do
-				j = 0; do while ( j <= 9 )
-					if ( DIGITS_A(j) == substring(r:r) ) exit
-					j = j + 1; cycle
-				end do
-
-				into = into + i*int(DIGITS_I(j), kind=int8)
-
-				if ( r == l ) exit
-				i = 10_int8*i; r = r - 1; cycle
-			end do
-
-			if ( negative ) then
-				into = -into; return
-			else
-				return
-			end if
-		else if ( fmt_ == 'z' ) then
-			l = 1; do while ( l <= substring_len )
-				if ( substring(l:l) /= SPACE ) exit
-				l = l + 1; cycle
-			end do
-
-			if ( substring_len > 2 ) then
-				if ( substring(l:l+1) == '0x' ) l = l + 2
-			end if
-
-			r = substring_len; do while ( r >= l )
-				if ( substring(r:r) /= SPACE ) exit
+			do i = 0, ubound(TENS_i16, dim=1)
+				into = into + int(iachar(substring(r:r)) - 48,int16)*TENS_i16(i); if ( r == l ) exit
 				r = r - 1; cycle
 			end do
 
-			if ( r-l+1 == 2 ) then
-				j = 0; do while ( j <= 15 )
-					if ( DIGITS_A(j) == substring(l:l) ) exit
-					j = j + 1; cycle
-				end do
+			if ( .not. negative ) return
 
-				if ( j >= 8 ) then
-					negative = .true.
-				else
-					negative = .false.
+			into = -into; return
+		else
+			r = substring_len; do
+				if ( (iachar(substring(r:r)) > 47) .or. (r == 1) ) exit
+				r = r - 1; cycle
+			end do
+
+			l = 1; do
+				if ( (iachar(substring(l:l)) > 47) .or. (l == substring_len) ) then
+					if ( r-l+1 > 2 ) then
+						if ( iachar(substring(l+1:l+1)) == 120 ) l = l + 2
+					end if
+					exit
 				end if
+				l = l + 1; cycle
+			end do
+
+			if ( (r-l+1 == 2) .and. (iachar(substring(l:l)) > 55) ) then
+				negative = .true.
 			else
 				negative = .false.
 			end if
 
 			into = 0_int8
 
-			i = 1_int8; do
-				j = 0; do while ( j <= 15 )
-					if ( DIGITS_A(j) == substring(r:r) ) exit
-					j = j + 1; cycle
-				end do
+			do i = 0, ubound(SIXTEENS_i8, dim=1)
+				digit = iachar(substring(r:r)) - 48
 
-				if ( r > l ) then
-					into = into + i*int(DIGITS_I(j), kind=int8)
-				else if ( r == l ) then
-					if ( negative ) then
-						into = into + i*int(DIGITS_I(j-8), kind=int8); into = (into - 1_int8) - huge(1_int8); return
+				if ( digit > 16 ) then
+					if ( digit < 23 ) then
+						digit = digit - 7
 					else
-						into = into + i*int(DIGITS_I(j), kind=int8); return
+						digit = digit - 39
 					end if
 				end if
 
-				i = 16_int8*i; r = r - 1; cycle
+				if ( r > l ) then
+					into = into + int(digit,int8)*SIXTEENS_i8(i); r = r - 1; cycle
+				else
+					if ( negative ) then
+						digit = digit - 8; into = into + int(digit,int8)*SIXTEENS_i8(i)
+						into = (into - 1_int8) - largest_int8; return
+					else
+						into = into + int(digit,int8)*SIXTEENS_i8(i); return
+					end if
+				end if
 			end do
 		end if
-	end procedure cast_i8
+	end procedure cast_char_to_i8
 end submodule internal_io
 
 submodule (io_fortran_lib) join_split
+	!------------------------------------------------------------------------------------------------------------------
 	!! This submodule provides module procedure implementations for the **public interfaces** `join` and `split`.
+	!------------------------------------------------------------------------------------------------------------------
+	implicit none (type,external)
+
 	contains
 	module procedure join_char
 		type(String) :: temp_String
@@ -11098,8 +13454,12 @@ submodule (io_fortran_lib) join_split
 end submodule join_split
 
 submodule (io_fortran_lib) file_io
+	!------------------------------------------------------------------------------------------------------------------
 	!! This submodule provides module procedure implementations for the **public interfaces** `to_file` and
 	!! `from_file`.
+	!------------------------------------------------------------------------------------------------------------------
+	implicit none (type,external)
+
 	contains
 	! Writing Procedures ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	module procedure to_file_1dc128
@@ -20175,8 +22535,12 @@ submodule (io_fortran_lib) file_io
 end submodule file_io
 
 submodule (io_fortran_lib) text_io
+	!------------------------------------------------------------------------------------------------------------------
 	!! This submodule provides module procedure implementations for the **public interface** `echo` and the **private
 	!! interfaces** `to_text` and `from_text`.
+	!------------------------------------------------------------------------------------------------------------------
+	implicit none (type,external)
+
 	contains
 	! Writing Procedures ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	module procedure echo_chars
@@ -20325,15 +22689,15 @@ submodule (io_fortran_lib) text_io
 
 		if ( header_present ) then
 			if ( dim == 1 ) then
-				cells(2_int64:,1_int64) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
+				call cast(x, into=cells(2_int64:,1_int64), locale=locale, fmt=fmt, decimals=decimals, im=im)
 			else
-				cells(2_int64,:) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
+				call cast(x, into=cells(2_int64,:), locale=locale, fmt=fmt, decimals=decimals, im=im)
 			end if
 		else
 			if ( dim == 1 ) then
-				cells(:,1_int64) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
+				call cast(x, into=cells(:,1_int64), locale=locale, fmt=fmt, decimals=decimals, im=im)
 			else
-				cells(1_int64,:) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
+				call cast(x, into=cells(1_int64,:), locale=locale, fmt=fmt, decimals=decimals, im=im)
 			end if
 		end if
 
@@ -20377,15 +22741,15 @@ submodule (io_fortran_lib) text_io
 
 		if ( header_present ) then
 			if ( dim == 1 ) then
-				cells(2_int64:,1_int64) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
+				call cast(x, into=cells(2_int64:,1_int64), locale=locale, fmt=fmt, decimals=decimals, im=im)
 			else
-				cells(2_int64,:) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
+				call cast(x, into=cells(2_int64,:), locale=locale, fmt=fmt, decimals=decimals, im=im)
 			end if
 		else
 			if ( dim == 1 ) then
-				cells(:,1_int64) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
+				call cast(x, into=cells(:,1_int64), locale=locale, fmt=fmt, decimals=decimals, im=im)
 			else
-				cells(1_int64,:) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
+				call cast(x, into=cells(1_int64,:), locale=locale, fmt=fmt, decimals=decimals, im=im)
 			end if
 		end if
 
@@ -20429,15 +22793,15 @@ submodule (io_fortran_lib) text_io
 
 		if ( header_present ) then
 			if ( dim == 1 ) then
-				cells(2_int64:,1_int64) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
+				call cast(x, into=cells(2_int64:,1_int64), locale=locale, fmt=fmt, decimals=decimals, im=im)
 			else
-				cells(2_int64,:) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
+				call cast(x, into=cells(2_int64,:), locale=locale, fmt=fmt, decimals=decimals, im=im)
 			end if
 		else
 			if ( dim == 1 ) then
-				cells(:,1_int64) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
+				call cast(x, into=cells(:,1_int64), locale=locale, fmt=fmt, decimals=decimals, im=im)
 			else
-				cells(1_int64,:) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
+				call cast(x, into=cells(1_int64,:), locale=locale, fmt=fmt, decimals=decimals, im=im)
 			end if
 		end if
 
@@ -20473,9 +22837,9 @@ submodule (io_fortran_lib) text_io
 		end if
 
 		if ( header_present ) then
-			cells(2_int64:,:) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
+			call cast(x, into=cells(2_int64:,:), locale=locale, fmt=fmt, decimals=decimals, im=im)
 		else
-			cells = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
+			call cast(x, into=cells, locale=locale, fmt=fmt, decimals=decimals, im=im)
 		end if
 
 		call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
@@ -20509,9 +22873,9 @@ submodule (io_fortran_lib) text_io
 		end if
 
 		if ( header_present ) then
-			cells(2_int64:,:) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
+			call cast(x, into=cells(2_int64:,:), locale=locale, fmt=fmt, decimals=decimals, im=im)
 		else
-			cells = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
+			call cast(x, into=cells, locale=locale, fmt=fmt, decimals=decimals, im=im)
 		end if
 
 		call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
@@ -20545,9 +22909,9 @@ submodule (io_fortran_lib) text_io
 		end if
 
 		if ( header_present ) then
-			cells(2_int64:,:) = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
+			call cast(x, into=cells(2_int64:,:), locale=locale, fmt=fmt, decimals=decimals, im=im)
 		else
-			cells = String(x, locale=locale, fmt=fmt, decimals=decimals, im=im)
+			call cast(x, into=cells, locale=locale, fmt=fmt, decimals=decimals, im=im)
 		end if
 
 		call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
@@ -20591,15 +22955,15 @@ submodule (io_fortran_lib) text_io
 
 		if ( header_present ) then
 			if ( dim == 1 ) then
-				cells(2_int64:,1_int64) = String(x, locale=locale, fmt=fmt, decimals=decimals)
+				call cast(x, into=cells(2_int64:,1_int64), locale=locale, fmt=fmt, decimals=decimals)
 			else
-				cells(2_int64,:) = String(x, locale=locale, fmt=fmt, decimals=decimals)
+				call cast(x, into=cells(2_int64,:), locale=locale, fmt=fmt, decimals=decimals)
 			end if
 		else
 			if ( dim == 1 ) then
-				cells(:,1_int64) = String(x, locale=locale, fmt=fmt, decimals=decimals)
+				call cast(x, into=cells(:,1_int64), locale=locale, fmt=fmt, decimals=decimals)
 			else
-				cells(1_int64,:) = String(x, locale=locale, fmt=fmt, decimals=decimals)
+				call cast(x, into=cells(1_int64,:), locale=locale, fmt=fmt, decimals=decimals)
 			end if
 		end if
 
@@ -20643,15 +23007,15 @@ submodule (io_fortran_lib) text_io
 
 		if ( header_present ) then
 			if ( dim == 1 ) then
-				cells(2_int64:,1_int64) = String(x, locale=locale, fmt=fmt, decimals=decimals)
+				call cast(x, into=cells(2_int64:,1_int64), locale=locale, fmt=fmt, decimals=decimals)
 			else
-				cells(2_int64,:) = String(x, locale=locale, fmt=fmt, decimals=decimals)
+				call cast(x, into=cells(2_int64,:), locale=locale, fmt=fmt, decimals=decimals)
 			end if
 		else
 			if ( dim == 1 ) then
-				cells(:,1_int64) = String(x, locale=locale, fmt=fmt, decimals=decimals)
+				call cast(x, into=cells(:,1_int64), locale=locale, fmt=fmt, decimals=decimals)
 			else
-				cells(1_int64,:) = String(x, locale=locale, fmt=fmt, decimals=decimals)
+				call cast(x, into=cells(1_int64,:), locale=locale, fmt=fmt, decimals=decimals)
 			end if
 		end if
 
@@ -20695,15 +23059,15 @@ submodule (io_fortran_lib) text_io
 
 		if ( header_present ) then
 			if ( dim == 1 ) then
-				cells(2_int64:,1_int64) = String(x, locale=locale, fmt=fmt, decimals=decimals)
+				call cast(x, into=cells(2_int64:,1_int64), locale=locale, fmt=fmt, decimals=decimals)
 			else
-				cells(2_int64,:) = String(x, locale=locale, fmt=fmt, decimals=decimals)
+				call cast(x, into=cells(2_int64,:), locale=locale, fmt=fmt, decimals=decimals)
 			end if
 		else
 			if ( dim == 1 ) then
-				cells(:,1_int64) = String(x, locale=locale, fmt=fmt, decimals=decimals)
+				call cast(x, into=cells(:,1_int64), locale=locale, fmt=fmt, decimals=decimals)
 			else
-				cells(1_int64,:) = String(x, locale=locale, fmt=fmt, decimals=decimals)
+				call cast(x, into=cells(1_int64,:), locale=locale, fmt=fmt, decimals=decimals)
 			end if
 		end if
 
@@ -20739,9 +23103,9 @@ submodule (io_fortran_lib) text_io
 		end if
 
 		if ( header_present ) then
-			cells(2_int64:,:) = String(x, locale=locale, fmt=fmt, decimals=decimals)
+			call cast(x, into=cells(2_int64:,:), locale=locale, fmt=fmt, decimals=decimals)
 		else
-			cells = String(x, locale=locale, fmt=fmt, decimals=decimals)
+			call cast(x, into=cells, locale=locale, fmt=fmt, decimals=decimals)
 		end if
 
 		call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
@@ -20775,9 +23139,9 @@ submodule (io_fortran_lib) text_io
 		end if
 
 		if ( header_present ) then
-			cells(2_int64:,:) = String(x, locale=locale, fmt=fmt, decimals=decimals)
+			call cast(x, into=cells(2_int64:,:), locale=locale, fmt=fmt, decimals=decimals)
 		else
-			cells = String(x, locale=locale, fmt=fmt, decimals=decimals)
+			call cast(x, into=cells, locale=locale, fmt=fmt, decimals=decimals)
 		end if
 
 		call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
@@ -20811,9 +23175,9 @@ submodule (io_fortran_lib) text_io
 		end if
 
 		if ( header_present ) then
-			cells(2_int64:,:) = String(x, locale=locale, fmt=fmt, decimals=decimals)
+			call cast(x, into=cells(2_int64:,:), locale=locale, fmt=fmt, decimals=decimals)
 		else
-			cells = String(x, locale=locale, fmt=fmt, decimals=decimals)
+			call cast(x, into=cells, locale=locale, fmt=fmt, decimals=decimals)
 		end if
 
 		call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
@@ -20857,15 +23221,15 @@ submodule (io_fortran_lib) text_io
 
 		if ( header_present ) then
 			if ( dim == 1 ) then
-				cells(2_int64:,1_int64) = String(x, fmt=fmt)
+				call cast(x, into=cells(2_int64:,1_int64), fmt=fmt)
 			else
-				cells(2_int64,:) = String(x, fmt=fmt)
+				call cast(x, into=cells(2_int64,:), fmt=fmt)
 			end if
 		else
 			if ( dim == 1 ) then
-				cells(:,1_int64) = String(x, fmt=fmt)
+				call cast(x, into=cells(:,1_int64), fmt=fmt)
 			else
-				cells(1_int64,:) = String(x, fmt=fmt)
+				call cast(x, into=cells(1_int64,:), fmt=fmt)
 			end if
 		end if
 
@@ -20909,15 +23273,15 @@ submodule (io_fortran_lib) text_io
 
 		if ( header_present ) then
 			if ( dim == 1 ) then
-				cells(2_int64:,1_int64) = String(x, fmt=fmt)
+				call cast(x, into=cells(2_int64:,1_int64), fmt=fmt)
 			else
-				cells(2_int64,:) = String(x, fmt=fmt)
+				call cast(x, into=cells(2_int64,:), fmt=fmt)
 			end if
 		else
 			if ( dim == 1 ) then
-				cells(:,1_int64) = String(x, fmt=fmt)
+				call cast(x, into=cells(:,1_int64), fmt=fmt)
 			else
-				cells(1_int64,:) = String(x, fmt=fmt)
+				call cast(x, into=cells(1_int64,:), fmt=fmt)
 			end if
 		end if
 
@@ -20961,15 +23325,15 @@ submodule (io_fortran_lib) text_io
 
 		if ( header_present ) then
 			if ( dim == 1 ) then
-				cells(2_int64:,1_int64) = String(x, fmt=fmt)
+				call cast(x, into=cells(2_int64:,1_int64), fmt=fmt)
 			else
-				cells(2_int64,:) = String(x, fmt=fmt)
+				call cast(x, into=cells(2_int64,:), fmt=fmt)
 			end if
 		else
 			if ( dim == 1 ) then
-				cells(:,1_int64) = String(x, fmt=fmt)
+				call cast(x, into=cells(:,1_int64), fmt=fmt)
 			else
-				cells(1_int64,:) = String(x, fmt=fmt)
+				call cast(x, into=cells(1_int64,:), fmt=fmt)
 			end if
 		end if
 
@@ -21013,15 +23377,15 @@ submodule (io_fortran_lib) text_io
 
 		if ( header_present ) then
 			if ( dim == 1 ) then
-				cells(2_int64:,1_int64) = String(x, fmt=fmt)
+				call cast(x, into=cells(2_int64:,1_int64), fmt=fmt)
 			else
-				cells(2_int64,:) = String(x, fmt=fmt)
+				call cast(x, into=cells(2_int64,:), fmt=fmt)
 			end if
 		else
 			if ( dim == 1 ) then
-				cells(:,1_int64) = String(x, fmt=fmt)
+				call cast(x, into=cells(:,1_int64), fmt=fmt)
 			else
-				cells(1_int64,:) = String(x, fmt=fmt)
+				call cast(x, into=cells(1_int64,:), fmt=fmt)
 			end if
 		end if
 
@@ -21057,9 +23421,9 @@ submodule (io_fortran_lib) text_io
 		end if
 
 		if ( header_present ) then
-			cells(2_int64:,:) = String(x, fmt=fmt)
+			call cast(x, into=cells(2_int64:,:), fmt=fmt)
 		else
-			cells = String(x, fmt=fmt)
+			call cast(x, into=cells, fmt=fmt)
 		end if
 
 		call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
@@ -21093,9 +23457,9 @@ submodule (io_fortran_lib) text_io
 		end if
 
 		if ( header_present ) then
-			cells(2_int64:,:) = String(x, fmt=fmt)
+			call cast(x, into=cells(2_int64:,:), fmt=fmt)
 		else
-			cells = String(x, fmt=fmt)
+			call cast(x, into=cells, fmt=fmt)
 		end if
 
 		call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
@@ -21129,9 +23493,9 @@ submodule (io_fortran_lib) text_io
 		end if
 
 		if ( header_present ) then
-			cells(2_int64:,:) = String(x, fmt=fmt)
+			call cast(x, into=cells(2_int64:,:), fmt=fmt)
 		else
-			cells = String(x, fmt=fmt)
+			call cast(x, into=cells, fmt=fmt)
 		end if
 
 		call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
@@ -21165,9 +23529,9 @@ submodule (io_fortran_lib) text_io
 		end if
 
 		if ( header_present ) then
-			cells(2_int64:,:) = String(x, fmt=fmt)
+			call cast(x, into=cells(2_int64:,:), fmt=fmt)
 		else
-			cells = String(x, fmt=fmt)
+			call cast(x, into=cells, fmt=fmt)
 		end if
 
 		call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
@@ -22400,8 +24764,12 @@ submodule (io_fortran_lib) text_io
 end submodule text_io
 
 submodule (io_fortran_lib) binary_io
+	!------------------------------------------------------------------------------------------------------------------
 	!! This submodule provides module procedure implementations for the **private interfaces** `to_binary` and
 	!! `from_binary`.
+	!------------------------------------------------------------------------------------------------------------------
+	implicit none (type,external)
+
 	contains
 	! Writing Procedures ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	module procedure to_binary_1dc128
@@ -29517,7 +31885,11 @@ submodule (io_fortran_lib) binary_io
 end submodule binary_io
 
 submodule (io_fortran_lib) array_printing
+	!------------------------------------------------------------------------------------------------------------------
 	!! This submodule provides module procedure implementations for the **public interface** `aprint`.
+	!------------------------------------------------------------------------------------------------------------------
+	implicit none (type,external)
+
 	contains
 	module procedure aprint_1dc128
 		character(len=:), allocatable, dimension(:) :: x_str
@@ -30383,7 +32755,11 @@ submodule (io_fortran_lib) array_printing
 
 		do concurrent(i = lbound(x, dim=1):ubound(x, dim=1))
 			if ( i == lbound(x, dim=1) ) then
-				rows(i)%s = LF//'    '//adjustl( x(i) )
+				if ( i == ubound(x, dim=1) ) then
+					rows(i)%s = LF//'    '//adjustl( x(i) )//LF
+				else
+					rows(i)%s = LF//'    '//adjustl( x(i) )
+				end if
 			else if ( i == ubound(x, dim=1) ) then
 				rows(i)%s = '    '//adjustl( x(i) )//LF
 			else
@@ -30404,7 +32780,11 @@ submodule (io_fortran_lib) array_printing
 
 		do concurrent(i = lbound(x, dim=1):ubound(x, dim=1))
 			if ( i == lbound(x, dim=1) ) then
-				rows(i)%s = LF//'    '//accum( x(i,:) )
+				if ( i == ubound(x, dim=1) ) then
+					rows(i)%s = LF//'    '//accum( x(i,:) )//LF
+				else
+					rows(i)%s = LF//'    '//accum( x(i,:) )
+				end if
 			else if ( i == ubound(x, dim=1) ) then
 				rows(i)%s = '    '//accum( x(i,:) )//LF
 			else
@@ -30491,9 +32871,9 @@ end submodule array_printing
 !======================================================================================================================
 !	List of workarounds for compiler bugs in ifx 2023.0.0 :
 !	-------------------------------------------------------
-!	1.	In read_file (line 4752), the internal subroutine split_because_ifxbug (line 4965) is called by the form
+!	1.	In read_file (line 4850), the internal subroutine split_because_ifxbug (line 5063) is called by the form
 !		|>	call split_because_ifxbug(substring, separator, tokens)
-!		where tokens is intent(out), to replace a functional call to split_string (line 11027) of the form
+!		where tokens is intent(out), to replace a functional call to split_string (line 13383) of the form
 !		|>	tokens = substring%split(separator)
 !		which induces a run-time segmentation fault in the program contained in benchmark.f90 not seen with the
 !		following compilers: ifort 2021.8.0, gfortran 11.3.0, gfortran 11.2.0. From investigation, the segmentation
@@ -30501,7 +32881,7 @@ end submodule array_printing
 !		expected, and seems to only appear when "-heap-arrays 0" is specified, as required by the large arrays of
 !		the program contained in benchmark.f90. With small arrays, the same fault occurs with the assignment on line
 !		20 of benchmark.f90 as long as "-heap-arrays 0" is specified.
-!	2.	In join_into_self (line 4630), the recursive call to join_into_self at line 4658 induces a run-time
+!	2.	In join_into_self (line 4728), the recursive call to join_into_self at line 4756 induces a run-time
 !		segmentation fault in the program contained in benchmark.f90 not seen with the following compilers: ifort
 !		2021.8.0, gfortran 11.3.0, gfortran 11.2.0. From investigation, the segmentation fault seems due to the passing
 !		of the array of derived type. The fault occurs in a majority of runs, but not in every run. To avoid the fault,
