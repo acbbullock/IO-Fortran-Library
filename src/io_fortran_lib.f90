@@ -317,7 +317,7 @@ module io_fortran_lib
 			!! For a user reference, see [write_file](../page/Ref/String-methods.html#write_file).
 			!----------------------------------------------------------------------------------------------------------
 			class(String), intent(inout) :: self
-			type(String), dimension(:,:), intent(inout) :: cell_array
+			type(String), dimension(:,:), intent(in) :: cell_array
 			character(len=*), intent(in) :: file_name
 			character(len=*), intent(in), optional :: row_separator, column_separator
 			logical, intent(in), optional :: append
@@ -4660,7 +4660,8 @@ submodule (io_fortran_lib) String_procedures
 	end procedure as_str
 
 	module procedure count_substring_chars
-		integer(int64) :: self_len, match_len, i
+		integer(int64) :: self_len, match_len, max_pos, upper_ind, i, j
+		integer :: first_char, last_char
 
 		self_len = self%len64()
 		match_len = len(match, kind=int64)
@@ -4677,10 +4678,51 @@ submodule (io_fortran_lib) String_procedures
 			occurrences = 0; return
 		end if
 
-		occurrences = 0
+		occurrences = 0; max_pos = self_len-match_len+1_int64
+		first_char = iachar(match(1:1)); last_char = iachar(match(match_len:match_len))
 
-		i = 1_int64; do while ( i <= self_len-match_len+1_int64 )
-			if ( self%s(i:i+match_len-1_int64) == match ) then
+		if ( match_len == 1_int64 ) then
+			i = 1_int64; do
+				if ( i > max_pos ) return
+
+				if ( iachar(self%s(i:i)) /= first_char ) then
+					i = i + 1_int64; cycle
+				else
+					occurrences = occurrences + 1; i = i + 1_int64; cycle
+				end if
+			end do
+		end if
+
+		if ( match_len == 2_int64 ) then
+			i = 1_int64; do
+				if ( i > max_pos ) return
+
+				if ( iachar(self%s(i:i)) /= first_char ) then
+					i = i + 1_int64; cycle
+				end if
+
+				if ( iachar(self%s(i+1_int64:i+1_int64)) /= last_char ) then
+					i = i + 1_int64; cycle
+				else
+					occurrences = occurrences + 1; i = i + 2_int64; cycle
+				end if
+			end do
+		end if
+
+		i = 1_int64; do
+			if ( i > max_pos ) return
+
+			if ( iachar(self%s(i:i)) /= first_char ) then
+				i = i + 1_int64; cycle
+			end if
+
+			upper_ind = i+match_len-1_int64
+
+			if ( iachar(self%s(upper_ind:upper_ind)) /= last_char ) then
+				i = i + 1_int64; cycle
+			end if
+
+			if ( self%s(i:upper_ind) == match ) then
 				occurrences = occurrences + 1; i = i + match_len; cycle
 			else
 				i = i + 1_int64; cycle
@@ -4689,31 +4731,69 @@ submodule (io_fortran_lib) String_procedures
 	end procedure count_substring_chars
 
 	module procedure count_substring_string
-		integer(int64) :: self_len, match_len, i
+		integer(int64) :: self_len, match_len, max_pos, upper_ind, i, j
+		integer :: first_char, last_char
 
 		self_len = self%len64()
 		match_len = match%len64()
 
 		if ( self_len < 1_int64 ) then
 			if ( self_len == match_len ) then
-				if ( self_len == 0_int64 ) then
-					occurrences = 1; return
-				else
-					occurrences = 0; return
-				end if
+				occurrences = 1; return
 			else
 				occurrences = 0; return
 			end if
 		end if
 
-		if ( (match_len < 1_int64) .or. (match_len > self_len) ) then
+		if ( (match_len == 0_int64) .or. (match_len > self_len) ) then
 			occurrences = 0; return
 		end if
 
-		occurrences = 0
+		occurrences = 0; max_pos = self_len-match_len+1_int64
+		first_char = iachar(match%s(1:1)); last_char = iachar(match%s(match_len:match_len))
 
-		i = 1_int64; do while ( i <= self_len-match_len+1_int64 )
-			if ( self%s(i:i+match_len-1_int64) == match%s ) then
+		if ( match_len == 1_int64 ) then
+			i = 1_int64; do
+				if ( i > max_pos ) return
+
+				if ( iachar(self%s(i:i)) /= first_char ) then
+					i = i + 1_int64; cycle
+				else
+					occurrences = occurrences + 1; i = i + 1_int64; cycle
+				end if
+			end do
+		end if
+
+		if ( match_len == 2_int64 ) then
+			i = 1_int64; do
+				if ( i > max_pos ) return
+
+				if ( iachar(self%s(i:i)) /= first_char ) then
+					i = i + 1_int64; cycle
+				end if
+
+				if ( iachar(self%s(i+1_int64:i+1_int64)) /= last_char ) then
+					i = i + 1_int64; cycle
+				else
+					occurrences = occurrences + 1; i = i + 2_int64; cycle
+				end if
+			end do
+		end if
+
+		i = 1_int64; do
+			if ( i > max_pos ) return
+
+			if ( iachar(self%s(i:i)) /= first_char ) then
+				i = i + 1_int64; cycle
+			end if
+
+			upper_ind = i+match_len-1_int64
+
+			if ( iachar(self%s(upper_ind:upper_ind)) /= last_char ) then
+				i = i + 1_int64; cycle
+			end if
+
+			if ( self%s(i:upper_ind) == match%s ) then
 				occurrences = occurrences + 1; i = i + match_len; cycle
 			else
 				i = i + 1_int64; cycle
@@ -4766,7 +4846,7 @@ submodule (io_fortran_lib) String_procedures
 	end procedure join_into_self
 
 	module procedure join_base
-		integer(int64), allocatable, dimension(:) :: lengths, cumm_lengths
+		integer(int64), dimension(size(tokens, kind=int64)) :: lengths, cumm_lengths
 		integer(int64) :: num_tokens, sep_len, total_length, pos, i
 
 		num_tokens = size(tokens, kind=int64)
@@ -4781,7 +4861,7 @@ submodule (io_fortran_lib) String_procedures
 			self%s = EMPTY_STR; return
 		end if
 
-		allocate( cumm_lengths(num_tokens), source=1_int64 )
+		cumm_lengths(1_int64) = 1_int64
 
 		do concurrent (i = 2_int64:num_tokens)
 			cumm_lengths(i) = sum( lengths(:i-1_int64) ) + 1_int64
@@ -4929,11 +5009,10 @@ submodule (io_fortran_lib) String_procedures
 		end if
 
 		cell_block: block
-			type(String), allocatable, dimension(:) :: rows, columns
 			character(len=:), allocatable :: row_separator_, column_separator_
-			integer(int64) :: n_rows, n_cols, i
-
-			logical, allocatable, dimension(:) :: quotes_exist
+			integer(int64) :: n_rows, n_cols, row, col, l, i
+			integer :: row_sep, row_sep_len, col_sep, col_sep_len, quote, current
+			logical :: in_quote
 
 			if ( .not. present(row_separator) ) then
 				row_separator_ = LF
@@ -4947,181 +5026,59 @@ submodule (io_fortran_lib) String_procedures
 				column_separator_ = column_separator
 			end if
 
-			! rows = self%split(separator=row_separator_)
-			call split_because_ifxbug(self, separator=row_separator_, tokens=rows)
+			n_rows = self%count(match=row_separator_)
+			n_cols = self%count(match=column_separator_); n_cols = n_cols/n_rows + 1_int64
 
-			if ( rows(size(rows, kind=int64))%len64() < 1_int64 ) then
-				n_rows = size(rows, kind=int64) - 1_int64
-			else
-				n_rows = size(rows, kind=int64)
-			end if
+			row_sep_len = len(row_separator_); col_sep_len = len(column_separator_)
+			row_sep = iachar(row_separator_(1:1)); col_sep = iachar(column_separator_(1:1))
+			quote = iachar(QQUOTE); in_quote = .false.
 
-			allocate( quotes_exist(n_rows), source=.false. )
-			call process_quotes(rows(:n_rows), column_separator=column_separator_, quotes_exist=quotes_exist)
+			allocate( cell_array(n_rows,n_cols) )
 
-			! columns = rows(1_int64)%split(separator=column_separator_)
-			call split_because_ifxbug(rows(1_int64), separator=column_separator_, tokens=columns)
-			n_cols = size(columns, kind=int64)
+			row = 1_int64; col = 1_int64; l = 1_int64; i = 1_int64; positional_transfers: do
+				current = iachar(self%s(i:i))
 
-			allocate( cell_array(n_rows, n_cols) )
-
-			cell_array(1_int64,:) = columns; call scrub(columns); deallocate(columns)
-
-			do concurrent (i = 2_int64:n_rows)
-				! cell_array(i,:) = rows(i)%split(separator=column_separator_)
-				call split_because_ifxbug(rows(i),separator=column_separator_,tokens=columns); cell_array(i,:)=columns
-			end do
-
-			call scrub(rows); deallocate(rows)
-			
-			if ( allocated(columns) ) then
-				call scrub(columns); deallocate(columns)
-			end if
-
-			do concurrent (i = 1_int64:n_rows)
-				if ( quotes_exist(i) ) call re_process_quotes(cell_array(i,:), column_separator=column_separator_)
-			end do
-		end block cell_block
-
-		contains
-		pure elemental recursive subroutine process_quotes(row, column_separator, quotes_exist)
-			type(String), intent(inout) :: row
-			character(len=*), intent(in) :: column_separator
-			logical, intent(inout) :: quotes_exist
-
-			character(len=:), allocatable :: replacement
-			logical :: in_quote
-			integer(int64) :: sep_len, i
-
-			sep_len = len(column_separator, kind=int64)
-
-			if ( sep_len == 1_int64 ) then
-				replacement = NUL
-			else
-				replacement = repeat(NUL, ncopies=sep_len)
-			end if
-
-			i = 1_int64
-			in_quote = .false.
-
-			replace_sep: do while ( i <= row%len64()-sep_len+1_int64 )
-				if ( row%s(i:i) == QQUOTE ) then
-					in_quote = ( .not. in_quote )
-					if ( .not. quotes_exist ) quotes_exist = .true.
-					i = i + 1_int64; cycle replace_sep
+				if ( (current /= quote) .and. (current /= col_sep) .and. (current /= row_sep) ) then
+					i = i + 1_int64; cycle
 				end if
 
-				if ( in_quote ) then
-					if ( row%s(i:i+sep_len-1_int64) == column_separator ) then
-						row%s(i:i+sep_len-1_int64) = replacement
-						i = i + sep_len; cycle replace_sep
-					else
-						i = i + 1_int64; cycle replace_sep
+				if ( current == quote ) then
+					in_quote = (.not. in_quote); i = i + 1_int64; cycle
+				end if
+
+				if ( current == col_sep ) then
+					if ( in_quote ) then
+						i = i + 1_int64; cycle
 					end if
-				else
-					i = i + 1_int64; cycle replace_sep
-				end if
-			end do replace_sep
-		end subroutine process_quotes
-		pure elemental recursive subroutine re_process_quotes(cell, column_separator)
-			type(String), intent(inout) :: cell
-			character(len=*), intent(in) :: column_separator
 
-			character(len=:), allocatable :: replacement
-			logical :: in_quote
-			integer(int64) :: sep_len, i
-
-			sep_len = len(column_separator, kind=int64)
-
-			if ( sep_len == 1_int64 ) then
-				replacement = NUL
-			else
-				replacement = repeat(NUL, ncopies=sep_len)
-			end if
-
-			i = 1_int64
-			in_quote = .false.
-
-			replace_sep: do while ( i <= cell%len64()-sep_len+1_int64 )
-				if ( cell%s(i:i) == QQUOTE ) then
-					in_quote = ( .not. in_quote )
-					i = i + 1_int64; cycle replace_sep
-				end if
-
-				if ( in_quote ) then
-					if ( cell%s(i:i+sep_len-1_int64) == replacement ) then
-						cell%s(i:i+sep_len-1_int64) = column_separator
-						i = i + sep_len; cycle replace_sep
+					if ( col_sep_len == 1 ) then
+						cell_array(row,col)%s = self%s(l:i-1); i = i + 1_int64; l = i; col = col + 1_int64; cycle
 					else
-						i = i + 1_int64; cycle replace_sep
-					end if
-				else
-					i = i + 1_int64; cycle replace_sep
-				end if
-			end do replace_sep
-		end subroutine re_process_quotes
-		pure recursive subroutine split_because_ifxbug(substring, separator, tokens)
-			! This subroutine exists purely as a workaround for an ifx 2023.0.0 bug resulting in a
-			! segmentation fault on an assignment of the form tokens = substring%split(separator).
-			! This procedure is a copy of split_string.
-			class(String), intent(in) :: substring
-			character(len=*), intent(in) :: separator
-			type(String), allocatable, dimension(:), intent(out) :: tokens
-
-			integer(int64) :: substring_len, sep_len, num_seps, i
-			integer(int64), allocatable, dimension(:) :: sep_positions
-
-			substring_len = substring%len64()
-
-			if ( substring_len < 1_int64 ) then
-				allocate( tokens(1) ); tokens(1)%s = EMPTY_STR; return
-			end if
-
-			sep_len = len(separator, kind=int64)
-			num_seps = 0_int64
-			i = 1_int64
-
-			allocate( sep_positions(substring_len) )
-
-			count_seps: do while ( i <= substring_len-sep_len+1_int64 )
-				if ( substring%s(i:i+sep_len-1_int64) == separator ) then
-					num_seps = num_seps + 1_int64; sep_positions(num_seps) = i
-					i = i + sep_len; cycle count_seps
-				else
-					i = i + 1_int64; cycle count_seps
-				end if
-			end do count_seps
-
-			if ( num_seps == 0_int64 ) then
-				allocate( tokens(1) ); tokens(1)%s = substring%s; return
-			end if
-
-			allocate( tokens(num_seps + 1_int64) )
-
-			positional_transfers: do concurrent (i = 1:num_seps)
-				if ( i == 1_int64 ) then
-					if ( sep_positions(i) == 1_int64 ) then
-						tokens(i)%s = EMPTY_STR
-					else
-						tokens(i)%s = substring%s(1_int64:sep_positions(i)-1_int64)
-					end if
-				else
-					if ( sep_positions(i) == sep_positions(i-1_int64)+sep_len ) then
-						tokens(i)%s = EMPTY_STR
-					else
-						tokens(i)%s = substring%s(sep_positions(i-1_int64)+sep_len:sep_positions(i)-1_int64)
+						if ( self%s(i:i+col_sep_len-1_int64) == column_separator_ ) then
+							cell_array(row,col)%s = self%s(l:i-1); i = i + col_sep_len; l = i; col = col+1_int64; cycle
+						else
+							i = i + 1_int64; cycle
+						end if
 					end if
 				end if
 
-				if ( i == num_seps ) then
-					if ( sep_positions(i)+sep_len > substring_len ) then
-						tokens(i+1_int64)%s = EMPTY_STR
+				if ( current == row_sep ) then
+					if ( row_sep_len == 1 ) then
+						cell_array(row,col)%s = self%s(l:i-1)
+						if ( row == n_rows ) return
+						i = i + 1_int64; l = i; col = 1_int64; row = row + 1_int64; cycle
 					else
-						tokens(i+1_int64)%s = substring%s(sep_positions(i)+sep_len:)
+						if ( self%s(i:i+row_sep_len-1_int64) == row_separator_ ) then
+							cell_array(row,col)%s = self%s(l:i-1)
+							if ( row == n_rows ) return
+							i = i + row_sep_len; l = i; col = 1_int64; row = row + 1_int64; cycle
+						else
+							i = i + 1_int64; cycle
+						end if
 					end if
 				end if
 			end do positional_transfers
-		end subroutine split_because_ifxbug
+		end block cell_block
 	end procedure read_file
 
 	module procedure replace_ch_copy
@@ -5653,9 +5610,9 @@ submodule (io_fortran_lib) String_procedures
 	end procedure trim_inplace
 
 	module procedure write_file
-		type(String), allocatable, dimension(:) :: rows
 		character(len=:), allocatable :: ext, row_separator_, column_separator_
-		integer(int64) :: n_rows, i
+		integer(int64), allocatable, dimension(:,:) :: lengths
+		integer(int64) :: n_rows, n_cols, row_sep_len, col_sep_len, total_len, row, col, pos
 		logical :: exists, append_
 		integer :: file_unit
 
@@ -5687,16 +5644,36 @@ submodule (io_fortran_lib) String_procedures
 		end if
 
 		n_rows = size(cell_array, dim=1, kind=int64)
+		n_cols = size(cell_array, dim=2, kind=int64)
+		row_sep_len = len(row_separator_, kind=int64)
+		col_sep_len = len(column_separator_, kind=int64)
 
-		allocate( rows(n_rows) )
+		if ( allocated(self%s) ) deallocate(self%s)
 
-		do concurrent (i = 1_int64:n_rows)
-			rows(i) = join(tokens=cell_array(i,:), separator=column_separator_)//row_separator_
-		end do
-		call scrub(cell_array)
+		lengths = cell_array%len64()
+		total_len = sum(lengths) + n_rows*row_sep_len + n_rows*(n_cols - 1_int64)*col_sep_len
 
-		call self%join(tokens=rows, separator=EMPTY_STR)
-		call scrub(rows); deallocate(rows)
+		allocate( character(len=total_len) :: self%s )
+
+		row = 1_int64; col = 1_int64; pos = 1_int64; positional_transfers: do
+			if ( lengths(row,col) > 0_int64 ) then
+				self%s(pos:pos+lengths(row,col)-1_int64) = cell_array(row,col)%s
+				pos = pos + lengths(row,col)
+			end if
+
+			if ( col < n_cols ) then
+				if ( col_sep_len > 0_int64 ) self%s(pos:pos+col_sep_len-1_int64) = column_separator_
+				pos = pos + col_sep_len; col = col + 1_int64; cycle
+			else
+				if ( row_sep_len > 0_int64 ) self%s(pos:pos+row_sep_len-1_int64) = row_separator_
+
+				if ( row < n_rows ) then
+					pos = pos + row_sep_len; row = row + 1_int64; col = 1_int64; cycle
+				else
+					exit
+				end if
+			end if
+		end do positional_transfers
 
 		inquire( file=file_name, exist=exists )
 
