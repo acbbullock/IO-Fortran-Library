@@ -103,7 +103,7 @@ module io_fortran_lib
 			final							::	scrub
 	end type String
 
-	interface                                                                             ! Submodule String_procedures
+	interface																				 ! Submodule string_methods
 		!--------------------------------------------------------------------------------------------------------------
 		!! Methods for the `String` type.
 		!--------------------------------------------------------------------------------------------------------------
@@ -343,7 +343,7 @@ module io_fortran_lib
 		end subroutine scrub
 	end interface
 
-	interface operator(//)                                                                        ! Submodule operators
+	interface operator(//)																		  ! Submodule operators
 		!--------------------------------------------------------------------------------------------------------------
 		!! Concatenation operator for `character` and `String`, lifted from `character`. Mixed type concatenation of
 		!! `character` and `String` is explicitly defined.
@@ -365,7 +365,7 @@ module io_fortran_lib
 		end function char_string_concatenation
 	end interface
 
-	interface operator(+)                                                                         ! Submodule operators
+	interface operator(+)																		  ! Submodule operators
 		!--------------------------------------------------------------------------------------------------------------
 		!! Concatenation operator for `character` and `String` (as addition). Mixed type concatenation of
 		!! `character` and `String` is explicitly defined.
@@ -392,7 +392,7 @@ module io_fortran_lib
 		end function char_string_concat_plus
 	end interface
 
-	interface operator(-)                                                                         ! Submodule operators
+	interface operator(-)																		  ! Submodule operators
 		!--------------------------------------------------------------------------------------------------------------
 		!! Excision operator for `character` and `String` (as subtraction). Mixed type excision of `character` and
 		!! `String` is explicitly defined.
@@ -418,7 +418,7 @@ module io_fortran_lib
 		end function char_string_excision
 	end interface
 
-	interface operator(**)                                                                        ! Submodule operators
+	interface operator(**)																		  ! Submodule operators
 		!--------------------------------------------------------------------------------------------------------------
 		!! Repetition operator for `character` and `String` (as exponentiation).
 		!!
@@ -436,7 +436,7 @@ module io_fortran_lib
 		end function repeat_String
 	end interface
 
-	interface operator(==)                                                                        ! Submodule operators
+	interface operator(==)																		  ! Submodule operators
 		!--------------------------------------------------------------------------------------------------------------
 		!! Equivalence operator for `character` and `String`. Mixed type equivalence of `character` and `String` is
 		!! explicitly defined.
@@ -460,7 +460,7 @@ module io_fortran_lib
 		end function char_string_equivalence
 	end interface
 
-	interface operator(/=)                                                                        ! Submodule operators
+	interface operator(/=)																		  ! Submodule operators
 		!--------------------------------------------------------------------------------------------------------------
 		!! Non-equivalence operator for `character` and `String`. Mixed type non-equivalence of `character` and
 		!! `String` is explicitly defined.
@@ -484,7 +484,7 @@ module io_fortran_lib
 		end function char_string_nonequivalence
 	end interface
 
-	interface String                                                                            ! Submodule internal_io
+	interface String																			! Submodule internal_io
 		!--------------------------------------------------------------------------------------------------------------
 		!! Function for returning a [String](../type/string.html) representation of numbers.
 		!!
@@ -560,7 +560,7 @@ module io_fortran_lib
 		end function new_string_from_empty
 	end interface
 
-	interface str                                                                               ! Submodule internal_io
+	interface str																				! Submodule internal_io
 		!--------------------------------------------------------------------------------------------------------------
 		!! Function for returning a `character` representation of a number.
 		!!
@@ -647,7 +647,7 @@ module io_fortran_lib
 		end function str_from_empty
 	end interface
 
-	interface cast                                                                              ! Submodule internal_io
+	interface cast																				! Submodule internal_io
 		!--------------------------------------------------------------------------------------------------------------
 		!! Subroutine for casting between numeric and string data.
 		!!
@@ -951,7 +951,7 @@ module io_fortran_lib
 		end function split_string
 	end interface
 
-	interface to_file                                                                               ! Submodule file_io
+	interface to_file																				! Submodule file_io
 		!--------------------------------------------------------------------------------------------------------------
 		!! Subroutine for writing an array of uniform numeric data type to an external file.
 		!!
@@ -1703,7 +1703,7 @@ module io_fortran_lib
 		end subroutine to_file_15di8
 	end interface
 
-	interface from_file                                                                             ! Submodule file_io
+	interface from_file																				! Submodule file_io
 		!--------------------------------------------------------------------------------------------------------------
 		!! Subroutine for reading an external file of uniform numeric data type and format into an array.
 		!!
@@ -2663,7 +2663,7 @@ module io_fortran_lib
 		end subroutine from_file_15di8
 	end interface
 
-	interface echo                                                                                  ! Submodule text_io
+	interface echo																					! Submodule text_io
 		!--------------------------------------------------------------------------------------------------------------
 		!! Subroutine for writing a scalar `character` or `String` to an external text file.
 		!!
@@ -2684,7 +2684,7 @@ module io_fortran_lib
 		end subroutine echo_string
 	end interface
 
-	interface to_text                                                                               ! Submodule text_io
+	interface to_text																				! Submodule text_io
 		!--------------------------------------------------------------------------------------------------------------
 		!! Private interface for writing an array to an external text file.
 		!--------------------------------------------------------------------------------------------------------------
@@ -2875,7 +2875,7 @@ module io_fortran_lib
 		end subroutine to_text_2di8
 	end interface
 
-	interface from_text                                                                             ! Submodule text_io
+	interface from_text																				! Submodule text_io
 		!--------------------------------------------------------------------------------------------------------------
 		!! Private interface for reading an external text file into an array.
 		!--------------------------------------------------------------------------------------------------------------
@@ -3044,7 +3044,7 @@ module io_fortran_lib
 		end subroutine from_text_2di8
 	end interface
 
-	interface to_binary                                                                           ! Submodule binary_io
+	interface to_binary																			  ! Submodule binary_io
 		!--------------------------------------------------------------------------------------------------------------
 		!! Private interface for writing an array to an external binary file.
 		!--------------------------------------------------------------------------------------------------------------
@@ -3694,7 +3694,7 @@ module io_fortran_lib
 		end subroutine to_binary_15di8
 	end interface
 
-	interface from_binary                                                                         ! Submodule binary_io
+	interface from_binary																		  ! Submodule binary_io
 		!--------------------------------------------------------------------------------------------------------------
 		!! Private interface for reading an external binary file into an array.
 		!--------------------------------------------------------------------------------------------------------------
@@ -4494,7 +4494,7 @@ module io_fortran_lib
 		end subroutine from_binary_15di8
 	end interface
 
-	interface aprint                                                                         ! Submodule array_printing
+	interface aprint																		 ! Submodule array_printing
 		!--------------------------------------------------------------------------------------------------------------
 		!! Subroutine for printing arrays and array sections to stdout.
 		!!
@@ -4644,7 +4644,7 @@ module io_fortran_lib
 
 end module io_fortran_lib
 
-submodule (io_fortran_lib) String_procedures
+submodule (io_fortran_lib) string_methods
 	!------------------------------------------------------------------------------------------------------------------
 	!! This submodule provides module procedure implementations for the **type-bound procedures** of type `String`.
 	!------------------------------------------------------------------------------------------------------------------
@@ -5026,12 +5026,47 @@ submodule (io_fortran_lib) String_procedures
 				column_separator_ = column_separator
 			end if
 
-			n_rows = self%count(match=row_separator_)
-			n_cols = self%count(match=column_separator_); n_cols = n_cols/n_rows + 1_int64
-
 			row_sep_len = len(row_separator_); col_sep_len = len(column_separator_)
 			row_sep = iachar(row_separator_(1:1)); col_sep = iachar(column_separator_(1:1))
 			quote = iachar(QQUOTE); in_quote = .false.
+
+			n_rows = self%count(match=row_separator_)
+
+			n_cols = 1_int64; i = 1_int64; get_n_cols: do
+				current = iachar(self%s(i:i))
+
+				if ( (current /= quote) .and. (current /= col_sep) .and. (current /= row_sep) ) then
+					i = i + 1_int64; cycle
+				end if
+
+				if ( current == col_sep ) then
+					if ( in_quote ) then
+						i = i + 1_int64; cycle
+					end if
+
+					if ( col_sep_len == 1 ) then
+						n_cols = n_cols + 1_int64; i = i + 1_int64; cycle
+					else
+						if ( self%s(i:i+col_sep_len-1_int64) == column_separator_ ) then
+							n_cols = n_cols + 1_int64; i = i + col_sep_len; cycle
+						else
+							i = i + 1_int64; cycle
+						end if
+					end if
+				end if
+
+				if ( current == row_sep ) then
+					if ( row_sep_len == 1 ) then
+						exit get_n_cols
+					else
+						if ( self%s(i:i+row_sep_len-1_int64) == row_separator_ ) then
+							exit get_n_cols
+						else
+							i = i + 1_int64; cycle
+						end if
+					end if
+				end if
+			end do get_n_cols
 
 			allocate( cell_array(n_rows,n_cols) )
 
@@ -5708,7 +5743,7 @@ submodule (io_fortran_lib) String_procedures
 	module procedure scrub
 		if ( allocated(self%s) ) deallocate(self%s)
 	end procedure scrub
-end submodule String_procedures
+end submodule string_methods
 
 submodule (io_fortran_lib) operators
 	!------------------------------------------------------------------------------------------------------------------
@@ -23522,10 +23557,10 @@ submodule (io_fortran_lib) text_io
 
 		if ( len(im) == 0 ) then
 			custom_processing: block
-				type(String), allocatable, dimension(:) :: rows, columns
-				integer(int64) :: file_length, i
+				integer(int64) :: file_length, row, col, l, i
+				integer :: row_sep, col_sep, col_sep_len, open_paren, close_paren, current
 				integer :: file_unit, iostat
-				logical :: exists
+				logical :: exists, in_paren
 
 				inquire( file=file_name, exist=exists )
 
@@ -23555,30 +23590,89 @@ submodule (io_fortran_lib) text_io
 					return
 				end if
 
-				rows = text_file%split(separator=NL)
+				col_sep_len = len(delim)
+				row_sep = iachar(NL); col_sep = iachar(delim(1:1))
+				open_paren = iachar('('); close_paren = iachar(')'); in_paren = .false.
 
-				if ( rows(size(rows, kind=int64))%len64() < 1_int64 ) then
-					n_rows = size(rows, kind=int64) - 1_int64
-				else
-					n_rows = size(rows, kind=int64)
-				end if
-	
-				call process_parentheses(rows, column_separator=delim)
+				n_rows = text_file%count(match=NL)
 
-				columns = rows(1_int64)%split(separator=delim)
-				n_cols = size(columns, kind=int64)
-	
-				allocate( cells(n_rows, n_cols) )
-	
-				cells(1_int64,:) = columns
-				deallocate(columns)
+				n_cols = 1_int64; i = 1_int64; get_n_cols: do
+					current = iachar(text_file%s(i:i))
 
-				do concurrent (i = 2_int64:n_rows)
-					cells(i,:) = rows(i)%split(separator=delim)
-					deallocate(rows(i)%s)
-				end do
-	
-				call re_process_parentheses(cells, column_separator=delim)
+					if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. &
+						 (current/=row_sep) ) then
+						i = i + 1_int64; cycle
+					end if
+
+					if ( current == open_paren ) then
+						in_paren = .true.; i = i + 1_int64; cycle
+					end if
+
+					if ( current == close_paren ) then
+						in_paren = .false.; i = i + 1_int64; cycle
+					end if
+
+					if ( current == col_sep ) then
+						if ( in_paren ) then
+							i = i + 1_int64; cycle
+						end if
+
+						if ( col_sep_len == 1 ) then
+							n_cols = n_cols + 1_int64; i = i + 1_int64; cycle
+						else
+							if ( text_file%s(i:i+col_sep_len-1_int64) == delim ) then
+								n_cols = n_cols + 1_int64; i = i + col_sep_len; cycle
+							else
+								i = i + 1_int64; cycle
+							end if
+						end if
+					end if
+
+					if ( current == row_sep ) exit get_n_cols
+				end do get_n_cols
+
+				allocate( cells(n_rows,n_cols) )
+
+				row = 1_int64; col = 1_int64; l = 1_int64; i = 1_int64; positional_transfers: do
+					current = iachar(text_file%s(i:i))
+
+					if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. &
+						 (current/=row_sep) ) then
+						i = i + 1_int64; cycle
+					end if
+
+					if ( current == open_paren ) then
+						in_paren = .true.; i = i + 1_int64; cycle
+					end if
+
+					if ( current == close_paren ) then
+						in_paren = .false.; i = i + 1_int64; cycle
+					end if
+
+					if ( current == col_sep ) then
+						if ( in_paren ) then
+							i = i + 1_int64; cycle
+						end if
+
+						if ( col_sep_len == 1 ) then
+							cells(row,col)%s = text_file%s(l:i-1); i = i + 1_int64; l = i
+							col = col + 1_int64; cycle
+						else
+							if ( text_file%s(i:i+col_sep_len-1_int64) == delim ) then
+								cells(row,col)%s = text_file%s(l:i-1); i = i + col_sep_len; l = i
+								col = col + 1_int64; cycle
+							else
+								i = i + 1_int64; cycle
+							end if
+						end if
+					end if
+
+					if ( current == row_sep ) then
+						cells(row,col)%s = text_file%s(l:i-1)
+						if ( row == n_rows ) exit custom_processing
+						i = i + 1_int64; l = i; col = 1_int64; row = row + 1_int64; cycle
+					end if
+				end do positional_transfers
 			end block custom_processing
 		else
 			call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
@@ -23586,7 +23680,6 @@ submodule (io_fortran_lib) text_io
 			n_rows = size(cells, dim=1, kind=int64)
 			n_cols = size(cells, dim=2, kind=int64)
 		end if
-		call text_file%empty()
 
 		if ( (n_rows > 1_int64) .and. (n_cols > 1_int64) ) then
 			if ( header ) then
@@ -23636,10 +23729,10 @@ submodule (io_fortran_lib) text_io
 
 		if ( len(im) == 0 ) then
 			custom_processing: block
-				type(String), allocatable, dimension(:) :: rows, columns
-				integer(int64) :: file_length, i
+				integer(int64) :: file_length, row, col, l, i
+				integer :: row_sep, col_sep, col_sep_len, open_paren, close_paren, current
 				integer :: file_unit, iostat
-				logical :: exists
+				logical :: exists, in_paren
 
 				inquire( file=file_name, exist=exists )
 
@@ -23669,30 +23762,89 @@ submodule (io_fortran_lib) text_io
 					return
 				end if
 
-				rows = text_file%split(separator=NL)
+				col_sep_len = len(delim)
+				row_sep = iachar(NL); col_sep = iachar(delim(1:1))
+				open_paren = iachar('('); close_paren = iachar(')'); in_paren = .false.
 
-				if ( rows(size(rows, kind=int64))%len64() < 1_int64 ) then
-					n_rows = size(rows, kind=int64) - 1_int64
-				else
-					n_rows = size(rows, kind=int64)
-				end if
-	
-				call process_parentheses(rows, column_separator=delim)
+				n_rows = text_file%count(match=NL)
 
-				columns = rows(1_int64)%split(separator=delim)
-				n_cols = size(columns, kind=int64)
-	
-				allocate( cells(n_rows, n_cols) )
-	
-				cells(1_int64,:) = columns
-				deallocate(columns)
+				n_cols = 1_int64; i = 1_int64; get_n_cols: do
+					current = iachar(text_file%s(i:i))
 
-				do concurrent (i = 2_int64:n_rows)
-					cells(i,:) = rows(i)%split(separator=delim)
-					deallocate(rows(i)%s)
-				end do
-	
-				call re_process_parentheses(cells, column_separator=delim)
+					if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. &
+						 (current/=row_sep) ) then
+						i = i + 1_int64; cycle
+					end if
+
+					if ( current == open_paren ) then
+						in_paren = .true.; i = i + 1_int64; cycle
+					end if
+
+					if ( current == close_paren ) then
+						in_paren = .false.; i = i + 1_int64; cycle
+					end if
+
+					if ( current == col_sep ) then
+						if ( in_paren ) then
+							i = i + 1_int64; cycle
+						end if
+
+						if ( col_sep_len == 1 ) then
+							n_cols = n_cols + 1_int64; i = i + 1_int64; cycle
+						else
+							if ( text_file%s(i:i+col_sep_len-1_int64) == delim ) then
+								n_cols = n_cols + 1_int64; i = i + col_sep_len; cycle
+							else
+								i = i + 1_int64; cycle
+							end if
+						end if
+					end if
+
+					if ( current == row_sep ) exit get_n_cols
+				end do get_n_cols
+
+				allocate( cells(n_rows,n_cols) )
+
+				row = 1_int64; col = 1_int64; l = 1_int64; i = 1_int64; positional_transfers: do
+					current = iachar(text_file%s(i:i))
+
+					if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. &
+						 (current/=row_sep) ) then
+						i = i + 1_int64; cycle
+					end if
+
+					if ( current == open_paren ) then
+						in_paren = .true.; i = i + 1_int64; cycle
+					end if
+
+					if ( current == close_paren ) then
+						in_paren = .false.; i = i + 1_int64; cycle
+					end if
+
+					if ( current == col_sep ) then
+						if ( in_paren ) then
+							i = i + 1_int64; cycle
+						end if
+
+						if ( col_sep_len == 1 ) then
+							cells(row,col)%s = text_file%s(l:i-1); i = i + 1_int64; l = i
+							col = col + 1_int64; cycle
+						else
+							if ( text_file%s(i:i+col_sep_len-1_int64) == delim ) then
+								cells(row,col)%s = text_file%s(l:i-1); i = i + col_sep_len; l = i
+								col = col + 1_int64; cycle
+							else
+								i = i + 1_int64; cycle
+							end if
+						end if
+					end if
+
+					if ( current == row_sep ) then
+						cells(row,col)%s = text_file%s(l:i-1)
+						if ( row == n_rows ) exit custom_processing
+						i = i + 1_int64; l = i; col = 1_int64; row = row + 1_int64; cycle
+					end if
+				end do positional_transfers
 			end block custom_processing
 		else
 			call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
@@ -23700,7 +23852,6 @@ submodule (io_fortran_lib) text_io
 			n_rows = size(cells, dim=1, kind=int64)
 			n_cols = size(cells, dim=2, kind=int64)
 		end if
-		call text_file%empty()
 
 		if ( (n_rows > 1_int64) .and. (n_cols > 1_int64) ) then
 			if ( header ) then
@@ -23750,10 +23901,10 @@ submodule (io_fortran_lib) text_io
 
 		if ( len(im) == 0 ) then
 			custom_processing: block
-				type(String), allocatable, dimension(:) :: rows, columns
-				integer(int64) :: file_length, i
+				integer(int64) :: file_length, row, col, l, i
+				integer :: row_sep, col_sep, col_sep_len, open_paren, close_paren, current
 				integer :: file_unit, iostat
-				logical :: exists
+				logical :: exists, in_paren
 
 				inquire( file=file_name, exist=exists )
 
@@ -23783,30 +23934,89 @@ submodule (io_fortran_lib) text_io
 					return
 				end if
 
-				rows = text_file%split(separator=NL)
+				col_sep_len = len(delim)
+				row_sep = iachar(NL); col_sep = iachar(delim(1:1))
+				open_paren = iachar('('); close_paren = iachar(')'); in_paren = .false.
 
-				if ( rows(size(rows, kind=int64))%len64() < 1_int64 ) then
-					n_rows = size(rows, kind=int64) - 1_int64
-				else
-					n_rows = size(rows, kind=int64)
-				end if
-	
-				call process_parentheses(rows, column_separator=delim)
+				n_rows = text_file%count(match=NL)
 
-				columns = rows(1_int64)%split(separator=delim)
-				n_cols = size(columns, kind=int64)
-	
-				allocate( cells(n_rows, n_cols) )
-	
-				cells(1_int64,:) = columns
-				deallocate(columns)
+				n_cols = 1_int64; i = 1_int64; get_n_cols: do
+					current = iachar(text_file%s(i:i))
 
-				do concurrent (i = 2_int64:n_rows)
-					cells(i,:) = rows(i)%split(separator=delim)
-					deallocate(rows(i)%s)
-				end do
-	
-				call re_process_parentheses(cells, column_separator=delim)
+					if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. &
+						 (current/=row_sep) ) then
+						i = i + 1_int64; cycle
+					end if
+
+					if ( current == open_paren ) then
+						in_paren = .true.; i = i + 1_int64; cycle
+					end if
+
+					if ( current == close_paren ) then
+						in_paren = .false.; i = i + 1_int64; cycle
+					end if
+
+					if ( current == col_sep ) then
+						if ( in_paren ) then
+							i = i + 1_int64; cycle
+						end if
+
+						if ( col_sep_len == 1 ) then
+							n_cols = n_cols + 1_int64; i = i + 1_int64; cycle
+						else
+							if ( text_file%s(i:i+col_sep_len-1_int64) == delim ) then
+								n_cols = n_cols + 1_int64; i = i + col_sep_len; cycle
+							else
+								i = i + 1_int64; cycle
+							end if
+						end if
+					end if
+
+					if ( current == row_sep ) exit get_n_cols
+				end do get_n_cols
+
+				allocate( cells(n_rows,n_cols) )
+
+				row = 1_int64; col = 1_int64; l = 1_int64; i = 1_int64; positional_transfers: do
+					current = iachar(text_file%s(i:i))
+
+					if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. &
+						 (current/=row_sep) ) then
+						i = i + 1_int64; cycle
+					end if
+
+					if ( current == open_paren ) then
+						in_paren = .true.; i = i + 1_int64; cycle
+					end if
+
+					if ( current == close_paren ) then
+						in_paren = .false.; i = i + 1_int64; cycle
+					end if
+
+					if ( current == col_sep ) then
+						if ( in_paren ) then
+							i = i + 1_int64; cycle
+						end if
+
+						if ( col_sep_len == 1 ) then
+							cells(row,col)%s = text_file%s(l:i-1); i = i + 1_int64; l = i
+							col = col + 1_int64; cycle
+						else
+							if ( text_file%s(i:i+col_sep_len-1_int64) == delim ) then
+								cells(row,col)%s = text_file%s(l:i-1); i = i + col_sep_len; l = i
+								col = col + 1_int64; cycle
+							else
+								i = i + 1_int64; cycle
+							end if
+						end if
+					end if
+
+					if ( current == row_sep ) then
+						cells(row,col)%s = text_file%s(l:i-1)
+						if ( row == n_rows ) exit custom_processing
+						i = i + 1_int64; l = i; col = 1_int64; row = row + 1_int64; cycle
+					end if
+				end do positional_transfers
 			end block custom_processing
 		else
 			call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
@@ -23814,7 +24024,6 @@ submodule (io_fortran_lib) text_io
 			n_rows = size(cells, dim=1, kind=int64)
 			n_cols = size(cells, dim=2, kind=int64)
 		end if
-		call text_file%empty()
 
 		if ( (n_rows > 1_int64) .and. (n_cols > 1_int64) ) then
 			if ( header ) then
@@ -23865,10 +24074,10 @@ submodule (io_fortran_lib) text_io
 
 		if ( len(im) == 0 ) then
 			custom_processing: block
-				type(String), allocatable, dimension(:) :: rows, columns
-				integer(int64) :: file_length, i
+				integer(int64) :: file_length, row, col, l, i
+				integer :: row_sep, col_sep, col_sep_len, open_paren, close_paren, current
 				integer :: file_unit, iostat
-				logical :: exists
+				logical :: exists, in_paren
 
 				inquire( file=file_name, exist=exists )
 
@@ -23898,30 +24107,89 @@ submodule (io_fortran_lib) text_io
 					return
 				end if
 
-				rows = text_file%split(separator=NL)
+				col_sep_len = len(delim)
+				row_sep = iachar(NL); col_sep = iachar(delim(1:1))
+				open_paren = iachar('('); close_paren = iachar(')'); in_paren = .false.
 
-				if ( rows(size(rows, kind=int64))%len64() < 1_int64 ) then
-					n_rows = size(rows, kind=int64) - 1_int64
-				else
-					n_rows = size(rows, kind=int64)
-				end if
-	
-				call process_parentheses(rows, column_separator=delim)
+				n_rows = text_file%count(match=NL)
 
-				columns = rows(1_int64)%split(separator=delim)
-				n_cols = size(columns, kind=int64)
-	
-				allocate( cells(n_rows, n_cols) )
-	
-				cells(1_int64,:) = columns
-				deallocate(columns)
+				n_cols = 1_int64; i = 1_int64; get_n_cols: do
+					current = iachar(text_file%s(i:i))
 
-				do concurrent (i = 2_int64:n_rows)
-					cells(i,:) = rows(i)%split(separator=delim)
-					deallocate(rows(i)%s)
-				end do
-	
-				call re_process_parentheses(cells, column_separator=delim)
+					if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. &
+						 (current/=row_sep) ) then
+						i = i + 1_int64; cycle
+					end if
+
+					if ( current == open_paren ) then
+						in_paren = .true.; i = i + 1_int64; cycle
+					end if
+
+					if ( current == close_paren ) then
+						in_paren = .false.; i = i + 1_int64; cycle
+					end if
+
+					if ( current == col_sep ) then
+						if ( in_paren ) then
+							i = i + 1_int64; cycle
+						end if
+
+						if ( col_sep_len == 1 ) then
+							n_cols = n_cols + 1_int64; i = i + 1_int64; cycle
+						else
+							if ( text_file%s(i:i+col_sep_len-1_int64) == delim ) then
+								n_cols = n_cols + 1_int64; i = i + col_sep_len; cycle
+							else
+								i = i + 1_int64; cycle
+							end if
+						end if
+					end if
+
+					if ( current == row_sep ) exit get_n_cols
+				end do get_n_cols
+
+				allocate( cells(n_rows,n_cols) )
+
+				row = 1_int64; col = 1_int64; l = 1_int64; i = 1_int64; positional_transfers: do
+					current = iachar(text_file%s(i:i))
+
+					if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. &
+						 (current/=row_sep) ) then
+						i = i + 1_int64; cycle
+					end if
+
+					if ( current == open_paren ) then
+						in_paren = .true.; i = i + 1_int64; cycle
+					end if
+
+					if ( current == close_paren ) then
+						in_paren = .false.; i = i + 1_int64; cycle
+					end if
+
+					if ( current == col_sep ) then
+						if ( in_paren ) then
+							i = i + 1_int64; cycle
+						end if
+
+						if ( col_sep_len == 1 ) then
+							cells(row,col)%s = text_file%s(l:i-1); i = i + 1_int64; l = i
+							col = col + 1_int64; cycle
+						else
+							if ( text_file%s(i:i+col_sep_len-1_int64) == delim ) then
+								cells(row,col)%s = text_file%s(l:i-1); i = i + col_sep_len; l = i
+								col = col + 1_int64; cycle
+							else
+								i = i + 1_int64; cycle
+							end if
+						end if
+					end if
+
+					if ( current == row_sep ) then
+						cells(row,col)%s = text_file%s(l:i-1)
+						if ( row == n_rows ) exit custom_processing
+						i = i + 1_int64; l = i; col = 1_int64; row = row + 1_int64; cycle
+					end if
+				end do positional_transfers
 			end block custom_processing
 		else
 			call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
@@ -23929,7 +24197,6 @@ submodule (io_fortran_lib) text_io
 			n_rows = size(cells, dim=1, kind=int64)
 			n_cols = size(cells, dim=2, kind=int64)
 		end if
-		call text_file%empty()
 
 		if ( header ) then
 			if ( .not. (n_rows > 1_int64) ) then
@@ -23951,10 +24218,10 @@ submodule (io_fortran_lib) text_io
 
 		if ( len(im) == 0 ) then
 			custom_processing: block
-				type(String), allocatable, dimension(:) :: rows, columns
-				integer(int64) :: file_length, i
+				integer(int64) :: file_length, row, col, l, i
+				integer :: row_sep, col_sep, col_sep_len, open_paren, close_paren, current
 				integer :: file_unit, iostat
-				logical :: exists
+				logical :: exists, in_paren
 
 				inquire( file=file_name, exist=exists )
 
@@ -23984,30 +24251,89 @@ submodule (io_fortran_lib) text_io
 					return
 				end if
 
-				rows = text_file%split(separator=NL)
+				col_sep_len = len(delim)
+				row_sep = iachar(NL); col_sep = iachar(delim(1:1))
+				open_paren = iachar('('); close_paren = iachar(')'); in_paren = .false.
 
-				if ( rows(size(rows, kind=int64))%len64() < 1_int64 ) then
-					n_rows = size(rows, kind=int64) - 1_int64
-				else
-					n_rows = size(rows, kind=int64)
-				end if
-	
-				call process_parentheses(rows, column_separator=delim)
+				n_rows = text_file%count(match=NL)
 
-				columns = rows(1_int64)%split(separator=delim)
-				n_cols = size(columns, kind=int64)
-	
-				allocate( cells(n_rows, n_cols) )
-	
-				cells(1_int64,:) = columns
-				deallocate(columns)
+				n_cols = 1_int64; i = 1_int64; get_n_cols: do
+					current = iachar(text_file%s(i:i))
 
-				do concurrent (i = 2_int64:n_rows)
-					cells(i,:) = rows(i)%split(separator=delim)
-					deallocate(rows(i)%s)
-				end do
-	
-				call re_process_parentheses(cells, column_separator=delim)
+					if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. &
+						 (current/=row_sep) ) then
+						i = i + 1_int64; cycle
+					end if
+
+					if ( current == open_paren ) then
+						in_paren = .true.; i = i + 1_int64; cycle
+					end if
+
+					if ( current == close_paren ) then
+						in_paren = .false.; i = i + 1_int64; cycle
+					end if
+
+					if ( current == col_sep ) then
+						if ( in_paren ) then
+							i = i + 1_int64; cycle
+						end if
+
+						if ( col_sep_len == 1 ) then
+							n_cols = n_cols + 1_int64; i = i + 1_int64; cycle
+						else
+							if ( text_file%s(i:i+col_sep_len-1_int64) == delim ) then
+								n_cols = n_cols + 1_int64; i = i + col_sep_len; cycle
+							else
+								i = i + 1_int64; cycle
+							end if
+						end if
+					end if
+
+					if ( current == row_sep ) exit get_n_cols
+				end do get_n_cols
+
+				allocate( cells(n_rows,n_cols) )
+
+				row = 1_int64; col = 1_int64; l = 1_int64; i = 1_int64; positional_transfers: do
+					current = iachar(text_file%s(i:i))
+
+					if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. &
+						 (current/=row_sep) ) then
+						i = i + 1_int64; cycle
+					end if
+
+					if ( current == open_paren ) then
+						in_paren = .true.; i = i + 1_int64; cycle
+					end if
+
+					if ( current == close_paren ) then
+						in_paren = .false.; i = i + 1_int64; cycle
+					end if
+
+					if ( current == col_sep ) then
+						if ( in_paren ) then
+							i = i + 1_int64; cycle
+						end if
+
+						if ( col_sep_len == 1 ) then
+							cells(row,col)%s = text_file%s(l:i-1); i = i + 1_int64; l = i
+							col = col + 1_int64; cycle
+						else
+							if ( text_file%s(i:i+col_sep_len-1_int64) == delim ) then
+								cells(row,col)%s = text_file%s(l:i-1); i = i + col_sep_len; l = i
+								col = col + 1_int64; cycle
+							else
+								i = i + 1_int64; cycle
+							end if
+						end if
+					end if
+
+					if ( current == row_sep ) then
+						cells(row,col)%s = text_file%s(l:i-1)
+						if ( row == n_rows ) exit custom_processing
+						i = i + 1_int64; l = i; col = 1_int64; row = row + 1_int64; cycle
+					end if
+				end do positional_transfers
 			end block custom_processing
 		else
 			call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
@@ -24015,7 +24341,6 @@ submodule (io_fortran_lib) text_io
 			n_rows = size(cells, dim=1, kind=int64)
 			n_cols = size(cells, dim=2, kind=int64)
 		end if
-		call text_file%empty()
 
 		if ( header ) then
 			if ( .not. (n_rows > 1_int64) ) then
@@ -24037,10 +24362,10 @@ submodule (io_fortran_lib) text_io
 
 		if ( len(im) == 0 ) then
 			custom_processing: block
-				type(String), allocatable, dimension(:) :: rows, columns
-				integer(int64) :: file_length, i
+				integer(int64) :: file_length, row, col, l, i
+				integer :: row_sep, col_sep, col_sep_len, open_paren, close_paren, current
 				integer :: file_unit, iostat
-				logical :: exists
+				logical :: exists, in_paren
 
 				inquire( file=file_name, exist=exists )
 
@@ -24070,30 +24395,89 @@ submodule (io_fortran_lib) text_io
 					return
 				end if
 
-				rows = text_file%split(separator=NL)
+				col_sep_len = len(delim)
+				row_sep = iachar(NL); col_sep = iachar(delim(1:1))
+				open_paren = iachar('('); close_paren = iachar(')'); in_paren = .false.
 
-				if ( rows(size(rows, kind=int64))%len64() < 1_int64 ) then
-					n_rows = size(rows, kind=int64) - 1_int64
-				else
-					n_rows = size(rows, kind=int64)
-				end if
-	
-				call process_parentheses(rows, column_separator=delim)
+				n_rows = text_file%count(match=NL)
 
-				columns = rows(1_int64)%split(separator=delim)
-				n_cols = size(columns, kind=int64)
-	
-				allocate( cells(n_rows, n_cols) )
-	
-				cells(1_int64,:) = columns
-				deallocate(columns)
+				n_cols = 1_int64; i = 1_int64; get_n_cols: do
+					current = iachar(text_file%s(i:i))
 
-				do concurrent (i = 2_int64:n_rows)
-					cells(i,:) = rows(i)%split(separator=delim)
-					deallocate(rows(i)%s)
-				end do
-	
-				call re_process_parentheses(cells, column_separator=delim)
+					if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. &
+						 (current/=row_sep) ) then
+						i = i + 1_int64; cycle
+					end if
+
+					if ( current == open_paren ) then
+						in_paren = .true.; i = i + 1_int64; cycle
+					end if
+
+					if ( current == close_paren ) then
+						in_paren = .false.; i = i + 1_int64; cycle
+					end if
+
+					if ( current == col_sep ) then
+						if ( in_paren ) then
+							i = i + 1_int64; cycle
+						end if
+
+						if ( col_sep_len == 1 ) then
+							n_cols = n_cols + 1_int64; i = i + 1_int64; cycle
+						else
+							if ( text_file%s(i:i+col_sep_len-1_int64) == delim ) then
+								n_cols = n_cols + 1_int64; i = i + col_sep_len; cycle
+							else
+								i = i + 1_int64; cycle
+							end if
+						end if
+					end if
+
+					if ( current == row_sep ) exit get_n_cols
+				end do get_n_cols
+
+				allocate( cells(n_rows,n_cols) )
+
+				row = 1_int64; col = 1_int64; l = 1_int64; i = 1_int64; positional_transfers: do
+					current = iachar(text_file%s(i:i))
+
+					if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. &
+						 (current/=row_sep) ) then
+						i = i + 1_int64; cycle
+					end if
+
+					if ( current == open_paren ) then
+						in_paren = .true.; i = i + 1_int64; cycle
+					end if
+
+					if ( current == close_paren ) then
+						in_paren = .false.; i = i + 1_int64; cycle
+					end if
+
+					if ( current == col_sep ) then
+						if ( in_paren ) then
+							i = i + 1_int64; cycle
+						end if
+
+						if ( col_sep_len == 1 ) then
+							cells(row,col)%s = text_file%s(l:i-1); i = i + 1_int64; l = i
+							col = col + 1_int64; cycle
+						else
+							if ( text_file%s(i:i+col_sep_len-1_int64) == delim ) then
+								cells(row,col)%s = text_file%s(l:i-1); i = i + col_sep_len; l = i
+								col = col + 1_int64; cycle
+							else
+								i = i + 1_int64; cycle
+							end if
+						end if
+					end if
+
+					if ( current == row_sep ) then
+						cells(row,col)%s = text_file%s(l:i-1)
+						if ( row == n_rows ) exit custom_processing
+						i = i + 1_int64; l = i; col = 1_int64; row = row + 1_int64; cycle
+					end if
+				end do positional_transfers
 			end block custom_processing
 		else
 			call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
@@ -24101,7 +24485,6 @@ submodule (io_fortran_lib) text_io
 			n_rows = size(cells, dim=1, kind=int64)
 			n_cols = size(cells, dim=2, kind=int64)
 		end if
-		call text_file%empty()
 
 		if ( header ) then
 			if ( .not. (n_rows > 1_int64) ) then
@@ -24652,92 +25035,6 @@ submodule (io_fortran_lib) text_io
 			call cells%cast(into=into, fmt=fmt); return
 		end if
 	end procedure from_text_2di8
-
-	! Internal Procedures ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	pure elemental recursive subroutine process_parentheses(row, column_separator)
-		type(String), intent(inout) :: row
-		character(len=*), intent(in) :: column_separator
-
-		character(len=:), allocatable :: replacement
-		logical :: in_paren
-		integer(int64) :: sep_len, i
-
-		sep_len = len(column_separator, kind=int64)
-
-		if ( sep_len == 1_int64 ) then
-			replacement = NUL
-		else
-			replacement = repeat(NUL, ncopies=sep_len)
-		end if
-
-		i = 1_int64
-		in_paren = .false.
-
-		replace_sep: do while ( i <= row%len64()-sep_len+1_int64 )
-			if ( row%s(i:i) == '(' ) then
-				in_paren = .true.
-				i = i + 1_int64; cycle replace_sep
-			end if
-
-			if ( row%s(i:i) == ')' ) then
-				in_paren = .false.
-				i = i + 1_int64; cycle replace_sep
-			end if
-
-			if ( in_paren ) then
-				if ( row%s(i:i+sep_len-1_int64) == column_separator ) then
-					row%s(i:i+sep_len-1_int64) = replacement
-					i = i + sep_len; cycle replace_sep
-				else
-					i = i + 1_int64; cycle replace_sep
-				end if
-			else
-				i = i + 1_int64; cycle replace_sep
-			end if
-		end do replace_sep
-	end subroutine process_parentheses
-	pure elemental recursive subroutine re_process_parentheses(cell, column_separator)
-		type(String), intent(inout) :: cell
-		character(len=*), intent(in) :: column_separator
-
-		character(len=:), allocatable :: replacement
-		logical :: in_paren
-		integer(int64) :: sep_len, i
-
-		sep_len = len(column_separator, kind=int64)
-
-		if ( sep_len == 1_int64 ) then
-			replacement = NUL
-		else
-			replacement = repeat(NUL, ncopies=sep_len)
-		end if
-
-		i = 1_int64
-		in_paren = .false.
-
-		replace_sep: do while ( i <= cell%len64()-sep_len+1_int64 )
-			if ( cell%s(i:i) == '(' ) then
-				in_paren = .true.
-				i = i + 1_int64; cycle replace_sep
-			end if
-
-			if ( cell%s(i:i) == ')' ) then
-				in_paren = .false.
-				i = i + 1_int64; cycle replace_sep
-			end if
-
-			if ( in_paren ) then
-				if ( cell%s(i:i+sep_len-1_int64) == replacement ) then
-					cell%s(i:i+sep_len-1_int64) = column_separator
-					i = i + sep_len; cycle replace_sep
-				else
-					i = i + 1_int64; cycle replace_sep
-				end if
-			else
-				i = i + 1_int64; cycle replace_sep
-			end if
-		end do replace_sep
-	end subroutine re_process_parentheses
 end submodule text_io
 
 submodule (io_fortran_lib) binary_io
@@ -32848,17 +33145,7 @@ end submodule array_printing
 !======================================================================================================================
 !	List of workarounds for compiler bugs in ifx 2023.0.0 :
 !	-------------------------------------------------------
-!	1.	In read_file (line 4850), the internal subroutine split_because_ifxbug (line 5063) is called by the form
-!		|>	call split_because_ifxbug(substring, separator, tokens)
-!		where tokens is intent(out), to replace a functional call to split_string (line 13383) of the form
-!		|>	tokens = substring%split(separator)
-!		which induces a run-time segmentation fault in the program contained in benchmark.f90 not seen with the
-!		following compilers: ifort 2021.8.0, gfortran 11.3.0, gfortran 11.2.0. From investigation, the segmentation
-!		fault seems due to the assignment of arrays of derived type, as the right-hand-side always evaluates as
-!		expected, and seems to only appear when "-heap-arrays 0" is specified, as required by the large arrays of
-!		the program contained in benchmark.f90. With small arrays, the same fault occurs with the assignment on line
-!		20 of benchmark.f90 as long as "-heap-arrays 0" is specified.
-!	2.	In join_into_self (line 4728), the recursive call to join_into_self at line 4756 induces a run-time
+!	1.	In join_into_self (line 4808), the recursive call to join_into_self at line 4836 induces a run-time
 !		segmentation fault in the program contained in benchmark.f90 not seen with the following compilers: ifort
 !		2021.8.0, gfortran 11.3.0, gfortran 11.2.0. From investigation, the segmentation fault seems due to the passing
 !		of the array of derived type. The fault occurs in a majority of runs, but not in every run. To avoid the fault,
