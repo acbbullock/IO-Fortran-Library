@@ -181,7 +181,7 @@ For `self` a scalar variable of type `String`:
 * `column_separator` is `optional` and of type `character(len=*)` (default is `','`)
 * `append` is `optional` and of type `logical` (default is `.false.`)
 
-*Description*: Writes the content of a cell array to a text file, consuming the cell array's contents in the process. The cell array's entire contents are populated into `self` using the designated `row_separator` and `column_separator` whose default values are `LF` and `','` respectively, and then streamed to an external text file. The file will be created if it does not exist, and will be appended to if `append` is `.true.`.
+*Description*: Writes the content of a cell array to a text file. The cell array's entire contents are populated into `self` using the designated `row_separator` and `column_separator` whose default values are `LF` and `','` respectively, and then streamed to an external text file. The file will be created if it does not exist, and will be appended to if `append` is `.true.`.
 
 @note `file_name` may be a relative path, but absolute paths are not guaranteed to work on every platform.
 

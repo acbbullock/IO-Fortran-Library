@@ -159,46 +159,46 @@
 Compiler version: GCC version 11.3.0
 Compiler options: -I build/gfortran_93B6DA15423670F8 -mtune=generic -march=x86-64 -O3 -J build/gfortran_93B6DA15423670F8 -fpre-include=/usr/include/finclude/math-vector-fortran.h
 
-Wall time for cast: 7.554 s
-Number of string conversions/second: 29784943
+Wall time for cast: 7.622 s
+Number of string conversions/second: 29518088
 
-Wall time for write_file: 28.509 s
+Wall time for write_file: 15.694 s
 Estimated file size: 2.474999 GB
 
-Wall time for read_file: 46.051 s
+Wall time for read_file: 20.032 s
 
-Wall time for cast: 8.906 s
-Number of string casts/second: 25263061
+Wall time for cast: 8.337 s
+Number of string casts/second: 26987495
 Data is exact match: T
 ---
 Compiler version: Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201
-Compiler options: -Ibuild/ifx_810FD198DC3B0576 -c -O3 -heap-arrays 0 -module build/ifx_810FD198DC3B0576 -o build/ifx_810FD198DC3B0576/IO-Fortran-Library/test_benchmark.f90.o
+Compiler options: -Ibuild/ifx_810FD198DC3B0576 -c -O3 -heap-arrays 0 -module build/ifx_810FD198DC3B0576 -o build/ifx_810FD198DC3B0576/IO-Fortran-Library/test_benchmark.f90.o 
 
-Wall time for cast: 13.309 s
-Number of string conversions/second: 16905471
+Wall time for cast: 13.990 s
+Number of string conversions/second: 16081786
 
-Wall time for write_file: 34.517 s
+Wall time for write_file: 13.911 s
 Estimated file size: 2.474999 GB
 
-Wall time for read_file: 89.839 s
+Wall time for read_file: 22.623 s
 
-Wall time for cast: 7.617 s
-Number of string casts/second: 29538634
+Wall time for cast: 7.963 s
+Number of string casts/second: 28252255
 Data is exact match:  T
 ---
 Compiler version: Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000
 Compiler options: -Ibuild/ifort_810FD198DC3B0576 -c -O3 -heap-arrays 0 -module build/ifort_810FD198DC3B0576 -o build/ifort_810FD198DC3B0576/IO-Fortran-Library/test_benchmark.f90.o
 
-Wall time for cast: 14.287 s
-Number of string conversions/second: 15747803
+Wall time for cast: 13.676 s
+Number of string conversions/second: 16452100
 
-Wall time for write_file: 25.268 s
+Wall time for write_file: 12.479 s
 Estimated file size: 2.474999 GB
 
-Wall time for read_file: 67.708 s
+Wall time for read_file: 24.115 s
 
-Wall time for cast: 9.754 s
-Number of string casts/second: 23065412
+Wall time for cast: 9.906 s
+Number of string casts/second: 22712251
 Data is exact match:  T
 ---
 </code></pre></div>
@@ -211,7 +211,9 @@ Data is exact match:  T
 <span class="w">    </span><span class="k">implicit none</span><span class="w"> </span><span class="p">(</span><span class="k">type</span><span class="p">,</span><span class="k">external</span><span class="p">)</span><span class="w"></span>
 
 <span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="n">String</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">int_file</span><span class="w"></span>
-<span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="n">String</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="p">,</span><span class="w"> </span><span class="k">dimension</span><span class="p">(:)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">hex_ints</span><span class="p">,</span><span class="w"> </span><span class="n">hex_ints_extra</span><span class="w"></span>
+<span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="n">String</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="p">,</span><span class="w"> </span><span class="k">dimension</span><span class="p">(:),</span><span class="w"> </span><span class="k">target</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">hex_ints</span><span class="p">,</span><span class="w"> </span><span class="n">hex_ints_extra</span><span class="w"></span>
+<span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="n">String</span><span class="p">),</span><span class="w"> </span><span class="k">dimension</span><span class="p">(:,:),</span><span class="w"> </span><span class="k">pointer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">hex_ints_map</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="nb">null</span><span class="p">()</span><span class="w"></span>
+
 <span class="w">    </span><span class="kt">integer</span><span class="p">,</span><span class="w"> </span><span class="k">allocatable</span><span class="p">,</span><span class="w"> </span><span class="k">dimension</span><span class="p">(:),</span><span class="w"> </span><span class="k">target</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">indices</span><span class="p">,</span><span class="w"> </span><span class="n">indices_extra</span><span class="w"></span>
 <span class="w">    </span><span class="kt">integer</span><span class="p">,</span><span class="w"> </span><span class="k">dimension</span><span class="p">(:),</span><span class="w"> </span><span class="k">pointer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">indices_map</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="nb">null</span><span class="p">()</span><span class="w"></span>
 <span class="w">    </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">largest</span><span class="p">,</span><span class="w"> </span><span class="n">smallest</span><span class="p">,</span><span class="w"> </span><span class="n">step</span><span class="p">,</span><span class="w"> </span><span class="n">start</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">j</span><span class="w"></span>
@@ -240,7 +242,8 @@ Data is exact match:  T
 
 <span class="k">        call </span><span class="n">cast</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span><span class="w"> </span><span class="n">into</span><span class="o">=</span><span class="n">hex_ints</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;z&#39;</span><span class="p">)</span><span class="w"></span>
 
-<span class="w">        </span><span class="k">call </span><span class="n">int_file</span><span class="p">%</span><span class="n">join</span><span class="p">(</span><span class="n">hex_ints</span><span class="p">,</span><span class="w"> </span><span class="n">separator</span><span class="o">=</span><span class="n">LF</span><span class="p">);</span><span class="w"> </span><span class="k">call </span><span class="n">int_file</span><span class="p">%</span><span class="n">echo</span><span class="p">(</span><span class="n">file_name</span><span class="o">=</span><span class="s1">&#39;int32.txt&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">append</span><span class="o">=</span><span class="p">.</span><span class="n">true</span><span class="p">.)</span><span class="w"></span>
+<span class="w">        </span><span class="n">hex_ints_map</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="n">step</span><span class="p">,</span><span class="mi">1</span><span class="p">:</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">hex_ints</span><span class="w"></span>
+<span class="w">        </span><span class="k">call </span><span class="n">int_file</span><span class="p">%</span><span class="n">write_file</span><span class="p">(</span><span class="n">hex_ints_map</span><span class="p">,</span><span class="w"> </span><span class="n">file_name</span><span class="o">=</span><span class="s1">&#39;int32.txt&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">append</span><span class="o">=</span><span class="p">.</span><span class="n">true</span><span class="p">.)</span><span class="w"></span>
 <span class="w">        </span><span class="n">total_length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">total_length</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">int_file</span><span class="p">%</span><span class="n">len64</span><span class="p">()</span><span class="w"></span>
 
 <span class="w">        </span><span class="k">write</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="s1">&#39;(a)&#39;</span><span class="p">)</span><span class="w">  </span><span class="s1">&#39;File length: &#39;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">str</span><span class="p">(</span><span class="n">total_length</span><span class="o">/</span><span class="mf">1e9</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;f&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">decimals</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s1">&#39; GB in cycle &#39;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">str</span><span class="p">(</span><span class="n">j</span><span class="p">)</span><span class="w"></span>
@@ -252,7 +255,8 @@ Data is exact match:  T
 
 <span class="w">    </span><span class="k">call </span><span class="n">cast</span><span class="p">(</span><span class="n">indices_extra</span><span class="p">,</span><span class="w"> </span><span class="n">into</span><span class="o">=</span><span class="n">hex_ints_extra</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;z&#39;</span><span class="p">)</span><span class="w"></span>
 
-<span class="w">    </span><span class="k">call </span><span class="n">int_file</span><span class="p">%</span><span class="n">join</span><span class="p">(</span><span class="n">hex_ints_extra</span><span class="p">,</span><span class="w"> </span><span class="n">separator</span><span class="o">=</span><span class="n">LF</span><span class="p">);</span><span class="w"> </span><span class="k">call </span><span class="n">int_file</span><span class="p">%</span><span class="n">echo</span><span class="p">(</span><span class="n">file_name</span><span class="o">=</span><span class="s1">&#39;int32.txt&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">append</span><span class="o">=</span><span class="p">.</span><span class="n">true</span><span class="p">.)</span><span class="w"></span>
+<span class="w">    </span><span class="n">hex_ints_map</span><span class="p">(</span><span class="n">smallest</span><span class="o">+</span><span class="mi">128</span><span class="o">*</span><span class="n">step</span><span class="p">:</span><span class="n">largest</span><span class="p">,</span><span class="mi">1</span><span class="p">:</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">hex_ints_extra</span><span class="w"></span>
+<span class="w">    </span><span class="k">call </span><span class="n">int_file</span><span class="p">%</span><span class="n">write_file</span><span class="p">(</span><span class="n">hex_ints_map</span><span class="p">,</span><span class="w"> </span><span class="n">file_name</span><span class="o">=</span><span class="s1">&#39;int32.txt&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">append</span><span class="o">=</span><span class="p">.</span><span class="n">true</span><span class="p">.)</span><span class="w"></span>
 <span class="w">    </span><span class="n">total_length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">total_length</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">int_file</span><span class="p">%</span><span class="n">len64</span><span class="p">()</span><span class="w"></span>
 
 <span class="w">    </span><span class="k">write</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="s1">&#39;(a)&#39;</span><span class="p">)</span><span class="w">  </span><span class="s1">&#39;File length: &#39;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">str</span><span class="p">(</span><span class="n">total_length</span><span class="o">/</span><span class="mf">1e9</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;f&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">decimals</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s1">&#39; GB at end of file.&#39;</span><span class="w"></span>
@@ -260,11 +264,11 @@ Data is exact match:  T
 <span class="w">    </span><span class="k">call </span><span class="nb">system_clock</span><span class="p">(</span><span class="n">t2</span><span class="p">,</span><span class="w"> </span><span class="n">count_rate</span><span class="o">=</span><span class="n">rate</span><span class="p">);</span><span class="w"> </span><span class="n">wall_time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">real</span><span class="p">(</span><span class="n">t2</span><span class="o">-</span><span class="n">t1</span><span class="p">,</span><span class="n">real64</span><span class="p">)</span><span class="o">/</span><span class="n">rate</span><span class="w"></span>
 <span class="w">    </span><span class="k">write</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="s1">&#39;(a)&#39;</span><span class="p">)</span><span class="w">  </span><span class="s1">&#39;Total time for write: &#39;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">str</span><span class="p">(</span><span class="n">wall_time</span><span class="o">/</span><span class="mi">60</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;f&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">decimals</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s1">&#39; minutes&#39;</span><span class="w"></span>
 
-<span class="w">    </span><span class="k">nullify</span><span class="p">(</span><span class="n">indices_map</span><span class="p">);</span><span class="w"> </span><span class="k">deallocate</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span><span class="w"> </span><span class="n">indices_extra</span><span class="p">,</span><span class="w"> </span><span class="n">hex_ints</span><span class="p">,</span><span class="w"> </span><span class="n">hex_ints_extra</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">nullify</span><span class="p">(</span><span class="n">indices_map</span><span class="p">,</span><span class="w"> </span><span class="n">hex_ints_map</span><span class="p">);</span><span class="w"> </span><span class="k">deallocate</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span><span class="w"> </span><span class="n">indices_extra</span><span class="p">,</span><span class="w"> </span><span class="n">hex_ints</span><span class="p">,</span><span class="w"> </span><span class="n">hex_ints_extra</span><span class="p">)</span><span class="w"></span>
 <span class="k">end program </span><span class="n">main</span><span class="w"></span>
 </code></pre></div>
 
-<p>On Linux, this should take around seven minutes with <code>ifort</code> using highest optimizations, and the resulting file size is <code>46.96 GB</code>.</p>
+<p>On Linux, this should take around five minutes with <code>gfortran</code>, and four minutes with <code>ifx</code>/<code>ifort</code> using highest optimizations, and the resulting file size is <code>46.96 GB</code>.</p>
     </div>
     <div class="col-md-3 col-md-pull-9">
       <hr class="visible-xs visible-sm">
@@ -380,7 +384,7 @@ Data is exact match:  T
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-02-02 19:50            </p>
+ on 2023-02-04 16:15            </p>
         </div>
       </div>
       <br>

@@ -70,46 +70,46 @@ With highest optimizations enabled for each compiler on Linux (`-O3`), we observ
 Compiler version: GCC version 11.3.0
 Compiler options: -I build/gfortran_93B6DA15423670F8 -mtune=generic -march=x86-64 -O3 -J build/gfortran_93B6DA15423670F8 -fpre-include=/usr/include/finclude/math-vector-fortran.h
 
-Wall time for cast: 7.554 s
-Number of string conversions/second: 29784943
+Wall time for cast: 7.622 s
+Number of string conversions/second: 29518088
 
-Wall time for write_file: 28.509 s
+Wall time for write_file: 15.694 s
 Estimated file size: 2.474999 GB
 
-Wall time for read_file: 46.051 s
+Wall time for read_file: 20.032 s
 
-Wall time for cast: 8.906 s
-Number of string casts/second: 25263061
+Wall time for cast: 8.337 s
+Number of string casts/second: 26987495
 Data is exact match: T
 ---
 Compiler version: Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201
-Compiler options: -Ibuild/ifx_810FD198DC3B0576 -c -O3 -heap-arrays 0 -module build/ifx_810FD198DC3B0576 -o build/ifx_810FD198DC3B0576/IO-Fortran-Library/test_benchmark.f90.o
+Compiler options: -Ibuild/ifx_810FD198DC3B0576 -c -O3 -heap-arrays 0 -module build/ifx_810FD198DC3B0576 -o build/ifx_810FD198DC3B0576/IO-Fortran-Library/test_benchmark.f90.o 
 
-Wall time for cast: 13.309 s
-Number of string conversions/second: 16905471
+Wall time for cast: 13.990 s
+Number of string conversions/second: 16081786
 
-Wall time for write_file: 34.517 s
+Wall time for write_file: 13.911 s
 Estimated file size: 2.474999 GB
 
-Wall time for read_file: 89.839 s
+Wall time for read_file: 22.623 s
 
-Wall time for cast: 7.617 s
-Number of string casts/second: 29538634
+Wall time for cast: 7.963 s
+Number of string casts/second: 28252255
 Data is exact match:  T
 ---
 Compiler version: Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000
 Compiler options: -Ibuild/ifort_810FD198DC3B0576 -c -O3 -heap-arrays 0 -module build/ifort_810FD198DC3B0576 -o build/ifort_810FD198DC3B0576/IO-Fortran-Library/test_benchmark.f90.o
 
-Wall time for cast: 14.287 s
-Number of string conversions/second: 15747803
+Wall time for cast: 13.676 s
+Number of string conversions/second: 16452100
 
-Wall time for write_file: 25.268 s
+Wall time for write_file: 12.479 s
 Estimated file size: 2.474999 GB
 
-Wall time for read_file: 67.708 s
+Wall time for read_file: 24.115 s
 
-Wall time for cast: 9.754 s
-Number of string casts/second: 23065412
+Wall time for cast: 9.906 s
+Number of string casts/second: 22712251
 Data is exact match:  T
 ---
 ```
@@ -125,7 +125,9 @@ program main
     implicit none (type,external)
 
     type(String) :: int_file
-    type(String), allocatable, dimension(:) :: hex_ints, hex_ints_extra
+    type(String), allocatable, dimension(:), target :: hex_ints, hex_ints_extra
+    type(String), dimension(:,:), pointer :: hex_ints_map => null()
+
     integer, allocatable, dimension(:), target :: indices, indices_extra
     integer, dimension(:), pointer :: indices_map => null()
     integer :: largest, smallest, step, start, i, j
@@ -154,7 +156,8 @@ program main
 
         call cast(indices, into=hex_ints, fmt='z')
 
-        call int_file%join(hex_ints, separator=LF); call int_file%echo(file_name='int32.txt', append=.true.)
+        hex_ints_map(1:step,1:1) => hex_ints
+        call int_file%write_file(hex_ints_map, file_name='int32.txt', append=.true.)
         total_length = total_length + int_file%len64()
 
         write(*,'(a)')  'File length: ' + str(total_length/1e9, fmt='f', decimals=3) + ' GB in cycle ' + str(j)
@@ -166,7 +169,8 @@ program main
 
     call cast(indices_extra, into=hex_ints_extra, fmt='z')
 
-    call int_file%join(hex_ints_extra, separator=LF); call int_file%echo(file_name='int32.txt', append=.true.)
+    hex_ints_map(smallest+128*step:largest,1:1) => hex_ints_extra
+    call int_file%write_file(hex_ints_map, file_name='int32.txt', append=.true.)
     total_length = total_length + int_file%len64()
 
     write(*,'(a)')  'File length: ' + str(total_length/1e9, fmt='f', decimals=3) + ' GB at end of file.'
@@ -174,8 +178,8 @@ program main
     call system_clock(t2, count_rate=rate); wall_time = real(t2-t1,real64)/rate
     write(*,'(a)')  'Total time for write: ' + str(wall_time/60, fmt='f', decimals=3) + ' minutes'
 
-    nullify(indices_map); deallocate(indices, indices_extra, hex_ints, hex_ints_extra)
+    nullify(indices_map, hex_ints_map); deallocate(indices, indices_extra, hex_ints, hex_ints_extra)
 end program main
 ```
 
-On Linux, this should take around seven minutes with `ifort` using highest optimizations, and the resulting file size is `46.96 GB`.
+On Linux, this should take around five minutes with `gfortran`, and four minutes with `ifx`/`ifort` using highest optimizations, and the resulting file size is `46.96 GB`.
