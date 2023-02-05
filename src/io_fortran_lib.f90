@@ -30,24 +30,24 @@ module io_fortran_lib
 	character(len=1), parameter :: CNUL  = c_null_char			!! The C null character re-exported from iso_c_binding.
 	character(len=0), parameter :: EMPTY_STR = ''												   !! The empty string.
 
-	character(len=*),					parameter :: COMPILER	= compiler_version()
-	character(len=1),					parameter :: SEMICOLON	= achar(59)									! Semicolon
-	character(len=1),					parameter :: POINT		= achar(46)									! Full stop
-	character(len=1),					parameter :: COMMA		= achar(44)										! Comma
-	character(len=1),					parameter :: QQUOTE		= achar(34)								 ! Double quote
-	character(len=1), dimension(*), 	parameter :: INT_FMTS   = [ 'i', 'z' ]			 ! Allowed formats for integers
-	character(len=1), dimension(*), 	parameter :: REAL_FMTS  = [ 'e', 'f', 'z' ]		   ! Allowed formats for floats
-	character(len=2), dimension(*), 	parameter :: LOCALES    = [ 'US', 'EU' ]			! Allowed locale specifiers
-	character(len=3), dimension(*), 	parameter :: BINARY_EXT = [ 'dat', 'bin' ]			! Allowed binary extensions
-	character(len=3), dimension(*), 	parameter :: TEXT_EXT   = [ 'csv', 'txt', 'log', &	  ! Allowed text extensions
-																	'rtf', 'odm', 'odt', &
-																	'ods', 'odf', 'xls', &
-																	'doc', 'org', 'dbf', &
-																	'bed', 'gff', 'gtf' ]
+	character(len=*),				parameter :: COMPILER	= compiler_version()
+	character(len=1),				parameter :: SEMICOLON	= achar(59)										! Semicolon
+	character(len=1),				parameter :: POINT		= achar(46)										! Full stop
+	character(len=1),				parameter :: COMMA		= achar(44)											! Comma
+	character(len=1),				parameter :: QQUOTE		= achar(34)									 ! Double quote
+	character(len=1), dimension(*), parameter :: INT_FMTS   = [ 'i', 'z' ]				 ! Allowed formats for integers
+	character(len=1), dimension(*), parameter :: REAL_FMTS  = [ 'e', 'f', 'z' ]			   ! Allowed formats for floats
+	character(len=2), dimension(*), parameter :: LOCALES    = [ 'US', 'EU' ]				! Allowed locale specifiers
+	character(len=3), dimension(*), parameter :: BINARY_EXT = [ 'dat', 'bin' ]				! Allowed binary extensions
+	character(len=3), dimension(*), parameter :: TEXT_EXT   = [ 'csv', 'txt', 'log', &		  ! Allowed text extensions
+																'rtf', 'odm', 'odt', &
+																'ods', 'odf', 'xls', &
+																'doc', 'org', 'dbf', &
+																'bed', 'gff', 'gtf' ]
 
 	type String
 		!--------------------------------------------------------------------------------------------------------------
-		!! A growable string type for advanced character handling and text file I/O.
+		!! A growable string type for advanced character handling and text I/O.
 		!!
 		!! For a user reference, see [String](../page/Ref/String.html),
 		!! [String methods](../page/Ref/String-methods.html), and [Operators](../page/Ref/operators.html).
@@ -13394,8 +13394,8 @@ submodule (io_fortran_lib) join_split
 
 	module procedure split_string
 		character(len=:), allocatable :: separator_
-		integer(int64) :: substring_len, sep_len, num_seps, i
-		integer(int64), allocatable, dimension(:) :: sep_positions
+		integer(int64) :: substring_len, l, i
+		integer :: sep_len, num_seps, sep, token, current
 
 		substring_len = substring%len64()
 
@@ -13409,9 +13409,9 @@ submodule (io_fortran_lib) join_split
 			separator_ = separator
 		end if
 
-		sep_len = len(separator_, kind=int64)
+		sep_len = len(separator_)
 
-		if ( sep_len == 0_int64 ) then
+		if ( sep_len == 0 ) then
 			allocate( tokens(substring_len) )
 			do concurrent (i = 1_int64:substring_len)
 				tokens(i)%s = substring%s(i:i)
@@ -13419,46 +13419,38 @@ submodule (io_fortran_lib) join_split
 			return
 		end if
 
-		num_seps = 0_int64
-		i = 1_int64
+		num_seps = substring%count(match=separator_)
 
-		allocate( sep_positions(substring_len) )
-
-		count_seps: do while ( i <= substring_len-sep_len+1_int64 )
-			if ( substring%s(i:i+sep_len-1_int64) == separator_ ) then
-				num_seps = num_seps + 1_int64; sep_positions(num_seps) = i
-				i = i + sep_len; cycle count_seps
-			else
-				i = i + 1_int64; cycle count_seps
-			end if
-		end do count_seps
-
-		if ( num_seps == 0_int64 ) then
+		if ( num_seps == 0 ) then
 			allocate( tokens(1) ); tokens(1)%s = substring%s; return
 		end if
 
-		allocate( tokens(num_seps + 1_int64) )
+		allocate( tokens(num_seps + 1) )
 
-		positional_transfers: do concurrent (i = 1:num_seps)
-			if ( i == 1_int64 ) then
-				if ( sep_positions(i) == 1_int64 ) then
-					tokens(i)%s = EMPTY_STR
-				else
-					tokens(i)%s = substring%s(1_int64:sep_positions(i)-1_int64)
-				end if
-			else
-				if ( sep_positions(i) == sep_positions(i-1_int64)+sep_len ) then
-					tokens(i)%s = EMPTY_STR
-				else
-					tokens(i)%s = substring%s(sep_positions(i-1_int64)+sep_len:sep_positions(i)-1_int64)
-				end if
+		sep = iachar(separator_(1:1))
+
+		i = 1_int64; l = 1_int64; token = 1; positional_transfers: do
+			current = iachar(substring%s(i:i))
+
+			if ( current /= sep ) then
+				i = i + 1_int64; cycle
 			end if
 
-			if ( i == num_seps ) then
-				if ( sep_positions(i)+sep_len > substring_len ) then
-					tokens(i+1_int64)%s = EMPTY_STR
+			if ( sep_len == 1 ) then
+				tokens(token)%s = substring%s(l:i-1)
+				if ( token == num_seps ) then
+					tokens(num_seps+1)%s = substring%s(i+1:); return
+				end if
+				token = token + 1; i = i + 1_int64; l = i; cycle
+			else
+				if ( substring%s(i:i+sep_len-1) == separator_ ) then
+					tokens(token)%s = substring%s(l:i-1)
+					if ( token == num_seps ) then
+						tokens(num_seps+1)%s = substring%s(i+sep_len:); return
+					end if
+					token = token + 1; i = i + sep_len; l = i; cycle
 				else
-					tokens(i+1_int64)%s = substring%s(sep_positions(i)+sep_len:)
+					i = i + 1_int64; cycle
 				end if
 			end if
 		end do positional_transfers
