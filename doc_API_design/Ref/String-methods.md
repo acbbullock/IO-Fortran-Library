@@ -5,7 +5,7 @@ author: Austin C Bullock
 
 ## [type String](../../type/string.html)
 
-*Description*: A growable string type for advanced character handling and text file I/O.
+*Description*: A growable string type for advanced character handling and text I/O.
 
 @note In addition to the functionality provided through type-bound procedures, the `String` type may be useful in array contexts for which the user requires arrays of strings which may have non-identical lengths, whose lengths may not be known, whose lengths may need to vary during run time, or in any other context in which the intrinsic `character` type is insufficient.
 
