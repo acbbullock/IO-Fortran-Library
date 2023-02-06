@@ -5039,6 +5039,10 @@ submodule (io_fortran_lib) string_methods
 					i = i + 1_int64; cycle
 				end if
 
+				if ( current == quote ) then
+					in_quote = (.not. in_quote); i = i + 1_int64; cycle
+				end if
+
 				if ( current == col_sep ) then
 					if ( in_quote ) then
 						i = i + 1_int64; cycle
