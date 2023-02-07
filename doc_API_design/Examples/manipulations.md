@@ -74,9 +74,9 @@ This program produces the following sample output:
 
 ```text
 ORIGINAL TIME STAMP:
-Date : 20230101
+Date : 20230101  
 Time : 143355.897
 
 RECONSTRUCTED TIME STAMP:
-20230101 : Date | 143355.897 : Time
+20230101   : Date | 143355.897 : Time
 ```

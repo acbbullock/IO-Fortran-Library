@@ -1,576 +1,576 @@
-RUNNING TESTS (str|cast) | date: 20230123 | time: 032421.776 | real kind: 4 | int kind: 1
------------------------------------------------------------------------------------------
+RUNNING TESTS (array) | date: 20230204 | time: 162240.439 | real kind: 4 | int kind: 1
+--------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 11.3.0" using compiler options "-I build/gfortran_2A42023B310FA28D -mtune=generic -march=x86-64 -g -Wall -Wextra -Wimplicit-interface -fPIC -fmax-errors=1 -fcheck=bounds -fcheck=array-temps -fbacktrace -fcoarray=single -J build/gfortran_2A42023B310FA28D -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (String|cast) | date: 20230123 | time: 032421.823 | real kind: 4 | int kind: 1
---------------------------------------------------------------------------------------------
+RUNNING TESTS (file) | date: 20230204 | time: 162240.724 | real kind: 4 | int kind: 1
+-------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 11.3.0" using compiler options "-I build/gfortran_2A42023B310FA28D -mtune=generic -march=x86-64 -g -Wall -Wextra -Wimplicit-interface -fPIC -fmax-errors=1 -fcheck=bounds -fcheck=array-temps -fbacktrace -fcoarray=single -J build/gfortran_2A42023B310FA28D -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (to_file|from_file) | date: 20230123 | time: 032422.012 | real kind: 4 | int kind: 1
---------------------------------------------------------------------------------------------------
+RUNNING TESTS (scalar) | date: 20230204 | time: 162245.170 | real kind: 4 | int kind: 1
+---------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 11.3.0" using compiler options "-I build/gfortran_2A42023B310FA28D -mtune=generic -march=x86-64 -g -Wall -Wextra -Wimplicit-interface -fPIC -fmax-errors=1 -fcheck=bounds -fcheck=array-temps -fbacktrace -fcoarray=single -J build/gfortran_2A42023B310FA28D -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (str|cast) | date: 20230123 | time: 032430.779 | real kind: 4 | int kind: 1
------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "-Ibuild/ifx_5C58216731706F11 -c -warn all -check all -error-limit 1 -O0 -g -assume byterecl -traceback -module build/ifx_5C58216731706F11 -o build/ifx_5C58216731706F11/IO-Fortran-Library/test_str-cast-test.f90.o ".
+RUNNING TESTS (array) | date: 20230204 | time: 162245.575 | real kind: 4 | int kind: 1
+--------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "-Ibuild/ifx_5C58216731706F11 -c -warn all -check all -error-limit 1 -O0 -g -assume byterecl -traceback -module build/ifx_5C58216731706F11 -o build/ifx_5C58216731706F11/IO-Fortran-Library/test_array-test.f90.o ".
 
-RUNNING TESTS (String|cast) | date: 20230123 | time: 032430.845 | real kind: 4 | int kind: 1
---------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "-Ibuild/ifx_5C58216731706F11 -c -warn all -check all -error-limit 1 -O0 -g -assume byterecl -traceback -module build/ifx_5C58216731706F11 -o build/ifx_5C58216731706F11/IO-Fortran-Library/test_String-cast-test.f90.o ".
+RUNNING TESTS (file) | date: 20230204 | time: 162245.801 | real kind: 4 | int kind: 1
+-------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "-Ibuild/ifx_5C58216731706F11 -c -warn all -check all -error-limit 1 -O0 -g -assume byterecl -traceback -module build/ifx_5C58216731706F11 -o build/ifx_5C58216731706F11/IO-Fortran-Library/test_file-test.f90.o ".
 
-RUNNING TESTS (to_file|from_file) | date: 20230123 | time: 032431.021 | real kind: 4 | int kind: 1
---------------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "-Ibuild/ifx_5C58216731706F11 -c -warn all -check all -error-limit 1 -O0 -g -assume byterecl -traceback -module build/ifx_5C58216731706F11 -o build/ifx_5C58216731706F11/IO-Fortran-Library/test_to_file-from_file-test.f90.o ".
+RUNNING TESTS (scalar) | date: 20230204 | time: 162249.415 | real kind: 4 | int kind: 1
+---------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "-Ibuild/ifx_5C58216731706F11 -c -warn all -check all -error-limit 1 -O0 -g -assume byterecl -traceback -module build/ifx_5C58216731706F11 -o build/ifx_5C58216731706F11/IO-Fortran-Library/test_scalar-test.f90.o ".
 
-RUNNING TESTS (str|cast) | date: 20230123 | time: 032450.909 | real kind: 4 | int kind: 1
------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "-Ibuild/ifort_5C58216731706F11 -c -warn all -check all -error-limit 1 -O0 -g -assume byterecl -traceback -module build/ifort_5C58216731706F11 -o build/ifort_5C58216731706F11/IO-Fortran-Library/test_str-cast-test.f90.o".
+RUNNING TESTS (array) | date: 20230204 | time: 162306.623 | real kind: 4 | int kind: 1
+--------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "-Ibuild/ifort_5C58216731706F11 -c -warn all -check all -error-limit 1 -O0 -g -assume byterecl -traceback -module build/ifort_5C58216731706F11 -o build/ifort_5C58216731706F11/IO-Fortran-Library/test_array-test.f90.o".
 
-RUNNING TESTS (String|cast) | date: 20230123 | time: 032450.969 | real kind: 4 | int kind: 1
---------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "-Ibuild/ifort_5C58216731706F11 -c -warn all -check all -error-limit 1 -O0 -g -assume byterecl -traceback -module build/ifort_5C58216731706F11 -o build/ifort_5C58216731706F11/IO-Fortran-Library/test_String-cast-test.f90.o".
+RUNNING TESTS (file) | date: 20230204 | time: 162306.930 | real kind: 4 | int kind: 1
+-------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "-Ibuild/ifort_5C58216731706F11 -c -warn all -check all -error-limit 1 -O0 -g -assume byterecl -traceback -module build/ifort_5C58216731706F11 -o build/ifort_5C58216731706F11/IO-Fortran-Library/test_file-test.f90.o".
 
-RUNNING TESTS (to_file|from_file) | date: 20230123 | time: 032451.191 | real kind: 4 | int kind: 1
---------------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "-Ibuild/ifort_5C58216731706F11 -c -warn all -check all -error-limit 1 -O0 -g -assume byterecl -traceback -module build/ifort_5C58216731706F11 -o build/ifort_5C58216731706F11/IO-Fortran-Library/test_to_file-from_file-test.f90.o".
+RUNNING TESTS (scalar) | date: 20230204 | time: 162311.358 | real kind: 4 | int kind: 1
+---------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "-Ibuild/ifort_5C58216731706F11 -c -warn all -check all -error-limit 1 -O0 -g -assume byterecl -traceback -module build/ifort_5C58216731706F11 -o build/ifort_5C58216731706F11/IO-Fortran-Library/test_scalar-test.f90.o".
 
-RUNNING TESTS (str|cast) | date: 20230123 | time: 032529.751 | real kind: 4 | int kind: 1
------------------------------------------------------------------------------------------
+RUNNING TESTS (array) | date: 20230204 | time: 162348.577 | real kind: 4 | int kind: 1
+--------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 11.3.0" using compiler options "-I build/gfortran_93B6DA15423670F8 -mtune=generic -march=x86-64 -O3 -J build/gfortran_93B6DA15423670F8 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (String|cast) | date: 20230123 | time: 032529.791 | real kind: 4 | int kind: 1
---------------------------------------------------------------------------------------------
+RUNNING TESTS (file) | date: 20230204 | time: 162348.837 | real kind: 4 | int kind: 1
+-------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 11.3.0" using compiler options "-I build/gfortran_93B6DA15423670F8 -mtune=generic -march=x86-64 -O3 -J build/gfortran_93B6DA15423670F8 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (to_file|from_file) | date: 20230123 | time: 032529.966 | real kind: 4 | int kind: 1
---------------------------------------------------------------------------------------------------
+RUNNING TESTS (scalar) | date: 20230204 | time: 162353.013 | real kind: 4 | int kind: 1
+---------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 11.3.0" using compiler options "-I build/gfortran_93B6DA15423670F8 -mtune=generic -march=x86-64 -O3 -J build/gfortran_93B6DA15423670F8 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (str|cast) | date: 20230123 | time: 032616.387 | real kind: 4 | int kind: 1
------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "-Ibuild/ifx_325C8B7ED1F4BD1E -c -O3 -stand f18 -module build/ifx_325C8B7ED1F4BD1E -o build/ifx_325C8B7ED1F4BD1E/IO-Fortran-Library/test_str-cast-test.f90.o ".
+RUNNING TESTS (array) | date: 20230204 | time: 162441.854 | real kind: 4 | int kind: 1
+--------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "-Ibuild/ifx_325C8B7ED1F4BD1E -c -O3 -stand f18 -module build/ifx_325C8B7ED1F4BD1E -o build/ifx_325C8B7ED1F4BD1E/IO-Fortran-Library/test_array-test.f90.o ".
 
-RUNNING TESTS (String|cast) | date: 20230123 | time: 032616.432 | real kind: 4 | int kind: 1
---------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "-Ibuild/ifx_325C8B7ED1F4BD1E -c -O3 -stand f18 -module build/ifx_325C8B7ED1F4BD1E -o build/ifx_325C8B7ED1F4BD1E/IO-Fortran-Library/test_String-cast-test.f90.o ".
+RUNNING TESTS (file) | date: 20230204 | time: 162442.030 | real kind: 4 | int kind: 1
+-------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "-Ibuild/ifx_325C8B7ED1F4BD1E -c -O3 -stand f18 -module build/ifx_325C8B7ED1F4BD1E -o build/ifx_325C8B7ED1F4BD1E/IO-Fortran-Library/test_file-test.f90.o ".
 
-RUNNING TESTS (to_file|from_file) | date: 20230123 | time: 032616.577 | real kind: 4 | int kind: 1
---------------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "-Ibuild/ifx_325C8B7ED1F4BD1E -c -O3 -stand f18 -module build/ifx_325C8B7ED1F4BD1E -o build/ifx_325C8B7ED1F4BD1E/IO-Fortran-Library/test_to_file-from_file-test.f90.o ".
+RUNNING TESTS (scalar) | date: 20230204 | time: 162444.984 | real kind: 4 | int kind: 1
+---------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "-Ibuild/ifx_325C8B7ED1F4BD1E -c -O3 -stand f18 -module build/ifx_325C8B7ED1F4BD1E -o build/ifx_325C8B7ED1F4BD1E/IO-Fortran-Library/test_scalar-test.f90.o ".
 
-RUNNING TESTS (str|cast) | date: 20230123 | time: 032718.703 | real kind: 4 | int kind: 1
------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "-Ibuild/ifort_325C8B7ED1F4BD1E -c -O3 -stand f18 -module build/ifort_325C8B7ED1F4BD1E -o build/ifort_325C8B7ED1F4BD1E/IO-Fortran-Library/test_str-cast-test.f90.o".
+RUNNING TESTS (array) | date: 20230204 | time: 162602.938 | real kind: 4 | int kind: 1
+--------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "-Ibuild/ifort_325C8B7ED1F4BD1E -c -O3 -stand f18 -module build/ifort_325C8B7ED1F4BD1E -o build/ifort_325C8B7ED1F4BD1E/IO-Fortran-Library/test_array-test.f90.o".
 
-RUNNING TESTS (String|cast) | date: 20230123 | time: 032718.755 | real kind: 4 | int kind: 1
---------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "-Ibuild/ifort_325C8B7ED1F4BD1E -c -O3 -stand f18 -module build/ifort_325C8B7ED1F4BD1E -o build/ifort_325C8B7ED1F4BD1E/IO-Fortran-Library/test_String-cast-test.f90.o".
+RUNNING TESTS (file) | date: 20230204 | time: 162603.133 | real kind: 4 | int kind: 1
+-------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "-Ibuild/ifort_325C8B7ED1F4BD1E -c -O3 -stand f18 -module build/ifort_325C8B7ED1F4BD1E -o build/ifort_325C8B7ED1F4BD1E/IO-Fortran-Library/test_file-test.f90.o".
 
-RUNNING TESTS (to_file|from_file) | date: 20230123 | time: 032718.913 | real kind: 4 | int kind: 1
---------------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "-Ibuild/ifort_325C8B7ED1F4BD1E -c -O3 -stand f18 -module build/ifort_325C8B7ED1F4BD1E -o build/ifort_325C8B7ED1F4BD1E/IO-Fortran-Library/test_to_file-from_file-test.f90.o".
+RUNNING TESTS (scalar) | date: 20230204 | time: 162606.155 | real kind: 4 | int kind: 1
+---------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "-Ibuild/ifort_325C8B7ED1F4BD1E -c -O3 -stand f18 -module build/ifort_325C8B7ED1F4BD1E -o build/ifort_325C8B7ED1F4BD1E/IO-Fortran-Library/test_scalar-test.f90.o".
 
-RUNNING TESTS (str|cast) | date: 20230123 | time: 033006.012 | real kind: 4 | int kind: 2
------------------------------------------------------------------------------------------
+RUNNING TESTS (array) | date: 20230204 | time: 162749.305 | real kind: 4 | int kind: 2
+--------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 11.3.0" using compiler options "-I build/gfortran_2A42023B310FA28D -mtune=generic -march=x86-64 -g -Wall -Wextra -Wimplicit-interface -fPIC -fmax-errors=1 -fcheck=bounds -fcheck=array-temps -fbacktrace -fcoarray=single -J build/gfortran_2A42023B310FA28D -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (String|cast) | date: 20230123 | time: 033006.058 | real kind: 4 | int kind: 2
---------------------------------------------------------------------------------------------
+RUNNING TESTS (file) | date: 20230204 | time: 162749.588 | real kind: 4 | int kind: 2
+-------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 11.3.0" using compiler options "-I build/gfortran_2A42023B310FA28D -mtune=generic -march=x86-64 -g -Wall -Wextra -Wimplicit-interface -fPIC -fmax-errors=1 -fcheck=bounds -fcheck=array-temps -fbacktrace -fcoarray=single -J build/gfortran_2A42023B310FA28D -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (to_file|from_file) | date: 20230123 | time: 033006.250 | real kind: 4 | int kind: 2
---------------------------------------------------------------------------------------------------
+RUNNING TESTS (scalar) | date: 20230204 | time: 162754.128 | real kind: 4 | int kind: 2
+---------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 11.3.0" using compiler options "-I build/gfortran_2A42023B310FA28D -mtune=generic -march=x86-64 -g -Wall -Wextra -Wimplicit-interface -fPIC -fmax-errors=1 -fcheck=bounds -fcheck=array-temps -fbacktrace -fcoarray=single -J build/gfortran_2A42023B310FA28D -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (str|cast) | date: 20230123 | time: 033030.325 | real kind: 4 | int kind: 2
------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "-Ibuild/ifx_5C58216731706F11 -c -warn all -check all -error-limit 1 -O0 -g -assume byterecl -traceback -module build/ifx_5C58216731706F11 -o build/ifx_5C58216731706F11/IO-Fortran-Library/test_str-cast-test.f90.o ".
+RUNNING TESTS (array) | date: 20230204 | time: 162754.557 | real kind: 4 | int kind: 2
+--------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "-Ibuild/ifx_5C58216731706F11 -c -warn all -check all -error-limit 1 -O0 -g -assume byterecl -traceback -module build/ifx_5C58216731706F11 -o build/ifx_5C58216731706F11/IO-Fortran-Library/test_array-test.f90.o ".
 
-RUNNING TESTS (String|cast) | date: 20230123 | time: 033030.388 | real kind: 4 | int kind: 2
---------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "-Ibuild/ifx_5C58216731706F11 -c -warn all -check all -error-limit 1 -O0 -g -assume byterecl -traceback -module build/ifx_5C58216731706F11 -o build/ifx_5C58216731706F11/IO-Fortran-Library/test_String-cast-test.f90.o ".
+RUNNING TESTS (file) | date: 20230204 | time: 162754.789 | real kind: 4 | int kind: 2
+-------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "-Ibuild/ifx_5C58216731706F11 -c -warn all -check all -error-limit 1 -O0 -g -assume byterecl -traceback -module build/ifx_5C58216731706F11 -o build/ifx_5C58216731706F11/IO-Fortran-Library/test_file-test.f90.o ".
 
-RUNNING TESTS (to_file|from_file) | date: 20230123 | time: 033030.563 | real kind: 4 | int kind: 2
---------------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "-Ibuild/ifx_5C58216731706F11 -c -warn all -check all -error-limit 1 -O0 -g -assume byterecl -traceback -module build/ifx_5C58216731706F11 -o build/ifx_5C58216731706F11/IO-Fortran-Library/test_to_file-from_file-test.f90.o ".
+RUNNING TESTS (scalar) | date: 20230204 | time: 162758.477 | real kind: 4 | int kind: 2
+---------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "-Ibuild/ifx_5C58216731706F11 -c -warn all -check all -error-limit 1 -O0 -g -assume byterecl -traceback -module build/ifx_5C58216731706F11 -o build/ifx_5C58216731706F11/IO-Fortran-Library/test_scalar-test.f90.o ".
 
-RUNNING TESTS (str|cast) | date: 20230123 | time: 033050.790 | real kind: 4 | int kind: 2
------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "-Ibuild/ifort_5C58216731706F11 -c -warn all -check all -error-limit 1 -O0 -g -assume byterecl -traceback -module build/ifort_5C58216731706F11 -o build/ifort_5C58216731706F11/IO-Fortran-Library/test_str-cast-test.f90.o".
+RUNNING TESTS (array) | date: 20230204 | time: 162758.897 | real kind: 4 | int kind: 2
+--------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "-Ibuild/ifort_5C58216731706F11 -c -warn all -check all -error-limit 1 -O0 -g -assume byterecl -traceback -module build/ifort_5C58216731706F11 -o build/ifort_5C58216731706F11/IO-Fortran-Library/test_array-test.f90.o".
 
-RUNNING TESTS (String|cast) | date: 20230123 | time: 033050.856 | real kind: 4 | int kind: 2
---------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "-Ibuild/ifort_5C58216731706F11 -c -warn all -check all -error-limit 1 -O0 -g -assume byterecl -traceback -module build/ifort_5C58216731706F11 -o build/ifort_5C58216731706F11/IO-Fortran-Library/test_String-cast-test.f90.o".
+RUNNING TESTS (file) | date: 20230204 | time: 162759.207 | real kind: 4 | int kind: 2
+-------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "-Ibuild/ifort_5C58216731706F11 -c -warn all -check all -error-limit 1 -O0 -g -assume byterecl -traceback -module build/ifort_5C58216731706F11 -o build/ifort_5C58216731706F11/IO-Fortran-Library/test_file-test.f90.o".
 
-RUNNING TESTS (to_file|from_file) | date: 20230123 | time: 033051.095 | real kind: 4 | int kind: 2
---------------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "-Ibuild/ifort_5C58216731706F11 -c -warn all -check all -error-limit 1 -O0 -g -assume byterecl -traceback -module build/ifort_5C58216731706F11 -o build/ifort_5C58216731706F11/IO-Fortran-Library/test_to_file-from_file-test.f90.o".
+RUNNING TESTS (scalar) | date: 20230204 | time: 162803.706 | real kind: 4 | int kind: 2
+---------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "-Ibuild/ifort_5C58216731706F11 -c -warn all -check all -error-limit 1 -O0 -g -assume byterecl -traceback -module build/ifort_5C58216731706F11 -o build/ifort_5C58216731706F11/IO-Fortran-Library/test_scalar-test.f90.o".
 
-RUNNING TESTS (str|cast) | date: 20230123 | time: 033129.312 | real kind: 4 | int kind: 2
------------------------------------------------------------------------------------------
+RUNNING TESTS (array) | date: 20230204 | time: 162814.555 | real kind: 4 | int kind: 2
+--------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 11.3.0" using compiler options "-I build/gfortran_93B6DA15423670F8 -mtune=generic -march=x86-64 -O3 -J build/gfortran_93B6DA15423670F8 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (String|cast) | date: 20230123 | time: 033129.353 | real kind: 4 | int kind: 2
---------------------------------------------------------------------------------------------
+RUNNING TESTS (file) | date: 20230204 | time: 162814.817 | real kind: 4 | int kind: 2
+-------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 11.3.0" using compiler options "-I build/gfortran_93B6DA15423670F8 -mtune=generic -march=x86-64 -O3 -J build/gfortran_93B6DA15423670F8 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (to_file|from_file) | date: 20230123 | time: 033129.528 | real kind: 4 | int kind: 2
---------------------------------------------------------------------------------------------------
+RUNNING TESTS (scalar) | date: 20230204 | time: 162819.013 | real kind: 4 | int kind: 2
+---------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 11.3.0" using compiler options "-I build/gfortran_93B6DA15423670F8 -mtune=generic -march=x86-64 -O3 -J build/gfortran_93B6DA15423670F8 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (str|cast) | date: 20230123 | time: 033215.568 | real kind: 4 | int kind: 2
------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "-Ibuild/ifx_325C8B7ED1F4BD1E -c -O3 -stand f18 -module build/ifx_325C8B7ED1F4BD1E -o build/ifx_325C8B7ED1F4BD1E/IO-Fortran-Library/test_str-cast-test.f90.o ".
+RUNNING TESTS (array) | date: 20230204 | time: 162828.718 | real kind: 4 | int kind: 2
+--------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "-Ibuild/ifx_325C8B7ED1F4BD1E -c -O3 -stand f18 -module build/ifx_325C8B7ED1F4BD1E -o build/ifx_325C8B7ED1F4BD1E/IO-Fortran-Library/test_array-test.f90.o ".
 
-RUNNING TESTS (String|cast) | date: 20230123 | time: 033215.614 | real kind: 4 | int kind: 2
---------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "-Ibuild/ifx_325C8B7ED1F4BD1E -c -O3 -stand f18 -module build/ifx_325C8B7ED1F4BD1E -o build/ifx_325C8B7ED1F4BD1E/IO-Fortran-Library/test_String-cast-test.f90.o ".
+RUNNING TESTS (file) | date: 20230204 | time: 162828.892 | real kind: 4 | int kind: 2
+-------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "-Ibuild/ifx_325C8B7ED1F4BD1E -c -O3 -stand f18 -module build/ifx_325C8B7ED1F4BD1E -o build/ifx_325C8B7ED1F4BD1E/IO-Fortran-Library/test_file-test.f90.o ".
 
-RUNNING TESTS (to_file|from_file) | date: 20230123 | time: 033215.760 | real kind: 4 | int kind: 2
---------------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "-Ibuild/ifx_325C8B7ED1F4BD1E -c -O3 -stand f18 -module build/ifx_325C8B7ED1F4BD1E -o build/ifx_325C8B7ED1F4BD1E/IO-Fortran-Library/test_to_file-from_file-test.f90.o ".
+RUNNING TESTS (scalar) | date: 20230204 | time: 162831.918 | real kind: 4 | int kind: 2
+---------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "-Ibuild/ifx_325C8B7ED1F4BD1E -c -O3 -stand f18 -module build/ifx_325C8B7ED1F4BD1E -o build/ifx_325C8B7ED1F4BD1E/IO-Fortran-Library/test_scalar-test.f90.o ".
 
-RUNNING TESTS (str|cast) | date: 20230123 | time: 033316.996 | real kind: 4 | int kind: 2
------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "-Ibuild/ifort_325C8B7ED1F4BD1E -c -O3 -stand f18 -module build/ifort_325C8B7ED1F4BD1E -o build/ifort_325C8B7ED1F4BD1E/IO-Fortran-Library/test_str-cast-test.f90.o".
+RUNNING TESTS (array) | date: 20230204 | time: 162904.341 | real kind: 4 | int kind: 2
+--------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "-Ibuild/ifort_325C8B7ED1F4BD1E -c -O3 -stand f18 -module build/ifort_325C8B7ED1F4BD1E -o build/ifort_325C8B7ED1F4BD1E/IO-Fortran-Library/test_array-test.f90.o".
 
-RUNNING TESTS (String|cast) | date: 20230123 | time: 033317.047 | real kind: 4 | int kind: 2
---------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "-Ibuild/ifort_325C8B7ED1F4BD1E -c -O3 -stand f18 -module build/ifort_325C8B7ED1F4BD1E -o build/ifort_325C8B7ED1F4BD1E/IO-Fortran-Library/test_String-cast-test.f90.o".
+RUNNING TESTS (file) | date: 20230204 | time: 162904.536 | real kind: 4 | int kind: 2
+-------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "-Ibuild/ifort_325C8B7ED1F4BD1E -c -O3 -stand f18 -module build/ifort_325C8B7ED1F4BD1E -o build/ifort_325C8B7ED1F4BD1E/IO-Fortran-Library/test_file-test.f90.o".
 
-RUNNING TESTS (to_file|from_file) | date: 20230123 | time: 033317.203 | real kind: 4 | int kind: 2
---------------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "-Ibuild/ifort_325C8B7ED1F4BD1E -c -O3 -stand f18 -module build/ifort_325C8B7ED1F4BD1E -o build/ifort_325C8B7ED1F4BD1E/IO-Fortran-Library/test_to_file-from_file-test.f90.o".
+RUNNING TESTS (scalar) | date: 20230204 | time: 162907.702 | real kind: 4 | int kind: 2
+---------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "-Ibuild/ifort_325C8B7ED1F4BD1E -c -O3 -stand f18 -module build/ifort_325C8B7ED1F4BD1E -o build/ifort_325C8B7ED1F4BD1E/IO-Fortran-Library/test_scalar-test.f90.o".
 
-RUNNING TESTS (str|cast) | date: 20230123 | time: 033423.859 | real kind: 8 | int kind: 4
------------------------------------------------------------------------------------------
+RUNNING TESTS (array) | date: 20230204 | time: 162933.127 | real kind: 8 | int kind: 4
+--------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 11.3.0" using compiler options "-I build/gfortran_2A42023B310FA28D -mtune=generic -march=x86-64 -g -Wall -Wextra -Wimplicit-interface -fPIC -fmax-errors=1 -fcheck=bounds -fcheck=array-temps -fbacktrace -fcoarray=single -J build/gfortran_2A42023B310FA28D -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (String|cast) | date: 20230123 | time: 033423.905 | real kind: 8 | int kind: 4
---------------------------------------------------------------------------------------------
+RUNNING TESTS (file) | date: 20230204 | time: 162933.457 | real kind: 8 | int kind: 4
+-------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 11.3.0" using compiler options "-I build/gfortran_2A42023B310FA28D -mtune=generic -march=x86-64 -g -Wall -Wextra -Wimplicit-interface -fPIC -fmax-errors=1 -fcheck=bounds -fcheck=array-temps -fbacktrace -fcoarray=single -J build/gfortran_2A42023B310FA28D -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (to_file|from_file) | date: 20230123 | time: 033424.125 | real kind: 8 | int kind: 4
---------------------------------------------------------------------------------------------------
+RUNNING TESTS (scalar) | date: 20230204 | time: 162938.409 | real kind: 8 | int kind: 4
+---------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 11.3.0" using compiler options "-I build/gfortran_2A42023B310FA28D -mtune=generic -march=x86-64 -g -Wall -Wextra -Wimplicit-interface -fPIC -fmax-errors=1 -fcheck=bounds -fcheck=array-temps -fbacktrace -fcoarray=single -J build/gfortran_2A42023B310FA28D -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (str|cast) | date: 20230123 | time: 033433.350 | real kind: 8 | int kind: 4
------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "-Ibuild/ifx_5C58216731706F11 -c -warn all -check all -error-limit 1 -O0 -g -assume byterecl -traceback -module build/ifx_5C58216731706F11 -o build/ifx_5C58216731706F11/IO-Fortran-Library/test_str-cast-test.f90.o ".
+RUNNING TESTS (array) | date: 20230204 | time: 162942.284 | real kind: 8 | int kind: 4
+--------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "-Ibuild/ifx_5C58216731706F11 -c -warn all -check all -error-limit 1 -O0 -g -assume byterecl -traceback -module build/ifx_5C58216731706F11 -o build/ifx_5C58216731706F11/IO-Fortran-Library/test_array-test.f90.o ".
 
-RUNNING TESTS (String|cast) | date: 20230123 | time: 033433.407 | real kind: 8 | int kind: 4
---------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "-Ibuild/ifx_5C58216731706F11 -c -warn all -check all -error-limit 1 -O0 -g -assume byterecl -traceback -module build/ifx_5C58216731706F11 -o build/ifx_5C58216731706F11/IO-Fortran-Library/test_String-cast-test.f90.o ".
+RUNNING TESTS (file) | date: 20230204 | time: 162942.552 | real kind: 8 | int kind: 4
+-------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "-Ibuild/ifx_5C58216731706F11 -c -warn all -check all -error-limit 1 -O0 -g -assume byterecl -traceback -module build/ifx_5C58216731706F11 -o build/ifx_5C58216731706F11/IO-Fortran-Library/test_file-test.f90.o ".
 
-RUNNING TESTS (to_file|from_file) | date: 20230123 | time: 033433.602 | real kind: 8 | int kind: 4
---------------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "-Ibuild/ifx_5C58216731706F11 -c -warn all -check all -error-limit 1 -O0 -g -assume byterecl -traceback -module build/ifx_5C58216731706F11 -o build/ifx_5C58216731706F11/IO-Fortran-Library/test_to_file-from_file-test.f90.o ".
+RUNNING TESTS (scalar) | date: 20230204 | time: 162946.753 | real kind: 8 | int kind: 4
+---------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "-Ibuild/ifx_5C58216731706F11 -c -warn all -check all -error-limit 1 -O0 -g -assume byterecl -traceback -module build/ifx_5C58216731706F11 -o build/ifx_5C58216731706F11/IO-Fortran-Library/test_scalar-test.f90.o ".
 
-RUNNING TESTS (str|cast) | date: 20230123 | time: 033443.361 | real kind: 8 | int kind: 4
------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "-Ibuild/ifort_5C58216731706F11 -c -warn all -check all -error-limit 1 -O0 -g -assume byterecl -traceback -module build/ifort_5C58216731706F11 -o build/ifort_5C58216731706F11/IO-Fortran-Library/test_str-cast-test.f90.o".
+RUNNING TESTS (array) | date: 20230204 | time: 162950.941 | real kind: 8 | int kind: 4
+--------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "-Ibuild/ifort_5C58216731706F11 -c -warn all -check all -error-limit 1 -O0 -g -assume byterecl -traceback -module build/ifort_5C58216731706F11 -o build/ifort_5C58216731706F11/IO-Fortran-Library/test_array-test.f90.o".
 
-RUNNING TESTS (String|cast) | date: 20230123 | time: 033443.427 | real kind: 8 | int kind: 4
---------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "-Ibuild/ifort_5C58216731706F11 -c -warn all -check all -error-limit 1 -O0 -g -assume byterecl -traceback -module build/ifort_5C58216731706F11 -o build/ifort_5C58216731706F11/IO-Fortran-Library/test_String-cast-test.f90.o".
+RUNNING TESTS (file) | date: 20230204 | time: 162951.289 | real kind: 8 | int kind: 4
+-------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "-Ibuild/ifort_5C58216731706F11 -c -warn all -check all -error-limit 1 -O0 -g -assume byterecl -traceback -module build/ifort_5C58216731706F11 -o build/ifort_5C58216731706F11/IO-Fortran-Library/test_file-test.f90.o".
 
-RUNNING TESTS (to_file|from_file) | date: 20230123 | time: 033443.681 | real kind: 8 | int kind: 4
---------------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "-Ibuild/ifort_5C58216731706F11 -c -warn all -check all -error-limit 1 -O0 -g -assume byterecl -traceback -module build/ifort_5C58216731706F11 -o build/ifort_5C58216731706F11/IO-Fortran-Library/test_to_file-from_file-test.f90.o".
+RUNNING TESTS (scalar) | date: 20230204 | time: 162956.611 | real kind: 8 | int kind: 4
+---------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "-Ibuild/ifort_5C58216731706F11 -c -warn all -check all -error-limit 1 -O0 -g -assume byterecl -traceback -module build/ifort_5C58216731706F11 -o build/ifort_5C58216731706F11/IO-Fortran-Library/test_scalar-test.f90.o".
 
-RUNNING TESTS (str|cast) | date: 20230123 | time: 033459.798 | real kind: 8 | int kind: 4
------------------------------------------------------------------------------------------
+RUNNING TESTS (array) | date: 20230204 | time: 163006.138 | real kind: 8 | int kind: 4
+--------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 11.3.0" using compiler options "-I build/gfortran_93B6DA15423670F8 -mtune=generic -march=x86-64 -O3 -J build/gfortran_93B6DA15423670F8 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (String|cast) | date: 20230123 | time: 033459.836 | real kind: 8 | int kind: 4
---------------------------------------------------------------------------------------------
+RUNNING TESTS (file) | date: 20230204 | time: 163006.431 | real kind: 8 | int kind: 4
+-------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 11.3.0" using compiler options "-I build/gfortran_93B6DA15423670F8 -mtune=generic -march=x86-64 -O3 -J build/gfortran_93B6DA15423670F8 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (to_file|from_file) | date: 20230123 | time: 033500.023 | real kind: 8 | int kind: 4
---------------------------------------------------------------------------------------------------
+RUNNING TESTS (scalar) | date: 20230204 | time: 163010.995 | real kind: 8 | int kind: 4
+---------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 11.3.0" using compiler options "-I build/gfortran_93B6DA15423670F8 -mtune=generic -march=x86-64 -O3 -J build/gfortran_93B6DA15423670F8 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (str|cast) | date: 20230123 | time: 033512.998 | real kind: 8 | int kind: 4
------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "-Ibuild/ifx_325C8B7ED1F4BD1E -c -O3 -stand f18 -module build/ifx_325C8B7ED1F4BD1E -o build/ifx_325C8B7ED1F4BD1E/IO-Fortran-Library/test_str-cast-test.f90.o ".
+RUNNING TESTS (array) | date: 20230204 | time: 163020.655 | real kind: 8 | int kind: 4
+--------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "-Ibuild/ifx_325C8B7ED1F4BD1E -c -O3 -stand f18 -module build/ifx_325C8B7ED1F4BD1E -o build/ifx_325C8B7ED1F4BD1E/IO-Fortran-Library/test_array-test.f90.o ".
 
-RUNNING TESTS (String|cast) | date: 20230123 | time: 033513.044 | real kind: 8 | int kind: 4
---------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "-Ibuild/ifx_325C8B7ED1F4BD1E -c -O3 -stand f18 -module build/ifx_325C8B7ED1F4BD1E -o build/ifx_325C8B7ED1F4BD1E/IO-Fortran-Library/test_String-cast-test.f90.o ".
+RUNNING TESTS (file) | date: 20230204 | time: 163020.862 | real kind: 8 | int kind: 4
+-------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "-Ibuild/ifx_325C8B7ED1F4BD1E -c -O3 -stand f18 -module build/ifx_325C8B7ED1F4BD1E -o build/ifx_325C8B7ED1F4BD1E/IO-Fortran-Library/test_file-test.f90.o ".
 
-RUNNING TESTS (to_file|from_file) | date: 20230123 | time: 033513.210 | real kind: 8 | int kind: 4
---------------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "-Ibuild/ifx_325C8B7ED1F4BD1E -c -O3 -stand f18 -module build/ifx_325C8B7ED1F4BD1E -o build/ifx_325C8B7ED1F4BD1E/IO-Fortran-Library/test_to_file-from_file-test.f90.o ".
+RUNNING TESTS (scalar) | date: 20230204 | time: 163024.207 | real kind: 8 | int kind: 4
+---------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "-Ibuild/ifx_325C8B7ED1F4BD1E -c -O3 -stand f18 -module build/ifx_325C8B7ED1F4BD1E -o build/ifx_325C8B7ED1F4BD1E/IO-Fortran-Library/test_scalar-test.f90.o ".
 
-RUNNING TESTS (str|cast) | date: 20230123 | time: 033538.259 | real kind: 8 | int kind: 4
------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "-Ibuild/ifort_325C8B7ED1F4BD1E -c -O3 -stand f18 -module build/ifort_325C8B7ED1F4BD1E -o build/ifort_325C8B7ED1F4BD1E/IO-Fortran-Library/test_str-cast-test.f90.o".
+RUNNING TESTS (array) | date: 20230204 | time: 163057.549 | real kind: 8 | int kind: 4
+--------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "-Ibuild/ifort_325C8B7ED1F4BD1E -c -O3 -stand f18 -module build/ifort_325C8B7ED1F4BD1E -o build/ifort_325C8B7ED1F4BD1E/IO-Fortran-Library/test_array-test.f90.o".
 
-RUNNING TESTS (String|cast) | date: 20230123 | time: 033538.313 | real kind: 8 | int kind: 4
---------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "-Ibuild/ifort_325C8B7ED1F4BD1E -c -O3 -stand f18 -module build/ifort_325C8B7ED1F4BD1E -o build/ifort_325C8B7ED1F4BD1E/IO-Fortran-Library/test_String-cast-test.f90.o".
+RUNNING TESTS (file) | date: 20230204 | time: 163057.770 | real kind: 8 | int kind: 4
+-------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "-Ibuild/ifort_325C8B7ED1F4BD1E -c -O3 -stand f18 -module build/ifort_325C8B7ED1F4BD1E -o build/ifort_325C8B7ED1F4BD1E/IO-Fortran-Library/test_file-test.f90.o".
 
-RUNNING TESTS (to_file|from_file) | date: 20230123 | time: 033538.485 | real kind: 8 | int kind: 4
---------------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "-Ibuild/ifort_325C8B7ED1F4BD1E -c -O3 -stand f18 -module build/ifort_325C8B7ED1F4BD1E -o build/ifort_325C8B7ED1F4BD1E/IO-Fortran-Library/test_to_file-from_file-test.f90.o".
+RUNNING TESTS (scalar) | date: 20230204 | time: 163101.149 | real kind: 8 | int kind: 4
+---------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "-Ibuild/ifort_325C8B7ED1F4BD1E -c -O3 -stand f18 -module build/ifort_325C8B7ED1F4BD1E -o build/ifort_325C8B7ED1F4BD1E/IO-Fortran-Library/test_scalar-test.f90.o".
 
-RUNNING TESTS (str|cast) | date: 20230123 | time: 033644.076 | real kind: 16 | int kind: 8
-------------------------------------------------------------------------------------------
+RUNNING TESTS (array) | date: 20230204 | time: 163126.130 | real kind: 16 | int kind: 8
+---------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 11.3.0" using compiler options "-I build/gfortran_2A42023B310FA28D -mtune=generic -march=x86-64 -g -Wall -Wextra -Wimplicit-interface -fPIC -fmax-errors=1 -fcheck=bounds -fcheck=array-temps -fbacktrace -fcoarray=single -J build/gfortran_2A42023B310FA28D -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (String|cast) | date: 20230123 | time: 033644.122 | real kind: 16 | int kind: 8
----------------------------------------------------------------------------------------------
+RUNNING TESTS (file) | date: 20230204 | time: 163126.721 | real kind: 16 | int kind: 8
+--------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 11.3.0" using compiler options "-I build/gfortran_2A42023B310FA28D -mtune=generic -march=x86-64 -g -Wall -Wextra -Wimplicit-interface -fPIC -fmax-errors=1 -fcheck=bounds -fcheck=array-temps -fbacktrace -fcoarray=single -J build/gfortran_2A42023B310FA28D -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (to_file|from_file) | date: 20230123 | time: 033644.443 | real kind: 16 | int kind: 8
----------------------------------------------------------------------------------------------------
+RUNNING TESTS (scalar) | date: 20230204 | time: 163134.313 | real kind: 16 | int kind: 8
+----------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 11.3.0" using compiler options "-I build/gfortran_2A42023B310FA28D -mtune=generic -march=x86-64 -g -Wall -Wextra -Wimplicit-interface -fPIC -fmax-errors=1 -fcheck=bounds -fcheck=array-temps -fbacktrace -fcoarray=single -J build/gfortran_2A42023B310FA28D -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (str|cast) | date: 20230123 | time: 033656.425 | real kind: 16 | int kind: 8
-------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "-Ibuild/ifx_5C58216731706F11 -c -warn all -check all -error-limit 1 -O0 -g -assume byterecl -traceback -module build/ifx_5C58216731706F11 -o build/ifx_5C58216731706F11/IO-Fortran-Library/test_str-cast-test.f90.o ".
+RUNNING TESTS (array) | date: 20230204 | time: 163138.434 | real kind: 16 | int kind: 8
+---------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "-Ibuild/ifx_5C58216731706F11 -c -warn all -check all -error-limit 1 -O0 -g -assume byterecl -traceback -module build/ifx_5C58216731706F11 -o build/ifx_5C58216731706F11/IO-Fortran-Library/test_array-test.f90.o ".
 
-RUNNING TESTS (String|cast) | date: 20230123 | time: 033656.484 | real kind: 16 | int kind: 8
----------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "-Ibuild/ifx_5C58216731706F11 -c -warn all -check all -error-limit 1 -O0 -g -assume byterecl -traceback -module build/ifx_5C58216731706F11 -o build/ifx_5C58216731706F11/IO-Fortran-Library/test_String-cast-test.f90.o ".
+RUNNING TESTS (file) | date: 20230204 | time: 163138.951 | real kind: 16 | int kind: 8
+--------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "-Ibuild/ifx_5C58216731706F11 -c -warn all -check all -error-limit 1 -O0 -g -assume byterecl -traceback -module build/ifx_5C58216731706F11 -o build/ifx_5C58216731706F11/IO-Fortran-Library/test_file-test.f90.o ".
 
-RUNNING TESTS (to_file|from_file) | date: 20230123 | time: 033656.800 | real kind: 16 | int kind: 8
----------------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "-Ibuild/ifx_5C58216731706F11 -c -warn all -check all -error-limit 1 -O0 -g -assume byterecl -traceback -module build/ifx_5C58216731706F11 -o build/ifx_5C58216731706F11/IO-Fortran-Library/test_to_file-from_file-test.f90.o ".
+RUNNING TESTS (scalar) | date: 20230204 | time: 163145.811 | real kind: 16 | int kind: 8
+----------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "-Ibuild/ifx_5C58216731706F11 -c -warn all -check all -error-limit 1 -O0 -g -assume byterecl -traceback -module build/ifx_5C58216731706F11 -o build/ifx_5C58216731706F11/IO-Fortran-Library/test_scalar-test.f90.o ".
 
-RUNNING TESTS (str|cast) | date: 20230123 | time: 033709.879 | real kind: 16 | int kind: 8
-------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "-Ibuild/ifort_5C58216731706F11 -c -warn all -check all -error-limit 1 -O0 -g -assume byterecl -traceback -module build/ifort_5C58216731706F11 -o build/ifort_5C58216731706F11/IO-Fortran-Library/test_str-cast-test.f90.o".
+RUNNING TESTS (array) | date: 20230204 | time: 163150.105 | real kind: 16 | int kind: 8
+---------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "-Ibuild/ifort_5C58216731706F11 -c -warn all -check all -error-limit 1 -O0 -g -assume byterecl -traceback -module build/ifort_5C58216731706F11 -o build/ifort_5C58216731706F11/IO-Fortran-Library/test_array-test.f90.o".
 
-RUNNING TESTS (String|cast) | date: 20230123 | time: 033709.948 | real kind: 16 | int kind: 8
----------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "-Ibuild/ifort_5C58216731706F11 -c -warn all -check all -error-limit 1 -O0 -g -assume byterecl -traceback -module build/ifort_5C58216731706F11 -o build/ifort_5C58216731706F11/IO-Fortran-Library/test_String-cast-test.f90.o".
+RUNNING TESTS (file) | date: 20230204 | time: 163150.734 | real kind: 16 | int kind: 8
+--------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "-Ibuild/ifort_5C58216731706F11 -c -warn all -check all -error-limit 1 -O0 -g -assume byterecl -traceback -module build/ifort_5C58216731706F11 -o build/ifort_5C58216731706F11/IO-Fortran-Library/test_file-test.f90.o".
 
-RUNNING TESTS (to_file|from_file) | date: 20230123 | time: 033710.334 | real kind: 16 | int kind: 8
----------------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "-Ibuild/ifort_5C58216731706F11 -c -warn all -check all -error-limit 1 -O0 -g -assume byterecl -traceback -module build/ifort_5C58216731706F11 -o build/ifort_5C58216731706F11/IO-Fortran-Library/test_to_file-from_file-test.f90.o".
+RUNNING TESTS (scalar) | date: 20230204 | time: 163159.273 | real kind: 16 | int kind: 8
+----------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "-Ibuild/ifort_5C58216731706F11 -c -warn all -check all -error-limit 1 -O0 -g -assume byterecl -traceback -module build/ifort_5C58216731706F11 -o build/ifort_5C58216731706F11/IO-Fortran-Library/test_scalar-test.f90.o".
 
-RUNNING TESTS (str|cast) | date: 20230123 | time: 033731.877 | real kind: 16 | int kind: 8
-------------------------------------------------------------------------------------------
+RUNNING TESTS (array) | date: 20230204 | time: 163209.629 | real kind: 16 | int kind: 8
+---------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 11.3.0" using compiler options "-I build/gfortran_93B6DA15423670F8 -mtune=generic -march=x86-64 -O3 -J build/gfortran_93B6DA15423670F8 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (String|cast) | date: 20230123 | time: 033731.916 | real kind: 16 | int kind: 8
----------------------------------------------------------------------------------------------
+RUNNING TESTS (file) | date: 20230204 | time: 163210.178 | real kind: 16 | int kind: 8
+--------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 11.3.0" using compiler options "-I build/gfortran_93B6DA15423670F8 -mtune=generic -march=x86-64 -O3 -J build/gfortran_93B6DA15423670F8 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (to_file|from_file) | date: 20230123 | time: 033732.207 | real kind: 16 | int kind: 8
----------------------------------------------------------------------------------------------------
+RUNNING TESTS (scalar) | date: 20230204 | time: 163217.239 | real kind: 16 | int kind: 8
+----------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 11.3.0" using compiler options "-I build/gfortran_93B6DA15423670F8 -mtune=generic -march=x86-64 -O3 -J build/gfortran_93B6DA15423670F8 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (str|cast) | date: 20230123 | time: 033746.680 | real kind: 16 | int kind: 8
-------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "-Ibuild/ifx_325C8B7ED1F4BD1E -c -O3 -stand f18 -module build/ifx_325C8B7ED1F4BD1E -o build/ifx_325C8B7ED1F4BD1E/IO-Fortran-Library/test_str-cast-test.f90.o ".
+RUNNING TESTS (array) | date: 20230204 | time: 163226.258 | real kind: 16 | int kind: 8
+---------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "-Ibuild/ifx_325C8B7ED1F4BD1E -c -O3 -stand f18 -module build/ifx_325C8B7ED1F4BD1E -o build/ifx_325C8B7ED1F4BD1E/IO-Fortran-Library/test_array-test.f90.o ".
 
-RUNNING TESTS (String|cast) | date: 20230123 | time: 033746.727 | real kind: 16 | int kind: 8
----------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "-Ibuild/ifx_325C8B7ED1F4BD1E -c -O3 -stand f18 -module build/ifx_325C8B7ED1F4BD1E -o build/ifx_325C8B7ED1F4BD1E/IO-Fortran-Library/test_String-cast-test.f90.o ".
+RUNNING TESTS (file) | date: 20230204 | time: 163226.719 | real kind: 16 | int kind: 8
+--------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "-Ibuild/ifx_325C8B7ED1F4BD1E -c -O3 -stand f18 -module build/ifx_325C8B7ED1F4BD1E -o build/ifx_325C8B7ED1F4BD1E/IO-Fortran-Library/test_file-test.f90.o ".
 
-RUNNING TESTS (to_file|from_file) | date: 20230123 | time: 033747.004 | real kind: 16 | int kind: 8
----------------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "-Ibuild/ifx_325C8B7ED1F4BD1E -c -O3 -stand f18 -module build/ifx_325C8B7ED1F4BD1E -o build/ifx_325C8B7ED1F4BD1E/IO-Fortran-Library/test_to_file-from_file-test.f90.o ".
+RUNNING TESTS (scalar) | date: 20230204 | time: 163232.651 | real kind: 16 | int kind: 8
+----------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "-Ibuild/ifx_325C8B7ED1F4BD1E -c -O3 -stand f18 -module build/ifx_325C8B7ED1F4BD1E -o build/ifx_325C8B7ED1F4BD1E/IO-Fortran-Library/test_scalar-test.f90.o ".
 
-RUNNING TESTS (str|cast) | date: 20230123 | time: 033817.745 | real kind: 16 | int kind: 8
-------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "-Ibuild/ifort_325C8B7ED1F4BD1E -c -O3 -stand f18 -module build/ifort_325C8B7ED1F4BD1E -o build/ifort_325C8B7ED1F4BD1E/IO-Fortran-Library/test_str-cast-test.f90.o".
+RUNNING TESTS (array) | date: 20230204 | time: 163339.116 | real kind: 16 | int kind: 8
+---------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "-Ibuild/ifort_325C8B7ED1F4BD1E -c -O3 -stand f18 -module build/ifort_325C8B7ED1F4BD1E -o build/ifort_325C8B7ED1F4BD1E/IO-Fortran-Library/test_array-test.f90.o".
 
-RUNNING TESTS (String|cast) | date: 20230123 | time: 033817.798 | real kind: 16 | int kind: 8
----------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "-Ibuild/ifort_325C8B7ED1F4BD1E -c -O3 -stand f18 -module build/ifort_325C8B7ED1F4BD1E -o build/ifort_325C8B7ED1F4BD1E/IO-Fortran-Library/test_String-cast-test.f90.o".
+RUNNING TESTS (file) | date: 20230204 | time: 163339.572 | real kind: 16 | int kind: 8
+--------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "-Ibuild/ifort_325C8B7ED1F4BD1E -c -O3 -stand f18 -module build/ifort_325C8B7ED1F4BD1E -o build/ifort_325C8B7ED1F4BD1E/IO-Fortran-Library/test_file-test.f90.o".
 
-RUNNING TESTS (to_file|from_file) | date: 20230123 | time: 033818.075 | real kind: 16 | int kind: 8
----------------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "-Ibuild/ifort_325C8B7ED1F4BD1E -c -O3 -stand f18 -module build/ifort_325C8B7ED1F4BD1E -o build/ifort_325C8B7ED1F4BD1E/IO-Fortran-Library/test_to_file-from_file-test.f90.o".
+RUNNING TESTS (scalar) | date: 20230204 | time: 163345.327 | real kind: 16 | int kind: 8
+----------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "-Ibuild/ifort_325C8B7ED1F4BD1E -c -O3 -stand f18 -module build/ifort_325C8B7ED1F4BD1E -o build/ifort_325C8B7ED1F4BD1E/IO-Fortran-Library/test_scalar-test.f90.o".
 
-RUNNING TESTS (str|cast) | date: 20230123 | time: 033911.937 | real kind: 16 | int kind: 8
-------------------------------------------------------------------------------------------
+RUNNING TESTS (array) | date: 20230204 | time: 163425.442 | real kind: 16 | int kind: 8
+---------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 11.2.0" using compiler options "-I build\gfortran_2A42023B310FA28D -mtune=generic -march=x86-64 -g -Wall -Wextra -Wimplicit-interface -fPIC -fmax-errors=1 -fcheck=bounds -fcheck=array-temps -fbacktrace -fcoarray=single -J build\gfortran_2A42023B310FA28D".
 
-RUNNING TESTS (String|cast) | date: 20230123 | time: 033912.532 | real kind: 16 | int kind: 8
----------------------------------------------------------------------------------------------
+RUNNING TESTS (file) | date: 20230204 | time: 163426.823 | real kind: 16 | int kind: 8
+--------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 11.2.0" using compiler options "-I build\gfortran_2A42023B310FA28D -mtune=generic -march=x86-64 -g -Wall -Wextra -Wimplicit-interface -fPIC -fmax-errors=1 -fcheck=bounds -fcheck=array-temps -fbacktrace -fcoarray=single -J build\gfortran_2A42023B310FA28D".
 
-RUNNING TESTS (to_file|from_file) | date: 20230123 | time: 033913.507 | real kind: 16 | int kind: 8
----------------------------------------------------------------------------------------------------
+RUNNING TESTS (scalar) | date: 20230204 | time: 163434.302 | real kind: 16 | int kind: 8
+----------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 11.2.0" using compiler options "-I build\gfortran_2A42023B310FA28D -mtune=generic -march=x86-64 -g -Wall -Wextra -Wimplicit-interface -fPIC -fmax-errors=1 -fcheck=bounds -fcheck=array-temps -fbacktrace -fcoarray=single -J build\gfortran_2A42023B310FA28D".
 
-RUNNING TESTS (str|cast) | date: 20230123 | time: 033935.339 | real kind: 16 | int kind: 8
-------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "/Ibuild\ifx_B8859E06ECE6F7C4 /c /warn:all /check:all /error-limit:1 /Od /Z7 /assume:byterecl /module:build\ifx_B8859E06ECE6F7C4 /o:build\ifx_B8859E06ECE6F7C4\IO-Fortran-Library\test_str-cast-test.f90.o ".
+RUNNING TESTS (array) | date: 20230204 | time: 163448.812 | real kind: 16 | int kind: 8
+---------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "/Ibuild\ifx_B8859E06ECE6F7C4 /c /warn:all /check:all /error-limit:1 /Od /Z7 /assume:byterecl /module:build\ifx_B8859E06ECE6F7C4 /o:build\ifx_B8859E06ECE6F7C4\IO-Fortran-Library\test_array-test.f90.o ".
 
-RUNNING TESTS (String|cast) | date: 20230123 | time: 033936.218 | real kind: 16 | int kind: 8
----------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "/Ibuild\ifx_B8859E06ECE6F7C4 /c /warn:all /check:all /error-limit:1 /Od /Z7 /assume:byterecl /module:build\ifx_B8859E06ECE6F7C4 /o:build\ifx_B8859E06ECE6F7C4\IO-Fortran-Library\test_String-cast-test.f90.o ".
+RUNNING TESTS (file) | date: 20230204 | time: 163449.955 | real kind: 16 | int kind: 8
+--------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "/Ibuild\ifx_B8859E06ECE6F7C4 /c /warn:all /check:all /error-limit:1 /Od /Z7 /assume:byterecl /module:build\ifx_B8859E06ECE6F7C4 /o:build\ifx_B8859E06ECE6F7C4\IO-Fortran-Library\test_file-test.f90.o ".
 
-RUNNING TESTS (to_file|from_file) | date: 20230123 | time: 033937.340 | real kind: 16 | int kind: 8
----------------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "/Ibuild\ifx_B8859E06ECE6F7C4 /c /warn:all /check:all /error-limit:1 /Od /Z7 /assume:byterecl /module:build\ifx_B8859E06ECE6F7C4 /o:build\ifx_B8859E06ECE6F7C4\IO-Fortran-Library\test_to_file-from_file-test.f90.o ".
+RUNNING TESTS (scalar) | date: 20230204 | time: 163456.799 | real kind: 16 | int kind: 8
+----------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "/Ibuild\ifx_B8859E06ECE6F7C4 /c /warn:all /check:all /error-limit:1 /Od /Z7 /assume:byterecl /module:build\ifx_B8859E06ECE6F7C4 /o:build\ifx_B8859E06ECE6F7C4\IO-Fortran-Library\test_scalar-test.f90.o ".
 
-RUNNING TESTS (str|cast) | date: 20230123 | time: 033957.780 | real kind: 16 | int kind: 8
-------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "/Ibuild\ifort_782887A201FCE169 /c /warn:all /check:all /error-limit:1 /Od /Z7 /assume:byterecl /traceback /module:build\ifort_782887A201FCE169 /o:build\ifort_782887A201FCE169\IO-Fortran-Library\test_str-cast-test.f90.o".
+RUNNING TESTS (array) | date: 20230204 | time: 163508.594 | real kind: 16 | int kind: 8
+---------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "/Ibuild\ifort_782887A201FCE169 /c /warn:all /check:all /error-limit:1 /Od /Z7 /assume:byterecl /traceback /module:build\ifort_782887A201FCE169 /o:build\ifort_782887A201FCE169\IO-Fortran-Library\test_array-test.f90.o".
 
-RUNNING TESTS (String|cast) | date: 20230123 | time: 033958.659 | real kind: 16 | int kind: 8
----------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "/Ibuild\ifort_782887A201FCE169 /c /warn:all /check:all /error-limit:1 /Od /Z7 /assume:byterecl /traceback /module:build\ifort_782887A201FCE169 /o:build\ifort_782887A201FCE169\IO-Fortran-Library\test_String-cast-test.f90.o".
+RUNNING TESTS (file) | date: 20230204 | time: 163509.842 | real kind: 16 | int kind: 8
+--------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "/Ibuild\ifort_782887A201FCE169 /c /warn:all /check:all /error-limit:1 /Od /Z7 /assume:byterecl /traceback /module:build\ifort_782887A201FCE169 /o:build\ifort_782887A201FCE169\IO-Fortran-Library\test_file-test.f90.o".
 
-RUNNING TESTS (to_file|from_file) | date: 20230123 | time: 033959.865 | real kind: 16 | int kind: 8
----------------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "/Ibuild\ifort_782887A201FCE169 /c /warn:all /check:all /error-limit:1 /Od /Z7 /assume:byterecl /traceback /module:build\ifort_782887A201FCE169 /o:build\ifort_782887A201FCE169\IO-Fortran-Library\test_to_file-from_file-test.f90.o".
+RUNNING TESTS (scalar) | date: 20230204 | time: 163518.110 | real kind: 16 | int kind: 8
+----------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "/Ibuild\ifort_782887A201FCE169 /c /warn:all /check:all /error-limit:1 /Od /Z7 /assume:byterecl /traceback /module:build\ifort_782887A201FCE169 /o:build\ifort_782887A201FCE169\IO-Fortran-Library\test_scalar-test.f90.o".
 
-RUNNING TESTS (str|cast) | date: 20230123 | time: 034047.561 | real kind: 16 | int kind: 8
-------------------------------------------------------------------------------------------
+RUNNING TESTS (array) | date: 20230204 | time: 163554.232 | real kind: 16 | int kind: 8
+---------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 11.2.0" using compiler options "-I build\gfortran_93B6DA15423670F8 -mtune=generic -march=x86-64 -O3 -J build\gfortran_93B6DA15423670F8".
 
-RUNNING TESTS (String|cast) | date: 20230123 | time: 034048.169 | real kind: 16 | int kind: 8
----------------------------------------------------------------------------------------------
+RUNNING TESTS (file) | date: 20230204 | time: 163555.390 | real kind: 16 | int kind: 8
+--------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 11.2.0" using compiler options "-I build\gfortran_93B6DA15423670F8 -mtune=generic -march=x86-64 -O3 -J build\gfortran_93B6DA15423670F8".
 
-RUNNING TESTS (to_file|from_file) | date: 20230123 | time: 034049.053 | real kind: 16 | int kind: 8
----------------------------------------------------------------------------------------------------
+RUNNING TESTS (scalar) | date: 20230204 | time: 163602.954 | real kind: 16 | int kind: 8
+----------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 11.2.0" using compiler options "-I build\gfortran_93B6DA15423670F8 -mtune=generic -march=x86-64 -O3 -J build\gfortran_93B6DA15423670F8".
 
-RUNNING TESTS (str|cast) | date: 20230123 | time: 034144.801 | real kind: 16 | int kind: 8
-------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "/Ibuild\ifx_CB939545EDCB6CE0 /c /O3 /stand:f18 /module:build\ifx_CB939545EDCB6CE0 /o:build\ifx_CB939545EDCB6CE0\IO-Fortran-Library\test_str-cast-test.f90.o ".
+RUNNING TESTS (array) | date: 20230204 | time: 163652.923 | real kind: 16 | int kind: 8
+---------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "/Ibuild\ifx_CB939545EDCB6CE0 /c /O3 /stand:f18 /module:build\ifx_CB939545EDCB6CE0 /o:build\ifx_CB939545EDCB6CE0\IO-Fortran-Library\test_array-test.f90.o ".
 
-RUNNING TESTS (String|cast) | date: 20230123 | time: 034145.686 | real kind: 16 | int kind: 8
----------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "/Ibuild\ifx_CB939545EDCB6CE0 /c /O3 /stand:f18 /module:build\ifx_CB939545EDCB6CE0 /o:build\ifx_CB939545EDCB6CE0\IO-Fortran-Library\test_String-cast-test.f90.o ".
+RUNNING TESTS (file) | date: 20230204 | time: 163654.715 | real kind: 16 | int kind: 8
+--------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "/Ibuild\ifx_CB939545EDCB6CE0 /c /O3 /stand:f18 /module:build\ifx_CB939545EDCB6CE0 /o:build\ifx_CB939545EDCB6CE0\IO-Fortran-Library\test_file-test.f90.o ".
 
-RUNNING TESTS (to_file|from_file) | date: 20230123 | time: 034146.681 | real kind: 16 | int kind: 8
----------------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "/Ibuild\ifx_CB939545EDCB6CE0 /c /O3 /stand:f18 /module:build\ifx_CB939545EDCB6CE0 /o:build\ifx_CB939545EDCB6CE0\IO-Fortran-Library\test_to_file-from_file-test.f90.o ".
+RUNNING TESTS (scalar) | date: 20230204 | time: 163700.450 | real kind: 16 | int kind: 8
+----------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "/Ibuild\ifx_CB939545EDCB6CE0 /c /O3 /stand:f18 /module:build\ifx_CB939545EDCB6CE0 /o:build\ifx_CB939545EDCB6CE0\IO-Fortran-Library\test_scalar-test.f90.o ".
 
-RUNNING TESTS (str|cast) | date: 20230123 | time: 034311.651 | real kind: 16 | int kind: 8
-------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "/Ibuild\ifort_CB939545EDCB6CE0 /c /O3 /stand:f18 /module:build\ifort_CB939545EDCB6CE0 /o:build\ifort_CB939545EDCB6CE0\IO-Fortran-Library\test_str-cast-test.f90.o".
+RUNNING TESTS (array) | date: 20230204 | time: 163859.008 | real kind: 16 | int kind: 8
+---------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "/Ibuild\ifort_CB939545EDCB6CE0 /c /O3 /stand:f18 /module:build\ifort_CB939545EDCB6CE0 /o:build\ifort_CB939545EDCB6CE0\IO-Fortran-Library\test_array-test.f90.o".
 
-RUNNING TESTS (String|cast) | date: 20230123 | time: 034312.604 | real kind: 16 | int kind: 8
----------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "/Ibuild\ifort_CB939545EDCB6CE0 /c /O3 /stand:f18 /module:build\ifort_CB939545EDCB6CE0 /o:build\ifort_CB939545EDCB6CE0\IO-Fortran-Library\test_String-cast-test.f90.o".
+RUNNING TESTS (file) | date: 20230204 | time: 163900.034 | real kind: 16 | int kind: 8
+--------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "/Ibuild\ifort_CB939545EDCB6CE0 /c /O3 /stand:f18 /module:build\ifort_CB939545EDCB6CE0 /o:build\ifort_CB939545EDCB6CE0\IO-Fortran-Library\test_file-test.f90.o".
 
-RUNNING TESTS (to_file|from_file) | date: 20230123 | time: 034313.685 | real kind: 16 | int kind: 8
----------------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "/Ibuild\ifort_CB939545EDCB6CE0 /c /O3 /stand:f18 /module:build\ifort_CB939545EDCB6CE0 /o:build\ifort_CB939545EDCB6CE0\IO-Fortran-Library\test_to_file-from_file-test.f90.o".
+RUNNING TESTS (scalar) | date: 20230204 | time: 163905.486 | real kind: 16 | int kind: 8
+----------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "/Ibuild\ifort_CB939545EDCB6CE0 /c /O3 /stand:f18 /module:build\ifort_CB939545EDCB6CE0 /o:build\ifort_CB939545EDCB6CE0\IO-Fortran-Library\test_scalar-test.f90.o".
 
-RUNNING TESTS (str|cast) | date: 20230123 | time: 034409.652 | real kind: 8 | int kind: 4
------------------------------------------------------------------------------------------
+RUNNING TESTS (array) | date: 20230204 | time: 163939.404 | real kind: 8 | int kind: 4
+--------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 11.2.0" using compiler options "-I build\gfortran_2A42023B310FA28D -mtune=generic -march=x86-64 -g -Wall -Wextra -Wimplicit-interface -fPIC -fmax-errors=1 -fcheck=bounds -fcheck=array-temps -fbacktrace -fcoarray=single -J build\gfortran_2A42023B310FA28D".
 
-RUNNING TESTS (String|cast) | date: 20230123 | time: 034410.412 | real kind: 8 | int kind: 4
---------------------------------------------------------------------------------------------
+RUNNING TESTS (file) | date: 20230204 | time: 163940.582 | real kind: 8 | int kind: 4
+-------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 11.2.0" using compiler options "-I build\gfortran_2A42023B310FA28D -mtune=generic -march=x86-64 -g -Wall -Wextra -Wimplicit-interface -fPIC -fmax-errors=1 -fcheck=bounds -fcheck=array-temps -fbacktrace -fcoarray=single -J build\gfortran_2A42023B310FA28D".
 
-RUNNING TESTS (to_file|from_file) | date: 20230123 | time: 034411.382 | real kind: 8 | int kind: 4
---------------------------------------------------------------------------------------------------
+RUNNING TESTS (scalar) | date: 20230204 | time: 163945.327 | real kind: 8 | int kind: 4
+---------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 11.2.0" using compiler options "-I build\gfortran_2A42023B310FA28D -mtune=generic -march=x86-64 -g -Wall -Wextra -Wimplicit-interface -fPIC -fmax-errors=1 -fcheck=bounds -fcheck=array-temps -fbacktrace -fcoarray=single -J build\gfortran_2A42023B310FA28D".
 
-RUNNING TESTS (str|cast) | date: 20230123 | time: 034420.378 | real kind: 8 | int kind: 4
------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "/Ibuild\ifx_B8859E06ECE6F7C4 /c /warn:all /check:all /error-limit:1 /Od /Z7 /assume:byterecl /module:build\ifx_B8859E06ECE6F7C4 /o:build\ifx_B8859E06ECE6F7C4\IO-Fortran-Library\test_str-cast-test.f90.o ".
+RUNNING TESTS (array) | date: 20230204 | time: 163948.641 | real kind: 8 | int kind: 4
+--------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "/Ibuild\ifx_B8859E06ECE6F7C4 /c /warn:all /check:all /error-limit:1 /Od /Z7 /assume:byterecl /module:build\ifx_B8859E06ECE6F7C4 /o:build\ifx_B8859E06ECE6F7C4\IO-Fortran-Library\test_array-test.f90.o ".
 
-RUNNING TESTS (String|cast) | date: 20230123 | time: 034421.133 | real kind: 8 | int kind: 4
---------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "/Ibuild\ifx_B8859E06ECE6F7C4 /c /warn:all /check:all /error-limit:1 /Od /Z7 /assume:byterecl /module:build\ifx_B8859E06ECE6F7C4 /o:build\ifx_B8859E06ECE6F7C4\IO-Fortran-Library\test_String-cast-test.f90.o ".
+RUNNING TESTS (file) | date: 20230204 | time: 163949.565 | real kind: 8 | int kind: 4
+-------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "/Ibuild\ifx_B8859E06ECE6F7C4 /c /warn:all /check:all /error-limit:1 /Od /Z7 /assume:byterecl /module:build\ifx_B8859E06ECE6F7C4 /o:build\ifx_B8859E06ECE6F7C4\IO-Fortran-Library\test_file-test.f90.o ".
 
-RUNNING TESTS (to_file|from_file) | date: 20230123 | time: 034422.020 | real kind: 8 | int kind: 4
---------------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "/Ibuild\ifx_B8859E06ECE6F7C4 /c /warn:all /check:all /error-limit:1 /Od /Z7 /assume:byterecl /module:build\ifx_B8859E06ECE6F7C4 /o:build\ifx_B8859E06ECE6F7C4\IO-Fortran-Library\test_to_file-from_file-test.f90.o ".
+RUNNING TESTS (scalar) | date: 20230204 | time: 163953.701 | real kind: 8 | int kind: 4
+---------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "/Ibuild\ifx_B8859E06ECE6F7C4 /c /warn:all /check:all /error-limit:1 /Od /Z7 /assume:byterecl /module:build\ifx_B8859E06ECE6F7C4 /o:build\ifx_B8859E06ECE6F7C4\IO-Fortran-Library\test_scalar-test.f90.o ".
 
-RUNNING TESTS (str|cast) | date: 20230123 | time: 034431.460 | real kind: 8 | int kind: 4
------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "/Ibuild\ifort_782887A201FCE169 /c /warn:all /check:all /error-limit:1 /Od /Z7 /assume:byterecl /traceback /module:build\ifort_782887A201FCE169 /o:build\ifort_782887A201FCE169\IO-Fortran-Library\test_str-cast-test.f90.o".
+RUNNING TESTS (array) | date: 20230204 | time: 163957.354 | real kind: 8 | int kind: 4
+--------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "/Ibuild\ifort_782887A201FCE169 /c /warn:all /check:all /error-limit:1 /Od /Z7 /assume:byterecl /traceback /module:build\ifort_782887A201FCE169 /o:build\ifort_782887A201FCE169\IO-Fortran-Library\test_array-test.f90.o".
 
-RUNNING TESTS (String|cast) | date: 20230123 | time: 034432.221 | real kind: 8 | int kind: 4
---------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "/Ibuild\ifort_782887A201FCE169 /c /warn:all /check:all /error-limit:1 /Od /Z7 /assume:byterecl /traceback /module:build\ifort_782887A201FCE169 /o:build\ifort_782887A201FCE169\IO-Fortran-Library\test_String-cast-test.f90.o".
+RUNNING TESTS (file) | date: 20230204 | time: 163958.323 | real kind: 8 | int kind: 4
+-------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "/Ibuild\ifort_782887A201FCE169 /c /warn:all /check:all /error-limit:1 /Od /Z7 /assume:byterecl /traceback /module:build\ifort_782887A201FCE169 /o:build\ifort_782887A201FCE169\IO-Fortran-Library\test_file-test.f90.o".
 
-RUNNING TESTS (to_file|from_file) | date: 20230123 | time: 034433.147 | real kind: 8 | int kind: 4
---------------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "/Ibuild\ifort_782887A201FCE169 /c /warn:all /check:all /error-limit:1 /Od /Z7 /assume:byterecl /traceback /module:build\ifort_782887A201FCE169 /o:build\ifort_782887A201FCE169\IO-Fortran-Library\test_to_file-from_file-test.f90.o".
+RUNNING TESTS (scalar) | date: 20230204 | time: 164003.417 | real kind: 8 | int kind: 4
+---------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "/Ibuild\ifort_782887A201FCE169 /c /warn:all /check:all /error-limit:1 /Od /Z7 /assume:byterecl /traceback /module:build\ifort_782887A201FCE169 /o:build\ifort_782887A201FCE169\IO-Fortran-Library\test_scalar-test.f90.o".
 
-RUNNING TESTS (str|cast) | date: 20230123 | time: 034449.489 | real kind: 8 | int kind: 4
------------------------------------------------------------------------------------------
+RUNNING TESTS (array) | date: 20230204 | time: 164011.583 | real kind: 8 | int kind: 4
+--------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 11.2.0" using compiler options "-I build\gfortran_93B6DA15423670F8 -mtune=generic -march=x86-64 -O3 -J build\gfortran_93B6DA15423670F8".
 
-RUNNING TESTS (String|cast) | date: 20230123 | time: 034450.043 | real kind: 8 | int kind: 4
---------------------------------------------------------------------------------------------
+RUNNING TESTS (file) | date: 20230204 | time: 164012.578 | real kind: 8 | int kind: 4
+-------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 11.2.0" using compiler options "-I build\gfortran_93B6DA15423670F8 -mtune=generic -march=x86-64 -O3 -J build\gfortran_93B6DA15423670F8".
 
-RUNNING TESTS (to_file|from_file) | date: 20230123 | time: 034451.000 | real kind: 8 | int kind: 4
---------------------------------------------------------------------------------------------------
+RUNNING TESTS (scalar) | date: 20230204 | time: 164016.991 | real kind: 8 | int kind: 4
+---------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 11.2.0" using compiler options "-I build\gfortran_93B6DA15423670F8 -mtune=generic -march=x86-64 -O3 -J build\gfortran_93B6DA15423670F8".
 
-RUNNING TESTS (str|cast) | date: 20230123 | time: 034504.890 | real kind: 8 | int kind: 4
------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "/Ibuild\ifx_CB939545EDCB6CE0 /c /O3 /stand:f18 /module:build\ifx_CB939545EDCB6CE0 /o:build\ifx_CB939545EDCB6CE0\IO-Fortran-Library\test_str-cast-test.f90.o ".
+RUNNING TESTS (array) | date: 20230204 | time: 164026.402 | real kind: 8 | int kind: 4
+--------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "/Ibuild\ifx_CB939545EDCB6CE0 /c /O3 /stand:f18 /module:build\ifx_CB939545EDCB6CE0 /o:build\ifx_CB939545EDCB6CE0\IO-Fortran-Library\test_array-test.f90.o ".
 
-RUNNING TESTS (String|cast) | date: 20230123 | time: 034505.447 | real kind: 8 | int kind: 4
---------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "/Ibuild\ifx_CB939545EDCB6CE0 /c /O3 /stand:f18 /module:build\ifx_CB939545EDCB6CE0 /o:build\ifx_CB939545EDCB6CE0\IO-Fortran-Library\test_String-cast-test.f90.o ".
+RUNNING TESTS (file) | date: 20230204 | time: 164027.166 | real kind: 8 | int kind: 4
+-------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "/Ibuild\ifx_CB939545EDCB6CE0 /c /O3 /stand:f18 /module:build\ifx_CB939545EDCB6CE0 /o:build\ifx_CB939545EDCB6CE0\IO-Fortran-Library\test_file-test.f90.o ".
 
-RUNNING TESTS (to_file|from_file) | date: 20230123 | time: 034506.167 | real kind: 8 | int kind: 4
---------------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "/Ibuild\ifx_CB939545EDCB6CE0 /c /O3 /stand:f18 /module:build\ifx_CB939545EDCB6CE0 /o:build\ifx_CB939545EDCB6CE0\IO-Fortran-Library\test_to_file-from_file-test.f90.o ".
+RUNNING TESTS (scalar) | date: 20230204 | time: 164030.438 | real kind: 8 | int kind: 4
+---------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "/Ibuild\ifx_CB939545EDCB6CE0 /c /O3 /stand:f18 /module:build\ifx_CB939545EDCB6CE0 /o:build\ifx_CB939545EDCB6CE0\IO-Fortran-Library\test_scalar-test.f90.o ".
 
-RUNNING TESTS (str|cast) | date: 20230123 | time: 034536.362 | real kind: 8 | int kind: 4
------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "/Ibuild\ifort_CB939545EDCB6CE0 /c /O3 /stand:f18 /module:build\ifort_CB939545EDCB6CE0 /o:build\ifort_CB939545EDCB6CE0\IO-Fortran-Library\test_str-cast-test.f90.o".
+RUNNING TESTS (array) | date: 20230204 | time: 164105.389 | real kind: 8 | int kind: 4
+--------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "/Ibuild\ifort_CB939545EDCB6CE0 /c /O3 /stand:f18 /module:build\ifort_CB939545EDCB6CE0 /o:build\ifort_CB939545EDCB6CE0\IO-Fortran-Library\test_array-test.f90.o".
 
-RUNNING TESTS (String|cast) | date: 20230123 | time: 034536.970 | real kind: 8 | int kind: 4
---------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "/Ibuild\ifort_CB939545EDCB6CE0 /c /O3 /stand:f18 /module:build\ifort_CB939545EDCB6CE0 /o:build\ifort_CB939545EDCB6CE0\IO-Fortran-Library\test_String-cast-test.f90.o".
+RUNNING TESTS (file) | date: 20230204 | time: 164106.098 | real kind: 8 | int kind: 4
+-------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "/Ibuild\ifort_CB939545EDCB6CE0 /c /O3 /stand:f18 /module:build\ifort_CB939545EDCB6CE0 /o:build\ifort_CB939545EDCB6CE0\IO-Fortran-Library\test_file-test.f90.o".
 
-RUNNING TESTS (to_file|from_file) | date: 20230123 | time: 034537.792 | real kind: 8 | int kind: 4
---------------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "/Ibuild\ifort_CB939545EDCB6CE0 /c /O3 /stand:f18 /module:build\ifort_CB939545EDCB6CE0 /o:build\ifort_CB939545EDCB6CE0\IO-Fortran-Library\test_to_file-from_file-test.f90.o".
+RUNNING TESTS (scalar) | date: 20230204 | time: 164109.433 | real kind: 8 | int kind: 4
+---------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "/Ibuild\ifort_CB939545EDCB6CE0 /c /O3 /stand:f18 /module:build\ifort_CB939545EDCB6CE0 /o:build\ifort_CB939545EDCB6CE0\IO-Fortran-Library\test_scalar-test.f90.o".
 
-RUNNING TESTS (str|cast) | date: 20230123 | time: 034658.319 | real kind: 4 | int kind: 2
------------------------------------------------------------------------------------------
+RUNNING TESTS (array) | date: 20230204 | time: 164139.965 | real kind: 4 | int kind: 2
+--------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 11.2.0" using compiler options "-I build\gfortran_2A42023B310FA28D -mtune=generic -march=x86-64 -g -Wall -Wextra -Wimplicit-interface -fPIC -fmax-errors=1 -fcheck=bounds -fcheck=array-temps -fbacktrace -fcoarray=single -J build\gfortran_2A42023B310FA28D".
 
-RUNNING TESTS (String|cast) | date: 20230123 | time: 034658.372 | real kind: 4 | int kind: 2
---------------------------------------------------------------------------------------------
+RUNNING TESTS (file) | date: 20230204 | time: 164141.375 | real kind: 4 | int kind: 2
+-------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 11.2.0" using compiler options "-I build\gfortran_2A42023B310FA28D -mtune=generic -march=x86-64 -g -Wall -Wextra -Wimplicit-interface -fPIC -fmax-errors=1 -fcheck=bounds -fcheck=array-temps -fbacktrace -fcoarray=single -J build\gfortran_2A42023B310FA28D".
 
-RUNNING TESTS (to_file|from_file) | date: 20230123 | time: 034658.691 | real kind: 4 | int kind: 2
---------------------------------------------------------------------------------------------------
+RUNNING TESTS (scalar) | date: 20230204 | time: 164145.255 | real kind: 4 | int kind: 2
+---------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 11.2.0" using compiler options "-I build\gfortran_2A42023B310FA28D -mtune=generic -march=x86-64 -g -Wall -Wextra -Wimplicit-interface -fPIC -fmax-errors=1 -fcheck=bounds -fcheck=array-temps -fbacktrace -fcoarray=single -J build\gfortran_2A42023B310FA28D".
 
-RUNNING TESTS (str|cast) | date: 20230123 | time: 034703.712 | real kind: 4 | int kind: 2
------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "/Ibuild\ifx_B8859E06ECE6F7C4 /c /warn:all /check:all /error-limit:1 /Od /Z7 /assume:byterecl /module:build\ifx_B8859E06ECE6F7C4 /o:build\ifx_B8859E06ECE6F7C4\IO-Fortran-Library\test_str-cast-test.f90.o ".
+RUNNING TESTS (array) | date: 20230204 | time: 164148.703 | real kind: 4 | int kind: 2
+--------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "/Ibuild\ifx_B8859E06ECE6F7C4 /c /warn:all /check:all /error-limit:1 /Od /Z7 /assume:byterecl /module:build\ifx_B8859E06ECE6F7C4 /o:build\ifx_B8859E06ECE6F7C4\IO-Fortran-Library\test_array-test.f90.o ".
 
-RUNNING TESTS (String|cast) | date: 20230123 | time: 034703.782 | real kind: 4 | int kind: 2
---------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "/Ibuild\ifx_B8859E06ECE6F7C4 /c /warn:all /check:all /error-limit:1 /Od /Z7 /assume:byterecl /module:build\ifx_B8859E06ECE6F7C4 /o:build\ifx_B8859E06ECE6F7C4\IO-Fortran-Library\test_String-cast-test.f90.o ".
+RUNNING TESTS (file) | date: 20230204 | time: 164149.569 | real kind: 4 | int kind: 2
+-------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "/Ibuild\ifx_B8859E06ECE6F7C4 /c /warn:all /check:all /error-limit:1 /Od /Z7 /assume:byterecl /module:build\ifx_B8859E06ECE6F7C4 /o:build\ifx_B8859E06ECE6F7C4\IO-Fortran-Library\test_file-test.f90.o ".
 
-RUNNING TESTS (to_file|from_file) | date: 20230123 | time: 034704.000 | real kind: 4 | int kind: 2
---------------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "/Ibuild\ifx_B8859E06ECE6F7C4 /c /warn:all /check:all /error-limit:1 /Od /Z7 /assume:byterecl /module:build\ifx_B8859E06ECE6F7C4 /o:build\ifx_B8859E06ECE6F7C4\IO-Fortran-Library\test_to_file-from_file-test.f90.o ".
+RUNNING TESTS (scalar) | date: 20230204 | time: 164153.992 | real kind: 4 | int kind: 2
+---------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "/Ibuild\ifx_B8859E06ECE6F7C4 /c /warn:all /check:all /error-limit:1 /Od /Z7 /assume:byterecl /module:build\ifx_B8859E06ECE6F7C4 /o:build\ifx_B8859E06ECE6F7C4\IO-Fortran-Library\test_scalar-test.f90.o ".
 
-RUNNING TESTS (str|cast) | date: 20230123 | time: 034709.539 | real kind: 4 | int kind: 2
------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "/Ibuild\ifort_782887A201FCE169 /c /warn:all /check:all /error-limit:1 /Od /Z7 /assume:byterecl /traceback /module:build\ifort_782887A201FCE169 /o:build\ifort_782887A201FCE169\IO-Fortran-Library\test_str-cast-test.f90.o".
+RUNNING TESTS (array) | date: 20230204 | time: 164157.334 | real kind: 4 | int kind: 2
+--------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "/Ibuild\ifort_782887A201FCE169 /c /warn:all /check:all /error-limit:1 /Od /Z7 /assume:byterecl /traceback /module:build\ifort_782887A201FCE169 /o:build\ifort_782887A201FCE169\IO-Fortran-Library\test_array-test.f90.o".
 
-RUNNING TESTS (String|cast) | date: 20230123 | time: 034710.338 | real kind: 4 | int kind: 2
---------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "/Ibuild\ifort_782887A201FCE169 /c /warn:all /check:all /error-limit:1 /Od /Z7 /assume:byterecl /traceback /module:build\ifort_782887A201FCE169 /o:build\ifort_782887A201FCE169\IO-Fortran-Library\test_String-cast-test.f90.o".
+RUNNING TESTS (file) | date: 20230204 | time: 164158.606 | real kind: 4 | int kind: 2
+-------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "/Ibuild\ifort_782887A201FCE169 /c /warn:all /check:all /error-limit:1 /Od /Z7 /assume:byterecl /traceback /module:build\ifort_782887A201FCE169 /o:build\ifort_782887A201FCE169\IO-Fortran-Library\test_file-test.f90.o".
 
-RUNNING TESTS (to_file|from_file) | date: 20230123 | time: 034711.491 | real kind: 4 | int kind: 2
---------------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "/Ibuild\ifort_782887A201FCE169 /c /warn:all /check:all /error-limit:1 /Od /Z7 /assume:byterecl /traceback /module:build\ifort_782887A201FCE169 /o:build\ifort_782887A201FCE169\IO-Fortran-Library\test_to_file-from_file-test.f90.o".
+RUNNING TESTS (scalar) | date: 20230204 | time: 164202.927 | real kind: 4 | int kind: 2
+---------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "/Ibuild\ifort_782887A201FCE169 /c /warn:all /check:all /error-limit:1 /Od /Z7 /assume:byterecl /traceback /module:build\ifort_782887A201FCE169 /o:build\ifort_782887A201FCE169\IO-Fortran-Library\test_scalar-test.f90.o".
 
-RUNNING TESTS (str|cast) | date: 20230123 | time: 034726.478 | real kind: 4 | int kind: 2
------------------------------------------------------------------------------------------
+RUNNING TESTS (array) | date: 20230204 | time: 164211.794 | real kind: 4 | int kind: 2
+--------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 11.2.0" using compiler options "-I build\gfortran_93B6DA15423670F8 -mtune=generic -march=x86-64 -O3 -J build\gfortran_93B6DA15423670F8".
 
-RUNNING TESTS (String|cast) | date: 20230123 | time: 034727.116 | real kind: 4 | int kind: 2
---------------------------------------------------------------------------------------------
+RUNNING TESTS (file) | date: 20230204 | time: 164212.856 | real kind: 4 | int kind: 2
+-------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 11.2.0" using compiler options "-I build\gfortran_93B6DA15423670F8 -mtune=generic -march=x86-64 -O3 -J build\gfortran_93B6DA15423670F8".
 
-RUNNING TESTS (to_file|from_file) | date: 20230123 | time: 034727.882 | real kind: 4 | int kind: 2
---------------------------------------------------------------------------------------------------
+RUNNING TESTS (scalar) | date: 20230204 | time: 164216.787 | real kind: 4 | int kind: 2
+---------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 11.2.0" using compiler options "-I build\gfortran_93B6DA15423670F8 -mtune=generic -march=x86-64 -O3 -J build\gfortran_93B6DA15423670F8".
 
-RUNNING TESTS (str|cast) | date: 20230123 | time: 034740.677 | real kind: 4 | int kind: 2
------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "/Ibuild\ifx_CB939545EDCB6CE0 /c /O3 /stand:f18 /module:build\ifx_CB939545EDCB6CE0 /o:build\ifx_CB939545EDCB6CE0\IO-Fortran-Library\test_str-cast-test.f90.o ".
+RUNNING TESTS (array) | date: 20230204 | time: 164226.204 | real kind: 4 | int kind: 2
+--------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "/Ibuild\ifx_CB939545EDCB6CE0 /c /O3 /stand:f18 /module:build\ifx_CB939545EDCB6CE0 /o:build\ifx_CB939545EDCB6CE0\IO-Fortran-Library\test_array-test.f90.o ".
 
-RUNNING TESTS (String|cast) | date: 20230123 | time: 034741.352 | real kind: 4 | int kind: 2
---------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "/Ibuild\ifx_CB939545EDCB6CE0 /c /O3 /stand:f18 /module:build\ifx_CB939545EDCB6CE0 /o:build\ifx_CB939545EDCB6CE0\IO-Fortran-Library\test_String-cast-test.f90.o ".
+RUNNING TESTS (file) | date: 20230204 | time: 164227.163 | real kind: 4 | int kind: 2
+-------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "/Ibuild\ifx_CB939545EDCB6CE0 /c /O3 /stand:f18 /module:build\ifx_CB939545EDCB6CE0 /o:build\ifx_CB939545EDCB6CE0\IO-Fortran-Library\test_file-test.f90.o ".
 
-RUNNING TESTS (to_file|from_file) | date: 20230123 | time: 034742.103 | real kind: 4 | int kind: 2
---------------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "/Ibuild\ifx_CB939545EDCB6CE0 /c /O3 /stand:f18 /module:build\ifx_CB939545EDCB6CE0 /o:build\ifx_CB939545EDCB6CE0\IO-Fortran-Library\test_to_file-from_file-test.f90.o ".
+RUNNING TESTS (scalar) | date: 20230204 | time: 164230.386 | real kind: 4 | int kind: 2
+---------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "/Ibuild\ifx_CB939545EDCB6CE0 /c /O3 /stand:f18 /module:build\ifx_CB939545EDCB6CE0 /o:build\ifx_CB939545EDCB6CE0\IO-Fortran-Library\test_scalar-test.f90.o ".
 
-RUNNING TESTS (str|cast) | date: 20230123 | time: 034812.040 | real kind: 4 | int kind: 2
------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "/Ibuild\ifort_CB939545EDCB6CE0 /c /O3 /stand:f18 /module:build\ifort_CB939545EDCB6CE0 /o:build\ifort_CB939545EDCB6CE0\IO-Fortran-Library\test_str-cast-test.f90.o".
+RUNNING TESTS (array) | date: 20230204 | time: 164305.856 | real kind: 4 | int kind: 2
+--------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "/Ibuild\ifort_CB939545EDCB6CE0 /c /O3 /stand:f18 /module:build\ifort_CB939545EDCB6CE0 /o:build\ifort_CB939545EDCB6CE0\IO-Fortran-Library\test_array-test.f90.o".
 
-RUNNING TESTS (String|cast) | date: 20230123 | time: 034812.720 | real kind: 4 | int kind: 2
---------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "/Ibuild\ifort_CB939545EDCB6CE0 /c /O3 /stand:f18 /module:build\ifort_CB939545EDCB6CE0 /o:build\ifort_CB939545EDCB6CE0\IO-Fortran-Library\test_String-cast-test.f90.o".
+RUNNING TESTS (file) | date: 20230204 | time: 164307.292 | real kind: 4 | int kind: 2
+-------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "/Ibuild\ifort_CB939545EDCB6CE0 /c /O3 /stand:f18 /module:build\ifort_CB939545EDCB6CE0 /o:build\ifort_CB939545EDCB6CE0\IO-Fortran-Library\test_file-test.f90.o".
 
-RUNNING TESTS (to_file|from_file) | date: 20230123 | time: 034813.836 | real kind: 4 | int kind: 2
---------------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "/Ibuild\ifort_CB939545EDCB6CE0 /c /O3 /stand:f18 /module:build\ifort_CB939545EDCB6CE0 /o:build\ifort_CB939545EDCB6CE0\IO-Fortran-Library\test_to_file-from_file-test.f90.o".
+RUNNING TESTS (scalar) | date: 20230204 | time: 164310.103 | real kind: 4 | int kind: 2
+---------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "/Ibuild\ifort_CB939545EDCB6CE0 /c /O3 /stand:f18 /module:build\ifort_CB939545EDCB6CE0 /o:build\ifort_CB939545EDCB6CE0\IO-Fortran-Library\test_scalar-test.f90.o".
 
-RUNNING TESTS (str|cast) | date: 20230123 | time: 034845.039 | real kind: 4 | int kind: 1
------------------------------------------------------------------------------------------
+RUNNING TESTS (array) | date: 20230204 | time: 164327.092 | real kind: 4 | int kind: 1
+--------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 11.2.0" using compiler options "-I build\gfortran_2A42023B310FA28D -mtune=generic -march=x86-64 -g -Wall -Wextra -Wimplicit-interface -fPIC -fmax-errors=1 -fcheck=bounds -fcheck=array-temps -fbacktrace -fcoarray=single -J build\gfortran_2A42023B310FA28D".
 
-RUNNING TESTS (String|cast) | date: 20230123 | time: 034845.650 | real kind: 4 | int kind: 1
---------------------------------------------------------------------------------------------
+RUNNING TESTS (file) | date: 20230204 | time: 164328.251 | real kind: 4 | int kind: 1
+-------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 11.2.0" using compiler options "-I build\gfortran_2A42023B310FA28D -mtune=generic -march=x86-64 -g -Wall -Wextra -Wimplicit-interface -fPIC -fmax-errors=1 -fcheck=bounds -fcheck=array-temps -fbacktrace -fcoarray=single -J build\gfortran_2A42023B310FA28D".
 
-RUNNING TESTS (to_file|from_file) | date: 20230123 | time: 034846.723 | real kind: 4 | int kind: 1
---------------------------------------------------------------------------------------------------
+RUNNING TESTS (scalar) | date: 20230204 | time: 164332.183 | real kind: 4 | int kind: 1
+---------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 11.2.0" using compiler options "-I build\gfortran_2A42023B310FA28D -mtune=generic -march=x86-64 -g -Wall -Wextra -Wimplicit-interface -fPIC -fmax-errors=1 -fcheck=bounds -fcheck=array-temps -fbacktrace -fcoarray=single -J build\gfortran_2A42023B310FA28D".
 
-RUNNING TESTS (str|cast) | date: 20230123 | time: 034854.326 | real kind: 4 | int kind: 1
------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "/Ibuild\ifx_B8859E06ECE6F7C4 /c /warn:all /check:all /error-limit:1 /Od /Z7 /assume:byterecl /module:build\ifx_B8859E06ECE6F7C4 /o:build\ifx_B8859E06ECE6F7C4\IO-Fortran-Library\test_str-cast-test.f90.o ".
+RUNNING TESTS (array) | date: 20230204 | time: 164335.567 | real kind: 4 | int kind: 1
+--------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "/Ibuild\ifx_B8859E06ECE6F7C4 /c /warn:all /check:all /error-limit:1 /Od /Z7 /assume:byterecl /module:build\ifx_B8859E06ECE6F7C4 /o:build\ifx_B8859E06ECE6F7C4\IO-Fortran-Library\test_array-test.f90.o ".
 
-RUNNING TESTS (String|cast) | date: 20230123 | time: 034855.210 | real kind: 4 | int kind: 1
---------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "/Ibuild\ifx_B8859E06ECE6F7C4 /c /warn:all /check:all /error-limit:1 /Od /Z7 /assume:byterecl /module:build\ifx_B8859E06ECE6F7C4 /o:build\ifx_B8859E06ECE6F7C4\IO-Fortran-Library\test_String-cast-test.f90.o ".
+RUNNING TESTS (file) | date: 20230204 | time: 164336.395 | real kind: 4 | int kind: 1
+-------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "/Ibuild\ifx_B8859E06ECE6F7C4 /c /warn:all /check:all /error-limit:1 /Od /Z7 /assume:byterecl /module:build\ifx_B8859E06ECE6F7C4 /o:build\ifx_B8859E06ECE6F7C4\IO-Fortran-Library\test_file-test.f90.o ".
 
-RUNNING TESTS (to_file|from_file) | date: 20230123 | time: 034856.249 | real kind: 4 | int kind: 1
---------------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "/Ibuild\ifx_B8859E06ECE6F7C4 /c /warn:all /check:all /error-limit:1 /Od /Z7 /assume:byterecl /module:build\ifx_B8859E06ECE6F7C4 /o:build\ifx_B8859E06ECE6F7C4\IO-Fortran-Library\test_to_file-from_file-test.f90.o ".
+RUNNING TESTS (scalar) | date: 20230204 | time: 164340.045 | real kind: 4 | int kind: 1
+---------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "/Ibuild\ifx_B8859E06ECE6F7C4 /c /warn:all /check:all /error-limit:1 /Od /Z7 /assume:byterecl /module:build\ifx_B8859E06ECE6F7C4 /o:build\ifx_B8859E06ECE6F7C4\IO-Fortran-Library\test_scalar-test.f90.o ".
 
-RUNNING TESTS (str|cast) | date: 20230123 | time: 034904.731 | real kind: 4 | int kind: 1
------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "/Ibuild\ifort_782887A201FCE169 /c /warn:all /check:all /error-limit:1 /Od /Z7 /assume:byterecl /traceback /module:build\ifort_782887A201FCE169 /o:build\ifort_782887A201FCE169\IO-Fortran-Library\test_str-cast-test.f90.o".
+RUNNING TESTS (array) | date: 20230204 | time: 164343.644 | real kind: 4 | int kind: 1
+--------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "/Ibuild\ifort_782887A201FCE169 /c /warn:all /check:all /error-limit:1 /Od /Z7 /assume:byterecl /traceback /module:build\ifort_782887A201FCE169 /o:build\ifort_782887A201FCE169\IO-Fortran-Library\test_array-test.f90.o".
 
-RUNNING TESTS (String|cast) | date: 20230123 | time: 034905.771 | real kind: 4 | int kind: 1
---------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "/Ibuild\ifort_782887A201FCE169 /c /warn:all /check:all /error-limit:1 /Od /Z7 /assume:byterecl /traceback /module:build\ifort_782887A201FCE169 /o:build\ifort_782887A201FCE169\IO-Fortran-Library\test_String-cast-test.f90.o".
+RUNNING TESTS (file) | date: 20230204 | time: 164344.662 | real kind: 4 | int kind: 1
+-------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "/Ibuild\ifort_782887A201FCE169 /c /warn:all /check:all /error-limit:1 /Od /Z7 /assume:byterecl /traceback /module:build\ifort_782887A201FCE169 /o:build\ifort_782887A201FCE169\IO-Fortran-Library\test_file-test.f90.o".
 
-RUNNING TESTS (to_file|from_file) | date: 20230123 | time: 034906.787 | real kind: 4 | int kind: 1
---------------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "/Ibuild\ifort_782887A201FCE169 /c /warn:all /check:all /error-limit:1 /Od /Z7 /assume:byterecl /traceback /module:build\ifort_782887A201FCE169 /o:build\ifort_782887A201FCE169\IO-Fortran-Library\test_to_file-from_file-test.f90.o".
+RUNNING TESTS (scalar) | date: 20230204 | time: 164349.091 | real kind: 4 | int kind: 1
+---------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "/Ibuild\ifort_782887A201FCE169 /c /warn:all /check:all /error-limit:1 /Od /Z7 /assume:byterecl /traceback /module:build\ifort_782887A201FCE169 /o:build\ifort_782887A201FCE169\IO-Fortran-Library\test_scalar-test.f90.o".
 
-RUNNING TESTS (str|cast) | date: 20230123 | time: 034921.835 | real kind: 4 | int kind: 1
------------------------------------------------------------------------------------------
+RUNNING TESTS (array) | date: 20230204 | time: 164358.661 | real kind: 4 | int kind: 1
+--------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 11.2.0" using compiler options "-I build\gfortran_93B6DA15423670F8 -mtune=generic -march=x86-64 -O3 -J build\gfortran_93B6DA15423670F8".
 
-RUNNING TESTS (String|cast) | date: 20230123 | time: 034922.510 | real kind: 4 | int kind: 1
---------------------------------------------------------------------------------------------
+RUNNING TESTS (file) | date: 20230204 | time: 164359.434 | real kind: 4 | int kind: 1
+-------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 11.2.0" using compiler options "-I build\gfortran_93B6DA15423670F8 -mtune=generic -march=x86-64 -O3 -J build\gfortran_93B6DA15423670F8".
 
-RUNNING TESTS (to_file|from_file) | date: 20230123 | time: 034923.391 | real kind: 4 | int kind: 1
---------------------------------------------------------------------------------------------------
+RUNNING TESTS (scalar) | date: 20230204 | time: 164403.109 | real kind: 4 | int kind: 1
+---------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 11.2.0" using compiler options "-I build\gfortran_93B6DA15423670F8 -mtune=generic -march=x86-64 -O3 -J build\gfortran_93B6DA15423670F8".
 
-RUNNING TESTS (str|cast) | date: 20230123 | time: 034935.910 | real kind: 4 | int kind: 1
------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "/Ibuild\ifx_CB939545EDCB6CE0 /c /O3 /stand:f18 /module:build\ifx_CB939545EDCB6CE0 /o:build\ifx_CB939545EDCB6CE0\IO-Fortran-Library\test_str-cast-test.f90.o ".
+RUNNING TESTS (array) | date: 20230204 | time: 164412.332 | real kind: 4 | int kind: 1
+--------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "/Ibuild\ifx_CB939545EDCB6CE0 /c /O3 /stand:f18 /module:build\ifx_CB939545EDCB6CE0 /o:build\ifx_CB939545EDCB6CE0\IO-Fortran-Library\test_array-test.f90.o ".
 
-RUNNING TESTS (String|cast) | date: 20230123 | time: 034936.509 | real kind: 4 | int kind: 1
---------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "/Ibuild\ifx_CB939545EDCB6CE0 /c /O3 /stand:f18 /module:build\ifx_CB939545EDCB6CE0 /o:build\ifx_CB939545EDCB6CE0\IO-Fortran-Library\test_String-cast-test.f90.o ".
+RUNNING TESTS (file) | date: 20230204 | time: 164413.035 | real kind: 4 | int kind: 1
+-------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "/Ibuild\ifx_CB939545EDCB6CE0 /c /O3 /stand:f18 /module:build\ifx_CB939545EDCB6CE0 /o:build\ifx_CB939545EDCB6CE0\IO-Fortran-Library\test_file-test.f90.o ".
 
-RUNNING TESTS (to_file|from_file) | date: 20230123 | time: 034937.199 | real kind: 4 | int kind: 1
---------------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "/Ibuild\ifx_CB939545EDCB6CE0 /c /O3 /stand:f18 /module:build\ifx_CB939545EDCB6CE0 /o:build\ifx_CB939545EDCB6CE0\IO-Fortran-Library\test_to_file-from_file-test.f90.o ".
+RUNNING TESTS (scalar) | date: 20230204 | time: 164415.917 | real kind: 4 | int kind: 1
+---------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201" using compiler options "/Ibuild\ifx_CB939545EDCB6CE0 /c /O3 /stand:f18 /module:build\ifx_CB939545EDCB6CE0 /o:build\ifx_CB939545EDCB6CE0\IO-Fortran-Library\test_scalar-test.f90.o ".
 
-RUNNING TESTS (str|cast) | date: 20230123 | time: 035006.559 | real kind: 4 | int kind: 1
------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "/Ibuild\ifort_CB939545EDCB6CE0 /c /O3 /stand:f18 /module:build\ifort_CB939545EDCB6CE0 /o:build\ifort_CB939545EDCB6CE0\IO-Fortran-Library\test_str-cast-test.f90.o".
+RUNNING TESTS (array) | date: 20230204 | time: 164451.746 | real kind: 4 | int kind: 1
+--------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "/Ibuild\ifort_CB939545EDCB6CE0 /c /O3 /stand:f18 /module:build\ifort_CB939545EDCB6CE0 /o:build\ifort_CB939545EDCB6CE0\IO-Fortran-Library\test_array-test.f90.o".
 
-RUNNING TESTS (String|cast) | date: 20230123 | time: 035007.355 | real kind: 4 | int kind: 1
---------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "/Ibuild\ifort_CB939545EDCB6CE0 /c /O3 /stand:f18 /module:build\ifort_CB939545EDCB6CE0 /o:build\ifort_CB939545EDCB6CE0\IO-Fortran-Library\test_String-cast-test.f90.o".
+RUNNING TESTS (file) | date: 20230204 | time: 164452.467 | real kind: 4 | int kind: 1
+-------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "/Ibuild\ifort_CB939545EDCB6CE0 /c /O3 /stand:f18 /module:build\ifort_CB939545EDCB6CE0 /o:build\ifort_CB939545EDCB6CE0\IO-Fortran-Library\test_file-test.f90.o".
 
-RUNNING TESTS (to_file|from_file) | date: 20230123 | time: 035008.202 | real kind: 4 | int kind: 1
---------------------------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "/Ibuild\ifort_CB939545EDCB6CE0 /c /O3 /stand:f18 /module:build\ifort_CB939545EDCB6CE0 /o:build\ifort_CB939545EDCB6CE0\IO-Fortran-Library\test_to_file-from_file-test.f90.o".
+RUNNING TESTS (scalar) | date: 20230204 | time: 164455.983 | real kind: 4 | int kind: 1
+---------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000" using compiler options "/Ibuild\ifort_CB939545EDCB6CE0 /c /O3 /stand:f18 /module:build\ifort_CB939545EDCB6CE0 /o:build\ifort_CB939545EDCB6CE0\IO-Fortran-Library\test_scalar-test.f90.o".
 

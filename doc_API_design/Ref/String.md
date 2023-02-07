@@ -5,7 +5,7 @@ author: Austin C Bullock
 
 ## [interface String](../../interface/string.html)
 
-*Description*: Function for transforming numeric or `character` data into a [String](../../type/string.html) type.
+*Description*: Function for returning a [String](../../type/string.html) representation of numbers.
 
 To return the empty `String`, use no arguments:
 
@@ -18,6 +18,8 @@ For `x` a scalar or array of any rank and of type `character`:
 ```fortran
 result = String(x)
 ```
+
+This is for `character` to `String` conversion.
 
 For `x` a scalar or array of any rank and of type `integer`:
 

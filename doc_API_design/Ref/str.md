@@ -5,7 +5,7 @@ author: Austin C Bullock
 
 ## [interface str](../../interface/str.html)
 
-*Description*: Function for representing a scalar number as a `character` string.
+*Description*: Function for returning a `character` representation of a number.
 
 To return the [empty string](../../module/io_fortran_lib.html#variable-empty_str), use no arguments:
 
@@ -18,6 +18,8 @@ For `x` a scalar of type `String`:
 ```fortran
 result = str(x)
 ```
+
+This is for scalar `String` to `character` conversion.
 
 For `x` a scalar of type `integer`:
 

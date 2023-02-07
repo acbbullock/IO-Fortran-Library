@@ -197,7 +197,7 @@
     
     <div class="col-md-9" id='text'>
       <h2>type, public :: String</h2>
-    <p>A growable string type for advanced character handling and text file I/O.</p>
+    <p>A growable string type for advanced character handling and text I/O.</p>
 <p>For a user reference, see <a href="../page/Ref/String.html">String</a>,
 <a href="../page/Ref/String-methods.html">String methods</a>, and <a href="../page/Ref/operators.html">Operators</a>.</p>
 <p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>TECHNICAL NOTE: The <code>String</code> type is memory safe. The user will never need to be concerned about
@@ -295,17 +295,14 @@ treated as the <a href="../module/io_fortran_lib.html#variable-empty_str">empty 
       </h3>
     </div>
       <div class="panel-body">
-        <p>Function for transforming numeric or <code>character</code> data into a <a href="../type/string.html">String</a> type.</p>
-<p>The interface for <code>String</code> is identical to that of <code>str</code> but with a return type of <code>String</code>, allowing for
-elemental assignments and access to the various <code>String</code> methods for advanced character handling. For the
-complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.</p>
+        <p>Function for returning a <a href="../type/string.html">String</a> representation of numbers.</p>
 <p>For a user reference, see <a href="../page/Ref/String.html">String</a>,
 <a href="../page/Ref/String-methods.html">String methods</a>, and <a href="../page/Ref/operators.html">Operators</a>.</p>
       </div>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_c128(x, locale, fmt, decimals, im) result(new)  
+    private pure elemental recursive module function new_string_from_c128(x, locale, fmt, decimals, im) result(new)  
 
     </h3>
   
@@ -408,7 +405,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_c64(x, locale, fmt, decimals, im) result(new)  
+    private pure elemental recursive module function new_string_from_c64(x, locale, fmt, decimals, im) result(new)  
 
     </h3>
   
@@ -511,7 +508,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_c32(x, locale, fmt, decimals, im) result(new)  
+    private pure elemental recursive module function new_string_from_c32(x, locale, fmt, decimals, im) result(new)  
 
     </h3>
   
@@ -614,7 +611,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_r128(x, locale, fmt, decimals) result(new)  
+    private pure elemental recursive module function new_string_from_r128(x, locale, fmt, decimals) result(new)  
 
     </h3>
   
@@ -702,7 +699,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_r64(x, locale, fmt, decimals) result(new)  
+    private pure elemental recursive module function new_string_from_r64(x, locale, fmt, decimals) result(new)  
 
     </h3>
   
@@ -790,7 +787,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_r32(x, locale, fmt, decimals) result(new)  
+    private pure elemental recursive module function new_string_from_r32(x, locale, fmt, decimals) result(new)  
 
     </h3>
   
@@ -878,7 +875,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_i64(x, fmt) result(new)  
+    private pure elemental recursive module function new_string_from_i64(x, fmt) result(new)  
 
     </h3>
   
@@ -936,7 +933,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_i32(x, fmt) result(new)  
+    private pure elemental recursive module function new_string_from_i32(x, fmt) result(new)  
 
     </h3>
   
@@ -994,7 +991,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_i16(x, fmt) result(new)  
+    private pure elemental recursive module function new_string_from_i16(x, fmt) result(new)  
 
     </h3>
   
@@ -1052,7 +1049,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_i8(x, fmt) result(new)  
+    private pure elemental recursive module function new_string_from_i8(x, fmt) result(new)  
 
     </h3>
   
@@ -1110,7 +1107,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_string(x) result(new)  
+    private pure elemental recursive module function new_string_from_string(x) result(new)  
 
     </h3>
   
@@ -1153,7 +1150,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_char(x) result(new)  
+    private pure elemental recursive module function new_string_from_char(x) result(new)  
 
     </h3>
   
@@ -1196,7 +1193,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental recursive module function new_Str_empty() result(new)  
+    private pure elemental recursive module function new_string_from_empty() result(new)  
 
     </h3>
   
@@ -1248,12 +1245,12 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
       <section>
         <h2>Type-Bound Procedures</h2>
             <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-cast"></span><h3>generic, public :: <strong>cast</strong>  => cast_string_c128, cast_string_c64, cast_string_c32, cast_string_r128, cast_string_r64, cast_string_r32, cast_string_i64, cast_string_i32, cast_string_i16, cast_string_i8         
+    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-cast"></span><h3>generic, public :: <strong>cast</strong>  => cast_string_to_c128, cast_string_to_c64, cast_string_to_c32, cast_string_to_r128, cast_string_to_r64, cast_string_to_r32, cast_string_to_i64, cast_string_to_i32, cast_string_to_i16, cast_string_to_i8         
     </h3></div>
     <ul class="list-group">
         <li class="list-group-item">
                   <h3>
-    private pure elemental recursive module subroutine cast_string_c128(substring, into, locale, fmt, im)  
+    private pure elemental recursive module subroutine cast_string_to_c128(substring, into, locale, fmt, im)  
 </h3>
   
 
@@ -1288,7 +1285,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
               <span class="anchor" ></span>
               complex(kind=real128),
             </td>
-<td>intent(out)</td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
@@ -1350,7 +1347,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
         </li>
         <li class="list-group-item">
                   <h3>
-    private pure elemental recursive module subroutine cast_string_c64(substring, into, locale, fmt, im)  
+    private pure elemental recursive module subroutine cast_string_to_c64(substring, into, locale, fmt, im)  
 </h3>
   
 
@@ -1385,7 +1382,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
               <span class="anchor" ></span>
               complex(kind=real64),
             </td>
-<td>intent(out)</td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
@@ -1447,7 +1444,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
         </li>
         <li class="list-group-item">
                   <h3>
-    private pure elemental recursive module subroutine cast_string_c32(substring, into, locale, fmt, im)  
+    private pure elemental recursive module subroutine cast_string_to_c32(substring, into, locale, fmt, im)  
 </h3>
   
 
@@ -1482,7 +1479,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
               <span class="anchor" ></span>
               complex(kind=real32),
             </td>
-<td>intent(out)</td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
@@ -1544,7 +1541,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
         </li>
         <li class="list-group-item">
                   <h3>
-    private pure elemental recursive module subroutine cast_string_r128(substring, into, locale, fmt)  
+    private pure elemental recursive module subroutine cast_string_to_r128(substring, into, locale, fmt)  
 </h3>
   
 
@@ -1579,7 +1576,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
               <span class="anchor" ></span>
               real(kind=real128),
             </td>
-<td>intent(out)</td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
@@ -1626,7 +1623,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
         </li>
         <li class="list-group-item">
                   <h3>
-    private pure elemental recursive module subroutine cast_string_r64(substring, into, locale, fmt)  
+    private pure elemental recursive module subroutine cast_string_to_r64(substring, into, locale, fmt)  
 </h3>
   
 
@@ -1661,7 +1658,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
               <span class="anchor" ></span>
               real(kind=real64),
             </td>
-<td>intent(out)</td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
@@ -1708,7 +1705,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
         </li>
         <li class="list-group-item">
                   <h3>
-    private pure elemental recursive module subroutine cast_string_r32(substring, into, locale, fmt)  
+    private pure elemental recursive module subroutine cast_string_to_r32(substring, into, locale, fmt)  
 </h3>
   
 
@@ -1743,7 +1740,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
               <span class="anchor" ></span>
               real(kind=real32),
             </td>
-<td>intent(out)</td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
@@ -1790,7 +1787,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
         </li>
         <li class="list-group-item">
                   <h3>
-    private pure elemental recursive module subroutine cast_string_i64(substring, into, fmt)  
+    private pure elemental recursive module subroutine cast_string_to_i64(substring, into, fmt)  
 </h3>
   
 
@@ -1825,7 +1822,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
               <span class="anchor" ></span>
               integer(kind=int64),
             </td>
-<td>intent(out)</td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
@@ -1857,7 +1854,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
         </li>
         <li class="list-group-item">
                   <h3>
-    private pure elemental recursive module subroutine cast_string_i32(substring, into, fmt)  
+    private pure elemental recursive module subroutine cast_string_to_i32(substring, into, fmt)  
 </h3>
   
 
@@ -1892,7 +1889,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
               <span class="anchor" ></span>
               integer(kind=int32),
             </td>
-<td>intent(out)</td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
@@ -1924,7 +1921,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
         </li>
         <li class="list-group-item">
                   <h3>
-    private pure elemental recursive module subroutine cast_string_i16(substring, into, fmt)  
+    private pure elemental recursive module subroutine cast_string_to_i16(substring, into, fmt)  
 </h3>
   
 
@@ -1959,7 +1956,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
               <span class="anchor" ></span>
               integer(kind=int16),
             </td>
-<td>intent(out)</td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
@@ -1991,7 +1988,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
         </li>
         <li class="list-group-item">
                   <h3>
-    private pure elemental recursive module subroutine cast_string_i8(substring, into, fmt)  
+    private pure elemental recursive module subroutine cast_string_to_i8(substring, into, fmt)  
 </h3>
   
 
@@ -2026,7 +2023,7 @@ complement of <code>String</code>, see <a href="../page/Ref/cast.html">cast</a>.
               <span class="anchor" ></span>
               integer(kind=int8),
             </td>
-<td>intent(out)</td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
@@ -2924,7 +2921,7 @@ in place.</p>
               <span class="anchor" ></span>
               type(<a href='../type/string.html'>String</a>),
             </td>
-<td>intent(inout),</td>
+<td>intent(in),</td>
               <td></td>            <td>
               dimension(:,:)
             </td>
@@ -3020,7 +3017,7 @@ in place.</p>
           <p class="text-right">
             Documentation generated by 
             <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-01-26 02:18            </p>
+ on 2023-02-06 16:51            </p>
         </div>
       </div>
       <br>
