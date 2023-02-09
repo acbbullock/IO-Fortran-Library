@@ -1,5 +1,5 @@
 name = "IO-Fortran-Library"
-version = "1.2.0"
+version = "1.2.1"
 license = "MIT"
 author = "Austin C Bullock"
 maintainer = "acb.bullock@gmail.com"
