@@ -550,11 +550,10 @@ program main
 		!! UNURAN (c) 2000  W. Hoermann & J. Leydold, Institut f. Statistik, WU Wien
 		!!-------------------------------------------------------------------------------------------------------------
 		real(rk), intent(in) :: mu, sig
-
+		
 		real(rk) :: kC1, kC2, kC3, kD1, kD2, kD3, kHm, kZm, kHp, kZp, kPhln, kHm1
 		real(rk) :: kHp1, kHzm, kHzmp, kAs, kBs, kCs, kB, kX0, kYm, kS, kT
 		real(rk) :: rn, x, y, z, res
-		integer :: i, j
 
 		kC1   = 1.448242853_rk
 		kC2   = 3.307147487_rk
@@ -572,14 +571,14 @@ program main
 		kHzm  = 0.375959516_rk
 		kHzmp = 0.591923442_rk
 		
-		kAs	= 0.8853395638_rk
-		kBs	= 0.2452635696_rk
-		kCs	= 0.2770276848_rk
-		kB	= 0.5029324303_rk
-		kX0	= 0.4571828819_rk
-		kYm	= 0.187308492_rk
-		kS	= 0.7270572718_rk
-		kT	= 0.03895759111_rk
+		kAs = 0.8853395638_rk
+		kBs = 0.2452635696_rk
+		kCs = 0.2770276848_rk
+		kB  = 0.5029324303_rk
+		kX0 = 0.4571828819_rk
+		kYm = 0.187308492_rk
+		kS  = 0.7270572718_rk
+		kT  = 0.03895759111_rk
 
 		outer: do
 			call random_number(y)
@@ -604,23 +603,22 @@ program main
 					z = -2.0_rk - rn
 				end if
 
-				if ( ((kC1-y)*(kC3+abs(z))) < kC2 ) then
+				if ( (kC1-y)*(kC3+abs(z)) < kC2 ) then
 					res = z; exit outer
 				else
 					x = rn*rn
-					if ( ((y+kD1)*(kD3+x)) < kD2 ) then
+					if ( (y+kD1)*(kD3+x) < kD2 ) then
 						res = rn; exit outer
-					else if ( (kHzmp-y) < exp(-(z*z+kPhln)/2) ) then
+					else if ( kHzmp-y < exp(-(z*z+kPhln)/2.0_rk) ) then
 						res = z; exit outer
-					else if ( (y+kHzm) < exp(-(x+kPhln)/2) ) then
+					else if ( y+kHzm < exp(-(x+kPhln)/2.0_rk) ) then
 						res = rn; exit outer
 					end if
 				end if
 			end if
 
 			inner: do
-				call random_number(x)
-				call random_number(y)
+				call random_number(x); call random_number(y)
 				y = kYm*y
 				z = kX0 - kS*x - y
 
@@ -629,17 +627,19 @@ program main
 				else
 					x = 1.0_rk - x
 					y = kYm - y
-					rn = -(2.0_rk + y/x)
+					rn = -( 2.0_rk + y/x )
 				end if
 
-				if ( ((y-kAs+x)*(kCs+x)+kBs) < 0.0_rk ) then
+				if ( (y-kAs+x)*(kCs+x)+kBs < 0.0_rk ) then
 					res = rn; exit inner
-				else if ( y < (x+kT) ) then
-					if ( (rn*rn) < (4.0_rk*(kB-log(x))) ) then
+				else if ( y < x+kT ) then
+					if ( rn*rn < 4.0_rk*(kB-log(x)) ) then
 						res = rn; exit inner
 					end if
 				end if
 			end do inner
+
+			exit outer
 		end do outer
 
 		gauss_res = res*sig + mu
