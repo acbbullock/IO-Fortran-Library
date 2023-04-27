@@ -4863,7 +4863,7 @@ submodule (io_fortran_lib) string_methods
 
 		cumm_lengths(1_int64) = 1_int64
 
-		do concurrent (i = 2_int64:num_tokens)
+		do i = 2_int64, num_tokens
 			cumm_lengths(i) = sum( lengths(:i-1_int64) ) + 1_int64
 		end do
 
@@ -4872,7 +4872,7 @@ submodule (io_fortran_lib) string_methods
 		total_length = total_length + (num_tokens - 1_int64)*sep_len
 		allocate( character(len=total_length) :: self%s )
 
-		positional_transfer: do concurrent (i = 1_int64:num_tokens)
+		positional_transfer: do i = 1_int64, num_tokens
 			pos = cumm_lengths(i) + (i - 1_int64)*sep_len
 			if ( lengths(i) > 0_int64 ) then
 				self%s(pos:pos+lengths(i)-1_int64) = tokens(i)%s
@@ -6092,7 +6092,7 @@ submodule (io_fortran_lib) internal_io
 
 			write(unit=xre_str(3:), fmt='(z32)') x%re
 
-			do concurrent (i = 3:34)
+			do i = 3, 34
 				if ( (xre_str(i:i) >= 'A') .and. (xre_str(i:i) <= 'F') ) xre_str(i:i) = achar(iachar(xre_str(i:i))+32)
 			end do
 		end if if_z_re
@@ -6105,7 +6105,7 @@ submodule (io_fortran_lib) internal_io
 
 			write(unit=xim_str(3:), fmt='(z32)') x%im
 
-			do concurrent (i = 3:34)
+			do i = 3, 34
 				if ( (xim_str(i:i) >= 'A') .and. (xim_str(i:i) <= 'F') ) xim_str(i:i) = achar(iachar(xim_str(i:i))+32)
 			end do
 		end if if_z_im
@@ -6782,7 +6782,7 @@ submodule (io_fortran_lib) internal_io
 
 			write(unit=new%s(3:), fmt='(z32)') x
 
-			do concurrent (i = 3:34)
+			do i = 3, 34
 				if ( (new%s(i:i) >= 'A') .and. (new%s(i:i) <= 'F') ) new%s(i:i) = achar(iachar(new%s(i:i)) + 32)
 			end do
 
@@ -7453,7 +7453,7 @@ submodule (io_fortran_lib) internal_io
 
 			write(unit=xre_str(3:), fmt='(z32)') x%re
 
-			do concurrent (i = 3:34)
+			do i = 3, 34
 				if ( (xre_str(i:i) >= 'A') .and. (xre_str(i:i) <= 'F') ) xre_str(i:i) = achar(iachar(xre_str(i:i))+32)
 			end do
 		end if if_z_re
@@ -7466,7 +7466,7 @@ submodule (io_fortran_lib) internal_io
 
 			write(unit=xim_str(3:), fmt='(z32)') x%im
 
-			do concurrent (i = 3:34)
+			do i = 3, 34
 				if ( (xim_str(i:i) >= 'A') .and. (xim_str(i:i) <= 'F') ) xim_str(i:i) = achar(iachar(xim_str(i:i))+32)
 			end do
 		end if if_z_im
@@ -8143,7 +8143,7 @@ submodule (io_fortran_lib) internal_io
 
 			write(unit=x_str(3:), fmt='(z32)') x
 
-			do concurrent (i = 3:34)
+			do i = 3, 34
 				if ( (x_str(i:i) >= 'A') .and. (x_str(i:i) <= 'F') ) x_str(i:i) = achar(iachar(x_str(i:i)) + 32)
 			end do
 
@@ -8759,7 +8759,7 @@ submodule (io_fortran_lib) internal_io
 
 			write(unit=xre_str(3:), fmt='(z32)') x%re
 
-			do concurrent (i = 3:34)
+			do i = 3, 34
 				if ( (xre_str(i:i) >= 'A') .and. (xre_str(i:i) <= 'F') ) xre_str(i:i) = achar(iachar(xre_str(i:i))+32)
 			end do
 		end if if_z_re
@@ -8772,7 +8772,7 @@ submodule (io_fortran_lib) internal_io
 
 			write(unit=xim_str(3:), fmt='(z32)') x%im
 
-			do concurrent (i = 3:34)
+			do i = 3, 34
 				if ( (xim_str(i:i) >= 'A') .and. (xim_str(i:i) <= 'F') ) xim_str(i:i) = achar(iachar(xim_str(i:i))+32)
 			end do
 		end if if_z_im
@@ -9449,7 +9449,7 @@ submodule (io_fortran_lib) internal_io
 
 			write(unit=into%s(3:), fmt='(z32)') x
 
-			do concurrent (i = 3:34)
+			do i = 3, 34
 				if ( (into%s(i:i) >= 'A') .and. (into%s(i:i) <= 'F') ) into%s(i:i) = achar(iachar(into%s(i:i)) + 32)
 			end do
 
@@ -10108,7 +10108,7 @@ submodule (io_fortran_lib) internal_io
 
 			write(unit=xre_str(3:), fmt='(z32)') x%re
 
-			do concurrent (i = 3:34)
+			do i = 3, 34
 				if ( (xre_str(i:i) >= 'A') .and. (xre_str(i:i) <= 'F') ) xre_str(i:i) = achar(iachar(xre_str(i:i))+32)
 			end do
 		end if if_z_re
@@ -10121,7 +10121,7 @@ submodule (io_fortran_lib) internal_io
 
 			write(unit=xim_str(3:), fmt='(z32)') x%im
 
-			do concurrent (i = 3:34)
+			do i = 3, 34
 				if ( (xim_str(i:i) >= 'A') .and. (xim_str(i:i) <= 'F') ) xim_str(i:i) = achar(iachar(xim_str(i:i))+32)
 			end do
 		end if if_z_im
@@ -10798,7 +10798,7 @@ submodule (io_fortran_lib) internal_io
 
 			write(unit=into(3:), fmt='(z32)') x
 
-			do concurrent (i = 3:34)
+			do i = 3, 34
 				if ( (into(i:i) >= 'A') .and. (into(i:i) <= 'F') ) into(i:i) = achar(iachar(into(i:i)) + 32)
 			end do
 
@@ -13417,7 +13417,7 @@ submodule (io_fortran_lib) join_split
 
 		if ( sep_len == 0 ) then
 			allocate( tokens(substring_len) )
-			do concurrent (i = 1_int64:substring_len)
+			do i = 1_int64, substring_len
 				tokens(i)%s = substring%s(i:i)
 			end do
 			return
@@ -22684,7 +22684,7 @@ submodule (io_fortran_lib) text_io
 				else
 					allocate( cells(2_int64,nx) )
 					label = trim(adjustl(header(1_int64)))
-					do concurrent (j = lbound(x, dim=1, kind=int64):ubound(x, dim=1, kind=int64))
+					do j = lbound(x, dim=1, kind=int64), ubound(x, dim=1, kind=int64)
 						cells(1_int64,j) = String(label//str(j))
 					end do
 				end if
@@ -22736,7 +22736,7 @@ submodule (io_fortran_lib) text_io
 				else
 					allocate( cells(2_int64,nx) )
 					label = trim(adjustl(header(1_int64)))
-					do concurrent (j = lbound(x, dim=1, kind=int64):ubound(x, dim=1, kind=int64))
+					do j = lbound(x, dim=1, kind=int64), ubound(x, dim=1, kind=int64)
 						cells(1_int64,j) = String(label//str(j))
 					end do
 				end if
@@ -22788,7 +22788,7 @@ submodule (io_fortran_lib) text_io
 				else
 					allocate( cells(2_int64,nx) )
 					label = trim(adjustl(header(1_int64)))
-					do concurrent (j = lbound(x, dim=1, kind=int64):ubound(x, dim=1, kind=int64))
+					do j = lbound(x, dim=1, kind=int64), ubound(x, dim=1, kind=int64)
 						cells(1_int64,j) = String(label//str(j))
 					end do
 				end if
@@ -22834,7 +22834,7 @@ submodule (io_fortran_lib) text_io
 				header_present = .true.
 				allocate( cells(n_rows+1_int64,n_cols) )
 				label = trim(adjustl(header(1_int64)))
-				do concurrent (j = lbound(x, dim=2, kind=int64):ubound(x, dim=2, kind=int64))
+				do j = lbound(x, dim=2, kind=int64), ubound(x, dim=2, kind=int64)
 					cells(1_int64,j) = String(label//str(j))
 				end do
 			end if
@@ -22870,7 +22870,7 @@ submodule (io_fortran_lib) text_io
 				header_present = .true.
 				allocate( cells(n_rows+1_int64,n_cols) )
 				label = trim(adjustl(header(1_int64)))
-				do concurrent (j = lbound(x, dim=2, kind=int64):ubound(x, dim=2, kind=int64))
+				do j = lbound(x, dim=2, kind=int64), ubound(x, dim=2, kind=int64)
 					cells(1_int64,j) = String(label//str(j))
 				end do
 			end if
@@ -22906,7 +22906,7 @@ submodule (io_fortran_lib) text_io
 				header_present = .true.
 				allocate( cells(n_rows+1_int64,n_cols) )
 				label = trim(adjustl(header(1_int64)))
-				do concurrent (j = lbound(x, dim=2, kind=int64):ubound(x, dim=2, kind=int64))
+				do j = lbound(x, dim=2, kind=int64), ubound(x, dim=2, kind=int64)
 					cells(1_int64,j) = String(label//str(j))
 				end do
 			end if
@@ -22950,7 +22950,7 @@ submodule (io_fortran_lib) text_io
 				else
 					allocate( cells(2_int64,nx) )
 					label = trim(adjustl(header(1_int64)))
-					do concurrent (j = lbound(x, dim=1, kind=int64):ubound(x, dim=1, kind=int64))
+					do j = lbound(x, dim=1, kind=int64), ubound(x, dim=1, kind=int64)
 						cells(1_int64,j) = String(label//str(j))
 					end do
 				end if
@@ -23002,7 +23002,7 @@ submodule (io_fortran_lib) text_io
 				else
 					allocate( cells(2_int64,nx) )
 					label = trim(adjustl(header(1_int64)))
-					do concurrent (j = lbound(x, dim=1, kind=int64):ubound(x, dim=1, kind=int64))
+					do j = lbound(x, dim=1, kind=int64), ubound(x, dim=1, kind=int64)
 						cells(1_int64,j) = String(label//str(j))
 					end do
 				end if
@@ -23054,7 +23054,7 @@ submodule (io_fortran_lib) text_io
 				else
 					allocate( cells(2_int64,nx) )
 					label = trim(adjustl(header(1_int64)))
-					do concurrent (j = lbound(x, dim=1, kind=int64):ubound(x, dim=1, kind=int64))
+					do j = lbound(x, dim=1, kind=int64), ubound(x, dim=1, kind=int64)
 						cells(1_int64,j) = String(label//str(j))
 					end do
 				end if
@@ -23100,7 +23100,7 @@ submodule (io_fortran_lib) text_io
 				header_present = .true.
 				allocate( cells(n_rows+1_int64,n_cols) )
 				label = trim(adjustl(header(1_int64)))
-				do concurrent (j = lbound(x, dim=2, kind=int64):ubound(x, dim=2, kind=int64))
+				do j = lbound(x, dim=2, kind=int64), ubound(x, dim=2, kind=int64)
 					cells(1_int64,j) = String(label//str(j))
 				end do
 			end if
@@ -23136,7 +23136,7 @@ submodule (io_fortran_lib) text_io
 				header_present = .true.
 				allocate( cells(n_rows+1_int64,n_cols) )
 				label = trim(adjustl(header(1_int64)))
-				do concurrent (j = lbound(x, dim=2, kind=int64):ubound(x, dim=2, kind=int64))
+				do j = lbound(x, dim=2, kind=int64), ubound(x, dim=2, kind=int64)
 					cells(1_int64,j) = String(label//str(j))
 				end do
 			end if
@@ -23172,7 +23172,7 @@ submodule (io_fortran_lib) text_io
 				header_present = .true.
 				allocate( cells(n_rows+1_int64,n_cols) )
 				label = trim(adjustl(header(1_int64)))
-				do concurrent (j = lbound(x, dim=2, kind=int64):ubound(x, dim=2, kind=int64))
+				do j = lbound(x, dim=2, kind=int64), ubound(x, dim=2, kind=int64)
 					cells(1_int64,j) = String(label//str(j))
 				end do
 			end if
@@ -23216,7 +23216,7 @@ submodule (io_fortran_lib) text_io
 				else
 					allocate( cells(2_int64,nx) )
 					label = trim(adjustl(header(1_int64)))
-					do concurrent (j = lbound(x, dim=1, kind=int64):ubound(x, dim=1, kind=int64))
+					do j = lbound(x, dim=1, kind=int64), ubound(x, dim=1, kind=int64)
 						cells(1_int64,j) = String(label//str(j))
 					end do
 				end if
@@ -23268,7 +23268,7 @@ submodule (io_fortran_lib) text_io
 				else
 					allocate( cells(2_int64,nx) )
 					label = trim(adjustl(header(1_int64)))
-					do concurrent (j = lbound(x, dim=1, kind=int64):ubound(x, dim=1, kind=int64))
+					do j = lbound(x, dim=1, kind=int64), ubound(x, dim=1, kind=int64)
 						cells(1_int64,j) = String(label//str(j))
 					end do
 				end if
@@ -23320,7 +23320,7 @@ submodule (io_fortran_lib) text_io
 				else
 					allocate( cells(2_int64,nx) )
 					label = trim(adjustl(header(1_int64)))
-					do concurrent (j = lbound(x, dim=1, kind=int64):ubound(x, dim=1, kind=int64))
+					do j = lbound(x, dim=1, kind=int64), ubound(x, dim=1, kind=int64)
 						cells(1_int64,j) = String(label//str(j))
 					end do
 				end if
@@ -23372,7 +23372,7 @@ submodule (io_fortran_lib) text_io
 				else
 					allocate( cells(2_int64,nx) )
 					label = trim(adjustl(header(1_int64)))
-					do concurrent (j = lbound(x, dim=1, kind=int64):ubound(x, dim=1, kind=int64))
+					do j = lbound(x, dim=1, kind=int64), ubound(x, dim=1, kind=int64)
 						cells(1_int64,j) = String(label//str(j))
 					end do
 				end if
@@ -23418,7 +23418,7 @@ submodule (io_fortran_lib) text_io
 				header_present = .true.
 				allocate( cells(n_rows+1_int64,n_cols) )
 				label = trim(adjustl(header(1_int64)))
-				do concurrent (j = lbound(x, dim=2, kind=int64):ubound(x, dim=2, kind=int64))
+				do j = lbound(x, dim=2, kind=int64), ubound(x, dim=2, kind=int64)
 					cells(1_int64,j) = String(label//str(j))
 				end do
 			end if
@@ -23454,7 +23454,7 @@ submodule (io_fortran_lib) text_io
 				header_present = .true.
 				allocate( cells(n_rows+1_int64,n_cols) )
 				label = trim(adjustl(header(1_int64)))
-				do concurrent (j = lbound(x, dim=2, kind=int64):ubound(x, dim=2, kind=int64))
+				do j = lbound(x, dim=2, kind=int64), ubound(x, dim=2, kind=int64)
 					cells(1_int64,j) = String(label//str(j))
 				end do
 			end if
@@ -23490,7 +23490,7 @@ submodule (io_fortran_lib) text_io
 				header_present = .true.
 				allocate( cells(n_rows+1_int64,n_cols) )
 				label = trim(adjustl(header(1_int64)))
-				do concurrent (j = lbound(x, dim=2, kind=int64):ubound(x, dim=2, kind=int64))
+				do j = lbound(x, dim=2, kind=int64), ubound(x, dim=2, kind=int64)
 					cells(1_int64,j) = String(label//str(j))
 				end do
 			end if
@@ -23526,7 +23526,7 @@ submodule (io_fortran_lib) text_io
 				header_present = .true.
 				allocate( cells(n_rows+1_int64,n_cols) )
 				label = trim(adjustl(header(1_int64)))
-				do concurrent (j = lbound(x, dim=2, kind=int64):ubound(x, dim=2, kind=int64))
+				do j = lbound(x, dim=2, kind=int64), ubound(x, dim=2, kind=int64)
 					cells(1_int64,j) = String(label//str(j))
 				end do
 			end if
@@ -32213,7 +32213,7 @@ submodule (io_fortran_lib) array_printing
 
 		allocate( character(len=l) :: x_str(lbound(x, dim=1):ubound(x, dim=1)) )
 
-		do concurrent (i = lbound(x, dim=1):ubound(x, dim=1))
+		do i = lbound(x, dim=1), ubound(x, dim=1)
 			x_str(i) = str(x(i), fmt=fmt_, decimals=decimals_, im=im_)
 		end do
 
@@ -32271,7 +32271,7 @@ submodule (io_fortran_lib) array_printing
 
 		allocate( character(len=l) :: x_str(lbound(x, dim=1):ubound(x, dim=1)) )
 
-		do concurrent (i = lbound(x, dim=1):ubound(x, dim=1))
+		do i = lbound(x, dim=1), ubound(x, dim=1)
 			x_str(i) = str(x(i), fmt=fmt_, decimals=decimals_, im=im_)
 		end do
 
@@ -32329,7 +32329,7 @@ submodule (io_fortran_lib) array_printing
 
 		allocate( character(len=l) :: x_str(lbound(x, dim=1):ubound(x, dim=1)) )
 
-		do concurrent (i = lbound(x, dim=1):ubound(x, dim=1))
+		do i = lbound(x, dim=1), ubound(x, dim=1)
 			x_str(i) = str(x(i), fmt=fmt_, decimals=decimals_, im=im_)
 		end do
 
@@ -32388,8 +32388,10 @@ submodule (io_fortran_lib) array_printing
 
 		allocate( character(len=l) :: x_str(lbound(x, dim=1):ubound(x, dim=1), lbound(x, dim=2):ubound(x, dim=2)) )
 
-		do concurrent (j = lbound(x, dim=2):ubound(x, dim=2), i = lbound(x, dim=1):ubound(x, dim=1))
-			x_str(i,j) = str(x(i,j), fmt=fmt_, decimals=decimals_, im=im_)
+		do j = lbound(x, dim=2), ubound(x, dim=2)
+            do i = lbound(x, dim=1), ubound(x, dim=1)
+                x_str(i,j) = str(x(i,j), fmt=fmt_, decimals=decimals_, im=im_)
+            end do
 		end do
 
 		call aprint(x_str)
@@ -32446,8 +32448,10 @@ submodule (io_fortran_lib) array_printing
 
 		allocate( character(len=l) :: x_str(lbound(x, dim=1):ubound(x, dim=1), lbound(x, dim=2):ubound(x, dim=2)) )
 
-		do concurrent (j = lbound(x, dim=2):ubound(x, dim=2), i = lbound(x, dim=1):ubound(x, dim=1))
-			x_str(i,j) = str(x(i,j), fmt=fmt_, decimals=decimals_, im=im_)
+		do j = lbound(x, dim=2), ubound(x, dim=2)
+            do i = lbound(x, dim=1), ubound(x, dim=1)
+                x_str(i,j) = str(x(i,j), fmt=fmt_, decimals=decimals_, im=im_)
+            end do
 		end do
 
 		call aprint(x_str)
@@ -32504,8 +32508,10 @@ submodule (io_fortran_lib) array_printing
 
 		allocate( character(len=l) :: x_str(lbound(x, dim=1):ubound(x, dim=1), lbound(x, dim=2):ubound(x, dim=2)) )
 
-		do concurrent (j = lbound(x, dim=2):ubound(x, dim=2), i = lbound(x, dim=1):ubound(x, dim=1))
-			x_str(i,j) = str(x(i,j), fmt=fmt_, decimals=decimals_, im=im_)
+		do j = lbound(x, dim=2), ubound(x, dim=2)
+            do i = lbound(x, dim=1), ubound(x, dim=1)
+                x_str(i,j) = str(x(i,j), fmt=fmt_, decimals=decimals_, im=im_)
+            end do
 		end do
 
 		call aprint(x_str)
@@ -32546,7 +32552,7 @@ submodule (io_fortran_lib) array_printing
 
 		allocate( x_str(lbound(x, dim=1):ubound(x, dim=1)), source=source )
 
-		do concurrent (i = lbound(x, dim=1):ubound(x, dim=1))
+		do i = lbound(x, dim=1), ubound(x, dim=1)
 			x_str(i) = str(x(i), fmt=fmt_, decimals=decimals_)
 		end do
 
@@ -32587,7 +32593,7 @@ submodule (io_fortran_lib) array_printing
 
 		allocate( x_str(lbound(x, dim=1):ubound(x, dim=1)), source=source )
 
-		do concurrent (i = lbound(x, dim=1):ubound(x, dim=1))
+		do i = lbound(x, dim=1), ubound(x, dim=1)
 			x_str(i) = str(x(i), fmt=fmt_, decimals=decimals_)
 		end do
 
@@ -32628,7 +32634,7 @@ submodule (io_fortran_lib) array_printing
 
 		allocate( x_str(lbound(x, dim=1):ubound(x, dim=1)), source=source )
 
-		do concurrent (i = lbound(x, dim=1):ubound(x, dim=1))
+		do i = lbound(x, dim=1), ubound(x, dim=1)
 			x_str(i) = str(x(i), fmt=fmt_, decimals=decimals_)
 		end do
 
@@ -32670,8 +32676,10 @@ submodule (io_fortran_lib) array_printing
 
 		allocate( x_str(lbound(x, dim=1):ubound(x, dim=1), lbound(x, dim=2):ubound(x, dim=2)), source=source )
 
-		do concurrent (j = lbound(x, dim=2):ubound(x, dim=2), i = lbound(x, dim=1):ubound(x, dim=1))
-			x_str(i,j) = str(x(i,j), fmt=fmt_, decimals=decimals_)
+		do j = lbound(x, dim=2), ubound(x, dim=2)
+            do i = lbound(x, dim=1), ubound(x, dim=1)
+                x_str(i,j) = str(x(i,j), fmt=fmt_, decimals=decimals_)
+            end do
 		end do
 
 		call aprint(x_str)
@@ -32711,8 +32719,10 @@ submodule (io_fortran_lib) array_printing
 
 		allocate( x_str(lbound(x, dim=1):ubound(x, dim=1), lbound(x, dim=2):ubound(x, dim=2)), source=source )
 
-		do concurrent (j = lbound(x, dim=2):ubound(x, dim=2), i = lbound(x, dim=1):ubound(x, dim=1))
-			x_str(i,j) = str(x(i,j), fmt=fmt_, decimals=decimals_)
+		do j = lbound(x, dim=2), ubound(x, dim=2)
+            do i = lbound(x, dim=1), ubound(x, dim=1)
+                x_str(i,j) = str(x(i,j), fmt=fmt_, decimals=decimals_)
+            end do
 		end do
 
 		call aprint(x_str)
@@ -32752,8 +32762,10 @@ submodule (io_fortran_lib) array_printing
 
 		allocate( x_str(lbound(x, dim=1):ubound(x, dim=1), lbound(x, dim=2):ubound(x, dim=2)), source=source )
 
-		do concurrent (j = lbound(x, dim=2):ubound(x, dim=2), i = lbound(x, dim=1):ubound(x, dim=1))
-			x_str(i,j) = str(x(i,j), fmt=fmt_, decimals=decimals_)
+		do j = lbound(x, dim=2), ubound(x, dim=2)
+            do i = lbound(x, dim=1), ubound(x, dim=1)
+                x_str(i,j) = str(x(i,j), fmt=fmt_, decimals=decimals_)
+            end do
 		end do
 
 		call aprint(x_str)
@@ -32785,7 +32797,7 @@ submodule (io_fortran_lib) array_printing
 
 		allocate( x_str(lbound(x, dim=1):ubound(x, dim=1)), source=source )
 
-		do concurrent (i = lbound(x, dim=1):ubound(x, dim=1))
+		do i = lbound(x, dim=1), ubound(x, dim=1)
 			x_str(i) = str(x(i), fmt=fmt_)
 		end do
 
@@ -32817,7 +32829,7 @@ submodule (io_fortran_lib) array_printing
 
 		allocate( x_str(lbound(x, dim=1):ubound(x, dim=1)), source=source )
 
-		do concurrent (i = lbound(x, dim=1):ubound(x, dim=1))
+		do i = lbound(x, dim=1), ubound(x, dim=1)
 			x_str(i) = str(x(i), fmt=fmt_)
 		end do
 
@@ -32849,7 +32861,7 @@ submodule (io_fortran_lib) array_printing
 
 		allocate( x_str(lbound(x, dim=1):ubound(x, dim=1)), source=source )
 
-		do concurrent (i = lbound(x, dim=1):ubound(x, dim=1))
+		do i = lbound(x, dim=1), ubound(x, dim=1)
 			x_str(i) = str(x(i), fmt=fmt_)
 		end do
 
@@ -32881,7 +32893,7 @@ submodule (io_fortran_lib) array_printing
 
 		allocate( x_str(lbound(x, dim=1):ubound(x, dim=1)), source=source )
 
-		do concurrent (i = lbound(x, dim=1):ubound(x, dim=1))
+		do i = lbound(x, dim=1), ubound(x, dim=1)
 			x_str(i) = str(x(i), fmt=fmt_)
 		end do
 
@@ -32914,8 +32926,10 @@ submodule (io_fortran_lib) array_printing
 
 		allocate( x_str(lbound(x, dim=1):ubound(x, dim=1), lbound(x, dim=2):ubound(x, dim=2)), source=source )
 
-		do concurrent (j = lbound(x, dim=2):ubound(x, dim=2), i = lbound(x, dim=1):ubound(x, dim=1))
-			x_str(i,j) = str(x(i,j), fmt=fmt_)
+		do j = lbound(x, dim=2), ubound(x, dim=2)
+            do i = lbound(x, dim=1), ubound(x, dim=1)
+                x_str(i,j) = str(x(i,j), fmt=fmt_)
+            end do
 		end do
 
 		call aprint(x_str)
@@ -32946,8 +32960,10 @@ submodule (io_fortran_lib) array_printing
 
 		allocate( x_str(lbound(x, dim=1):ubound(x, dim=1), lbound(x, dim=2):ubound(x, dim=2)), source=source )
 
-		do concurrent (j = lbound(x, dim=2):ubound(x, dim=2), i = lbound(x, dim=1):ubound(x, dim=1))
-			x_str(i,j) = str(x(i,j), fmt=fmt_)
+		do j = lbound(x, dim=2), ubound(x, dim=2)
+            do i = lbound(x, dim=1), ubound(x, dim=1)
+                x_str(i,j) = str(x(i,j), fmt=fmt_)
+            end do
 		end do
 
 		call aprint(x_str)
@@ -32978,8 +32994,10 @@ submodule (io_fortran_lib) array_printing
 
 		allocate( x_str(lbound(x, dim=1):ubound(x, dim=1), lbound(x, dim=2):ubound(x, dim=2)), source=source )
 
-		do concurrent (j = lbound(x, dim=2):ubound(x, dim=2), i = lbound(x, dim=1):ubound(x, dim=1))
-			x_str(i,j) = str(x(i,j), fmt=fmt_)
+		do j = lbound(x, dim=2), ubound(x, dim=2)
+            do i = lbound(x, dim=1), ubound(x, dim=1)
+                x_str(i,j) = str(x(i,j), fmt=fmt_)
+            end do
 		end do
 
 		call aprint(x_str)
@@ -33010,8 +33028,10 @@ submodule (io_fortran_lib) array_printing
 
 		allocate( x_str(lbound(x, dim=1):ubound(x, dim=1), lbound(x, dim=2):ubound(x, dim=2)), source=source )
 
-		do concurrent (j = lbound(x, dim=2):ubound(x, dim=2), i = lbound(x, dim=1):ubound(x, dim=1))
-			x_str(i,j) = str(x(i,j), fmt=fmt_)
+		do j = lbound(x, dim=2), ubound(x, dim=2)
+            do i = lbound(x, dim=1), ubound(x, dim=1)
+                x_str(i,j) = str(x(i,j), fmt=fmt_)
+            end do
 		end do
 
 		call aprint(x_str)
@@ -33023,7 +33043,7 @@ submodule (io_fortran_lib) array_printing
 
 		allocate( rows(lbound(x, dim=1):ubound(x, dim=1)) )
 
-		do concurrent(i = lbound(x, dim=1):ubound(x, dim=1))
+		do i = lbound(x, dim=1), ubound(x, dim=1)
 			if ( i == lbound(x, dim=1) ) then
 				if ( i == ubound(x, dim=1) ) then
 					rows(i)%s = LF//'    '//adjustl( x(i) )//LF
@@ -33048,7 +33068,7 @@ submodule (io_fortran_lib) array_printing
 
 		allocate( rows(lbound(x, dim=1):ubound(x, dim=1)) )
 
-		do concurrent(i = lbound(x, dim=1):ubound(x, dim=1))
+		do i = lbound(x, dim=1), ubound(x, dim=1)
 			if ( i == lbound(x, dim=1) ) then
 				if ( i == ubound(x, dim=1) ) then
 					rows(i)%s = LF//'    '//accum( x(i,:) )//LF
@@ -33086,7 +33106,7 @@ submodule (io_fortran_lib) array_printing
 
 			allocate( character(len=x_len*x_size + x_size - 1) :: x_str )
 
-			positional_transfer: do concurrent (i = 1:x_size)
+			positional_transfer: do i = 1, x_size
 				pos = (i-1)*(x_len + 1) + 1
 				x_str(pos:pos+x_len-1) = adjustl(x(i))
 				if ( i < x_size ) x_str(pos+x_len:pos+x_len) = SPACE
@@ -33104,7 +33124,7 @@ submodule (io_fortran_lib) array_printing
 
 		allocate( character(len=max_length) :: char_arr(lbound(x, dim=1):ubound(x, dim=1)) )
 
-		do concurrent (i = lbound(x, dim=1):ubound(x, dim=1))
+		do i = lbound(x, dim=1), ubound(x, dim=1)
 			if ( lengths(i) < 1 ) then
 				char_arr(i) = EMPTY_STR
 			else
@@ -33126,13 +33146,15 @@ submodule (io_fortran_lib) array_printing
 		allocate( character(len=max_length) :: &
 				  char_arr(lbound(x, dim=1):ubound(x, dim=1), lbound(x, dim=2):ubound(x, dim=2)) )
 
-		do concurrent (j = lbound(x, dim=2):ubound(x, dim=2), i = lbound(x, dim=1):ubound(x, dim=1))
-			if ( lengths(i,j) < 1 ) then
-				char_arr(i,j) = EMPTY_STR
-			else
-				char_arr(i,j) = x(i,j)%s
-			end if
-		end do
+        do j = lbound(x, dim=2), ubound(x, dim=2)
+            do i = lbound(x, dim=1), ubound(x, dim=1)
+                if ( lengths(i,j) < 1 ) then
+                    char_arr(i,j) = EMPTY_STR
+                else
+                    char_arr(i,j) = x(i,j)%s
+                end if
+            end do
+        end do
 
 		call aprint(char_arr)
 	end procedure aprint_2dString
