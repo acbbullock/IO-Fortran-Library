@@ -32389,9 +32389,9 @@ submodule (io_fortran_lib) array_printing
 		allocate( character(len=l) :: x_str(lbound(x, dim=1):ubound(x, dim=1), lbound(x, dim=2):ubound(x, dim=2)) )
 
 		do j = lbound(x, dim=2), ubound(x, dim=2)
-            do i = lbound(x, dim=1), ubound(x, dim=1)
-                x_str(i,j) = str(x(i,j), fmt=fmt_, decimals=decimals_, im=im_)
-            end do
+			do i = lbound(x, dim=1), ubound(x, dim=1)
+				x_str(i,j) = str(x(i,j), fmt=fmt_, decimals=decimals_, im=im_)
+			end do
 		end do
 
 		call aprint(x_str)
@@ -32449,9 +32449,9 @@ submodule (io_fortran_lib) array_printing
 		allocate( character(len=l) :: x_str(lbound(x, dim=1):ubound(x, dim=1), lbound(x, dim=2):ubound(x, dim=2)) )
 
 		do j = lbound(x, dim=2), ubound(x, dim=2)
-            do i = lbound(x, dim=1), ubound(x, dim=1)
-                x_str(i,j) = str(x(i,j), fmt=fmt_, decimals=decimals_, im=im_)
-            end do
+			do i = lbound(x, dim=1), ubound(x, dim=1)
+				x_str(i,j) = str(x(i,j), fmt=fmt_, decimals=decimals_, im=im_)
+			end do
 		end do
 
 		call aprint(x_str)
@@ -32509,9 +32509,9 @@ submodule (io_fortran_lib) array_printing
 		allocate( character(len=l) :: x_str(lbound(x, dim=1):ubound(x, dim=1), lbound(x, dim=2):ubound(x, dim=2)) )
 
 		do j = lbound(x, dim=2), ubound(x, dim=2)
-            do i = lbound(x, dim=1), ubound(x, dim=1)
-                x_str(i,j) = str(x(i,j), fmt=fmt_, decimals=decimals_, im=im_)
-            end do
+			do i = lbound(x, dim=1), ubound(x, dim=1)
+				x_str(i,j) = str(x(i,j), fmt=fmt_, decimals=decimals_, im=im_)
+			end do
 		end do
 
 		call aprint(x_str)
@@ -32677,9 +32677,9 @@ submodule (io_fortran_lib) array_printing
 		allocate( x_str(lbound(x, dim=1):ubound(x, dim=1), lbound(x, dim=2):ubound(x, dim=2)), source=source )
 
 		do j = lbound(x, dim=2), ubound(x, dim=2)
-            do i = lbound(x, dim=1), ubound(x, dim=1)
-                x_str(i,j) = str(x(i,j), fmt=fmt_, decimals=decimals_)
-            end do
+			do i = lbound(x, dim=1), ubound(x, dim=1)
+				x_str(i,j) = str(x(i,j), fmt=fmt_, decimals=decimals_)
+			end do
 		end do
 
 		call aprint(x_str)
@@ -32720,9 +32720,9 @@ submodule (io_fortran_lib) array_printing
 		allocate( x_str(lbound(x, dim=1):ubound(x, dim=1), lbound(x, dim=2):ubound(x, dim=2)), source=source )
 
 		do j = lbound(x, dim=2), ubound(x, dim=2)
-            do i = lbound(x, dim=1), ubound(x, dim=1)
-                x_str(i,j) = str(x(i,j), fmt=fmt_, decimals=decimals_)
-            end do
+			do i = lbound(x, dim=1), ubound(x, dim=1)
+				x_str(i,j) = str(x(i,j), fmt=fmt_, decimals=decimals_)
+			end do
 		end do
 
 		call aprint(x_str)
@@ -32763,9 +32763,9 @@ submodule (io_fortran_lib) array_printing
 		allocate( x_str(lbound(x, dim=1):ubound(x, dim=1), lbound(x, dim=2):ubound(x, dim=2)), source=source )
 
 		do j = lbound(x, dim=2), ubound(x, dim=2)
-            do i = lbound(x, dim=1), ubound(x, dim=1)
-                x_str(i,j) = str(x(i,j), fmt=fmt_, decimals=decimals_)
-            end do
+			do i = lbound(x, dim=1), ubound(x, dim=1)
+				x_str(i,j) = str(x(i,j), fmt=fmt_, decimals=decimals_)
+			end do
 		end do
 
 		call aprint(x_str)
@@ -32927,9 +32927,9 @@ submodule (io_fortran_lib) array_printing
 		allocate( x_str(lbound(x, dim=1):ubound(x, dim=1), lbound(x, dim=2):ubound(x, dim=2)), source=source )
 
 		do j = lbound(x, dim=2), ubound(x, dim=2)
-            do i = lbound(x, dim=1), ubound(x, dim=1)
-                x_str(i,j) = str(x(i,j), fmt=fmt_)
-            end do
+			do i = lbound(x, dim=1), ubound(x, dim=1)
+				x_str(i,j) = str(x(i,j), fmt=fmt_)
+			end do
 		end do
 
 		call aprint(x_str)
@@ -32961,9 +32961,9 @@ submodule (io_fortran_lib) array_printing
 		allocate( x_str(lbound(x, dim=1):ubound(x, dim=1), lbound(x, dim=2):ubound(x, dim=2)), source=source )
 
 		do j = lbound(x, dim=2), ubound(x, dim=2)
-            do i = lbound(x, dim=1), ubound(x, dim=1)
-                x_str(i,j) = str(x(i,j), fmt=fmt_)
-            end do
+			do i = lbound(x, dim=1), ubound(x, dim=1)
+				x_str(i,j) = str(x(i,j), fmt=fmt_)
+			end do
 		end do
 
 		call aprint(x_str)
@@ -32995,9 +32995,9 @@ submodule (io_fortran_lib) array_printing
 		allocate( x_str(lbound(x, dim=1):ubound(x, dim=1), lbound(x, dim=2):ubound(x, dim=2)), source=source )
 
 		do j = lbound(x, dim=2), ubound(x, dim=2)
-            do i = lbound(x, dim=1), ubound(x, dim=1)
-                x_str(i,j) = str(x(i,j), fmt=fmt_)
-            end do
+			do i = lbound(x, dim=1), ubound(x, dim=1)
+				x_str(i,j) = str(x(i,j), fmt=fmt_)
+			end do
 		end do
 
 		call aprint(x_str)
@@ -33029,9 +33029,9 @@ submodule (io_fortran_lib) array_printing
 		allocate( x_str(lbound(x, dim=1):ubound(x, dim=1), lbound(x, dim=2):ubound(x, dim=2)), source=source )
 
 		do j = lbound(x, dim=2), ubound(x, dim=2)
-            do i = lbound(x, dim=1), ubound(x, dim=1)
-                x_str(i,j) = str(x(i,j), fmt=fmt_)
-            end do
+			do i = lbound(x, dim=1), ubound(x, dim=1)
+				x_str(i,j) = str(x(i,j), fmt=fmt_)
+			end do
 		end do
 
 		call aprint(x_str)
@@ -33146,15 +33146,15 @@ submodule (io_fortran_lib) array_printing
 		allocate( character(len=max_length) :: &
 				  char_arr(lbound(x, dim=1):ubound(x, dim=1), lbound(x, dim=2):ubound(x, dim=2)) )
 
-        do j = lbound(x, dim=2), ubound(x, dim=2)
-            do i = lbound(x, dim=1), ubound(x, dim=1)
-                if ( lengths(i,j) < 1 ) then
-                    char_arr(i,j) = EMPTY_STR
-                else
-                    char_arr(i,j) = x(i,j)%s
-                end if
-            end do
-        end do
+		do j = lbound(x, dim=2), ubound(x, dim=2)
+			do i = lbound(x, dim=1), ubound(x, dim=1)
+				if ( lengths(i,j) < 1 ) then
+					char_arr(i,j) = EMPTY_STR
+				else
+					char_arr(i,j) = x(i,j)%s
+				end if
+			end do
+		end do
 
 		call aprint(char_arr)
 	end procedure aprint_2dString
