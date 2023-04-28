@@ -4829,7 +4829,7 @@ submodule (io_fortran_lib) string_methods
 			separator_ = separator
 		end if
 
-		comp = String(COMPILER); GCC = ( comp%count(match='GCC') > 0 ); deallocate(comp%s)
+		comp%s = COMPILER; GCC = ( comp%count(match='GCC') > 0 ); deallocate(comp%s)
 
 		if ( num_tokens > 500_int64 ) then
 			if ( GCC ) then
@@ -22680,7 +22680,7 @@ submodule (io_fortran_lib) text_io
 				header_present = .true.
 				if ( dim == 1 ) then
 					allocate( cells(nx+1_int64,1_int64) )
-					cells(1_int64,1_int64) = String( trim(adjustl(header(1_int64))) )
+					cells(1_int64,1_int64)%s = trim(adjustl(header(1_int64)))
 				else
 					allocate( cells(2_int64,nx) )
 					label = trim(adjustl(header(1_int64)))
@@ -22734,7 +22734,7 @@ submodule (io_fortran_lib) text_io
 				header_present = .true.
 				if ( dim == 1 ) then
 					allocate( cells(nx+1_int64,1_int64) )
-					cells(1_int64,1_int64) = String( trim(adjustl(header(1_int64))) )
+					cells(1_int64,1_int64)%s = trim(adjustl(header(1_int64)))
 				else
 					allocate( cells(2_int64,nx) )
 					label = trim(adjustl(header(1_int64)))
@@ -22788,7 +22788,7 @@ submodule (io_fortran_lib) text_io
 				header_present = .true.
 				if ( dim == 1 ) then
 					allocate( cells(nx+1_int64,1_int64) )
-					cells(1_int64,1_int64) = String( trim(adjustl(header(1_int64))) )
+					cells(1_int64,1_int64)%s = trim(adjustl(header(1_int64)))
 				else
 					allocate( cells(2_int64,nx) )
 					label = trim(adjustl(header(1_int64)))
@@ -22958,7 +22958,7 @@ submodule (io_fortran_lib) text_io
 				header_present = .true.
 				if ( dim == 1 ) then
 					allocate( cells(nx+1_int64,1_int64) )
-					cells(1_int64,1_int64) = String( trim(adjustl(header(1_int64))) )
+					cells(1_int64,1_int64)%s = trim(adjustl(header(1_int64)))
 				else
 					allocate( cells(2_int64,nx) )
 					label = trim(adjustl(header(1_int64)))
@@ -23012,7 +23012,7 @@ submodule (io_fortran_lib) text_io
 				header_present = .true.
 				if ( dim == 1 ) then
 					allocate( cells(nx+1_int64,1_int64) )
-					cells(1_int64,1_int64) = String( trim(adjustl(header(1_int64))) )
+					cells(1_int64,1_int64)%s = trim(adjustl(header(1_int64)))
 				else
 					allocate( cells(2_int64,nx) )
 					label = trim(adjustl(header(1_int64)))
@@ -23066,7 +23066,7 @@ submodule (io_fortran_lib) text_io
 				header_present = .true.
 				if ( dim == 1 ) then
 					allocate( cells(nx+1_int64,1_int64) )
-					cells(1_int64,1_int64) = String( trim(adjustl(header(1_int64))) )
+					cells(1_int64,1_int64)%s = trim(adjustl(header(1_int64)))
 				else
 					allocate( cells(2_int64,nx) )
 					label = trim(adjustl(header(1_int64)))
@@ -23236,7 +23236,7 @@ submodule (io_fortran_lib) text_io
 				header_present = .true.
 				if ( dim == 1 ) then
 					allocate( cells(nx+1_int64,1_int64) )
-					cells(1_int64,1_int64) = String( trim(adjustl(header(1_int64))) )
+					cells(1_int64,1_int64)%s = trim(adjustl(header(1_int64)))
 				else
 					allocate( cells(2_int64,nx) )
 					label = trim(adjustl(header(1_int64)))
@@ -23290,7 +23290,7 @@ submodule (io_fortran_lib) text_io
 				header_present = .true.
 				if ( dim == 1 ) then
 					allocate( cells(nx+1_int64,1_int64) )
-					cells(1_int64,1_int64) = String( trim(adjustl(header(1_int64))) )
+					cells(1_int64,1_int64)%s = trim(adjustl(header(1_int64)))
 				else
 					allocate( cells(2_int64,nx) )
 					label = trim(adjustl(header(1_int64)))
@@ -23344,7 +23344,7 @@ submodule (io_fortran_lib) text_io
 				header_present = .true.
 				if ( dim == 1 ) then
 					allocate( cells(nx+1_int64,1_int64) )
-					cells(1_int64,1_int64) = String( trim(adjustl(header(1_int64))) )
+					cells(1_int64,1_int64)%s = trim(adjustl(header(1_int64)))
 				else
 					allocate( cells(2_int64,nx) )
 					label = trim(adjustl(header(1_int64)))
@@ -23398,7 +23398,7 @@ submodule (io_fortran_lib) text_io
 				header_present = .true.
 				if ( dim == 1 ) then
 					allocate( cells(nx+1_int64,1_int64) )
-					cells(1_int64,1_int64) = String( trim(adjustl(header(1_int64))) )
+					cells(1_int64,1_int64)%s = trim(adjustl(header(1_int64)))
 				else
 					allocate( cells(2_int64,nx) )
 					label = trim(adjustl(header(1_int64)))
