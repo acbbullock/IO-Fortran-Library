@@ -4829,7 +4829,7 @@ submodule (io_fortran_lib) string_methods
 			separator_ = separator
 		end if
 
-		comp = String(COMPILER); GCC = ( comp%count(match='GCC') > 0 ); deallocate(comp%s)
+		comp%s = COMPILER; GCC = ( comp%count(match='GCC') > 0 ); deallocate(comp%s)
 
 		if ( num_tokens > 500_int64 ) then
 			if ( GCC ) then
@@ -22680,19 +22680,21 @@ submodule (io_fortran_lib) text_io
 				header_present = .true.
 				if ( dim == 1 ) then
 					allocate( cells(nx+1_int64,1_int64) )
-					cells(1_int64,1_int64) = String( trim(adjustl(header(1_int64))) )
+					cells(1_int64,1_int64)%s = trim(adjustl(header(1_int64)))
 				else
 					allocate( cells(2_int64,nx) )
 					label = trim(adjustl(header(1_int64)))
 					do j = lbound(x, dim=1, kind=int64), ubound(x, dim=1, kind=int64)
-						cells(1_int64,j) = String(label//str(j))
+						cells(1_int64,j)%s = label//str(j)
 					end do
 				end if
 			end if
 		else
 			header_present = .true.
 			allocate( cells(2_int64,nx) )
-			cells(1_int64,:) = String(header)
+			do j = lbound(x, dim=1, kind=int64), ubound(x, dim=1, kind=int64)
+				cells(1_int64,j)%s = header(j)
+			end do
 		end if
 
 		if ( header_present ) then
@@ -22732,19 +22734,21 @@ submodule (io_fortran_lib) text_io
 				header_present = .true.
 				if ( dim == 1 ) then
 					allocate( cells(nx+1_int64,1_int64) )
-					cells(1_int64,1_int64) = String( trim(adjustl(header(1_int64))) )
+					cells(1_int64,1_int64)%s = trim(adjustl(header(1_int64)))
 				else
 					allocate( cells(2_int64,nx) )
 					label = trim(adjustl(header(1_int64)))
 					do j = lbound(x, dim=1, kind=int64), ubound(x, dim=1, kind=int64)
-						cells(1_int64,j) = String(label//str(j))
+						cells(1_int64,j)%s = label//str(j)
 					end do
 				end if
 			end if
 		else
 			header_present = .true.
 			allocate( cells(2_int64,nx) )
-			cells(1_int64,:) = String(header)
+			do j = lbound(x, dim=1, kind=int64), ubound(x, dim=1, kind=int64)
+				cells(1_int64,j)%s = header(j)
+			end do
 		end if
 
 		if ( header_present ) then
@@ -22784,19 +22788,21 @@ submodule (io_fortran_lib) text_io
 				header_present = .true.
 				if ( dim == 1 ) then
 					allocate( cells(nx+1_int64,1_int64) )
-					cells(1_int64,1_int64) = String( trim(adjustl(header(1_int64))) )
+					cells(1_int64,1_int64)%s = trim(adjustl(header(1_int64)))
 				else
 					allocate( cells(2_int64,nx) )
 					label = trim(adjustl(header(1_int64)))
 					do j = lbound(x, dim=1, kind=int64), ubound(x, dim=1, kind=int64)
-						cells(1_int64,j) = String(label//str(j))
+						cells(1_int64,j)%s = label//str(j)
 					end do
 				end if
 			end if
 		else
 			header_present = .true.
 			allocate( cells(2_int64,nx) )
-			cells(1_int64,:) = String(header)
+			do j = lbound(x, dim=1, kind=int64), ubound(x, dim=1, kind=int64)
+				cells(1_int64,j)%s = header(j)
+			end do
 		end if
 
 		if ( header_present ) then
@@ -22835,13 +22841,15 @@ submodule (io_fortran_lib) text_io
 				allocate( cells(n_rows+1_int64,n_cols) )
 				label = trim(adjustl(header(1_int64)))
 				do j = lbound(x, dim=2, kind=int64), ubound(x, dim=2, kind=int64)
-					cells(1_int64,j) = String(label//str(j))
+					cells(1_int64,j)%s = label//str(j)
 				end do
 			end if
 		else
 			header_present = .true.
 			allocate( cells(n_rows+1_int64,n_cols) )
-			cells(1_int64,:) = String(header)
+			do j = lbound(x, dim=1, kind=int64), ubound(x, dim=1, kind=int64)
+				cells(1_int64,j)%s = header(j)
+			end do
 		end if
 
 		if ( header_present ) then
@@ -22871,13 +22879,15 @@ submodule (io_fortran_lib) text_io
 				allocate( cells(n_rows+1_int64,n_cols) )
 				label = trim(adjustl(header(1_int64)))
 				do j = lbound(x, dim=2, kind=int64), ubound(x, dim=2, kind=int64)
-					cells(1_int64,j) = String(label//str(j))
+					cells(1_int64,j)%s = label//str(j)
 				end do
 			end if
 		else
 			header_present = .true.
 			allocate( cells(n_rows+1_int64,n_cols) )
-			cells(1_int64,:) = String(header)
+			do j = lbound(x, dim=1, kind=int64), ubound(x, dim=1, kind=int64)
+				cells(1_int64,j)%s = header(j)
+			end do
 		end if
 
 		if ( header_present ) then
@@ -22907,13 +22917,15 @@ submodule (io_fortran_lib) text_io
 				allocate( cells(n_rows+1_int64,n_cols) )
 				label = trim(adjustl(header(1_int64)))
 				do j = lbound(x, dim=2, kind=int64), ubound(x, dim=2, kind=int64)
-					cells(1_int64,j) = String(label//str(j))
+					cells(1_int64,j)%s = label//str(j)
 				end do
 			end if
 		else
 			header_present = .true.
 			allocate( cells(n_rows+1_int64,n_cols) )
-			cells(1_int64,:) = String(header)
+			do j = lbound(x, dim=1, kind=int64), ubound(x, dim=1, kind=int64)
+				cells(1_int64,j)%s = header(j)
+			end do
 		end if
 
 		if ( header_present ) then
@@ -22946,19 +22958,21 @@ submodule (io_fortran_lib) text_io
 				header_present = .true.
 				if ( dim == 1 ) then
 					allocate( cells(nx+1_int64,1_int64) )
-					cells(1_int64,1_int64) = String( trim(adjustl(header(1_int64))) )
+					cells(1_int64,1_int64)%s = trim(adjustl(header(1_int64)))
 				else
 					allocate( cells(2_int64,nx) )
 					label = trim(adjustl(header(1_int64)))
 					do j = lbound(x, dim=1, kind=int64), ubound(x, dim=1, kind=int64)
-						cells(1_int64,j) = String(label//str(j))
+						cells(1_int64,j)%s = label//str(j)
 					end do
 				end if
 			end if
 		else
 			header_present = .true.
 			allocate( cells(2_int64,nx) )
-			cells(1_int64,:) = String(header)
+			do j = lbound(x, dim=1, kind=int64), ubound(x, dim=1, kind=int64)
+				cells(1_int64,j)%s = header(j)
+			end do
 		end if
 
 		if ( header_present ) then
@@ -22998,19 +23012,21 @@ submodule (io_fortran_lib) text_io
 				header_present = .true.
 				if ( dim == 1 ) then
 					allocate( cells(nx+1_int64,1_int64) )
-					cells(1_int64,1_int64) = String( trim(adjustl(header(1_int64))) )
+					cells(1_int64,1_int64)%s = trim(adjustl(header(1_int64)))
 				else
 					allocate( cells(2_int64,nx) )
 					label = trim(adjustl(header(1_int64)))
 					do j = lbound(x, dim=1, kind=int64), ubound(x, dim=1, kind=int64)
-						cells(1_int64,j) = String(label//str(j))
+						cells(1_int64,j)%s = label//str(j)
 					end do
 				end if
 			end if
 		else
 			header_present = .true.
 			allocate( cells(2_int64,nx) )
-			cells(1_int64,:) = String(header)
+			do j = lbound(x, dim=1, kind=int64), ubound(x, dim=1, kind=int64)
+				cells(1_int64,j)%s = header(j)
+			end do
 		end if
 
 		if ( header_present ) then
@@ -23050,19 +23066,21 @@ submodule (io_fortran_lib) text_io
 				header_present = .true.
 				if ( dim == 1 ) then
 					allocate( cells(nx+1_int64,1_int64) )
-					cells(1_int64,1_int64) = String( trim(adjustl(header(1_int64))) )
+					cells(1_int64,1_int64)%s = trim(adjustl(header(1_int64)))
 				else
 					allocate( cells(2_int64,nx) )
 					label = trim(adjustl(header(1_int64)))
 					do j = lbound(x, dim=1, kind=int64), ubound(x, dim=1, kind=int64)
-						cells(1_int64,j) = String(label//str(j))
+						cells(1_int64,j)%s = label//str(j)
 					end do
 				end if
 			end if
 		else
 			header_present = .true.
 			allocate( cells(2_int64,nx) )
-			cells(1_int64,:) = String(header)
+			do j = lbound(x, dim=1, kind=int64), ubound(x, dim=1, kind=int64)
+				cells(1_int64,j)%s = header(j)
+			end do
 		end if
 
 		if ( header_present ) then
@@ -23101,13 +23119,15 @@ submodule (io_fortran_lib) text_io
 				allocate( cells(n_rows+1_int64,n_cols) )
 				label = trim(adjustl(header(1_int64)))
 				do j = lbound(x, dim=2, kind=int64), ubound(x, dim=2, kind=int64)
-					cells(1_int64,j) = String(label//str(j))
+					cells(1_int64,j)%s = label//str(j)
 				end do
 			end if
 		else
 			header_present = .true.
 			allocate( cells(n_rows+1_int64,n_cols) )
-			cells(1_int64,:) = String(header)
+			do j = lbound(x, dim=1, kind=int64), ubound(x, dim=1, kind=int64)
+				cells(1_int64,j)%s = header(j)
+			end do
 		end if
 
 		if ( header_present ) then
@@ -23137,13 +23157,15 @@ submodule (io_fortran_lib) text_io
 				allocate( cells(n_rows+1_int64,n_cols) )
 				label = trim(adjustl(header(1_int64)))
 				do j = lbound(x, dim=2, kind=int64), ubound(x, dim=2, kind=int64)
-					cells(1_int64,j) = String(label//str(j))
+					cells(1_int64,j)%s = label//str(j)
 				end do
 			end if
 		else
 			header_present = .true.
 			allocate( cells(n_rows+1_int64,n_cols) )
-			cells(1_int64,:) = String(header)
+			do j = lbound(x, dim=2, kind=int64), ubound(x, dim=2, kind=int64)
+				cells(1_int64,j)%s = header(j)
+			end do
 		end if
 
 		if ( header_present ) then
@@ -23173,13 +23195,15 @@ submodule (io_fortran_lib) text_io
 				allocate( cells(n_rows+1_int64,n_cols) )
 				label = trim(adjustl(header(1_int64)))
 				do j = lbound(x, dim=2, kind=int64), ubound(x, dim=2, kind=int64)
-					cells(1_int64,j) = String(label//str(j))
+					cells(1_int64,j)%s = label//str(j)
 				end do
 			end if
 		else
 			header_present = .true.
 			allocate( cells(n_rows+1_int64,n_cols) )
-			cells(1_int64,:) = String(header)
+			do j = lbound(x, dim=1, kind=int64), ubound(x, dim=1, kind=int64)
+				cells(1_int64,j)%s = header(j)
+			end do
 		end if
 
 		if ( header_present ) then
@@ -23212,19 +23236,21 @@ submodule (io_fortran_lib) text_io
 				header_present = .true.
 				if ( dim == 1 ) then
 					allocate( cells(nx+1_int64,1_int64) )
-					cells(1_int64,1_int64) = String( trim(adjustl(header(1_int64))) )
+					cells(1_int64,1_int64)%s = trim(adjustl(header(1_int64)))
 				else
 					allocate( cells(2_int64,nx) )
 					label = trim(adjustl(header(1_int64)))
 					do j = lbound(x, dim=1, kind=int64), ubound(x, dim=1, kind=int64)
-						cells(1_int64,j) = String(label//str(j))
+						cells(1_int64,j)%s = label//str(j)
 					end do
 				end if
 			end if
 		else
 			header_present = .true.
 			allocate( cells(2_int64,nx) )
-			cells(1_int64,:) = String(header)
+			do j = lbound(x, dim=1, kind=int64), ubound(x, dim=1, kind=int64)
+				cells(1_int64,j)%s = header(j)
+			end do
 		end if
 
 		if ( header_present ) then
@@ -23264,19 +23290,21 @@ submodule (io_fortran_lib) text_io
 				header_present = .true.
 				if ( dim == 1 ) then
 					allocate( cells(nx+1_int64,1_int64) )
-					cells(1_int64,1_int64) = String( trim(adjustl(header(1_int64))) )
+					cells(1_int64,1_int64)%s = trim(adjustl(header(1_int64)))
 				else
 					allocate( cells(2_int64,nx) )
 					label = trim(adjustl(header(1_int64)))
 					do j = lbound(x, dim=1, kind=int64), ubound(x, dim=1, kind=int64)
-						cells(1_int64,j) = String(label//str(j))
+						cells(1_int64,j)%s = label//str(j)
 					end do
 				end if
 			end if
 		else
 			header_present = .true.
 			allocate( cells(2_int64,nx) )
-			cells(1_int64,:) = String(header)
+			do j = lbound(x, dim=1, kind=int64), ubound(x, dim=1, kind=int64)
+				cells(1_int64,j)%s = header(j)
+			end do
 		end if
 
 		if ( header_present ) then
@@ -23316,19 +23344,21 @@ submodule (io_fortran_lib) text_io
 				header_present = .true.
 				if ( dim == 1 ) then
 					allocate( cells(nx+1_int64,1_int64) )
-					cells(1_int64,1_int64) = String( trim(adjustl(header(1_int64))) )
+					cells(1_int64,1_int64)%s = trim(adjustl(header(1_int64)))
 				else
 					allocate( cells(2_int64,nx) )
 					label = trim(adjustl(header(1_int64)))
 					do j = lbound(x, dim=1, kind=int64), ubound(x, dim=1, kind=int64)
-						cells(1_int64,j) = String(label//str(j))
+						cells(1_int64,j)%s = label//str(j)
 					end do
 				end if
 			end if
 		else
 			header_present = .true.
 			allocate( cells(2_int64,nx) )
-			cells(1_int64,:) = String(header)
+			do j = lbound(x, dim=1, kind=int64), ubound(x, dim=1, kind=int64)
+				cells(1_int64,j)%s = header(j)
+			end do
 		end if
 
 		if ( header_present ) then
@@ -23368,19 +23398,21 @@ submodule (io_fortran_lib) text_io
 				header_present = .true.
 				if ( dim == 1 ) then
 					allocate( cells(nx+1_int64,1_int64) )
-					cells(1_int64,1_int64) = String( trim(adjustl(header(1_int64))) )
+					cells(1_int64,1_int64)%s = trim(adjustl(header(1_int64)))
 				else
 					allocate( cells(2_int64,nx) )
 					label = trim(adjustl(header(1_int64)))
 					do j = lbound(x, dim=1, kind=int64), ubound(x, dim=1, kind=int64)
-						cells(1_int64,j) = String(label//str(j))
+						cells(1_int64,j)%s = label//str(j)
 					end do
 				end if
 			end if
 		else
 			header_present = .true.
 			allocate( cells(2_int64,nx) )
-			cells(1_int64,:) = String(header)
+			do j = lbound(x, dim=1, kind=int64), ubound(x, dim=1, kind=int64)
+				cells(1_int64,j)%s = header(j)
+			end do
 		end if
 
 		if ( header_present ) then
@@ -23419,13 +23451,15 @@ submodule (io_fortran_lib) text_io
 				allocate( cells(n_rows+1_int64,n_cols) )
 				label = trim(adjustl(header(1_int64)))
 				do j = lbound(x, dim=2, kind=int64), ubound(x, dim=2, kind=int64)
-					cells(1_int64,j) = String(label//str(j))
+					cells(1_int64,j)%s = label//str(j)
 				end do
 			end if
 		else
 			header_present = .true.
 			allocate( cells(n_rows+1_int64,n_cols) )
-			cells(1_int64,:) = String(header)
+			do j = lbound(x, dim=1, kind=int64), ubound(x, dim=1, kind=int64)
+				cells(1_int64,j)%s = header(j)
+			end do
 		end if
 
 		if ( header_present ) then
@@ -23455,13 +23489,15 @@ submodule (io_fortran_lib) text_io
 				allocate( cells(n_rows+1_int64,n_cols) )
 				label = trim(adjustl(header(1_int64)))
 				do j = lbound(x, dim=2, kind=int64), ubound(x, dim=2, kind=int64)
-					cells(1_int64,j) = String(label//str(j))
+					cells(1_int64,j)%s = label//str(j)
 				end do
 			end if
 		else
 			header_present = .true.
 			allocate( cells(n_rows+1_int64,n_cols) )
-			cells(1_int64,:) = String(header)
+			do j = lbound(x, dim=1, kind=int64), ubound(x, dim=1, kind=int64)
+				cells(1_int64,j)%s = header(j)
+			end do
 		end if
 
 		if ( header_present ) then
@@ -23491,13 +23527,15 @@ submodule (io_fortran_lib) text_io
 				allocate( cells(n_rows+1_int64,n_cols) )
 				label = trim(adjustl(header(1_int64)))
 				do j = lbound(x, dim=2, kind=int64), ubound(x, dim=2, kind=int64)
-					cells(1_int64,j) = String(label//str(j))
+					cells(1_int64,j)%s = label//str(j)
 				end do
 			end if
 		else
 			header_present = .true.
 			allocate( cells(n_rows+1_int64,n_cols) )
-			cells(1_int64,:) = String(header)
+			do j = lbound(x, dim=1, kind=int64), ubound(x, dim=1, kind=int64)
+				cells(1_int64,j)%s = header(j)
+			end do
 		end if
 
 		if ( header_present ) then
@@ -23527,13 +23565,15 @@ submodule (io_fortran_lib) text_io
 				allocate( cells(n_rows+1_int64,n_cols) )
 				label = trim(adjustl(header(1_int64)))
 				do j = lbound(x, dim=2, kind=int64), ubound(x, dim=2, kind=int64)
-					cells(1_int64,j) = String(label//str(j))
+					cells(1_int64,j)%s = label//str(j)
 				end do
 			end if
 		else
 			header_present = .true.
 			allocate( cells(n_rows+1_int64,n_cols) )
-			cells(1_int64,:) = String(header)
+			do j = lbound(x, dim=1, kind=int64), ubound(x, dim=1, kind=int64)
+				cells(1_int64,j)%s = header(j)
+			end do
 		end if
 
 		if ( header_present ) then
