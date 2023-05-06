@@ -22847,7 +22847,7 @@ submodule (io_fortran_lib) text_io
 		else
 			header_present = .true.
 			allocate( cells(n_rows+1_int64,n_cols) )
-			do j = lbound(x, dim=1, kind=int64), ubound(x, dim=1, kind=int64)
+			do j = lbound(x, dim=2, kind=int64), ubound(x, dim=2, kind=int64)
 				cells(1_int64,j)%s = header(j)
 			end do
 		end if
@@ -22885,7 +22885,7 @@ submodule (io_fortran_lib) text_io
 		else
 			header_present = .true.
 			allocate( cells(n_rows+1_int64,n_cols) )
-			do j = lbound(x, dim=1, kind=int64), ubound(x, dim=1, kind=int64)
+			do j = lbound(x, dim=2, kind=int64), ubound(x, dim=2, kind=int64)
 				cells(1_int64,j)%s = header(j)
 			end do
 		end if
@@ -22923,7 +22923,7 @@ submodule (io_fortran_lib) text_io
 		else
 			header_present = .true.
 			allocate( cells(n_rows+1_int64,n_cols) )
-			do j = lbound(x, dim=1, kind=int64), ubound(x, dim=1, kind=int64)
+			do j = lbound(x, dim=2, kind=int64), ubound(x, dim=2, kind=int64)
 				cells(1_int64,j)%s = header(j)
 			end do
 		end if
@@ -23125,7 +23125,7 @@ submodule (io_fortran_lib) text_io
 		else
 			header_present = .true.
 			allocate( cells(n_rows+1_int64,n_cols) )
-			do j = lbound(x, dim=1, kind=int64), ubound(x, dim=1, kind=int64)
+			do j = lbound(x, dim=2, kind=int64), ubound(x, dim=2, kind=int64)
 				cells(1_int64,j)%s = header(j)
 			end do
 		end if
@@ -23201,7 +23201,7 @@ submodule (io_fortran_lib) text_io
 		else
 			header_present = .true.
 			allocate( cells(n_rows+1_int64,n_cols) )
-			do j = lbound(x, dim=1, kind=int64), ubound(x, dim=1, kind=int64)
+			do j = lbound(x, dim=2, kind=int64), ubound(x, dim=2, kind=int64)
 				cells(1_int64,j)%s = header(j)
 			end do
 		end if
@@ -23457,7 +23457,7 @@ submodule (io_fortran_lib) text_io
 		else
 			header_present = .true.
 			allocate( cells(n_rows+1_int64,n_cols) )
-			do j = lbound(x, dim=1, kind=int64), ubound(x, dim=1, kind=int64)
+			do j = lbound(x, dim=2, kind=int64), ubound(x, dim=2, kind=int64)
 				cells(1_int64,j)%s = header(j)
 			end do
 		end if
@@ -23495,7 +23495,7 @@ submodule (io_fortran_lib) text_io
 		else
 			header_present = .true.
 			allocate( cells(n_rows+1_int64,n_cols) )
-			do j = lbound(x, dim=1, kind=int64), ubound(x, dim=1, kind=int64)
+			do j = lbound(x, dim=2, kind=int64), ubound(x, dim=2, kind=int64)
 				cells(1_int64,j)%s = header(j)
 			end do
 		end if
@@ -23533,7 +23533,7 @@ submodule (io_fortran_lib) text_io
 		else
 			header_present = .true.
 			allocate( cells(n_rows+1_int64,n_cols) )
-			do j = lbound(x, dim=1, kind=int64), ubound(x, dim=1, kind=int64)
+			do j = lbound(x, dim=2, kind=int64), ubound(x, dim=2, kind=int64)
 				cells(1_int64,j)%s = header(j)
 			end do
 		end if
@@ -23571,7 +23571,7 @@ submodule (io_fortran_lib) text_io
 		else
 			header_present = .true.
 			allocate( cells(n_rows+1_int64,n_cols) )
-			do j = lbound(x, dim=1, kind=int64), ubound(x, dim=1, kind=int64)
+			do j = lbound(x, dim=2, kind=int64), ubound(x, dim=2, kind=int64)
 				cells(1_int64,j)%s = header(j)
 			end do
 		end if
