@@ -1048,125 +1048,123 @@ submodule (io_fortran_lib) text_io
         type(String), allocatable :: cells(:,:)
         integer(i64)              :: n_rows, n_cols
 
+        integer(i64) :: file_length, row, col, l, i
+        integer      :: row_sep, col_sep, col_sep_len, open_paren, close_paren, current
+        integer      :: file_unit, iostat
+        logical      :: exists, in_paren
+
         if ( len(im) == 0 ) then
-            custom_processing: block
-                integer(i64) :: file_length, row, col, l, i
-                integer      :: row_sep, col_sep, col_sep_len, open_paren, close_paren, current
-                integer      :: file_unit, iostat
-                logical      :: exists, in_paren
+            inquire(file=file_name, exist=exists)
 
-                inquire(file=file_name, exist=exists)
+            file_unit = input_unit
 
-                file_unit = input_unit
+            if ( exists ) then
+                open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                      action="read", access="stream", position="rewind" )
+            else
+                error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+                return
+            end if
 
-                if ( exists ) then
-                    open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
-                          action="read", access="stream", position="rewind" )
-                else
-                    error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
-                    return
+            inquire(file=file_name, size=file_length)
+
+            if ( file_length == 0_i64 ) then
+                error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
+                return
+            end if
+
+            allocate( character(len=file_length) :: text_file%s )
+            read(unit=file_unit, iostat=iostat) text_file%s
+            close(file_unit)
+
+            if ( iostat > 0 ) then
+                error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+                return
+            end if
+
+            col_sep_len = len(delim)
+            row_sep = iachar(NL); col_sep = iachar(delim(1:1))
+            open_paren = iachar('('); close_paren = iachar(')'); in_paren = .false.
+
+            n_rows = text_file%count(match=NL)
+
+            n_cols = 1_i64; i = 1_i64; get_n_cols: do
+                current = iachar(text_file%s(i:i))
+
+                if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. &
+                     (current/=row_sep) ) then
+                    i = i + 1_i64; cycle
                 end if
 
-                inquire( file=file_name, size=file_length )
-
-                if ( file_length == 0_i64 ) then
-                    error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
-                    return
+                if ( current == open_paren ) then
+                    in_paren = .true.; i = i + 1_i64; cycle
                 end if
 
-                allocate( character(len=file_length) :: text_file%s )
-                read(unit=file_unit, iostat=iostat) text_file%s
-                close(file_unit)
-
-                if ( iostat > 0 ) then
-                    error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
-                    return
+                if ( current == close_paren ) then
+                    in_paren = .false.; i = i + 1_i64; cycle
                 end if
 
-                col_sep_len = len(delim)
-                row_sep = iachar(NL); col_sep = iachar(delim(1:1))
-                open_paren = iachar('('); close_paren = iachar(')'); in_paren = .false.
-
-                n_rows = text_file%count(match=NL)
-
-                n_cols = 1_i64; i = 1_i64; get_n_cols: do
-                    current = iachar(text_file%s(i:i))
-
-                    if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. &
-                         (current/=row_sep) ) then
+                if ( current == col_sep ) then
+                    if ( in_paren ) then
                         i = i + 1_i64; cycle
                     end if
 
-                    if ( current == open_paren ) then
-                        in_paren = .true.; i = i + 1_i64; cycle
-                    end if
-
-                    if ( current == close_paren ) then
-                        in_paren = .false.; i = i + 1_i64; cycle
-                    end if
-
-                    if ( current == col_sep ) then
-                        if ( in_paren ) then
-                            i = i + 1_i64; cycle
-                        end if
-
-                        if ( col_sep_len == 1 ) then
-                            n_cols = n_cols + 1_i64; i = i + 1_i64; cycle
+                    if ( col_sep_len == 1 ) then
+                        n_cols = n_cols + 1_i64; i = i + 1_i64; cycle
+                    else
+                        if ( text_file%s(i:i+col_sep_len-1_i64) == delim ) then
+                            n_cols = n_cols + 1_i64; i = i + col_sep_len; cycle
                         else
-                            if ( text_file%s(i:i+col_sep_len-1_i64) == delim ) then
-                                n_cols = n_cols + 1_i64; i = i + col_sep_len; cycle
-                            else
-                                i = i + 1_i64; cycle
-                            end if
+                            i = i + 1_i64; cycle
                         end if
                     end if
+                end if
 
-                    if ( current == row_sep ) exit get_n_cols
-                end do get_n_cols
+                if ( current == row_sep ) exit get_n_cols
+            end do get_n_cols
 
-                allocate( cells(n_rows,n_cols) )
+            allocate( cells(n_rows,n_cols) )
 
-                row = 1_i64; col = 1_i64; l = 1_i64; i = 1_i64; positional_transfers: do
-                    current = iachar(text_file%s(i:i))
+            row = 1_i64; col = 1_i64; l = 1_i64; i = 1_i64; positional_transfers: do
+                current = iachar(text_file%s(i:i))
 
-                    if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. &
-                         (current/=row_sep) ) then
+                if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. &
+                     (current/=row_sep) ) then
+                    i = i + 1_i64; cycle
+                end if
+
+                if ( current == open_paren ) then
+                    in_paren = .true.; i = i + 1_i64; cycle
+                end if
+
+                if ( current == close_paren ) then
+                    in_paren = .false.; i = i + 1_i64; cycle
+                end if
+
+                if ( current == col_sep ) then
+                    if ( in_paren ) then
                         i = i + 1_i64; cycle
                     end if
 
-                    if ( current == open_paren ) then
-                        in_paren = .true.; i = i + 1_i64; cycle
-                    end if
-
-                    if ( current == close_paren ) then
-                        in_paren = .false.; i = i + 1_i64; cycle
-                    end if
-
-                    if ( current == col_sep ) then
-                        if ( in_paren ) then
-                            i = i + 1_i64; cycle
-                        end if
-
-                        if ( col_sep_len == 1 ) then
-                            cells(row,col)%s = text_file%s(l:i-1); i = i + 1_i64; l = i
+                    if ( col_sep_len == 1 ) then
+                        cells(row,col)%s = text_file%s(l:i-1); i = i + 1_i64; l = i
+                        col = col + 1_i64; cycle
+                    else
+                        if ( text_file%s(i:i+col_sep_len-1_i64) == delim ) then
+                            cells(row,col)%s = text_file%s(l:i-1); i = i + col_sep_len; l = i
                             col = col + 1_i64; cycle
                         else
-                            if ( text_file%s(i:i+col_sep_len-1_i64) == delim ) then
-                                cells(row,col)%s = text_file%s(l:i-1); i = i + col_sep_len; l = i
-                                col = col + 1_i64; cycle
-                            else
-                                i = i + 1_i64; cycle
-                            end if
+                            i = i + 1_i64; cycle
                         end if
                     end if
+                end if
 
-                    if ( current == row_sep ) then
-                        cells(row,col)%s = text_file%s(l:i-1)
-                        if ( row == n_rows ) exit custom_processing
-                        i = i + 1_i64; l = i; col = 1_i64; row = row + 1_i64; cycle
-                    end if
-                end do positional_transfers
-            end block custom_processing
+                if ( current == row_sep ) then
+                    cells(row,col)%s = text_file%s(l:i-1)
+                    if ( row == n_rows ) exit positional_transfers
+                    i = i + 1_i64; l = i; col = 1_i64; row = row + 1_i64; cycle
+                end if
+            end do positional_transfers
         else
             call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
 
@@ -1220,125 +1218,123 @@ submodule (io_fortran_lib) text_io
         type(String), allocatable :: cells(:,:)
         integer(i64)              :: n_rows, n_cols
 
+        integer(i64) :: file_length, row, col, l, i
+        integer      :: row_sep, col_sep, col_sep_len, open_paren, close_paren, current
+        integer      :: file_unit, iostat
+        logical      :: exists, in_paren
+
         if ( len(im) == 0 ) then
-            custom_processing: block
-                integer(i64) :: file_length, row, col, l, i
-                integer      :: row_sep, col_sep, col_sep_len, open_paren, close_paren, current
-                integer      :: file_unit, iostat
-                logical      :: exists, in_paren
+            inquire(file=file_name, exist=exists)
 
-                inquire(file=file_name, exist=exists)
+            file_unit = input_unit
 
-                file_unit = input_unit
+            if ( exists ) then
+                open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                      action="read", access="stream", position="rewind" )
+            else
+                error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+                return
+            end if
 
-                if ( exists ) then
-                    open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
-                          action="read", access="stream", position="rewind" )
-                else
-                    error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
-                    return
+            inquire(file=file_name, size=file_length)
+
+            if ( file_length == 0_i64 ) then
+                error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
+                return
+            end if
+
+            allocate( character(len=file_length) :: text_file%s )
+            read(unit=file_unit, iostat=iostat) text_file%s
+            close(file_unit)
+
+            if ( iostat > 0 ) then
+                error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+                return
+            end if
+
+            col_sep_len = len(delim)
+            row_sep = iachar(NL); col_sep = iachar(delim(1:1))
+            open_paren = iachar('('); close_paren = iachar(')'); in_paren = .false.
+
+            n_rows = text_file%count(match=NL)
+
+            n_cols = 1_i64; i = 1_i64; get_n_cols: do
+                current = iachar(text_file%s(i:i))
+
+                if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. &
+                     (current/=row_sep) ) then
+                    i = i + 1_i64; cycle
                 end if
 
-                inquire( file=file_name, size=file_length )
-
-                if ( file_length == 0_i64 ) then
-                    error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
-                    return
+                if ( current == open_paren ) then
+                    in_paren = .true.; i = i + 1_i64; cycle
                 end if
 
-                allocate( character(len=file_length) :: text_file%s )
-                read(unit=file_unit, iostat=iostat) text_file%s
-                close(file_unit)
-
-                if ( iostat > 0 ) then
-                    error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
-                    return
+                if ( current == close_paren ) then
+                    in_paren = .false.; i = i + 1_i64; cycle
                 end if
 
-                col_sep_len = len(delim)
-                row_sep = iachar(NL); col_sep = iachar(delim(1:1))
-                open_paren = iachar('('); close_paren = iachar(')'); in_paren = .false.
-
-                n_rows = text_file%count(match=NL)
-
-                n_cols = 1_i64; i = 1_i64; get_n_cols: do
-                    current = iachar(text_file%s(i:i))
-
-                    if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. &
-                         (current/=row_sep) ) then
+                if ( current == col_sep ) then
+                    if ( in_paren ) then
                         i = i + 1_i64; cycle
                     end if
 
-                    if ( current == open_paren ) then
-                        in_paren = .true.; i = i + 1_i64; cycle
-                    end if
-
-                    if ( current == close_paren ) then
-                        in_paren = .false.; i = i + 1_i64; cycle
-                    end if
-
-                    if ( current == col_sep ) then
-                        if ( in_paren ) then
-                            i = i + 1_i64; cycle
-                        end if
-
-                        if ( col_sep_len == 1 ) then
-                            n_cols = n_cols + 1_i64; i = i + 1_i64; cycle
+                    if ( col_sep_len == 1 ) then
+                        n_cols = n_cols + 1_i64; i = i + 1_i64; cycle
+                    else
+                        if ( text_file%s(i:i+col_sep_len-1_i64) == delim ) then
+                            n_cols = n_cols + 1_i64; i = i + col_sep_len; cycle
                         else
-                            if ( text_file%s(i:i+col_sep_len-1_i64) == delim ) then
-                                n_cols = n_cols + 1_i64; i = i + col_sep_len; cycle
-                            else
-                                i = i + 1_i64; cycle
-                            end if
+                            i = i + 1_i64; cycle
                         end if
                     end if
+                end if
 
-                    if ( current == row_sep ) exit get_n_cols
-                end do get_n_cols
+                if ( current == row_sep ) exit get_n_cols
+            end do get_n_cols
 
-                allocate( cells(n_rows,n_cols) )
+            allocate( cells(n_rows,n_cols) )
 
-                row = 1_i64; col = 1_i64; l = 1_i64; i = 1_i64; positional_transfers: do
-                    current = iachar(text_file%s(i:i))
+            row = 1_i64; col = 1_i64; l = 1_i64; i = 1_i64; positional_transfers: do
+                current = iachar(text_file%s(i:i))
 
-                    if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. &
-                         (current/=row_sep) ) then
+                if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. &
+                     (current/=row_sep) ) then
+                    i = i + 1_i64; cycle
+                end if
+
+                if ( current == open_paren ) then
+                    in_paren = .true.; i = i + 1_i64; cycle
+                end if
+
+                if ( current == close_paren ) then
+                    in_paren = .false.; i = i + 1_i64; cycle
+                end if
+
+                if ( current == col_sep ) then
+                    if ( in_paren ) then
                         i = i + 1_i64; cycle
                     end if
 
-                    if ( current == open_paren ) then
-                        in_paren = .true.; i = i + 1_i64; cycle
-                    end if
-
-                    if ( current == close_paren ) then
-                        in_paren = .false.; i = i + 1_i64; cycle
-                    end if
-
-                    if ( current == col_sep ) then
-                        if ( in_paren ) then
-                            i = i + 1_i64; cycle
-                        end if
-
-                        if ( col_sep_len == 1 ) then
-                            cells(row,col)%s = text_file%s(l:i-1); i = i + 1_i64; l = i
+                    if ( col_sep_len == 1 ) then
+                        cells(row,col)%s = text_file%s(l:i-1); i = i + 1_i64; l = i
+                        col = col + 1_i64; cycle
+                    else
+                        if ( text_file%s(i:i+col_sep_len-1_i64) == delim ) then
+                            cells(row,col)%s = text_file%s(l:i-1); i = i + col_sep_len; l = i
                             col = col + 1_i64; cycle
                         else
-                            if ( text_file%s(i:i+col_sep_len-1_i64) == delim ) then
-                                cells(row,col)%s = text_file%s(l:i-1); i = i + col_sep_len; l = i
-                                col = col + 1_i64; cycle
-                            else
-                                i = i + 1_i64; cycle
-                            end if
+                            i = i + 1_i64; cycle
                         end if
                     end if
+                end if
 
-                    if ( current == row_sep ) then
-                        cells(row,col)%s = text_file%s(l:i-1)
-                        if ( row == n_rows ) exit custom_processing
-                        i = i + 1_i64; l = i; col = 1_i64; row = row + 1_i64; cycle
-                    end if
-                end do positional_transfers
-            end block custom_processing
+                if ( current == row_sep ) then
+                    cells(row,col)%s = text_file%s(l:i-1)
+                    if ( row == n_rows ) exit positional_transfers
+                    i = i + 1_i64; l = i; col = 1_i64; row = row + 1_i64; cycle
+                end if
+            end do positional_transfers
         else
             call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
 
@@ -1392,125 +1388,123 @@ submodule (io_fortran_lib) text_io
         type(String), allocatable :: cells(:,:)
         integer(i64)              :: n_rows, n_cols
 
+        integer(i64) :: file_length, row, col, l, i
+        integer      :: row_sep, col_sep, col_sep_len, open_paren, close_paren, current
+        integer      :: file_unit, iostat
+        logical      :: exists, in_paren
+
         if ( len(im) == 0 ) then
-            custom_processing: block
-                integer(i64) :: file_length, row, col, l, i
-                integer      :: row_sep, col_sep, col_sep_len, open_paren, close_paren, current
-                integer      :: file_unit, iostat
-                logical      :: exists, in_paren
+            inquire(file=file_name, exist=exists)
 
-                inquire(file=file_name, exist=exists)
+            file_unit = input_unit
 
-                file_unit = input_unit
+            if ( exists ) then
+                open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                      action="read", access="stream", position="rewind" )
+            else
+                error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+                return
+            end if
 
-                if ( exists ) then
-                    open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
-                          action="read", access="stream", position="rewind" )
-                else
-                    error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
-                    return
+            inquire(file=file_name, size=file_length)
+
+            if ( file_length == 0_i64 ) then
+                error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
+                return
+            end if
+
+            allocate( character(len=file_length) :: text_file%s )
+            read(unit=file_unit, iostat=iostat) text_file%s
+            close(file_unit)
+
+            if ( iostat > 0 ) then
+                error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+                return
+            end if
+
+            col_sep_len = len(delim)
+            row_sep = iachar(NL); col_sep = iachar(delim(1:1))
+            open_paren = iachar('('); close_paren = iachar(')'); in_paren = .false.
+
+            n_rows = text_file%count(match=NL)
+
+            n_cols = 1_i64; i = 1_i64; get_n_cols: do
+                current = iachar(text_file%s(i:i))
+
+                if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. &
+                     (current/=row_sep) ) then
+                    i = i + 1_i64; cycle
                 end if
 
-                inquire( file=file_name, size=file_length )
-
-                if ( file_length == 0_i64 ) then
-                    error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
-                    return
+                if ( current == open_paren ) then
+                    in_paren = .true.; i = i + 1_i64; cycle
                 end if
 
-                allocate( character(len=file_length) :: text_file%s )
-                read(unit=file_unit, iostat=iostat) text_file%s
-                close(file_unit)
-
-                if ( iostat > 0 ) then
-                    error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
-                    return
+                if ( current == close_paren ) then
+                    in_paren = .false.; i = i + 1_i64; cycle
                 end if
 
-                col_sep_len = len(delim)
-                row_sep = iachar(NL); col_sep = iachar(delim(1:1))
-                open_paren = iachar('('); close_paren = iachar(')'); in_paren = .false.
-
-                n_rows = text_file%count(match=NL)
-
-                n_cols = 1_i64; i = 1_i64; get_n_cols: do
-                    current = iachar(text_file%s(i:i))
-
-                    if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. &
-                         (current/=row_sep) ) then
+                if ( current == col_sep ) then
+                    if ( in_paren ) then
                         i = i + 1_i64; cycle
                     end if
 
-                    if ( current == open_paren ) then
-                        in_paren = .true.; i = i + 1_i64; cycle
-                    end if
-
-                    if ( current == close_paren ) then
-                        in_paren = .false.; i = i + 1_i64; cycle
-                    end if
-
-                    if ( current == col_sep ) then
-                        if ( in_paren ) then
-                            i = i + 1_i64; cycle
-                        end if
-
-                        if ( col_sep_len == 1 ) then
-                            n_cols = n_cols + 1_i64; i = i + 1_i64; cycle
+                    if ( col_sep_len == 1 ) then
+                        n_cols = n_cols + 1_i64; i = i + 1_i64; cycle
+                    else
+                        if ( text_file%s(i:i+col_sep_len-1_i64) == delim ) then
+                            n_cols = n_cols + 1_i64; i = i + col_sep_len; cycle
                         else
-                            if ( text_file%s(i:i+col_sep_len-1_i64) == delim ) then
-                                n_cols = n_cols + 1_i64; i = i + col_sep_len; cycle
-                            else
-                                i = i + 1_i64; cycle
-                            end if
+                            i = i + 1_i64; cycle
                         end if
                     end if
+                end if
 
-                    if ( current == row_sep ) exit get_n_cols
-                end do get_n_cols
+                if ( current == row_sep ) exit get_n_cols
+            end do get_n_cols
 
-                allocate( cells(n_rows,n_cols) )
+            allocate( cells(n_rows,n_cols) )
 
-                row = 1_i64; col = 1_i64; l = 1_i64; i = 1_i64; positional_transfers: do
-                    current = iachar(text_file%s(i:i))
+            row = 1_i64; col = 1_i64; l = 1_i64; i = 1_i64; positional_transfers: do
+                current = iachar(text_file%s(i:i))
 
-                    if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. &
-                         (current/=row_sep) ) then
+                if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. &
+                     (current/=row_sep) ) then
+                    i = i + 1_i64; cycle
+                end if
+
+                if ( current == open_paren ) then
+                    in_paren = .true.; i = i + 1_i64; cycle
+                end if
+
+                if ( current == close_paren ) then
+                    in_paren = .false.; i = i + 1_i64; cycle
+                end if
+
+                if ( current == col_sep ) then
+                    if ( in_paren ) then
                         i = i + 1_i64; cycle
                     end if
 
-                    if ( current == open_paren ) then
-                        in_paren = .true.; i = i + 1_i64; cycle
-                    end if
-
-                    if ( current == close_paren ) then
-                        in_paren = .false.; i = i + 1_i64; cycle
-                    end if
-
-                    if ( current == col_sep ) then
-                        if ( in_paren ) then
-                            i = i + 1_i64; cycle
-                        end if
-
-                        if ( col_sep_len == 1 ) then
-                            cells(row,col)%s = text_file%s(l:i-1); i = i + 1_i64; l = i
+                    if ( col_sep_len == 1 ) then
+                        cells(row,col)%s = text_file%s(l:i-1); i = i + 1_i64; l = i
+                        col = col + 1_i64; cycle
+                    else
+                        if ( text_file%s(i:i+col_sep_len-1_i64) == delim ) then
+                            cells(row,col)%s = text_file%s(l:i-1); i = i + col_sep_len; l = i
                             col = col + 1_i64; cycle
                         else
-                            if ( text_file%s(i:i+col_sep_len-1_i64) == delim ) then
-                                cells(row,col)%s = text_file%s(l:i-1); i = i + col_sep_len; l = i
-                                col = col + 1_i64; cycle
-                            else
-                                i = i + 1_i64; cycle
-                            end if
+                            i = i + 1_i64; cycle
                         end if
                     end if
+                end if
 
-                    if ( current == row_sep ) then
-                        cells(row,col)%s = text_file%s(l:i-1)
-                        if ( row == n_rows ) exit custom_processing
-                        i = i + 1_i64; l = i; col = 1_i64; row = row + 1_i64; cycle
-                    end if
-                end do positional_transfers
-            end block custom_processing
+                if ( current == row_sep ) then
+                    cells(row,col)%s = text_file%s(l:i-1)
+                    if ( row == n_rows ) exit positional_transfers
+                    i = i + 1_i64; l = i; col = 1_i64; row = row + 1_i64; cycle
+                end if
+            end do positional_transfers
         else
             call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
 
@@ -1565,125 +1559,123 @@ submodule (io_fortran_lib) text_io
         type(String), allocatable :: cells(:,:)
         integer(i64)              :: n_rows, n_cols
 
+        integer(i64) :: file_length, row, col, l, i
+        integer      :: row_sep, col_sep, col_sep_len, open_paren, close_paren, current
+        integer      :: file_unit, iostat
+        logical      :: exists, in_paren
+
         if ( len(im) == 0 ) then
-            custom_processing: block
-                integer(i64) :: file_length, row, col, l, i
-                integer      :: row_sep, col_sep, col_sep_len, open_paren, close_paren, current
-                integer      :: file_unit, iostat
-                logical      :: exists, in_paren
+            inquire(file=file_name, exist=exists)
 
-                inquire(file=file_name, exist=exists)
+            file_unit = input_unit
 
-                file_unit = input_unit
+            if ( exists ) then
+                open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                      action="read", access="stream", position="rewind" )
+            else
+                error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+                return
+            end if
 
-                if ( exists ) then
-                    open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
-                          action="read", access="stream", position="rewind" )
-                else
-                    error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
-                    return
+            inquire(file=file_name, size=file_length)
+
+            if ( file_length == 0_i64 ) then
+                error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
+                return
+            end if
+
+            allocate( character(len=file_length) :: text_file%s )
+            read(unit=file_unit, iostat=iostat) text_file%s
+            close(file_unit)
+
+            if ( iostat > 0 ) then
+                error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+                return
+            end if
+
+            col_sep_len = len(delim)
+            row_sep = iachar(NL); col_sep = iachar(delim(1:1))
+            open_paren = iachar('('); close_paren = iachar(')'); in_paren = .false.
+
+            n_rows = text_file%count(match=NL)
+
+            n_cols = 1_i64; i = 1_i64; get_n_cols: do
+                current = iachar(text_file%s(i:i))
+
+                if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. &
+                     (current/=row_sep) ) then
+                    i = i + 1_i64; cycle
                 end if
 
-                inquire( file=file_name, size=file_length )
-
-                if ( file_length == 0_i64 ) then
-                    error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
-                    return
+                if ( current == open_paren ) then
+                    in_paren = .true.; i = i + 1_i64; cycle
                 end if
 
-                allocate( character(len=file_length) :: text_file%s )
-                read(unit=file_unit, iostat=iostat) text_file%s
-                close(file_unit)
-
-                if ( iostat > 0 ) then
-                    error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
-                    return
+                if ( current == close_paren ) then
+                    in_paren = .false.; i = i + 1_i64; cycle
                 end if
 
-                col_sep_len = len(delim)
-                row_sep = iachar(NL); col_sep = iachar(delim(1:1))
-                open_paren = iachar('('); close_paren = iachar(')'); in_paren = .false.
-
-                n_rows = text_file%count(match=NL)
-
-                n_cols = 1_i64; i = 1_i64; get_n_cols: do
-                    current = iachar(text_file%s(i:i))
-
-                    if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. &
-                         (current/=row_sep) ) then
+                if ( current == col_sep ) then
+                    if ( in_paren ) then
                         i = i + 1_i64; cycle
                     end if
 
-                    if ( current == open_paren ) then
-                        in_paren = .true.; i = i + 1_i64; cycle
-                    end if
-
-                    if ( current == close_paren ) then
-                        in_paren = .false.; i = i + 1_i64; cycle
-                    end if
-
-                    if ( current == col_sep ) then
-                        if ( in_paren ) then
-                            i = i + 1_i64; cycle
-                        end if
-
-                        if ( col_sep_len == 1 ) then
-                            n_cols = n_cols + 1_i64; i = i + 1_i64; cycle
+                    if ( col_sep_len == 1 ) then
+                        n_cols = n_cols + 1_i64; i = i + 1_i64; cycle
+                    else
+                        if ( text_file%s(i:i+col_sep_len-1_i64) == delim ) then
+                            n_cols = n_cols + 1_i64; i = i + col_sep_len; cycle
                         else
-                            if ( text_file%s(i:i+col_sep_len-1_i64) == delim ) then
-                                n_cols = n_cols + 1_i64; i = i + col_sep_len; cycle
-                            else
-                                i = i + 1_i64; cycle
-                            end if
+                            i = i + 1_i64; cycle
                         end if
                     end if
+                end if
 
-                    if ( current == row_sep ) exit get_n_cols
-                end do get_n_cols
+                if ( current == row_sep ) exit get_n_cols
+            end do get_n_cols
 
-                allocate( cells(n_rows,n_cols) )
+            allocate( cells(n_rows,n_cols) )
 
-                row = 1_i64; col = 1_i64; l = 1_i64; i = 1_i64; positional_transfers: do
-                    current = iachar(text_file%s(i:i))
+            row = 1_i64; col = 1_i64; l = 1_i64; i = 1_i64; positional_transfers: do
+                current = iachar(text_file%s(i:i))
 
-                    if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. &
-                         (current/=row_sep) ) then
+                if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. &
+                     (current/=row_sep) ) then
+                    i = i + 1_i64; cycle
+                end if
+
+                if ( current == open_paren ) then
+                    in_paren = .true.; i = i + 1_i64; cycle
+                end if
+
+                if ( current == close_paren ) then
+                    in_paren = .false.; i = i + 1_i64; cycle
+                end if
+
+                if ( current == col_sep ) then
+                    if ( in_paren ) then
                         i = i + 1_i64; cycle
                     end if
 
-                    if ( current == open_paren ) then
-                        in_paren = .true.; i = i + 1_i64; cycle
-                    end if
-
-                    if ( current == close_paren ) then
-                        in_paren = .false.; i = i + 1_i64; cycle
-                    end if
-
-                    if ( current == col_sep ) then
-                        if ( in_paren ) then
-                            i = i + 1_i64; cycle
-                        end if
-
-                        if ( col_sep_len == 1 ) then
-                            cells(row,col)%s = text_file%s(l:i-1); i = i + 1_i64; l = i
+                    if ( col_sep_len == 1 ) then
+                        cells(row,col)%s = text_file%s(l:i-1); i = i + 1_i64; l = i
+                        col = col + 1_i64; cycle
+                    else
+                        if ( text_file%s(i:i+col_sep_len-1_i64) == delim ) then
+                            cells(row,col)%s = text_file%s(l:i-1); i = i + col_sep_len; l = i
                             col = col + 1_i64; cycle
                         else
-                            if ( text_file%s(i:i+col_sep_len-1_i64) == delim ) then
-                                cells(row,col)%s = text_file%s(l:i-1); i = i + col_sep_len; l = i
-                                col = col + 1_i64; cycle
-                            else
-                                i = i + 1_i64; cycle
-                            end if
+                            i = i + 1_i64; cycle
                         end if
                     end if
+                end if
 
-                    if ( current == row_sep ) then
-                        cells(row,col)%s = text_file%s(l:i-1)
-                        if ( row == n_rows ) exit custom_processing
-                        i = i + 1_i64; l = i; col = 1_i64; row = row + 1_i64; cycle
-                    end if
-                end do positional_transfers
-            end block custom_processing
+                if ( current == row_sep ) then
+                    cells(row,col)%s = text_file%s(l:i-1)
+                    if ( row == n_rows ) exit positional_transfers
+                    i = i + 1_i64; l = i; col = 1_i64; row = row + 1_i64; cycle
+                end if
+            end do positional_transfers
         else
             call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
 
@@ -1709,125 +1701,123 @@ submodule (io_fortran_lib) text_io
         type(String), allocatable :: cells(:,:)
         integer(i64)              :: n_rows, n_cols
 
+        integer(i64) :: file_length, row, col, l, i
+        integer      :: row_sep, col_sep, col_sep_len, open_paren, close_paren, current
+        integer      :: file_unit, iostat
+        logical      :: exists, in_paren
+
         if ( len(im) == 0 ) then
-            custom_processing: block
-                integer(i64) :: file_length, row, col, l, i
-                integer      :: row_sep, col_sep, col_sep_len, open_paren, close_paren, current
-                integer      :: file_unit, iostat
-                logical      :: exists, in_paren
+            inquire(file=file_name, exist=exists)
 
-                inquire(file=file_name, exist=exists)
+            file_unit = input_unit
 
-                file_unit = input_unit
+            if ( exists ) then
+                open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                      action="read", access="stream", position="rewind" )
+            else
+                error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+                return
+            end if
 
-                if ( exists ) then
-                    open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
-                          action="read", access="stream", position="rewind" )
-                else
-                    error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
-                    return
+            inquire(file=file_name, size=file_length)
+
+            if ( file_length == 0_i64 ) then
+                error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
+                return
+            end if
+
+            allocate( character(len=file_length) :: text_file%s )
+            read(unit=file_unit, iostat=iostat) text_file%s
+            close(file_unit)
+
+            if ( iostat > 0 ) then
+                error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+                return
+            end if
+
+            col_sep_len = len(delim)
+            row_sep = iachar(NL); col_sep = iachar(delim(1:1))
+            open_paren = iachar('('); close_paren = iachar(')'); in_paren = .false.
+
+            n_rows = text_file%count(match=NL)
+
+            n_cols = 1_i64; i = 1_i64; get_n_cols: do
+                current = iachar(text_file%s(i:i))
+
+                if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. &
+                     (current/=row_sep) ) then
+                    i = i + 1_i64; cycle
                 end if
 
-                inquire( file=file_name, size=file_length )
-
-                if ( file_length == 0_i64 ) then
-                    error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
-                    return
+                if ( current == open_paren ) then
+                    in_paren = .true.; i = i + 1_i64; cycle
                 end if
 
-                allocate( character(len=file_length) :: text_file%s )
-                read(unit=file_unit, iostat=iostat) text_file%s
-                close(file_unit)
-
-                if ( iostat > 0 ) then
-                    error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
-                    return
+                if ( current == close_paren ) then
+                    in_paren = .false.; i = i + 1_i64; cycle
                 end if
 
-                col_sep_len = len(delim)
-                row_sep = iachar(NL); col_sep = iachar(delim(1:1))
-                open_paren = iachar('('); close_paren = iachar(')'); in_paren = .false.
-
-                n_rows = text_file%count(match=NL)
-
-                n_cols = 1_i64; i = 1_i64; get_n_cols: do
-                    current = iachar(text_file%s(i:i))
-
-                    if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. &
-                         (current/=row_sep) ) then
+                if ( current == col_sep ) then
+                    if ( in_paren ) then
                         i = i + 1_i64; cycle
                     end if
 
-                    if ( current == open_paren ) then
-                        in_paren = .true.; i = i + 1_i64; cycle
-                    end if
-
-                    if ( current == close_paren ) then
-                        in_paren = .false.; i = i + 1_i64; cycle
-                    end if
-
-                    if ( current == col_sep ) then
-                        if ( in_paren ) then
-                            i = i + 1_i64; cycle
-                        end if
-
-                        if ( col_sep_len == 1 ) then
-                            n_cols = n_cols + 1_i64; i = i + 1_i64; cycle
+                    if ( col_sep_len == 1 ) then
+                        n_cols = n_cols + 1_i64; i = i + 1_i64; cycle
+                    else
+                        if ( text_file%s(i:i+col_sep_len-1_i64) == delim ) then
+                            n_cols = n_cols + 1_i64; i = i + col_sep_len; cycle
                         else
-                            if ( text_file%s(i:i+col_sep_len-1_i64) == delim ) then
-                                n_cols = n_cols + 1_i64; i = i + col_sep_len; cycle
-                            else
-                                i = i + 1_i64; cycle
-                            end if
+                            i = i + 1_i64; cycle
                         end if
                     end if
+                end if
 
-                    if ( current == row_sep ) exit get_n_cols
-                end do get_n_cols
+                if ( current == row_sep ) exit get_n_cols
+            end do get_n_cols
 
-                allocate( cells(n_rows,n_cols) )
+            allocate( cells(n_rows,n_cols) )
 
-                row = 1_i64; col = 1_i64; l = 1_i64; i = 1_i64; positional_transfers: do
-                    current = iachar(text_file%s(i:i))
+            row = 1_i64; col = 1_i64; l = 1_i64; i = 1_i64; positional_transfers: do
+                current = iachar(text_file%s(i:i))
 
-                    if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. &
-                         (current/=row_sep) ) then
+                if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. &
+                     (current/=row_sep) ) then
+                    i = i + 1_i64; cycle
+                end if
+
+                if ( current == open_paren ) then
+                    in_paren = .true.; i = i + 1_i64; cycle
+                end if
+
+                if ( current == close_paren ) then
+                    in_paren = .false.; i = i + 1_i64; cycle
+                end if
+
+                if ( current == col_sep ) then
+                    if ( in_paren ) then
                         i = i + 1_i64; cycle
                     end if
 
-                    if ( current == open_paren ) then
-                        in_paren = .true.; i = i + 1_i64; cycle
-                    end if
-
-                    if ( current == close_paren ) then
-                        in_paren = .false.; i = i + 1_i64; cycle
-                    end if
-
-                    if ( current == col_sep ) then
-                        if ( in_paren ) then
-                            i = i + 1_i64; cycle
-                        end if
-
-                        if ( col_sep_len == 1 ) then
-                            cells(row,col)%s = text_file%s(l:i-1); i = i + 1_i64; l = i
+                    if ( col_sep_len == 1 ) then
+                        cells(row,col)%s = text_file%s(l:i-1); i = i + 1_i64; l = i
+                        col = col + 1_i64; cycle
+                    else
+                        if ( text_file%s(i:i+col_sep_len-1_i64) == delim ) then
+                            cells(row,col)%s = text_file%s(l:i-1); i = i + col_sep_len; l = i
                             col = col + 1_i64; cycle
                         else
-                            if ( text_file%s(i:i+col_sep_len-1_i64) == delim ) then
-                                cells(row,col)%s = text_file%s(l:i-1); i = i + col_sep_len; l = i
-                                col = col + 1_i64; cycle
-                            else
-                                i = i + 1_i64; cycle
-                            end if
+                            i = i + 1_i64; cycle
                         end if
                     end if
+                end if
 
-                    if ( current == row_sep ) then
-                        cells(row,col)%s = text_file%s(l:i-1)
-                        if ( row == n_rows ) exit custom_processing
-                        i = i + 1_i64; l = i; col = 1_i64; row = row + 1_i64; cycle
-                    end if
-                end do positional_transfers
-            end block custom_processing
+                if ( current == row_sep ) then
+                    cells(row,col)%s = text_file%s(l:i-1)
+                    if ( row == n_rows ) exit positional_transfers
+                    i = i + 1_i64; l = i; col = 1_i64; row = row + 1_i64; cycle
+                end if
+            end do positional_transfers
         else
             call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
 
@@ -1853,125 +1843,123 @@ submodule (io_fortran_lib) text_io
         type(String), allocatable :: cells(:,:)
         integer(i64)              :: n_rows, n_cols
 
+        integer(i64) :: file_length, row, col, l, i
+        integer      :: row_sep, col_sep, col_sep_len, open_paren, close_paren, current
+        integer      :: file_unit, iostat
+        logical      :: exists, in_paren
+
         if ( len(im) == 0 ) then
-            custom_processing: block
-                integer(i64) :: file_length, row, col, l, i
-                integer      :: row_sep, col_sep, col_sep_len, open_paren, close_paren, current
-                integer      :: file_unit, iostat
-                logical      :: exists, in_paren
+            inquire(file=file_name, exist=exists)
 
-                inquire(file=file_name, exist=exists)
+            file_unit = input_unit
 
-                file_unit = input_unit
+            if ( exists ) then
+                open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                      action="read", access="stream", position="rewind" )
+            else
+                error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+                return
+            end if
 
-                if ( exists ) then
-                    open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
-                          action="read", access="stream", position="rewind" )
-                else
-                    error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
-                    return
+            inquire(file=file_name, size=file_length)
+
+            if ( file_length == 0_i64 ) then
+                error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
+                return
+            end if
+
+            allocate( character(len=file_length) :: text_file%s )
+            read(unit=file_unit, iostat=iostat) text_file%s
+            close(file_unit)
+
+            if ( iostat > 0 ) then
+                error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+                return
+            end if
+
+            col_sep_len = len(delim)
+            row_sep = iachar(NL); col_sep = iachar(delim(1:1))
+            open_paren = iachar('('); close_paren = iachar(')'); in_paren = .false.
+
+            n_rows = text_file%count(match=NL)
+
+            n_cols = 1_i64; i = 1_i64; get_n_cols: do
+                current = iachar(text_file%s(i:i))
+
+                if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. &
+                     (current/=row_sep) ) then
+                    i = i + 1_i64; cycle
                 end if
 
-                inquire( file=file_name, size=file_length )
-
-                if ( file_length == 0_i64 ) then
-                    error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
-                    return
+                if ( current == open_paren ) then
+                    in_paren = .true.; i = i + 1_i64; cycle
                 end if
 
-                allocate( character(len=file_length) :: text_file%s )
-                read(unit=file_unit, iostat=iostat) text_file%s
-                close(file_unit)
-
-                if ( iostat > 0 ) then
-                    error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
-                    return
+                if ( current == close_paren ) then
+                    in_paren = .false.; i = i + 1_i64; cycle
                 end if
 
-                col_sep_len = len(delim)
-                row_sep = iachar(NL); col_sep = iachar(delim(1:1))
-                open_paren = iachar('('); close_paren = iachar(')'); in_paren = .false.
-
-                n_rows = text_file%count(match=NL)
-
-                n_cols = 1_i64; i = 1_i64; get_n_cols: do
-                    current = iachar(text_file%s(i:i))
-
-                    if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. &
-                         (current/=row_sep) ) then
+                if ( current == col_sep ) then
+                    if ( in_paren ) then
                         i = i + 1_i64; cycle
                     end if
 
-                    if ( current == open_paren ) then
-                        in_paren = .true.; i = i + 1_i64; cycle
-                    end if
-
-                    if ( current == close_paren ) then
-                        in_paren = .false.; i = i + 1_i64; cycle
-                    end if
-
-                    if ( current == col_sep ) then
-                        if ( in_paren ) then
-                            i = i + 1_i64; cycle
-                        end if
-
-                        if ( col_sep_len == 1 ) then
-                            n_cols = n_cols + 1_i64; i = i + 1_i64; cycle
+                    if ( col_sep_len == 1 ) then
+                        n_cols = n_cols + 1_i64; i = i + 1_i64; cycle
+                    else
+                        if ( text_file%s(i:i+col_sep_len-1_i64) == delim ) then
+                            n_cols = n_cols + 1_i64; i = i + col_sep_len; cycle
                         else
-                            if ( text_file%s(i:i+col_sep_len-1_i64) == delim ) then
-                                n_cols = n_cols + 1_i64; i = i + col_sep_len; cycle
-                            else
-                                i = i + 1_i64; cycle
-                            end if
+                            i = i + 1_i64; cycle
                         end if
                     end if
+                end if
 
-                    if ( current == row_sep ) exit get_n_cols
-                end do get_n_cols
+                if ( current == row_sep ) exit get_n_cols
+            end do get_n_cols
 
-                allocate( cells(n_rows,n_cols) )
+            allocate( cells(n_rows,n_cols) )
 
-                row = 1_i64; col = 1_i64; l = 1_i64; i = 1_i64; positional_transfers: do
-                    current = iachar(text_file%s(i:i))
+            row = 1_i64; col = 1_i64; l = 1_i64; i = 1_i64; positional_transfers: do
+                current = iachar(text_file%s(i:i))
 
-                    if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. &
-                         (current/=row_sep) ) then
+                if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. &
+                     (current/=row_sep) ) then
+                    i = i + 1_i64; cycle
+                end if
+
+                if ( current == open_paren ) then
+                    in_paren = .true.; i = i + 1_i64; cycle
+                end if
+
+                if ( current == close_paren ) then
+                    in_paren = .false.; i = i + 1_i64; cycle
+                end if
+
+                if ( current == col_sep ) then
+                    if ( in_paren ) then
                         i = i + 1_i64; cycle
                     end if
 
-                    if ( current == open_paren ) then
-                        in_paren = .true.; i = i + 1_i64; cycle
-                    end if
-
-                    if ( current == close_paren ) then
-                        in_paren = .false.; i = i + 1_i64; cycle
-                    end if
-
-                    if ( current == col_sep ) then
-                        if ( in_paren ) then
-                            i = i + 1_i64; cycle
-                        end if
-
-                        if ( col_sep_len == 1 ) then
-                            cells(row,col)%s = text_file%s(l:i-1); i = i + 1_i64; l = i
+                    if ( col_sep_len == 1 ) then
+                        cells(row,col)%s = text_file%s(l:i-1); i = i + 1_i64; l = i
+                        col = col + 1_i64; cycle
+                    else
+                        if ( text_file%s(i:i+col_sep_len-1_i64) == delim ) then
+                            cells(row,col)%s = text_file%s(l:i-1); i = i + col_sep_len; l = i
                             col = col + 1_i64; cycle
                         else
-                            if ( text_file%s(i:i+col_sep_len-1_i64) == delim ) then
-                                cells(row,col)%s = text_file%s(l:i-1); i = i + col_sep_len; l = i
-                                col = col + 1_i64; cycle
-                            else
-                                i = i + 1_i64; cycle
-                            end if
+                            i = i + 1_i64; cycle
                         end if
                     end if
+                end if
 
-                    if ( current == row_sep ) then
-                        cells(row,col)%s = text_file%s(l:i-1)
-                        if ( row == n_rows ) exit custom_processing
-                        i = i + 1_i64; l = i; col = 1_i64; row = row + 1_i64; cycle
-                    end if
-                end do positional_transfers
-            end block custom_processing
+                if ( current == row_sep ) then
+                    cells(row,col)%s = text_file%s(l:i-1)
+                    if ( row == n_rows ) exit positional_transfers
+                    i = i + 1_i64; l = i; col = 1_i64; row = row + 1_i64; cycle
+                end if
+            end do positional_transfers
         else
             call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
 

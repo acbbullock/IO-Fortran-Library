@@ -1,552 +1,720 @@
-RUNNING TESTS (array) | date: 20230813 | time: 170702.912 | complex kind: 16
-----------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifx_CD8259930F8CA70E /o:build\ifx_CD8259930F8CA70E\IO-Fortran-Library\test_units_array-test-c128.f90.o ".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170703.420 | complex kind: 4
----------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifx_CD8259930F8CA70E /o:build\ifx_CD8259930F8CA70E\IO-Fortran-Library\test_units_array-test-c32.f90.o ".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170703.620 | complex kind: 8
----------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifx_CD8259930F8CA70E /o:build\ifx_CD8259930F8CA70E\IO-Fortran-Library\test_units_array-test-c64.f90.o ".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170703.850 | int kind: 2
------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifx_CD8259930F8CA70E /o:build\ifx_CD8259930F8CA70E\IO-Fortran-Library\test_units_array-test-i16.f90.o ".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170703.890 | int kind: 4
------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifx_CD8259930F8CA70E /o:build\ifx_CD8259930F8CA70E\IO-Fortran-Library\test_units_array-test-i32.f90.o ".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170703.930 | int kind: 8
------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifx_CD8259930F8CA70E /o:build\ifx_CD8259930F8CA70E\IO-Fortran-Library\test_units_array-test-i64.f90.o ".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170703.971 | int kind: 1
------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifx_CD8259930F8CA70E /o:build\ifx_CD8259930F8CA70E\IO-Fortran-Library\test_units_array-test-i8.f90.o ".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170704.010 | real kind: 16
--------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifx_CD8259930F8CA70E /o:build\ifx_CD8259930F8CA70E\IO-Fortran-Library\test_units_array-test-r128.f90.o ".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170704.125 | real kind: 4
-------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifx_CD8259930F8CA70E /o:build\ifx_CD8259930F8CA70E\IO-Fortran-Library\test_units_array-test-r32.f90.o ".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170704.192 | real kind: 8
-------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifx_CD8259930F8CA70E /o:build\ifx_CD8259930F8CA70E\IO-Fortran-Library\test_units_array-test-r64.f90.o ".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170704.550 | int kind: 2
------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifx_CD8259930F8CA70E /o:build\ifx_CD8259930F8CA70E\IO-Fortran-Library\test_units_file-test-i16.f90.o ".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170704.761 | int kind: 4
------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifx_CD8259930F8CA70E /o:build\ifx_CD8259930F8CA70E\IO-Fortran-Library\test_units_file-test-i32.f90.o ".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170705.017 | int kind: 8
------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifx_CD8259930F8CA70E /o:build\ifx_CD8259930F8CA70E\IO-Fortran-Library\test_units_file-test-i64.f90.o ".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170705.333 | int kind: 1
------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifx_CD8259930F8CA70E /o:build\ifx_CD8259930F8CA70E\IO-Fortran-Library\test_units_file-test-i8.f90.o ".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170705.519 | real kind: 16
--------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifx_CD8259930F8CA70E /o:build\ifx_CD8259930F8CA70E\IO-Fortran-Library\test_units_file-test-r128.f90.o ".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170706.540 | real kind: 4
-------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifx_CD8259930F8CA70E /o:build\ifx_CD8259930F8CA70E\IO-Fortran-Library\test_units_file-test-r32.f90.o ".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170707.092 | real kind: 8
-------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifx_CD8259930F8CA70E /o:build\ifx_CD8259930F8CA70E\IO-Fortran-Library\test_units_file-test-r64.f90.o ".
-
-RUNNING TESTS (scalar) | date: 20230813 | time: 170707.743 | complex kind: 16
------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifx_CD8259930F8CA70E /o:build\ifx_CD8259930F8CA70E\IO-Fortran-Library\test_units_scalar-test-c128.f90.o ".
-
-RUNNING TESTS (scalar) | date: 20230813 | time: 170707.783 | complex kind: 4
-----------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifx_CD8259930F8CA70E /o:build\ifx_CD8259930F8CA70E\IO-Fortran-Library\test_units_scalar-test-c32.f90.o ".
-
-RUNNING TESTS (scalar) | date: 20230813 | time: 170707.821 | complex kind: 8
-----------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifx_CD8259930F8CA70E /o:build\ifx_CD8259930F8CA70E\IO-Fortran-Library\test_units_scalar-test-c64.f90.o ".
-
-RUNNING TESTS (scalar) | date: 20230813 | time: 170707.860 | int kind: 2
-------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifx_CD8259930F8CA70E /o:build\ifx_CD8259930F8CA70E\IO-Fortran-Library\test_units_scalar-test-i16.f90.o ".
-
-RUNNING TESTS (scalar) | date: 20230813 | time: 170707.899 | int kind: 4
-------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifx_CD8259930F8CA70E /o:build\ifx_CD8259930F8CA70E\IO-Fortran-Library\test_units_scalar-test-i32.f90.o ".
-
-RUNNING TESTS (scalar) | date: 20230813 | time: 170707.937 | int kind: 8
-------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifx_CD8259930F8CA70E /o:build\ifx_CD8259930F8CA70E\IO-Fortran-Library\test_units_scalar-test-i64.f90.o ".
-
-RUNNING TESTS (scalar) | date: 20230813 | time: 170707.977 | int kind: 1
-------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifx_CD8259930F8CA70E /o:build\ifx_CD8259930F8CA70E\IO-Fortran-Library\test_units_scalar-test-i8.f90.o ".
-
-RUNNING TESTS (scalar) | date: 20230813 | time: 170708.017 | real kind: 16
---------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifx_CD8259930F8CA70E /o:build\ifx_CD8259930F8CA70E\IO-Fortran-Library\test_units_scalar-test-r128.f90.o ".
-
-RUNNING TESTS (scalar) | date: 20230813 | time: 170708.059 | real kind: 4
--------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifx_CD8259930F8CA70E /o:build\ifx_CD8259930F8CA70E\IO-Fortran-Library\test_units_scalar-test-r32.f90.o ".
-
-RUNNING TESTS (scalar) | date: 20230813 | time: 170708.097 | real kind: 8
--------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifx_CD8259930F8CA70E /o:build\ifx_CD8259930F8CA70E\IO-Fortran-Library\test_units_scalar-test-r64.f90.o ".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170814.454 | complex kind: 16
-----------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifx_1C22D9550D54E5CD /o:build\ifx_1C22D9550D54E5CD\IO-Fortran-Library\test_units_array-test-c128.f90.o ".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170814.909 | complex kind: 4
----------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifx_1C22D9550D54E5CD /o:build\ifx_1C22D9550D54E5CD\IO-Fortran-Library\test_units_array-test-c32.f90.o ".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170815.084 | complex kind: 8
----------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifx_1C22D9550D54E5CD /o:build\ifx_1C22D9550D54E5CD\IO-Fortran-Library\test_units_array-test-c64.f90.o ".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170815.282 | int kind: 2
------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifx_1C22D9550D54E5CD /o:build\ifx_1C22D9550D54E5CD\IO-Fortran-Library\test_units_array-test-i16.f90.o ".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170815.320 | int kind: 4
------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifx_1C22D9550D54E5CD /o:build\ifx_1C22D9550D54E5CD\IO-Fortran-Library\test_units_array-test-i32.f90.o ".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170815.359 | int kind: 8
------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifx_1C22D9550D54E5CD /o:build\ifx_1C22D9550D54E5CD\IO-Fortran-Library\test_units_array-test-i64.f90.o ".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170815.397 | int kind: 1
------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifx_1C22D9550D54E5CD /o:build\ifx_1C22D9550D54E5CD\IO-Fortran-Library\test_units_array-test-i8.f90.o ".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170815.435 | real kind: 16
--------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifx_1C22D9550D54E5CD /o:build\ifx_1C22D9550D54E5CD\IO-Fortran-Library\test_units_array-test-r128.f90.o ".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170815.541 | real kind: 4
-------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifx_1C22D9550D54E5CD /o:build\ifx_1C22D9550D54E5CD\IO-Fortran-Library\test_units_array-test-r32.f90.o ".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170815.601 | real kind: 8
-------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifx_1C22D9550D54E5CD /o:build\ifx_1C22D9550D54E5CD\IO-Fortran-Library\test_units_array-test-r64.f90.o ".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170815.880 | int kind: 2
------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifx_1C22D9550D54E5CD /o:build\ifx_1C22D9550D54E5CD\IO-Fortran-Library\test_units_file-test-i16.f90.o ".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170816.070 | int kind: 4
------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifx_1C22D9550D54E5CD /o:build\ifx_1C22D9550D54E5CD\IO-Fortran-Library\test_units_file-test-i32.f90.o ".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170816.276 | int kind: 8
------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifx_1C22D9550D54E5CD /o:build\ifx_1C22D9550D54E5CD\IO-Fortran-Library\test_units_file-test-i64.f90.o ".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170816.498 | int kind: 1
------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifx_1C22D9550D54E5CD /o:build\ifx_1C22D9550D54E5CD\IO-Fortran-Library\test_units_file-test-i8.f90.o ".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170816.700 | real kind: 16
--------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifx_1C22D9550D54E5CD /o:build\ifx_1C22D9550D54E5CD\IO-Fortran-Library\test_units_file-test-r128.f90.o ".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170817.598 | real kind: 4
-------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifx_1C22D9550D54E5CD /o:build\ifx_1C22D9550D54E5CD\IO-Fortran-Library\test_units_file-test-r32.f90.o ".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170818.090 | real kind: 8
-------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifx_1C22D9550D54E5CD /o:build\ifx_1C22D9550D54E5CD\IO-Fortran-Library\test_units_file-test-r64.f90.o ".
-
-RUNNING TESTS (scalar) | date: 20230813 | time: 170818.597 | complex kind: 16
------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifx_1C22D9550D54E5CD /o:build\ifx_1C22D9550D54E5CD\IO-Fortran-Library\test_units_scalar-test-c128.f90.o ".
-
-RUNNING TESTS (scalar) | date: 20230813 | time: 170818.640 | complex kind: 4
-----------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifx_1C22D9550D54E5CD /o:build\ifx_1C22D9550D54E5CD\IO-Fortran-Library\test_units_scalar-test-c32.f90.o ".
-
-RUNNING TESTS (scalar) | date: 20230813 | time: 170818.682 | complex kind: 8
-----------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifx_1C22D9550D54E5CD /o:build\ifx_1C22D9550D54E5CD\IO-Fortran-Library\test_units_scalar-test-c64.f90.o ".
-
-RUNNING TESTS (scalar) | date: 20230813 | time: 170818.723 | int kind: 2
-------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifx_1C22D9550D54E5CD /o:build\ifx_1C22D9550D54E5CD\IO-Fortran-Library\test_units_scalar-test-i16.f90.o ".
-
-RUNNING TESTS (scalar) | date: 20230813 | time: 170818.762 | int kind: 4
-------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifx_1C22D9550D54E5CD /o:build\ifx_1C22D9550D54E5CD\IO-Fortran-Library\test_units_scalar-test-i32.f90.o ".
-
-RUNNING TESTS (scalar) | date: 20230813 | time: 170818.799 | int kind: 8
-------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifx_1C22D9550D54E5CD /o:build\ifx_1C22D9550D54E5CD\IO-Fortran-Library\test_units_scalar-test-i64.f90.o ".
-
-RUNNING TESTS (scalar) | date: 20230813 | time: 170818.837 | int kind: 1
-------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifx_1C22D9550D54E5CD /o:build\ifx_1C22D9550D54E5CD\IO-Fortran-Library\test_units_scalar-test-i8.f90.o ".
-
-RUNNING TESTS (scalar) | date: 20230813 | time: 170818.874 | real kind: 16
---------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifx_1C22D9550D54E5CD /o:build\ifx_1C22D9550D54E5CD\IO-Fortran-Library\test_units_scalar-test-r128.f90.o ".
-
-RUNNING TESTS (scalar) | date: 20230813 | time: 170818.913 | real kind: 4
--------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifx_1C22D9550D54E5CD /o:build\ifx_1C22D9550D54E5CD\IO-Fortran-Library\test_units_scalar-test-r32.f90.o ".
-
-RUNNING TESTS (scalar) | date: 20230813 | time: 170818.950 | real kind: 8
--------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifx_1C22D9550D54E5CD /o:build\ifx_1C22D9550D54E5CD\IO-Fortran-Library\test_units_scalar-test-r64.f90.o ".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170841.944 | complex kind: 16
-----------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifort_CD8259930F8CA70E /o:build\ifort_CD8259930F8CA70E\IO-Fortran-Library\test_units_array-test-c128.f90.o".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170842.535 | complex kind: 4
----------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifort_CD8259930F8CA70E /o:build\ifort_CD8259930F8CA70E\IO-Fortran-Library\test_units_array-test-c32.f90.o".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170842.794 | complex kind: 8
----------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifort_CD8259930F8CA70E /o:build\ifort_CD8259930F8CA70E\IO-Fortran-Library\test_units_array-test-c64.f90.o".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170843.089 | int kind: 2
------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifort_CD8259930F8CA70E /o:build\ifort_CD8259930F8CA70E\IO-Fortran-Library\test_units_array-test-i16.f90.o".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170843.133 | int kind: 4
------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifort_CD8259930F8CA70E /o:build\ifort_CD8259930F8CA70E\IO-Fortran-Library\test_units_array-test-i32.f90.o".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170843.176 | int kind: 8
------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifort_CD8259930F8CA70E /o:build\ifort_CD8259930F8CA70E\IO-Fortran-Library\test_units_array-test-i64.f90.o".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170843.221 | int kind: 1
------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifort_CD8259930F8CA70E /o:build\ifort_CD8259930F8CA70E\IO-Fortran-Library\test_units_array-test-i8.f90.o".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170843.264 | real kind: 16
--------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifort_CD8259930F8CA70E /o:build\ifort_CD8259930F8CA70E\IO-Fortran-Library\test_units_array-test-r128.f90.o".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170843.390 | real kind: 4
-------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifort_CD8259930F8CA70E /o:build\ifort_CD8259930F8CA70E\IO-Fortran-Library\test_units_array-test-r32.f90.o".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170843.464 | real kind: 8
-------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifort_CD8259930F8CA70E /o:build\ifort_CD8259930F8CA70E\IO-Fortran-Library\test_units_array-test-r64.f90.o".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170843.817 | int kind: 2
------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifort_CD8259930F8CA70E /o:build\ifort_CD8259930F8CA70E\IO-Fortran-Library\test_units_file-test-i16.f90.o".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170844.090 | int kind: 4
------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifort_CD8259930F8CA70E /o:build\ifort_CD8259930F8CA70E\IO-Fortran-Library\test_units_file-test-i32.f90.o".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170844.357 | int kind: 8
------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifort_CD8259930F8CA70E /o:build\ifort_CD8259930F8CA70E\IO-Fortran-Library\test_units_file-test-i64.f90.o".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170844.716 | int kind: 1
------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifort_CD8259930F8CA70E /o:build\ifort_CD8259930F8CA70E\IO-Fortran-Library\test_units_file-test-i8.f90.o".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170844.958 | real kind: 16
--------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifort_CD8259930F8CA70E /o:build\ifort_CD8259930F8CA70E\IO-Fortran-Library\test_units_file-test-r128.f90.o".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170846.169 | real kind: 4
-------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifort_CD8259930F8CA70E /o:build\ifort_CD8259930F8CA70E\IO-Fortran-Library\test_units_file-test-r32.f90.o".
-
-RUNNING TESTS (array) | date: 20230813 | time: 170846.872 | real kind: 8
-------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifort_CD8259930F8CA70E /o:build\ifort_CD8259930F8CA70E\IO-Fortran-Library\test_units_file-test-r64.f90.o".
-
-RUNNING TESTS (scalar) | date: 20230813 | time: 170847.628 | complex kind: 16
------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifort_CD8259930F8CA70E /o:build\ifort_CD8259930F8CA70E\IO-Fortran-Library\test_units_scalar-test-c128.f90.o".
-
-RUNNING TESTS (scalar) | date: 20230813 | time: 170847.669 | complex kind: 4
-----------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifort_CD8259930F8CA70E /o:build\ifort_CD8259930F8CA70E\IO-Fortran-Library\test_units_scalar-test-c32.f90.o".
-
-RUNNING TESTS (scalar) | date: 20230813 | time: 170847.709 | complex kind: 8
-----------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifort_CD8259930F8CA70E /o:build\ifort_CD8259930F8CA70E\IO-Fortran-Library\test_units_scalar-test-c64.f90.o".
-
-RUNNING TESTS (scalar) | date: 20230813 | time: 170847.752 | int kind: 2
-------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifort_CD8259930F8CA70E /o:build\ifort_CD8259930F8CA70E\IO-Fortran-Library\test_units_scalar-test-i16.f90.o".
-
-RUNNING TESTS (scalar) | date: 20230813 | time: 170847.791 | int kind: 4
-------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifort_CD8259930F8CA70E /o:build\ifort_CD8259930F8CA70E\IO-Fortran-Library\test_units_scalar-test-i32.f90.o".
-
-RUNNING TESTS (scalar) | date: 20230813 | time: 170847.831 | int kind: 8
-------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifort_CD8259930F8CA70E /o:build\ifort_CD8259930F8CA70E\IO-Fortran-Library\test_units_scalar-test-i64.f90.o".
-
-RUNNING TESTS (scalar) | date: 20230813 | time: 170847.871 | int kind: 1
-------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifort_CD8259930F8CA70E /o:build\ifort_CD8259930F8CA70E\IO-Fortran-Library\test_units_scalar-test-i8.f90.o".
-
-RUNNING TESTS (scalar) | date: 20230813 | time: 170847.911 | real kind: 16
---------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifort_CD8259930F8CA70E /o:build\ifort_CD8259930F8CA70E\IO-Fortran-Library\test_units_scalar-test-r128.f90.o".
-
-RUNNING TESTS (scalar) | date: 20230813 | time: 170847.954 | real kind: 4
--------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifort_CD8259930F8CA70E /o:build\ifort_CD8259930F8CA70E\IO-Fortran-Library\test_units_scalar-test-r32.f90.o".
-
-RUNNING TESTS (scalar) | date: 20230813 | time: 170847.996 | real kind: 8
--------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_CD8259930F8CA70E /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /free /module:build\ifort_CD8259930F8CA70E /o:build\ifort_CD8259930F8CA70E\IO-Fortran-Library\test_units_scalar-test-r64.f90.o".
-
-RUNNING TESTS (array) | date: 20230813 | time: 171059.316 | complex kind: 16
-----------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifort_1C22D9550D54E5CD /o:build\ifort_1C22D9550D54E5CD\IO-Fortran-Library\test_units_array-test-c128.f90.o".
-
-RUNNING TESTS (array) | date: 20230813 | time: 171059.758 | complex kind: 4
----------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifort_1C22D9550D54E5CD /o:build\ifort_1C22D9550D54E5CD\IO-Fortran-Library\test_units_array-test-c32.f90.o".
-
-RUNNING TESTS (array) | date: 20230813 | time: 171059.933 | complex kind: 8
----------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifort_1C22D9550D54E5CD /o:build\ifort_1C22D9550D54E5CD\IO-Fortran-Library\test_units_array-test-c64.f90.o".
-
-RUNNING TESTS (array) | date: 20230813 | time: 171100.131 | int kind: 2
------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifort_1C22D9550D54E5CD /o:build\ifort_1C22D9550D54E5CD\IO-Fortran-Library\test_units_array-test-i16.f90.o".
-
-RUNNING TESTS (array) | date: 20230813 | time: 171100.169 | int kind: 4
------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifort_1C22D9550D54E5CD /o:build\ifort_1C22D9550D54E5CD\IO-Fortran-Library\test_units_array-test-i32.f90.o".
-
-RUNNING TESTS (array) | date: 20230813 | time: 171100.210 | int kind: 8
------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifort_1C22D9550D54E5CD /o:build\ifort_1C22D9550D54E5CD\IO-Fortran-Library\test_units_array-test-i64.f90.o".
-
-RUNNING TESTS (array) | date: 20230813 | time: 171100.250 | int kind: 1
------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifort_1C22D9550D54E5CD /o:build\ifort_1C22D9550D54E5CD\IO-Fortran-Library\test_units_array-test-i8.f90.o".
-
-RUNNING TESTS (array) | date: 20230813 | time: 171100.289 | real kind: 16
--------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifort_1C22D9550D54E5CD /o:build\ifort_1C22D9550D54E5CD\IO-Fortran-Library\test_units_array-test-r128.f90.o".
-
-RUNNING TESTS (array) | date: 20230813 | time: 171100.391 | real kind: 4
-------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifort_1C22D9550D54E5CD /o:build\ifort_1C22D9550D54E5CD\IO-Fortran-Library\test_units_array-test-r32.f90.o".
-
-RUNNING TESTS (array) | date: 20230813 | time: 171100.450 | real kind: 8
-------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifort_1C22D9550D54E5CD /o:build\ifort_1C22D9550D54E5CD\IO-Fortran-Library\test_units_array-test-r64.f90.o".
-
-RUNNING TESTS (array) | date: 20230813 | time: 171100.734 | int kind: 2
------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifort_1C22D9550D54E5CD /o:build\ifort_1C22D9550D54E5CD\IO-Fortran-Library\test_units_file-test-i16.f90.o".
-
-RUNNING TESTS (array) | date: 20230813 | time: 171100.887 | int kind: 4
------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifort_1C22D9550D54E5CD /o:build\ifort_1C22D9550D54E5CD\IO-Fortran-Library\test_units_file-test-i32.f90.o".
-
-RUNNING TESTS (array) | date: 20230813 | time: 171101.055 | int kind: 8
------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifort_1C22D9550D54E5CD /o:build\ifort_1C22D9550D54E5CD\IO-Fortran-Library\test_units_file-test-i64.f90.o".
-
-RUNNING TESTS (array) | date: 20230813 | time: 171101.285 | int kind: 1
------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifort_1C22D9550D54E5CD /o:build\ifort_1C22D9550D54E5CD\IO-Fortran-Library\test_units_file-test-i8.f90.o".
-
-RUNNING TESTS (array) | date: 20230813 | time: 171101.434 | real kind: 16
--------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifort_1C22D9550D54E5CD /o:build\ifort_1C22D9550D54E5CD\IO-Fortran-Library\test_units_file-test-r128.f90.o".
-
-RUNNING TESTS (array) | date: 20230813 | time: 171102.324 | real kind: 4
-------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifort_1C22D9550D54E5CD /o:build\ifort_1C22D9550D54E5CD\IO-Fortran-Library\test_units_file-test-r32.f90.o".
-
-RUNNING TESTS (array) | date: 20230813 | time: 171102.816 | real kind: 8
-------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifort_1C22D9550D54E5CD /o:build\ifort_1C22D9550D54E5CD\IO-Fortran-Library\test_units_file-test-r64.f90.o".
-
-RUNNING TESTS (scalar) | date: 20230813 | time: 171103.353 | complex kind: 16
------------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifort_1C22D9550D54E5CD /o:build\ifort_1C22D9550D54E5CD\IO-Fortran-Library\test_units_scalar-test-c128.f90.o".
-
-RUNNING TESTS (scalar) | date: 20230813 | time: 171103.392 | complex kind: 4
-----------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifort_1C22D9550D54E5CD /o:build\ifort_1C22D9550D54E5CD\IO-Fortran-Library\test_units_scalar-test-c32.f90.o".
-
-RUNNING TESTS (scalar) | date: 20230813 | time: 171103.430 | complex kind: 8
-----------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifort_1C22D9550D54E5CD /o:build\ifort_1C22D9550D54E5CD\IO-Fortran-Library\test_units_scalar-test-c64.f90.o".
-
-RUNNING TESTS (scalar) | date: 20230813 | time: 171103.469 | int kind: 2
-------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifort_1C22D9550D54E5CD /o:build\ifort_1C22D9550D54E5CD\IO-Fortran-Library\test_units_scalar-test-i16.f90.o".
-
-RUNNING TESTS (scalar) | date: 20230813 | time: 171103.507 | int kind: 4
-------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifort_1C22D9550D54E5CD /o:build\ifort_1C22D9550D54E5CD\IO-Fortran-Library\test_units_scalar-test-i32.f90.o".
-
-RUNNING TESTS (scalar) | date: 20230813 | time: 171103.546 | int kind: 8
-------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifort_1C22D9550D54E5CD /o:build\ifort_1C22D9550D54E5CD\IO-Fortran-Library\test_units_scalar-test-i64.f90.o".
-
-RUNNING TESTS (scalar) | date: 20230813 | time: 171103.585 | int kind: 1
-------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifort_1C22D9550D54E5CD /o:build\ifort_1C22D9550D54E5CD\IO-Fortran-Library\test_units_scalar-test-i8.f90.o".
-
-RUNNING TESTS (scalar) | date: 20230813 | time: 171103.625 | real kind: 16
---------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifort_1C22D9550D54E5CD /o:build\ifort_1C22D9550D54E5CD\IO-Fortran-Library\test_units_scalar-test-r128.f90.o".
-
-RUNNING TESTS (scalar) | date: 20230813 | time: 171103.663 | real kind: 4
--------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifort_1C22D9550D54E5CD /o:build\ifort_1C22D9550D54E5CD\IO-Fortran-Library\test_units_scalar-test-r32.f90.o".
-
-RUNNING TESTS (scalar) | date: 20230813 | time: 171103.703 | real kind: 8
--------------------------------------------------------------------------
-All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "/Ibuild\ifort_1C22D9550D54E5CD /c /stand:f18 /O3 /free /module:build\ifort_1C22D9550D54E5CD /o:build\ifort_1C22D9550D54E5CD\IO-Fortran-Library\test_units_scalar-test-r64.f90.o".
-
-RUNNING TESTS (array) | date: 20230813 | time: 171230.732 | complex kind: 16
+RUNNING TESTS (array) | date: 20230813 | time: 173818.829 | complex kind: 16
 ----------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_11254A62D1E3D294 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_11254A62D1E3D294 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (array) | date: 20230813 | time: 171231.137 | complex kind: 4
+RUNNING TESTS (array) | date: 20230813 | time: 173819.231 | complex kind: 4
 ---------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_11254A62D1E3D294 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_11254A62D1E3D294 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (array) | date: 20230813 | time: 171231.338 | complex kind: 8
+RUNNING TESTS (array) | date: 20230813 | time: 173819.440 | complex kind: 8
 ---------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_11254A62D1E3D294 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_11254A62D1E3D294 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (array) | date: 20230813 | time: 171231.558 | int kind: 2
+RUNNING TESTS (array) | date: 20230813 | time: 173819.659 | int kind: 2
 -----------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_11254A62D1E3D294 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_11254A62D1E3D294 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (array) | date: 20230813 | time: 171231.596 | int kind: 4
+RUNNING TESTS (array) | date: 20230813 | time: 173819.695 | int kind: 4
 -----------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_11254A62D1E3D294 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_11254A62D1E3D294 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (array) | date: 20230813 | time: 171231.635 | int kind: 8
+RUNNING TESTS (array) | date: 20230813 | time: 173819.732 | int kind: 8
 -----------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_11254A62D1E3D294 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_11254A62D1E3D294 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (array) | date: 20230813 | time: 171231.672 | int kind: 1
+RUNNING TESTS (array) | date: 20230813 | time: 173819.770 | int kind: 1
 -----------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_11254A62D1E3D294 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_11254A62D1E3D294 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (array) | date: 20230813 | time: 171231.710 | real kind: 16
+RUNNING TESTS (array) | date: 20230813 | time: 173819.807 | real kind: 16
 -------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_11254A62D1E3D294 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_11254A62D1E3D294 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (array) | date: 20230813 | time: 171231.804 | real kind: 4
+RUNNING TESTS (array) | date: 20230813 | time: 173819.902 | real kind: 4
 ------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_11254A62D1E3D294 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_11254A62D1E3D294 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (array) | date: 20230813 | time: 171231.866 | real kind: 8
+RUNNING TESTS (array) | date: 20230813 | time: 173819.965 | real kind: 8
 ------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_11254A62D1E3D294 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_11254A62D1E3D294 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (array) | date: 20230813 | time: 171231.935 | complex kind: 16
+RUNNING TESTS (array) | date: 20230813 | time: 173820.034 | complex kind: 16
 ----------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_11254A62D1E3D294 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_11254A62D1E3D294 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (array) | date: 20230813 | time: 171237.282 | complex kind: 4
+RUNNING TESTS (array) | date: 20230813 | time: 173825.506 | complex kind: 4
 ---------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_11254A62D1E3D294 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_11254A62D1E3D294 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (array) | date: 20230813 | time: 171240.586 | complex kind: 8
+RUNNING TESTS (array) | date: 20230813 | time: 173828.862 | complex kind: 8
 ---------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_11254A62D1E3D294 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_11254A62D1E3D294 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (array) | date: 20230813 | time: 171244.151 | int kind: 2
+RUNNING TESTS (array) | date: 20230813 | time: 173832.328 | int kind: 2
 -----------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_11254A62D1E3D294 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_11254A62D1E3D294 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (array) | date: 20230813 | time: 171244.524 | int kind: 4
+RUNNING TESTS (array) | date: 20230813 | time: 173832.727 | int kind: 4
 -----------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_11254A62D1E3D294 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_11254A62D1E3D294 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (array) | date: 20230813 | time: 171244.950 | int kind: 8
+RUNNING TESTS (array) | date: 20230813 | time: 173833.150 | int kind: 8
 -----------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_11254A62D1E3D294 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_11254A62D1E3D294 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (array) | date: 20230813 | time: 171245.373 | int kind: 1
+RUNNING TESTS (array) | date: 20230813 | time: 173833.543 | int kind: 1
 -----------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_11254A62D1E3D294 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_11254A62D1E3D294 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (array) | date: 20230813 | time: 171245.737 | real kind: 16
+RUNNING TESTS (array) | date: 20230813 | time: 173833.925 | real kind: 16
 -------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_11254A62D1E3D294 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_11254A62D1E3D294 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (array) | date: 20230813 | time: 171246.865 | real kind: 4
+RUNNING TESTS (array) | date: 20230813 | time: 173835.010 | real kind: 4
 ------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_11254A62D1E3D294 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_11254A62D1E3D294 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (array) | date: 20230813 | time: 171247.691 | real kind: 8
+RUNNING TESTS (array) | date: 20230813 | time: 173835.825 | real kind: 8
 ------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_11254A62D1E3D294 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_11254A62D1E3D294 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (scalar) | date: 20230813 | time: 171248.571 | complex kind: 16
+RUNNING TESTS (scalar) | date: 20230813 | time: 173836.700 | complex kind: 16
 -----------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_11254A62D1E3D294 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_11254A62D1E3D294 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (scalar) | date: 20230813 | time: 171248.611 | complex kind: 4
+RUNNING TESTS (scalar) | date: 20230813 | time: 173836.739 | complex kind: 4
 ----------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_11254A62D1E3D294 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_11254A62D1E3D294 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (scalar) | date: 20230813 | time: 171248.649 | complex kind: 8
+RUNNING TESTS (scalar) | date: 20230813 | time: 173836.777 | complex kind: 8
 ----------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_11254A62D1E3D294 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_11254A62D1E3D294 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (scalar) | date: 20230813 | time: 171248.687 | int kind: 2
+RUNNING TESTS (scalar) | date: 20230813 | time: 173836.814 | int kind: 2
 ------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_11254A62D1E3D294 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_11254A62D1E3D294 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (scalar) | date: 20230813 | time: 171248.723 | int kind: 4
+RUNNING TESTS (scalar) | date: 20230813 | time: 173836.849 | int kind: 4
 ------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_11254A62D1E3D294 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_11254A62D1E3D294 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (scalar) | date: 20230813 | time: 171248.760 | int kind: 8
+RUNNING TESTS (scalar) | date: 20230813 | time: 173836.886 | int kind: 8
 ------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_11254A62D1E3D294 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_11254A62D1E3D294 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (scalar) | date: 20230813 | time: 171248.796 | int kind: 1
+RUNNING TESTS (scalar) | date: 20230813 | time: 173836.923 | int kind: 1
 ------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_11254A62D1E3D294 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_11254A62D1E3D294 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (scalar) | date: 20230813 | time: 171248.832 | real kind: 16
+RUNNING TESTS (scalar) | date: 20230813 | time: 173836.960 | real kind: 16
 --------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_11254A62D1E3D294 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_11254A62D1E3D294 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (scalar) | date: 20230813 | time: 171248.869 | real kind: 4
+RUNNING TESTS (scalar) | date: 20230813 | time: 173836.998 | real kind: 4
 -------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_11254A62D1E3D294 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_11254A62D1E3D294 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
 
-RUNNING TESTS (scalar) | date: 20230813 | time: 171248.906 | real kind: 8
+RUNNING TESTS (scalar) | date: 20230813 | time: 173837.036 | real kind: 8
 -------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_11254A62D1E3D294 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_11254A62D1E3D294 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (array) | date: 20230813 | time: 173951.244 | complex kind: 16
+----------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_78F11BC70A0F0145 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -fimplicit-none -ffree-form -J build/gfortran_78F11BC70A0F0145 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (array) | date: 20230813 | time: 173951.633 | complex kind: 4
+---------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_78F11BC70A0F0145 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -fimplicit-none -ffree-form -J build/gfortran_78F11BC70A0F0145 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (array) | date: 20230813 | time: 173951.816 | complex kind: 8
+---------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_78F11BC70A0F0145 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -fimplicit-none -ffree-form -J build/gfortran_78F11BC70A0F0145 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (array) | date: 20230813 | time: 173952.016 | int kind: 2
+-----------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_78F11BC70A0F0145 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -fimplicit-none -ffree-form -J build/gfortran_78F11BC70A0F0145 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (array) | date: 20230813 | time: 173952.045 | int kind: 4
+-----------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_78F11BC70A0F0145 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -fimplicit-none -ffree-form -J build/gfortran_78F11BC70A0F0145 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (array) | date: 20230813 | time: 173952.073 | int kind: 8
+-----------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_78F11BC70A0F0145 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -fimplicit-none -ffree-form -J build/gfortran_78F11BC70A0F0145 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (array) | date: 20230813 | time: 173952.101 | int kind: 1
+-----------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_78F11BC70A0F0145 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -fimplicit-none -ffree-form -J build/gfortran_78F11BC70A0F0145 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (array) | date: 20230813 | time: 173952.130 | real kind: 16
+-------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_78F11BC70A0F0145 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -fimplicit-none -ffree-form -J build/gfortran_78F11BC70A0F0145 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (array) | date: 20230813 | time: 173952.212 | real kind: 4
+------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_78F11BC70A0F0145 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -fimplicit-none -ffree-form -J build/gfortran_78F11BC70A0F0145 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (array) | date: 20230813 | time: 173952.264 | real kind: 8
+------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_78F11BC70A0F0145 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -fimplicit-none -ffree-form -J build/gfortran_78F11BC70A0F0145 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (array) | date: 20230813 | time: 173952.321 | complex kind: 16
+----------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_78F11BC70A0F0145 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -fimplicit-none -ffree-form -J build/gfortran_78F11BC70A0F0145 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (array) | date: 20230813 | time: 173957.431 | complex kind: 4
+---------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_78F11BC70A0F0145 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -fimplicit-none -ffree-form -J build/gfortran_78F11BC70A0F0145 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174000.467 | complex kind: 8
+---------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_78F11BC70A0F0145 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -fimplicit-none -ffree-form -J build/gfortran_78F11BC70A0F0145 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174003.714 | int kind: 2
+-----------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_78F11BC70A0F0145 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -fimplicit-none -ffree-form -J build/gfortran_78F11BC70A0F0145 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174004.061 | int kind: 4
+-----------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_78F11BC70A0F0145 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -fimplicit-none -ffree-form -J build/gfortran_78F11BC70A0F0145 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174004.403 | int kind: 8
+-----------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_78F11BC70A0F0145 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -fimplicit-none -ffree-form -J build/gfortran_78F11BC70A0F0145 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174004.782 | int kind: 1
+-----------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_78F11BC70A0F0145 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -fimplicit-none -ffree-form -J build/gfortran_78F11BC70A0F0145 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174005.145 | real kind: 16
+-------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_78F11BC70A0F0145 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -fimplicit-none -ffree-form -J build/gfortran_78F11BC70A0F0145 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174006.202 | real kind: 4
+------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_78F11BC70A0F0145 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -fimplicit-none -ffree-form -J build/gfortran_78F11BC70A0F0145 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174006.983 | real kind: 8
+------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_78F11BC70A0F0145 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -fimplicit-none -ffree-form -J build/gfortran_78F11BC70A0F0145 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174007.794 | complex kind: 16
+-----------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_78F11BC70A0F0145 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -fimplicit-none -ffree-form -J build/gfortran_78F11BC70A0F0145 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174007.825 | complex kind: 4
+----------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_78F11BC70A0F0145 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -fimplicit-none -ffree-form -J build/gfortran_78F11BC70A0F0145 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174007.854 | complex kind: 8
+----------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_78F11BC70A0F0145 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -fimplicit-none -ffree-form -J build/gfortran_78F11BC70A0F0145 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174007.884 | int kind: 2
+------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_78F11BC70A0F0145 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -fimplicit-none -ffree-form -J build/gfortran_78F11BC70A0F0145 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174007.915 | int kind: 4
+------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_78F11BC70A0F0145 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -fimplicit-none -ffree-form -J build/gfortran_78F11BC70A0F0145 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174007.945 | int kind: 8
+------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_78F11BC70A0F0145 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -fimplicit-none -ffree-form -J build/gfortran_78F11BC70A0F0145 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174007.974 | int kind: 1
+------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_78F11BC70A0F0145 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -fimplicit-none -ffree-form -J build/gfortran_78F11BC70A0F0145 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174008.002 | real kind: 16
+--------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_78F11BC70A0F0145 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -fimplicit-none -ffree-form -J build/gfortran_78F11BC70A0F0145 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174008.030 | real kind: 4
+-------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_78F11BC70A0F0145 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -fimplicit-none -ffree-form -J build/gfortran_78F11BC70A0F0145 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174008.059 | real kind: 8
+-------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 12.3.1 20230508 (Red Hat 12.3.1-1)" using compiler options "-I build/gfortran_78F11BC70A0F0145 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -fimplicit-none -ffree-form -J build/gfortran_78F11BC70A0F0145 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174050.918 | complex kind: 16
+----------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_486D36825426F63D -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifx_486D36825426F63D -o build/ifx_486D36825426F63D/IO-Fortran-Library/test_units_array-test-c128.f90.o ".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174051.360 | complex kind: 4
+---------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_486D36825426F63D -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifx_486D36825426F63D -o build/ifx_486D36825426F63D/IO-Fortran-Library/test_units_array-test-c32.f90.o ".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174051.550 | complex kind: 8
+---------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_486D36825426F63D -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifx_486D36825426F63D -o build/ifx_486D36825426F63D/IO-Fortran-Library/test_units_array-test-c64.f90.o ".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174051.771 | int kind: 2
+-----------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_486D36825426F63D -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifx_486D36825426F63D -o build/ifx_486D36825426F63D/IO-Fortran-Library/test_units_array-test-i16.f90.o ".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174051.831 | int kind: 4
+-----------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_486D36825426F63D -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifx_486D36825426F63D -o build/ifx_486D36825426F63D/IO-Fortran-Library/test_units_array-test-i32.f90.o ".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174051.902 | int kind: 8
+-----------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_486D36825426F63D -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifx_486D36825426F63D -o build/ifx_486D36825426F63D/IO-Fortran-Library/test_units_array-test-i64.f90.o ".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174051.964 | int kind: 1
+-----------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_486D36825426F63D -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifx_486D36825426F63D -o build/ifx_486D36825426F63D/IO-Fortran-Library/test_units_array-test-i8.f90.o ".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174052.024 | real kind: 16
+-------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_486D36825426F63D -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifx_486D36825426F63D -o build/ifx_486D36825426F63D/IO-Fortran-Library/test_units_array-test-r128.f90.o ".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174052.144 | real kind: 4
+------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_486D36825426F63D -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifx_486D36825426F63D -o build/ifx_486D36825426F63D/IO-Fortran-Library/test_units_array-test-r32.f90.o ".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174052.220 | real kind: 8
+------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_486D36825426F63D -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifx_486D36825426F63D -o build/ifx_486D36825426F63D/IO-Fortran-Library/test_units_array-test-r64.f90.o ".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174052.307 | complex kind: 16
+----------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_486D36825426F63D -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifx_486D36825426F63D -o build/ifx_486D36825426F63D/IO-Fortran-Library/test_units_file-test-c128.f90.o ".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174057.955 | complex kind: 4
+---------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_486D36825426F63D -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifx_486D36825426F63D -o build/ifx_486D36825426F63D/IO-Fortran-Library/test_units_file-test-c32.f90.o ".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174100.841 | complex kind: 8
+---------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_486D36825426F63D -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifx_486D36825426F63D -o build/ifx_486D36825426F63D/IO-Fortran-Library/test_units_file-test-c64.f90.o ".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174104.048 | int kind: 2
+-----------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_486D36825426F63D -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifx_486D36825426F63D -o build/ifx_486D36825426F63D/IO-Fortran-Library/test_units_file-test-i16.f90.o ".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174104.453 | int kind: 4
+-----------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_486D36825426F63D -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifx_486D36825426F63D -o build/ifx_486D36825426F63D/IO-Fortran-Library/test_units_file-test-i32.f90.o ".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174104.878 | int kind: 8
+-----------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_486D36825426F63D -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifx_486D36825426F63D -o build/ifx_486D36825426F63D/IO-Fortran-Library/test_units_file-test-i64.f90.o ".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174105.361 | int kind: 1
+-----------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_486D36825426F63D -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifx_486D36825426F63D -o build/ifx_486D36825426F63D/IO-Fortran-Library/test_units_file-test-i8.f90.o ".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174105.759 | real kind: 16
+-------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_486D36825426F63D -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifx_486D36825426F63D -o build/ifx_486D36825426F63D/IO-Fortran-Library/test_units_file-test-r128.f90.o ".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174106.976 | real kind: 4
+------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_486D36825426F63D -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifx_486D36825426F63D -o build/ifx_486D36825426F63D/IO-Fortran-Library/test_units_file-test-r32.f90.o ".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174107.712 | real kind: 8
+------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_486D36825426F63D -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifx_486D36825426F63D -o build/ifx_486D36825426F63D/IO-Fortran-Library/test_units_file-test-r64.f90.o ".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174108.590 | complex kind: 16
+-----------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_486D36825426F63D -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifx_486D36825426F63D -o build/ifx_486D36825426F63D/IO-Fortran-Library/test_units_scalar-test-c128.f90.o ".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174108.650 | complex kind: 4
+----------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_486D36825426F63D -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifx_486D36825426F63D -o build/ifx_486D36825426F63D/IO-Fortran-Library/test_units_scalar-test-c32.f90.o ".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174108.710 | complex kind: 8
+----------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_486D36825426F63D -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifx_486D36825426F63D -o build/ifx_486D36825426F63D/IO-Fortran-Library/test_units_scalar-test-c64.f90.o ".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174108.770 | int kind: 2
+------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_486D36825426F63D -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifx_486D36825426F63D -o build/ifx_486D36825426F63D/IO-Fortran-Library/test_units_scalar-test-i16.f90.o ".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174108.824 | int kind: 4
+------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_486D36825426F63D -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifx_486D36825426F63D -o build/ifx_486D36825426F63D/IO-Fortran-Library/test_units_scalar-test-i32.f90.o ".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174108.877 | int kind: 8
+------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_486D36825426F63D -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifx_486D36825426F63D -o build/ifx_486D36825426F63D/IO-Fortran-Library/test_units_scalar-test-i64.f90.o ".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174108.931 | int kind: 1
+------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_486D36825426F63D -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifx_486D36825426F63D -o build/ifx_486D36825426F63D/IO-Fortran-Library/test_units_scalar-test-i8.f90.o ".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174108.983 | real kind: 16
+--------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_486D36825426F63D -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifx_486D36825426F63D -o build/ifx_486D36825426F63D/IO-Fortran-Library/test_units_scalar-test-r128.f90.o ".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174109.036 | real kind: 4
+-------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_486D36825426F63D -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifx_486D36825426F63D -o build/ifx_486D36825426F63D/IO-Fortran-Library/test_units_scalar-test-r32.f90.o ".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174109.090 | real kind: 8
+-------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_486D36825426F63D -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifx_486D36825426F63D -o build/ifx_486D36825426F63D/IO-Fortran-Library/test_units_scalar-test-r64.f90.o ".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174212.024 | complex kind: 16
+----------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifx_2E24A4ED8A141301 -o build/ifx_2E24A4ED8A141301/IO-Fortran-Library/test_units_array-test-c128.f90.o ".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174212.409 | complex kind: 4
+---------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifx_2E24A4ED8A141301 -o build/ifx_2E24A4ED8A141301/IO-Fortran-Library/test_units_array-test-c32.f90.o ".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174212.556 | complex kind: 8
+---------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifx_2E24A4ED8A141301 -o build/ifx_2E24A4ED8A141301/IO-Fortran-Library/test_units_array-test-c64.f90.o ".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174212.727 | int kind: 2
+-----------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifx_2E24A4ED8A141301 -o build/ifx_2E24A4ED8A141301/IO-Fortran-Library/test_units_array-test-i16.f90.o ".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174212.770 | int kind: 4
+-----------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifx_2E24A4ED8A141301 -o build/ifx_2E24A4ED8A141301/IO-Fortran-Library/test_units_array-test-i32.f90.o ".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174212.813 | int kind: 8
+-----------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifx_2E24A4ED8A141301 -o build/ifx_2E24A4ED8A141301/IO-Fortran-Library/test_units_array-test-i64.f90.o ".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174212.855 | int kind: 1
+-----------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifx_2E24A4ED8A141301 -o build/ifx_2E24A4ED8A141301/IO-Fortran-Library/test_units_array-test-i8.f90.o ".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174212.897 | real kind: 16
+-------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifx_2E24A4ED8A141301 -o build/ifx_2E24A4ED8A141301/IO-Fortran-Library/test_units_array-test-r128.f90.o ".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174212.995 | real kind: 4
+------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifx_2E24A4ED8A141301 -o build/ifx_2E24A4ED8A141301/IO-Fortran-Library/test_units_array-test-r32.f90.o ".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174213.063 | real kind: 8
+------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifx_2E24A4ED8A141301 -o build/ifx_2E24A4ED8A141301/IO-Fortran-Library/test_units_array-test-r64.f90.o ".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174213.126 | complex kind: 16
+----------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifx_2E24A4ED8A141301 -o build/ifx_2E24A4ED8A141301/IO-Fortran-Library/test_units_file-test-c128.f90.o ".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174218.032 | complex kind: 4
+---------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifx_2E24A4ED8A141301 -o build/ifx_2E24A4ED8A141301/IO-Fortran-Library/test_units_file-test-c32.f90.o ".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174220.480 | complex kind: 8
+---------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifx_2E24A4ED8A141301 -o build/ifx_2E24A4ED8A141301/IO-Fortran-Library/test_units_file-test-c64.f90.o ".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174223.212 | int kind: 2
+-----------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifx_2E24A4ED8A141301 -o build/ifx_2E24A4ED8A141301/IO-Fortran-Library/test_units_file-test-i16.f90.o ".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174223.579 | int kind: 4
+-----------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifx_2E24A4ED8A141301 -o build/ifx_2E24A4ED8A141301/IO-Fortran-Library/test_units_file-test-i32.f90.o ".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174223.941 | int kind: 8
+-----------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifx_2E24A4ED8A141301 -o build/ifx_2E24A4ED8A141301/IO-Fortran-Library/test_units_file-test-i64.f90.o ".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174224.338 | int kind: 1
+-----------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifx_2E24A4ED8A141301 -o build/ifx_2E24A4ED8A141301/IO-Fortran-Library/test_units_file-test-i8.f90.o ".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174224.703 | real kind: 16
+-------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifx_2E24A4ED8A141301 -o build/ifx_2E24A4ED8A141301/IO-Fortran-Library/test_units_file-test-r128.f90.o ".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174225.758 | real kind: 4
+------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifx_2E24A4ED8A141301 -o build/ifx_2E24A4ED8A141301/IO-Fortran-Library/test_units_file-test-r32.f90.o ".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174226.434 | real kind: 8
+------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifx_2E24A4ED8A141301 -o build/ifx_2E24A4ED8A141301/IO-Fortran-Library/test_units_file-test-r64.f90.o ".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174227.173 | complex kind: 16
+-----------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifx_2E24A4ED8A141301 -o build/ifx_2E24A4ED8A141301/IO-Fortran-Library/test_units_scalar-test-c128.f90.o ".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174227.214 | complex kind: 4
+----------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifx_2E24A4ED8A141301 -o build/ifx_2E24A4ED8A141301/IO-Fortran-Library/test_units_scalar-test-c32.f90.o ".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174227.253 | complex kind: 8
+----------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifx_2E24A4ED8A141301 -o build/ifx_2E24A4ED8A141301/IO-Fortran-Library/test_units_scalar-test-c64.f90.o ".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174227.292 | int kind: 2
+------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifx_2E24A4ED8A141301 -o build/ifx_2E24A4ED8A141301/IO-Fortran-Library/test_units_scalar-test-i16.f90.o ".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174227.329 | int kind: 4
+------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifx_2E24A4ED8A141301 -o build/ifx_2E24A4ED8A141301/IO-Fortran-Library/test_units_scalar-test-i32.f90.o ".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174227.368 | int kind: 8
+------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifx_2E24A4ED8A141301 -o build/ifx_2E24A4ED8A141301/IO-Fortran-Library/test_units_scalar-test-i64.f90.o ".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174227.406 | int kind: 1
+------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifx_2E24A4ED8A141301 -o build/ifx_2E24A4ED8A141301/IO-Fortran-Library/test_units_scalar-test-i8.f90.o ".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174227.446 | real kind: 16
+--------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifx_2E24A4ED8A141301 -o build/ifx_2E24A4ED8A141301/IO-Fortran-Library/test_units_scalar-test-r128.f90.o ".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174227.486 | real kind: 4
+-------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifx_2E24A4ED8A141301 -o build/ifx_2E24A4ED8A141301/IO-Fortran-Library/test_units_scalar-test-r32.f90.o ".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174227.523 | real kind: 8
+-------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifx_2E24A4ED8A141301 -o build/ifx_2E24A4ED8A141301/IO-Fortran-Library/test_units_scalar-test-r64.f90.o ".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174312.416 | complex kind: 16
+----------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_65D579E96D1065D4 -c -stand f18 -warn all -check all -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifort_65D579E96D1065D4 -o build/ifort_65D579E96D1065D4/IO-Fortran-Library/test_units_array-test-c128.f90.o".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174312.971 | complex kind: 4
+---------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_65D579E96D1065D4 -c -stand f18 -warn all -check all -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifort_65D579E96D1065D4 -o build/ifort_65D579E96D1065D4/IO-Fortran-Library/test_units_array-test-c32.f90.o".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174313.249 | complex kind: 8
+---------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_65D579E96D1065D4 -c -stand f18 -warn all -check all -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifort_65D579E96D1065D4 -o build/ifort_65D579E96D1065D4/IO-Fortran-Library/test_units_array-test-c64.f90.o".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174313.544 | int kind: 2
+-----------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_65D579E96D1065D4 -c -stand f18 -warn all -check all -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifort_65D579E96D1065D4 -o build/ifort_65D579E96D1065D4/IO-Fortran-Library/test_units_array-test-i16.f90.o".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174313.610 | int kind: 4
+-----------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_65D579E96D1065D4 -c -stand f18 -warn all -check all -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifort_65D579E96D1065D4 -o build/ifort_65D579E96D1065D4/IO-Fortran-Library/test_units_array-test-i32.f90.o".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174313.675 | int kind: 8
+-----------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_65D579E96D1065D4 -c -stand f18 -warn all -check all -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifort_65D579E96D1065D4 -o build/ifort_65D579E96D1065D4/IO-Fortran-Library/test_units_array-test-i64.f90.o".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174313.742 | int kind: 1
+-----------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_65D579E96D1065D4 -c -stand f18 -warn all -check all -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifort_65D579E96D1065D4 -o build/ifort_65D579E96D1065D4/IO-Fortran-Library/test_units_array-test-i8.f90.o".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174313.806 | real kind: 16
+-------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_65D579E96D1065D4 -c -stand f18 -warn all -check all -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifort_65D579E96D1065D4 -o build/ifort_65D579E96D1065D4/IO-Fortran-Library/test_units_array-test-r128.f90.o".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174313.942 | real kind: 4
+------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_65D579E96D1065D4 -c -stand f18 -warn all -check all -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifort_65D579E96D1065D4 -o build/ifort_65D579E96D1065D4/IO-Fortran-Library/test_units_array-test-r32.f90.o".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174314.034 | real kind: 8
+------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_65D579E96D1065D4 -c -stand f18 -warn all -check all -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifort_65D579E96D1065D4 -o build/ifort_65D579E96D1065D4/IO-Fortran-Library/test_units_array-test-r64.f90.o".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174314.131 | complex kind: 16
+----------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_65D579E96D1065D4 -c -stand f18 -warn all -check all -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifort_65D579E96D1065D4 -o build/ifort_65D579E96D1065D4/IO-Fortran-Library/test_units_file-test-c128.f90.o".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174320.770 | complex kind: 4
+---------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_65D579E96D1065D4 -c -stand f18 -warn all -check all -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifort_65D579E96D1065D4 -o build/ifort_65D579E96D1065D4/IO-Fortran-Library/test_units_file-test-c32.f90.o".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174324.432 | complex kind: 8
+---------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_65D579E96D1065D4 -c -stand f18 -warn all -check all -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifort_65D579E96D1065D4 -o build/ifort_65D579E96D1065D4/IO-Fortran-Library/test_units_file-test-c64.f90.o".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174328.719 | int kind: 2
+-----------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_65D579E96D1065D4 -c -stand f18 -warn all -check all -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifort_65D579E96D1065D4 -o build/ifort_65D579E96D1065D4/IO-Fortran-Library/test_units_file-test-i16.f90.o".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174329.199 | int kind: 4
+-----------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_65D579E96D1065D4 -c -stand f18 -warn all -check all -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifort_65D579E96D1065D4 -o build/ifort_65D579E96D1065D4/IO-Fortran-Library/test_units_file-test-i32.f90.o".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174329.701 | int kind: 8
+-----------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_65D579E96D1065D4 -c -stand f18 -warn all -check all -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifort_65D579E96D1065D4 -o build/ifort_65D579E96D1065D4/IO-Fortran-Library/test_units_file-test-i64.f90.o".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174330.218 | int kind: 1
+-----------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_65D579E96D1065D4 -c -stand f18 -warn all -check all -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifort_65D579E96D1065D4 -o build/ifort_65D579E96D1065D4/IO-Fortran-Library/test_units_file-test-i8.f90.o".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174330.686 | real kind: 16
+-------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_65D579E96D1065D4 -c -stand f18 -warn all -check all -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifort_65D579E96D1065D4 -o build/ifort_65D579E96D1065D4/IO-Fortran-Library/test_units_file-test-r128.f90.o".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174332.023 | real kind: 4
+------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_65D579E96D1065D4 -c -stand f18 -warn all -check all -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifort_65D579E96D1065D4 -o build/ifort_65D579E96D1065D4/IO-Fortran-Library/test_units_file-test-r32.f90.o".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174332.937 | real kind: 8
+------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_65D579E96D1065D4 -c -stand f18 -warn all -check all -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifort_65D579E96D1065D4 -o build/ifort_65D579E96D1065D4/IO-Fortran-Library/test_units_file-test-r64.f90.o".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174333.943 | complex kind: 16
+-----------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_65D579E96D1065D4 -c -stand f18 -warn all -check all -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifort_65D579E96D1065D4 -o build/ifort_65D579E96D1065D4/IO-Fortran-Library/test_units_scalar-test-c128.f90.o".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174334.010 | complex kind: 4
+----------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_65D579E96D1065D4 -c -stand f18 -warn all -check all -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifort_65D579E96D1065D4 -o build/ifort_65D579E96D1065D4/IO-Fortran-Library/test_units_scalar-test-c32.f90.o".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174334.081 | complex kind: 8
+----------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_65D579E96D1065D4 -c -stand f18 -warn all -check all -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifort_65D579E96D1065D4 -o build/ifort_65D579E96D1065D4/IO-Fortran-Library/test_units_scalar-test-c64.f90.o".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174334.152 | int kind: 2
+------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_65D579E96D1065D4 -c -stand f18 -warn all -check all -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifort_65D579E96D1065D4 -o build/ifort_65D579E96D1065D4/IO-Fortran-Library/test_units_scalar-test-i16.f90.o".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174334.213 | int kind: 4
+------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_65D579E96D1065D4 -c -stand f18 -warn all -check all -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifort_65D579E96D1065D4 -o build/ifort_65D579E96D1065D4/IO-Fortran-Library/test_units_scalar-test-i32.f90.o".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174334.275 | int kind: 8
+------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_65D579E96D1065D4 -c -stand f18 -warn all -check all -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifort_65D579E96D1065D4 -o build/ifort_65D579E96D1065D4/IO-Fortran-Library/test_units_scalar-test-i64.f90.o".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174334.337 | int kind: 1
+------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_65D579E96D1065D4 -c -stand f18 -warn all -check all -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifort_65D579E96D1065D4 -o build/ifort_65D579E96D1065D4/IO-Fortran-Library/test_units_scalar-test-i8.f90.o".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174334.399 | real kind: 16
+--------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_65D579E96D1065D4 -c -stand f18 -warn all -check all -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifort_65D579E96D1065D4 -o build/ifort_65D579E96D1065D4/IO-Fortran-Library/test_units_scalar-test-r128.f90.o".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174334.464 | real kind: 4
+-------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_65D579E96D1065D4 -c -stand f18 -warn all -check all -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifort_65D579E96D1065D4 -o build/ifort_65D579E96D1065D4/IO-Fortran-Library/test_units_scalar-test-r32.f90.o".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174334.523 | real kind: 8
+-------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_65D579E96D1065D4 -c -stand f18 -warn all -check all -error-limit 1 -O0 -g -traceback -assume byterecl -free -module build/ifort_65D579E96D1065D4 -o build/ifort_65D579E96D1065D4/IO-Fortran-Library/test_units_scalar-test-r64.f90.o".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174534.791 | complex kind: 16
+----------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifort_2E24A4ED8A141301 -o build/ifort_2E24A4ED8A141301/IO-Fortran-Library/test_units_array-test-c128.f90.o".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174535.168 | complex kind: 4
+---------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifort_2E24A4ED8A141301 -o build/ifort_2E24A4ED8A141301/IO-Fortran-Library/test_units_array-test-c32.f90.o".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174535.320 | complex kind: 8
+---------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifort_2E24A4ED8A141301 -o build/ifort_2E24A4ED8A141301/IO-Fortran-Library/test_units_array-test-c64.f90.o".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174535.499 | int kind: 2
+-----------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifort_2E24A4ED8A141301 -o build/ifort_2E24A4ED8A141301/IO-Fortran-Library/test_units_array-test-i16.f90.o".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174535.550 | int kind: 4
+-----------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifort_2E24A4ED8A141301 -o build/ifort_2E24A4ED8A141301/IO-Fortran-Library/test_units_array-test-i32.f90.o".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174535.602 | int kind: 8
+-----------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifort_2E24A4ED8A141301 -o build/ifort_2E24A4ED8A141301/IO-Fortran-Library/test_units_array-test-i64.f90.o".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174535.655 | int kind: 1
+-----------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifort_2E24A4ED8A141301 -o build/ifort_2E24A4ED8A141301/IO-Fortran-Library/test_units_array-test-i8.f90.o".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174535.705 | real kind: 16
+-------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifort_2E24A4ED8A141301 -o build/ifort_2E24A4ED8A141301/IO-Fortran-Library/test_units_array-test-r128.f90.o".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174535.807 | real kind: 4
+------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifort_2E24A4ED8A141301 -o build/ifort_2E24A4ED8A141301/IO-Fortran-Library/test_units_array-test-r32.f90.o".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174535.874 | real kind: 8
+------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifort_2E24A4ED8A141301 -o build/ifort_2E24A4ED8A141301/IO-Fortran-Library/test_units_array-test-r64.f90.o".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174535.948 | complex kind: 16
+----------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifort_2E24A4ED8A141301 -o build/ifort_2E24A4ED8A141301/IO-Fortran-Library/test_units_file-test-c128.f90.o".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174540.700 | complex kind: 4
+---------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifort_2E24A4ED8A141301 -o build/ifort_2E24A4ED8A141301/IO-Fortran-Library/test_units_file-test-c32.f90.o".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174543.113 | complex kind: 8
+---------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifort_2E24A4ED8A141301 -o build/ifort_2E24A4ED8A141301/IO-Fortran-Library/test_units_file-test-c64.f90.o".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174545.740 | int kind: 2
+-----------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifort_2E24A4ED8A141301 -o build/ifort_2E24A4ED8A141301/IO-Fortran-Library/test_units_file-test-i16.f90.o".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174546.096 | int kind: 4
+-----------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifort_2E24A4ED8A141301 -o build/ifort_2E24A4ED8A141301/IO-Fortran-Library/test_units_file-test-i32.f90.o".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174546.457 | int kind: 8
+-----------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifort_2E24A4ED8A141301 -o build/ifort_2E24A4ED8A141301/IO-Fortran-Library/test_units_file-test-i64.f90.o".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174546.831 | int kind: 1
+-----------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifort_2E24A4ED8A141301 -o build/ifort_2E24A4ED8A141301/IO-Fortran-Library/test_units_file-test-i8.f90.o".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174547.180 | real kind: 16
+-------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifort_2E24A4ED8A141301 -o build/ifort_2E24A4ED8A141301/IO-Fortran-Library/test_units_file-test-r128.f90.o".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174548.209 | real kind: 4
+------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifort_2E24A4ED8A141301 -o build/ifort_2E24A4ED8A141301/IO-Fortran-Library/test_units_file-test-r32.f90.o".
+
+RUNNING TESTS (array) | date: 20230813 | time: 174548.870 | real kind: 8
+------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifort_2E24A4ED8A141301 -o build/ifort_2E24A4ED8A141301/IO-Fortran-Library/test_units_file-test-r64.f90.o".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174549.693 | complex kind: 16
+-----------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifort_2E24A4ED8A141301 -o build/ifort_2E24A4ED8A141301/IO-Fortran-Library/test_units_scalar-test-c128.f90.o".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174549.743 | complex kind: 4
+----------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifort_2E24A4ED8A141301 -o build/ifort_2E24A4ED8A141301/IO-Fortran-Library/test_units_scalar-test-c32.f90.o".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174549.792 | complex kind: 8
+----------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifort_2E24A4ED8A141301 -o build/ifort_2E24A4ED8A141301/IO-Fortran-Library/test_units_scalar-test-c64.f90.o".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174549.841 | int kind: 2
+------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifort_2E24A4ED8A141301 -o build/ifort_2E24A4ED8A141301/IO-Fortran-Library/test_units_scalar-test-i16.f90.o".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174549.887 | int kind: 4
+------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifort_2E24A4ED8A141301 -o build/ifort_2E24A4ED8A141301/IO-Fortran-Library/test_units_scalar-test-i32.f90.o".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174549.933 | int kind: 8
+------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifort_2E24A4ED8A141301 -o build/ifort_2E24A4ED8A141301/IO-Fortran-Library/test_units_scalar-test-i64.f90.o".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174549.981 | int kind: 1
+------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifort_2E24A4ED8A141301 -o build/ifort_2E24A4ED8A141301/IO-Fortran-Library/test_units_scalar-test-i8.f90.o".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174550.029 | real kind: 16
+--------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifort_2E24A4ED8A141301 -o build/ifort_2E24A4ED8A141301/IO-Fortran-Library/test_units_scalar-test-r128.f90.o".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174550.076 | real kind: 4
+-------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifort_2E24A4ED8A141301 -o build/ifort_2E24A4ED8A141301/IO-Fortran-Library/test_units_scalar-test-r32.f90.o".
+
+RUNNING TESTS (scalar) | date: 20230813 | time: 174550.124 | real kind: 8
+-------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.10.0 Build 20230609_000000" using compiler options "-Ibuild/ifort_2E24A4ED8A141301 -c -stand f18 -O3 -free -module build/ifort_2E24A4ED8A141301 -o build/ifort_2E24A4ED8A141301/IO-Fortran-Library/test_units_scalar-test-r64.f90.o".
 
