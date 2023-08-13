@@ -70,4 +70,5 @@ program main
     end if
 
     call logmsg%echo(logfile)
+    write(*,*)
 end program main

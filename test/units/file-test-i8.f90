@@ -1,16 +1,16 @@
 program main
     use, intrinsic :: iso_fortran_env, only: ik=>int8, rk=>real32, &
                       compiler_version, compiler_options
-    use io_fortran_lib, only: String, to_file, from_file, LF, str, operator(+), operator(**)
+    use io_fortran_lib, only: String, to_file, from_file, LF, SPACE, str, operator(+), operator(**)
     use randoms,        only: random_gauss
     implicit none (type, external)
 
     integer,          parameter :: rows = 700, cols = 25
     character(len=*), parameter :: logfile = "./test/tests.log"
 
-    character(len=10) :: date, time
+    character(len=10) :: date = repeat(SPACE, len(date)), time = repeat(SPACE, len(time))
     type(String)      :: logmsg
-    logical           :: all_passing
+    logical           :: all_passing = .true.
 
     real(rk),    allocatable :: u(:), x(:,:)
     integer(ik), allocatable :: i(:), k(:,:)
@@ -26,7 +26,6 @@ program main
 
     call logmsg%push(LF + "-"**logmsg%len() + LF)
 
-    all_passing = .true.
     write(*,"(a)") logmsg%as_str()
 
     call random_gauss(u,0.0_rk,1.0_rk); i = floor(huge(1_ik)*u, ik) + 1_ik
@@ -278,4 +277,5 @@ program main
     end if
 
     call logmsg%echo(logfile)
+    write(*,*)
 end program main

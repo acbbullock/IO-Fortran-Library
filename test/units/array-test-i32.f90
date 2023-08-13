@@ -1,18 +1,18 @@
 program main
     use, intrinsic :: iso_fortran_env, only: ik=>int32, rk=>real32, &
                       compiler_version, compiler_options
-    use io_fortran_lib, only: String, cast, LF, str, operator(+), operator(**)
+    use io_fortran_lib, only: String, cast, LF, SPACE, str, operator(+), operator(**)
     use randoms,        only: random_gauss
     implicit none (type, external)
 
     integer,          parameter :: n = 2000
     character(len=*), parameter :: logfile = "./test/tests.log"
 
-    character(len=10) :: date, time
+    character(len=10) :: date = repeat(SPACE, len(date)), time = repeat(SPACE, len(time))
     type(String)      :: logmsg, string_var(n)
-    logical           :: all_passing
-    real(rk)          :: x(n)
-    integer(ik)       :: i(n), j(n)
+    logical           :: all_passing = .true.
+    real(rk)          :: x(n) = 0.0_rk
+    integer(ik)       :: i(n) = 0_ik, j(n) = 0_ik
 
     call random_init(repeatable=.false., image_distinct=.true.)
     call date_and_time(date=date, time=time)
@@ -23,7 +23,6 @@ program main
 
     call logmsg%push(LF + "-"**logmsg%len() + LF)
 
-    all_passing = .true.
     write(*,"(a)") logmsg%as_str()
 
     call random_gauss(x,0.0_rk,1.0_rk); i = floor(huge(1_ik)*x, ik) + 1_ik
@@ -71,4 +70,5 @@ program main
     end if
 
     call logmsg%echo(logfile)
+    write(*,*)
 end program main
