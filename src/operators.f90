@@ -196,7 +196,7 @@ submodule (io_fortran_lib) operators
         integer :: Stringl_len, charsr_len
 
         Stringl_len = Stringl%len()
-        charsr_len = len(charsr)
+        charsr_len  = len(charsr)
 
         if ( Stringl_len /= charsr_len ) then
             equal = .false.; return
@@ -212,7 +212,7 @@ submodule (io_fortran_lib) operators
     module procedure char_string_equivalence
         integer :: charsl_len, Stringr_len
 
-        charsl_len = len(charsl)
+        charsl_len  = len(charsl)
         Stringr_len = Stringr%len()
 
         if ( charsl_len /= Stringr_len ) then
@@ -247,7 +247,7 @@ submodule (io_fortran_lib) operators
         integer :: Stringl_len, charsr_len
 
         Stringl_len = Stringl%len()
-        charsr_len = len(charsr)
+        charsr_len  = len(charsr)
 
         if ( Stringl_len /= charsr_len ) then
             unequal = .true.; return
@@ -263,7 +263,7 @@ submodule (io_fortran_lib) operators
     module procedure char_string_nonequivalence
         integer :: charsl_len, Stringr_len
 
-        charsl_len = len(charsl)
+        charsl_len  = len(charsl)
         Stringr_len = Stringr%len()
 
         if ( charsl_len /= Stringr_len ) then

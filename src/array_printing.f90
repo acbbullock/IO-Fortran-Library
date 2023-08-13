@@ -7,17 +7,17 @@ submodule (io_fortran_lib) array_printing
     contains ! Procedure bodies for module subprograms <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>!
 
     module procedure aprint_1dc128
-        character(len=:), allocatable, dimension(:) :: x_str
+        character(len=:), allocatable :: x_str(:)
         character(len=:), allocatable :: fmt_, im_, xre_max_str, xre_min_str, xim_max_str, xim_min_str
-        integer :: i, decimals_, l
+        integer                       :: i, decimals_, l
 
         if ( .not. present(fmt) ) then
-            fmt_ = 'f'
+            fmt_ = "f"
         else
             if ( any(REAL_FMTS == fmt) ) then
                 fmt_ = fmt
             else
-                fmt_ = 'f'
+                fmt_ = "f"
             end if
         end if
 
@@ -28,7 +28,7 @@ submodule (io_fortran_lib) array_printing
         end if
 
         if ( .not. present(im) ) then
-            im_ = 'j'
+            im_ = "j"
         else
             im_ = trim(adjustl(im))
         end if
@@ -65,17 +65,17 @@ submodule (io_fortran_lib) array_printing
         call aprint(x_str)
     end procedure aprint_1dc128
     module procedure aprint_1dc64
-        character(len=:), allocatable, dimension(:) :: x_str
+        character(len=:), allocatable :: x_str(:)
         character(len=:), allocatable :: fmt_, im_, xre_max_str, xre_min_str, xim_max_str, xim_min_str
-        integer :: i, decimals_, l
+        integer                       :: i, decimals_, l
 
         if ( .not. present(fmt) ) then
-            fmt_ = 'f'
+            fmt_ = "f"
         else
             if ( any(REAL_FMTS == fmt) ) then
                 fmt_ = fmt
             else
-                fmt_ = 'f'
+                fmt_ = "f"
             end if
         end if
 
@@ -86,7 +86,7 @@ submodule (io_fortran_lib) array_printing
         end if
 
         if ( .not. present(im) ) then
-            im_ = 'j'
+            im_ = "j"
         else
             im_ = trim(adjustl(im))
         end if
@@ -123,17 +123,17 @@ submodule (io_fortran_lib) array_printing
         call aprint(x_str)
     end procedure aprint_1dc64
     module procedure aprint_1dc32
-        character(len=:), allocatable, dimension(:) :: x_str
+        character(len=:), allocatable :: x_str(:)
         character(len=:), allocatable :: fmt_, im_, xre_max_str, xre_min_str, xim_max_str, xim_min_str
-        integer :: i, decimals_, l
+        integer                       :: i, decimals_, l
 
         if ( .not. present(fmt) ) then
-            fmt_ = 'f'
+            fmt_ = "f"
         else
             if ( any(REAL_FMTS == fmt) ) then
                 fmt_ = fmt
             else
-                fmt_ = 'f'
+                fmt_ = "f"
             end if
         end if
 
@@ -144,7 +144,7 @@ submodule (io_fortran_lib) array_printing
         end if
 
         if ( .not. present(im) ) then
-            im_ = 'j'
+            im_ = "j"
         else
             im_ = trim(adjustl(im))
         end if
@@ -182,17 +182,17 @@ submodule (io_fortran_lib) array_printing
     end procedure aprint_1dc32
 
     module procedure aprint_2dc128
-        character(len=:), allocatable, dimension(:,:) :: x_str
+        character(len=:), allocatable :: x_str(:,:)
         character(len=:), allocatable :: fmt_, im_, xre_max_str, xre_min_str, xim_max_str, xim_min_str
-        integer :: i, j, decimals_, l
+        integer                       :: i, j, decimals_, l
 
         if ( .not. present(fmt) ) then
-            fmt_ = 'f'
+            fmt_ = "f"
         else
             if ( any(REAL_FMTS == fmt) ) then
                 fmt_ = fmt
             else
-                fmt_ = 'f'
+                fmt_ = "f"
             end if
         end if
 
@@ -203,7 +203,7 @@ submodule (io_fortran_lib) array_printing
         end if
 
         if ( .not. present(im) ) then
-            im_ = 'j'
+            im_ = "j"
         else
             im_ = trim(adjustl(im))
         end if
@@ -242,17 +242,17 @@ submodule (io_fortran_lib) array_printing
         call aprint(x_str)
     end procedure aprint_2dc128
     module procedure aprint_2dc64
-        character(len=:), allocatable, dimension(:,:) :: x_str
+        character(len=:), allocatable :: x_str(:,:)
         character(len=:), allocatable :: fmt_, im_, xre_max_str, xre_min_str, xim_max_str, xim_min_str
-        integer :: i, j, decimals_, l
+        integer                       :: i, j, decimals_, l
 
         if ( .not. present(fmt) ) then
-            fmt_ = 'f'
+            fmt_ = "f"
         else
             if ( any(REAL_FMTS == fmt) ) then
                 fmt_ = fmt
             else
-                fmt_ = 'f'
+                fmt_ = "f"
             end if
         end if
 
@@ -263,7 +263,7 @@ submodule (io_fortran_lib) array_printing
         end if
 
         if ( .not. present(im) ) then
-            im_ = 'j'
+            im_ = "j"
         else
             im_ = trim(adjustl(im))
         end if
@@ -302,17 +302,17 @@ submodule (io_fortran_lib) array_printing
         call aprint(x_str)
     end procedure aprint_2dc64
     module procedure aprint_2dc32
-        character(len=:), allocatable, dimension(:,:) :: x_str
+        character(len=:), allocatable :: x_str(:,:)
         character(len=:), allocatable :: fmt_, im_, xre_max_str, xre_min_str, xim_max_str, xim_min_str
-        integer :: i, j, decimals_, l
+        integer                       :: i, j, decimals_, l
 
         if ( .not. present(fmt) ) then
-            fmt_ = 'f'
+            fmt_ = "f"
         else
             if ( any(REAL_FMTS == fmt) ) then
                 fmt_ = fmt
             else
-                fmt_ = 'f'
+                fmt_ = "f"
             end if
         end if
 
@@ -323,7 +323,7 @@ submodule (io_fortran_lib) array_printing
         end if
 
         if ( .not. present(im) ) then
-            im_ = 'j'
+            im_ = "j"
         else
             im_ = trim(adjustl(im))
         end if
@@ -363,17 +363,17 @@ submodule (io_fortran_lib) array_printing
     end procedure aprint_2dc32
 
     module procedure aprint_1dr128
-        character(len=:), allocatable, dimension(:) :: x_str
+        character(len=:), allocatable :: x_str(:)
         character(len=:), allocatable :: fmt_, x_max_str, x_min_str, x_abs_min_str, source
-        integer :: i, decimals_
+        integer                       :: i, decimals_
 
         if ( .not. present(fmt) ) then
-            fmt_ = 'f'
+            fmt_ = "f"
         else
             if ( any(REAL_FMTS == fmt) ) then
                 fmt_ = fmt
             else
-                fmt_ = 'f'
+                fmt_ = "f"
             end if
         end if
 
@@ -404,17 +404,17 @@ submodule (io_fortran_lib) array_printing
         call aprint(x_str)
     end procedure aprint_1dr128
     module procedure aprint_1dr64
-        character(len=:), allocatable, dimension(:) :: x_str
+        character(len=:), allocatable :: x_str(:)
         character(len=:), allocatable :: fmt_, x_max_str, x_min_str, x_abs_min_str, source
-        integer :: i, decimals_
+        integer                       :: i, decimals_
 
         if ( .not. present(fmt) ) then
-            fmt_ = 'f'
+            fmt_ = "f"
         else
             if ( any(REAL_FMTS == fmt) ) then
                 fmt_ = fmt
             else
-                fmt_ = 'f'
+                fmt_ = "f"
             end if
         end if
 
@@ -445,17 +445,17 @@ submodule (io_fortran_lib) array_printing
         call aprint(x_str)
     end procedure aprint_1dr64
     module procedure aprint_1dr32
-        character(len=:), allocatable, dimension(:) :: x_str
+        character(len=:), allocatable :: x_str(:)
         character(len=:), allocatable :: fmt_, x_max_str, x_min_str, x_abs_min_str, source
-        integer :: i, decimals_
+        integer                       :: i, decimals_
 
         if ( .not. present(fmt) ) then
-            fmt_ = 'f'
+            fmt_ = "f"
         else
             if ( any(REAL_FMTS == fmt) ) then
                 fmt_ = fmt
             else
-                fmt_ = 'f'
+                fmt_ = "f"
             end if
         end if
 
@@ -487,17 +487,17 @@ submodule (io_fortran_lib) array_printing
     end procedure aprint_1dr32
 
     module procedure aprint_2dr128
-        character(len=:), allocatable, dimension(:,:) :: x_str
+        character(len=:), allocatable :: x_str(:,:)
         character(len=:), allocatable :: fmt_, x_max_str, x_min_str, x_abs_min_str, source
-        integer :: i, j, decimals_
+        integer                       :: i, j, decimals_
 
         if ( .not. present(fmt) ) then
-            fmt_ = 'f'
+            fmt_ = "f"
         else
             if ( any(REAL_FMTS == fmt) ) then
                 fmt_ = fmt
             else
-                fmt_ = 'f'
+                fmt_ = "f"
             end if
         end if
 
@@ -530,17 +530,17 @@ submodule (io_fortran_lib) array_printing
         call aprint(x_str)
     end procedure aprint_2dr128
     module procedure aprint_2dr64
-        character(len=:), allocatable, dimension(:,:) :: x_str
+        character(len=:), allocatable :: x_str(:,:)
         character(len=:), allocatable :: fmt_, x_max_str, x_min_str, x_abs_min_str, source
-        integer :: i, j, decimals_
+        integer                       :: i, j, decimals_
 
         if ( .not. present(fmt) ) then
-            fmt_ = 'f'
+            fmt_ = "f"
         else
             if ( any(REAL_FMTS == fmt) ) then
                 fmt_ = fmt
             else
-                fmt_ = 'f'
+                fmt_ = "f"
             end if
         end if
 
@@ -573,17 +573,17 @@ submodule (io_fortran_lib) array_printing
         call aprint(x_str)
     end procedure aprint_2dr64
     module procedure aprint_2dr32
-        character(len=:), allocatable, dimension(:,:) :: x_str
+        character(len=:), allocatable :: x_str(:,:)
         character(len=:), allocatable :: fmt_, x_max_str, x_min_str, x_abs_min_str, source
-        integer :: i, j, decimals_
+        integer                       :: i, j, decimals_
 
         if ( .not. present(fmt) ) then
-            fmt_ = 'f'
+            fmt_ = "f"
         else
             if ( any(REAL_FMTS == fmt) ) then
                 fmt_ = fmt
             else
-                fmt_ = 'f'
+                fmt_ = "f"
             end if
         end if
 
@@ -617,17 +617,17 @@ submodule (io_fortran_lib) array_printing
     end procedure aprint_2dr32
 
     module procedure aprint_1di64
-        character(len=:), allocatable, dimension(:) :: x_str
+        character(len=:), allocatable :: x_str(:)
         character(len=:), allocatable :: fmt_, x_max_str, x_min_str, source
-        integer :: i
+        integer                       :: i
 
         if ( .not. present(fmt) ) then
-            fmt_ = 'i'
+            fmt_ = "i"
         else
             if ( any(INT_FMTS == fmt) ) then
                 fmt_ = fmt
             else
-                fmt_ = 'i'
+                fmt_ = "i"
             end if
         end if
 
@@ -649,17 +649,17 @@ submodule (io_fortran_lib) array_printing
         call aprint(x_str)
     end procedure aprint_1di64
     module procedure aprint_1di32
-        character(len=:), allocatable, dimension(:) :: x_str
+        character(len=:), allocatable :: x_str(:)
         character(len=:), allocatable :: fmt_, x_max_str, x_min_str, source
-        integer :: i
+        integer                       :: i
 
         if ( .not. present(fmt) ) then
-            fmt_ = 'i'
+            fmt_ = "i"
         else
             if ( any(INT_FMTS == fmt) ) then
                 fmt_ = fmt
             else
-                fmt_ = 'i'
+                fmt_ = "i"
             end if
         end if
 
@@ -681,17 +681,17 @@ submodule (io_fortran_lib) array_printing
         call aprint(x_str)
     end procedure aprint_1di32
     module procedure aprint_1di16
-        character(len=:), allocatable, dimension(:) :: x_str
+        character(len=:), allocatable :: x_str(:)
         character(len=:), allocatable :: fmt_, x_max_str, x_min_str, source
-        integer :: i
+        integer                       :: i
 
         if ( .not. present(fmt) ) then
-            fmt_ = 'i'
+            fmt_ = "i"
         else
             if ( any(INT_FMTS == fmt) ) then
                 fmt_ = fmt
             else
-                fmt_ = 'i'
+                fmt_ = "i"
             end if
         end if
 
@@ -713,17 +713,17 @@ submodule (io_fortran_lib) array_printing
         call aprint(x_str)
     end procedure aprint_1di16
     module procedure aprint_1di8
-        character(len=:), allocatable, dimension(:) :: x_str
+        character(len=:), allocatable :: x_str(:)
         character(len=:), allocatable :: fmt_, x_max_str, x_min_str, source
-        integer :: i
+        integer                       :: i
 
         if ( .not. present(fmt) ) then
-            fmt_ = 'i'
+            fmt_ = "i"
         else
             if ( any(INT_FMTS == fmt) ) then
                 fmt_ = fmt
             else
-                fmt_ = 'i'
+                fmt_ = "i"
             end if
         end if
 
@@ -746,17 +746,17 @@ submodule (io_fortran_lib) array_printing
     end procedure aprint_1di8
 
     module procedure aprint_2di64
-        character(len=:), allocatable, dimension(:,:) :: x_str
+        character(len=:), allocatable :: x_str(:,:)
         character(len=:), allocatable :: fmt_, x_max_str, x_min_str, source, str_tmp
-        integer :: i, j
+        integer                       :: i, j
 
         if ( .not. present(fmt) ) then
-            fmt_ = 'i'
+            fmt_ = "i"
         else
             if ( any(INT_FMTS == fmt) ) then
                 fmt_ = fmt
             else
-                fmt_ = 'i'
+                fmt_ = "i"
             end if
         end if
 
@@ -780,17 +780,17 @@ submodule (io_fortran_lib) array_printing
         call aprint(x_str)
     end procedure aprint_2di64
     module procedure aprint_2di32
-        character(len=:), allocatable, dimension(:,:) :: x_str
+        character(len=:), allocatable :: x_str(:,:)
         character(len=:), allocatable :: fmt_, x_max_str, x_min_str, source, str_tmp
-        integer :: i, j
+        integer                       :: i, j
 
         if ( .not. present(fmt) ) then
-            fmt_ = 'i'
+            fmt_ = "i"
         else
             if ( any(INT_FMTS == fmt) ) then
                 fmt_ = fmt
             else
-                fmt_ = 'i'
+                fmt_ = "i"
             end if
         end if
 
@@ -814,17 +814,17 @@ submodule (io_fortran_lib) array_printing
         call aprint(x_str)
     end procedure aprint_2di32
     module procedure aprint_2di16
-        character(len=:), allocatable, dimension(:,:) :: x_str
+        character(len=:), allocatable :: x_str(:,:)
         character(len=:), allocatable :: fmt_, x_max_str, x_min_str, source, str_tmp
-        integer :: i, j
+        integer                       :: i, j
 
         if ( .not. present(fmt) ) then
-            fmt_ = 'i'
+            fmt_ = "i"
         else
             if ( any(INT_FMTS == fmt) ) then
                 fmt_ = fmt
             else
-                fmt_ = 'i'
+                fmt_ = "i"
             end if
         end if
 
@@ -848,17 +848,17 @@ submodule (io_fortran_lib) array_printing
         call aprint(x_str)
     end procedure aprint_2di16
     module procedure aprint_2di8
-        character(len=:), allocatable, dimension(:,:) :: x_str
+        character(len=:), allocatable :: x_str(:,:)
         character(len=:), allocatable :: fmt_, x_max_str, x_min_str, source, str_tmp
-        integer :: i, j
+        integer                       :: i, j
 
         if ( .not. present(fmt) ) then
-            fmt_ = 'i'
+            fmt_ = "i"
         else
             if ( any(INT_FMTS == fmt) ) then
                 fmt_ = fmt
             else
-                fmt_ = 'i'
+                fmt_ = "i"
             end if
         end if
 
@@ -883,8 +883,8 @@ submodule (io_fortran_lib) array_printing
     end procedure aprint_2di8
 
     module procedure aprint_1dchar
-        type(String), allocatable, dimension(:) :: rows
-        integer :: i
+        type(String), allocatable :: rows(:)
+        integer                   :: i
 
         allocate( rows(lbound(x, dim=1):ubound(x, dim=1)) )
 
@@ -903,13 +903,13 @@ submodule (io_fortran_lib) array_printing
         end do
 
         do i = lbound(x, dim=1), ubound(x, dim=1)
-            write(*,'(a)') rows(i)%s
+            write(*,"(a)") rows(i)%s
         end do
     end procedure aprint_1dchar
 
     module procedure aprint_2dchar
-        type(String), allocatable, dimension(:) :: rows
-        integer :: i
+        type(String), allocatable :: rows(:)
+        integer                   :: i
 
         allocate( rows(lbound(x, dim=1):ubound(x, dim=1)) )
 
@@ -928,17 +928,17 @@ submodule (io_fortran_lib) array_printing
         end do
 
         do i = lbound(x, dim=1), ubound(x, dim=1)
-            write(*,'(a)') rows(i)%s
+            write(*,"(a)") rows(i)%s
         end do
 
         contains
         pure recursive function accum(x) result(x_str)
-            character(len=*), dimension(:), intent(in) :: x
+            character(len=*), intent(in)  :: x(:)
             character(len=:), allocatable :: x_str
 
             integer :: x_len, x_size, i, pos
 
-            x_len = len(x)
+            x_len  = len(x)
             x_size = size(x)
 
             if ( x_size == 1 ) then
@@ -960,11 +960,11 @@ submodule (io_fortran_lib) array_printing
     end procedure aprint_2dchar
 
     module procedure aprint_1dString
-        character(len=:), allocatable, dimension(:) :: char_arr
-        integer, allocatable, dimension(:) :: lengths
-        integer :: i, max_length
+        character(len=:), allocatable :: char_arr(:)
+        integer, allocatable          :: lengths(:)
+        integer                       :: i, max_length
 
-        lengths = x%len()
+        lengths    = x%len()
         max_length = maxval(lengths)
 
         allocate( character(len=max_length) :: char_arr(lbound(x, dim=1):ubound(x, dim=1)) )
@@ -981,11 +981,11 @@ submodule (io_fortran_lib) array_printing
     end procedure aprint_1dString
 
     module procedure aprint_2dString
-        character(len=:), allocatable, dimension(:,:) :: char_arr
-        integer, allocatable, dimension(:,:) :: lengths
-        integer :: i, j, max_length
+        character(len=:), allocatable :: char_arr(:,:)
+        integer, allocatable          :: lengths(:,:)
+        integer                       :: i, j, max_length
 
-        lengths = x%len()
+        lengths    = x%len()
         max_length = maxval(lengths)
 
         allocate( character(len=max_length) :: &

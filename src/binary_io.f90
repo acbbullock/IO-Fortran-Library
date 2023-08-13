@@ -17,11 +17,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -37,11 +37,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -57,11 +57,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -78,11 +78,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -98,11 +98,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -118,11 +118,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -139,11 +139,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -159,11 +159,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -179,11 +179,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -200,11 +200,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -220,11 +220,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -240,11 +240,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -261,11 +261,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -281,11 +281,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -301,11 +301,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -322,11 +322,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -342,11 +342,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -362,11 +362,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -383,11 +383,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -403,11 +403,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -423,11 +423,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -444,11 +444,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -464,11 +464,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -484,11 +484,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -505,11 +505,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -525,11 +525,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -545,11 +545,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -566,11 +566,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -586,11 +586,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -606,11 +606,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -627,11 +627,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -647,11 +647,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -667,11 +667,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -688,11 +688,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -708,11 +708,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -728,11 +728,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -749,11 +749,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -769,11 +769,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -789,11 +789,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -810,11 +810,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -830,11 +830,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -850,11 +850,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -871,11 +871,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -891,11 +891,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -911,11 +911,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -932,11 +932,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -952,11 +952,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -972,11 +972,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -993,11 +993,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1013,11 +1013,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1033,11 +1033,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1054,11 +1054,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1074,11 +1074,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1094,11 +1094,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1115,11 +1115,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1135,11 +1135,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1155,11 +1155,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1176,11 +1176,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1196,11 +1196,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1216,11 +1216,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1237,11 +1237,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1257,11 +1257,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1277,11 +1277,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1298,11 +1298,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1318,11 +1318,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1338,11 +1338,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1359,11 +1359,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1379,11 +1379,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1399,11 +1399,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1420,11 +1420,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1440,11 +1440,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1460,11 +1460,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1481,11 +1481,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1501,11 +1501,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1521,11 +1521,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1542,11 +1542,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1562,11 +1562,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1582,11 +1582,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1603,11 +1603,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1623,11 +1623,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1643,11 +1643,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1664,11 +1664,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1684,11 +1684,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1704,11 +1704,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1725,11 +1725,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1745,11 +1745,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1765,11 +1765,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1786,11 +1786,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1806,11 +1806,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1826,11 +1826,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1847,11 +1847,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1867,11 +1867,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1887,11 +1887,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1907,11 +1907,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1928,11 +1928,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1948,11 +1948,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1968,11 +1968,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -1988,11 +1988,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2009,11 +2009,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2029,11 +2029,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2049,11 +2049,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2069,11 +2069,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2090,11 +2090,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2110,11 +2110,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2130,11 +2130,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2150,11 +2150,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2171,11 +2171,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2191,11 +2191,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2211,11 +2211,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2231,11 +2231,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2252,11 +2252,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2272,11 +2272,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2292,11 +2292,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2312,11 +2312,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2333,11 +2333,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2353,11 +2353,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2373,11 +2373,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2393,11 +2393,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2414,11 +2414,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2434,11 +2434,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2454,11 +2454,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2474,11 +2474,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2495,11 +2495,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2515,11 +2515,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2535,11 +2535,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2555,11 +2555,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2576,11 +2576,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2596,11 +2596,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2616,11 +2616,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2636,11 +2636,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2657,11 +2657,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2677,11 +2677,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2697,11 +2697,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2717,11 +2717,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2738,11 +2738,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2758,11 +2758,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2778,11 +2778,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2798,11 +2798,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2819,11 +2819,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2839,11 +2839,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2859,11 +2859,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2879,11 +2879,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2900,11 +2900,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2920,11 +2920,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2940,11 +2940,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2960,11 +2960,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -2981,11 +2981,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -3001,11 +3001,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -3021,11 +3021,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -3041,11 +3041,11 @@ submodule (io_fortran_lib) binary_io
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                  action="write", access="stream" )
         end if
 
         write(unit=file_unit) x
@@ -3063,8 +3063,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -3089,8 +3089,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -3115,8 +3115,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -3142,8 +3142,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -3168,8 +3168,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -3194,8 +3194,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -3221,8 +3221,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -3247,8 +3247,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -3273,8 +3273,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -3300,8 +3300,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -3326,8 +3326,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -3352,8 +3352,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -3379,8 +3379,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -3405,8 +3405,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -3431,8 +3431,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -3458,8 +3458,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -3484,8 +3484,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -3510,8 +3510,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -3537,8 +3537,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -3564,8 +3564,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -3591,8 +3591,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -3619,8 +3619,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -3646,8 +3646,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -3673,8 +3673,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -3701,8 +3701,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -3728,8 +3728,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -3755,8 +3755,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -3783,8 +3783,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -3810,8 +3810,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -3837,8 +3837,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -3865,8 +3865,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -3892,8 +3892,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -3919,8 +3919,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -3947,8 +3947,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -3974,8 +3974,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -4001,8 +4001,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -4029,8 +4029,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -4057,8 +4057,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -4085,8 +4085,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -4114,8 +4114,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -4142,8 +4142,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -4170,8 +4170,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -4199,8 +4199,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -4227,8 +4227,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -4255,8 +4255,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -4284,8 +4284,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -4310,8 +4310,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -4336,8 +4336,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -4363,8 +4363,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -4389,8 +4389,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -4415,8 +4415,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -4442,8 +4442,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -4468,8 +4468,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -4494,8 +4494,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -4521,8 +4521,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -4547,8 +4547,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -4573,8 +4573,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -4600,8 +4600,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -4626,8 +4626,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -4652,8 +4652,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -4679,8 +4679,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -4705,8 +4705,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -4731,8 +4731,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -4758,8 +4758,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -4785,8 +4785,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -4812,8 +4812,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -4840,8 +4840,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -4867,8 +4867,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -4894,8 +4894,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -4922,8 +4922,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -4949,8 +4949,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -4976,8 +4976,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -5004,8 +5004,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -5031,8 +5031,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -5058,8 +5058,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -5086,8 +5086,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -5113,8 +5113,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -5140,8 +5140,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -5168,8 +5168,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -5195,8 +5195,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -5222,8 +5222,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -5250,8 +5250,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -5278,8 +5278,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -5306,8 +5306,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -5335,8 +5335,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -5363,8 +5363,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -5391,8 +5391,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -5420,8 +5420,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -5448,8 +5448,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -5476,8 +5476,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -5505,8 +5505,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -5531,8 +5531,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -5557,8 +5557,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -5583,8 +5583,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -5610,8 +5610,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -5636,8 +5636,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -5662,8 +5662,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -5688,8 +5688,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -5715,8 +5715,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -5741,8 +5741,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -5767,8 +5767,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -5793,8 +5793,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -5820,8 +5820,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -5846,8 +5846,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -5872,8 +5872,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -5898,8 +5898,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -5925,8 +5925,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -5951,8 +5951,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -5977,8 +5977,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -6003,8 +6003,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -6030,8 +6030,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -6056,8 +6056,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -6082,8 +6082,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -6108,8 +6108,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -6135,8 +6135,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -6162,8 +6162,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -6189,8 +6189,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -6216,8 +6216,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -6244,8 +6244,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -6271,8 +6271,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -6298,8 +6298,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -6325,8 +6325,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -6353,8 +6353,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -6380,8 +6380,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -6407,8 +6407,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -6434,8 +6434,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -6462,8 +6462,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -6489,8 +6489,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -6516,8 +6516,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -6543,8 +6543,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -6571,8 +6571,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -6598,8 +6598,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -6625,8 +6625,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -6652,8 +6652,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -6680,8 +6680,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -6707,8 +6707,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -6734,8 +6734,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -6761,8 +6761,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -6789,8 +6789,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -6817,8 +6817,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -6845,8 +6845,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -6873,8 +6873,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -6902,8 +6902,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -6930,8 +6930,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -6958,8 +6958,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -6986,8 +6986,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -7015,8 +7015,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -7043,8 +7043,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -7071,8 +7071,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return
@@ -7099,8 +7099,8 @@ submodule (io_fortran_lib) binary_io
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                  action='read', access='stream', position='rewind' )
+            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
             error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
             return

@@ -10,8 +10,8 @@ submodule (io_fortran_lib) text_io
     ! Writing Procedures ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     module procedure echo_chars
         character(len=:), allocatable :: ext, terminator_
-        logical :: exists, append_
-        integer :: file_unit
+        logical                       :: exists, append_
+        integer                       :: file_unit
 
         ext = ext_of(file_name)
 
@@ -40,32 +40,32 @@ submodule (io_fortran_lib) text_io
             terminator_ = terminator
         end if
 
-        inquire( file=file_name, exist=exists )
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
             if ( .not. append_ ) then
-                open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                      action='write', access='stream' )
+                open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                      action="write", access="stream" )
             else
-                open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                      action='write', access='stream', position='append' )
+                open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                      action="write", access="stream", position="append" )
             end if
         end if
 
-        write( unit=file_unit ) substring//terminator_
+        write(unit=file_unit) substring//terminator_
 
         close(file_unit)
     end procedure echo_chars
 
     module procedure echo_string
         character(len=:), allocatable :: ext, terminator_
-        logical :: exists, append_
-        integer :: file_unit
+        logical                       :: exists, append_
+        integer                       :: file_unit
 
         ext = ext_of(file_name)
 
@@ -94,34 +94,34 @@ submodule (io_fortran_lib) text_io
             terminator_ = terminator
         end if
 
-        inquire( file=file_name, exist=exists )
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status='new', form='unformatted', &
-                  action='write', access='stream' )
+            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+                  action="write", access="stream" )
         else
             if ( .not. append_ ) then
-                open( newunit=file_unit, file=file_name, status='replace', form='unformatted', &
-                      action='write', access='stream' )
+                open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                      action="write", access="stream" )
             else
-                open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                      action='write', access='stream', position='append' )
+                open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                      action="write", access="stream", position="append" )
             end if
         end if
 
-        write( unit=file_unit ) substring%s//terminator_
+        write(unit=file_unit) substring%s//terminator_
 
         close(file_unit)
     end procedure echo_string
 
     module procedure to_text_1dc128
-        type(String) :: text_file
-        type(String), allocatable, dimension(:,:) :: cells
+        type(String)                  :: text_file
+        type(String),     allocatable :: cells(:,:)
         character(len=:), allocatable :: label
-        integer(i64) :: nx, j
-        logical :: header_present
+        integer(i64)                  :: nx, j
+        logical                       :: header_present
 
         nx = size(x, kind=i64)
         header_present = .false.
@@ -171,11 +171,11 @@ submodule (io_fortran_lib) text_io
         call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
     end procedure to_text_1dc128
     module procedure to_text_1dc64
-        type(String) :: text_file
-        type(String), allocatable, dimension(:,:) :: cells
+        type(String)                  :: text_file
+        type(String),     allocatable :: cells(:,:)
         character(len=:), allocatable :: label
-        integer(i64) :: nx, j
-        logical :: header_present
+        integer(i64)                  :: nx, j
+        logical                       :: header_present
 
         nx = size(x, kind=i64)
         header_present = .false.
@@ -225,11 +225,11 @@ submodule (io_fortran_lib) text_io
         call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
     end procedure to_text_1dc64
     module procedure to_text_1dc32
-        type(String) :: text_file
-        type(String), allocatable, dimension(:,:) :: cells
+        type(String)                  :: text_file
+        type(String),     allocatable :: cells(:,:)
         character(len=:), allocatable :: label
-        integer(i64) :: nx, j
-        logical :: header_present
+        integer(i64)                  :: nx, j
+        logical                       :: header_present
 
         nx = size(x, kind=i64)
         header_present = .false.
@@ -280,11 +280,11 @@ submodule (io_fortran_lib) text_io
     end procedure to_text_1dc32
 
     module procedure to_text_2dc128
-        type(String) :: text_file
-        type(String), allocatable, dimension(:,:) :: cells
+        type(String)                  :: text_file
+        type(String),     allocatable :: cells(:,:)
         character(len=:), allocatable :: label
-        integer(i64) :: n_rows, n_cols, j
-        logical :: header_present
+        integer(i64)                  :: n_rows, n_cols, j
+        logical                       :: header_present
 
         n_rows = size(x, dim=1, kind=i64)
         n_cols = size(x, dim=2, kind=i64)
@@ -318,11 +318,11 @@ submodule (io_fortran_lib) text_io
         call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
     end procedure to_text_2dc128
     module procedure to_text_2dc64
-        type(String) :: text_file
-        type(String), allocatable, dimension(:,:) :: cells
+        type(String)                  :: text_file
+        type(String),     allocatable :: cells(:,:)
         character(len=:), allocatable :: label
-        integer(i64) :: n_rows, n_cols, j
-        logical :: header_present
+        integer(i64)                  :: n_rows, n_cols, j
+        logical                       :: header_present
 
         n_rows = size(x, dim=1, kind=i64)
         n_cols = size(x, dim=2, kind=i64)
@@ -356,11 +356,11 @@ submodule (io_fortran_lib) text_io
         call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
     end procedure to_text_2dc64
     module procedure to_text_2dc32
-        type(String) :: text_file
-        type(String), allocatable, dimension(:,:) :: cells
+        type(String)                  :: text_file
+        type(String),     allocatable :: cells(:,:)
         character(len=:), allocatable :: label
-        integer(i64) :: n_rows, n_cols, j
-        logical :: header_present
+        integer(i64)                  :: n_rows, n_cols, j
+        logical                       :: header_present
 
         n_rows = size(x, dim=1, kind=i64)
         n_cols = size(x, dim=2, kind=i64)
@@ -395,11 +395,11 @@ submodule (io_fortran_lib) text_io
     end procedure to_text_2dc32
 
     module procedure to_text_1dr128
-        type(String) :: text_file
-        type(String), allocatable, dimension(:,:) :: cells
+        type(String)                  :: text_file
+        type(String),     allocatable :: cells(:,:)
         character(len=:), allocatable :: label
-        integer(i64) :: nx, j
-        logical :: header_present
+        integer(i64)                  :: nx, j
+        logical                       :: header_present
 
         nx = size(x, kind=i64)
         header_present = .false.
@@ -449,11 +449,11 @@ submodule (io_fortran_lib) text_io
         call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
     end procedure to_text_1dr128
     module procedure to_text_1dr64
-        type(String) :: text_file
-        type(String), allocatable, dimension(:,:) :: cells
+        type(String)                  :: text_file
+        type(String),     allocatable :: cells(:,:)
         character(len=:), allocatable :: label
-        integer(i64) :: nx, j
-        logical :: header_present
+        integer(i64)                  :: nx, j
+        logical                       :: header_present
 
         nx = size(x, kind=i64)
         header_present = .false.
@@ -503,11 +503,11 @@ submodule (io_fortran_lib) text_io
         call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
     end procedure to_text_1dr64
     module procedure to_text_1dr32
-        type(String) :: text_file
-        type(String), allocatable, dimension(:,:) :: cells
+        type(String)                  :: text_file
+        type(String),     allocatable :: cells(:,:)
         character(len=:), allocatable :: label
-        integer(i64) :: nx, j
-        logical :: header_present
+        integer(i64)                  :: nx, j
+        logical                       :: header_present
 
         nx = size(x, kind=i64)
         header_present = .false.
@@ -558,11 +558,11 @@ submodule (io_fortran_lib) text_io
     end procedure to_text_1dr32
 
     module procedure to_text_2dr128
-        type(String) :: text_file
-        type(String), allocatable, dimension(:,:) :: cells
+        type(String)                  :: text_file
+        type(String),     allocatable :: cells(:,:)
         character(len=:), allocatable :: label
-        integer(i64) :: n_rows, n_cols, j
-        logical :: header_present
+        integer(i64)                  :: n_rows, n_cols, j
+        logical                       :: header_present
 
         n_rows = size(x, dim=1, kind=i64)
         n_cols = size(x, dim=2, kind=i64)
@@ -596,11 +596,11 @@ submodule (io_fortran_lib) text_io
         call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
     end procedure to_text_2dr128
     module procedure to_text_2dr64
-        type(String) :: text_file
-        type(String), allocatable, dimension(:,:) :: cells
+        type(String)                  :: text_file
+        type(String),     allocatable :: cells(:,:)
         character(len=:), allocatable :: label
-        integer(i64) :: n_rows, n_cols, j
-        logical :: header_present
+        integer(i64)                  :: n_rows, n_cols, j
+        logical                       :: header_present
 
         n_rows = size(x, dim=1, kind=i64)
         n_cols = size(x, dim=2, kind=i64)
@@ -634,11 +634,11 @@ submodule (io_fortran_lib) text_io
         call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
     end procedure to_text_2dr64
     module procedure to_text_2dr32
-        type(String) :: text_file
-        type(String), allocatable, dimension(:,:) :: cells
+        type(String)                  :: text_file
+        type(String),     allocatable :: cells(:,:)
         character(len=:), allocatable :: label
-        integer(i64) :: n_rows, n_cols, j
-        logical :: header_present
+        integer(i64)                  :: n_rows, n_cols, j
+        logical                       :: header_present
 
         n_rows = size(x, dim=1, kind=i64)
         n_cols = size(x, dim=2, kind=i64)
@@ -673,11 +673,11 @@ submodule (io_fortran_lib) text_io
     end procedure to_text_2dr32
 
     module procedure to_text_1di64
-        type(String) :: text_file
-        type(String), allocatable, dimension(:,:) :: cells
+        type(String)                  :: text_file
+        type(String),     allocatable :: cells(:,:)
         character(len=:), allocatable :: label
-        integer(i64) :: nx, j
-        logical :: header_present
+        integer(i64)                  :: nx, j
+        logical                       :: header_present
 
         nx = size(x, kind=i64)
         header_present = .false.
@@ -727,11 +727,11 @@ submodule (io_fortran_lib) text_io
         call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
     end procedure to_text_1di64
     module procedure to_text_1di32
-        type(String) :: text_file
-        type(String), allocatable, dimension(:,:) :: cells
+        type(String)                  :: text_file
+        type(String),     allocatable :: cells(:,:)
         character(len=:), allocatable :: label
-        integer(i64) :: nx, j
-        logical :: header_present
+        integer(i64)                  :: nx, j
+        logical                       :: header_present
 
         nx = size(x, kind=i64)
         header_present = .false.
@@ -781,11 +781,11 @@ submodule (io_fortran_lib) text_io
         call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
     end procedure to_text_1di32
     module procedure to_text_1di16
-        type(String) :: text_file
-        type(String), allocatable, dimension(:,:) :: cells
+        type(String)                  :: text_file
+        type(String),     allocatable :: cells(:,:)
         character(len=:), allocatable :: label
-        integer(i64) :: nx, j
-        logical :: header_present
+        integer(i64)                  :: nx, j
+        logical                       :: header_present
 
         nx = size(x, kind=i64)
         header_present = .false.
@@ -835,11 +835,11 @@ submodule (io_fortran_lib) text_io
         call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
     end procedure to_text_1di16
     module procedure to_text_1di8
-        type(String) :: text_file
-        type(String), allocatable, dimension(:,:) :: cells
+        type(String)                  :: text_file
+        type(String),     allocatable :: cells(:,:)
         character(len=:), allocatable :: label
-        integer(i64) :: nx, j
-        logical :: header_present
+        integer(i64)                  :: nx, j
+        logical                       :: header_present
 
         nx = size(x, kind=i64)
         header_present = .false.
@@ -890,11 +890,11 @@ submodule (io_fortran_lib) text_io
     end procedure to_text_1di8
 
     module procedure to_text_2di64
-        type(String) :: text_file
-        type(String), allocatable, dimension(:,:) :: cells
+        type(String)                  :: text_file
+        type(String),     allocatable :: cells(:,:)
         character(len=:), allocatable :: label
-        integer(i64) :: n_rows, n_cols, j
-        logical :: header_present
+        integer(i64)                  :: n_rows, n_cols, j
+        logical                       :: header_present
 
         n_rows = size(x, dim=1, kind=i64)
         n_cols = size(x, dim=2, kind=i64)
@@ -928,11 +928,11 @@ submodule (io_fortran_lib) text_io
         call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
     end procedure to_text_2di64
     module procedure to_text_2di32
-        type(String) :: text_file
-        type(String), allocatable, dimension(:,:) :: cells
+        type(String)                  :: text_file
+        type(String),     allocatable :: cells(:,:)
         character(len=:), allocatable :: label
-        integer(i64) :: n_rows, n_cols, j
-        logical :: header_present
+        integer(i64)                  :: n_rows, n_cols, j
+        logical                       :: header_present
 
         n_rows = size(x, dim=1, kind=i64)
         n_cols = size(x, dim=2, kind=i64)
@@ -966,11 +966,11 @@ submodule (io_fortran_lib) text_io
         call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
     end procedure to_text_2di32
     module procedure to_text_2di16
-        type(String) :: text_file
-        type(String), allocatable, dimension(:,:) :: cells
+        type(String)                  :: text_file
+        type(String),     allocatable :: cells(:,:)
         character(len=:), allocatable :: label
-        integer(i64) :: n_rows, n_cols, j
-        logical :: header_present
+        integer(i64)                  :: n_rows, n_cols, j
+        logical                       :: header_present
 
         n_rows = size(x, dim=1, kind=i64)
         n_cols = size(x, dim=2, kind=i64)
@@ -1004,11 +1004,11 @@ submodule (io_fortran_lib) text_io
         call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
     end procedure to_text_2di16
     module procedure to_text_2di8
-        type(String) :: text_file
-        type(String), allocatable, dimension(:,:) :: cells
+        type(String)                  :: text_file
+        type(String),     allocatable :: cells(:,:)
         character(len=:), allocatable :: label
-        integer(i64) :: n_rows, n_cols, j
-        logical :: header_present
+        integer(i64)                  :: n_rows, n_cols, j
+        logical                       :: header_present
 
         n_rows = size(x, dim=1, kind=i64)
         n_cols = size(x, dim=2, kind=i64)
@@ -1044,24 +1044,24 @@ submodule (io_fortran_lib) text_io
 
     ! Reading Procedures ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     module procedure from_text_1dc128
-        type(String) :: text_file
-        type(String), allocatable, dimension(:,:) :: cells
-        integer(i64) :: n_rows, n_cols
+        type(String)              :: text_file
+        type(String), allocatable :: cells(:,:)
+        integer(i64)              :: n_rows, n_cols
 
         if ( len(im) == 0 ) then
             custom_processing: block
                 integer(i64) :: file_length, row, col, l, i
-                integer :: row_sep, col_sep, col_sep_len, open_paren, close_paren, current
-                integer :: file_unit, iostat
-                logical :: exists, in_paren
+                integer      :: row_sep, col_sep, col_sep_len, open_paren, close_paren, current
+                integer      :: file_unit, iostat
+                logical      :: exists, in_paren
 
-                inquire( file=file_name, exist=exists )
+                inquire(file=file_name, exist=exists)
 
                 file_unit = input_unit
 
                 if ( exists ) then
-                    open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                          action='read', access='stream', position='rewind' )
+                    open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                          action="read", access="stream", position="rewind" )
                 else
                     error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
                     return
@@ -1216,24 +1216,24 @@ submodule (io_fortran_lib) text_io
         end if
     end procedure from_text_1dc128
     module procedure from_text_1dc64
-        type(String) :: text_file
-        type(String), allocatable, dimension(:,:) :: cells
-        integer(i64) :: n_rows, n_cols
+        type(String)              :: text_file
+        type(String), allocatable :: cells(:,:)
+        integer(i64)              :: n_rows, n_cols
 
         if ( len(im) == 0 ) then
             custom_processing: block
                 integer(i64) :: file_length, row, col, l, i
-                integer :: row_sep, col_sep, col_sep_len, open_paren, close_paren, current
-                integer :: file_unit, iostat
-                logical :: exists, in_paren
+                integer      :: row_sep, col_sep, col_sep_len, open_paren, close_paren, current
+                integer      :: file_unit, iostat
+                logical      :: exists, in_paren
 
-                inquire( file=file_name, exist=exists )
+                inquire(file=file_name, exist=exists)
 
                 file_unit = input_unit
 
                 if ( exists ) then
-                    open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                          action='read', access='stream', position='rewind' )
+                    open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                          action="read", access="stream", position="rewind" )
                 else
                     error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
                     return
@@ -1388,24 +1388,24 @@ submodule (io_fortran_lib) text_io
         end if
     end procedure from_text_1dc64
     module procedure from_text_1dc32
-        type(String) :: text_file
-        type(String), allocatable, dimension(:,:) :: cells
-        integer(i64) :: n_rows, n_cols
+        type(String)              :: text_file
+        type(String), allocatable :: cells(:,:)
+        integer(i64)              :: n_rows, n_cols
 
         if ( len(im) == 0 ) then
             custom_processing: block
                 integer(i64) :: file_length, row, col, l, i
-                integer :: row_sep, col_sep, col_sep_len, open_paren, close_paren, current
-                integer :: file_unit, iostat
-                logical :: exists, in_paren
+                integer      :: row_sep, col_sep, col_sep_len, open_paren, close_paren, current
+                integer      :: file_unit, iostat
+                logical      :: exists, in_paren
 
-                inquire( file=file_name, exist=exists )
+                inquire(file=file_name, exist=exists)
 
                 file_unit = input_unit
 
                 if ( exists ) then
-                    open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                          action='read', access='stream', position='rewind' )
+                    open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                          action="read", access="stream", position="rewind" )
                 else
                     error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
                     return
@@ -1561,24 +1561,24 @@ submodule (io_fortran_lib) text_io
     end procedure from_text_1dc32
 
     module procedure from_text_2dc128
-        type(String) :: text_file
-        type(String), allocatable, dimension(:,:) :: cells
-        integer(i64) :: n_rows, n_cols
+        type(String)              :: text_file
+        type(String), allocatable :: cells(:,:)
+        integer(i64)              :: n_rows, n_cols
 
         if ( len(im) == 0 ) then
             custom_processing: block
                 integer(i64) :: file_length, row, col, l, i
-                integer :: row_sep, col_sep, col_sep_len, open_paren, close_paren, current
-                integer :: file_unit, iostat
-                logical :: exists, in_paren
+                integer      :: row_sep, col_sep, col_sep_len, open_paren, close_paren, current
+                integer      :: file_unit, iostat
+                logical      :: exists, in_paren
 
-                inquire( file=file_name, exist=exists )
+                inquire(file=file_name, exist=exists)
 
                 file_unit = input_unit
 
                 if ( exists ) then
-                    open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                          action='read', access='stream', position='rewind' )
+                    open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                          action="read", access="stream", position="rewind" )
                 else
                     error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
                     return
@@ -1705,24 +1705,24 @@ submodule (io_fortran_lib) text_io
         end if
     end procedure from_text_2dc128
     module procedure from_text_2dc64
-        type(String) :: text_file
-        type(String), allocatable, dimension(:,:) :: cells
-        integer(i64) :: n_rows, n_cols
+        type(String)              :: text_file
+        type(String), allocatable :: cells(:,:)
+        integer(i64)              :: n_rows, n_cols
 
         if ( len(im) == 0 ) then
             custom_processing: block
                 integer(i64) :: file_length, row, col, l, i
-                integer :: row_sep, col_sep, col_sep_len, open_paren, close_paren, current
-                integer :: file_unit, iostat
-                logical :: exists, in_paren
+                integer      :: row_sep, col_sep, col_sep_len, open_paren, close_paren, current
+                integer      :: file_unit, iostat
+                logical      :: exists, in_paren
 
-                inquire( file=file_name, exist=exists )
+                inquire(file=file_name, exist=exists)
 
                 file_unit = input_unit
 
                 if ( exists ) then
-                    open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                          action='read', access='stream', position='rewind' )
+                    open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                          action="read", access="stream", position="rewind" )
                 else
                     error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
                     return
@@ -1849,24 +1849,24 @@ submodule (io_fortran_lib) text_io
         end if
     end procedure from_text_2dc64
     module procedure from_text_2dc32
-        type(String) :: text_file
-        type(String), allocatable, dimension(:,:) :: cells
-        integer(i64) :: n_rows, n_cols
+        type(String)              :: text_file
+        type(String), allocatable :: cells(:,:)
+        integer(i64)              :: n_rows, n_cols
 
         if ( len(im) == 0 ) then
             custom_processing: block
                 integer(i64) :: file_length, row, col, l, i
-                integer :: row_sep, col_sep, col_sep_len, open_paren, close_paren, current
-                integer :: file_unit, iostat
-                logical :: exists, in_paren
+                integer      :: row_sep, col_sep, col_sep_len, open_paren, close_paren, current
+                integer      :: file_unit, iostat
+                logical      :: exists, in_paren
 
-                inquire( file=file_name, exist=exists )
+                inquire(file=file_name, exist=exists)
 
                 file_unit = input_unit
 
                 if ( exists ) then
-                    open( newunit=file_unit, file=file_name, status='old', form='unformatted', &
-                          action='read', access='stream', position='rewind' )
+                    open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                          action="read", access="stream", position="rewind" )
                 else
                     error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
                     return
@@ -1994,9 +1994,9 @@ submodule (io_fortran_lib) text_io
     end procedure from_text_2dc32
 
     module procedure from_text_1dr128
-        type(String) :: text_file
-        type(String), allocatable, dimension(:,:) :: cells
-        integer(i64) :: n_rows, n_cols
+        type(String)              :: text_file
+        type(String), allocatable :: cells(:,:)
+        integer(i64)              :: n_rows, n_cols
 
         call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
         call text_file%empty()
@@ -2046,9 +2046,9 @@ submodule (io_fortran_lib) text_io
         end if
     end procedure from_text_1dr128
     module procedure from_text_1dr64
-        type(String) :: text_file
-        type(String), allocatable, dimension(:,:) :: cells
-        integer(i64) :: n_rows, n_cols
+        type(String)              :: text_file
+        type(String), allocatable :: cells(:,:)
+        integer(i64)              :: n_rows, n_cols
 
         call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
         call text_file%empty()
@@ -2098,9 +2098,9 @@ submodule (io_fortran_lib) text_io
         end if
     end procedure from_text_1dr64
     module procedure from_text_1dr32
-        type(String) :: text_file
-        type(String), allocatable, dimension(:,:) :: cells
-        integer(i64) :: n_rows, n_cols
+        type(String)              :: text_file
+        type(String), allocatable :: cells(:,:)
+        integer(i64)              :: n_rows, n_cols
 
         call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
         call text_file%empty()
@@ -2151,9 +2151,9 @@ submodule (io_fortran_lib) text_io
     end procedure from_text_1dr32
 
     module procedure from_text_2dr128
-        type(String) :: text_file
-        type(String), allocatable, dimension(:,:) :: cells
-        integer(i64) :: n_rows, n_cols
+        type(String)              :: text_file
+        type(String), allocatable :: cells(:,:)
+        integer(i64)              :: n_rows, n_cols
 
         call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
         call text_file%empty()
@@ -2175,9 +2175,9 @@ submodule (io_fortran_lib) text_io
         end if
     end procedure from_text_2dr128
     module procedure from_text_2dr64
-        type(String) :: text_file
-        type(String), allocatable, dimension(:,:) :: cells
-        integer(i64) :: n_rows, n_cols
+        type(String)              :: text_file
+        type(String), allocatable :: cells(:,:)
+        integer(i64)              :: n_rows, n_cols
 
         call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
         call text_file%empty()
@@ -2199,9 +2199,9 @@ submodule (io_fortran_lib) text_io
         end if
     end procedure from_text_2dr64
     module procedure from_text_2dr32
-        type(String) :: text_file
-        type(String), allocatable, dimension(:,:) :: cells
-        integer(i64) :: n_rows, n_cols
+        type(String)              :: text_file
+        type(String), allocatable :: cells(:,:)
+        integer(i64)              :: n_rows, n_cols
 
         call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
         call text_file%empty()
@@ -2224,9 +2224,9 @@ submodule (io_fortran_lib) text_io
     end procedure from_text_2dr32
 
     module procedure from_text_1di64
-        type(String) :: text_file
-        type(String), allocatable, dimension(:,:) :: cells
-        integer(i64) :: n_rows, n_cols
+        type(String)              :: text_file
+        type(String), allocatable :: cells(:,:)
+        integer(i64)              :: n_rows, n_cols
 
         call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
         call text_file%empty()
@@ -2276,9 +2276,9 @@ submodule (io_fortran_lib) text_io
         end if
     end procedure from_text_1di64
     module procedure from_text_1di32
-        type(String) :: text_file
-        type(String), allocatable, dimension(:,:) :: cells
-        integer(i64) :: n_rows, n_cols
+        type(String)              :: text_file
+        type(String), allocatable :: cells(:,:)
+        integer(i64)              :: n_rows, n_cols
 
         call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
         call text_file%empty()
@@ -2328,9 +2328,9 @@ submodule (io_fortran_lib) text_io
         end if
     end procedure from_text_1di32
     module procedure from_text_1di16
-        type(String) :: text_file
-        type(String), allocatable, dimension(:,:) :: cells
-        integer(i64) :: n_rows, n_cols
+        type(String)              :: text_file
+        type(String), allocatable :: cells(:,:)
+        integer(i64)              :: n_rows, n_cols
 
         call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
         call text_file%empty()
@@ -2380,9 +2380,9 @@ submodule (io_fortran_lib) text_io
         end if
     end procedure from_text_1di16
     module procedure from_text_1di8
-        type(String) :: text_file
-        type(String), allocatable, dimension(:,:) :: cells
-        integer(i64) :: n_rows, n_cols
+        type(String)              :: text_file
+        type(String), allocatable :: cells(:,:)
+        integer(i64)              :: n_rows, n_cols
 
         call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
         call text_file%empty()
@@ -2433,9 +2433,9 @@ submodule (io_fortran_lib) text_io
     end procedure from_text_1di8
 
     module procedure from_text_2di64
-        type(String) :: text_file
-        type(String), allocatable, dimension(:,:) :: cells
-        integer(i64) :: n_rows, n_cols
+        type(String)              :: text_file
+        type(String), allocatable :: cells(:,:)
+        integer(i64)              :: n_rows, n_cols
 
         call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
         call text_file%empty()
@@ -2457,9 +2457,9 @@ submodule (io_fortran_lib) text_io
         end if
     end procedure from_text_2di64
     module procedure from_text_2di32
-        type(String) :: text_file
-        type(String), allocatable, dimension(:,:) :: cells
-        integer(i64) :: n_rows, n_cols
+        type(String)              :: text_file
+        type(String), allocatable :: cells(:,:)
+        integer(i64)              :: n_rows, n_cols
 
         call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
         call text_file%empty()
@@ -2481,9 +2481,9 @@ submodule (io_fortran_lib) text_io
         end if
     end procedure from_text_2di32
     module procedure from_text_2di16
-        type(String) :: text_file
-        type(String), allocatable, dimension(:,:) :: cells
-        integer(i64) :: n_rows, n_cols
+        type(String)              :: text_file
+        type(String), allocatable :: cells(:,:)
+        integer(i64)              :: n_rows, n_cols
 
         call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
         call text_file%empty()
@@ -2505,9 +2505,9 @@ submodule (io_fortran_lib) text_io
         end if
     end procedure from_text_2di16
     module procedure from_text_2di8
-        type(String) :: text_file
-        type(String), allocatable, dimension(:,:) :: cells
-        integer(i64) :: n_rows, n_cols
+        type(String)              :: text_file
+        type(String), allocatable :: cells(:,:)
+        integer(i64)              :: n_rows, n_cols
 
         call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
         call text_file%empty()

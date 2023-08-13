@@ -50,10 +50,10 @@ submodule (io_fortran_lib) internal_io
 
     ! String ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     module procedure new_string_from_c128
-        character(len=1) :: fmt_
-        character(len=5) :: decimal
+        character(len=1)              :: fmt_
+        character(len=5)              :: decimal
         character(len=:), allocatable :: xre_str, xim_str, im_
-        integer :: e, decimals_, i
+        integer                       :: e, decimals_, i
 
         if ( .not. present(fmt) ) then
             fmt_ = 'e'
@@ -288,10 +288,10 @@ submodule (io_fortran_lib) internal_io
         end if
     end procedure new_string_from_c128
     module procedure new_string_from_c64
-        character(len=1) :: fmt_
-        character(len=5) :: decimal
+        character(len=1)              :: fmt_
+        character(len=5)              :: decimal
         character(len=:), allocatable :: xre_str, xim_str, im_
-        integer :: e, decimals_, i
+        integer                       :: e, decimals_, i
 
         if ( .not. present(fmt) ) then
             fmt_ = 'e'
@@ -514,10 +514,10 @@ submodule (io_fortran_lib) internal_io
         end if
     end procedure new_string_from_c64
     module procedure new_string_from_c32
-        character(len=1) :: fmt_
-        character(len=5) :: decimal
+        character(len=1)              :: fmt_
+        character(len=5)              :: decimal
         character(len=:), allocatable :: xre_str, xim_str, im_
-        integer :: e, decimals_, i
+        integer                       :: e, decimals_, i
 
         if ( .not. present(fmt) ) then
             fmt_ = 'e'
@@ -743,7 +743,7 @@ submodule (io_fortran_lib) internal_io
     module procedure new_string_from_r128
         character(len=1) :: fmt_
         character(len=5) :: decimal
-        integer :: e, decimals_, i
+        integer          :: e, decimals_, i
 
         if ( .not. present(fmt) ) then
             fmt_ = 'e'
@@ -866,7 +866,7 @@ submodule (io_fortran_lib) internal_io
     module procedure new_string_from_r64
         character(len=1) :: fmt_
         character(len=5) :: decimal
-        integer :: e, decimals_, i
+        integer          :: e, decimals_, i
 
         if ( .not. present(fmt) ) then
             fmt_ = 'e'
@@ -1009,7 +1009,7 @@ submodule (io_fortran_lib) internal_io
     module procedure new_string_from_r32
         character(len=1) :: fmt_
         character(len=5) :: decimal
-        integer :: e, decimals_, i
+        integer          :: e, decimals_, i
 
         if ( .not. present(fmt) ) then
             fmt_ = 'e'
@@ -1150,11 +1150,11 @@ submodule (io_fortran_lib) internal_io
     end procedure new_string_from_r32
 
     module procedure new_string_from_i64
-        character(len=1) :: fmt_
+        character(len=1)  :: fmt_
         character(len=20) :: buffer
-        integer(i64) :: num, next
-        integer :: ascii_code, i
-        logical :: negative
+        integer(i64)      :: num, next
+        integer           :: ascii_code, i
+        logical           :: negative
 
         if ( .not. present(fmt) ) then
             fmt_ = 'i'
@@ -1212,10 +1212,10 @@ submodule (io_fortran_lib) internal_io
         end if
     end procedure new_string_from_i64
     module procedure new_string_from_i32
-        character(len=1) :: fmt_
+        character(len=1)  :: fmt_
         character(len=11) :: buffer
-        integer :: num, next, ascii_code, i
-        logical :: negative
+        integer           :: num, next, ascii_code, i
+        logical           :: negative
 
         if ( .not. present(fmt) ) then
             fmt_ = 'i'
@@ -1275,8 +1275,8 @@ submodule (io_fortran_lib) internal_io
     module procedure new_string_from_i16
         character(len=1) :: fmt_
         character(len=6) :: buffer
-        integer :: num, next, ascii_code, i
-        logical :: negative
+        integer          :: num, next, ascii_code, i
+        logical          :: negative
 
         if ( .not. present(fmt) ) then
             fmt_ = 'i'
@@ -1336,8 +1336,8 @@ submodule (io_fortran_lib) internal_io
     module procedure new_string_from_i8
         character(len=1) :: fmt_
         character(len=4) :: buffer
-        integer :: num, next, ascii_code, i
-        logical :: negative
+        integer          :: num, next, ascii_code, i
+        logical          :: negative
 
         if ( .not. present(fmt) ) then
             fmt_ = 'i'
@@ -1411,10 +1411,10 @@ submodule (io_fortran_lib) internal_io
 
     ! str ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     module procedure str_from_c128
-        character(len=1) :: fmt_
-        character(len=5) :: decimal
+        character(len=1)              :: fmt_
+        character(len=5)              :: decimal
         character(len=:), allocatable :: xre_str, xim_str, im_
-        integer :: e, decimals_, i
+        integer                       :: e, decimals_, i
 
         if ( .not. present(fmt) ) then
             fmt_ = 'e'
@@ -1649,10 +1649,10 @@ submodule (io_fortran_lib) internal_io
         end if
     end procedure str_from_c128
     module procedure str_from_c64
-        character(len=1) :: fmt_
-        character(len=5) :: decimal
+        character(len=1)              :: fmt_
+        character(len=5)              :: decimal
         character(len=:), allocatable :: xre_str, xim_str, im_
-        integer :: e, decimals_, i
+        integer                       :: e, decimals_, i
 
         if ( .not. present(fmt) ) then
             fmt_ = 'e'
@@ -1875,10 +1875,10 @@ submodule (io_fortran_lib) internal_io
         end if
     end procedure str_from_c64
     module procedure str_from_c32
-        character(len=1) :: fmt_
-        character(len=5) :: decimal
+        character(len=1)              :: fmt_
+        character(len=5)              :: decimal
         character(len=:), allocatable :: xre_str, xim_str, im_
-        integer :: e, decimals_, i
+        integer                       :: e, decimals_, i
 
         if ( .not. present(fmt) ) then
             fmt_ = 'e'
@@ -2104,7 +2104,7 @@ submodule (io_fortran_lib) internal_io
     module procedure str_from_r128
         character(len=1) :: fmt_
         character(len=5) :: decimal
-        integer :: e, decimals_, i
+        integer          :: e, decimals_, i
 
         if ( .not. present(fmt) ) then
             fmt_ = 'e'
@@ -2227,7 +2227,7 @@ submodule (io_fortran_lib) internal_io
     module procedure str_from_r64
         character(len=1) :: fmt_
         character(len=5) :: decimal
-        integer :: e, decimals_, i
+        integer          :: e, decimals_, i
 
         if ( .not. present(fmt) ) then
             fmt_ = 'e'
@@ -2342,7 +2342,7 @@ submodule (io_fortran_lib) internal_io
     module procedure str_from_r32
         character(len=1) :: fmt_
         character(len=5) :: decimal
-        integer :: e, decimals_, i
+        integer          :: e, decimals_, i
 
         if ( .not. present(fmt) ) then
             fmt_ = 'e'
@@ -2456,11 +2456,11 @@ submodule (io_fortran_lib) internal_io
     end procedure str_from_r32
 
     module procedure str_from_i64
-        character(len=1) :: fmt_
+        character(len=1)  :: fmt_
         character(len=20) :: buffer
-        integer(i64) :: num, next
-        integer :: ascii_code, i
-        logical :: negative
+        integer(i64)      :: num, next
+        integer           :: ascii_code, i
+        logical           :: negative
 
         if ( .not. present(fmt) ) then
             fmt_ = 'i'
@@ -2518,10 +2518,10 @@ submodule (io_fortran_lib) internal_io
         end if
     end procedure str_from_i64
     module procedure str_from_i32
-        character(len=1) :: fmt_
+        character(len=1)  :: fmt_
         character(len=11) :: buffer
-        integer :: num, next, ascii_code, i
-        logical :: negative
+        integer           :: num, next, ascii_code, i
+        logical           :: negative
 
         if ( .not. present(fmt) ) then
             fmt_ = 'i'
@@ -2581,8 +2581,8 @@ submodule (io_fortran_lib) internal_io
     module procedure str_from_i16
         character(len=1) :: fmt_
         character(len=6) :: buffer
-        integer :: num, next, ascii_code, i
-        logical :: negative
+        integer          :: num, next, ascii_code, i
+        logical          :: negative
 
         if ( .not. present(fmt) ) then
             fmt_ = 'i'
@@ -2642,8 +2642,8 @@ submodule (io_fortran_lib) internal_io
     module procedure str_from_i8
         character(len=1) :: fmt_
         character(len=4) :: buffer
-        integer :: num, next, ascii_code, i
-        logical :: negative
+        integer          :: num, next, ascii_code, i
+        logical          :: negative
 
         if ( .not. present(fmt) ) then
             fmt_ = 'i'
@@ -2717,10 +2717,10 @@ submodule (io_fortran_lib) internal_io
 
     ! cast ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     module procedure cast_c128_to_string
-        character(len=1) :: fmt_
-        character(len=5) :: decimal
+        character(len=1)              :: fmt_
+        character(len=5)              :: decimal
         character(len=:), allocatable :: xre_str, xim_str, im_
-        integer :: e, decimals_, i
+        integer                       :: e, decimals_, i
 
         if ( .not. present(fmt) ) then
             fmt_ = 'e'
@@ -2955,10 +2955,10 @@ submodule (io_fortran_lib) internal_io
         end if
     end procedure cast_c128_to_string
     module procedure cast_c64_to_string
-        character(len=1) :: fmt_
-        character(len=5) :: decimal
+        character(len=1)              :: fmt_
+        character(len=5)              :: decimal
         character(len=:), allocatable :: xre_str, xim_str, im_
-        integer :: e, decimals_, i
+        integer                       :: e, decimals_, i
 
         if ( .not. present(fmt) ) then
             fmt_ = 'e'
@@ -3181,10 +3181,10 @@ submodule (io_fortran_lib) internal_io
         end if
     end procedure cast_c64_to_string
     module procedure cast_c32_to_string
-        character(len=1) :: fmt_
-        character(len=5) :: decimal
+        character(len=1)              :: fmt_
+        character(len=5)              :: decimal
         character(len=:), allocatable :: xre_str, xim_str, im_
-        integer :: e, decimals_, i
+        integer                       :: e, decimals_, i
 
         if ( .not. present(fmt) ) then
             fmt_ = 'e'
@@ -3410,7 +3410,7 @@ submodule (io_fortran_lib) internal_io
     module procedure cast_r128_to_string
         character(len=1) :: fmt_
         character(len=5) :: decimal
-        integer :: e, decimals_, i
+        integer          :: e, decimals_, i
 
         if ( .not. present(fmt) ) then
             fmt_ = 'e'
@@ -3534,7 +3534,7 @@ submodule (io_fortran_lib) internal_io
     module procedure cast_r64_to_string
         character(len=1) :: fmt_
         character(len=5) :: decimal
-        integer :: e, decimals_, i
+        integer          :: e, decimals_, i
 
         if ( .not. present(fmt) ) then
             fmt_ = 'e'
@@ -3678,7 +3678,7 @@ submodule (io_fortran_lib) internal_io
     module procedure cast_r32_to_string
         character(len=1) :: fmt_
         character(len=5) :: decimal
-        integer :: e, decimals_, i
+        integer          :: e, decimals_, i
 
         if ( .not. present(fmt) ) then
             fmt_ = 'e'
@@ -3820,11 +3820,11 @@ submodule (io_fortran_lib) internal_io
     end procedure cast_r32_to_string
 
     module procedure cast_i64_to_string
-        character(len=1) :: fmt_
+        character(len=1)  :: fmt_
         character(len=20) :: buffer
-        integer(i64) :: num, next
-        integer :: ascii_code, i
-        logical :: negative
+        integer(i64)      :: num, next
+        integer           :: ascii_code, i
+        logical           :: negative
 
         if ( .not. present(fmt) ) then
             fmt_ = 'i'
@@ -3882,10 +3882,10 @@ submodule (io_fortran_lib) internal_io
         end if
     end procedure cast_i64_to_string
     module procedure cast_i32_to_string
-        character(len=1) :: fmt_
+        character(len=1)  :: fmt_
         character(len=11) :: buffer
-        integer :: num, next, ascii_code, i
-        logical :: negative
+        integer           :: num, next, ascii_code, i
+        logical           :: negative
 
         if ( .not. present(fmt) ) then
             fmt_ = 'i'
@@ -3945,8 +3945,8 @@ submodule (io_fortran_lib) internal_io
     module procedure cast_i16_to_string
         character(len=1) :: fmt_
         character(len=6) :: buffer
-        integer :: num, next, ascii_code, i
-        logical :: negative
+        integer          :: num, next, ascii_code, i
+        logical          :: negative
 
         if ( .not. present(fmt) ) then
             fmt_ = 'i'
@@ -4006,8 +4006,8 @@ submodule (io_fortran_lib) internal_io
     module procedure cast_i8_to_string
         character(len=1) :: fmt_
         character(len=4) :: buffer
-        integer :: num, next, ascii_code, i
-        logical :: negative
+        integer          :: num, next, ascii_code, i
+        logical          :: negative
 
         if ( .not. present(fmt) ) then
             fmt_ = 'i'
@@ -4066,10 +4066,10 @@ submodule (io_fortran_lib) internal_io
     end procedure cast_i8_to_string
 
     module procedure cast_c128_to_char
-        character(len=1) :: fmt_
-        character(len=5) :: decimal
+        character(len=1)              :: fmt_
+        character(len=5)              :: decimal
         character(len=:), allocatable :: xre_str, xim_str, im_
-        integer :: e, decimals_, i
+        integer                       :: e, decimals_, i
 
         if ( .not. present(fmt) ) then
             fmt_ = 'e'
@@ -4304,10 +4304,10 @@ submodule (io_fortran_lib) internal_io
         end if
     end procedure cast_c128_to_char
     module procedure cast_c64_to_char
-        character(len=1) :: fmt_
-        character(len=5) :: decimal
+        character(len=1)              :: fmt_
+        character(len=5)              :: decimal
         character(len=:), allocatable :: xre_str, xim_str, im_
-        integer :: e, decimals_, i
+        integer                       :: e, decimals_, i
 
         if ( .not. present(fmt) ) then
             fmt_ = 'e'
@@ -4530,10 +4530,10 @@ submodule (io_fortran_lib) internal_io
         end if
     end procedure cast_c64_to_char
     module procedure cast_c32_to_char
-        character(len=1) :: fmt_
-        character(len=5) :: decimal
+        character(len=1)              :: fmt_
+        character(len=5)              :: decimal
         character(len=:), allocatable :: xre_str, xim_str, im_
-        integer :: e, decimals_, i
+        integer                       :: e, decimals_, i
 
         if ( .not. present(fmt) ) then
             fmt_ = 'e'
@@ -4759,7 +4759,7 @@ submodule (io_fortran_lib) internal_io
     module procedure cast_r128_to_char
         character(len=1) :: fmt_
         character(len=5) :: decimal
-        integer :: e, decimals_, i
+        integer          :: e, decimals_, i
 
         if ( .not. present(fmt) ) then
             fmt_ = 'e'
@@ -4883,7 +4883,7 @@ submodule (io_fortran_lib) internal_io
     module procedure cast_r64_to_char
         character(len=1) :: fmt_
         character(len=5) :: decimal
-        integer :: e, decimals_, i
+        integer          :: e, decimals_, i
 
         if ( .not. present(fmt) ) then
             fmt_ = 'e'
@@ -5027,7 +5027,7 @@ submodule (io_fortran_lib) internal_io
     module procedure cast_r32_to_char
         character(len=1) :: fmt_
         character(len=5) :: decimal
-        integer :: e, decimals_, i
+        integer          :: e, decimals_, i
 
         if ( .not. present(fmt) ) then
             fmt_ = 'e'
@@ -5169,11 +5169,11 @@ submodule (io_fortran_lib) internal_io
     end procedure cast_r32_to_char
 
     module procedure cast_i64_to_char
-        character(len=1) :: fmt_
+        character(len=1)  :: fmt_
         character(len=20) :: buffer
-        integer(i64) :: num, next
-        integer :: ascii_code, i
-        logical :: negative
+        integer(i64)      :: num, next
+        integer           :: ascii_code, i
+        logical           :: negative
 
         if ( .not. present(fmt) ) then
             fmt_ = 'i'
@@ -5231,10 +5231,10 @@ submodule (io_fortran_lib) internal_io
         end if
     end procedure cast_i64_to_char
     module procedure cast_i32_to_char
-        character(len=1) :: fmt_
+        character(len=1)  :: fmt_
         character(len=11) :: buffer
-        integer :: num, next, ascii_code, i
-        logical :: negative
+        integer           :: num, next, ascii_code, i
+        logical           :: negative
 
         if ( .not. present(fmt) ) then
             fmt_ = 'i'
@@ -5294,8 +5294,8 @@ submodule (io_fortran_lib) internal_io
     module procedure cast_i16_to_char
         character(len=1) :: fmt_
         character(len=6) :: buffer
-        integer :: num, next, ascii_code, i
-        logical :: negative
+        integer          :: num, next, ascii_code, i
+        logical          :: negative
 
         if ( .not. present(fmt) ) then
             fmt_ = 'i'
@@ -5355,8 +5355,8 @@ submodule (io_fortran_lib) internal_io
     module procedure cast_i8_to_char
         character(len=1) :: fmt_
         character(len=4) :: buffer
-        integer :: num, next, ascii_code, i
-        logical :: negative
+        integer          :: num, next, ascii_code, i
+        logical          :: negative
 
         if ( .not. present(fmt) ) then
             fmt_ = 'i'
@@ -5415,8 +5415,8 @@ submodule (io_fortran_lib) internal_io
     end procedure cast_i8_to_char
 
     module procedure cast_string_to_c128
-        character(len=1) :: fmt_
-        character(len=5) :: decimal
+        character(len=1)              :: fmt_
+        character(len=5)              :: decimal
         character(len=:), allocatable :: im_
 
         real(r128) :: z_re, z_im
@@ -5566,8 +5566,8 @@ submodule (io_fortran_lib) internal_io
         end if
     end procedure cast_string_to_c128
     module procedure cast_string_to_c64
-        character(len=1) :: fmt_
-        character(len=5) :: decimal
+        character(len=1)              :: fmt_
+        character(len=5)              :: decimal
         character(len=:), allocatable :: im_
 
         real(r64) :: z_re, z_im
@@ -5687,8 +5687,8 @@ submodule (io_fortran_lib) internal_io
         end if
     end procedure cast_string_to_c64
     module procedure cast_string_to_c32
-        character(len=1) :: fmt_
-        character(len=5) :: decimal
+        character(len=1)              :: fmt_
+        character(len=5)              :: decimal
         character(len=:), allocatable :: im_
 
         real(r32) :: z_re, z_im
@@ -6027,8 +6027,8 @@ submodule (io_fortran_lib) internal_io
 
     module procedure cast_string_to_i64
         character(len=1) :: fmt_
-        integer :: substring_len, r, l, i, digit
-        logical :: negative
+        integer          :: substring_len, r, l, i, digit
+        logical          :: negative
 
         substring_len = substring%len()
 
@@ -6123,8 +6123,8 @@ submodule (io_fortran_lib) internal_io
     end procedure cast_string_to_i64
     module procedure cast_string_to_i32
         character(len=1) :: fmt_
-        integer :: substring_len, r, l, i, digit
-        logical :: negative
+        integer          :: substring_len, r, l, i, digit
+        logical          :: negative
 
         substring_len = substring%len()
 
@@ -6219,8 +6219,8 @@ submodule (io_fortran_lib) internal_io
     end procedure cast_string_to_i32
     module procedure cast_string_to_i16
         character(len=1) :: fmt_
-        integer :: substring_len, r, l, i, digit
-        logical :: negative
+        integer          :: substring_len, r, l, i, digit
+        logical          :: negative
 
         substring_len = substring%len()
 
@@ -6315,8 +6315,8 @@ submodule (io_fortran_lib) internal_io
     end procedure cast_string_to_i16
     module procedure cast_string_to_i8
         character(len=1) :: fmt_
-        integer :: substring_len, r, l, i, digit
-        logical :: negative
+        integer          :: substring_len, r, l, i, digit
+        logical          :: negative
 
         substring_len = substring%len()
 
@@ -6411,8 +6411,8 @@ submodule (io_fortran_lib) internal_io
     end procedure cast_string_to_i8
 
     module procedure cast_char_to_c128
-        character(len=1) :: fmt_
-        character(len=5) :: decimal
+        character(len=1)              :: fmt_
+        character(len=5)              :: decimal
         character(len=:), allocatable :: im_
 
         real(r128) :: z_re, z_im
@@ -6562,8 +6562,8 @@ submodule (io_fortran_lib) internal_io
         end if
     end procedure cast_char_to_c128
     module procedure cast_char_to_c64
-        character(len=1) :: fmt_
-        character(len=5) :: decimal
+        character(len=1)              :: fmt_
+        character(len=5)              :: decimal
         character(len=:), allocatable :: im_
 
         real(r64) :: z_re, z_im
@@ -6683,8 +6683,8 @@ submodule (io_fortran_lib) internal_io
         end if
     end procedure cast_char_to_c64
     module procedure cast_char_to_c32
-        character(len=1) :: fmt_
-        character(len=5) :: decimal
+        character(len=1)              :: fmt_
+        character(len=5)              :: decimal
         character(len=:), allocatable :: im_
 
         real(r32) :: z_re, z_im
@@ -6927,8 +6927,8 @@ submodule (io_fortran_lib) internal_io
 
     module procedure cast_char_to_i64
         character(len=1) :: fmt_
-        integer :: substring_len, r, l, i, digit
-        logical :: negative
+        integer          :: substring_len, r, l, i, digit
+        logical          :: negative
 
         substring_len = len(substring)
 
@@ -7023,8 +7023,8 @@ submodule (io_fortran_lib) internal_io
     end procedure cast_char_to_i64
     module procedure cast_char_to_i32
         character(len=1) :: fmt_
-        integer :: substring_len, r, l, i, digit
-        logical :: negative
+        integer          :: substring_len, r, l, i, digit
+        logical          :: negative
 
         substring_len = len(substring)
 
@@ -7119,8 +7119,8 @@ submodule (io_fortran_lib) internal_io
     end procedure cast_char_to_i32
     module procedure cast_char_to_i16
         character(len=1) :: fmt_
-        integer :: substring_len, r, l, i, digit
-        logical :: negative
+        integer          :: substring_len, r, l, i, digit
+        logical          :: negative
 
         substring_len = len(substring)
 
@@ -7215,8 +7215,8 @@ submodule (io_fortran_lib) internal_io
     end procedure cast_char_to_i16
     module procedure cast_char_to_i8
         character(len=1) :: fmt_
-        integer :: substring_len, r, l, i, digit
-        logical :: negative
+        integer          :: substring_len, r, l, i, digit
+        logical          :: negative
 
         substring_len = len(substring)
 

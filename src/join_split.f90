@@ -7,7 +7,7 @@ submodule (io_fortran_lib) join_split
     contains ! Procedure bodies for module subprograms <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>!
 
     module procedure join_char
-        type(String) :: temp_String
+        type(String)                  :: temp_String
         character(len=:), allocatable :: separator_
 
         if ( .not. present(separator) ) then
@@ -26,9 +26,9 @@ submodule (io_fortran_lib) join_split
     end procedure join_char
 
     module procedure join_string
-        type(String), dimension(2) :: token_pair
+        type(String)                  :: token_pair(2)
         character(len=:), allocatable :: separator_
-        integer(i64) :: num_tokens
+        integer(i64)                  :: num_tokens
 
         num_tokens = size(tokens, kind=i64)
 
@@ -68,8 +68,8 @@ submodule (io_fortran_lib) join_split
 
     module procedure split_string
         character(len=:), allocatable :: separator_
-        integer(i64) :: substring_len, l, i
-        integer :: sep_len, num_seps, sep, token, current
+        integer(i64)                  :: substring_len, l, i
+        integer                       :: sep_len, num_seps, sep, token, current
 
         substring_len = substring%len64()
 
