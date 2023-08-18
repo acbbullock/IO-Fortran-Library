@@ -13,6 +13,8 @@ submodule (io_fortran_lib) text_io
         logical                       :: exists, append_
         integer                       :: file_unit
 
+        exists=.false.; append_=.false.; file_unit=0
+
         ext = ext_of(file_name)
 
         if ( .not. any(TEXT_EXT == ext) ) then
@@ -66,6 +68,8 @@ submodule (io_fortran_lib) text_io
         character(len=:), allocatable :: ext, terminator_
         logical                       :: exists, append_
         integer                       :: file_unit
+
+        exists=.false.; append_=.false.; file_unit=0
 
         ext = ext_of(file_name)
 
@@ -123,8 +127,7 @@ submodule (io_fortran_lib) text_io
         integer(i64)                  :: nx, j
         logical                       :: header_present
 
-        nx = size(x, kind=i64)
-        header_present = .false.
+        nx=size(x, kind=i64); j=0_i64; header_present=.false.
 
         if ( size(header, kind=i64) == 1_i64 ) then
             if ( all(header == EMPTY_STR) ) then
@@ -177,8 +180,7 @@ submodule (io_fortran_lib) text_io
         integer(i64)                  :: nx, j
         logical                       :: header_present
 
-        nx = size(x, kind=i64)
-        header_present = .false.
+        nx=size(x, kind=i64); j=0_i64; header_present=.false.
 
         if ( size(header, kind=i64) == 1_i64 ) then
             if ( all(header == EMPTY_STR) ) then
@@ -231,8 +233,7 @@ submodule (io_fortran_lib) text_io
         integer(i64)                  :: nx, j
         logical                       :: header_present
 
-        nx = size(x, kind=i64)
-        header_present = .false.
+        nx=size(x, kind=i64); j=0_i64; header_present=.false.
 
         if ( size(header, kind=i64) == 1_i64 ) then
             if ( all(header == EMPTY_STR) ) then
@@ -286,9 +287,7 @@ submodule (io_fortran_lib) text_io
         integer(i64)                  :: n_rows, n_cols, j
         logical                       :: header_present
 
-        n_rows = size(x, dim=1, kind=i64)
-        n_cols = size(x, dim=2, kind=i64)
-        header_present = .false.
+        n_rows=size(x, dim=1, kind=i64); n_cols=size(x, dim=2, kind=i64); j=0_i64; header_present=.false.
 
         if ( size(header, kind=i64) == 1_i64 ) then
             if ( all(header == EMPTY_STR) ) then
@@ -324,9 +323,7 @@ submodule (io_fortran_lib) text_io
         integer(i64)                  :: n_rows, n_cols, j
         logical                       :: header_present
 
-        n_rows = size(x, dim=1, kind=i64)
-        n_cols = size(x, dim=2, kind=i64)
-        header_present = .false.
+        n_rows=size(x, dim=1, kind=i64); n_cols=size(x, dim=2, kind=i64); j=0_i64; header_present=.false.
 
         if ( size(header, kind=i64) == 1_i64 ) then
             if ( all(header == EMPTY_STR) ) then
@@ -362,9 +359,7 @@ submodule (io_fortran_lib) text_io
         integer(i64)                  :: n_rows, n_cols, j
         logical                       :: header_present
 
-        n_rows = size(x, dim=1, kind=i64)
-        n_cols = size(x, dim=2, kind=i64)
-        header_present = .false.
+        n_rows=size(x, dim=1, kind=i64); n_cols=size(x, dim=2, kind=i64); j=0_i64; header_present=.false.
 
         if ( size(header, kind=i64) == 1_i64 ) then
             if ( all(header == EMPTY_STR) ) then
@@ -401,8 +396,7 @@ submodule (io_fortran_lib) text_io
         integer(i64)                  :: nx, j
         logical                       :: header_present
 
-        nx = size(x, kind=i64)
-        header_present = .false.
+        nx=size(x, kind=i64); j=0_i64; header_present=.false.
 
         if ( size(header, kind=i64) == 1_i64 ) then
             if ( all(header == EMPTY_STR) ) then
@@ -455,8 +449,7 @@ submodule (io_fortran_lib) text_io
         integer(i64)                  :: nx, j
         logical                       :: header_present
 
-        nx = size(x, kind=i64)
-        header_present = .false.
+        nx=size(x, kind=i64); j=0_i64; header_present=.false.
 
         if ( size(header, kind=i64) == 1_i64 ) then
             if ( all(header == EMPTY_STR) ) then
@@ -509,8 +502,7 @@ submodule (io_fortran_lib) text_io
         integer(i64)                  :: nx, j
         logical                       :: header_present
 
-        nx = size(x, kind=i64)
-        header_present = .false.
+        nx=size(x, kind=i64); j=0_i64; header_present=.false.
 
         if ( size(header, kind=i64) == 1_i64 ) then
             if ( all(header == EMPTY_STR) ) then
@@ -564,9 +556,7 @@ submodule (io_fortran_lib) text_io
         integer(i64)                  :: n_rows, n_cols, j
         logical                       :: header_present
 
-        n_rows = size(x, dim=1, kind=i64)
-        n_cols = size(x, dim=2, kind=i64)
-        header_present = .false.
+        n_rows=size(x, dim=1, kind=i64); n_cols=size(x, dim=2, kind=i64); j=0_i64; header_present=.false.
 
         if ( size(header, kind=i64) == 1_i64 ) then
             if ( all(header == EMPTY_STR) ) then
@@ -602,9 +592,7 @@ submodule (io_fortran_lib) text_io
         integer(i64)                  :: n_rows, n_cols, j
         logical                       :: header_present
 
-        n_rows = size(x, dim=1, kind=i64)
-        n_cols = size(x, dim=2, kind=i64)
-        header_present = .false.
+        n_rows=size(x, dim=1, kind=i64); n_cols=size(x, dim=2, kind=i64); j=0_i64; header_present=.false.
 
         if ( size(header, kind=i64) == 1_i64 ) then
             if ( all(header == EMPTY_STR) ) then
@@ -640,9 +628,7 @@ submodule (io_fortran_lib) text_io
         integer(i64)                  :: n_rows, n_cols, j
         logical                       :: header_present
 
-        n_rows = size(x, dim=1, kind=i64)
-        n_cols = size(x, dim=2, kind=i64)
-        header_present = .false.
+        n_rows=size(x, dim=1, kind=i64); n_cols=size(x, dim=2, kind=i64); j=0_i64; header_present=.false.
 
         if ( size(header, kind=i64) == 1_i64 ) then
             if ( all(header == EMPTY_STR) ) then
@@ -679,8 +665,7 @@ submodule (io_fortran_lib) text_io
         integer(i64)                  :: nx, j
         logical                       :: header_present
 
-        nx = size(x, kind=i64)
-        header_present = .false.
+        nx=size(x, kind=i64); j=0_i64; header_present=.false.
 
         if ( size(header, kind=i64) == 1_i64 ) then
             if ( all(header == EMPTY_STR) ) then
@@ -733,8 +718,7 @@ submodule (io_fortran_lib) text_io
         integer(i64)                  :: nx, j
         logical                       :: header_present
 
-        nx = size(x, kind=i64)
-        header_present = .false.
+        nx=size(x, kind=i64); j=0_i64; header_present=.false.
 
         if ( size(header, kind=i64) == 1_i64 ) then
             if ( all(header == EMPTY_STR) ) then
@@ -787,8 +771,7 @@ submodule (io_fortran_lib) text_io
         integer(i64)                  :: nx, j
         logical                       :: header_present
 
-        nx = size(x, kind=i64)
-        header_present = .false.
+        nx=size(x, kind=i64); j=0_i64; header_present=.false.
 
         if ( size(header, kind=i64) == 1_i64 ) then
             if ( all(header == EMPTY_STR) ) then
@@ -841,8 +824,7 @@ submodule (io_fortran_lib) text_io
         integer(i64)                  :: nx, j
         logical                       :: header_present
 
-        nx = size(x, kind=i64)
-        header_present = .false.
+        nx=size(x, kind=i64); j=0_i64; header_present=.false.
 
         if ( size(header, kind=i64) == 1_i64 ) then
             if ( all(header == EMPTY_STR) ) then
@@ -896,9 +878,7 @@ submodule (io_fortran_lib) text_io
         integer(i64)                  :: n_rows, n_cols, j
         logical                       :: header_present
 
-        n_rows = size(x, dim=1, kind=i64)
-        n_cols = size(x, dim=2, kind=i64)
-        header_present = .false.
+        n_rows=size(x, dim=1, kind=i64); n_cols=size(x, dim=2, kind=i64); j=0_i64; header_present=.false.
 
         if ( size(header, kind=i64) == 1_i64 ) then
             if ( all(header == EMPTY_STR) ) then
@@ -934,9 +914,7 @@ submodule (io_fortran_lib) text_io
         integer(i64)                  :: n_rows, n_cols, j
         logical                       :: header_present
 
-        n_rows = size(x, dim=1, kind=i64)
-        n_cols = size(x, dim=2, kind=i64)
-        header_present = .false.
+        n_rows=size(x, dim=1, kind=i64); n_cols=size(x, dim=2, kind=i64); j=0_i64; header_present=.false.
 
         if ( size(header, kind=i64) == 1_i64 ) then
             if ( all(header == EMPTY_STR) ) then
@@ -972,9 +950,7 @@ submodule (io_fortran_lib) text_io
         integer(i64)                  :: n_rows, n_cols, j
         logical                       :: header_present
 
-        n_rows = size(x, dim=1, kind=i64)
-        n_cols = size(x, dim=2, kind=i64)
-        header_present = .false.
+        n_rows=size(x, dim=1, kind=i64); n_cols=size(x, dim=2, kind=i64); j=0_i64; header_present=.false.
 
         if ( size(header, kind=i64) == 1_i64 ) then
             if ( all(header == EMPTY_STR) ) then
@@ -1010,9 +986,7 @@ submodule (io_fortran_lib) text_io
         integer(i64)                  :: n_rows, n_cols, j
         logical                       :: header_present
 
-        n_rows = size(x, dim=1, kind=i64)
-        n_cols = size(x, dim=2, kind=i64)
-        header_present = .false.
+        n_rows=size(x, dim=1, kind=i64); n_cols=size(x, dim=2, kind=i64); j=0_i64; header_present=.false.
 
         if ( size(header, kind=i64) == 1_i64 ) then
             if ( all(header == EMPTY_STR) ) then
@@ -1052,6 +1026,12 @@ submodule (io_fortran_lib) text_io
         integer      :: row_sep, col_sep, col_sep_len, open_paren, close_paren, current
         integer      :: file_unit, iostat
         logical      :: exists, in_paren
+
+        n_rows      = 0_i64;   n_cols   = 0_i64
+        file_length = 0_i64;   row      = 0_i64; col         = 0_i64; l          = 0_i64; i           = 0_i64
+        row_sep     = 0;       col_sep  = 0;     col_sep_len = 0;     open_paren = 0;     close_paren = 0; current = 0
+        file_unit   = 0;       iostat   = 0
+        exists      = .false.; in_paren = .false.
 
         if ( len(im) == 0 ) then
             inquire(file=file_name, exist=exists)
@@ -1223,6 +1203,12 @@ submodule (io_fortran_lib) text_io
         integer      :: file_unit, iostat
         logical      :: exists, in_paren
 
+        n_rows      = 0_i64;   n_cols   = 0_i64
+        file_length = 0_i64;   row      = 0_i64; col         = 0_i64; l          = 0_i64; i           = 0_i64
+        row_sep     = 0;       col_sep  = 0;     col_sep_len = 0;     open_paren = 0;     close_paren = 0; current = 0
+        file_unit   = 0;       iostat   = 0
+        exists      = .false.; in_paren = .false.
+
         if ( len(im) == 0 ) then
             inquire(file=file_name, exist=exists)
 
@@ -1392,6 +1378,12 @@ submodule (io_fortran_lib) text_io
         integer      :: row_sep, col_sep, col_sep_len, open_paren, close_paren, current
         integer      :: file_unit, iostat
         logical      :: exists, in_paren
+
+        n_rows      = 0_i64;   n_cols   = 0_i64
+        file_length = 0_i64;   row      = 0_i64; col         = 0_i64; l          = 0_i64; i           = 0_i64
+        row_sep     = 0;       col_sep  = 0;     col_sep_len = 0;     open_paren = 0;     close_paren = 0; current = 0
+        file_unit   = 0;       iostat   = 0
+        exists      = .false.; in_paren = .false.
 
         if ( len(im) == 0 ) then
             inquire(file=file_name, exist=exists)
@@ -1564,6 +1556,12 @@ submodule (io_fortran_lib) text_io
         integer      :: file_unit, iostat
         logical      :: exists, in_paren
 
+        n_rows      = 0_i64;   n_cols   = 0_i64
+        file_length = 0_i64;   row      = 0_i64; col         = 0_i64; l          = 0_i64; i           = 0_i64
+        row_sep     = 0;       col_sep  = 0;     col_sep_len = 0;     open_paren = 0;     close_paren = 0; current = 0
+        file_unit   = 0;       iostat   = 0
+        exists      = .false.; in_paren = .false.
+
         if ( len(im) == 0 ) then
             inquire(file=file_name, exist=exists)
 
@@ -1705,6 +1703,12 @@ submodule (io_fortran_lib) text_io
         integer      :: row_sep, col_sep, col_sep_len, open_paren, close_paren, current
         integer      :: file_unit, iostat
         logical      :: exists, in_paren
+
+        n_rows      = 0_i64;   n_cols   = 0_i64
+        file_length = 0_i64;   row      = 0_i64; col         = 0_i64; l          = 0_i64; i           = 0_i64
+        row_sep     = 0;       col_sep  = 0;     col_sep_len = 0;     open_paren = 0;     close_paren = 0; current = 0
+        file_unit   = 0;       iostat   = 0
+        exists      = .false.; in_paren = .false.
 
         if ( len(im) == 0 ) then
             inquire(file=file_name, exist=exists)
@@ -1848,6 +1852,12 @@ submodule (io_fortran_lib) text_io
         integer      :: file_unit, iostat
         logical      :: exists, in_paren
 
+        n_rows      = 0_i64;   n_cols   = 0_i64
+        file_length = 0_i64;   row      = 0_i64; col         = 0_i64; l          = 0_i64; i           = 0_i64
+        row_sep     = 0;       col_sep  = 0;     col_sep_len = 0;     open_paren = 0;     close_paren = 0; current = 0
+        file_unit   = 0;       iostat   = 0
+        exists      = .false.; in_paren = .false.
+
         if ( len(im) == 0 ) then
             inquire(file=file_name, exist=exists)
 
@@ -1986,6 +1996,8 @@ submodule (io_fortran_lib) text_io
         type(String), allocatable :: cells(:,:)
         integer(i64)              :: n_rows, n_cols
 
+        n_rows=0_i64; n_cols=0_i64
+
         call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
         call text_file%empty()
 
@@ -2038,6 +2050,8 @@ submodule (io_fortran_lib) text_io
         type(String), allocatable :: cells(:,:)
         integer(i64)              :: n_rows, n_cols
 
+        n_rows=0_i64; n_cols=0_i64
+
         call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
         call text_file%empty()
 
@@ -2089,6 +2103,8 @@ submodule (io_fortran_lib) text_io
         type(String)              :: text_file
         type(String), allocatable :: cells(:,:)
         integer(i64)              :: n_rows, n_cols
+
+        n_rows=0_i64; n_cols=0_i64
 
         call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
         call text_file%empty()
@@ -2143,6 +2159,8 @@ submodule (io_fortran_lib) text_io
         type(String), allocatable :: cells(:,:)
         integer(i64)              :: n_rows, n_cols
 
+        n_rows=0_i64; n_cols=0_i64
+
         call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
         call text_file%empty()
 
@@ -2166,6 +2184,8 @@ submodule (io_fortran_lib) text_io
         type(String)              :: text_file
         type(String), allocatable :: cells(:,:)
         integer(i64)              :: n_rows, n_cols
+
+        n_rows=0_i64; n_cols=0_i64
 
         call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
         call text_file%empty()
@@ -2191,6 +2211,8 @@ submodule (io_fortran_lib) text_io
         type(String), allocatable :: cells(:,:)
         integer(i64)              :: n_rows, n_cols
 
+        n_rows=0_i64; n_cols=0_i64
+
         call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
         call text_file%empty()
 
@@ -2215,6 +2237,8 @@ submodule (io_fortran_lib) text_io
         type(String)              :: text_file
         type(String), allocatable :: cells(:,:)
         integer(i64)              :: n_rows, n_cols
+
+        n_rows=0_i64; n_cols=0_i64
 
         call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
         call text_file%empty()
@@ -2268,6 +2292,8 @@ submodule (io_fortran_lib) text_io
         type(String), allocatable :: cells(:,:)
         integer(i64)              :: n_rows, n_cols
 
+        n_rows=0_i64; n_cols=0_i64
+
         call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
         call text_file%empty()
 
@@ -2320,6 +2346,8 @@ submodule (io_fortran_lib) text_io
         type(String), allocatable :: cells(:,:)
         integer(i64)              :: n_rows, n_cols
 
+        n_rows=0_i64; n_cols=0_i64
+
         call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
         call text_file%empty()
 
@@ -2371,6 +2399,8 @@ submodule (io_fortran_lib) text_io
         type(String)              :: text_file
         type(String), allocatable :: cells(:,:)
         integer(i64)              :: n_rows, n_cols
+
+        n_rows=0_i64; n_cols=0_i64
 
         call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
         call text_file%empty()
@@ -2425,6 +2455,8 @@ submodule (io_fortran_lib) text_io
         type(String), allocatable :: cells(:,:)
         integer(i64)              :: n_rows, n_cols
 
+        n_rows=0_i64; n_cols=0_i64
+
         call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
         call text_file%empty()
 
@@ -2448,6 +2480,8 @@ submodule (io_fortran_lib) text_io
         type(String)              :: text_file
         type(String), allocatable :: cells(:,:)
         integer(i64)              :: n_rows, n_cols
+
+        n_rows=0_i64; n_cols=0_i64
 
         call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
         call text_file%empty()
@@ -2473,6 +2507,8 @@ submodule (io_fortran_lib) text_io
         type(String), allocatable :: cells(:,:)
         integer(i64)              :: n_rows, n_cols
 
+        n_rows=0_i64; n_cols=0_i64
+
         call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
         call text_file%empty()
 
@@ -2496,6 +2532,8 @@ submodule (io_fortran_lib) text_io
         type(String)              :: text_file
         type(String), allocatable :: cells(:,:)
         integer(i64)              :: n_rows, n_cols
+
+        n_rows=0_i64; n_cols=0_i64
 
         call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
         call text_file%empty()

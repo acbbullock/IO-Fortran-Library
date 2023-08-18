@@ -10,6 +10,8 @@ submodule (io_fortran_lib) file_io
     module procedure ext_of
         integer :: i, l
 
+        i=0; l=0
+
         l = len_trim(file_name)
 
         do i = l, 1, -1
@@ -29,6 +31,8 @@ submodule (io_fortran_lib) file_io
         character(len=:), allocatable :: ext, locale_, delim_, fmt_, im_
         integer                       :: decimals_, hstat, dim_
 
+        decimals_=0; hstat=0; dim_=0
+
         ext = ext_of(file_name)
 
         if ( any(TEXT_EXT == ext) ) then
@@ -79,12 +83,12 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(locale) ) then
-                locale_ = 'US'
+                locale_ = "US"
             else
                 if ( any(LOCALES == locale) ) then
                     locale_ = locale
                 else
-                    locale_ = 'US'
+                    locale_ = "US"
                     write(*,"(a)") LF//'WARNING: Invalid locale "'//locale//'" for file "'//file_name//'". '// &
                                        'Defaulting to US format.'// &
                                    LF//'Locale must be one of: '//join(LOCALES)
@@ -95,7 +99,7 @@ submodule (io_fortran_lib) file_io
                 if ( dim_ == 1 ) then
                     delim_ = EMPTY_STR
                 else
-                    if ( locale_ == 'US' ) then
+                    if ( locale_ == "US" ) then
                         delim_ = COMMA
                     else
                         delim_ = SEMICOLON
@@ -110,12 +114,12 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(fmt) ) then
-                fmt_ = 'e'
+                fmt_ = "e"
             else
                 if ( any(REAL_FMTS == fmt) ) then
                     fmt_ = fmt
                 else
-                    fmt_ = 'e'
+                    fmt_ = "e"
                     write(*,"(a)") LF//'WARNING: Invalid format "'//fmt//'" for file "'//file_name//'". '// &
                                        'Defaulting to exponential format.'// &
                                    LF//'Format must be one of: '//join(REAL_FMTS)
@@ -137,13 +141,13 @@ submodule (io_fortran_lib) file_io
             call to_text( x=x, file_name=file_name, header=header_, dim=dim_, locale=locale_, delim=delim_, &
                           fmt=fmt_, decimals=decimals_, im=im_ )
         else if ( any(BINARY_EXT == ext) ) then
-            if ( present(header) )   write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
-            if ( present(dim) )      write(*,"(a)") LF//'WARNING: dim not supported for file type "'//ext//'".'
-            if ( present(locale) )   write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
-            if ( present(delim) )    write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
-            if ( present(fmt) )      write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
+            if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
+            if ( present(dim     ) ) write(*,"(a)") LF//'WARNING: dim not supported for file type "'//ext//'".'
+            if ( present(locale  ) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
+            if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
+            if ( present(fmt     ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
             if ( present(decimals) ) write(*,"(a)") LF//'WARNING: decimals not supported for file type "'//ext//'".'
-            if ( present(im) )       write(*,"(a)") LF//'WARNING: im not supported for file type "'//ext//'".'
+            if ( present(im      ) ) write(*,"(a)") LF//'WARNING: im not supported for file type "'//ext//'".'
 
             call to_binary(x=x, file_name=file_name)
         else
@@ -158,6 +162,8 @@ submodule (io_fortran_lib) file_io
         character(len=:), allocatable :: ext, locale_, delim_, fmt_, im_
         integer                       :: decimals_, hstat, dim_
 
+        decimals_=0; hstat=0; dim_=0
+
         ext = ext_of(file_name)
 
         if ( any(TEXT_EXT == ext) ) then
@@ -208,12 +214,12 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(locale) ) then
-                locale_ = 'US'
+                locale_ = "US"
             else
                 if ( any(LOCALES == locale) ) then
                     locale_ = locale
                 else
-                    locale_ = 'US'
+                    locale_ = "US"
                     write(*,"(a)") LF//'WARNING: Invalid locale "'//locale//'" for file "'//file_name//'". '// &
                                        'Defaulting to US format.'// &
                                    LF//'Locale must be one of: '//join(LOCALES)
@@ -224,7 +230,7 @@ submodule (io_fortran_lib) file_io
                 if ( dim_ == 1 ) then
                     delim_ = EMPTY_STR
                 else
-                    if ( locale_ == 'US' ) then
+                    if ( locale_ == "US" ) then
                         delim_ = COMMA
                     else
                         delim_ = SEMICOLON
@@ -239,12 +245,12 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(fmt) ) then
-                fmt_ = 'e'
+                fmt_ = "e"
             else
                 if ( any(REAL_FMTS == fmt) ) then
                     fmt_ = fmt
                 else
-                    fmt_ = 'e'
+                    fmt_ = "e"
                     write(*,"(a)") LF//'WARNING: Invalid format "'//fmt//'" for file "'//file_name//'". '// &
                                        'Defaulting to exponential format.'// &
                                    LF//'Format must be one of: '//join(REAL_FMTS)
@@ -266,13 +272,13 @@ submodule (io_fortran_lib) file_io
             call to_text( x=x, file_name=file_name, header=header_, dim=dim_, locale=locale_, delim=delim_, &
                           fmt=fmt_, decimals=decimals_, im=im_ )
         else if ( any(BINARY_EXT == ext) ) then
-            if ( present(header) )   write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
-            if ( present(dim) )      write(*,"(a)") LF//'WARNING: dim not supported for file type "'//ext//'".'
-            if ( present(locale) )   write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
-            if ( present(delim) )    write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
-            if ( present(fmt) )      write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
+            if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
+            if ( present(dim     ) ) write(*,"(a)") LF//'WARNING: dim not supported for file type "'//ext//'".'
+            if ( present(locale  ) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
+            if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
+            if ( present(fmt     ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
             if ( present(decimals) ) write(*,"(a)") LF//'WARNING: decimals not supported for file type "'//ext//'".'
-            if ( present(im) )       write(*,"(a)") LF//'WARNING: im not supported for file type "'//ext//'".'
+            if ( present(im      ) ) write(*,"(a)") LF//'WARNING: im not supported for file type "'//ext//'".'
 
             call to_binary(x=x, file_name=file_name)
         else
@@ -287,6 +293,8 @@ submodule (io_fortran_lib) file_io
         character(len=:), allocatable :: ext, locale_, delim_, fmt_, im_
         integer                       :: decimals_, hstat, dim_
 
+        decimals_=0; hstat=0; dim_=0
+
         ext = ext_of(file_name)
 
         if ( any(TEXT_EXT == ext) ) then
@@ -337,12 +345,12 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(locale) ) then
-                locale_ = 'US'
+                locale_ = "US"
             else
                 if ( any(LOCALES == locale) ) then
                     locale_ = locale
                 else
-                    locale_ = 'US'
+                    locale_ = "US"
                     write(*,"(a)") LF//'WARNING: Invalid locale "'//locale//'" for file "'//file_name//'". '// &
                                        'Defaulting to US format.'// &
                                    LF//'Locale must be one of: '//join(LOCALES)
@@ -353,7 +361,7 @@ submodule (io_fortran_lib) file_io
                 if ( dim_ == 1 ) then
                     delim_ = EMPTY_STR
                 else
-                    if ( locale_ == 'US' ) then
+                    if ( locale_ == "US" ) then
                         delim_ = COMMA
                     else
                         delim_ = SEMICOLON
@@ -368,12 +376,12 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(fmt) ) then
-                fmt_ = 'e'
+                fmt_ = "e"
             else
                 if ( any(REAL_FMTS == fmt) ) then
                     fmt_ = fmt
                 else
-                    fmt_ = 'e'
+                    fmt_ = "e"
                     write(*,"(a)") LF//'WARNING: Invalid format "'//fmt//'" for file "'//file_name//'". '// &
                                        'Defaulting to exponential format.'// &
                                    LF//'Format must be one of: '//join(REAL_FMTS)
@@ -395,13 +403,13 @@ submodule (io_fortran_lib) file_io
             call to_text( x=x, file_name=file_name, header=header_, dim=dim_, locale=locale_, delim=delim_, &
                           fmt=fmt_, decimals=decimals_, im=im_ )
         else if ( any(BINARY_EXT == ext) ) then
-            if ( present(header) )   write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
-            if ( present(dim) )      write(*,"(a)") LF//'WARNING: dim not supported for file type "'//ext//'".'
-            if ( present(locale) )   write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
-            if ( present(delim) )    write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
-            if ( present(fmt) )      write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
+            if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
+            if ( present(dim     ) ) write(*,"(a)") LF//'WARNING: dim not supported for file type "'//ext//'".'
+            if ( present(locale  ) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
+            if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
+            if ( present(fmt     ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
             if ( present(decimals) ) write(*,"(a)") LF//'WARNING: decimals not supported for file type "'//ext//'".'
-            if ( present(im) )       write(*,"(a)") LF//'WARNING: im not supported for file type "'//ext//'".'
+            if ( present(im      ) ) write(*,"(a)") LF//'WARNING: im not supported for file type "'//ext//'".'
 
             call to_binary(x=x, file_name=file_name)
         else
@@ -434,12 +442,12 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(locale) ) then
-                locale_ = 'US'
+                locale_ = "US"
             else
                 if ( any(LOCALES == locale) ) then
                     locale_ = locale
                 else
-                    locale_ = 'US'
+                    locale_ = "US"
                     write(*,"(a)") LF//'WARNING: Invalid locale "'//locale//'" for file "'//file_name//'". '// &
                                        'Defaulting to US format.'// &
                                    LF//'Locale must be one of: '//join(LOCALES)
@@ -447,7 +455,7 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(delim) ) then
-                if ( locale_ == 'US' ) then
+                if ( locale_ == "US" ) then
                     delim_ = COMMA
                 else
                     delim_ = SEMICOLON
@@ -457,12 +465,12 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(fmt) ) then
-                fmt_ = 'e'
+                fmt_ = "e"
             else
                 if ( any(REAL_FMTS == fmt) ) then
                     fmt_ = fmt
                 else
-                    fmt_ = 'e'
+                    fmt_ = "e"
                     write(*,"(a)") LF//'WARNING: Invalid format "'//fmt//'" for file "'//file_name//'". '// &
                                        'Defaulting to exponential format.'// &
                                    LF//'Format must be one of: '//join(REAL_FMTS)
@@ -484,12 +492,12 @@ submodule (io_fortran_lib) file_io
             call to_text( x=x, file_name=file_name, header=header_, locale=locale_, delim=delim_, &
                           fmt=fmt_, decimals=decimals_, im=im_ )
         else if ( any(BINARY_EXT == ext) ) then
-            if ( present(header) )   write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
-            if ( present(locale) )   write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
-            if ( present(delim) )    write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
-            if ( present(fmt) )      write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
+            if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
+            if ( present(locale  ) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
+            if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
+            if ( present(fmt     ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
             if ( present(decimals) ) write(*,"(a)") LF//'WARNING: decimals not supported for file type "'//ext//'".'
-            if ( present(im) )       write(*,"(a)") LF//'WARNING: im not supported for file type "'//ext//'".'
+            if ( present(im      ) ) write(*,"(a)") LF//'WARNING: im not supported for file type "'//ext//'".'
 
             call to_binary(x=x, file_name=file_name)
         else
@@ -521,12 +529,12 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(locale) ) then
-                locale_ = 'US'
+                locale_ = "US"
             else
                 if ( any(LOCALES == locale) ) then
                     locale_ = locale
                 else
-                    locale_ = 'US'
+                    locale_ = "US"
                     write(*,"(a)") LF//'WARNING: Invalid locale "'//locale//'" for file "'//file_name//'". '// &
                                        'Defaulting to US format.'// &
                                    LF//'Locale must be one of: '//join(LOCALES)
@@ -534,7 +542,7 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(delim) ) then
-                if ( locale_ == 'US' ) then
+                if ( locale_ == "US" ) then
                     delim_ = COMMA
                 else
                     delim_ = SEMICOLON
@@ -544,12 +552,12 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(fmt) ) then
-                fmt_ = 'e'
+                fmt_ = "e"
             else
                 if ( any(REAL_FMTS == fmt) ) then
                     fmt_ = fmt
                 else
-                    fmt_ = 'e'
+                    fmt_ = "e"
                     write(*,"(a)") LF//'WARNING: Invalid format "'//fmt//'" for file "'//file_name//'". '// &
                                        'Defaulting to exponential format.'// &
                                    LF//'Format must be one of: '//join(REAL_FMTS)
@@ -571,12 +579,12 @@ submodule (io_fortran_lib) file_io
             call to_text( x=x, file_name=file_name, header=header_, locale=locale_, delim=delim_, &
                           fmt=fmt_, decimals=decimals_, im=im_ )
         else if ( any(BINARY_EXT == ext) ) then
-            if ( present(header) )   write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
-            if ( present(locale) )   write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
-            if ( present(delim) )    write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
-            if ( present(fmt) )      write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
+            if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
+            if ( present(locale  ) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
+            if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
+            if ( present(fmt     ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
             if ( present(decimals) ) write(*,"(a)") LF//'WARNING: decimals not supported for file type "'//ext//'".'
-            if ( present(im) )       write(*,"(a)") LF//'WARNING: im not supported for file type "'//ext//'".'
+            if ( present(im      ) ) write(*,"(a)") LF//'WARNING: im not supported for file type "'//ext//'".'
 
             call to_binary(x=x, file_name=file_name)
         else
@@ -608,12 +616,12 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(locale) ) then
-                locale_ = 'US'
+                locale_ = "US"
             else
                 if ( any(LOCALES == locale) ) then
                     locale_ = locale
                 else
-                    locale_ = 'US'
+                    locale_ = "US"
                     write(*,"(a)") LF//'WARNING: Invalid locale "'//locale//'" for file "'//file_name//'". '// &
                                        'Defaulting to US format.'// &
                                    LF//'Locale must be one of: '//join(LOCALES)
@@ -621,7 +629,7 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(delim) ) then
-                if ( locale_ == 'US' ) then
+                if ( locale_ == "US" ) then
                     delim_ = COMMA
                 else
                     delim_ = SEMICOLON
@@ -631,12 +639,12 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(fmt) ) then
-                fmt_ = 'e'
+                fmt_ = "e"
             else
                 if ( any(REAL_FMTS == fmt) ) then
                     fmt_ = fmt
                 else
-                    fmt_ = 'e'
+                    fmt_ = "e"
                     write(*,"(a)") LF//'WARNING: Invalid format "'//fmt//'" for file "'//file_name//'". '// &
                                        'Defaulting to exponential format.'// &
                                    LF//'Format must be one of: '//join(REAL_FMTS)
@@ -658,12 +666,12 @@ submodule (io_fortran_lib) file_io
             call to_text( x=x, file_name=file_name, header=header_, locale=locale_, delim=delim_, &
                           fmt=fmt_, decimals=decimals_, im=im_ )
         else if ( any(BINARY_EXT == ext) ) then
-            if ( present(header) )   write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
-            if ( present(locale) )   write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
-            if ( present(delim) )    write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
-            if ( present(fmt) )      write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
+            if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
+            if ( present(locale  ) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
+            if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
+            if ( present(fmt     ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
             if ( present(decimals) ) write(*,"(a)") LF//'WARNING: decimals not supported for file type "'//ext//'".'
-            if ( present(im) )       write(*,"(a)") LF//'WARNING: im not supported for file type "'//ext//'".'
+            if ( present(im      ) ) write(*,"(a)") LF//'WARNING: im not supported for file type "'//ext//'".'
 
             call to_binary(x=x, file_name=file_name)
         else
@@ -1433,6 +1441,8 @@ submodule (io_fortran_lib) file_io
         character(len=:), allocatable :: ext, locale_, delim_, fmt_
         integer                       :: decimals_, hstat, dim_
 
+        decimals_=0; hstat=0; dim_=0
+
         ext = ext_of(file_name)
 
         if ( any(TEXT_EXT == ext) ) then
@@ -1483,12 +1493,12 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(locale) ) then
-                locale_ = 'US'
+                locale_ = "US"
             else
                 if ( any(LOCALES == locale) ) then
                     locale_ = locale
                 else
-                    locale_ = 'US'
+                    locale_ = "US"
                     write(*,"(a)") LF//'WARNING: Invalid locale "'//locale//'" for file "'//file_name//'". '// &
                                        'Defaulting to US format.'// &
                                    LF//'Locale must be one of: '//join(LOCALES)
@@ -1499,7 +1509,7 @@ submodule (io_fortran_lib) file_io
                 if ( dim_ == 1 ) then
                     delim_ = EMPTY_STR
                 else
-                    if ( locale_ == 'US' ) then
+                    if ( locale_ == "US" ) then
                         delim_ = COMMA
                     else
                         delim_ = SEMICOLON
@@ -1514,12 +1524,12 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(fmt) ) then
-                fmt_ = 'e'
+                fmt_ = "e"
             else
                 if ( any(REAL_FMTS == fmt) ) then
                     fmt_ = fmt
                 else
-                    fmt_ = 'e'
+                    fmt_ = "e"
                     write(*,"(a)") LF//'WARNING: Invalid format "'//fmt//'" for file "'//file_name//'". '// &
                                        'Defaulting to exponential format.'// &
                                    LF//'Format must be one of: '//join(REAL_FMTS)
@@ -1535,11 +1545,11 @@ submodule (io_fortran_lib) file_io
             call to_text( x=x, file_name=file_name, header=header_, dim=dim_, locale=locale_, delim=delim_, &
                           fmt=fmt_, decimals=decimals_ )
         else if ( any(BINARY_EXT == ext) ) then
-            if ( present(header) )   write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
-            if ( present(dim) )      write(*,"(a)") LF//'WARNING: dim not supported for file type "'//ext//'".'
-            if ( present(locale) )   write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
-            if ( present(delim) )    write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
-            if ( present(fmt) )      write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
+            if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
+            if ( present(dim     ) ) write(*,"(a)") LF//'WARNING: dim not supported for file type "'//ext//'".'
+            if ( present(locale  ) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
+            if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
+            if ( present(fmt     ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
             if ( present(decimals) ) write(*,"(a)") LF//'WARNING: decimals not supported for file type "'//ext//'".'
 
             call to_binary(x=x, file_name=file_name)
@@ -1555,6 +1565,8 @@ submodule (io_fortran_lib) file_io
         character(len=:), allocatable :: ext, locale_, delim_, fmt_
         integer                       :: decimals_, hstat, dim_
 
+        decimals_=0; hstat=0; dim_=0
+
         ext = ext_of(file_name)
 
         if ( any(TEXT_EXT == ext) ) then
@@ -1605,12 +1617,12 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(locale) ) then
-                locale_ = 'US'
+                locale_ = "US"
             else
                 if ( any(LOCALES == locale) ) then
                     locale_ = locale
                 else
-                    locale_ = 'US'
+                    locale_ = "US"
                     write(*,"(a)") LF//'WARNING: Invalid locale "'//locale//'" for file "'//file_name//'". '// &
                                        'Defaulting to US format.'// &
                                    LF//'Locale must be one of: '//join(LOCALES)
@@ -1621,7 +1633,7 @@ submodule (io_fortran_lib) file_io
                 if ( dim_ == 1 ) then
                     delim_ = EMPTY_STR
                 else
-                    if ( locale_ == 'US' ) then
+                    if ( locale_ == "US" ) then
                         delim_ = COMMA
                     else
                         delim_ = SEMICOLON
@@ -1636,12 +1648,12 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(fmt) ) then
-                fmt_ = 'e'
+                fmt_ = "e"
             else
                 if ( any(REAL_FMTS == fmt) ) then
                     fmt_ = fmt
                 else
-                    fmt_ = 'e'
+                    fmt_ = "e"
                     write(*,"(a)") LF//'WARNING: Invalid format "'//fmt//'" for file "'//file_name//'". '// &
                                        'Defaulting to exponential format.'// &
                                    LF//'Format must be one of: '//join(REAL_FMTS)
@@ -1657,11 +1669,11 @@ submodule (io_fortran_lib) file_io
             call to_text( x=x, file_name=file_name, header=header_, dim=dim_, locale=locale_, delim=delim_, &
                           fmt=fmt_, decimals=decimals_ )
         else if ( any(BINARY_EXT == ext) ) then
-            if ( present(header) )   write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
-            if ( present(dim) )      write(*,"(a)") LF//'WARNING: dim not supported for file type "'//ext//'".'
-            if ( present(locale) )   write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
-            if ( present(delim) )    write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
-            if ( present(fmt) )      write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
+            if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
+            if ( present(dim     ) ) write(*,"(a)") LF//'WARNING: dim not supported for file type "'//ext//'".'
+            if ( present(locale  ) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
+            if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
+            if ( present(fmt     ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
             if ( present(decimals) ) write(*,"(a)") LF//'WARNING: decimals not supported for file type "'//ext//'".'
 
             call to_binary(x=x, file_name=file_name)
@@ -1677,6 +1689,8 @@ submodule (io_fortran_lib) file_io
         character(len=:), allocatable :: ext, locale_, delim_, fmt_
         integer                       :: decimals_, hstat, dim_
 
+        decimals_=0; hstat=0; dim_=0
+
         ext = ext_of(file_name)
 
         if ( any(TEXT_EXT == ext) ) then
@@ -1727,12 +1741,12 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(locale) ) then
-                locale_ = 'US'
+                locale_ = "US"
             else
                 if ( any(LOCALES == locale) ) then
                     locale_ = locale
                 else
-                    locale_ = 'US'
+                    locale_ = "US"
                     write(*,"(a)") LF//'WARNING: Invalid locale "'//locale//'" for file "'//file_name//'". '// &
                                        'Defaulting to US format.'// &
                                    LF//'Locale must be one of: '//join(LOCALES)
@@ -1743,7 +1757,7 @@ submodule (io_fortran_lib) file_io
                 if ( dim_ == 1 ) then
                     delim_ = EMPTY_STR
                 else
-                    if ( locale_ == 'US' ) then
+                    if ( locale_ == "US" ) then
                         delim_ = COMMA
                     else
                         delim_ = SEMICOLON
@@ -1758,12 +1772,12 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(fmt) ) then
-                fmt_ = 'e'
+                fmt_ = "e"
             else
                 if ( any(REAL_FMTS == fmt) ) then
                     fmt_ = fmt
                 else
-                    fmt_ = 'e'
+                    fmt_ = "e"
                     write(*,"(a)") LF//'WARNING: Invalid format "'//fmt//'" for file "'//file_name//'". '// &
                                        'Defaulting to exponential format.'// &
                                    LF//'Format must be one of: '//join(REAL_FMTS)
@@ -1779,11 +1793,11 @@ submodule (io_fortran_lib) file_io
             call to_text( x=x, file_name=file_name, header=header_, dim=dim_, locale=locale_, delim=delim_, &
                           fmt=fmt_, decimals=decimals_ )
         else if ( any(BINARY_EXT == ext) ) then
-            if ( present(header) )   write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
-            if ( present(dim) )      write(*,"(a)") LF//'WARNING: dim not supported for file type "'//ext//'".'
-            if ( present(locale) )   write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
-            if ( present(delim) )    write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
-            if ( present(fmt) )      write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
+            if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
+            if ( present(dim     ) ) write(*,"(a)") LF//'WARNING: dim not supported for file type "'//ext//'".'
+            if ( present(locale  ) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
+            if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
+            if ( present(fmt     ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
             if ( present(decimals) ) write(*,"(a)") LF//'WARNING: decimals not supported for file type "'//ext//'".'
 
             call to_binary(x=x, file_name=file_name)
@@ -1800,6 +1814,8 @@ submodule (io_fortran_lib) file_io
         character(len=:), allocatable :: ext, locale_, delim_, fmt_
         integer                       :: decimals_
 
+        decimals_=0
+
         ext = ext_of(file_name)
 
         if ( any(TEXT_EXT == ext) ) then
@@ -1817,12 +1833,12 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(locale) ) then
-                locale_ = 'US'
+                locale_ = "US"
             else
                 if ( any(LOCALES == locale) ) then
                     locale_ = locale
                 else
-                    locale_ = 'US'
+                    locale_ = "US"
                     write(*,"(a)") LF//'WARNING: Invalid locale "'//locale//'" for file "'//file_name//'". '// &
                                        'Defaulting to US format.'// &
                                    LF//'Locale must be one of: '//join(LOCALES)
@@ -1830,7 +1846,7 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(delim) ) then
-                if ( locale_ == 'US' ) then
+                if ( locale_ == "US" ) then
                     delim_ = COMMA
                 else
                     delim_ = SEMICOLON
@@ -1840,12 +1856,12 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(fmt) ) then
-                fmt_ = 'e'
+                fmt_ = "e"
             else
                 if ( any(REAL_FMTS == fmt) ) then
                     fmt_ = fmt
                 else
-                    fmt_ = 'e'
+                    fmt_ = "e"
                     write(*,"(a)") LF//'WARNING: Invalid format "'//fmt//'" for file "'//file_name//'". '// &
                                        'Defaulting to exponential format.'// &
                                    LF//'Format must be one of: '//join(REAL_FMTS)
@@ -1861,10 +1877,10 @@ submodule (io_fortran_lib) file_io
             call to_text( x=x, file_name=file_name, header=header_, locale=locale_, delim=delim_, &
                           fmt=fmt_, decimals=decimals_ )
         else if ( any(BINARY_EXT == ext) ) then
-            if ( present(header) )   write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
-            if ( present(locale) )   write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
-            if ( present(delim) )    write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
-            if ( present(fmt) )      write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
+            if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
+            if ( present(locale  ) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
+            if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
+            if ( present(fmt     ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
             if ( present(decimals) ) write(*,"(a)") LF//'WARNING: decimals not supported for file type "'//ext//'".'
 
             call to_binary(x=x, file_name=file_name)
@@ -1880,6 +1896,8 @@ submodule (io_fortran_lib) file_io
         character(len=:), allocatable :: ext, locale_, delim_, fmt_
         integer                       :: decimals_
 
+        decimals_=0
+
         ext = ext_of(file_name)
 
         if ( any(TEXT_EXT == ext) ) then
@@ -1897,12 +1915,12 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(locale) ) then
-                locale_ = 'US'
+                locale_ = "US"
             else
                 if ( any(LOCALES == locale) ) then
                     locale_ = locale
                 else
-                    locale_ = 'US'
+                    locale_ = "US"
                     write(*,"(a)") LF//'WARNING: Invalid locale "'//locale//'" for file "'//file_name//'". '// &
                                        'Defaulting to US format.'// &
                                    LF//'Locale must be one of: '//join(LOCALES)
@@ -1910,7 +1928,7 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(delim) ) then
-                if ( locale_ == 'US' ) then
+                if ( locale_ == "US" ) then
                     delim_ = COMMA
                 else
                     delim_ = SEMICOLON
@@ -1920,12 +1938,12 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(fmt) ) then
-                fmt_ = 'e'
+                fmt_ = "e"
             else
                 if ( any(REAL_FMTS == fmt) ) then
                     fmt_ = fmt
                 else
-                    fmt_ = 'e'
+                    fmt_ = "e"
                     write(*,"(a)") LF//'WARNING: Invalid format "'//fmt//'" for file "'//file_name//'". '// &
                                        'Defaulting to exponential format.'// &
                                    LF//'Format must be one of: '//join(REAL_FMTS)
@@ -1941,10 +1959,10 @@ submodule (io_fortran_lib) file_io
             call to_text( x=x, file_name=file_name, header=header_, locale=locale_, delim=delim_, &
                           fmt=fmt_, decimals=decimals_ )
         else if ( any(BINARY_EXT == ext) ) then
-            if ( present(header) )   write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
-            if ( present(locale) )   write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
-            if ( present(delim) )    write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
-            if ( present(fmt) )      write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
+            if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
+            if ( present(locale  ) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
+            if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
+            if ( present(fmt     ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
             if ( present(decimals) ) write(*,"(a)") LF//'WARNING: decimals not supported for file type "'//ext//'".'
 
             call to_binary(x=x, file_name=file_name)
@@ -1960,6 +1978,8 @@ submodule (io_fortran_lib) file_io
         character(len=:), allocatable :: ext, locale_, delim_, fmt_
         integer                       :: decimals_
 
+        decimals_=0
+
         ext = ext_of(file_name)
 
         if ( any(TEXT_EXT == ext) ) then
@@ -1977,12 +1997,12 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(locale) ) then
-                locale_ = 'US'
+                locale_ = "US"
             else
                 if ( any(LOCALES == locale) ) then
                     locale_ = locale
                 else
-                    locale_ = 'US'
+                    locale_ = "US"
                     write(*,"(a)") LF//'WARNING: Invalid locale "'//locale//'" for file "'//file_name//'". '// &
                                        'Defaulting to US format.'// &
                                    LF//'Locale must be one of: '//join(LOCALES)
@@ -1990,7 +2010,7 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(delim) ) then
-                if ( locale_ == 'US' ) then
+                if ( locale_ == "US" ) then
                     delim_ = COMMA
                 else
                     delim_ = SEMICOLON
@@ -2000,12 +2020,12 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(fmt) ) then
-                fmt_ = 'e'
+                fmt_ = "e"
             else
                 if ( any(REAL_FMTS == fmt) ) then
                     fmt_ = fmt
                 else
-                    fmt_ = 'e'
+                    fmt_ = "e"
                     write(*,"(a)") LF//'WARNING: Invalid format "'//fmt//'" for file "'//file_name//'". '// &
                                        'Defaulting to exponential format.'// &
                                    LF//'Format must be one of: '//join(REAL_FMTS)
@@ -2021,10 +2041,10 @@ submodule (io_fortran_lib) file_io
             call to_text( x=x, file_name=file_name, header=header_, locale=locale_, delim=delim_, &
                           fmt=fmt_, decimals=decimals_ )
         else if ( any(BINARY_EXT == ext) ) then
-            if ( present(header) )   write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
-            if ( present(locale) )   write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
-            if ( present(delim) )    write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
-            if ( present(fmt) )      write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
+            if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
+            if ( present(locale  ) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
+            if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
+            if ( present(fmt     ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
             if ( present(decimals) ) write(*,"(a)") LF//'WARNING: decimals not supported for file type "'//ext//'".'
 
             call to_binary(x=x, file_name=file_name)
@@ -2795,6 +2815,8 @@ submodule (io_fortran_lib) file_io
         character(len=:), allocatable :: header_(:)
         integer                       :: hstat, dim_
 
+        hstat=0; dim_=0
+
         ext = ext_of(file_name)
 
         if ( any(TEXT_EXT == ext) ) then
@@ -2874,9 +2896,9 @@ submodule (io_fortran_lib) file_io
             call to_text(x=x, file_name=file_name, header=header_, dim=dim_, delim=delim_, fmt=fmt_)
         else if ( any(BINARY_EXT == ext) ) then
             if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
-            if ( present(dim) )    write(*,"(a)") LF//'WARNING: dim not supported for file type "'//ext//'".'
-            if ( present(delim) )  write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
-            if ( present(fmt) )    write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
+            if ( present(dim   ) ) write(*,"(a)") LF//'WARNING: dim not supported for file type "'//ext//'".'
+            if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
+            if ( present(fmt   ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
 
             call to_binary(x=x, file_name=file_name)
         else
@@ -2891,6 +2913,8 @@ submodule (io_fortran_lib) file_io
         character(len=:), allocatable :: header_(:)
         integer                       :: hstat, dim_
 
+        hstat=0; dim_=0
+
         ext = ext_of(file_name)
 
         if ( any(TEXT_EXT == ext) ) then
@@ -2970,9 +2994,9 @@ submodule (io_fortran_lib) file_io
             call to_text(x=x, file_name=file_name, header=header_, dim=dim_, delim=delim_, fmt=fmt_)
         else if ( any(BINARY_EXT == ext) ) then
             if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
-            if ( present(dim) )    write(*,"(a)") LF//'WARNING: dim not supported for file type "'//ext//'".'
-            if ( present(delim) )  write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
-            if ( present(fmt) )    write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
+            if ( present(dim   ) ) write(*,"(a)") LF//'WARNING: dim not supported for file type "'//ext//'".'
+            if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
+            if ( present(fmt   ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
 
             call to_binary(x=x, file_name=file_name)
         else
@@ -2987,6 +3011,8 @@ submodule (io_fortran_lib) file_io
         character(len=:), allocatable :: header_(:)
         integer                       :: hstat, dim_
 
+        hstat=0; dim_=0
+
         ext = ext_of(file_name)
 
         if ( any(TEXT_EXT == ext) ) then
@@ -3066,9 +3092,9 @@ submodule (io_fortran_lib) file_io
             call to_text(x=x, file_name=file_name, header=header_, dim=dim_, delim=delim_, fmt=fmt_)
         else if ( any(BINARY_EXT == ext) ) then
             if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
-            if ( present(dim) )    write(*,"(a)") LF//'WARNING: dim not supported for file type "'//ext//'".'
-            if ( present(delim) )  write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
-            if ( present(fmt) )    write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
+            if ( present(dim   ) ) write(*,"(a)") LF//'WARNING: dim not supported for file type "'//ext//'".'
+            if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
+            if ( present(fmt   ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
 
             call to_binary(x=x, file_name=file_name)
         else
@@ -3083,6 +3109,8 @@ submodule (io_fortran_lib) file_io
         character(len=:), allocatable :: header_(:)
         integer                       :: hstat, dim_
 
+        hstat=0; dim_=0
+
         ext = ext_of(file_name)
 
         if ( any(TEXT_EXT == ext) ) then
@@ -3162,9 +3190,9 @@ submodule (io_fortran_lib) file_io
             call to_text(x=x, file_name=file_name, header=header_, dim=dim_, delim=delim_, fmt=fmt_)
         else if ( any(BINARY_EXT == ext) ) then
             if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
-            if ( present(dim) )    write(*,"(a)") LF//'WARNING: dim not supported for file type "'//ext//'".'
-            if ( present(delim) )  write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
-            if ( present(fmt) )    write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
+            if ( present(dim   ) ) write(*,"(a)") LF//'WARNING: dim not supported for file type "'//ext//'".'
+            if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
+            if ( present(fmt   ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
 
             call to_binary(x=x, file_name=file_name)
         else
@@ -3217,8 +3245,8 @@ submodule (io_fortran_lib) file_io
             call to_text(x=x, file_name=file_name, header=header_, delim=delim_, fmt=fmt_)
         else if ( any(BINARY_EXT == ext) ) then
             if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
-            if ( present(delim) )  write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
-            if ( present(fmt) )    write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
+            if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
+            if ( present(fmt   ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
 
             call to_binary(x=x, file_name=file_name)
         else
@@ -3270,8 +3298,8 @@ submodule (io_fortran_lib) file_io
             call to_text(x=x, file_name=file_name, header=header_, delim=delim_, fmt=fmt_)
         else if ( any(BINARY_EXT == ext) ) then
             if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
-            if ( present(delim) )  write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
-            if ( present(fmt) )    write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
+            if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
+            if ( present(fmt   ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
 
             call to_binary(x=x, file_name=file_name)
         else
@@ -3323,8 +3351,8 @@ submodule (io_fortran_lib) file_io
             call to_text(x=x, file_name=file_name, header=header_, delim=delim_, fmt=fmt_)
         else if ( any(BINARY_EXT == ext) ) then
             if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
-            if ( present(delim) )  write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
-            if ( present(fmt) )    write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
+            if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
+            if ( present(fmt   ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
 
             call to_binary(x=x, file_name=file_name)
         else
@@ -3376,8 +3404,8 @@ submodule (io_fortran_lib) file_io
             call to_text(x=x, file_name=file_name, header=header_, delim=delim_, fmt=fmt_)
         else if ( any(BINARY_EXT == ext) ) then
             if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
-            if ( present(delim) )  write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
-            if ( present(fmt) )    write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
+            if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
+            if ( present(fmt   ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
 
             call to_binary(x=x, file_name=file_name)
         else
@@ -4394,6 +4422,8 @@ submodule (io_fortran_lib) file_io
         character(len=:), allocatable :: ext, locale_, delim_, fmt_, im_
         logical                       :: header_
 
+        header_=.false.
+
         ext = ext_of(file_name)
 
         if ( any(TEXT_EXT == ext) ) then
@@ -4404,7 +4434,7 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(locale) ) then
-                locale_ = 'US'
+                locale_ = "US"
             else
                 if ( any(LOCALES == locale) ) then
                     locale_ = locale
@@ -4415,14 +4445,14 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(delim) ) then
-                if ( locale_ == 'US' ) then
+                if ( locale_ == "US" ) then
                     delim_ = COMMA
                 else
                     delim_ = SEMICOLON
                 end if
             else
                 delim_ = delim
-                if ( locale_ == 'US' ) then
+                if ( locale_ == "US" ) then
                     if ( delim_ == POINT ) then
                         error stop LF//'FATAL: Invalid delimiter for read of file "'//file_name//'" with US decimal.'
                     end if
@@ -4434,7 +4464,7 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(fmt) ) then
-                fmt_ = 'e'
+                fmt_ = "e"
             else
                 if ( any(REAL_FMTS == fmt) ) then
                     fmt_ = fmt
@@ -4492,6 +4522,8 @@ submodule (io_fortran_lib) file_io
         character(len=:), allocatable :: ext, locale_, delim_, fmt_, im_
         logical                       :: header_
 
+        header_=.false.
+
         ext = ext_of(file_name)
 
         if ( any(TEXT_EXT == ext) ) then
@@ -4502,7 +4534,7 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(locale) ) then
-                locale_ = 'US'
+                locale_ = "US"
             else
                 if ( any(LOCALES == locale) ) then
                     locale_ = locale
@@ -4513,14 +4545,14 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(delim) ) then
-                if ( locale_ == 'US' ) then
+                if ( locale_ == "US" ) then
                     delim_ = COMMA
                 else
                     delim_ = SEMICOLON
                 end if
             else
                 delim_ = delim
-                if ( locale_ == 'US' ) then
+                if ( locale_ == "US" ) then
                     if ( delim_ == POINT ) then
                         error stop LF//'FATAL: Invalid delimiter for read of file "'//file_name//'" with US decimal.'
                     end if
@@ -4532,7 +4564,7 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(fmt) ) then
-                fmt_ = 'e'
+                fmt_ = "e"
             else
                 if ( any(REAL_FMTS == fmt) ) then
                     fmt_ = fmt
@@ -4590,6 +4622,8 @@ submodule (io_fortran_lib) file_io
         character(len=:), allocatable :: ext, locale_, delim_, fmt_, im_
         logical                       :: header_
 
+        header_=.false.
+
         ext = ext_of(file_name)
 
         if ( any(TEXT_EXT == ext) ) then
@@ -4600,7 +4634,7 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(locale) ) then
-                locale_ = 'US'
+                locale_ = "US"
             else
                 if ( any(LOCALES == locale) ) then
                     locale_ = locale
@@ -4611,14 +4645,14 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(delim) ) then
-                if ( locale_ == 'US' ) then
+                if ( locale_ == "US" ) then
                     delim_ = COMMA
                 else
                     delim_ = SEMICOLON
                 end if
             else
                 delim_ = delim
-                if ( locale_ == 'US' ) then
+                if ( locale_ == "US" ) then
                     if ( delim_ == POINT ) then
                         error stop LF//'FATAL: Invalid delimiter for read of file "'//file_name//'" with US decimal.'
                     end if
@@ -4630,7 +4664,7 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(fmt) ) then
-                fmt_ = 'e'
+                fmt_ = "e"
             else
                 if ( any(REAL_FMTS == fmt) ) then
                     fmt_ = fmt
@@ -4689,6 +4723,8 @@ submodule (io_fortran_lib) file_io
         character(len=:), allocatable :: ext, locale_, delim_, fmt_, im_
         logical                       :: header_
 
+        header_=.false.
+
         ext = ext_of(file_name)
 
         if ( any(TEXT_EXT == ext) ) then
@@ -4699,7 +4735,7 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(locale) ) then
-                locale_ = 'US'
+                locale_ = "US"
             else
                 if ( any(LOCALES == locale) ) then
                     locale_ = locale
@@ -4710,14 +4746,14 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(delim) ) then
-                if ( locale_ == 'US' ) then
+                if ( locale_ == "US" ) then
                     delim_ = COMMA
                 else
                     delim_ = SEMICOLON
                 end if
             else
                 delim_ = delim
-                if ( locale_ == 'US' ) then
+                if ( locale_ == "US" ) then
                     if ( delim_ == POINT ) then
                         error stop LF//'FATAL: Invalid delimiter for read of file "'//file_name//'" with US decimal.'
                     end if
@@ -4729,7 +4765,7 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(fmt) ) then
-                fmt_ = 'e'
+                fmt_ = "e"
             else
                 if ( any(REAL_FMTS == fmt) ) then
                     fmt_ = fmt
@@ -4787,6 +4823,8 @@ submodule (io_fortran_lib) file_io
         character(len=:), allocatable :: ext, locale_, delim_, fmt_, im_
         logical                       :: header_
 
+        header_=.false.
+
         ext = ext_of(file_name)
 
         if ( any(TEXT_EXT == ext) ) then
@@ -4797,7 +4835,7 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(locale) ) then
-                locale_ = 'US'
+                locale_ = "US"
             else
                 if ( any(LOCALES == locale) ) then
                     locale_ = locale
@@ -4808,14 +4846,14 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(delim) ) then
-                if ( locale_ == 'US' ) then
+                if ( locale_ == "US" ) then
                     delim_ = COMMA
                 else
                     delim_ = SEMICOLON
                 end if
             else
                 delim_ = delim
-                if ( locale_ == 'US' ) then
+                if ( locale_ == "US" ) then
                     if ( delim_ == POINT ) then
                         error stop LF//'FATAL: Invalid delimiter for read of file "'//file_name//'" with US decimal.'
                     end if
@@ -4827,7 +4865,7 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(fmt) ) then
-                fmt_ = 'e'
+                fmt_ = "e"
             else
                 if ( any(REAL_FMTS == fmt) ) then
                     fmt_ = fmt
@@ -4885,6 +4923,8 @@ submodule (io_fortran_lib) file_io
         character(len=:), allocatable :: ext, locale_, delim_, fmt_, im_
         logical                       :: header_
 
+        header_=.false.
+
         ext = ext_of(file_name)
 
         if ( any(TEXT_EXT == ext) ) then
@@ -4895,7 +4935,7 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(locale) ) then
-                locale_ = 'US'
+                locale_ = "US"
             else
                 if ( any(LOCALES == locale) ) then
                     locale_ = locale
@@ -4906,14 +4946,14 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(delim) ) then
-                if ( locale_ == 'US' ) then
+                if ( locale_ == "US" ) then
                     delim_ = COMMA
                 else
                     delim_ = SEMICOLON
                 end if
             else
                 delim_ = delim
-                if ( locale_ == 'US' ) then
+                if ( locale_ == "US" ) then
                     if ( delim_ == POINT ) then
                         error stop LF//'FATAL: Invalid delimiter for read of file "'//file_name//'" with US decimal.'
                     end if
@@ -4925,7 +4965,7 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(fmt) ) then
-                fmt_ = 'e'
+                fmt_ = "e"
             else
                 if ( any(REAL_FMTS == fmt) ) then
                     fmt_ = fmt
@@ -5894,6 +5934,8 @@ submodule (io_fortran_lib) file_io
         character(len=:), allocatable :: ext, locale_, delim_, fmt_
         logical                       :: header_
 
+        header_=.false.
+
         ext = ext_of(file_name)
 
         if ( any(TEXT_EXT == ext) ) then
@@ -5904,7 +5946,7 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(locale) ) then
-                locale_ = 'US'
+                locale_ = "US"
             else
                 if ( any(LOCALES == locale) ) then
                     locale_ = locale
@@ -5915,14 +5957,14 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(delim) ) then
-                if ( locale_ == 'US' ) then
+                if ( locale_ == "US" ) then
                     delim_ = COMMA
                 else
                     delim_ = SEMICOLON
                 end if
             else
                 delim_ = delim
-                if ( locale_ == 'US' ) then
+                if ( locale_ == "US" ) then
                     if ( delim_ == POINT ) then
                         error stop LF//'FATAL: Invalid delimiter for read of file "'//file_name//'" with US decimal.'
                     end if
@@ -5934,7 +5976,7 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(fmt) ) then
-                fmt_ = 'e'
+                fmt_ = "e"
             else
                 if ( any(REAL_FMTS == fmt) ) then
                     fmt_ = fmt
@@ -5985,6 +6027,8 @@ submodule (io_fortran_lib) file_io
         character(len=:), allocatable :: ext, locale_, delim_, fmt_
         logical                       :: header_
 
+        header_=.false.
+
         ext = ext_of(file_name)
 
         if ( any(TEXT_EXT == ext) ) then
@@ -5995,7 +6039,7 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(locale) ) then
-                locale_ = 'US'
+                locale_ = "US"
             else
                 if ( any(LOCALES == locale) ) then
                     locale_ = locale
@@ -6006,14 +6050,14 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(delim) ) then
-                if ( locale_ == 'US' ) then
+                if ( locale_ == "US" ) then
                     delim_ = COMMA
                 else
                     delim_ = SEMICOLON
                 end if
             else
                 delim_ = delim
-                if ( locale_ == 'US' ) then
+                if ( locale_ == "US" ) then
                     if ( delim_ == POINT ) then
                         error stop LF//'FATAL: Invalid delimiter for read of file "'//file_name//'" with US decimal.'
                     end if
@@ -6025,7 +6069,7 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(fmt) ) then
-                fmt_ = 'e'
+                fmt_ = "e"
             else
                 if ( any(REAL_FMTS == fmt) ) then
                     fmt_ = fmt
@@ -6076,6 +6120,8 @@ submodule (io_fortran_lib) file_io
         character(len=:), allocatable :: ext, locale_, delim_, fmt_
         logical                       :: header_
 
+        header_=.false.
+
         ext = ext_of(file_name)
 
         if ( any(TEXT_EXT == ext) ) then
@@ -6086,7 +6132,7 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(locale) ) then
-                locale_ = 'US'
+                locale_ = "US"
             else
                 if ( any(LOCALES == locale) ) then
                     locale_ = locale
@@ -6097,14 +6143,14 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(delim) ) then
-                if ( locale_ == 'US' ) then
+                if ( locale_ == "US" ) then
                     delim_ = COMMA
                 else
                     delim_ = SEMICOLON
                 end if
             else
                 delim_ = delim
-                if ( locale_ == 'US' ) then
+                if ( locale_ == "US" ) then
                     if ( delim_ == POINT ) then
                         error stop LF//'FATAL: Invalid delimiter for read of file "'//file_name//'" with US decimal.'
                     end if
@@ -6116,7 +6162,7 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(fmt) ) then
-                fmt_ = 'e'
+                fmt_ = "e"
             else
                 if ( any(REAL_FMTS == fmt) ) then
                     fmt_ = fmt
@@ -6168,6 +6214,8 @@ submodule (io_fortran_lib) file_io
         character(len=:), allocatable :: ext, locale_, delim_, fmt_
         logical                       :: header_
 
+        header_=.false.
+
         ext = ext_of(file_name)
 
         if ( any(TEXT_EXT == ext) ) then
@@ -6178,7 +6226,7 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(locale) ) then
-                locale_ = 'US'
+                locale_ = "US"
             else
                 if ( any(LOCALES == locale) ) then
                     locale_ = locale
@@ -6189,14 +6237,14 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(delim) ) then
-                if ( locale_ == 'US' ) then
+                if ( locale_ == "US" ) then
                     delim_ = COMMA
                 else
                     delim_ = SEMICOLON
                 end if
             else
                 delim_ = delim
-                if ( locale_ == 'US' ) then
+                if ( locale_ == "US" ) then
                     if ( delim_ == POINT ) then
                         error stop LF//'FATAL: Invalid delimiter for read of file "'//file_name//'" with US decimal.'
                     end if
@@ -6208,7 +6256,7 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(fmt) ) then
-                fmt_ = 'e'
+                fmt_ = "e"
             else
                 if ( any(REAL_FMTS == fmt) ) then
                     fmt_ = fmt
@@ -6259,6 +6307,8 @@ submodule (io_fortran_lib) file_io
         character(len=:), allocatable :: ext, locale_, delim_, fmt_
         logical                       :: header_
 
+        header_=.false.
+
         ext = ext_of(file_name)
 
         if ( any(TEXT_EXT == ext) ) then
@@ -6269,7 +6319,7 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(locale) ) then
-                locale_ = 'US'
+                locale_ = "US"
             else
                 if ( any(LOCALES == locale) ) then
                     locale_ = locale
@@ -6280,14 +6330,14 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(delim) ) then
-                if ( locale_ == 'US' ) then
+                if ( locale_ == "US" ) then
                     delim_ = COMMA
                 else
                     delim_ = SEMICOLON
                 end if
             else
                 delim_ = delim
-                if ( locale_ == 'US' ) then
+                if ( locale_ == "US" ) then
                     if ( delim_ == POINT ) then
                         error stop LF//'FATAL: Invalid delimiter for read of file "'//file_name//'" with US decimal.'
                     end if
@@ -6299,7 +6349,7 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(fmt) ) then
-                fmt_ = 'e'
+                fmt_ = "e"
             else
                 if ( any(REAL_FMTS == fmt) ) then
                     fmt_ = fmt
@@ -6350,6 +6400,8 @@ submodule (io_fortran_lib) file_io
         character(len=:), allocatable :: ext, locale_, delim_, fmt_
         logical                       :: header_
 
+        header_=.false.
+
         ext = ext_of(file_name)
 
         if ( any(TEXT_EXT == ext) ) then
@@ -6360,7 +6412,7 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(locale) ) then
-                locale_ = 'US'
+                locale_ = "US"
             else
                 if ( any(LOCALES == locale) ) then
                     locale_ = locale
@@ -6371,14 +6423,14 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(delim) ) then
-                if ( locale_ == 'US' ) then
+                if ( locale_ == "US" ) then
                     delim_ = COMMA
                 else
                     delim_ = SEMICOLON
                 end if
             else
                 delim_ = delim
-                if ( locale_ == 'US' ) then
+                if ( locale_ == "US" ) then
                     if ( delim_ == POINT ) then
                         error stop LF//'FATAL: Invalid delimiter for read of file "'//file_name//'" with US decimal.'
                     end if
@@ -6390,7 +6442,7 @@ submodule (io_fortran_lib) file_io
             end if
 
             if ( .not. present(fmt) ) then
-                fmt_ = 'e'
+                fmt_ = "e"
             else
                 if ( any(REAL_FMTS == fmt) ) then
                     fmt_ = fmt
@@ -7352,6 +7404,8 @@ submodule (io_fortran_lib) file_io
         character(len=:), allocatable :: ext, delim_, fmt_
         logical                       :: header_
 
+        header_=.false.
+
         ext = ext_of(file_name)
 
         if ( any(TEXT_EXT == ext) ) then
@@ -7418,6 +7472,8 @@ submodule (io_fortran_lib) file_io
     module procedure from_textfile_1di32
         character(len=:), allocatable :: ext, delim_, fmt_
         logical                       :: header_
+
+        header_=.false.
 
         ext = ext_of(file_name)
 
@@ -7486,6 +7542,8 @@ submodule (io_fortran_lib) file_io
         character(len=:), allocatable :: ext, delim_, fmt_
         logical                       :: header_
 
+        header_=.false.
+
         ext = ext_of(file_name)
 
         if ( any(TEXT_EXT == ext) ) then
@@ -7552,6 +7610,8 @@ submodule (io_fortran_lib) file_io
     module procedure from_textfile_1di8
         character(len=:), allocatable :: ext, delim_, fmt_
         logical                       :: header_
+
+        header_=.false.
 
         ext = ext_of(file_name)
 
@@ -7621,6 +7681,8 @@ submodule (io_fortran_lib) file_io
         character(len=:), allocatable :: ext, delim_, fmt_
         logical                       :: header_
 
+        header_=.false.
+
         ext = ext_of(file_name)
 
         if ( any(TEXT_EXT == ext) ) then
@@ -7687,6 +7749,8 @@ submodule (io_fortran_lib) file_io
     module procedure from_textfile_2di32
         character(len=:), allocatable :: ext, delim_, fmt_
         logical                       :: header_
+
+        header_=.false.
 
         ext = ext_of(file_name)
 
@@ -7755,6 +7819,8 @@ submodule (io_fortran_lib) file_io
         character(len=:), allocatable :: ext, delim_, fmt_
         logical                       :: header_
 
+        header_=.false.
+
         ext = ext_of(file_name)
 
         if ( any(TEXT_EXT == ext) ) then
@@ -7821,6 +7887,8 @@ submodule (io_fortran_lib) file_io
     module procedure from_textfile_2di8
         character(len=:), allocatable :: ext, delim_, fmt_
         logical                       :: header_
+
+        header_=.false.
 
         ext = ext_of(file_name)
 

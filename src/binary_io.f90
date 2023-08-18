@@ -12,7 +12,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -32,7 +35,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -52,7 +58,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -73,7 +82,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -93,7 +105,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -113,7 +128,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -134,7 +152,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -154,7 +175,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -174,7 +198,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -195,7 +222,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -215,7 +245,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -235,7 +268,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -256,7 +292,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -276,7 +315,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -296,7 +338,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -317,7 +362,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -337,7 +385,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -357,7 +408,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -378,7 +432,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -398,7 +455,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -418,7 +478,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -439,7 +502,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -459,7 +525,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -479,7 +548,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -500,7 +572,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -520,7 +595,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -540,7 +618,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -561,7 +642,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -581,7 +665,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -601,7 +688,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -622,7 +712,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -642,7 +735,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -662,7 +758,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -683,7 +782,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -703,7 +805,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -723,7 +828,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -744,7 +852,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -764,7 +875,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -784,7 +898,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -805,7 +922,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -825,7 +945,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -845,7 +968,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -866,7 +992,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -886,7 +1015,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -906,7 +1038,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -927,7 +1062,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -947,7 +1085,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -967,7 +1108,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -988,7 +1132,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1008,7 +1155,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1028,7 +1178,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1049,7 +1202,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1069,7 +1225,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1089,7 +1248,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1110,7 +1272,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1130,7 +1295,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1150,7 +1318,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1171,7 +1342,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1191,7 +1365,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1211,7 +1388,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1232,7 +1412,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1252,7 +1435,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1272,7 +1458,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1293,7 +1482,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1313,7 +1505,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1333,7 +1528,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1354,7 +1552,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1374,7 +1575,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1394,7 +1598,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1415,7 +1622,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1435,7 +1645,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1455,7 +1668,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1476,7 +1692,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1496,7 +1715,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1516,7 +1738,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1537,7 +1762,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1557,7 +1785,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1577,7 +1808,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1598,7 +1832,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1618,7 +1855,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1638,7 +1878,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1659,7 +1902,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1679,7 +1925,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1699,7 +1948,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1720,7 +1972,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1740,7 +1995,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1760,7 +2018,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1781,7 +2042,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1801,7 +2065,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1821,7 +2088,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1842,7 +2112,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1862,7 +2135,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1882,7 +2158,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1902,7 +2181,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1923,7 +2205,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1943,7 +2228,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1963,7 +2251,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -1983,7 +2274,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2004,7 +2298,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2024,7 +2321,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2044,7 +2344,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2064,7 +2367,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2085,7 +2391,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2105,7 +2414,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2125,7 +2437,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2145,7 +2460,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2166,7 +2484,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2186,7 +2507,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2206,7 +2530,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2226,7 +2553,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2247,7 +2577,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2267,7 +2600,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2287,7 +2623,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2307,7 +2646,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2328,7 +2670,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2348,7 +2693,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2368,7 +2716,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2388,7 +2739,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2409,7 +2763,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2429,7 +2786,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2449,7 +2809,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2469,7 +2832,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2490,7 +2856,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2510,7 +2879,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2530,7 +2902,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2550,7 +2925,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2571,7 +2949,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2591,7 +2972,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2611,7 +2995,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2631,7 +3018,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2652,7 +3042,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2672,7 +3065,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2692,7 +3088,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2712,7 +3111,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2733,7 +3135,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2753,7 +3158,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2773,7 +3181,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2793,7 +3204,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2814,7 +3228,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2834,7 +3251,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2854,7 +3274,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2874,7 +3297,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2895,7 +3321,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2915,7 +3344,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2935,7 +3367,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2955,7 +3390,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2976,7 +3414,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -2996,7 +3437,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -3016,7 +3460,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -3036,7 +3483,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = output_unit
 
@@ -3058,7 +3508,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -3084,7 +3537,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -3110,7 +3566,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -3137,7 +3596,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -3163,7 +3625,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -3189,7 +3654,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -3216,7 +3684,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -3242,7 +3713,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -3268,7 +3742,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -3295,7 +3772,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -3321,7 +3801,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -3347,7 +3830,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -3374,7 +3860,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -3400,7 +3889,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -3426,7 +3918,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -3453,7 +3948,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -3479,7 +3977,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -3505,7 +4006,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -3532,7 +4036,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -3559,7 +4066,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -3586,7 +4096,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -3614,7 +4127,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -3641,7 +4157,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -3668,7 +4187,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -3696,7 +4218,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -3723,7 +4248,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -3750,7 +4278,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -3778,7 +4309,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -3805,7 +4339,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -3832,7 +4369,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -3860,7 +4400,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -3887,7 +4430,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -3914,7 +4460,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -3942,7 +4491,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -3969,7 +4521,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -3996,7 +4551,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -4024,7 +4582,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -4052,7 +4613,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -4080,7 +4644,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -4109,7 +4676,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -4137,7 +4707,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -4165,7 +4738,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -4194,7 +4770,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -4222,7 +4801,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -4250,7 +4832,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -4279,7 +4864,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -4305,7 +4893,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -4331,7 +4922,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -4358,7 +4952,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -4384,7 +4981,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -4410,7 +5010,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -4437,7 +5040,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -4463,7 +5069,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -4489,7 +5098,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -4516,7 +5128,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -4542,7 +5157,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -4568,7 +5186,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -4595,7 +5216,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -4621,7 +5245,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -4647,7 +5274,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -4674,7 +5304,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -4700,7 +5333,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -4726,7 +5362,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -4753,7 +5392,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -4780,7 +5422,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -4807,7 +5452,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -4835,7 +5483,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -4862,7 +5513,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -4889,7 +5543,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -4917,7 +5574,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -4944,7 +5604,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -4971,7 +5634,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -4999,7 +5665,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -5026,7 +5695,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -5053,7 +5725,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -5081,7 +5756,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -5108,7 +5786,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -5135,7 +5816,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -5163,7 +5847,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -5190,7 +5877,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -5217,7 +5907,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -5245,7 +5938,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -5273,7 +5969,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -5301,7 +6000,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -5330,7 +6032,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -5358,7 +6063,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -5386,7 +6094,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -5415,7 +6126,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -5443,7 +6157,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -5471,7 +6188,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -5500,7 +6220,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -5526,7 +6249,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -5552,7 +6278,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -5578,7 +6307,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -5605,7 +6337,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -5631,7 +6366,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -5657,7 +6395,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -5683,7 +6424,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -5710,7 +6454,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -5736,7 +6483,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -5762,7 +6512,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -5788,7 +6541,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -5815,7 +6571,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -5841,7 +6600,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -5867,7 +6629,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -5893,7 +6658,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -5920,7 +6688,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -5946,7 +6717,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -5972,7 +6746,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -5998,7 +6775,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -6025,7 +6805,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -6051,7 +6834,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -6077,7 +6863,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -6103,7 +6892,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -6130,7 +6922,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -6157,7 +6952,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -6184,7 +6982,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -6211,7 +7012,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -6239,7 +7043,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -6266,7 +7073,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -6293,7 +7103,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -6320,7 +7133,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -6348,7 +7164,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -6375,7 +7194,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -6402,7 +7224,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -6429,7 +7254,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -6457,7 +7285,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -6484,7 +7315,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -6511,7 +7345,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -6538,7 +7375,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -6566,7 +7406,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -6593,7 +7436,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -6620,7 +7466,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -6647,7 +7496,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -6675,7 +7527,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -6702,7 +7557,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -6729,7 +7587,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -6756,7 +7617,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -6784,7 +7648,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -6812,7 +7679,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -6840,7 +7710,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -6868,7 +7741,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -6897,7 +7773,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -6925,7 +7804,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -6953,7 +7835,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -6981,7 +7866,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -7010,7 +7898,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -7038,7 +7929,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -7066,7 +7960,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 
@@ -7094,7 +7991,10 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file_name, exist=exists)
 
         file_unit = input_unit
 

@@ -83,6 +83,8 @@ module randoms
         kS  = 0.7270572718_r128
         kT  = 0.03895759111_r128
 
+        rn=0e0_r128; x=0e0_r128; y=0e0_r128; z=0e0_r128; res=0e0_r128; gauss_res=0e0_r128
+
         outer: do
             call random_number(y)
 
@@ -179,6 +181,8 @@ module randoms
         kS  = 0.7270572718_r64
         kT  = 0.03895759111_r64
 
+        rn=0e0_r64; x=0e0_r64; y=0e0_r64; z=0e0_r64; res=0e0_r64; gauss_res=0e0_r64
+
         outer: do
             call random_number(y)
 
@@ -274,6 +278,8 @@ module randoms
         kYm = 0.187308492_r32
         kS  = 0.7270572718_r32
         kT  = 0.03895759111_r32
+
+        rn=0e0_r32; x=0e0_r32; y=0e0_r32; z=0e0_r32; res=0e0_r32; gauss_res=0e0_r32
 
         outer: do
             call random_number(y)
