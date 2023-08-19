@@ -110,14 +110,14 @@
 <p><em>Description</em>: Subroutine for casting between numeric and string data.</p>
 <h3 id="casting-numbers-to-string-variables">Casting numbers to string variables</h3>
 <p>For casting <code>x</code> of type <code>integer</code> into a variable <code>into</code> of type <code>character</code> (scalar only) or <code>String</code> (any rank):</p>
-<div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">cast</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">into</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">)</span><span class="w"></span>
+<div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">cast</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">into</span><span class="w"> </span><span class="p">[,</span><span class="w"> </span><span class="n">fmt</span><span class="p">])</span><span class="w"></span>
 </code></pre></div>
 
 <ul>
 <li><code>fmt</code> is <code>optional</code>, may be one of <code>INT_FMTS</code></li>
 </ul>
 <p>For casting <code>x</code> of type <code>real</code> into a variable <code>into</code> of type <code>character</code> (scalar only) or <code>String</code> (any rank):</p>
-<div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">cast</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">into</span><span class="p">,</span><span class="w"> </span><span class="n">locale</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">,</span><span class="w"> </span><span class="n">decimals</span><span class="p">)</span><span class="w"></span>
+<div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">cast</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">into</span><span class="w"> </span><span class="p">[,</span><span class="w"> </span><span class="n">locale</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">,</span><span class="w"> </span><span class="n">decimals</span><span class="p">])</span><span class="w"></span>
 </code></pre></div>
 
 <ul>
@@ -126,7 +126,7 @@
 <li><code>decimals</code> is <code>optional</code> and of type <code>integer</code></li>
 </ul>
 <p>For casting <code>x</code> of type <code>complex</code> into a variable <code>into</code> of type <code>character</code> (scalar only) or <code>String</code> (any rank):</p>
-<div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">cast</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">into</span><span class="p">,</span><span class="w"> </span><span class="n">locale</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">,</span><span class="w"> </span><span class="n">decimals</span><span class="p">,</span><span class="w"> </span><span class="n">im</span><span class="p">)</span><span class="w"></span>
+<div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">cast</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">into</span><span class="w"> </span><span class="p">[,</span><span class="w"> </span><span class="n">locale</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">,</span><span class="w"> </span><span class="n">decimals</span><span class="p">,</span><span class="w"> </span><span class="n">im</span><span class="p">])</span><span class="w"></span>
 </code></pre></div>
 
 <ul>
@@ -138,20 +138,20 @@
 <p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>While <a href="str.html">str</a> and <a href="String.html">String</a> return values which may be used flexibly inside of string expressions, <code>cast</code> may be used as above to write directly to variables. When converting large amounts of data to strings, <code>cast</code> may be up to 2x faster than the functional alternatives since the total number of string allocations is reduced by at least half, all else being equal.</p></div>
 <h3 id="casting-strings-to-numeric-variables">Casting strings to numeric variables</h3>
 <p>For casting <code>substring</code> of type <code>character</code> (scalar only) or <code>String</code> (any rank) into a variable <code>into</code> of type <code>integer</code>:</p>
-<div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">cast</span><span class="p">(</span><span class="n">substring</span><span class="p">,</span><span class="w"> </span><span class="n">into</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">)</span><span class="w"></span>
+<div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">cast</span><span class="p">(</span><span class="n">substring</span><span class="p">,</span><span class="w"> </span><span class="n">into</span><span class="w"> </span><span class="p">[,</span><span class="w"> </span><span class="n">fmt</span><span class="p">])</span><span class="w"></span>
 </code></pre></div>
 
-<div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">substring</span><span class="p">%</span><span class="n">cast</span><span class="p">(</span><span class="n">into</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">)</span><span class="w"></span>
+<div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">substring</span><span class="p">%</span><span class="n">cast</span><span class="p">(</span><span class="n">into</span><span class="w"> </span><span class="p">[,</span><span class="w"> </span><span class="n">fmt</span><span class="p">])</span><span class="w"></span>
 </code></pre></div>
 
 <ul>
 <li><code>fmt</code> is <code>optional</code>, may be one of <code>INT_FMTS</code></li>
 </ul>
 <p>For casting <code>substring</code> of type <code>character</code> (scalar only) or <code>String</code> (any rank) into a variable <code>into</code> of type <code>real</code>:</p>
-<div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">cast</span><span class="p">(</span><span class="n">substring</span><span class="p">,</span><span class="w"> </span><span class="n">into</span><span class="p">,</span><span class="w"> </span><span class="n">locale</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">)</span><span class="w"></span>
+<div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">cast</span><span class="p">(</span><span class="n">substring</span><span class="p">,</span><span class="w"> </span><span class="n">into</span><span class="w"> </span><span class="p">[,</span><span class="w"> </span><span class="n">locale</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">])</span><span class="w"></span>
 </code></pre></div>
 
-<div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">substring</span><span class="p">%</span><span class="n">cast</span><span class="p">(</span><span class="n">into</span><span class="p">,</span><span class="w"> </span><span class="n">locale</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">)</span><span class="w"></span>
+<div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">substring</span><span class="p">%</span><span class="n">cast</span><span class="p">(</span><span class="n">into</span><span class="w"> </span><span class="p">[,</span><span class="w"> </span><span class="n">locale</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">])</span><span class="w"></span>
 </code></pre></div>
 
 <ul>
@@ -159,10 +159,10 @@
 <li><code>fmt</code> is <code>optional</code>, may be one of <code>REAL_FMTS</code></li>
 </ul>
 <p>For casting <code>substring</code> of type <code>character</code> (scalar only) or <code>String</code> (any rank) into a variable <code>into</code> of type <code>complex</code>:</p>
-<div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">cast</span><span class="p">(</span><span class="n">substring</span><span class="p">,</span><span class="w"> </span><span class="n">into</span><span class="p">,</span><span class="w"> </span><span class="n">locale</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">,</span><span class="w"> </span><span class="n">im</span><span class="p">)</span><span class="w"></span>
+<div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">cast</span><span class="p">(</span><span class="n">substring</span><span class="p">,</span><span class="w"> </span><span class="n">into</span><span class="w"> </span><span class="p">[,</span><span class="w"> </span><span class="n">locale</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">,</span><span class="w"> </span><span class="n">im</span><span class="p">])</span><span class="w"></span>
 </code></pre></div>
 
-<div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">substring</span><span class="p">%</span><span class="n">cast</span><span class="p">(</span><span class="n">into</span><span class="p">,</span><span class="w"> </span><span class="n">locale</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">,</span><span class="w"> </span><span class="n">im</span><span class="p">)</span><span class="w"></span>
+<div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">substring</span><span class="p">%</span><span class="n">cast</span><span class="p">(</span><span class="n">into</span><span class="w"> </span><span class="p">[,</span><span class="w"> </span><span class="n">locale</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">,</span><span class="w"> </span><span class="n">im</span><span class="p">])</span><span class="w"></span>
 </code></pre></div>
 
 <ul>
@@ -302,7 +302,7 @@
             <p class="text-right">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-08-18 19:24              </p>
+ on 2023-08-18 20:13              </p>
           </div>
         </div>
         <br>

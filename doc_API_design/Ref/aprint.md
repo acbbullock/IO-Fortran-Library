@@ -16,7 +16,7 @@ call aprint(x)
 For `x` an array of rank `1` or `2` and of type `integer`:
 
 ```fortran
-call aprint(x, fmt)
+call aprint(x [, fmt])
 ```
 
 * `fmt` is `optional`, may be one of `INT_FMTS`
@@ -24,7 +24,7 @@ call aprint(x, fmt)
 For `x` an array of rank `1` or `2` and of type `real`:
 
 ```fortran
-call aprint(x, fmt, decimals)
+call aprint(x [, fmt, decimals])
 ```
 
 * `fmt` is `optional`, may be one of `REAL_FMTS`
@@ -33,7 +33,7 @@ call aprint(x, fmt, decimals)
 For `x` an array of rank `1` or `2` and of type `complex`:
 
 ```fortran
-call aprint(x, fmt, decimals, im)
+call aprint(x [, fmt, decimals, im])
 ```
 
 * `fmt` is `optional`, may be one of `REAL_FMTS`

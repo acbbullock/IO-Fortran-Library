@@ -10,11 +10,11 @@ author: Austin C Bullock
 For `x` an array of rank `1`, `2` and of type `integer`:
 
 ```fortran
-call to_file(x, file, header, dim, delim, fmt)
+call to_file(x, file [, header, dim, delim, fmt])
 ```
 
 ```fortran
-call to_file(x, file, header, delim, fmt)
+call to_file(x, file [, header, delim, fmt])
 ```
 
 * `file` is of type `character(len=*)`
@@ -26,11 +26,11 @@ call to_file(x, file, header, delim, fmt)
 For `x` an array of rank `1`, `2` and of type `real`:
 
 ```fortran
-call to_file(x, file, header, dim, locale, delim, fmt, decimals)
+call to_file(x, file [, header, dim, locale, delim, fmt, decimals])
 ```
 
 ```fortran
-call to_file(x, file, header, locale, delim, fmt, decimals)
+call to_file(x, file [, header, locale, delim, fmt, decimals])
 ```
 
 * `file` is of type `character(len=*)`
@@ -44,11 +44,11 @@ call to_file(x, file, header, locale, delim, fmt, decimals)
 For `x` an array of rank `1`, `2` and of type of type `complex`:
 
 ```fortran
-call to_file(x, file, header, dim, locale, delim, fmt, decimals, im)
+call to_file(x, file [, header, dim, locale, delim, fmt, decimals, im])
 ```
 
 ```fortran
-call to_file(x, file, header, locale, delim, fmt, decimals, im)
+call to_file(x, file [, header, locale, delim, fmt, decimals, im])
 ```
 
 * `file` is of type `character(len=*)`

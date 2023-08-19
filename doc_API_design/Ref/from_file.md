@@ -10,7 +10,7 @@ author: Austin C Bullock
 For reading textual data into an array `into` of rank `1` or `2` and of type `integer`:
 
 ```fortran
-call from_file(file, into, header, delim, fmt)
+call from_file(file, into [, header, delim, fmt])
 ```
 
 * `file` is of type `character(len=*)`
@@ -21,7 +21,7 @@ call from_file(file, into, header, delim, fmt)
 For reading textual data into an array `into` of rank `1` or `2` and of type `real`:
 
 ```fortran
-call from_file(file, into, header, locale, delim, fmt)
+call from_file(file, into [, header, locale, delim, fmt])
 ```
 
 * `file` is of type `character(len=*)`
@@ -33,7 +33,7 @@ call from_file(file, into, header, locale, delim, fmt)
 For reading textual data into an array `into` of rank `1` or `2` and of type `complex`:
 
 ```fortran
-call from_file(file, into, header, locale, delim, fmt, im)
+call from_file(file, into [, header, locale, delim, fmt, im])
 ```
 
 * `file` is of type `character(len=*)`

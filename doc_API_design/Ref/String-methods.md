@@ -58,7 +58,7 @@ For `self` a scalar or array variable of any rank and of type `String`:
 For `self` a scalar variable of type `String`:
 
 ```fortran
-    call self%join(tokens, separator)
+    call self%join(tokens [, separator])
 ```
 
 * `tokens` is of type `type(String), dimension(:)`
@@ -97,7 +97,7 @@ For `self` a scalar or array variable of any rank and of type `String`:
 For `self` a scalar variable of type `String`:
 
 ```fortran
-    call self%read_file(file, cell_array, row_separator, column_separator)
+    call self%read_file(file [, cell_array, row_separator, column_separator])
 ```
 
 * `file` is of type `character(len=*)`
@@ -116,7 +116,7 @@ For `self` a scalar variable of type `String`:
 For `self` a scalar or array variable of any rank and of type `String`:
 
 ```fortran
-    result = self%replace(match, substring, back)
+    result = self%replace(match, substring [, back])
 ```
 
 * `match` is of type `character(len=*)` or `String`
@@ -132,7 +132,7 @@ For `self` a scalar or array variable of any rank and of type `String`:
 For `self` a scalar or array variable of any rank and of type `String`:
 
 ```fortran
-    call self%replace_inplace(match, substring, back)
+    call self%replace_inplace(match, substring [, back])
 ```
 
 * `match` is of type `character(len=*)` or `String`
@@ -172,7 +172,7 @@ For `self` a scalar or array variable of any rank and of type `String`:
 For `self` a scalar variable of type `String`:
 
 ```fortran
-    call self%write_file(cell_array, file, row_separator, column_separator, append)
+    call self%write_file(cell_array, file [, row_separator, column_separator, append])
 ```
 
 * `cell_array` is of type `type(String), dimension(:,:)`

@@ -24,7 +24,7 @@ This is for scalar `String` to `character` conversion.
 For `x` a scalar of type `integer`:
 
 ```fortran
-result = str(x, fmt)
+result = str(x [, fmt])
 ```
 
 * `fmt` is `optional`, may be one of `INT_FMTS`
@@ -32,7 +32,7 @@ result = str(x, fmt)
 For `x` a scalar of type `real`:
 
 ```fortran
-result = str(x, locale, fmt, decimals)
+result = str(x [, locale, fmt, decimals])
 ```
 
 * `locale` is `optional`, may be one of `LOCALES`
@@ -42,7 +42,7 @@ result = str(x, locale, fmt, decimals)
 For `x` a scalar of type `complex`:
 
 ```fortran
-result = str(x, locale, fmt, decimals, im)
+result = str(x [, locale, fmt, decimals, im])
 ```
 
 * `locale` is `optional`, may be one of `LOCALES`
