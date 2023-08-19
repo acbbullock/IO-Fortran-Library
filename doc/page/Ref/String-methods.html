@@ -165,17 +165,17 @@
 <p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p><code>substring</code> may be a scalar or the same rank and shape as <code>self</code>.</p></div>
 <h3 id="read_file"><a href="../../type/string.html#boundprocedure-read_file">read_file</a></h3>
 <p>For <code>self</code> a scalar variable of type <code>String</code>:</p>
-<div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">read_file</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span><span class="w"> </span><span class="n">cell_array</span><span class="p">,</span><span class="w"> </span><span class="n">row_separator</span><span class="p">,</span><span class="w"> </span><span class="n">column_separator</span><span class="p">)</span><span class="w"></span>
+<div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">read_file</span><span class="p">(</span><span class="k">file</span><span class="p">,</span><span class="w"> </span><span class="n">cell_array</span><span class="p">,</span><span class="w"> </span><span class="n">row_separator</span><span class="p">,</span><span class="w"> </span><span class="n">column_separator</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 
 <ul>
-<li><code>file_name</code> is of type <code>character(len=*)</code></li>
+<li><code>file</code> is of type <code>character(len=*)</code></li>
 <li><code>cell_array</code> is <code>optional</code> and of type <code>type(String), allocatable, dimension(:,:)</code></li>
 <li><code>row_separator</code> is <code>optional</code> and of type <code>character(len=*)</code> (default is <code>LF</code>)</li>
-<li><code>column_separator</code> is <code>optional</code> and of type <code>character(len=*)</code> (default is <code>','</code>)</li>
+<li><code>column_separator</code> is <code>optional</code> and of type <code>character(len=*)</code> (default is <code>","</code>)</li>
 </ul>
-<p><em>Description</em>: Reads raw text file contents into <code>self</code> and optionally populates a cell array using the designated <code>row_separator</code> and <code>column_separator</code> whose default values are <code>LF</code> and <code>','</code> respectively.</p>
-<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p><code>file_name</code> may be a relative path, but absolute paths are not guaranteed to work on every platform.</p></div>
+<p><em>Description</em>: Reads raw text file contents into <code>self</code> and optionally populates a cell array using the designated <code>row_separator</code> and <code>column_separator</code> whose default values are <code>LF</code> and <code>","</code> respectively.</p>
+<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p><code>file</code> may be a relative path, but absolute paths are not guaranteed to work on every platform.</p></div>
 <p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>The <code>cell_array</code> must be <code>allocatable</code> and will be re-allocated internally (if already allocated).</p></div>
 <h3 id="replace"><a href="../../type/string.html#boundprocedure-replace">replace</a></h3>
 <p>For <code>self</code> a scalar or array variable of any rank and of type <code>String</code>:</p>
@@ -217,28 +217,28 @@
 <p><em>Description</em>: Removes any leading or trailing whitespace of the string slice component of a <code>String</code> elementally and in place.</p>
 <h3 id="write_file"><a href="../../type/string.html#boundprocedure-write_file">write_file</a></h3>
 <p>For <code>self</code> a scalar variable of type <code>String</code>:</p>
-<div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">write_file</span><span class="p">(</span><span class="n">cell_array</span><span class="p">,</span><span class="w"> </span><span class="n">file_name</span><span class="p">,</span><span class="w"> </span><span class="n">row_separator</span><span class="p">,</span><span class="w"> </span><span class="n">column_separator</span><span class="p">,</span><span class="w"> </span><span class="n">append</span><span class="p">)</span><span class="w"></span>
+<div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">write_file</span><span class="p">(</span><span class="n">cell_array</span><span class="p">,</span><span class="w"> </span><span class="k">file</span><span class="p">,</span><span class="w"> </span><span class="n">row_separator</span><span class="p">,</span><span class="w"> </span><span class="n">column_separator</span><span class="p">,</span><span class="w"> </span><span class="n">append</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 
 <ul>
 <li><code>cell_array</code> is of type <code>type(String), dimension(:,:)</code></li>
-<li><code>file_name</code> is of type <code>character(len=*)</code></li>
+<li><code>file</code> is of type <code>character(len=*)</code></li>
 <li><code>row_separator</code> is <code>optional</code> and of type <code>character(len=*)</code> (default is <code>LF</code>)</li>
-<li><code>column_separator</code> is <code>optional</code> and of type <code>character(len=*)</code> (default is <code>','</code>)</li>
+<li><code>column_separator</code> is <code>optional</code> and of type <code>character(len=*)</code> (default is <code>","</code>)</li>
 <li><code>append</code> is <code>optional</code> and of type <code>logical</code> (default is <code>.false.</code>)</li>
 </ul>
-<p><em>Description</em>: Writes the content of a cell array to a text file. The cell array's entire contents are populated into <code>self</code> using the designated <code>row_separator</code> and <code>column_separator</code> whose default values are <code>LF</code> and <code>','</code> respectively, and then streamed to an external text file. The file will be created if it does not exist, and will be appended to if <code>append</code> is <code>.true.</code>.</p>
-<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p><code>file_name</code> may be a relative path, but absolute paths are not guaranteed to work on every platform.</p></div>
+<p><em>Description</em>: Writes the content of a cell array to a text file. The cell array's entire contents are populated into <code>self</code> using the designated <code>row_separator</code> and <code>column_separator</code> whose default values are <code>LF</code> and <code>","</code> respectively, and then streamed to an external text file. The file will be created if it does not exist, and will be appended to if <code>append</code> is <code>.true.</code>.</p>
+<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p><code>file</code> may be a relative path, but absolute paths are not guaranteed to work on every platform.</p></div>
 <h3 id="writeformatted"><a href="../../type/string.html#boundprocedure-write%28formatted%29">write(formatted)</a></h3>
 <p>For <code>substring</code> a scalar or array of any rank and of type <code>String</code>:</p>
-<div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="k">print</span><span class="w"> </span><span class="s1">&#39;(DT)&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">substring</span><span class="w"></span>
+<div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="k">print</span><span class="w"> </span><span class="s2">&quot;(DT)&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">substring</span><span class="w"></span>
 </code></pre></div>
 
-<div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="k">write</span><span class="p">(</span><span class="n">unit</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;(DT)&#39;</span><span class="p">)</span><span class="w"> </span><span class="n">substring</span><span class="w"></span>
+<div class="codehilite"><pre><span></span><code><span class="w">    </span><span class="k">write</span><span class="p">(</span><span class="n">unit</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;(DT)&quot;</span><span class="p">)</span><span class="w"> </span><span class="n">substring</span><span class="w"></span>
 </code></pre></div>
 
 <p><em>Description</em>: Formatted write DTIO procedure for type <code>String</code>.</p>
-<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>When performing a formatted write to <code>unit</code>, use the derived-type edit descriptor format <code>fmt='(DT)'</code>.</p></div>
+<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>When performing a formatted write to <code>unit</code>, use the derived-type edit descriptor format <code>fmt="(DT)"</code>.</p></div>
     </div>
     <div class="col-md-3 col-md-pull-9">
       <hr class="visible-xs visible-sm">
@@ -354,7 +354,7 @@
             <p class="text-right">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-08-13 17:49              </p>
+ on 2023-08-18 19:24              </p>
           </div>
         </div>
         <br>

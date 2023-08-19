@@ -12,15 +12,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -32,15 +35,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -52,15 +58,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -73,15 +82,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -93,15 +105,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -113,15 +128,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -134,15 +152,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -154,15 +175,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -174,15 +198,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -195,15 +222,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -215,15 +245,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -235,15 +268,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -256,15 +292,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -276,15 +315,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -296,15 +338,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -317,15 +362,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -337,15 +385,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -357,15 +408,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -378,15 +432,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -398,15 +455,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -418,15 +478,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -439,15 +502,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -459,15 +525,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -479,15 +548,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -500,15 +572,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -520,15 +595,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -540,15 +618,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -561,15 +642,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -581,15 +665,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -601,15 +688,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -622,15 +712,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -642,15 +735,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -662,15 +758,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -683,15 +782,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -703,15 +805,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -723,15 +828,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -744,15 +852,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -764,15 +875,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -784,15 +898,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -805,15 +922,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -825,15 +945,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -845,15 +968,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -866,15 +992,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -886,15 +1015,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -906,15 +1038,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -927,15 +1062,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -947,15 +1085,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -967,15 +1108,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -988,15 +1132,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1008,15 +1155,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1028,15 +1178,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1049,15 +1202,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1069,15 +1225,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1089,15 +1248,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1110,15 +1272,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1130,15 +1295,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1150,15 +1318,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1171,15 +1342,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1191,15 +1365,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1211,15 +1388,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1232,15 +1412,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1252,15 +1435,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1272,15 +1458,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1293,15 +1482,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1313,15 +1505,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1333,15 +1528,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1354,15 +1552,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1374,15 +1575,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1394,15 +1598,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1415,15 +1622,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1435,15 +1645,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1455,15 +1668,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1476,15 +1692,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1496,15 +1715,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1516,15 +1738,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1537,15 +1762,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1557,15 +1785,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1577,15 +1808,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1598,15 +1832,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1618,15 +1855,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1638,15 +1878,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1659,15 +1902,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1679,15 +1925,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1699,15 +1948,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1720,15 +1972,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1740,15 +1995,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1760,15 +2018,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1781,15 +2042,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1801,15 +2065,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1821,15 +2088,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1842,15 +2112,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1862,15 +2135,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1882,15 +2158,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1902,15 +2181,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1923,15 +2205,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1943,15 +2228,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1963,15 +2251,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -1983,15 +2274,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2004,15 +2298,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2024,15 +2321,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2044,15 +2344,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2064,15 +2367,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2085,15 +2391,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2105,15 +2414,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2125,15 +2437,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2145,15 +2460,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2166,15 +2484,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2186,15 +2507,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2206,15 +2530,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2226,15 +2553,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2247,15 +2577,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2267,15 +2600,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2287,15 +2623,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2307,15 +2646,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2328,15 +2670,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2348,15 +2693,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2368,15 +2716,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2388,15 +2739,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2409,15 +2763,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2429,15 +2786,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2449,15 +2809,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2469,15 +2832,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2490,15 +2856,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2510,15 +2879,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2530,15 +2902,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2550,15 +2925,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2571,15 +2949,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2591,15 +2972,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2611,15 +2995,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2631,15 +3018,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2652,15 +3042,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2672,15 +3065,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2692,15 +3088,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2712,15 +3111,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2733,15 +3135,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2753,15 +3158,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2773,15 +3181,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2793,15 +3204,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2814,15 +3228,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2834,15 +3251,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2854,15 +3274,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2874,15 +3297,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2895,15 +3321,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2915,15 +3344,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2935,15 +3367,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2955,15 +3390,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2976,15 +3414,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -2996,15 +3437,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -3016,15 +3460,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -3036,15 +3483,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
-            open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+            open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                   action="write", access="stream" )
         end if
 
@@ -3058,15 +3508,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -3074,7 +3527,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -3084,15 +3537,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -3100,7 +3556,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -3110,15 +3566,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -3126,7 +3585,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -3137,15 +3596,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -3153,7 +3615,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -3163,15 +3625,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -3179,7 +3644,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -3189,15 +3654,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -3205,7 +3673,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -3216,15 +3684,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -3232,7 +3703,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -3242,15 +3713,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -3258,7 +3732,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -3268,15 +3742,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -3284,7 +3761,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -3295,15 +3772,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -3311,7 +3791,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -3321,15 +3801,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -3337,7 +3820,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -3347,15 +3830,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -3363,7 +3849,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -3374,15 +3860,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -3390,7 +3879,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -3400,15 +3889,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -3416,7 +3908,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -3426,15 +3918,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -3442,7 +3937,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -3453,15 +3948,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -3469,7 +3967,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -3479,15 +3977,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -3495,7 +3996,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -3505,15 +4006,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -3521,7 +4025,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -3532,15 +4036,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -3549,7 +4056,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -3559,15 +4066,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -3576,7 +4086,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -3586,15 +4096,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -3603,7 +4116,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -3614,15 +4127,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -3631,7 +4147,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -3641,15 +4157,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -3658,7 +4177,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -3668,15 +4187,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -3685,7 +4207,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -3696,15 +4218,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -3713,7 +4238,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -3723,15 +4248,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -3740,7 +4268,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -3750,15 +4278,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -3767,7 +4298,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -3778,15 +4309,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -3795,7 +4329,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -3805,15 +4339,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -3822,7 +4359,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -3832,15 +4369,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -3849,7 +4389,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -3860,15 +4400,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -3877,7 +4420,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -3887,15 +4430,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -3904,7 +4450,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -3914,15 +4460,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -3931,7 +4480,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -3942,15 +4491,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -3959,7 +4511,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -3969,15 +4521,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -3986,7 +4541,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -3996,15 +4551,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -4013,7 +4571,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -4024,15 +4582,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -4042,7 +4603,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -4052,15 +4613,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -4070,7 +4634,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -4080,15 +4644,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -4098,7 +4665,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -4109,15 +4676,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -4127,7 +4697,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -4137,15 +4707,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -4155,7 +4728,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -4165,15 +4738,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -4183,7 +4759,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -4194,15 +4770,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -4212,7 +4791,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -4222,15 +4801,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -4240,7 +4822,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -4250,15 +4832,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -4268,7 +4853,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -4279,15 +4864,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -4295,7 +4883,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -4305,15 +4893,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -4321,7 +4912,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -4331,15 +4922,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -4347,7 +4941,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -4358,15 +4952,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -4374,7 +4971,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -4384,15 +4981,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -4400,7 +5000,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -4410,15 +5010,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -4426,7 +5029,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -4437,15 +5040,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -4453,7 +5059,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -4463,15 +5069,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -4479,7 +5088,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -4489,15 +5098,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -4505,7 +5117,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -4516,15 +5128,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -4532,7 +5147,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -4542,15 +5157,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -4558,7 +5176,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -4568,15 +5186,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -4584,7 +5205,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -4595,15 +5216,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -4611,7 +5235,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -4621,15 +5245,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -4637,7 +5264,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -4647,15 +5274,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -4663,7 +5293,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -4674,15 +5304,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -4690,7 +5323,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -4700,15 +5333,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -4716,7 +5352,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -4726,15 +5362,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -4742,7 +5381,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -4753,15 +5392,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -4770,7 +5412,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -4780,15 +5422,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -4797,7 +5442,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -4807,15 +5452,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -4824,7 +5472,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -4835,15 +5483,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -4852,7 +5503,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -4862,15 +5513,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -4879,7 +5533,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -4889,15 +5543,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -4906,7 +5563,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -4917,15 +5574,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -4934,7 +5594,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -4944,15 +5604,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -4961,7 +5624,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -4971,15 +5634,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -4988,7 +5654,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -4999,15 +5665,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -5016,7 +5685,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -5026,15 +5695,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -5043,7 +5715,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -5053,15 +5725,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -5070,7 +5745,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -5081,15 +5756,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -5098,7 +5776,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -5108,15 +5786,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -5125,7 +5806,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -5135,15 +5816,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -5152,7 +5836,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -5163,15 +5847,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -5180,7 +5867,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -5190,15 +5877,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -5207,7 +5897,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -5217,15 +5907,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -5234,7 +5927,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -5245,15 +5938,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -5263,7 +5959,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -5273,15 +5969,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -5291,7 +5990,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -5301,15 +6000,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -5319,7 +6021,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -5330,15 +6032,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -5348,7 +6053,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -5358,15 +6063,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -5376,7 +6084,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -5386,15 +6094,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -5404,7 +6115,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -5415,15 +6126,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -5433,7 +6147,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -5443,15 +6157,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -5461,7 +6178,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -5471,15 +6188,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -5489,7 +6209,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -5500,15 +6220,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -5516,7 +6239,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -5526,15 +6249,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -5542,7 +6268,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -5552,15 +6278,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -5568,7 +6297,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -5578,15 +6307,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -5594,7 +6326,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -5605,15 +6337,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -5621,7 +6356,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -5631,15 +6366,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -5647,7 +6385,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -5657,15 +6395,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -5673,7 +6414,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -5683,15 +6424,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -5699,7 +6443,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -5710,15 +6454,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -5726,7 +6473,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -5736,15 +6483,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -5752,7 +6502,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -5762,15 +6512,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -5778,7 +6531,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -5788,15 +6541,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -5804,7 +6560,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -5815,15 +6571,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -5831,7 +6590,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -5841,15 +6600,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -5857,7 +6619,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -5867,15 +6629,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -5883,7 +6648,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -5893,15 +6658,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -5909,7 +6677,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -5920,15 +6688,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -5936,7 +6707,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -5946,15 +6717,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -5962,7 +6736,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -5972,15 +6746,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -5988,7 +6765,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -5998,15 +6775,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -6014,7 +6794,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -6025,15 +6805,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -6041,7 +6824,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -6051,15 +6834,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -6067,7 +6853,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -6077,15 +6863,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -6093,7 +6882,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -6103,15 +6892,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -6119,7 +6911,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -6130,15 +6922,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -6147,7 +6942,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -6157,15 +6952,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -6174,7 +6972,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -6184,15 +6982,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -6201,7 +7002,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -6211,15 +7012,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -6228,7 +7032,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -6239,15 +7043,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -6256,7 +7063,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -6266,15 +7073,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -6283,7 +7093,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -6293,15 +7103,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -6310,7 +7123,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -6320,15 +7133,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -6337,7 +7153,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -6348,15 +7164,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -6365,7 +7184,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -6375,15 +7194,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -6392,7 +7214,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -6402,15 +7224,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -6419,7 +7244,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -6429,15 +7254,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -6446,7 +7274,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -6457,15 +7285,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -6474,7 +7305,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -6484,15 +7315,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -6501,7 +7335,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -6511,15 +7345,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -6528,7 +7365,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -6538,15 +7375,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -6555,7 +7395,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -6566,15 +7406,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -6583,7 +7426,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -6593,15 +7436,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -6610,7 +7456,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -6620,15 +7466,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -6637,7 +7486,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -6647,15 +7496,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -6664,7 +7516,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -6675,15 +7527,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -6692,7 +7547,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -6702,15 +7557,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -6719,7 +7577,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -6729,15 +7587,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -6746,7 +7607,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -6756,15 +7617,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -6773,7 +7637,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -6784,15 +7648,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -6802,7 +7669,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -6812,15 +7679,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -6830,7 +7700,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -6840,15 +7710,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -6858,7 +7731,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -6868,15 +7741,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -6886,7 +7762,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -6897,15 +7773,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -6915,7 +7794,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -6925,15 +7804,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -6943,7 +7825,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -6953,15 +7835,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -6971,7 +7856,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -6981,15 +7866,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -6999,7 +7887,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -7010,15 +7898,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -7028,7 +7919,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -7038,15 +7929,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -7056,7 +7950,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -7066,15 +7960,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -7084,7 +7981,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
@@ -7094,15 +7991,18 @@ submodule (io_fortran_lib) binary_io
         logical :: exists
         integer :: file_unit, iostat
 
-        inquire( file=file_name, exist=exists )
+        exists    = .false.
+        file_unit = 0; iostat = 0
+
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
@@ -7112,7 +8012,7 @@ submodule (io_fortran_lib) binary_io
         read(unit=file_unit, iostat=iostat) into
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 

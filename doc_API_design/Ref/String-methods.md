@@ -97,17 +97,17 @@ For `self` a scalar or array variable of any rank and of type `String`:
 For `self` a scalar variable of type `String`:
 
 ```fortran
-    call self%read_file(file_name, cell_array, row_separator, column_separator)
+    call self%read_file(file, cell_array, row_separator, column_separator)
 ```
 
-* `file_name` is of type `character(len=*)`
+* `file` is of type `character(len=*)`
 * `cell_array` is `optional` and of type `type(String), allocatable, dimension(:,:)`
 * `row_separator` is `optional` and of type `character(len=*)` (default is `LF`)
-* `column_separator` is `optional` and of type `character(len=*)` (default is `','`)
+* `column_separator` is `optional` and of type `character(len=*)` (default is `","`)
 
-*Description*: Reads raw text file contents into `self` and optionally populates a cell array using the designated `row_separator` and `column_separator` whose default values are `LF` and `','` respectively.
+*Description*: Reads raw text file contents into `self` and optionally populates a cell array using the designated `row_separator` and `column_separator` whose default values are `LF` and `","` respectively.
 
-@note `file_name` may be a relative path, but absolute paths are not guaranteed to work on every platform.
+@note `file` may be a relative path, but absolute paths are not guaranteed to work on every platform.
 
 @note The `cell_array` must be `allocatable` and will be re-allocated internally (if already allocated).
 
@@ -172,31 +172,31 @@ For `self` a scalar or array variable of any rank and of type `String`:
 For `self` a scalar variable of type `String`:
 
 ```fortran
-    call self%write_file(cell_array, file_name, row_separator, column_separator, append)
+    call self%write_file(cell_array, file, row_separator, column_separator, append)
 ```
 
 * `cell_array` is of type `type(String), dimension(:,:)`
-* `file_name` is of type `character(len=*)`
+* `file` is of type `character(len=*)`
 * `row_separator` is `optional` and of type `character(len=*)` (default is `LF`)
-* `column_separator` is `optional` and of type `character(len=*)` (default is `','`)
+* `column_separator` is `optional` and of type `character(len=*)` (default is `","`)
 * `append` is `optional` and of type `logical` (default is `.false.`)
 
-*Description*: Writes the content of a cell array to a text file. The cell array's entire contents are populated into `self` using the designated `row_separator` and `column_separator` whose default values are `LF` and `','` respectively, and then streamed to an external text file. The file will be created if it does not exist, and will be appended to if `append` is `.true.`.
+*Description*: Writes the content of a cell array to a text file. The cell array's entire contents are populated into `self` using the designated `row_separator` and `column_separator` whose default values are `LF` and `","` respectively, and then streamed to an external text file. The file will be created if it does not exist, and will be appended to if `append` is `.true.`.
 
-@note `file_name` may be a relative path, but absolute paths are not guaranteed to work on every platform.
+@note `file` may be a relative path, but absolute paths are not guaranteed to work on every platform.
 
 ### [write(formatted)](../../type/string.html#boundprocedure-write%28formatted%29)
 
 For `substring` a scalar or array of any rank and of type `String`:
 
 ```fortran
-    print '(DT)', substring
+    print "(DT)", substring
 ```
 
 ```fortran
-    write(unit, '(DT)') substring
+    write(unit, "(DT)") substring
 ```
 
 *Description*: Formatted write DTIO procedure for type `String`.
 
-@note When performing a formatted write to `unit`, use the derived-type edit descriptor format `fmt='(DT)'`.
+@note When performing a formatted write to `unit`, use the derived-type edit descriptor format `fmt="(DT)"`.

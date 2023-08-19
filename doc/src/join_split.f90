@@ -71,6 +71,8 @@ submodule (io_fortran_lib) join_split
         integer(i64)                  :: substring_len, l, i
         integer                       :: sep_len, num_seps, sep, token, current
 
+        substring_len=0_i64; l=0_i64; i=0_i64; sep_len=0; num_seps=0; sep=0; token=0; current=0
+
         substring_len = substring%len64()
 
         if ( substring_len < 1_i64 ) then

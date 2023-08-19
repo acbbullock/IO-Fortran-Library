@@ -118,11 +118,11 @@
 
 <span class="w">    </span><span class="k">call </span><span class="nb">random_number</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"></span>
 
-<span class="w">    </span><span class="k">call </span><span class="n">to_file</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">file_name</span><span class="o">=</span><span class="s1">&#39;x.dat&#39;</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">call </span><span class="n">to_file</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="k">file</span><span class="o">=</span><span class="s2">&quot;x.dat&quot;</span><span class="p">)</span><span class="w"></span>
 
-<span class="w">    </span><span class="k">call </span><span class="n">from_file</span><span class="p">(</span><span class="s1">&#39;x.dat&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">into</span><span class="o">=</span><span class="n">x_dat</span><span class="p">,</span><span class="w"> </span><span class="n">data_shape</span><span class="o">=</span><span class="nb">shape</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="w"></span>
+<span class="w">    </span><span class="k">call </span><span class="n">from_file</span><span class="p">(</span><span class="s2">&quot;x.dat&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">into</span><span class="o">=</span><span class="n">x_dat</span><span class="p">,</span><span class="w"> </span><span class="n">data_shape</span><span class="o">=</span><span class="nb">shape</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="w"></span>
 
-<span class="w">    </span><span class="k">write</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="s1">&#39;x == x_dat : &#39;</span><span class="p">,</span><span class="w"> </span><span class="k">all</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">x_dat</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">write</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="s2">&quot;x == x_dat : &quot;</span><span class="p">,</span><span class="w"> </span><span class="k">all</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">x_dat</span><span class="p">)</span><span class="w"></span>
 <span class="k">end program </span><span class="n">main</span><span class="w"></span>
 </code></pre></div>
 
@@ -138,13 +138,13 @@
 
 <span class="w">    </span><span class="k">call </span><span class="nb">random_number</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"></span>
 
-<span class="w">    </span><span class="k">call </span><span class="n">to_file</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">file_name</span><span class="o">=</span><span class="s1">&#39;x.dat&#39;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">call </span><span class="n">to_file</span><span class="p">(</span><span class="nb">shape</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="w"> </span><span class="n">file_name</span><span class="o">=</span><span class="s1">&#39;x_shape.csv&#39;</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">call </span><span class="n">to_file</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="k">file</span><span class="o">=</span><span class="s2">&quot;x.dat&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">call </span><span class="n">to_file</span><span class="p">(</span><span class="nb">shape</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="w"> </span><span class="k">file</span><span class="o">=</span><span class="s2">&quot;x_shape.csv&quot;</span><span class="p">)</span><span class="w"></span>
 
-<span class="w">    </span><span class="k">call </span><span class="n">from_file</span><span class="p">(</span><span class="s1">&#39;x_shape.csv&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">into</span><span class="o">=</span><span class="n">x_shape</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">call </span><span class="n">from_file</span><span class="p">(</span><span class="s1">&#39;x.dat&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">into</span><span class="o">=</span><span class="n">x_dat</span><span class="p">,</span><span class="w"> </span><span class="n">data_shape</span><span class="o">=</span><span class="n">x_shape</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">call </span><span class="n">from_file</span><span class="p">(</span><span class="s2">&quot;x_shape.csv&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">into</span><span class="o">=</span><span class="n">x_shape</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">call </span><span class="n">from_file</span><span class="p">(</span><span class="s2">&quot;x.dat&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">into</span><span class="o">=</span><span class="n">x_dat</span><span class="p">,</span><span class="w"> </span><span class="n">data_shape</span><span class="o">=</span><span class="n">x_shape</span><span class="p">)</span><span class="w"></span>
 
-<span class="w">    </span><span class="k">write</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="s1">&#39;x == x_dat : &#39;</span><span class="p">,</span><span class="w"> </span><span class="k">all</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">x_dat</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">write</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="s2">&quot;x == x_dat : &quot;</span><span class="p">,</span><span class="w"> </span><span class="k">all</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">x_dat</span><span class="p">)</span><span class="w"></span>
 <span class="k">end program </span><span class="n">main</span><span class="w"></span>
 </code></pre></div>
     </div>
@@ -262,7 +262,7 @@
             <p class="text-right">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-08-13 17:49              </p>
+ on 2023-08-18 19:24              </p>
           </div>
         </div>
         <br>

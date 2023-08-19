@@ -19,11 +19,11 @@ program main
 
     call random_number(x)
 
-    call to_file(x, file_name='x.dat')
+    call to_file(x, file="x.dat")
 
-    call from_file('x.dat', into=x_dat, data_shape=shape(x))
+    call from_file("x.dat", into=x_dat, data_shape=shape(x))
 
-    write(*,*) 'x == x_dat : ', all(x == x_dat)
+    write(*,*) "x == x_dat : ", all(x == x_dat)
 end program main
 ```
 
@@ -42,12 +42,12 @@ program main
 
     call random_number(x)
 
-    call to_file(x, file_name='x.dat')
-    call to_file(shape(x), file_name='x_shape.csv')
+    call to_file(x, file="x.dat")
+    call to_file(shape(x), file="x_shape.csv")
 
-    call from_file('x_shape.csv', into=x_shape)
-    call from_file('x.dat', into=x_dat, data_shape=x_shape)
+    call from_file("x_shape.csv", into=x_shape)
+    call from_file("x.dat", into=x_dat, data_shape=x_shape)
 
-    write(*,*) 'x == x_dat : ', all(x == x_dat)
+    write(*,*) "x == x_dat : ", all(x == x_dat)
 end program main
 ```

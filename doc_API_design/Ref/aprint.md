@@ -42,20 +42,20 @@ call aprint(x, fmt, decimals, im)
 
 ### Optional Arguments
 
-Integer formats (default is `'i'`):
+Integer formats (default is `"i"`):
 
 ```fortran
-INT_FMTS = [ 'i', 'z' ]
+INT_FMTS = [ "i", "z" ]
 ```
 
-Real formats (default is `'f'`):
+Real formats (default is `"f"`):
 
 ```fortran
-REAL_FMTS = [ 'e', 'f', 'z' ]
+REAL_FMTS = [ "e", "f", "z" ]
 ```
 
 Decimals (default is `2`): `decimals` specifies the number of digits on the rhs of the radix point.
 
-Imaginary unit (default is `'j'`): `im` specifies the form of a complex number.
+Imaginary unit (default is `"j"`): `im` specifies the form of a complex number.
 
 @note The optional arguments for `aprint` are different than elsewhere, and better suited for easy viewing of array sections.

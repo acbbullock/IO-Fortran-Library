@@ -18,6 +18,8 @@ submodule (io_fortran_lib) string_methods
         integer(i64) :: self_len, match_len, max_pos, upper_ind, i, j
         integer      :: first_char, last_char
 
+        self_len=0_i64; match_len=0_i64; max_pos=0_i64; upper_ind=0_i64; i=0_i64; j=0_i64; first_char=0; last_char=0
+
         self_len  = self%len64()
         match_len = len(match, kind=i64)
 
@@ -88,6 +90,8 @@ submodule (io_fortran_lib) string_methods
     module procedure count_substring_string
         integer(i64) :: self_len, match_len, max_pos, upper_ind, i, j
         integer      :: first_char, last_char
+
+        self_len=0_i64; match_len=0_i64; max_pos=0_i64; upper_ind=0_i64; i=0_i64; j=0_i64; first_char=0; last_char=0
 
         self_len  = self%len64()
         match_len = match%len64()
@@ -168,7 +172,7 @@ submodule (io_fortran_lib) string_methods
         type(String) :: comp
         logical      :: GCC
 
-        num_tokens = size(tokens, kind=i64)
+        num_tokens = size(tokens, kind=i64); GCC = .false.
 
         if ( num_tokens == 1_i64 ) then
             if ( tokens(1_i64)%len64() < 1_i64 ) then
@@ -184,7 +188,7 @@ submodule (io_fortran_lib) string_methods
             separator_ = separator
         end if
 
-        comp%s = COMPILER; GCC = ( comp%count(match='GCC') > 0 ); deallocate(comp%s)
+        comp%s = COMPILER; GCC = ( comp%count(match="GCC") > 0 ); deallocate(comp%s)
 
         if ( num_tokens > 500_i64 ) then
             if ( GCC ) then
@@ -203,6 +207,8 @@ submodule (io_fortran_lib) string_methods
     module procedure join_base
         integer(i64), dimension(size(tokens, kind=i64)) :: lengths, cumm_lengths
         integer(i64)                                    :: num_tokens, sep_len, total_length, pos, i
+
+        lengths=0_i64; cumm_lengths=0_i64; num_tokens=0_i64; sep_len=0_i64; total_length=0_i64; pos=0_i64; i=0_i64
 
         num_tokens = size(tokens, kind=i64)
 
@@ -288,35 +294,37 @@ submodule (io_fortran_lib) string_methods
         integer                       :: file_unit, iostat
         logical                       :: exists
 
-        ext = ext_of(file_name)
+        file_length=0_i64; file_unit=0; iostat=0; exists=.false.
+
+        ext = ext_of(file)
 
         if ( .not. any(TEXT_EXT == ext) ) then
             if ( any(BINARY_EXT == ext) ) then
-                error stop LF//'FATAL: Error reading file "'//file_name//'" in method READ_FILE. Binary data '// &
+                error stop LF//'FATAL: Error reading file "'//file//'" in method READ_FILE. Binary data '// &
                                'cannot be read into a String.'
             else
-                error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'" in '// &
+                error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file//'" in '// &
                                'method READ_FILE.'// &
                            LF//'Supported file extensions: '//join(TEXT_EXT)
             end if
         end if
 
-        inquire(file=file_name, exist=exists)
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
-                  action='read', access="stream", position='rewind' )
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
+                  action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
-        inquire( file=file_name, size=file_length )
+        inquire( file=file, size=file_length )
 
         if ( file_length == 0_i64 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
+            error stop LF//'FATAL: Error reading file "'//file//'". File is empty.'
             return
         end if
 
@@ -327,20 +335,20 @@ submodule (io_fortran_lib) string_methods
         close(file_unit)
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
         if ( .not. present(cell_array) ) then
             if ( present(row_separator) ) then
                 write(*,"(a)")  LF//'WARNING: Row separator was specified in method READ_FILE for file "'// &
-                                    file_name//'" without a cell array output. To use this option, '// &
+                                    file//'" without a cell array output. To use this option, '// &
                                     'provide an actual argument to cell_array.'
             end if
 
             if ( present(column_separator) ) then
                 write(*,"(a)")  LF//'WARNING: Column separator was specified in method READ_FILE for file "'// &
-                                    file_name//'" without a cell array output. To use this option, '// &
+                                    file//'" without a cell array output. To use this option, '// &
                                     'provide an actual argument to cell_array.'
             end if
 
@@ -350,7 +358,7 @@ submodule (io_fortran_lib) string_methods
         if ( present(row_separator) ) then
             if ( len(row_separator) == 0 ) then
                 write(*,"(a)")  LF//'WARNING: Cannot populate a cell array with the contents of file "'// &
-                                    file_name//'" using an empty row separator. Returning without cell array...'
+                                    file//'" using an empty row separator. Returning without cell array...'
                 return
             end if
         end if
@@ -358,7 +366,7 @@ submodule (io_fortran_lib) string_methods
         if ( present(column_separator) ) then
             if ( len(column_separator) == 0 ) then
                 write(*,"(a)")  LF//'WARNING: Cannot populate a cell array with the contents of file "'// &
-                                    file_name//'" using an empty column separator. Returning without cell array...'
+                                    file//'" using an empty column separator. Returning without cell array...'
                 return
             end if
         end if
@@ -368,6 +376,10 @@ submodule (io_fortran_lib) string_methods
             integer(i64)                  :: n_rows, n_cols, row, col, l, i
             integer                       :: row_sep, row_sep_len, col_sep, col_sep_len, quote, current
             logical                       :: in_quote
+
+            n_rows   = 0_i64; n_cols      = 0_i64; row     = 0_i64; col         = 0_i64; l     = 0_i64; i       = 0_i64
+            row_sep  = 0;     row_sep_len = 0;     col_sep = 0;     col_sep_len = 0;     quote = 0;     current = 0
+            in_quote = .false.
 
             if ( .not. present(row_separator) ) then
                 row_separator_ = LF
@@ -479,6 +491,8 @@ submodule (io_fortran_lib) string_methods
         integer :: i, self_len, match_len, substring_len, diff_len
         logical :: back_
 
+        i=0; self_len=0; match_len=0; substring_len=0; diff_len=0; back_=.false.
+
         self_len      = self%len()
         match_len     = len(match)
         substring_len = len(substring)
@@ -539,6 +553,8 @@ submodule (io_fortran_lib) string_methods
         character(len=:), allocatable :: substring_
         integer                       :: i, self_len, match_len, substring_len, diff_len
         logical                       :: back_
+
+        i=0; self_len=0; match_len=0; substring_len=0; diff_len=0; back_=.false.
 
         self_len      = self%len()
         match_len     = match%len()
@@ -607,6 +623,8 @@ submodule (io_fortran_lib) string_methods
         integer                       :: i, self_len, match_len, substring_len, diff_len
         logical                       :: back_
 
+        i=0; self_len=0; match_len=0; substring_len=0; diff_len=0; back_=.false.
+
         self_len      = self%len()
         match_len     = len(match)
         substring_len = substring%len()
@@ -673,6 +691,8 @@ submodule (io_fortran_lib) string_methods
         integer :: i, self_len, match_len, substring_len, diff_len
         logical :: back_
 
+        i=0; self_len=0; match_len=0; substring_len=0; diff_len=0; back_=.false.
+
         self_len      = self%len()
         match_len     = match%len()
         substring_len = len(substring)
@@ -733,6 +753,8 @@ submodule (io_fortran_lib) string_methods
         type(String) :: new
         integer      :: i, self_len, match_len, substring_len, diff_len
         logical      :: back_
+
+        i=0; self_len=0; match_len=0; substring_len=0; diff_len=0; back_=.false.
 
         self_len      = self%len()
         match_len     = len(match)
@@ -795,6 +817,8 @@ submodule (io_fortran_lib) string_methods
         character(len=:), allocatable :: substring_
         integer                       :: i, self_len, match_len, substring_len, diff_len
         logical                       :: back_
+
+        i=0; self_len=0; match_len=0; substring_len=0; diff_len=0; back_=.false.
 
         self_len      = self%len()
         match_len     = match%len()
@@ -864,6 +888,8 @@ submodule (io_fortran_lib) string_methods
         integer                       :: i, self_len, match_len, substring_len, diff_len
         logical                       :: back_
 
+        i=0; self_len=0; match_len=0; substring_len=0; diff_len=0; back_=.false.
+
         self_len      = self%len()
         match_len     = len(match)
         substring_len = substring%len()
@@ -930,6 +956,8 @@ submodule (io_fortran_lib) string_methods
         type(String) :: new
         integer      :: i, self_len, match_len, substring_len, diff_len
         logical      :: back_
+
+        i=0; self_len=0; match_len=0; substring_len=0; diff_len=0; back_=.false.
 
         self_len      = self%len()
         match_len     = match%len()
@@ -1005,15 +1033,20 @@ submodule (io_fortran_lib) string_methods
 
     module procedure write_file
         character(len=:), allocatable :: ext, row_separator_, column_separator_
-        integer(i64), allocatable     :: lengths(:,:)
+        integer(i64),     allocatable :: lengths(:,:)
         integer(i64)                  :: n_rows, n_cols, row_sep_len, col_sep_len, total_len, row, col, pos
         logical                       :: exists, append_
         integer                       :: file_unit
 
-        ext = ext_of(file_name)
+        n_rows    = 0_i64;   n_cols  = 0_i64; row_sep_len = 0_i64; col_sep_len = 0_i64
+        total_len = 0_i64;   row     = 0_i64; col         = 0_i64; pos         = 0_i64
+        exists    = .false.; append_ = .false.
+        file_unit = 0
+
+        ext = ext_of(file)
 
         if ( .not. any(TEXT_EXT == ext) ) then
-            write(*,"(a)")  LF//'WARNING: Skipping write to "'//file_name//'" in method WRITE_FILE'// &
+            write(*,"(a)")  LF//'WARNING: Skipping write to "'//file//'" in method WRITE_FILE'// &
                                 'due to unsupported file extension "'//ext//'".'// &
                             LF//'Supported file extensions: '//join(TEXT_EXT)
             return
@@ -1069,19 +1102,19 @@ submodule (io_fortran_lib) string_methods
             end if
         end do positional_transfers
 
-        inquire(file=file_name, exist=exists)
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
             if ( .not. append_ ) then
-                open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                       action="write", access="stream" )
             else
-                open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                open( newunit=file_unit, file=file, status="old", form="unformatted", &
                       action="write", access="stream", position="append" )
             end if
         end if

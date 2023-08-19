@@ -10,14 +10,14 @@ author: Austin C Bullock
 For `x` an array of rank `1`, `2` and of type `integer`:
 
 ```fortran
-call to_file(x, file_name, header, dim, delim, fmt)
+call to_file(x, file, header, dim, delim, fmt)
 ```
 
 ```fortran
-call to_file(x, file_name, header, delim, fmt)
+call to_file(x, file, header, delim, fmt)
 ```
 
-* `file_name` is of type `character(len=*)`
+* `file` is of type `character(len=*)`
 * `header` is `optional` and of type `character(len=*), dimension(:)`
 * `dim` is `optional` and of type `integer` (available only if `x` has rank `1`)
 * `delim` is `optional` and of type `character(len=*)`
@@ -26,14 +26,14 @@ call to_file(x, file_name, header, delim, fmt)
 For `x` an array of rank `1`, `2` and of type `real`:
 
 ```fortran
-call to_file(x, file_name, header, dim, locale, delim, fmt, decimals)
+call to_file(x, file, header, dim, locale, delim, fmt, decimals)
 ```
 
 ```fortran
-call to_file(x, file_name, header, locale, delim, fmt, decimals)
+call to_file(x, file, header, locale, delim, fmt, decimals)
 ```
 
-* `file_name` is of type `character(len=*)`
+* `file` is of type `character(len=*)`
 * `header` is `optional` and of type `character(len=*), dimension(:)`
 * `dim` is `optional` and of type `integer` (available only if `x` has rank `1`)
 * `locale` is `optional`, may be one of `LOCALES`
@@ -44,14 +44,14 @@ call to_file(x, file_name, header, locale, delim, fmt, decimals)
 For `x` an array of rank `1`, `2` and of type of type `complex`:
 
 ```fortran
-call to_file(x, file_name, header, dim, locale, delim, fmt, decimals, im)
+call to_file(x, file, header, dim, locale, delim, fmt, decimals, im)
 ```
 
 ```fortran
-call to_file(x, file_name, header, locale, delim, fmt, decimals, im)
+call to_file(x, file, header, locale, delim, fmt, decimals, im)
 ```
 
-* `file_name` is of type `character(len=*)`
+* `file` is of type `character(len=*)`
 * `header` is `optional` and of type `character(len=*), dimension(:)`
 * `dim` is `optional` and of type `integer` (available only if `x` has rank `1`)
 * `locale` is `optional`, may be one of `LOCALES`
@@ -63,12 +63,12 @@ call to_file(x, file_name, header, locale, delim, fmt, decimals, im)
 For `x` an array of any rank `3`-`15` and of type `integer`, `real`, `complex`:
 
 ```fortran
-call to_file(x, file_name)
+call to_file(x, file)
 ```
 
-* `file_name` is of type `character(len=*)`
+* `file` is of type `character(len=*)`
 
-@note `file_name` may be a relative path, but absolute paths are not guaranteed to work on every platform.
+@note `file` may be a relative path, but absolute paths are not guaranteed to work on every platform.
 
 @note `to_file` will always use the `NL` line ending when writing text files (which on most systems equates to `LF`).
 
@@ -78,26 +78,26 @@ Header (default is none): `header` is a [character array literal](../UserInfo/co
 
 Dimension: `dim` specifies whether to write along the rows (`dim=1`) or along the columns (`dim=2`), choosing the former by default unless `size(header)` is `size(x)`. This option is available only if `x` has rank `1`.
 
-Locales (default is `'US'`):
+Locales (default is `"US"`):
 
 ```fortran
-LOCALES = [ 'US', 'EU' ]
+LOCALES = [ "US", "EU" ]
 ```
 
-Delimiter: data separator. Default is `','` for `integer` data and for `real`/`complex` data with `'US'` locale, and `';'` for `real`/`complex` data with `'EU'` locale. It is always recommended to omit the delimiter argument for default unless a custom delimiter is really necessary. If `x` has rank `1` and `dim=1`, then the `delim` argument is ignored.
+Delimiter: data separator. Default is `","` for `integer` data and for `real`/`complex` data with `"US"` locale, and `";"` for `real`/`complex` data with `"EU"` locale. It is always recommended to omit the delimiter argument for default unless a custom delimiter is really necessary. If `x` has rank `1` and `dim=1`, then the `delim` argument is ignored.
 
-Integer formats (default is `'i'`):
+Integer formats (default is `"i"`):
 
 ```fortran
-INT_FMTS = [ 'i', 'z' ]
+INT_FMTS = [ "i", "z" ]
 ```
 
-Real formats (default is `'e'`):
+Real formats (default is `"e"`):
 
 ```fortran
-REAL_FMTS = [ 'e', 'f', 'z' ]
+REAL_FMTS = [ "e", "f", "z" ]
 ```
 
 Decimals: `decimals` specifies the number of digits on the rhs of the radix point, with a default determined internally based on the [text format](../UserInfo/text-fmts.html) and precision.
 
-Imaginary unit: `im` specifies the form of a complex number. By default, `complex` numbers will be written as ordered pairs, e.g. `(2.45,3.45)`. If `im` is specified, then the number will be written as a sum with the specified imaginary unit, e.g. `2.45+3.45j` for `im='j'` or `2.45+3.45*1i` for `im='*1i'`.
+Imaginary unit: `im` specifies the form of a complex number. By default, `complex` numbers will be written as ordered pairs, e.g. `(2.45,3.45)`. If `im` is specified, then the number will be written as a sum with the specified imaginary unit, e.g. `2.45+3.45j` for `im="j"` or `2.45+3.45*1i` for `im="*1i"`.

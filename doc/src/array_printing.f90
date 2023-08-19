@@ -9,7 +9,9 @@ submodule (io_fortran_lib) array_printing
     module procedure aprint_1dc128
         character(len=:), allocatable :: x_str(:)
         character(len=:), allocatable :: fmt_, im_, xre_max_str, xre_min_str, xim_max_str, xim_min_str
-        integer                       :: i, decimals_, l
+        integer                       :: l, i, decimals_
+
+        l=0; i=0; decimals_=0
 
         if ( .not. present(fmt) ) then
             fmt_ = "f"
@@ -67,7 +69,9 @@ submodule (io_fortran_lib) array_printing
     module procedure aprint_1dc64
         character(len=:), allocatable :: x_str(:)
         character(len=:), allocatable :: fmt_, im_, xre_max_str, xre_min_str, xim_max_str, xim_min_str
-        integer                       :: i, decimals_, l
+        integer                       :: l, i, decimals_
+
+        l=0; i=0; decimals_=0
 
         if ( .not. present(fmt) ) then
             fmt_ = "f"
@@ -125,7 +129,9 @@ submodule (io_fortran_lib) array_printing
     module procedure aprint_1dc32
         character(len=:), allocatable :: x_str(:)
         character(len=:), allocatable :: fmt_, im_, xre_max_str, xre_min_str, xim_max_str, xim_min_str
-        integer                       :: i, decimals_, l
+        integer                       :: l, i, decimals_
+
+        l=0; i=0; decimals_=0
 
         if ( .not. present(fmt) ) then
             fmt_ = "f"
@@ -184,7 +190,9 @@ submodule (io_fortran_lib) array_printing
     module procedure aprint_2dc128
         character(len=:), allocatable :: x_str(:,:)
         character(len=:), allocatable :: fmt_, im_, xre_max_str, xre_min_str, xim_max_str, xim_min_str
-        integer                       :: i, j, decimals_, l
+        integer                       :: l, i, j, decimals_
+
+        l=0; i=0; j=0; decimals_=0
 
         if ( .not. present(fmt) ) then
             fmt_ = "f"
@@ -244,7 +252,9 @@ submodule (io_fortran_lib) array_printing
     module procedure aprint_2dc64
         character(len=:), allocatable :: x_str(:,:)
         character(len=:), allocatable :: fmt_, im_, xre_max_str, xre_min_str, xim_max_str, xim_min_str
-        integer                       :: i, j, decimals_, l
+        integer                       :: l, i, j, decimals_
+
+        l=0; i=0; j=0; decimals_=0
 
         if ( .not. present(fmt) ) then
             fmt_ = "f"
@@ -304,7 +314,9 @@ submodule (io_fortran_lib) array_printing
     module procedure aprint_2dc32
         character(len=:), allocatable :: x_str(:,:)
         character(len=:), allocatable :: fmt_, im_, xre_max_str, xre_min_str, xim_max_str, xim_min_str
-        integer                       :: i, j, decimals_, l
+        integer                       :: l, i, j, decimals_
+
+        l=0; i=0; j=0; decimals_=0
 
         if ( .not. present(fmt) ) then
             fmt_ = "f"
@@ -367,6 +379,8 @@ submodule (io_fortran_lib) array_printing
         character(len=:), allocatable :: fmt_, x_max_str, x_min_str, x_abs_min_str, source
         integer                       :: i, decimals_
 
+        i=0; decimals_=0
+
         if ( .not. present(fmt) ) then
             fmt_ = "f"
         else
@@ -407,6 +421,8 @@ submodule (io_fortran_lib) array_printing
         character(len=:), allocatable :: x_str(:)
         character(len=:), allocatable :: fmt_, x_max_str, x_min_str, x_abs_min_str, source
         integer                       :: i, decimals_
+
+        i=0; decimals_=0
 
         if ( .not. present(fmt) ) then
             fmt_ = "f"
@@ -449,6 +465,8 @@ submodule (io_fortran_lib) array_printing
         character(len=:), allocatable :: fmt_, x_max_str, x_min_str, x_abs_min_str, source
         integer                       :: i, decimals_
 
+        i=0; decimals_=0
+
         if ( .not. present(fmt) ) then
             fmt_ = "f"
         else
@@ -490,6 +508,8 @@ submodule (io_fortran_lib) array_printing
         character(len=:), allocatable :: x_str(:,:)
         character(len=:), allocatable :: fmt_, x_max_str, x_min_str, x_abs_min_str, source
         integer                       :: i, j, decimals_
+
+        i=0; j=0; decimals_=0
 
         if ( .not. present(fmt) ) then
             fmt_ = "f"
@@ -534,6 +554,8 @@ submodule (io_fortran_lib) array_printing
         character(len=:), allocatable :: fmt_, x_max_str, x_min_str, x_abs_min_str, source
         integer                       :: i, j, decimals_
 
+        i=0; j=0; decimals_=0
+
         if ( .not. present(fmt) ) then
             fmt_ = "f"
         else
@@ -576,6 +598,8 @@ submodule (io_fortran_lib) array_printing
         character(len=:), allocatable :: x_str(:,:)
         character(len=:), allocatable :: fmt_, x_max_str, x_min_str, x_abs_min_str, source
         integer                       :: i, j, decimals_
+
+        i=0; j=0; decimals_=0
 
         if ( .not. present(fmt) ) then
             fmt_ = "f"
@@ -621,6 +645,8 @@ submodule (io_fortran_lib) array_printing
         character(len=:), allocatable :: fmt_, x_max_str, x_min_str, source
         integer                       :: i
 
+        i=0
+
         if ( .not. present(fmt) ) then
             fmt_ = "i"
         else
@@ -652,6 +678,8 @@ submodule (io_fortran_lib) array_printing
         character(len=:), allocatable :: x_str(:)
         character(len=:), allocatable :: fmt_, x_max_str, x_min_str, source
         integer                       :: i
+
+        i=0
 
         if ( .not. present(fmt) ) then
             fmt_ = "i"
@@ -685,6 +713,8 @@ submodule (io_fortran_lib) array_printing
         character(len=:), allocatable :: fmt_, x_max_str, x_min_str, source
         integer                       :: i
 
+        i=0
+
         if ( .not. present(fmt) ) then
             fmt_ = "i"
         else
@@ -716,6 +746,8 @@ submodule (io_fortran_lib) array_printing
         character(len=:), allocatable :: x_str(:)
         character(len=:), allocatable :: fmt_, x_max_str, x_min_str, source
         integer                       :: i
+
+        i=0
 
         if ( .not. present(fmt) ) then
             fmt_ = "i"
@@ -749,6 +781,8 @@ submodule (io_fortran_lib) array_printing
         character(len=:), allocatable :: x_str(:,:)
         character(len=:), allocatable :: fmt_, x_max_str, x_min_str, source, str_tmp
         integer                       :: i, j
+
+        i=0; j=0
 
         if ( .not. present(fmt) ) then
             fmt_ = "i"
@@ -784,6 +818,8 @@ submodule (io_fortran_lib) array_printing
         character(len=:), allocatable :: fmt_, x_max_str, x_min_str, source, str_tmp
         integer                       :: i, j
 
+        i=0; j=0
+
         if ( .not. present(fmt) ) then
             fmt_ = "i"
         else
@@ -817,6 +853,8 @@ submodule (io_fortran_lib) array_printing
         character(len=:), allocatable :: x_str(:,:)
         character(len=:), allocatable :: fmt_, x_max_str, x_min_str, source, str_tmp
         integer                       :: i, j
+
+        i=0; j=0
 
         if ( .not. present(fmt) ) then
             fmt_ = "i"
@@ -852,6 +890,8 @@ submodule (io_fortran_lib) array_printing
         character(len=:), allocatable :: fmt_, x_max_str, x_min_str, source, str_tmp
         integer                       :: i, j
 
+        i=0; j=0
+
         if ( .not. present(fmt) ) then
             fmt_ = "i"
         else
@@ -886,6 +926,8 @@ submodule (io_fortran_lib) array_printing
         type(String), allocatable :: rows(:)
         integer                   :: i
 
+        i=0
+
         allocate( rows(lbound(x, dim=1):ubound(x, dim=1)) )
 
         do i = lbound(x, dim=1), ubound(x, dim=1)
@@ -910,6 +952,8 @@ submodule (io_fortran_lib) array_printing
     module procedure aprint_2dchar
         type(String), allocatable :: rows(:)
         integer                   :: i
+
+        i=0
 
         allocate( rows(lbound(x, dim=1):ubound(x, dim=1)) )
 
@@ -938,6 +982,8 @@ submodule (io_fortran_lib) array_printing
 
             integer :: x_len, x_size, i, pos
 
+            x_len=0; x_size=0; i=0; pos=0
+
             x_len  = len(x)
             x_size = size(x)
 
@@ -964,6 +1010,8 @@ submodule (io_fortran_lib) array_printing
         integer, allocatable          :: lengths(:)
         integer                       :: i, max_length
 
+        i=0; max_length=0
+
         lengths    = x%len()
         max_length = maxval(lengths)
 
@@ -984,6 +1032,8 @@ submodule (io_fortran_lib) array_printing
         character(len=:), allocatable :: char_arr(:,:)
         integer, allocatable          :: lengths(:,:)
         integer                       :: i, j, max_length
+
+        i=0; j=0; max_length=0
 
         lengths    = x%len()
         max_length = maxval(lengths)

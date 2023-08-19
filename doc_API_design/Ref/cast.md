@@ -87,22 +87,22 @@ call substring%cast(into, locale, fmt, im)
 
 ### Optional Arguments
 
-Integer formats (default is `'i'`):
+Integer formats (default is `"i"`):
 
 ```fortran
-INT_FMTS = [ 'i', 'z' ]
+INT_FMTS = [ "i", "z" ]
 ```
 
-Real formats (default is `'e'`):
+Real formats (default is `"e"`):
 
 ```fortran
-REAL_FMTS = [ 'e', 'f', 'z' ]
+REAL_FMTS = [ "e", "f", "z" ]
 ```
 
-Locales (default is `'US'`):
+Locales (default is `"US"`):
 
 ```fortran
-LOCALES = [ 'US', 'EU' ]
+LOCALES = [ "US", "EU" ]
 ```
 
 Decimals: `decimals` specifies the number of digits on the rhs of the radix point, with a default determined internally based on the [text format](../UserInfo/text-fmts.html) and precision.

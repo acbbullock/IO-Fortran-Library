@@ -109,32 +109,32 @@
       <h2 id="interface-from_file"><a href="../../interface/from_file.html">interface from_file</a></h2>
 <p><em>Description</em>: Subroutine for reading an external file of uniform numeric data type and format into an array.</p>
 <p>For reading textual data into an array <code>into</code> of rank <code>1</code> or <code>2</code> and of type <code>integer</code>:</p>
-<div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">from_file</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span><span class="w"> </span><span class="n">into</span><span class="p">,</span><span class="w"> </span><span class="n">header</span><span class="p">,</span><span class="w"> </span><span class="n">delim</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">)</span><span class="w"></span>
+<div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">from_file</span><span class="p">(</span><span class="k">file</span><span class="p">,</span><span class="w"> </span><span class="n">into</span><span class="p">,</span><span class="w"> </span><span class="n">header</span><span class="p">,</span><span class="w"> </span><span class="n">delim</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 
 <ul>
-<li><code>file_name</code> is of type <code>character(len=*)</code></li>
+<li><code>file</code> is of type <code>character(len=*)</code></li>
 <li><code>header</code> is <code>optional</code> and of type <code>logical</code></li>
 <li><code>delim</code> is <code>optional</code> and of type <code>character(len=*)</code></li>
 <li><code>fmt</code> is <code>optional</code>, may be one of <code>INT_FMTS</code></li>
 </ul>
 <p>For reading textual data into an array <code>into</code> of rank <code>1</code> or <code>2</code> and of type <code>real</code>:</p>
-<div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">from_file</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span><span class="w"> </span><span class="n">into</span><span class="p">,</span><span class="w"> </span><span class="n">header</span><span class="p">,</span><span class="w"> </span><span class="n">locale</span><span class="p">,</span><span class="w"> </span><span class="n">delim</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">)</span><span class="w"></span>
+<div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">from_file</span><span class="p">(</span><span class="k">file</span><span class="p">,</span><span class="w"> </span><span class="n">into</span><span class="p">,</span><span class="w"> </span><span class="n">header</span><span class="p">,</span><span class="w"> </span><span class="n">locale</span><span class="p">,</span><span class="w"> </span><span class="n">delim</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 
 <ul>
-<li><code>file_name</code> is of type <code>character(len=*)</code></li>
+<li><code>file</code> is of type <code>character(len=*)</code></li>
 <li><code>header</code> is <code>optional</code> and of type <code>logical</code></li>
 <li><code>locale</code> is <code>optional</code>, may be one of <code>LOCALES</code></li>
 <li><code>delim</code> is <code>optional</code> and of type <code>character(len=*)</code></li>
 <li><code>fmt</code> is <code>optional</code>, may be one of <code>REAL_FMTS</code></li>
 </ul>
 <p>For reading textual data into an array <code>into</code> of rank <code>1</code> or <code>2</code> and of type <code>complex</code>:</p>
-<div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">from_file</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span><span class="w"> </span><span class="n">into</span><span class="p">,</span><span class="w"> </span><span class="n">header</span><span class="p">,</span><span class="w"> </span><span class="n">locale</span><span class="p">,</span><span class="w"> </span><span class="n">delim</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">,</span><span class="w"> </span><span class="n">im</span><span class="p">)</span><span class="w"></span>
+<div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">from_file</span><span class="p">(</span><span class="k">file</span><span class="p">,</span><span class="w"> </span><span class="n">into</span><span class="p">,</span><span class="w"> </span><span class="n">header</span><span class="p">,</span><span class="w"> </span><span class="n">locale</span><span class="p">,</span><span class="w"> </span><span class="n">delim</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">,</span><span class="w"> </span><span class="n">im</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 
 <ul>
-<li><code>file_name</code> is of type <code>character(len=*)</code></li>
+<li><code>file</code> is of type <code>character(len=*)</code></li>
 <li><code>header</code> is <code>optional</code> and of type <code>logical</code></li>
 <li><code>locale</code> is <code>optional</code>, may be one of <code>LOCALES</code></li>
 <li><code>delim</code> is <code>optional</code> and of type <code>character(len=*)</code></li>
@@ -142,29 +142,29 @@
 <li><code>im</code> is <code>optional</code> and of type <code>character(len=*)</code></li>
 </ul>
 <p>For reading binary data into an array <code>into</code> of any rank <code>1</code>-<code>15</code> and of type <code>integer</code>, <code>real</code>, <code>complex</code>:</p>
-<div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">from_file</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span><span class="w"> </span><span class="n">into</span><span class="p">,</span><span class="w"> </span><span class="n">data_shape</span><span class="p">)</span><span class="w"></span>
+<div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">from_file</span><span class="p">(</span><span class="k">file</span><span class="p">,</span><span class="w"> </span><span class="n">into</span><span class="p">,</span><span class="w"> </span><span class="n">data_shape</span><span class="p">)</span><span class="w"></span>
 </code></pre></div>
 
 <ul>
-<li><code>file_name</code> is of type <code>character(len=*)</code></li>
+<li><code>file</code> is of type <code>character(len=*)</code></li>
 <li><code>data_shape</code> is of type <code>integer, dimension(:)</code></li>
 </ul>
-<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p><code>file_name</code> may be a relative path, but absolute paths are not guaranteed to work on every platform.</p></div>
+<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p><code>file</code> may be a relative path, but absolute paths are not guaranteed to work on every platform.</p></div>
 <p></p><div class="alert alert-warning" role="alert"><h4>Warning</h4><p>In all cases, <code>into</code> must be <code>allocatable</code>, and will lose its allocation status upon passing into <code>from_file</code> if already allocated. As a result, <code>from_file</code> does not allow reading into sections of already allocated arrays.</p></div>
 <p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>When reading binary data, <code>data_shape</code> must be present and its size must equal the rank of <code>into</code>.</p></div>
 <h3 id="optional-arguments">Optional Arguments</h3>
 <p>Header (default is <code>.false.</code>): specifies whether a header line is present.</p>
-<p>Locales (default is <code>'US'</code>):</p>
-<div class="codehilite"><pre><span></span><code><span class="n">LOCALES</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s1">&#39;US&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;EU&#39;</span><span class="w"> </span><span class="p">]</span><span class="w"></span>
+<p>Locales (default is <code>"US"</code>):</p>
+<div class="codehilite"><pre><span></span><code><span class="n">LOCALES</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">&quot;US&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;EU&quot;</span><span class="w"> </span><span class="p">]</span><span class="w"></span>
 </code></pre></div>
 
-<p>Delimiter: data separator. Default is <code>','</code> for <code>integer</code> data and for <code>real</code>/<code>complex</code> data with <code>'US'</code> locale, and <code>';'</code> for <code>real</code>/<code>complex</code> data with <code>'EU'</code> locale. It is always recommended to omit the delimiter argument for default unless a custom delimiter is really necessary. If <code>x</code> has rank <code>1</code> and the data is ordered down the rows, then the <code>delim</code> argument is ignored.</p>
-<p>Integer formats (default is <code>'i'</code>):</p>
-<div class="codehilite"><pre><span></span><code><span class="n">INT_FMTS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s1">&#39;i&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;z&#39;</span><span class="w"> </span><span class="p">]</span><span class="w"></span>
+<p>Delimiter: data separator. Default is <code>","</code> for <code>integer</code> data and for <code>real</code>/<code>complex</code> data with <code>"US"</code> locale, and <code>";"</code> for <code>real</code>/<code>complex</code> data with <code>"EU"</code> locale. It is always recommended to omit the delimiter argument for default unless a custom delimiter is really necessary. If <code>x</code> has rank <code>1</code> and the data is ordered down the rows, then the <code>delim</code> argument is ignored.</p>
+<p>Integer formats (default is <code>"i"</code>):</p>
+<div class="codehilite"><pre><span></span><code><span class="n">INT_FMTS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">&quot;i&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;z&quot;</span><span class="w"> </span><span class="p">]</span><span class="w"></span>
 </code></pre></div>
 
-<p>Real formats (default is <code>'e'</code>):</p>
-<div class="codehilite"><pre><span></span><code><span class="n">REAL_FMTS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s1">&#39;e&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;f&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;z&#39;</span><span class="w"> </span><span class="p">]</span><span class="w"></span>
+<p>Real formats (default is <code>"e"</code>):</p>
+<div class="codehilite"><pre><span></span><code><span class="n">REAL_FMTS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">&quot;e&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;f&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;z&quot;</span><span class="w"> </span><span class="p">]</span><span class="w"></span>
 </code></pre></div>
 
 <p>Imaginary unit: <code>im</code> specifies the form of a complex number. If not present, <code>complex</code> numbers will be assumed to be written as ordered pairs, e.g. <code>(2.45,3.45)</code>.</p>
@@ -283,7 +283,7 @@
             <p class="text-right">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-08-13 17:49              </p>
+ on 2023-08-18 19:24              </p>
           </div>
         </div>
         <br>

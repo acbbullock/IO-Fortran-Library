@@ -19,25 +19,25 @@ program main
     integer :: errstat
 
     call date_and_time(date=date, time=time)
-    logfile = 'logfile_main_'//trim(adjustl(date))//'_'//time//'.log'
+    logfile = "logfile_main_"//trim(adjustl(date))//"_"//time//".log"
 
-    logmsg = 'PROGRAM MAIN - BEGINNING EXECUTION'
-    call echo(logmsg//LF//repeat('-', ncopies=len(logmsg)), file_name=logfile)
+    logmsg = "PROGRAM MAIN - BEGINNING EXECUTION"
+    call echo(logmsg//LF//repeat("-", ncopies=len(logmsg)), file=logfile)
 
     ! ...
 
-    logmsg = 'All is good so far...'
+    logmsg = "All is good so far..."
     call echo(logmsg, logfile)
 
     read(*,*) errstat
 
     if ( errstat /= 0 ) then
-        logmsg = 'Process has non-zero exit status: '//str(errstat)//LF//'Stopping...'
+        logmsg = "Process has non-zero exit status: "//str(errstat)//LF//"Stopping..."
         call echo(logmsg, logfile)
         error stop logmsg
     end if
 
-    logmsg = 'All processes have executed successfully.'
+    logmsg = "All processes have executed successfully."
     call echo(logmsg, logfile)
 end program main
 ```
@@ -55,24 +55,24 @@ program main
     integer :: errstat
 
     call date_and_time(date=date, time=time)
-    logfile = 'logfile_main_' + trim(adjustl(date)) + '_' + time + '.log'
+    logfile = "logfile_main_" + trim(adjustl(date)) + "_" + time + ".log"
 
-    logmsg = String('PROGRAM MAIN - BEGINNING EXECUTION')
-    call logmsg%push(LF + '-'**logmsg%len() + LF)
+    logmsg = String("PROGRAM MAIN - BEGINNING EXECUTION")
+    call logmsg%push(LF + "-"**logmsg%len() + LF)
 
     ! ...
 
-    call logmsg%push('All is good so far...' + LF)
+    call logmsg%push("All is good so far..." + LF)
 
     read(*,*) errstat
 
     if ( errstat /= 0 ) then
-        call logmsg%push('Process has non-zero exit status: ' + str(errstat) + LF + 'Stopping...')
+        call logmsg%push("Process has non-zero exit status: " + str(errstat) + LF + "Stopping...")
         call logmsg%echo(logfile)
         error stop logmsg%as_str()
     end if
 
-    call logmsg%push('All processes have executed successfully.')
+    call logmsg%push("All processes have executed successfully.")
     call logmsg%echo(logfile)
 end program main
 ```
