@@ -15,17 +15,17 @@ submodule (io_fortran_lib) text_io
 
         exists=.false.; append_=.false.; file_unit=0
 
-        ext = ext_of(file_name)
+        ext = ext_of(file)
 
         if ( .not. any(TEXT_EXT == ext) ) then
-            write(*,"(a)")  LF//'WARNING: Skipping write to "'//file_name//'" '// &
+            write(*,"(a)")  LF//'WARNING: Skipping write to "'//file//'" '// &
                                 'due to unsupported file extension "'//ext//'".'// &
                             LF//'Supported file extensions: '//join(TEXT_EXT)
             return
         end if
 
         if ( len(substring, kind=i64) == 0_i64 ) then
-            write(*,"(a)")  LF//'WARNING: Skipping write to "'//file_name//'". '// &
+            write(*,"(a)")  LF//'WARNING: Skipping write to "'//file//'". '// &
                                 'String to write is empty.'
             return
         end if
@@ -42,19 +42,19 @@ submodule (io_fortran_lib) text_io
             terminator_ = terminator
         end if
 
-        inquire(file=file_name, exist=exists)
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
             if ( .not. append_ ) then
-                open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                       action="write", access="stream" )
             else
-                open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                open( newunit=file_unit, file=file, status="old", form="unformatted", &
                       action="write", access="stream", position="append" )
             end if
         end if
@@ -71,17 +71,17 @@ submodule (io_fortran_lib) text_io
 
         exists=.false.; append_=.false.; file_unit=0
 
-        ext = ext_of(file_name)
+        ext = ext_of(file)
 
         if ( .not. any(TEXT_EXT == ext) ) then
-            write(*,"(a)")  LF//'WARNING: Skipping write to "'//file_name//'" '// &
+            write(*,"(a)")  LF//'WARNING: Skipping write to "'//file//'" '// &
                                 'due to unsupported file extension "'//ext//'".'// &
                             LF//'Supported file extensions: '//join(TEXT_EXT)
             return
         end if
 
         if ( substring%len64() < 1_i64 ) then
-            write(*,"(a)")  LF//'WARNING: Skipping write to "'//file_name//'". '// &
+            write(*,"(a)")  LF//'WARNING: Skipping write to "'//file//'". '// &
                                 'String to write is empty.'
             return
         end if
@@ -98,19 +98,19 @@ submodule (io_fortran_lib) text_io
             terminator_ = terminator
         end if
 
-        inquire(file=file_name, exist=exists)
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
             if ( .not. append_ ) then
-                open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                       action="write", access="stream" )
             else
-                open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                open( newunit=file_unit, file=file, status="old", form="unformatted", &
                       action="write", access="stream", position="append" )
             end if
         end if
@@ -171,7 +171,7 @@ submodule (io_fortran_lib) text_io
             end if
         end if
 
-        call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
+        call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
     end procedure to_text_1dc128
     module procedure to_text_1dc64
         type(String)                  :: text_file
@@ -224,7 +224,7 @@ submodule (io_fortran_lib) text_io
             end if
         end if
 
-        call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
+        call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
     end procedure to_text_1dc64
     module procedure to_text_1dc32
         type(String)                  :: text_file
@@ -277,7 +277,7 @@ submodule (io_fortran_lib) text_io
             end if
         end if
 
-        call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
+        call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
     end procedure to_text_1dc32
 
     module procedure to_text_2dc128
@@ -314,7 +314,7 @@ submodule (io_fortran_lib) text_io
             call cast(x, into=cells, locale=locale, fmt=fmt, decimals=decimals, im=im)
         end if
 
-        call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
+        call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
     end procedure to_text_2dc128
     module procedure to_text_2dc64
         type(String)                  :: text_file
@@ -350,7 +350,7 @@ submodule (io_fortran_lib) text_io
             call cast(x, into=cells, locale=locale, fmt=fmt, decimals=decimals, im=im)
         end if
 
-        call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
+        call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
     end procedure to_text_2dc64
     module procedure to_text_2dc32
         type(String)                  :: text_file
@@ -386,7 +386,7 @@ submodule (io_fortran_lib) text_io
             call cast(x, into=cells, locale=locale, fmt=fmt, decimals=decimals, im=im)
         end if
 
-        call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
+        call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
     end procedure to_text_2dc32
 
     module procedure to_text_1dr128
@@ -440,7 +440,7 @@ submodule (io_fortran_lib) text_io
             end if
         end if
 
-        call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
+        call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
     end procedure to_text_1dr128
     module procedure to_text_1dr64
         type(String)                  :: text_file
@@ -493,7 +493,7 @@ submodule (io_fortran_lib) text_io
             end if
         end if
 
-        call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
+        call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
     end procedure to_text_1dr64
     module procedure to_text_1dr32
         type(String)                  :: text_file
@@ -546,7 +546,7 @@ submodule (io_fortran_lib) text_io
             end if
         end if
 
-        call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
+        call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
     end procedure to_text_1dr32
 
     module procedure to_text_2dr128
@@ -583,7 +583,7 @@ submodule (io_fortran_lib) text_io
             call cast(x, into=cells, locale=locale, fmt=fmt, decimals=decimals)
         end if
 
-        call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
+        call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
     end procedure to_text_2dr128
     module procedure to_text_2dr64
         type(String)                  :: text_file
@@ -619,7 +619,7 @@ submodule (io_fortran_lib) text_io
             call cast(x, into=cells, locale=locale, fmt=fmt, decimals=decimals)
         end if
 
-        call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
+        call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
     end procedure to_text_2dr64
     module procedure to_text_2dr32
         type(String)                  :: text_file
@@ -655,7 +655,7 @@ submodule (io_fortran_lib) text_io
             call cast(x, into=cells, locale=locale, fmt=fmt, decimals=decimals)
         end if
 
-        call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
+        call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
     end procedure to_text_2dr32
 
     module procedure to_text_1di64
@@ -709,7 +709,7 @@ submodule (io_fortran_lib) text_io
             end if
         end if
 
-        call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
+        call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
     end procedure to_text_1di64
     module procedure to_text_1di32
         type(String)                  :: text_file
@@ -762,7 +762,7 @@ submodule (io_fortran_lib) text_io
             end if
         end if
 
-        call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
+        call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
     end procedure to_text_1di32
     module procedure to_text_1di16
         type(String)                  :: text_file
@@ -815,7 +815,7 @@ submodule (io_fortran_lib) text_io
             end if
         end if
 
-        call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
+        call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
     end procedure to_text_1di16
     module procedure to_text_1di8
         type(String)                  :: text_file
@@ -868,7 +868,7 @@ submodule (io_fortran_lib) text_io
             end if
         end if
 
-        call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
+        call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
     end procedure to_text_1di8
 
     module procedure to_text_2di64
@@ -905,7 +905,7 @@ submodule (io_fortran_lib) text_io
             call cast(x, into=cells, fmt=fmt)
         end if
 
-        call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
+        call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
     end procedure to_text_2di64
     module procedure to_text_2di32
         type(String)                  :: text_file
@@ -941,7 +941,7 @@ submodule (io_fortran_lib) text_io
             call cast(x, into=cells, fmt=fmt)
         end if
 
-        call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
+        call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
     end procedure to_text_2di32
     module procedure to_text_2di16
         type(String)                  :: text_file
@@ -977,7 +977,7 @@ submodule (io_fortran_lib) text_io
             call cast(x, into=cells, fmt=fmt)
         end if
 
-        call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
+        call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
     end procedure to_text_2di16
     module procedure to_text_2di8
         type(String)                  :: text_file
@@ -1013,7 +1013,7 @@ submodule (io_fortran_lib) text_io
             call cast(x, into=cells, fmt=fmt)
         end if
 
-        call text_file%write_file(cells, file_name=file_name, row_separator=NL, column_separator=delim)
+        call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
     end procedure to_text_2di8
 
     ! Reading Procedures ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1034,22 +1034,22 @@ submodule (io_fortran_lib) text_io
         exists      = .false.; in_paren = .false.
 
         if ( len(im) == 0 ) then
-            inquire(file=file_name, exist=exists)
+            inquire(file=file, exist=exists)
 
             file_unit = input_unit
 
             if ( exists ) then
-                open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                open( newunit=file_unit, file=file, status="old", form="unformatted", &
                       action="read", access="stream", position="rewind" )
             else
-                error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+                error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
                 return
             end if
 
-            inquire(file=file_name, size=file_length)
+            inquire(file=file, size=file_length)
 
             if ( file_length == 0_i64 ) then
-                error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
+                error stop LF//'FATAL: Error reading file "'//file//'". File is empty.'
                 return
             end if
 
@@ -1058,7 +1058,7 @@ submodule (io_fortran_lib) text_io
             close(file_unit)
 
             if ( iostat > 0 ) then
-                error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+                error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
                 return
             end if
 
@@ -1146,7 +1146,7 @@ submodule (io_fortran_lib) text_io
                 end if
             end do positional_transfers
         else
-            call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
+            call text_file%read_file(file, cell_array=cells, row_separator=NL, column_separator=delim)
 
             n_rows = size(cells, dim=1, kind=i64)
             n_cols = size(cells, dim=2, kind=i64)
@@ -1155,11 +1155,11 @@ submodule (io_fortran_lib) text_io
         if ( (n_rows > 1_i64) .and. (n_cols > 1_i64) ) then
             if ( header ) then
                 if ( n_rows /= 2_i64 ) then
-                    error stop LF//'Error reading file "'//file_name//'". Data cannot fit into one-dimensional array.'
+                    error stop LF//'Error reading file "'//file//'". Data cannot fit into one-dimensional array.'
                     return
                 end if
             else
-                error stop LF//'Error reading file "'//file_name//'". Data cannot fit into one-dimensional array.'// &
+                error stop LF//'Error reading file "'//file//'". Data cannot fit into one-dimensional array.'// &
                                ' If there are two rows including a header row, specify "header=.true." .'
                 return
             end if
@@ -1168,7 +1168,7 @@ submodule (io_fortran_lib) text_io
         if ( n_cols == 1_i64 ) then
             if ( header ) then
                 if ( .not. (n_rows > 1_i64) ) then
-                    error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+                    error stop LF//'Error reading file "'//file//'". File is empty after header.'
                     return
                 end if
 
@@ -1182,7 +1182,7 @@ submodule (io_fortran_lib) text_io
 
         if ( header ) then
             if ( .not. (n_rows > 1_i64) ) then
-                error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+                error stop LF//'Error reading file "'//file//'". File is empty after header.'
                 return
             end if
 
@@ -1210,22 +1210,22 @@ submodule (io_fortran_lib) text_io
         exists      = .false.; in_paren = .false.
 
         if ( len(im) == 0 ) then
-            inquire(file=file_name, exist=exists)
+            inquire(file=file, exist=exists)
 
             file_unit = input_unit
 
             if ( exists ) then
-                open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                open( newunit=file_unit, file=file, status="old", form="unformatted", &
                       action="read", access="stream", position="rewind" )
             else
-                error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+                error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
                 return
             end if
 
-            inquire(file=file_name, size=file_length)
+            inquire(file=file, size=file_length)
 
             if ( file_length == 0_i64 ) then
-                error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
+                error stop LF//'FATAL: Error reading file "'//file//'". File is empty.'
                 return
             end if
 
@@ -1234,7 +1234,7 @@ submodule (io_fortran_lib) text_io
             close(file_unit)
 
             if ( iostat > 0 ) then
-                error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+                error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
                 return
             end if
 
@@ -1322,7 +1322,7 @@ submodule (io_fortran_lib) text_io
                 end if
             end do positional_transfers
         else
-            call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
+            call text_file%read_file(file, cell_array=cells, row_separator=NL, column_separator=delim)
 
             n_rows = size(cells, dim=1, kind=i64)
             n_cols = size(cells, dim=2, kind=i64)
@@ -1331,11 +1331,11 @@ submodule (io_fortran_lib) text_io
         if ( (n_rows > 1_i64) .and. (n_cols > 1_i64) ) then
             if ( header ) then
                 if ( n_rows /= 2_i64 ) then
-                    error stop LF//'Error reading file "'//file_name//'". Data cannot fit into one-dimensional array.'
+                    error stop LF//'Error reading file "'//file//'". Data cannot fit into one-dimensional array.'
                     return
                 end if
             else
-                error stop LF//'Error reading file "'//file_name//'". Data cannot fit into one-dimensional array.'// &
+                error stop LF//'Error reading file "'//file//'". Data cannot fit into one-dimensional array.'// &
                                ' If there are two rows including a header row, specify "header=.true." .'
                 return
             end if
@@ -1344,7 +1344,7 @@ submodule (io_fortran_lib) text_io
         if ( n_cols == 1_i64 ) then
             if ( header ) then
                 if ( .not. (n_rows > 1_i64) ) then
-                    error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+                    error stop LF//'Error reading file "'//file//'". File is empty after header.'
                     return
                 end if
 
@@ -1358,7 +1358,7 @@ submodule (io_fortran_lib) text_io
 
         if ( header ) then
             if ( .not. (n_rows > 1_i64) ) then
-                error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+                error stop LF//'Error reading file "'//file//'". File is empty after header.'
                 return
             end if
 
@@ -1386,22 +1386,22 @@ submodule (io_fortran_lib) text_io
         exists      = .false.; in_paren = .false.
 
         if ( len(im) == 0 ) then
-            inquire(file=file_name, exist=exists)
+            inquire(file=file, exist=exists)
 
             file_unit = input_unit
 
             if ( exists ) then
-                open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                open( newunit=file_unit, file=file, status="old", form="unformatted", &
                       action="read", access="stream", position="rewind" )
             else
-                error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+                error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
                 return
             end if
 
-            inquire(file=file_name, size=file_length)
+            inquire(file=file, size=file_length)
 
             if ( file_length == 0_i64 ) then
-                error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
+                error stop LF//'FATAL: Error reading file "'//file//'". File is empty.'
                 return
             end if
 
@@ -1410,7 +1410,7 @@ submodule (io_fortran_lib) text_io
             close(file_unit)
 
             if ( iostat > 0 ) then
-                error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+                error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
                 return
             end if
 
@@ -1498,7 +1498,7 @@ submodule (io_fortran_lib) text_io
                 end if
             end do positional_transfers
         else
-            call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
+            call text_file%read_file(file, cell_array=cells, row_separator=NL, column_separator=delim)
 
             n_rows = size(cells, dim=1, kind=i64)
             n_cols = size(cells, dim=2, kind=i64)
@@ -1507,11 +1507,11 @@ submodule (io_fortran_lib) text_io
         if ( (n_rows > 1_i64) .and. (n_cols > 1_i64) ) then
             if ( header ) then
                 if ( n_rows /= 2_i64 ) then
-                    error stop LF//'Error reading file "'//file_name//'". Data cannot fit into one-dimensional array.'
+                    error stop LF//'Error reading file "'//file//'". Data cannot fit into one-dimensional array.'
                     return
                 end if
             else
-                error stop LF//'Error reading file "'//file_name//'". Data cannot fit into one-dimensional array.'// &
+                error stop LF//'Error reading file "'//file//'". Data cannot fit into one-dimensional array.'// &
                                ' If there are two rows including a header row, specify "header=.true." .'
                 return
             end if
@@ -1520,7 +1520,7 @@ submodule (io_fortran_lib) text_io
         if ( n_cols == 1_i64 ) then
             if ( header ) then
                 if ( .not. (n_rows > 1_i64) ) then
-                    error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+                    error stop LF//'Error reading file "'//file//'". File is empty after header.'
                     return
                 end if
 
@@ -1534,7 +1534,7 @@ submodule (io_fortran_lib) text_io
 
         if ( header ) then
             if ( .not. (n_rows > 1_i64) ) then
-                error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+                error stop LF//'Error reading file "'//file//'". File is empty after header.'
                 return
             end if
 
@@ -1563,22 +1563,22 @@ submodule (io_fortran_lib) text_io
         exists      = .false.; in_paren = .false.
 
         if ( len(im) == 0 ) then
-            inquire(file=file_name, exist=exists)
+            inquire(file=file, exist=exists)
 
             file_unit = input_unit
 
             if ( exists ) then
-                open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                open( newunit=file_unit, file=file, status="old", form="unformatted", &
                       action="read", access="stream", position="rewind" )
             else
-                error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+                error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
                 return
             end if
 
-            inquire(file=file_name, size=file_length)
+            inquire(file=file, size=file_length)
 
             if ( file_length == 0_i64 ) then
-                error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
+                error stop LF//'FATAL: Error reading file "'//file//'". File is empty.'
                 return
             end if
 
@@ -1587,7 +1587,7 @@ submodule (io_fortran_lib) text_io
             close(file_unit)
 
             if ( iostat > 0 ) then
-                error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+                error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
                 return
             end if
 
@@ -1675,7 +1675,7 @@ submodule (io_fortran_lib) text_io
                 end if
             end do positional_transfers
         else
-            call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
+            call text_file%read_file(file, cell_array=cells, row_separator=NL, column_separator=delim)
 
             n_rows = size(cells, dim=1, kind=i64)
             n_cols = size(cells, dim=2, kind=i64)
@@ -1683,7 +1683,7 @@ submodule (io_fortran_lib) text_io
 
         if ( header ) then
             if ( .not. (n_rows > 1_i64) ) then
-                error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+                error stop LF//'Error reading file "'//file//'". File is empty after header.'
                 return
             end if
 
@@ -1711,22 +1711,22 @@ submodule (io_fortran_lib) text_io
         exists      = .false.; in_paren = .false.
 
         if ( len(im) == 0 ) then
-            inquire(file=file_name, exist=exists)
+            inquire(file=file, exist=exists)
 
             file_unit = input_unit
 
             if ( exists ) then
-                open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                open( newunit=file_unit, file=file, status="old", form="unformatted", &
                       action="read", access="stream", position="rewind" )
             else
-                error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+                error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
                 return
             end if
 
-            inquire(file=file_name, size=file_length)
+            inquire(file=file, size=file_length)
 
             if ( file_length == 0_i64 ) then
-                error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
+                error stop LF//'FATAL: Error reading file "'//file//'". File is empty.'
                 return
             end if
 
@@ -1735,7 +1735,7 @@ submodule (io_fortran_lib) text_io
             close(file_unit)
 
             if ( iostat > 0 ) then
-                error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+                error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
                 return
             end if
 
@@ -1823,7 +1823,7 @@ submodule (io_fortran_lib) text_io
                 end if
             end do positional_transfers
         else
-            call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
+            call text_file%read_file(file, cell_array=cells, row_separator=NL, column_separator=delim)
 
             n_rows = size(cells, dim=1, kind=i64)
             n_cols = size(cells, dim=2, kind=i64)
@@ -1831,7 +1831,7 @@ submodule (io_fortran_lib) text_io
 
         if ( header ) then
             if ( .not. (n_rows > 1_i64) ) then
-                error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+                error stop LF//'Error reading file "'//file//'". File is empty after header.'
                 return
             end if
 
@@ -1859,22 +1859,22 @@ submodule (io_fortran_lib) text_io
         exists      = .false.; in_paren = .false.
 
         if ( len(im) == 0 ) then
-            inquire(file=file_name, exist=exists)
+            inquire(file=file, exist=exists)
 
             file_unit = input_unit
 
             if ( exists ) then
-                open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                open( newunit=file_unit, file=file, status="old", form="unformatted", &
                       action="read", access="stream", position="rewind" )
             else
-                error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+                error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
                 return
             end if
 
-            inquire(file=file_name, size=file_length)
+            inquire(file=file, size=file_length)
 
             if ( file_length == 0_i64 ) then
-                error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
+                error stop LF//'FATAL: Error reading file "'//file//'". File is empty.'
                 return
             end if
 
@@ -1883,7 +1883,7 @@ submodule (io_fortran_lib) text_io
             close(file_unit)
 
             if ( iostat > 0 ) then
-                error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+                error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
                 return
             end if
 
@@ -1971,7 +1971,7 @@ submodule (io_fortran_lib) text_io
                 end if
             end do positional_transfers
         else
-            call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
+            call text_file%read_file(file, cell_array=cells, row_separator=NL, column_separator=delim)
 
             n_rows = size(cells, dim=1, kind=i64)
             n_cols = size(cells, dim=2, kind=i64)
@@ -1979,7 +1979,7 @@ submodule (io_fortran_lib) text_io
 
         if ( header ) then
             if ( .not. (n_rows > 1_i64) ) then
-                error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+                error stop LF//'Error reading file "'//file//'". File is empty after header.'
                 return
             end if
 
@@ -1998,7 +1998,7 @@ submodule (io_fortran_lib) text_io
 
         n_rows=0_i64; n_cols=0_i64
 
-        call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
+        call text_file%read_file(file, cell_array=cells, row_separator=NL, column_separator=delim)
         call text_file%empty()
 
         n_rows = size(cells, dim=1, kind=i64)
@@ -2007,11 +2007,11 @@ submodule (io_fortran_lib) text_io
         if ( (n_rows > 1_i64) .and. (n_cols > 1_i64) ) then
             if ( header ) then
                 if ( n_rows /= 2_i64 ) then
-                    error stop LF//'Error reading file "'//file_name//'". Data cannot fit into one-dimensional array.'
+                    error stop LF//'Error reading file "'//file//'". Data cannot fit into one-dimensional array.'
                     return
                 end if
             else
-                error stop LF//'Error reading file "'//file_name//'". Data cannot fit into one-dimensional array.'// &
+                error stop LF//'Error reading file "'//file//'". Data cannot fit into one-dimensional array.'// &
                                ' If there are two rows including a header row, specify "header=.true." .'
                 return
             end if
@@ -2020,7 +2020,7 @@ submodule (io_fortran_lib) text_io
         if ( n_cols == 1_i64 ) then
             if ( header ) then
                 if ( .not. (n_rows > 1_i64) ) then
-                    error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+                    error stop LF//'Error reading file "'//file//'". File is empty after header.'
                     return
                 end if
 
@@ -2034,7 +2034,7 @@ submodule (io_fortran_lib) text_io
 
         if ( header ) then
             if ( .not. (n_rows > 1_i64) ) then
-                error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+                error stop LF//'Error reading file "'//file//'". File is empty after header.'
                 return
             end if
 
@@ -2052,7 +2052,7 @@ submodule (io_fortran_lib) text_io
 
         n_rows=0_i64; n_cols=0_i64
 
-        call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
+        call text_file%read_file(file, cell_array=cells, row_separator=NL, column_separator=delim)
         call text_file%empty()
 
         n_rows = size(cells, dim=1, kind=i64)
@@ -2061,11 +2061,11 @@ submodule (io_fortran_lib) text_io
         if ( (n_rows > 1_i64) .and. (n_cols > 1_i64) ) then
             if ( header ) then
                 if ( n_rows /= 2_i64 ) then
-                    error stop LF//'Error reading file "'//file_name//'". Data cannot fit into one-dimensional array.'
+                    error stop LF//'Error reading file "'//file//'". Data cannot fit into one-dimensional array.'
                     return
                 end if
             else
-                error stop LF//'Error reading file "'//file_name//'". Data cannot fit into one-dimensional array.'// &
+                error stop LF//'Error reading file "'//file//'". Data cannot fit into one-dimensional array.'// &
                                ' If there are two rows including a header row, specify "header=.true." .'
                 return
             end if
@@ -2074,7 +2074,7 @@ submodule (io_fortran_lib) text_io
         if ( n_cols == 1_i64 ) then
             if ( header ) then
                 if ( .not. (n_rows > 1_i64) ) then
-                    error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+                    error stop LF//'Error reading file "'//file//'". File is empty after header.'
                     return
                 end if
 
@@ -2088,7 +2088,7 @@ submodule (io_fortran_lib) text_io
 
         if ( header ) then
             if ( .not. (n_rows > 1_i64) ) then
-                error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+                error stop LF//'Error reading file "'//file//'". File is empty after header.'
                 return
             end if
 
@@ -2106,7 +2106,7 @@ submodule (io_fortran_lib) text_io
 
         n_rows=0_i64; n_cols=0_i64
 
-        call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
+        call text_file%read_file(file, cell_array=cells, row_separator=NL, column_separator=delim)
         call text_file%empty()
 
         n_rows = size(cells, dim=1, kind=i64)
@@ -2115,11 +2115,11 @@ submodule (io_fortran_lib) text_io
         if ( (n_rows > 1_i64) .and. (n_cols > 1_i64) ) then
             if ( header ) then
                 if ( n_rows /= 2_i64 ) then
-                    error stop LF//'Error reading file "'//file_name//'". Data cannot fit into one-dimensional array.'
+                    error stop LF//'Error reading file "'//file//'". Data cannot fit into one-dimensional array.'
                     return
                 end if
             else
-                error stop LF//'Error reading file "'//file_name//'". Data cannot fit into one-dimensional array.'// &
+                error stop LF//'Error reading file "'//file//'". Data cannot fit into one-dimensional array.'// &
                                ' If there are two rows including a header row, specify "header=.true." .'
                 return
             end if
@@ -2128,7 +2128,7 @@ submodule (io_fortran_lib) text_io
         if ( n_cols == 1_i64 ) then
             if ( header ) then
                 if ( .not. (n_rows > 1_i64) ) then
-                    error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+                    error stop LF//'Error reading file "'//file//'". File is empty after header.'
                     return
                 end if
 
@@ -2142,7 +2142,7 @@ submodule (io_fortran_lib) text_io
 
         if ( header ) then
             if ( .not. (n_rows > 1_i64) ) then
-                error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+                error stop LF//'Error reading file "'//file//'". File is empty after header.'
                 return
             end if
 
@@ -2161,7 +2161,7 @@ submodule (io_fortran_lib) text_io
 
         n_rows=0_i64; n_cols=0_i64
 
-        call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
+        call text_file%read_file(file, cell_array=cells, row_separator=NL, column_separator=delim)
         call text_file%empty()
 
         n_rows = size(cells, dim=1, kind=i64)
@@ -2169,7 +2169,7 @@ submodule (io_fortran_lib) text_io
 
         if ( header ) then
             if ( .not. (n_rows > 1_i64) ) then
-                error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+                error stop LF//'Error reading file "'//file//'". File is empty after header.'
                 return
             end if
 
@@ -2187,7 +2187,7 @@ submodule (io_fortran_lib) text_io
 
         n_rows=0_i64; n_cols=0_i64
 
-        call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
+        call text_file%read_file(file, cell_array=cells, row_separator=NL, column_separator=delim)
         call text_file%empty()
 
         n_rows = size(cells, dim=1, kind=i64)
@@ -2195,7 +2195,7 @@ submodule (io_fortran_lib) text_io
 
         if ( header ) then
             if ( .not. (n_rows > 1_i64) ) then
-                error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+                error stop LF//'Error reading file "'//file//'". File is empty after header.'
                 return
             end if
 
@@ -2213,7 +2213,7 @@ submodule (io_fortran_lib) text_io
 
         n_rows=0_i64; n_cols=0_i64
 
-        call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
+        call text_file%read_file(file, cell_array=cells, row_separator=NL, column_separator=delim)
         call text_file%empty()
 
         n_rows = size(cells, dim=1, kind=i64)
@@ -2221,7 +2221,7 @@ submodule (io_fortran_lib) text_io
 
         if ( header ) then
             if ( .not. (n_rows > 1_i64) ) then
-                error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+                error stop LF//'Error reading file "'//file//'". File is empty after header.'
                 return
             end if
 
@@ -2240,7 +2240,7 @@ submodule (io_fortran_lib) text_io
 
         n_rows=0_i64; n_cols=0_i64
 
-        call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
+        call text_file%read_file(file, cell_array=cells, row_separator=NL, column_separator=delim)
         call text_file%empty()
 
         n_rows = size(cells, dim=1, kind=i64)
@@ -2249,11 +2249,11 @@ submodule (io_fortran_lib) text_io
         if ( (n_rows > 1_i64) .and. (n_cols > 1_i64) ) then
             if ( header ) then
                 if ( n_rows /= 2_i64 ) then
-                    error stop LF//'Error reading file "'//file_name//'". Data cannot fit into one-dimensional array.'
+                    error stop LF//'Error reading file "'//file//'". Data cannot fit into one-dimensional array.'
                     return
                 end if
             else
-                error stop LF//'Error reading file "'//file_name//'". Data cannot fit into one-dimensional array.'// &
+                error stop LF//'Error reading file "'//file//'". Data cannot fit into one-dimensional array.'// &
                                ' If there are two rows including a header row, specify "header=.true." .'
                 return
             end if
@@ -2262,7 +2262,7 @@ submodule (io_fortran_lib) text_io
         if ( n_cols == 1_i64 ) then
             if ( header ) then
                 if ( .not. (n_rows > 1_i64) ) then
-                    error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+                    error stop LF//'Error reading file "'//file//'". File is empty after header.'
                     return
                 end if
 
@@ -2276,7 +2276,7 @@ submodule (io_fortran_lib) text_io
 
         if ( header ) then
             if ( .not. (n_rows > 1_i64) ) then
-                error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+                error stop LF//'Error reading file "'//file//'". File is empty after header.'
                 return
             end if
 
@@ -2294,7 +2294,7 @@ submodule (io_fortran_lib) text_io
 
         n_rows=0_i64; n_cols=0_i64
 
-        call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
+        call text_file%read_file(file, cell_array=cells, row_separator=NL, column_separator=delim)
         call text_file%empty()
 
         n_rows = size(cells, dim=1, kind=i64)
@@ -2303,11 +2303,11 @@ submodule (io_fortran_lib) text_io
         if ( (n_rows > 1_i64) .and. (n_cols > 1_i64) ) then
             if ( header ) then
                 if ( n_rows /= 2_i64 ) then
-                    error stop LF//'Error reading file "'//file_name//'". Data cannot fit into one-dimensional array.'
+                    error stop LF//'Error reading file "'//file//'". Data cannot fit into one-dimensional array.'
                     return
                 end if
             else
-                error stop LF//'Error reading file "'//file_name//'". Data cannot fit into one-dimensional array.'// &
+                error stop LF//'Error reading file "'//file//'". Data cannot fit into one-dimensional array.'// &
                                ' If there are two rows including a header row, specify "header=.true." .'
                 return
             end if
@@ -2316,7 +2316,7 @@ submodule (io_fortran_lib) text_io
         if ( n_cols == 1_i64 ) then
             if ( header ) then
                 if ( .not. (n_rows > 1_i64) ) then
-                    error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+                    error stop LF//'Error reading file "'//file//'". File is empty after header.'
                     return
                 end if
 
@@ -2330,7 +2330,7 @@ submodule (io_fortran_lib) text_io
 
         if ( header ) then
             if ( .not. (n_rows > 1_i64) ) then
-                error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+                error stop LF//'Error reading file "'//file//'". File is empty after header.'
                 return
             end if
 
@@ -2348,7 +2348,7 @@ submodule (io_fortran_lib) text_io
 
         n_rows=0_i64; n_cols=0_i64
 
-        call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
+        call text_file%read_file(file, cell_array=cells, row_separator=NL, column_separator=delim)
         call text_file%empty()
 
         n_rows = size(cells, dim=1, kind=i64)
@@ -2357,11 +2357,11 @@ submodule (io_fortran_lib) text_io
         if ( (n_rows > 1_i64) .and. (n_cols > 1_i64) ) then
             if ( header ) then
                 if ( n_rows /= 2_i64 ) then
-                    error stop LF//'Error reading file "'//file_name//'". Data cannot fit into one-dimensional array.'
+                    error stop LF//'Error reading file "'//file//'". Data cannot fit into one-dimensional array.'
                     return
                 end if
             else
-                error stop LF//'Error reading file "'//file_name//'". Data cannot fit into one-dimensional array.'// &
+                error stop LF//'Error reading file "'//file//'". Data cannot fit into one-dimensional array.'// &
                                ' If there are two rows including a header row, specify "header=.true." .'
                 return
             end if
@@ -2370,7 +2370,7 @@ submodule (io_fortran_lib) text_io
         if ( n_cols == 1_i64 ) then
             if ( header ) then
                 if ( .not. (n_rows > 1_i64) ) then
-                    error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+                    error stop LF//'Error reading file "'//file//'". File is empty after header.'
                     return
                 end if
 
@@ -2384,7 +2384,7 @@ submodule (io_fortran_lib) text_io
 
         if ( header ) then
             if ( .not. (n_rows > 1_i64) ) then
-                error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+                error stop LF//'Error reading file "'//file//'". File is empty after header.'
                 return
             end if
 
@@ -2402,7 +2402,7 @@ submodule (io_fortran_lib) text_io
 
         n_rows=0_i64; n_cols=0_i64
 
-        call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
+        call text_file%read_file(file, cell_array=cells, row_separator=NL, column_separator=delim)
         call text_file%empty()
 
         n_rows = size(cells, dim=1, kind=i64)
@@ -2411,11 +2411,11 @@ submodule (io_fortran_lib) text_io
         if ( (n_rows > 1_i64) .and. (n_cols > 1_i64) ) then
             if ( header ) then
                 if ( n_rows /= 2_i64 ) then
-                    error stop LF//'Error reading file "'//file_name//'". Data cannot fit into one-dimensional array.'
+                    error stop LF//'Error reading file "'//file//'". Data cannot fit into one-dimensional array.'
                     return
                 end if
             else
-                error stop LF//'Error reading file "'//file_name//'". Data cannot fit into one-dimensional array.'// &
+                error stop LF//'Error reading file "'//file//'". Data cannot fit into one-dimensional array.'// &
                                ' If there are two rows including a header row, specify "header=.true." .'
                 return
             end if
@@ -2424,7 +2424,7 @@ submodule (io_fortran_lib) text_io
         if ( n_cols == 1_i64 ) then
             if ( header ) then
                 if ( .not. (n_rows > 1_i64) ) then
-                    error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+                    error stop LF//'Error reading file "'//file//'". File is empty after header.'
                     return
                 end if
 
@@ -2438,7 +2438,7 @@ submodule (io_fortran_lib) text_io
 
         if ( header ) then
             if ( .not. (n_rows > 1_i64) ) then
-                error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+                error stop LF//'Error reading file "'//file//'". File is empty after header.'
                 return
             end if
 
@@ -2457,7 +2457,7 @@ submodule (io_fortran_lib) text_io
 
         n_rows=0_i64; n_cols=0_i64
 
-        call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
+        call text_file%read_file(file, cell_array=cells, row_separator=NL, column_separator=delim)
         call text_file%empty()
 
         n_rows = size(cells, dim=1, kind=i64)
@@ -2465,7 +2465,7 @@ submodule (io_fortran_lib) text_io
 
         if ( header ) then
             if ( .not. (n_rows > 1_i64) ) then
-                error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+                error stop LF//'Error reading file "'//file//'". File is empty after header.'
                 return
             end if
 
@@ -2483,7 +2483,7 @@ submodule (io_fortran_lib) text_io
 
         n_rows=0_i64; n_cols=0_i64
 
-        call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
+        call text_file%read_file(file, cell_array=cells, row_separator=NL, column_separator=delim)
         call text_file%empty()
 
         n_rows = size(cells, dim=1, kind=i64)
@@ -2491,7 +2491,7 @@ submodule (io_fortran_lib) text_io
 
         if ( header ) then
             if ( .not. (n_rows > 1_i64) ) then
-                error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+                error stop LF//'Error reading file "'//file//'". File is empty after header.'
                 return
             end if
 
@@ -2509,7 +2509,7 @@ submodule (io_fortran_lib) text_io
 
         n_rows=0_i64; n_cols=0_i64
 
-        call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
+        call text_file%read_file(file, cell_array=cells, row_separator=NL, column_separator=delim)
         call text_file%empty()
 
         n_rows = size(cells, dim=1, kind=i64)
@@ -2517,7 +2517,7 @@ submodule (io_fortran_lib) text_io
 
         if ( header ) then
             if ( .not. (n_rows > 1_i64) ) then
-                error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+                error stop LF//'Error reading file "'//file//'". File is empty after header.'
                 return
             end if
 
@@ -2535,7 +2535,7 @@ submodule (io_fortran_lib) text_io
 
         n_rows=0_i64; n_cols=0_i64
 
-        call text_file%read_file(file_name, cell_array=cells, row_separator=NL, column_separator=delim)
+        call text_file%read_file(file, cell_array=cells, row_separator=NL, column_separator=delim)
         call text_file%empty()
 
         n_rows = size(cells, dim=1, kind=i64)
@@ -2543,7 +2543,7 @@ submodule (io_fortran_lib) text_io
 
         if ( header ) then
             if ( .not. (n_rows > 1_i64) ) then
-                error stop LF//'Error reading file "'//file_name//'". File is empty after header.'
+                error stop LF//'Error reading file "'//file//'". File is empty after header.'
                 return
             end if
 

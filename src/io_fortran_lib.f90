@@ -208,7 +208,7 @@ module io_fortran_lib
             type(String),  intent(in)    :: substring
         end subroutine push_string
 
-        impure recursive module subroutine read_file(self, file_name, cell_array, row_separator, column_separator)
+        impure recursive module subroutine read_file(self, file, cell_array, row_separator, column_separator)
             !-----------------------------------------------------------------------------------------------------------
             !! Reads raw text file contents into `self` and optionally populates a cell array using the designated
             !! `row_separator` and `column_separator` whose default values are `LF` and `COMMA` respectively.
@@ -216,7 +216,7 @@ module io_fortran_lib
             !! For a user reference, see [read_file](../page/Ref/String-methods.html#read_file).
             !-----------------------------------------------------------------------------------------------------------
             class(String),    intent(inout)                      :: self
-            character(len=*), intent(in)                         :: file_name
+            character(len=*), intent(in)                         :: file
             type(String),     intent(out), allocatable, optional :: cell_array(:,:)
             character(len=*), intent(in),               optional :: row_separator, column_separator
         end subroutine read_file
@@ -317,7 +317,7 @@ module io_fortran_lib
             class(String), intent(inout) :: self
         end subroutine trim_inplace
 
-        impure recursive module subroutine write_file(self, cell_array,file_name,row_separator,column_separator,append)
+        impure recursive module subroutine write_file(self, cell_array,file,row_separator,column_separator,append)
             !-----------------------------------------------------------------------------------------------------------
             !! Writes the content of a cell array to a text file. The cell array's entire contents are populated into
             !! `self` and then streamed to an external text file using the designated `row_separator` and
@@ -327,7 +327,7 @@ module io_fortran_lib
             !-----------------------------------------------------------------------------------------------------------
             class(String),    intent(inout)        :: self
             type(String),     intent(in)           :: cell_array(:,:)
-            character(len=*), intent(in)           :: file_name
+            character(len=*), intent(in)           :: file
             character(len=*), intent(in), optional :: row_separator, column_separator
             logical,          intent(in), optional :: append
         end subroutine write_file
@@ -960,15 +960,23 @@ module io_fortran_lib
         end function split_string
     end interface
 
+    interface                                                                                        ! Submodule file_io
+        pure recursive module function ext_of(file) result(ext)
+            ! Function for parsing a file name for an extension
+            character(len=*), intent(in)  :: file
+            character(len=:), allocatable :: ext
+        end function ext_of
+    end interface
+
     interface to_file                                                                                ! Submodule file_io
         !---------------------------------------------------------------------------------------------------------------
         !! Subroutine for writing an array of uniform numeric data type to an external file.
         !!
         !! For a user reference, see [to_file](../page/Ref/to_file.html).
         !---------------------------------------------------------------------------------------------------------------
-        impure recursive module subroutine to_file_1dc128(x, file_name, header, dim, locale, delim, fmt, decimals, im)
+        impure recursive module subroutine to_file_1dc128(x, file, header, dim, locale, delim, fmt, decimals, im)
             complex(r128),    intent(in)           :: x(:)
-            character(len=*), intent(in)           :: file_name
+            character(len=*), intent(in)           :: file
             character(len=*), intent(in), optional :: header(:)
             integer,          intent(in), optional :: dim
             character(len=*), intent(in), optional :: locale
@@ -977,9 +985,9 @@ module io_fortran_lib
             integer,          intent(in), optional :: decimals
             character(len=*), intent(in), optional :: im
         end subroutine to_file_1dc128
-        impure recursive module subroutine to_file_1dc64(x, file_name, header, dim, locale, delim, fmt, decimals, im)
+        impure recursive module subroutine to_file_1dc64(x, file, header, dim, locale, delim, fmt, decimals, im)
             complex(r64),     intent(in)           :: x(:)
-            character(len=*), intent(in)           :: file_name
+            character(len=*), intent(in)           :: file
             character(len=*), intent(in), optional :: header(:)
             integer,          intent(in), optional :: dim
             character(len=*), intent(in), optional :: locale
@@ -988,9 +996,9 @@ module io_fortran_lib
             integer,          intent(in), optional :: decimals
             character(len=*), intent(in), optional :: im
         end subroutine to_file_1dc64
-        impure recursive module subroutine to_file_1dc32(x, file_name, header, dim, locale, delim, fmt, decimals, im)
+        impure recursive module subroutine to_file_1dc32(x, file, header, dim, locale, delim, fmt, decimals, im)
             complex(r32),     intent(in)           :: x(:)
-            character(len=*), intent(in)           :: file_name
+            character(len=*), intent(in)           :: file
             character(len=*), intent(in), optional :: header(:)
             integer,          intent(in), optional :: dim
             character(len=*), intent(in), optional :: locale
@@ -1000,9 +1008,9 @@ module io_fortran_lib
             character(len=*), intent(in), optional :: im
         end subroutine to_file_1dc32
 
-        impure recursive module subroutine to_file_2dc128(x, file_name, header, locale, delim, fmt, decimals, im)
+        impure recursive module subroutine to_file_2dc128(x, file, header, locale, delim, fmt, decimals, im)
             complex(r128),    intent(in)           :: x(:,:)
-            character(len=*), intent(in)           :: file_name
+            character(len=*), intent(in)           :: file
             character(len=*), intent(in), optional :: header(:)
             character(len=*), intent(in), optional :: locale
             character(len=*), intent(in), optional :: delim
@@ -1010,9 +1018,9 @@ module io_fortran_lib
             integer,          intent(in), optional :: decimals
             character(len=*), intent(in), optional :: im
         end subroutine to_file_2dc128
-        impure recursive module subroutine to_file_2dc64(x, file_name, header, locale, delim, fmt, decimals, im)
+        impure recursive module subroutine to_file_2dc64(x, file, header, locale, delim, fmt, decimals, im)
             complex(r64),     intent(in)           :: x(:,:)
-            character(len=*), intent(in)           :: file_name
+            character(len=*), intent(in)           :: file
             character(len=*), intent(in), optional :: header(:)
             character(len=*), intent(in), optional :: locale
             character(len=*), intent(in), optional :: delim
@@ -1020,9 +1028,9 @@ module io_fortran_lib
             integer,          intent(in), optional :: decimals
             character(len=*), intent(in), optional :: im
         end subroutine to_file_2dc64
-        impure recursive module subroutine to_file_2dc32(x, file_name, header, locale, delim, fmt, decimals, im)
+        impure recursive module subroutine to_file_2dc32(x, file, header, locale, delim, fmt, decimals, im)
             complex(r32),     intent(in)           :: x(:,:)
-            character(len=*), intent(in)           :: file_name
+            character(len=*), intent(in)           :: file
             character(len=*), intent(in), optional :: header(:)
             character(len=*), intent(in), optional :: locale
             character(len=*), intent(in), optional :: delim
@@ -1031,178 +1039,178 @@ module io_fortran_lib
             character(len=*), intent(in), optional :: im
         end subroutine to_file_2dc32
 
-        impure recursive module subroutine to_file_3dc128(x, file_name)
+        impure recursive module subroutine to_file_3dc128(x, file)
             complex(r128),    intent(in) :: x(:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_3dc128
-        impure recursive module subroutine to_file_3dc64(x, file_name)
+        impure recursive module subroutine to_file_3dc64(x, file)
             complex(r64),     intent(in) :: x(:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_3dc64
-        impure recursive module subroutine to_file_3dc32(x, file_name)
+        impure recursive module subroutine to_file_3dc32(x, file)
             complex(r32),     intent(in) :: x(:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_3dc32
 
-        impure recursive module subroutine to_file_4dc128(x, file_name)
+        impure recursive module subroutine to_file_4dc128(x, file)
             complex(r128),    intent(in) :: x(:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_4dc128
-        impure recursive module subroutine to_file_4dc64(x, file_name)
+        impure recursive module subroutine to_file_4dc64(x, file)
             complex(r64),     intent(in) :: x(:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_4dc64
-        impure recursive module subroutine to_file_4dc32(x, file_name)
+        impure recursive module subroutine to_file_4dc32(x, file)
             complex(r32),     intent(in) :: x(:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_4dc32
 
-        impure recursive module subroutine to_file_5dc128(x, file_name)
+        impure recursive module subroutine to_file_5dc128(x, file)
             complex(r128),    intent(in) :: x(:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_5dc128
-        impure recursive module subroutine to_file_5dc64(x, file_name)
+        impure recursive module subroutine to_file_5dc64(x, file)
             complex(r64),     intent(in) :: x(:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_5dc64
-        impure recursive module subroutine to_file_5dc32(x, file_name)
+        impure recursive module subroutine to_file_5dc32(x, file)
             complex(r32),     intent(in) :: x(:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_5dc32
 
-        impure recursive module subroutine to_file_6dc128(x, file_name)
+        impure recursive module subroutine to_file_6dc128(x, file)
             complex(r128),    intent(in) :: x(:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_6dc128
-        impure recursive module subroutine to_file_6dc64(x, file_name)
+        impure recursive module subroutine to_file_6dc64(x, file)
             complex(r64),     intent(in) :: x(:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_6dc64
-        impure recursive module subroutine to_file_6dc32(x, file_name)
+        impure recursive module subroutine to_file_6dc32(x, file)
             complex(r32),     intent(in) :: x(:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_6dc32
 
-        impure recursive module subroutine to_file_7dc128(x, file_name)
+        impure recursive module subroutine to_file_7dc128(x, file)
             complex(r128),    intent(in) :: x(:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_7dc128
-        impure recursive module subroutine to_file_7dc64(x, file_name)
+        impure recursive module subroutine to_file_7dc64(x, file)
             complex(r64),     intent(in) :: x(:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_7dc64
-        impure recursive module subroutine to_file_7dc32(x, file_name)
+        impure recursive module subroutine to_file_7dc32(x, file)
             complex(r32),     intent(in) :: x(:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_7dc32
 
-        impure recursive module subroutine to_file_8dc128(x, file_name)
+        impure recursive module subroutine to_file_8dc128(x, file)
             complex(r128),    intent(in) :: x(:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_8dc128
-        impure recursive module subroutine to_file_8dc64(x, file_name)
+        impure recursive module subroutine to_file_8dc64(x, file)
             complex(r64),     intent(in) :: x(:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_8dc64
-        impure recursive module subroutine to_file_8dc32(x, file_name)
+        impure recursive module subroutine to_file_8dc32(x, file)
             complex(r32),     intent(in) :: x(:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_8dc32
 
-        impure recursive module subroutine to_file_9dc128(x, file_name)
+        impure recursive module subroutine to_file_9dc128(x, file)
             complex(r128),    intent(in) :: x(:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_9dc128
-        impure recursive module subroutine to_file_9dc64(x, file_name)
+        impure recursive module subroutine to_file_9dc64(x, file)
             complex(r64),     intent(in) :: x(:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_9dc64
-        impure recursive module subroutine to_file_9dc32(x, file_name)
+        impure recursive module subroutine to_file_9dc32(x, file)
             complex(r32),     intent(in) :: x(:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_9dc32
 
-        impure recursive module subroutine to_file_10dc128(x, file_name)
+        impure recursive module subroutine to_file_10dc128(x, file)
             complex(r128),    intent(in) :: x(:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_10dc128
-        impure recursive module subroutine to_file_10dc64(x, file_name)
+        impure recursive module subroutine to_file_10dc64(x, file)
             complex(r64),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_10dc64
-        impure recursive module subroutine to_file_10dc32(x, file_name)
+        impure recursive module subroutine to_file_10dc32(x, file)
             complex(r32),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_10dc32
 
-        impure recursive module subroutine to_file_11dc128(x, file_name)
+        impure recursive module subroutine to_file_11dc128(x, file)
             complex(r128),    intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_11dc128
-        impure recursive module subroutine to_file_11dc64(x, file_name)
+        impure recursive module subroutine to_file_11dc64(x, file)
             complex(r64),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_11dc64
-        impure recursive module subroutine to_file_11dc32(x, file_name)
+        impure recursive module subroutine to_file_11dc32(x, file)
             complex(r32),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_11dc32
 
-        impure recursive module subroutine to_file_12dc128(x, file_name)
+        impure recursive module subroutine to_file_12dc128(x, file)
             complex(r128),    intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_12dc128
-        impure recursive module subroutine to_file_12dc64(x, file_name)
+        impure recursive module subroutine to_file_12dc64(x, file)
             complex(r64),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_12dc64
-        impure recursive module subroutine to_file_12dc32(x, file_name)
+        impure recursive module subroutine to_file_12dc32(x, file)
             complex(r32),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_12dc32
 
-        impure recursive module subroutine to_file_13dc128(x, file_name)
+        impure recursive module subroutine to_file_13dc128(x, file)
             complex(r128),    intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_13dc128
-        impure recursive module subroutine to_file_13dc64(x, file_name)
+        impure recursive module subroutine to_file_13dc64(x, file)
             complex(r64),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_13dc64
-        impure recursive module subroutine to_file_13dc32(x, file_name)
+        impure recursive module subroutine to_file_13dc32(x, file)
             complex(r32),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_13dc32
 
-        impure recursive module subroutine to_file_14dc128(x, file_name)
+        impure recursive module subroutine to_file_14dc128(x, file)
             complex(r128),    intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_14dc128
-        impure recursive module subroutine to_file_14dc64(x, file_name)
+        impure recursive module subroutine to_file_14dc64(x, file)
             complex(r64),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_14dc64
-        impure recursive module subroutine to_file_14dc32(x, file_name)
+        impure recursive module subroutine to_file_14dc32(x, file)
             complex(r32),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_14dc32
 
-        impure recursive module subroutine to_file_15dc128(x, file_name)
+        impure recursive module subroutine to_file_15dc128(x, file)
             complex(r128),    intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_15dc128
-        impure recursive module subroutine to_file_15dc64(x, file_name)
+        impure recursive module subroutine to_file_15dc64(x, file)
             complex(r64),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_15dc64
-        impure recursive module subroutine to_file_15dc32(x, file_name)
+        impure recursive module subroutine to_file_15dc32(x, file)
             complex(r32),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_15dc32
 
-        impure recursive module subroutine to_file_1dr128(x, file_name, header, dim, locale, delim, fmt, decimals)
+        impure recursive module subroutine to_file_1dr128(x, file, header, dim, locale, delim, fmt, decimals)
             real(r128),       intent(in)           :: x(:)
-            character(len=*), intent(in)           :: file_name
+            character(len=*), intent(in)           :: file
             character(len=*), intent(in), optional :: header(:)
             integer,          intent(in), optional :: dim
             character(len=*), intent(in), optional :: locale
@@ -1210,9 +1218,9 @@ module io_fortran_lib
             character(len=*), intent(in), optional :: fmt
             integer,          intent(in), optional :: decimals
         end subroutine to_file_1dr128
-        impure recursive module subroutine to_file_1dr64(x, file_name, header, dim, locale, delim, fmt, decimals)
+        impure recursive module subroutine to_file_1dr64(x, file, header, dim, locale, delim, fmt, decimals)
             real(r64),        intent(in)           :: x(:)
-            character(len=*), intent(in)           :: file_name
+            character(len=*), intent(in)           :: file
             character(len=*), intent(in), optional :: header(:)
             integer,          intent(in), optional :: dim
             character(len=*), intent(in), optional :: locale
@@ -1220,9 +1228,9 @@ module io_fortran_lib
             character(len=*), intent(in), optional :: fmt
             integer,          intent(in), optional :: decimals
         end subroutine to_file_1dr64
-        impure recursive module subroutine to_file_1dr32(x, file_name, header, dim, locale, delim, fmt, decimals)
+        impure recursive module subroutine to_file_1dr32(x, file, header, dim, locale, delim, fmt, decimals)
             real(r32),        intent(in)           :: x(:)
-            character(len=*), intent(in)           :: file_name
+            character(len=*), intent(in)           :: file
             character(len=*), intent(in), optional :: header(:)
             integer,          intent(in), optional :: dim
             character(len=*), intent(in), optional :: locale
@@ -1231,27 +1239,27 @@ module io_fortran_lib
             integer,          intent(in), optional :: decimals
         end subroutine to_file_1dr32
 
-        impure recursive module subroutine to_file_2dr128(x, file_name, header, locale, delim, fmt, decimals)
+        impure recursive module subroutine to_file_2dr128(x, file, header, locale, delim, fmt, decimals)
             real(r128),       intent(in)           :: x(:,:)
-            character(len=*), intent(in)           :: file_name
+            character(len=*), intent(in)           :: file
             character(len=*), intent(in), optional :: header(:)
             character(len=*), intent(in), optional :: locale
             character(len=*), intent(in), optional :: delim
             character(len=*), intent(in), optional :: fmt
             integer,          intent(in), optional :: decimals
         end subroutine to_file_2dr128
-        impure recursive module subroutine to_file_2dr64(x, file_name, header, locale, delim, fmt, decimals)
+        impure recursive module subroutine to_file_2dr64(x, file, header, locale, delim, fmt, decimals)
             real(r64),        intent(in)           :: x(:,:)
-            character(len=*), intent(in)           :: file_name
+            character(len=*), intent(in)           :: file
             character(len=*), intent(in), optional :: header(:)
             character(len=*), intent(in), optional :: locale
             character(len=*), intent(in), optional :: delim
             character(len=*), intent(in), optional :: fmt
             integer,          intent(in), optional :: decimals
         end subroutine to_file_2dr64
-        impure recursive module subroutine to_file_2dr32(x, file_name, header, locale, delim, fmt, decimals)
+        impure recursive module subroutine to_file_2dr32(x, file, header, locale, delim, fmt, decimals)
             real(r32),        intent(in)           :: x(:,:)
-            character(len=*), intent(in)           :: file_name
+            character(len=*), intent(in)           :: file
             character(len=*), intent(in), optional :: header(:)
             character(len=*), intent(in), optional :: locale
             character(len=*), intent(in), optional :: delim
@@ -1259,456 +1267,456 @@ module io_fortran_lib
             integer,          intent(in), optional :: decimals
         end subroutine to_file_2dr32
 
-        impure recursive module subroutine to_file_3dr128(x, file_name)
+        impure recursive module subroutine to_file_3dr128(x, file)
             real(r128),       intent(in) :: x(:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_3dr128
-        impure recursive module subroutine to_file_3dr64(x, file_name)
+        impure recursive module subroutine to_file_3dr64(x, file)
             real(r64),        intent(in) :: x(:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_3dr64
-        impure recursive module subroutine to_file_3dr32(x, file_name)
+        impure recursive module subroutine to_file_3dr32(x, file)
             real(r32),        intent(in) :: x(:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_3dr32
 
-        impure recursive module subroutine to_file_4dr128(x, file_name)
+        impure recursive module subroutine to_file_4dr128(x, file)
             real(r128),       intent(in) :: x(:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_4dr128
-        impure recursive module subroutine to_file_4dr64(x, file_name)
+        impure recursive module subroutine to_file_4dr64(x, file)
             real(r64),        intent(in) :: x(:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_4dr64
-        impure recursive module subroutine to_file_4dr32(x, file_name)
+        impure recursive module subroutine to_file_4dr32(x, file)
             real(r32),        intent(in) :: x(:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_4dr32
 
-        impure recursive module subroutine to_file_5dr128(x, file_name)
+        impure recursive module subroutine to_file_5dr128(x, file)
             real(r128),       intent(in) :: x(:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_5dr128
-        impure recursive module subroutine to_file_5dr64(x, file_name)
+        impure recursive module subroutine to_file_5dr64(x, file)
             real(r64),        intent(in) :: x(:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_5dr64
-        impure recursive module subroutine to_file_5dr32(x, file_name)
+        impure recursive module subroutine to_file_5dr32(x, file)
             real(r32),        intent(in) :: x(:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_5dr32
 
-        impure recursive module subroutine to_file_6dr128(x, file_name)
+        impure recursive module subroutine to_file_6dr128(x, file)
             real(r128),       intent(in) :: x(:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_6dr128
-        impure recursive module subroutine to_file_6dr64(x, file_name)
+        impure recursive module subroutine to_file_6dr64(x, file)
             real(r64),        intent(in) :: x(:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_6dr64
-        impure recursive module subroutine to_file_6dr32(x, file_name)
+        impure recursive module subroutine to_file_6dr32(x, file)
             real(r32),        intent(in) :: x(:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_6dr32
 
-        impure recursive module subroutine to_file_7dr128(x, file_name)
+        impure recursive module subroutine to_file_7dr128(x, file)
             real(r128),       intent(in) :: x(:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_7dr128
-        impure recursive module subroutine to_file_7dr64(x, file_name)
+        impure recursive module subroutine to_file_7dr64(x, file)
             real(r64),        intent(in) :: x(:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_7dr64
-        impure recursive module subroutine to_file_7dr32(x, file_name)
+        impure recursive module subroutine to_file_7dr32(x, file)
             real(r32),        intent(in) :: x(:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_7dr32
 
-        impure recursive module subroutine to_file_8dr128(x, file_name)
+        impure recursive module subroutine to_file_8dr128(x, file)
             real(r128),       intent(in) :: x(:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_8dr128
-        impure recursive module subroutine to_file_8dr64(x, file_name)
+        impure recursive module subroutine to_file_8dr64(x, file)
             real(r64),        intent(in) :: x(:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_8dr64
-        impure recursive module subroutine to_file_8dr32(x, file_name)
+        impure recursive module subroutine to_file_8dr32(x, file)
             real(r32),        intent(in) :: x(:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_8dr32
 
-        impure recursive module subroutine to_file_9dr128(x, file_name)
+        impure recursive module subroutine to_file_9dr128(x, file)
             real(r128),       intent(in) :: x(:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_9dr128
-        impure recursive module subroutine to_file_9dr64(x, file_name)
+        impure recursive module subroutine to_file_9dr64(x, file)
             real(r64),        intent(in) :: x(:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_9dr64
-        impure recursive module subroutine to_file_9dr32(x, file_name)
+        impure recursive module subroutine to_file_9dr32(x, file)
             real(r32),        intent(in) :: x(:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_9dr32
 
-        impure recursive module subroutine to_file_10dr128(x, file_name)
+        impure recursive module subroutine to_file_10dr128(x, file)
             real(r128), intent(in)       :: x(:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_10dr128
-        impure recursive module subroutine to_file_10dr64(x, file_name)
+        impure recursive module subroutine to_file_10dr64(x, file)
             real(r64), intent(in)        :: x(:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_10dr64
-        impure recursive module subroutine to_file_10dr32(x, file_name)
+        impure recursive module subroutine to_file_10dr32(x, file)
             real(r32), intent(in)        :: x(:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_10dr32
 
-        impure recursive module subroutine to_file_11dr128(x, file_name)
+        impure recursive module subroutine to_file_11dr128(x, file)
             real(r128), intent(in)       :: x(:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_11dr128
-        impure recursive module subroutine to_file_11dr64(x, file_name)
+        impure recursive module subroutine to_file_11dr64(x, file)
             real(r64), intent(in)        :: x(:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_11dr64
-        impure recursive module subroutine to_file_11dr32(x, file_name)
+        impure recursive module subroutine to_file_11dr32(x, file)
             real(r32), intent(in)        :: x(:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_11dr32
 
-        impure recursive module subroutine to_file_12dr128(x, file_name)
+        impure recursive module subroutine to_file_12dr128(x, file)
             real(r128), intent(in)       :: x(:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_12dr128
-        impure recursive module subroutine to_file_12dr64(x, file_name)
+        impure recursive module subroutine to_file_12dr64(x, file)
             real(r64), intent(in)        :: x(:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_12dr64
-        impure recursive module subroutine to_file_12dr32(x, file_name)
+        impure recursive module subroutine to_file_12dr32(x, file)
             real(r32), intent(in)        :: x(:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_12dr32
 
-        impure recursive module subroutine to_file_13dr128(x, file_name)
+        impure recursive module subroutine to_file_13dr128(x, file)
             real(r128), intent(in)       :: x(:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_13dr128
-        impure recursive module subroutine to_file_13dr64(x, file_name)
+        impure recursive module subroutine to_file_13dr64(x, file)
             real(r64), intent(in)        :: x(:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_13dr64
-        impure recursive module subroutine to_file_13dr32(x, file_name)
+        impure recursive module subroutine to_file_13dr32(x, file)
             real(r32), intent(in)        :: x(:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_13dr32
 
-        impure recursive module subroutine to_file_14dr128(x, file_name)
+        impure recursive module subroutine to_file_14dr128(x, file)
             real(r128), intent(in)       :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_14dr128
-        impure recursive module subroutine to_file_14dr64(x, file_name)
+        impure recursive module subroutine to_file_14dr64(x, file)
             real(r64), intent(in)        :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_14dr64
-        impure recursive module subroutine to_file_14dr32(x, file_name)
+        impure recursive module subroutine to_file_14dr32(x, file)
             real(r32), intent(in)        :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_14dr32
 
-        impure recursive module subroutine to_file_15dr128(x, file_name)
+        impure recursive module subroutine to_file_15dr128(x, file)
             real(r128), intent(in)       :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_15dr128
-        impure recursive module subroutine to_file_15dr64(x, file_name)
+        impure recursive module subroutine to_file_15dr64(x, file)
             real(r64), intent(in)        :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_15dr64
-        impure recursive module subroutine to_file_15dr32(x, file_name)
+        impure recursive module subroutine to_file_15dr32(x, file)
             real(r32), intent(in)        :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_15dr32
 
-        impure recursive module subroutine to_file_1di64(x, file_name, header, dim, delim, fmt)
+        impure recursive module subroutine to_file_1di64(x, file, header, dim, delim, fmt)
             integer(i64),     intent(in)           :: x(:)
-            character(len=*), intent(in)           :: file_name
+            character(len=*), intent(in)           :: file
             character(len=*), intent(in), optional :: header(:)
             integer,          intent(in), optional :: dim
             character(len=*), intent(in), optional :: delim
             character(len=*), intent(in), optional :: fmt
         end subroutine to_file_1di64
-        impure recursive module subroutine to_file_1di32(x, file_name, header, dim, delim, fmt)
+        impure recursive module subroutine to_file_1di32(x, file, header, dim, delim, fmt)
             integer(i32),     intent(in)           :: x(:)
-            character(len=*), intent(in)           :: file_name
+            character(len=*), intent(in)           :: file
             character(len=*), intent(in), optional :: header(:)
             integer,          intent(in), optional :: dim
             character(len=*), intent(in), optional :: delim
             character(len=*), intent(in), optional :: fmt
         end subroutine to_file_1di32
-        impure recursive module subroutine to_file_1di16(x, file_name, header, dim, delim, fmt)
+        impure recursive module subroutine to_file_1di16(x, file, header, dim, delim, fmt)
             integer(i16),     intent(in)           :: x(:)
-            character(len=*), intent(in)           :: file_name
+            character(len=*), intent(in)           :: file
             character(len=*), intent(in), optional :: header(:)
             integer,          intent(in), optional :: dim
             character(len=*), intent(in), optional :: delim
             character(len=*), intent(in), optional :: fmt
         end subroutine to_file_1di16
-        impure recursive module subroutine to_file_1di8(x, file_name, header, dim, delim, fmt)
+        impure recursive module subroutine to_file_1di8(x, file, header, dim, delim, fmt)
             integer(i8),      intent(in)           :: x(:)
-            character(len=*), intent(in)           :: file_name
+            character(len=*), intent(in)           :: file
             character(len=*), intent(in), optional :: header(:)
             integer,          intent(in), optional :: dim
             character(len=*), intent(in), optional :: delim
             character(len=*), intent(in), optional :: fmt
         end subroutine to_file_1di8
 
-        impure recursive module subroutine to_file_2di64(x, file_name, header, delim, fmt)
+        impure recursive module subroutine to_file_2di64(x, file, header, delim, fmt)
             integer(i64),     intent(in)           :: x(:,:)
-            character(len=*), intent(in)           :: file_name
+            character(len=*), intent(in)           :: file
             character(len=*), intent(in), optional :: header(:)
             character(len=*), intent(in), optional :: delim
             character(len=*), intent(in), optional :: fmt
         end subroutine to_file_2di64
-        impure recursive module subroutine to_file_2di32(x, file_name, header, delim, fmt)
+        impure recursive module subroutine to_file_2di32(x, file, header, delim, fmt)
             integer(i32),     intent(in)           :: x(:,:)
-            character(len=*), intent(in)           :: file_name
+            character(len=*), intent(in)           :: file
             character(len=*), intent(in), optional :: header(:)
             character(len=*), intent(in), optional :: delim
             character(len=*), intent(in), optional :: fmt
         end subroutine to_file_2di32
-        impure recursive module subroutine to_file_2di16(x, file_name, header, delim, fmt)
+        impure recursive module subroutine to_file_2di16(x, file, header, delim, fmt)
             integer(i16),     intent(in)           :: x(:,:)
-            character(len=*), intent(in)           :: file_name
+            character(len=*), intent(in)           :: file
             character(len=*), intent(in), optional :: header(:)
             character(len=*), intent(in), optional :: delim
             character(len=*), intent(in), optional :: fmt
         end subroutine to_file_2di16
-        impure recursive module subroutine to_file_2di8(x, file_name, header, delim, fmt)
+        impure recursive module subroutine to_file_2di8(x, file, header, delim, fmt)
             integer(i8),      intent(in)           :: x(:,:)
-            character(len=*), intent(in)           :: file_name
+            character(len=*), intent(in)           :: file
             character(len=*), intent(in), optional :: header(:)
             character(len=*), intent(in), optional :: delim
             character(len=*), intent(in), optional :: fmt
         end subroutine to_file_2di8
 
-        impure recursive module subroutine to_file_3di64(x, file_name)
+        impure recursive module subroutine to_file_3di64(x, file)
             integer(i64),     intent(in) :: x(:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_3di64
-        impure recursive module subroutine to_file_3di32(x, file_name)
+        impure recursive module subroutine to_file_3di32(x, file)
             integer(i32),     intent(in) :: x(:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_3di32
-        impure recursive module subroutine to_file_3di16(x, file_name)
+        impure recursive module subroutine to_file_3di16(x, file)
             integer(i16),     intent(in) :: x(:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_3di16
-        impure recursive module subroutine to_file_3di8(x, file_name)
+        impure recursive module subroutine to_file_3di8(x, file)
             integer(i8),      intent(in) :: x(:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_3di8
 
-        impure recursive module subroutine to_file_4di64(x, file_name)
+        impure recursive module subroutine to_file_4di64(x, file)
             integer(i64),     intent(in) :: x(:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_4di64
-        impure recursive module subroutine to_file_4di32(x, file_name)
+        impure recursive module subroutine to_file_4di32(x, file)
             integer(i32),     intent(in) :: x(:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_4di32
-        impure recursive module subroutine to_file_4di16(x, file_name)
+        impure recursive module subroutine to_file_4di16(x, file)
             integer(i16),     intent(in) :: x(:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_4di16
-        impure recursive module subroutine to_file_4di8(x, file_name)
+        impure recursive module subroutine to_file_4di8(x, file)
             integer(i8),      intent(in) :: x(:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_4di8
 
-        impure recursive module subroutine to_file_5di64(x, file_name)
+        impure recursive module subroutine to_file_5di64(x, file)
             integer(i64),     intent(in) :: x(:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_5di64
-        impure recursive module subroutine to_file_5di32(x, file_name)
+        impure recursive module subroutine to_file_5di32(x, file)
             integer(i32),     intent(in) :: x(:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_5di32
-        impure recursive module subroutine to_file_5di16(x, file_name)
+        impure recursive module subroutine to_file_5di16(x, file)
             integer(i16),     intent(in) :: x(:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_5di16
-        impure recursive module subroutine to_file_5di8(x, file_name)
+        impure recursive module subroutine to_file_5di8(x, file)
             integer(i8),      intent(in) :: x(:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_5di8
 
-        impure recursive module subroutine to_file_6di64(x, file_name)
+        impure recursive module subroutine to_file_6di64(x, file)
             integer(i64),     intent(in) :: x(:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_6di64
-        impure recursive module subroutine to_file_6di32(x, file_name)
+        impure recursive module subroutine to_file_6di32(x, file)
             integer(i32),     intent(in) :: x(:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_6di32
-        impure recursive module subroutine to_file_6di16(x, file_name)
+        impure recursive module subroutine to_file_6di16(x, file)
             integer(i16),     intent(in) :: x(:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_6di16
-        impure recursive module subroutine to_file_6di8(x, file_name)
+        impure recursive module subroutine to_file_6di8(x, file)
             integer(i8),      intent(in) :: x(:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_6di8
 
-        impure recursive module subroutine to_file_7di64(x, file_name)
+        impure recursive module subroutine to_file_7di64(x, file)
             integer(i64),     intent(in) :: x(:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_7di64
-        impure recursive module subroutine to_file_7di32(x, file_name)
+        impure recursive module subroutine to_file_7di32(x, file)
             integer(i32),     intent(in) :: x(:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_7di32
-        impure recursive module subroutine to_file_7di16(x, file_name)
+        impure recursive module subroutine to_file_7di16(x, file)
             integer(i16),     intent(in) :: x(:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_7di16
-        impure recursive module subroutine to_file_7di8(x, file_name)
+        impure recursive module subroutine to_file_7di8(x, file)
             integer(i8),      intent(in) :: x(:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_7di8
 
-        impure recursive module subroutine to_file_8di64(x, file_name)
+        impure recursive module subroutine to_file_8di64(x, file)
             integer(i64),     intent(in) :: x(:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_8di64
-        impure recursive module subroutine to_file_8di32(x, file_name)
+        impure recursive module subroutine to_file_8di32(x, file)
             integer(i32),     intent(in) :: x(:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_8di32
-        impure recursive module subroutine to_file_8di16(x, file_name)
+        impure recursive module subroutine to_file_8di16(x, file)
             integer(i16),     intent(in) :: x(:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_8di16
-        impure recursive module subroutine to_file_8di8(x, file_name)
+        impure recursive module subroutine to_file_8di8(x, file)
             integer(i8),      intent(in) :: x(:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_8di8
 
-        impure recursive module subroutine to_file_9di64(x, file_name)
+        impure recursive module subroutine to_file_9di64(x, file)
             integer(i64),     intent(in) :: x(:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_9di64
-        impure recursive module subroutine to_file_9di32(x, file_name)
+        impure recursive module subroutine to_file_9di32(x, file)
             integer(i32),     intent(in) :: x(:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_9di32
-        impure recursive module subroutine to_file_9di16(x, file_name)
+        impure recursive module subroutine to_file_9di16(x, file)
             integer(i16),     intent(in) :: x(:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_9di16
-        impure recursive module subroutine to_file_9di8(x, file_name)
+        impure recursive module subroutine to_file_9di8(x, file)
             integer(i8),      intent(in) :: x(:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_9di8
 
-        impure recursive module subroutine to_file_10di64(x, file_name)
+        impure recursive module subroutine to_file_10di64(x, file)
             integer(i64),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_10di64
-        impure recursive module subroutine to_file_10di32(x, file_name)
+        impure recursive module subroutine to_file_10di32(x, file)
             integer(i32),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_10di32
-        impure recursive module subroutine to_file_10di16(x, file_name)
+        impure recursive module subroutine to_file_10di16(x, file)
             integer(i16),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_10di16
-        impure recursive module subroutine to_file_10di8(x, file_name)
+        impure recursive module subroutine to_file_10di8(x, file)
             integer(i8),      intent(in) :: x(:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_10di8
 
-        impure recursive module subroutine to_file_11di64(x, file_name)
+        impure recursive module subroutine to_file_11di64(x, file)
             integer(i64),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_11di64
-        impure recursive module subroutine to_file_11di32(x, file_name)
+        impure recursive module subroutine to_file_11di32(x, file)
             integer(i32),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_11di32
-        impure recursive module subroutine to_file_11di16(x, file_name)
+        impure recursive module subroutine to_file_11di16(x, file)
             integer(i16),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_11di16
-        impure recursive module subroutine to_file_11di8(x, file_name)
+        impure recursive module subroutine to_file_11di8(x, file)
             integer(i8),      intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_11di8
 
-        impure recursive module subroutine to_file_12di64(x, file_name)
+        impure recursive module subroutine to_file_12di64(x, file)
             integer(i64),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_12di64
-        impure recursive module subroutine to_file_12di32(x, file_name)
+        impure recursive module subroutine to_file_12di32(x, file)
             integer(i32),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_12di32
-        impure recursive module subroutine to_file_12di16(x, file_name)
+        impure recursive module subroutine to_file_12di16(x, file)
             integer(i16),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_12di16
-        impure recursive module subroutine to_file_12di8(x, file_name)
+        impure recursive module subroutine to_file_12di8(x, file)
             integer(i8),      intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_12di8
 
-        impure recursive module subroutine to_file_13di64(x, file_name)
+        impure recursive module subroutine to_file_13di64(x, file)
             integer(i64),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_13di64
-        impure recursive module subroutine to_file_13di32(x, file_name)
+        impure recursive module subroutine to_file_13di32(x, file)
             integer(i32),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_13di32
-        impure recursive module subroutine to_file_13di16(x, file_name)
+        impure recursive module subroutine to_file_13di16(x, file)
             integer(i16),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_13di16
-        impure recursive module subroutine to_file_13di8(x, file_name)
+        impure recursive module subroutine to_file_13di8(x, file)
             integer(i8),      intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_13di8
 
-        impure recursive module subroutine to_file_14di64(x, file_name)
+        impure recursive module subroutine to_file_14di64(x, file)
             integer(i64),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_14di64
-        impure recursive module subroutine to_file_14di32(x, file_name)
+        impure recursive module subroutine to_file_14di32(x, file)
             integer(i32),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_14di32
-        impure recursive module subroutine to_file_14di16(x, file_name)
+        impure recursive module subroutine to_file_14di16(x, file)
             integer(i16),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_14di16
-        impure recursive module subroutine to_file_14di8(x, file_name)
+        impure recursive module subroutine to_file_14di8(x, file)
             integer(i8),      intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_14di8
 
-        impure recursive module subroutine to_file_15di64(x, file_name)
+        impure recursive module subroutine to_file_15di64(x, file)
             integer(i64),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_15di64
-        impure recursive module subroutine to_file_15di32(x, file_name)
+        impure recursive module subroutine to_file_15di32(x, file)
             integer(i32),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_15di32
-        impure recursive module subroutine to_file_15di16(x, file_name)
+        impure recursive module subroutine to_file_15di16(x, file)
             integer(i16),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_15di16
-        impure recursive module subroutine to_file_15di8(x, file_name)
+        impure recursive module subroutine to_file_15di8(x, file)
             integer(i8),      intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_file_15di8
     end interface
 
@@ -1718,8 +1726,8 @@ module io_fortran_lib
         !!
         !! For a user reference, see [from_file](../page/Ref/from_file.html).
         !---------------------------------------------------------------------------------------------------------------
-        impure recursive module subroutine from_textfile_1dc128(file_name, into, header, locale, delim, fmt, im)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_textfile_1dc128(file, into, header, locale, delim, fmt, im)
+            character(len=*), intent(in)               :: file
             complex(r128),    intent(out), allocatable :: into(:)
             logical,          intent(in),  optional    :: header
             character(len=*), intent(in),  optional    :: locale
@@ -1727,13 +1735,13 @@ module io_fortran_lib
             character(len=*), intent(in),  optional    :: fmt
             character(len=*), intent(in),  optional    :: im
         end subroutine from_textfile_1dc128
-        impure recursive module subroutine from_binaryfile_1dc128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binaryfile_1dc128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r128),    intent(out), allocatable :: into(:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binaryfile_1dc128
-        impure recursive module subroutine from_textfile_1dc64(file_name, into, header, locale, delim, fmt, im)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_textfile_1dc64(file, into, header, locale, delim, fmt, im)
+            character(len=*), intent(in)               :: file
             complex(r64),     intent(out), allocatable :: into(:)
             logical,          intent(in),  optional    :: header
             character(len=*), intent(in),  optional    :: locale
@@ -1741,13 +1749,13 @@ module io_fortran_lib
             character(len=*), intent(in),  optional    :: fmt
             character(len=*), intent(in),  optional    :: im
         end subroutine from_textfile_1dc64
-        impure recursive module subroutine from_binaryfile_1dc64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binaryfile_1dc64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r64),     intent(out), allocatable :: into(:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binaryfile_1dc64
-        impure recursive module subroutine from_textfile_1dc32(file_name, into, header, locale, delim, fmt, im)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_textfile_1dc32(file, into, header, locale, delim, fmt, im)
+            character(len=*), intent(in)               :: file
             complex(r32),     intent(out), allocatable :: into(:)
             logical,          intent(in),  optional    :: header
             character(len=*), intent(in),  optional    :: locale
@@ -1755,14 +1763,14 @@ module io_fortran_lib
             character(len=*), intent(in),  optional    :: fmt
             character(len=*), intent(in),  optional    :: im
         end subroutine from_textfile_1dc32
-        impure recursive module subroutine from_binaryfile_1dc32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binaryfile_1dc32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r32),     intent(out), allocatable :: into(:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binaryfile_1dc32
 
-        impure recursive module subroutine from_textfile_2dc128(file_name, into, header, locale, delim, fmt, im)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_textfile_2dc128(file, into, header, locale, delim, fmt, im)
+            character(len=*), intent(in)               :: file
             complex(r128),    intent(out), allocatable :: into(:,:)
             logical,          intent(in),  optional    :: header
             character(len=*), intent(in),  optional    :: locale
@@ -1770,13 +1778,13 @@ module io_fortran_lib
             character(len=*), intent(in),  optional    :: fmt
             character(len=*), intent(in),  optional    :: im
         end subroutine from_textfile_2dc128
-        impure recursive module subroutine from_binaryfile_2dc128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binaryfile_2dc128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r128),    intent(out), allocatable :: into(:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binaryfile_2dc128
-        impure recursive module subroutine from_textfile_2dc64(file_name, into, header, locale, delim, fmt, im)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_textfile_2dc64(file, into, header, locale, delim, fmt, im)
+            character(len=*), intent(in)               :: file
             complex(r64),     intent(out), allocatable :: into(:,:)
             logical,          intent(in),  optional    :: header
             character(len=*), intent(in),  optional    :: locale
@@ -1784,13 +1792,13 @@ module io_fortran_lib
             character(len=*), intent(in),  optional    :: fmt
             character(len=*), intent(in),  optional    :: im
         end subroutine from_textfile_2dc64
-        impure recursive module subroutine from_binaryfile_2dc64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binaryfile_2dc64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r64),     intent(out), allocatable :: into(:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binaryfile_2dc64
-        impure recursive module subroutine from_textfile_2dc32(file_name, into, header, locale, delim, fmt, im)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_textfile_2dc32(file, into, header, locale, delim, fmt, im)
+            character(len=*), intent(in)               :: file
             complex(r32),     intent(out), allocatable :: into(:,:)
             logical,          intent(in),  optional    :: header
             character(len=*), intent(in),  optional    :: locale
@@ -1798,875 +1806,875 @@ module io_fortran_lib
             character(len=*), intent(in),  optional    :: fmt
             character(len=*), intent(in),  optional    :: im
         end subroutine from_textfile_2dc32
-        impure recursive module subroutine from_binaryfile_2dc32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binaryfile_2dc32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r32),     intent(out), allocatable :: into(:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binaryfile_2dc32
 
-        impure recursive module subroutine from_file_3dc128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_3dc128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r128),    intent(out), allocatable :: into(:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_3dc128
-        impure recursive module subroutine from_file_3dc64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_3dc64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r64),     intent(out), allocatable :: into(:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_3dc64
-        impure recursive module subroutine from_file_3dc32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_3dc32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r32),     intent(out), allocatable :: into(:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_3dc32
 
-        impure recursive module subroutine from_file_4dc128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_4dc128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r128),    intent(out), allocatable :: into(:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_4dc128
-        impure recursive module subroutine from_file_4dc64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_4dc64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r64),     intent(out), allocatable :: into(:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_4dc64
-        impure recursive module subroutine from_file_4dc32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_4dc32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r32),     intent(out), allocatable :: into(:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_4dc32
 
-        impure recursive module subroutine from_file_5dc128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_5dc128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r128),    intent(out), allocatable :: into(:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_5dc128
-        impure recursive module subroutine from_file_5dc64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_5dc64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r64),     intent(out), allocatable :: into(:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_5dc64
-        impure recursive module subroutine from_file_5dc32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_5dc32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r32),     intent(out), allocatable :: into(:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_5dc32
 
-        impure recursive module subroutine from_file_6dc128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_6dc128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r128),    intent(out), allocatable :: into(:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_6dc128
-        impure recursive module subroutine from_file_6dc64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_6dc64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r64),     intent(out), allocatable :: into(:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_6dc64
-        impure recursive module subroutine from_file_6dc32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_6dc32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r32),     intent(out), allocatable :: into(:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_6dc32
 
-        impure recursive module subroutine from_file_7dc128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_7dc128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r128),    intent(out), allocatable :: into(:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_7dc128
-        impure recursive module subroutine from_file_7dc64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_7dc64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r64),     intent(out), allocatable :: into(:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_7dc64
-        impure recursive module subroutine from_file_7dc32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_7dc32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r32),     intent(out), allocatable :: into(:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_7dc32
 
-        impure recursive module subroutine from_file_8dc128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_8dc128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r128),    intent(out), allocatable :: into(:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_8dc128
-        impure recursive module subroutine from_file_8dc64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_8dc64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r64),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_8dc64
-        impure recursive module subroutine from_file_8dc32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_8dc32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r32),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_8dc32
 
-        impure recursive module subroutine from_file_9dc128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_9dc128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r128),    intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_9dc128
-        impure recursive module subroutine from_file_9dc64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_9dc64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r64),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_9dc64
-        impure recursive module subroutine from_file_9dc32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_9dc32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r32),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_9dc32
 
-        impure recursive module subroutine from_file_10dc128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_10dc128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r128),    intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_10dc128
-        impure recursive module subroutine from_file_10dc64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_10dc64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r64),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_10dc64
-        impure recursive module subroutine from_file_10dc32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_10dc32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r32),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_10dc32
 
-        impure recursive module subroutine from_file_11dc128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_11dc128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r128),    intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_11dc128
-        impure recursive module subroutine from_file_11dc64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_11dc64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r64),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_11dc64
-        impure recursive module subroutine from_file_11dc32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_11dc32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r32),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_11dc32
 
-        impure recursive module subroutine from_file_12dc128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_12dc128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r128),    intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_12dc128
-        impure recursive module subroutine from_file_12dc64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_12dc64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r64),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_12dc64
-        impure recursive module subroutine from_file_12dc32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_12dc32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r32),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_12dc32
 
-        impure recursive module subroutine from_file_13dc128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_13dc128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r128),    intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_13dc128
-        impure recursive module subroutine from_file_13dc64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_13dc64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r64),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_13dc64
-        impure recursive module subroutine from_file_13dc32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_13dc32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r32),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_13dc32
 
-        impure recursive module subroutine from_file_14dc128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_14dc128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r128),    intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_14dc128
-        impure recursive module subroutine from_file_14dc64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_14dc64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r64),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_14dc64
-        impure recursive module subroutine from_file_14dc32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_14dc32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r32),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_14dc32
 
-        impure recursive module subroutine from_file_15dc128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_15dc128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r128),    intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_15dc128
-        impure recursive module subroutine from_file_15dc64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_15dc64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r64),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_15dc64
-        impure recursive module subroutine from_file_15dc32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_15dc32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r32),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_15dc32
 
-        impure recursive module subroutine from_textfile_1dr128(file_name, into, header, locale, delim, fmt)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_textfile_1dr128(file, into, header, locale, delim, fmt)
+            character(len=*), intent(in)               :: file
             real(r128),       intent(out), allocatable :: into(:)
             logical,          intent(in),  optional    :: header
             character(len=*), intent(in),  optional    :: locale
             character(len=*), intent(in),  optional    :: delim
             character(len=*), intent(in),  optional    :: fmt
         end subroutine from_textfile_1dr128
-        impure recursive module subroutine from_binaryfile_1dr128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binaryfile_1dr128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r128),       intent(out), allocatable :: into(:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binaryfile_1dr128
-        impure recursive module subroutine from_textfile_1dr64(file_name, into, header, locale, delim, fmt)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_textfile_1dr64(file, into, header, locale, delim, fmt)
+            character(len=*), intent(in)               :: file
             real(r64),        intent(out), allocatable :: into(:)
             logical,          intent(in),  optional    :: header
             character(len=*), intent(in),  optional    :: locale
             character(len=*), intent(in),  optional    :: delim
             character(len=*), intent(in),  optional    :: fmt
         end subroutine from_textfile_1dr64
-        impure recursive module subroutine from_binaryfile_1dr64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binaryfile_1dr64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r64),        intent(out), allocatable :: into(:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binaryfile_1dr64
-        impure recursive module subroutine from_textfile_1dr32(file_name, into, header, locale, delim, fmt)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_textfile_1dr32(file, into, header, locale, delim, fmt)
+            character(len=*), intent(in)               :: file
             real(r32),        intent(out), allocatable :: into(:)
             logical,          intent(in),  optional    :: header
             character(len=*), intent(in),  optional    :: locale
             character(len=*), intent(in),  optional    :: delim
             character(len=*), intent(in),  optional    :: fmt
         end subroutine from_textfile_1dr32
-        impure recursive module subroutine from_binaryfile_1dr32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binaryfile_1dr32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r32),        intent(out), allocatable :: into(:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binaryfile_1dr32
 
-        impure recursive module subroutine from_textfile_2dr128(file_name, into, header, locale, delim, fmt)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_textfile_2dr128(file, into, header, locale, delim, fmt)
+            character(len=*), intent(in)               :: file
             real(r128),       intent(out), allocatable :: into(:,:)
             logical,          intent(in),  optional    :: header
             character(len=*), intent(in),  optional    :: locale
             character(len=*), intent(in),  optional    :: delim
             character(len=*), intent(in),  optional    :: fmt
         end subroutine from_textfile_2dr128
-        impure recursive module subroutine from_binaryfile_2dr128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binaryfile_2dr128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r128),       intent(out), allocatable :: into(:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binaryfile_2dr128
-        impure recursive module subroutine from_textfile_2dr64(file_name, into, header, locale, delim, fmt)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_textfile_2dr64(file, into, header, locale, delim, fmt)
+            character(len=*), intent(in)               :: file
             real(r64),        intent(out), allocatable :: into(:,:)
             logical,          intent(in),  optional    :: header
             character(len=*), intent(in),  optional    :: locale
             character(len=*), intent(in),  optional    :: delim
             character(len=*), intent(in),  optional    :: fmt
         end subroutine from_textfile_2dr64
-        impure recursive module subroutine from_binaryfile_2dr64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binaryfile_2dr64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r64),        intent(out), allocatable :: into(:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binaryfile_2dr64
-        impure recursive module subroutine from_textfile_2dr32(file_name, into, header, locale, delim, fmt)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_textfile_2dr32(file, into, header, locale, delim, fmt)
+            character(len=*), intent(in)               :: file
             real(r32),        intent(out), allocatable :: into(:,:)
             logical,          intent(in),  optional    :: header
             character(len=*), intent(in),  optional    :: locale
             character(len=*), intent(in),  optional    :: delim
             character(len=*), intent(in),  optional    :: fmt
         end subroutine from_textfile_2dr32
-        impure recursive module subroutine from_binaryfile_2dr32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binaryfile_2dr32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r32),        intent(out), allocatable :: into(:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binaryfile_2dr32
 
-        impure recursive module subroutine from_file_3dr128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_3dr128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r128),       intent(out), allocatable :: into(:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_3dr128
-        impure recursive module subroutine from_file_3dr64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_3dr64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r64),        intent(out), allocatable :: into(:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_3dr64
-        impure recursive module subroutine from_file_3dr32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_3dr32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r32),        intent(out), allocatable :: into(:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_3dr32
 
-        impure recursive module subroutine from_file_4dr128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_4dr128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r128),       intent(out), allocatable :: into(:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_4dr128
-        impure recursive module subroutine from_file_4dr64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_4dr64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r64),        intent(out), allocatable :: into(:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_4dr64
-        impure recursive module subroutine from_file_4dr32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_4dr32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r32),        intent(out), allocatable :: into(:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_4dr32
 
-        impure recursive module subroutine from_file_5dr128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_5dr128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r128),       intent(out), allocatable :: into(:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_5dr128
-        impure recursive module subroutine from_file_5dr64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_5dr64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r64),        intent(out), allocatable :: into(:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_5dr64
-        impure recursive module subroutine from_file_5dr32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_5dr32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r32),        intent(out), allocatable :: into(:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_5dr32
 
-        impure recursive module subroutine from_file_6dr128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_6dr128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r128),       intent(out), allocatable :: into(:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_6dr128
-        impure recursive module subroutine from_file_6dr64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_6dr64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r64),        intent(out), allocatable :: into(:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_6dr64
-        impure recursive module subroutine from_file_6dr32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_6dr32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r32),        intent(out), allocatable :: into(:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_6dr32
 
-        impure recursive module subroutine from_file_7dr128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_7dr128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r128),       intent(out), allocatable :: into(:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_7dr128
-        impure recursive module subroutine from_file_7dr64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_7dr64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r64),        intent(out), allocatable :: into(:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_7dr64
-        impure recursive module subroutine from_file_7dr32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_7dr32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r32),        intent(out), allocatable :: into(:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_7dr32
 
-        impure recursive module subroutine from_file_8dr128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_8dr128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r128),       intent(out), allocatable :: into(:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_8dr128
-        impure recursive module subroutine from_file_8dr64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_8dr64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r64),        intent(out), allocatable :: into(:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_8dr64
-        impure recursive module subroutine from_file_8dr32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_8dr32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r32),        intent(out), allocatable :: into(:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_8dr32
 
-        impure recursive module subroutine from_file_9dr128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_9dr128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r128),       intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_9dr128
-        impure recursive module subroutine from_file_9dr64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_9dr64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r64),        intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_9dr64
-        impure recursive module subroutine from_file_9dr32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_9dr32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r32),        intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_9dr32
 
-        impure recursive module subroutine from_file_10dr128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_10dr128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r128),       intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_10dr128
-        impure recursive module subroutine from_file_10dr64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_10dr64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r64),        intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_10dr64
-        impure recursive module subroutine from_file_10dr32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_10dr32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r32),        intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_10dr32
 
-        impure recursive module subroutine from_file_11dr128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_11dr128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r128),       intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_11dr128
-        impure recursive module subroutine from_file_11dr64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_11dr64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r64),        intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_11dr64
-        impure recursive module subroutine from_file_11dr32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_11dr32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r32),        intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_11dr32
 
-        impure recursive module subroutine from_file_12dr128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_12dr128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r128),       intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_12dr128
-        impure recursive module subroutine from_file_12dr64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_12dr64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r64),        intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_12dr64
-        impure recursive module subroutine from_file_12dr32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_12dr32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r32),        intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_12dr32
 
-        impure recursive module subroutine from_file_13dr128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_13dr128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r128),       intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_13dr128
-        impure recursive module subroutine from_file_13dr64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_13dr64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r64),        intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_13dr64
-        impure recursive module subroutine from_file_13dr32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_13dr32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r32),        intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_13dr32
 
-        impure recursive module subroutine from_file_14dr128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_14dr128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r128),       intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_14dr128
-        impure recursive module subroutine from_file_14dr64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_14dr64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r64),        intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_14dr64
-        impure recursive module subroutine from_file_14dr32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_14dr32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r32),        intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_14dr32
 
-        impure recursive module subroutine from_file_15dr128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_15dr128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r128),       intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_15dr128
-        impure recursive module subroutine from_file_15dr64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_15dr64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r64),        intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_15dr64
-        impure recursive module subroutine from_file_15dr32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_15dr32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r32),        intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_15dr32
 
-        impure recursive module subroutine from_textfile_1di64(file_name, into, header, delim, fmt)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_textfile_1di64(file, into, header, delim, fmt)
+            character(len=*), intent(in)               :: file
             integer(i64),     intent(out), allocatable :: into(:)
             logical,          intent(in),  optional    :: header
             character(len=*), intent(in),  optional    :: delim
             character(len=*), intent(in),  optional    :: fmt
         end subroutine from_textfile_1di64
-        impure recursive module subroutine from_binaryfile_1di64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binaryfile_1di64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i64),     intent(out), allocatable :: into(:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binaryfile_1di64
-        impure recursive module subroutine from_textfile_1di32(file_name, into, header, delim, fmt)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_textfile_1di32(file, into, header, delim, fmt)
+            character(len=*), intent(in)               :: file
             integer(i32),     intent(out), allocatable :: into(:)
             logical,          intent(in),  optional    :: header
             character(len=*), intent(in),  optional    :: delim
             character(len=*), intent(in),  optional    :: fmt
         end subroutine from_textfile_1di32
-        impure recursive module subroutine from_binaryfile_1di32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binaryfile_1di32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i32),     intent(out), allocatable :: into(:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binaryfile_1di32
-        impure recursive module subroutine from_textfile_1di16(file_name, into, header, delim, fmt)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_textfile_1di16(file, into, header, delim, fmt)
+            character(len=*), intent(in)               :: file
             integer(i16),     intent(out), allocatable :: into(:)
             logical,          intent(in),  optional    :: header
             character(len=*), intent(in),  optional    :: delim
             character(len=*), intent(in),  optional    :: fmt
         end subroutine from_textfile_1di16
-        impure recursive module subroutine from_binaryfile_1di16(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binaryfile_1di16(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i16),     intent(out), allocatable :: into(:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binaryfile_1di16
-        impure recursive module subroutine from_textfile_1di8(file_name, into, header, delim, fmt)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_textfile_1di8(file, into, header, delim, fmt)
+            character(len=*), intent(in)               :: file
             integer(i8),      intent(out), allocatable :: into(:)
             logical,          intent(in),  optional    :: header
             character(len=*), intent(in),  optional    :: delim
             character(len=*), intent(in),  optional    :: fmt
         end subroutine from_textfile_1di8
-        impure recursive module subroutine from_binaryfile_1di8(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binaryfile_1di8(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i8),      intent(out), allocatable :: into(:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binaryfile_1di8
 
-        impure recursive module subroutine from_textfile_2di64(file_name, into, header, delim, fmt)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_textfile_2di64(file, into, header, delim, fmt)
+            character(len=*), intent(in)               :: file
             integer(i64),     intent(out), allocatable :: into(:,:)
             logical,          intent(in),  optional    :: header
             character(len=*), intent(in),  optional    :: delim
             character(len=*), intent(in),  optional    :: fmt
         end subroutine from_textfile_2di64
-        impure recursive module subroutine from_binaryfile_2di64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binaryfile_2di64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i64),     intent(out), allocatable :: into(:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binaryfile_2di64
-        impure recursive module subroutine from_textfile_2di32(file_name, into, header, delim, fmt)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_textfile_2di32(file, into, header, delim, fmt)
+            character(len=*), intent(in)               :: file
             integer(i32),     intent(out), allocatable :: into(:,:)
             logical,          intent(in),  optional    :: header
             character(len=*), intent(in),  optional    :: delim
             character(len=*), intent(in),  optional    :: fmt
         end subroutine from_textfile_2di32
-        impure recursive module subroutine from_binaryfile_2di32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binaryfile_2di32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i32),     intent(out), allocatable :: into(:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binaryfile_2di32
-        impure recursive module subroutine from_textfile_2di16(file_name, into, header, delim, fmt)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_textfile_2di16(file, into, header, delim, fmt)
+            character(len=*), intent(in)               :: file
             integer(i16),     intent(out), allocatable :: into(:,:)
             logical,          intent(in),  optional    :: header
             character(len=*), intent(in),  optional    :: delim
             character(len=*), intent(in),  optional    :: fmt
         end subroutine from_textfile_2di16
-        impure recursive module subroutine from_binaryfile_2di16(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binaryfile_2di16(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i16),     intent(out), allocatable :: into(:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binaryfile_2di16
-        impure recursive module subroutine from_textfile_2di8(file_name, into, header, delim, fmt)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_textfile_2di8(file, into, header, delim, fmt)
+            character(len=*), intent(in)               :: file
             integer(i8),      intent(out), allocatable :: into(:,:)
             logical,          intent(in),  optional    :: header
             character(len=*), intent(in),  optional    :: delim
             character(len=*), intent(in),  optional    :: fmt
         end subroutine from_textfile_2di8
-        impure recursive module subroutine from_binaryfile_2di8(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binaryfile_2di8(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i8),      intent(out), allocatable :: into(:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binaryfile_2di8
 
-        impure recursive module subroutine from_file_3di64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_3di64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i64),     intent(out), allocatable :: into(:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_3di64
-        impure recursive module subroutine from_file_3di32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_3di32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i32),     intent(out), allocatable :: into(:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_3di32
-        impure recursive module subroutine from_file_3di16(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_3di16(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i16),     intent(out), allocatable :: into(:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_3di16
-        impure recursive module subroutine from_file_3di8(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_3di8(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i8),      intent(out), allocatable :: into(:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_3di8
 
-        impure recursive module subroutine from_file_4di64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_4di64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i64),     intent(out), allocatable :: into(:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_4di64
-        impure recursive module subroutine from_file_4di32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_4di32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i32),     intent(out), allocatable :: into(:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_4di32
-        impure recursive module subroutine from_file_4di16(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_4di16(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i16),     intent(out), allocatable :: into(:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_4di16
-        impure recursive module subroutine from_file_4di8(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_4di8(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i8),      intent(out), allocatable :: into(:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_4di8
 
-        impure recursive module subroutine from_file_5di64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_5di64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i64),     intent(out), allocatable :: into(:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_5di64
-        impure recursive module subroutine from_file_5di32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_5di32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i32),     intent(out), allocatable :: into(:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_5di32
-        impure recursive module subroutine from_file_5di16(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_5di16(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i16),     intent(out), allocatable :: into(:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_5di16
-        impure recursive module subroutine from_file_5di8(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_5di8(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i8),      intent(out), allocatable :: into(:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_5di8
 
-        impure recursive module subroutine from_file_6di64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_6di64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i64),     intent(out), allocatable :: into(:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_6di64
-        impure recursive module subroutine from_file_6di32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_6di32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i32),     intent(out), allocatable :: into(:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_6di32
-        impure recursive module subroutine from_file_6di16(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_6di16(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i16),     intent(out), allocatable :: into(:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_6di16
-        impure recursive module subroutine from_file_6di8(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_6di8(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i8),      intent(out), allocatable :: into(:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_6di8
 
-        impure recursive module subroutine from_file_7di64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_7di64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i64),     intent(out), allocatable :: into(:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_7di64
-        impure recursive module subroutine from_file_7di32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_7di32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i32),     intent(out), allocatable :: into(:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_7di32
-        impure recursive module subroutine from_file_7di16(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_7di16(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i16),     intent(out), allocatable :: into(:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_7di16
-        impure recursive module subroutine from_file_7di8(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_7di8(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i8),      intent(out), allocatable :: into(:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_7di8
 
-        impure recursive module subroutine from_file_8di64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_8di64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i64),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_8di64
-        impure recursive module subroutine from_file_8di32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_8di32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i32),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_8di32
-        impure recursive module subroutine from_file_8di16(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_8di16(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i16),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_8di16
-        impure recursive module subroutine from_file_8di8(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_8di8(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i8),      intent(out), allocatable :: into(:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_8di8
 
-        impure recursive module subroutine from_file_9di64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_9di64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i64),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_9di64
-        impure recursive module subroutine from_file_9di32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_9di32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i32),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_9di32
-        impure recursive module subroutine from_file_9di16(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_9di16(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i16),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_9di16
-        impure recursive module subroutine from_file_9di8(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_9di8(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i8),      intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_9di8
 
-        impure recursive module subroutine from_file_10di64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_10di64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i64),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_10di64
-        impure recursive module subroutine from_file_10di32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_10di32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i32),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_10di32
-        impure recursive module subroutine from_file_10di16(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_10di16(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i16),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_10di16
-        impure recursive module subroutine from_file_10di8(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_10di8(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i8),      intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_10di8
 
-        impure recursive module subroutine from_file_11di64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_11di64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i64),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_11di64
-        impure recursive module subroutine from_file_11di32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_11di32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i32),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_11di32
-        impure recursive module subroutine from_file_11di16(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_11di16(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i16),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_11di16
-        impure recursive module subroutine from_file_11di8(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_11di8(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i8),      intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_11di8
 
-        impure recursive module subroutine from_file_12di64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_12di64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i64),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_12di64
-        impure recursive module subroutine from_file_12di32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_12di32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i32),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_12di32
-        impure recursive module subroutine from_file_12di16(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_12di16(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i16),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_12di16
-        impure recursive module subroutine from_file_12di8(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_12di8(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i8),      intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_12di8
 
-        impure recursive module subroutine from_file_13di64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_13di64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i64),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_13di64
-        impure recursive module subroutine from_file_13di32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_13di32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i32),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_13di32
-        impure recursive module subroutine from_file_13di16(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_13di16(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i16),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_13di16
-        impure recursive module subroutine from_file_13di8(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_13di8(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i8),      intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_13di8
 
-        impure recursive module subroutine from_file_14di64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_14di64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i64),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_14di64
-        impure recursive module subroutine from_file_14di32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_14di32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i32),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_14di32
-        impure recursive module subroutine from_file_14di16(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_14di16(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i16),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_14di16
-        impure recursive module subroutine from_file_14di8(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_14di8(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i8),      intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_14di8
 
-        impure recursive module subroutine from_file_15di64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_15di64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i64),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_15di64
-        impure recursive module subroutine from_file_15di32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_15di32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i32),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_15di32
-        impure recursive module subroutine from_file_15di16(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_15di16(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i16),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_15di16
-        impure recursive module subroutine from_file_15di8(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_file_15di8(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i8),      intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_file_15di8
@@ -2678,16 +2686,16 @@ module io_fortran_lib
         !!
         !! For a user reference, see [echo](../page/Ref/echo.html).
         !---------------------------------------------------------------------------------------------------------------
-        impure recursive module subroutine echo_chars(substring, file_name, append, terminator)
+        impure recursive module subroutine echo_chars(substring, file, append, terminator)
             character(len=*), intent(in)           :: substring
-            character(len=*), intent(in)           :: file_name
+            character(len=*), intent(in)           :: file
             logical,          intent(in), optional :: append
             character(len=*), intent(in), optional :: terminator
         end subroutine echo_chars
 
-        impure recursive module subroutine echo_string(substring, file_name, append, terminator)
+        impure recursive module subroutine echo_string(substring, file, append, terminator)
             class(String),    intent(in)           :: substring
-            character(len=*), intent(in)           :: file_name
+            character(len=*), intent(in)           :: file
             logical,          intent(in), optional :: append
             character(len=*), intent(in), optional :: terminator
         end subroutine echo_string
@@ -2697,9 +2705,9 @@ module io_fortran_lib
         !---------------------------------------------------------------------------------------------------------------
         !! Private interface for writing an array to an external text file.
         !---------------------------------------------------------------------------------------------------------------
-        impure recursive module subroutine to_text_1dc128(x, file_name, header, dim, locale, delim, fmt, decimals, im)
+        impure recursive module subroutine to_text_1dc128(x, file, header, dim, locale, delim, fmt, decimals, im)
             complex(r128),    intent(in) :: x(:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
             character(len=*), intent(in) :: header(:)
             integer,          intent(in) :: dim
             character(len=*), intent(in) :: locale
@@ -2708,9 +2716,9 @@ module io_fortran_lib
             integer,          intent(in) :: decimals
             character(len=*), intent(in) :: im
         end subroutine to_text_1dc128
-        impure recursive module subroutine to_text_1dc64(x, file_name, header, dim, locale, delim, fmt, decimals, im)
+        impure recursive module subroutine to_text_1dc64(x, file, header, dim, locale, delim, fmt, decimals, im)
             complex(r64),     intent(in) :: x(:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
             character(len=*), intent(in) :: header(:)
             integer,          intent(in) :: dim
             character(len=*), intent(in) :: locale
@@ -2719,9 +2727,9 @@ module io_fortran_lib
             integer,          intent(in) :: decimals
             character(len=*), intent(in) :: im
         end subroutine to_text_1dc64
-        impure recursive module subroutine to_text_1dc32(x, file_name, header, dim, locale, delim, fmt, decimals, im)
+        impure recursive module subroutine to_text_1dc32(x, file, header, dim, locale, delim, fmt, decimals, im)
             complex(r32),     intent(in) :: x(:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
             character(len=*), intent(in) :: header(:)
             integer,          intent(in) :: dim
             character(len=*), intent(in) :: locale
@@ -2731,9 +2739,9 @@ module io_fortran_lib
             character(len=*), intent(in) :: im
         end subroutine to_text_1dc32
 
-        impure recursive module subroutine to_text_2dc128(x, file_name, header, locale, delim, fmt, decimals, im)
+        impure recursive module subroutine to_text_2dc128(x, file, header, locale, delim, fmt, decimals, im)
             complex(r128),    intent(in) :: x(:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
             character(len=*), intent(in) :: header(:)
             character(len=*), intent(in) :: locale
             character(len=*), intent(in) :: delim
@@ -2741,9 +2749,9 @@ module io_fortran_lib
             integer,          intent(in) :: decimals
             character(len=*), intent(in) :: im
         end subroutine to_text_2dc128
-        impure recursive module subroutine to_text_2dc64(x, file_name, header, locale, delim, fmt, decimals, im)
+        impure recursive module subroutine to_text_2dc64(x, file, header, locale, delim, fmt, decimals, im)
             complex(r64),     intent(in) :: x(:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
             character(len=*), intent(in) :: header(:)
             character(len=*), intent(in) :: locale
             character(len=*), intent(in) :: delim
@@ -2751,9 +2759,9 @@ module io_fortran_lib
             integer,          intent(in) :: decimals
             character(len=*), intent(in) :: im
         end subroutine to_text_2dc64
-        impure recursive module subroutine to_text_2dc32(x, file_name, header, locale, delim, fmt, decimals, im)
+        impure recursive module subroutine to_text_2dc32(x, file, header, locale, delim, fmt, decimals, im)
             complex(r32),     intent(in) :: x(:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
             character(len=*), intent(in) :: header(:)
             character(len=*), intent(in) :: locale
             character(len=*), intent(in) :: delim
@@ -2762,9 +2770,9 @@ module io_fortran_lib
             character(len=*), intent(in) :: im
         end subroutine to_text_2dc32
 
-        impure recursive module subroutine to_text_1dr128(x, file_name, header, dim, locale, delim, fmt, decimals)
+        impure recursive module subroutine to_text_1dr128(x, file, header, dim, locale, delim, fmt, decimals)
             real(r128),       intent(in) :: x(:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
             character(len=*), intent(in) :: header(:)
             integer,          intent(in) :: dim
             character(len=*), intent(in) :: locale
@@ -2772,9 +2780,9 @@ module io_fortran_lib
             character(len=*), intent(in) :: fmt
             integer,          intent(in) :: decimals
         end subroutine to_text_1dr128
-        impure recursive module subroutine to_text_1dr64(x, file_name, header, dim, locale, delim, fmt, decimals)
+        impure recursive module subroutine to_text_1dr64(x, file, header, dim, locale, delim, fmt, decimals)
             real(r64),        intent(in) :: x(:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
             character(len=*), intent(in) :: header(:)
             integer,          intent(in) :: dim
             character(len=*), intent(in) :: locale
@@ -2782,9 +2790,9 @@ module io_fortran_lib
             character(len=*), intent(in) :: fmt
             integer,          intent(in) :: decimals
         end subroutine to_text_1dr64
-        impure recursive module subroutine to_text_1dr32(x, file_name, header, dim, locale, delim, fmt, decimals)
+        impure recursive module subroutine to_text_1dr32(x, file, header, dim, locale, delim, fmt, decimals)
             real(r32),        intent(in) :: x(:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
             character(len=*), intent(in) :: header(:)
             integer,          intent(in) :: dim
             character(len=*), intent(in) :: locale
@@ -2793,27 +2801,27 @@ module io_fortran_lib
             integer,          intent(in) :: decimals
         end subroutine to_text_1dr32
 
-        impure recursive module subroutine to_text_2dr128(x, file_name, header, locale, delim, fmt, decimals)
+        impure recursive module subroutine to_text_2dr128(x, file, header, locale, delim, fmt, decimals)
             real(r128),       intent(in) :: x(:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
             character(len=*), intent(in) :: header(:)
             character(len=*), intent(in) :: locale
             character(len=*), intent(in) :: delim
             character(len=*), intent(in) :: fmt
             integer,          intent(in) :: decimals
         end subroutine to_text_2dr128
-        impure recursive module subroutine to_text_2dr64(x, file_name, header, locale, delim, fmt, decimals)
+        impure recursive module subroutine to_text_2dr64(x, file, header, locale, delim, fmt, decimals)
             real(r64),        intent(in) :: x(:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
             character(len=*), intent(in) :: header(:)
             character(len=*), intent(in) :: locale
             character(len=*), intent(in) :: delim
             character(len=*), intent(in) :: fmt
             integer,          intent(in) :: decimals
         end subroutine to_text_2dr64
-        impure recursive module subroutine to_text_2dr32(x, file_name, header, locale, delim, fmt, decimals)
+        impure recursive module subroutine to_text_2dr32(x, file, header, locale, delim, fmt, decimals)
             real(r32),        intent(in) :: x(:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
             character(len=*), intent(in) :: header(:)
             character(len=*), intent(in) :: locale
             character(len=*), intent(in) :: delim
@@ -2821,63 +2829,63 @@ module io_fortran_lib
             integer,          intent(in) :: decimals
         end subroutine to_text_2dr32
 
-        impure recursive module subroutine to_text_1di64(x, file_name, header, dim, delim, fmt)
+        impure recursive module subroutine to_text_1di64(x, file, header, dim, delim, fmt)
             integer(i64),     intent(in) :: x(:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
             character(len=*), intent(in) :: header(:)
             integer,          intent(in) :: dim
             character(len=*), intent(in) :: delim
             character(len=*), intent(in) :: fmt
         end subroutine to_text_1di64
-        impure recursive module subroutine to_text_1di32(x, file_name, header, dim, delim, fmt)
+        impure recursive module subroutine to_text_1di32(x, file, header, dim, delim, fmt)
             integer(i32),     intent(in) :: x(:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
             character(len=*), intent(in) :: header(:)
             integer,          intent(in) :: dim
             character(len=*), intent(in) :: delim
             character(len=*), intent(in) :: fmt
         end subroutine to_text_1di32
-        impure recursive module subroutine to_text_1di16(x, file_name, header, dim, delim, fmt)
+        impure recursive module subroutine to_text_1di16(x, file, header, dim, delim, fmt)
             integer(i16),     intent(in) :: x(:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
             character(len=*), intent(in) :: header(:)
             integer,          intent(in) :: dim
             character(len=*), intent(in) :: delim
             character(len=*), intent(in) :: fmt
         end subroutine to_text_1di16
-        impure recursive module subroutine to_text_1di8(x, file_name, header, dim, delim, fmt)
+        impure recursive module subroutine to_text_1di8(x, file, header, dim, delim, fmt)
             integer(i8),      intent(in) :: x(:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
             character(len=*), intent(in) :: header(:)
             integer,          intent(in) :: dim
             character(len=*), intent(in) :: delim
             character(len=*), intent(in) :: fmt
         end subroutine to_text_1di8
 
-        impure recursive module subroutine to_text_2di64(x, file_name, header, delim, fmt)
+        impure recursive module subroutine to_text_2di64(x, file, header, delim, fmt)
             integer(i64),     intent(in) :: x(:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
             character(len=*), intent(in) :: header(:)
             character(len=*), intent(in) :: delim
             character(len=*), intent(in) :: fmt
         end subroutine to_text_2di64
-        impure recursive module subroutine to_text_2di32(x, file_name, header, delim, fmt)
+        impure recursive module subroutine to_text_2di32(x, file, header, delim, fmt)
             integer(i32),     intent(in) :: x(:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
             character(len=*), intent(in) :: header(:)
             character(len=*), intent(in) :: delim
             character(len=*), intent(in) :: fmt
         end subroutine to_text_2di32
-        impure recursive module subroutine to_text_2di16(x, file_name, header, delim, fmt)
+        impure recursive module subroutine to_text_2di16(x, file, header, delim, fmt)
             integer(i16),     intent(in) :: x(:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
             character(len=*), intent(in) :: header(:)
             character(len=*), intent(in) :: delim
             character(len=*), intent(in) :: fmt
         end subroutine to_text_2di16
-        impure recursive module subroutine to_text_2di8(x, file_name, header, delim, fmt)
+        impure recursive module subroutine to_text_2di8(x, file, header, delim, fmt)
             integer(i8),      intent(in) :: x(:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
             character(len=*), intent(in) :: header(:)
             character(len=*), intent(in) :: delim
             character(len=*), intent(in) :: fmt
@@ -2888,8 +2896,8 @@ module io_fortran_lib
         !---------------------------------------------------------------------------------------------------------------
         !! Private interface for reading an external text file into an array.
         !---------------------------------------------------------------------------------------------------------------
-        impure recursive module subroutine from_text_1dc128(file_name, into, header, locale, delim, fmt, im)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_text_1dc128(file, into, header, locale, delim, fmt, im)
+            character(len=*), intent(in)               :: file
             complex(r128),    intent(out), allocatable :: into(:)
             logical,          intent(in)               :: header
             character(len=*), intent(in)               :: locale
@@ -2897,8 +2905,8 @@ module io_fortran_lib
             character(len=*), intent(in)               :: fmt
             character(len=*), intent(in)               :: im
         end subroutine from_text_1dc128
-        impure recursive module subroutine from_text_1dc64(file_name, into, header, locale, delim, fmt, im)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_text_1dc64(file, into, header, locale, delim, fmt, im)
+            character(len=*), intent(in)               :: file
             complex(r64),     intent(out), allocatable :: into(:)
             logical,          intent(in)               :: header
             character(len=*), intent(in)               :: locale
@@ -2906,8 +2914,8 @@ module io_fortran_lib
             character(len=*), intent(in)               :: fmt
             character(len=*), intent(in)               :: im
         end subroutine from_text_1dc64
-        impure recursive module subroutine from_text_1dc32(file_name, into, header, locale, delim, fmt, im)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_text_1dc32(file, into, header, locale, delim, fmt, im)
+            character(len=*), intent(in)               :: file
             complex(r32),     intent(out), allocatable :: into(:)
             logical,          intent(in)               :: header
             character(len=*), intent(in)               :: locale
@@ -2916,8 +2924,8 @@ module io_fortran_lib
             character(len=*), intent(in)               :: im
         end subroutine from_text_1dc32
 
-        impure recursive module subroutine from_text_2dc128(file_name, into, header, locale, delim, fmt, im)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_text_2dc128(file, into, header, locale, delim, fmt, im)
+            character(len=*), intent(in)               :: file
             complex(r128),    intent(out), allocatable :: into(:,:)
             logical,          intent(in)               :: header
             character(len=*), intent(in)               :: locale
@@ -2925,8 +2933,8 @@ module io_fortran_lib
             character(len=*), intent(in)               :: fmt
             character(len=*), intent(in)               :: im
         end subroutine from_text_2dc128
-        impure recursive module subroutine from_text_2dc64(file_name, into, header, locale, delim, fmt, im)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_text_2dc64(file, into, header, locale, delim, fmt, im)
+            character(len=*), intent(in)               :: file
             complex(r64),     intent(out), allocatable :: into(:,:)
             logical,          intent(in)               :: header
             character(len=*), intent(in)               :: locale
@@ -2934,8 +2942,8 @@ module io_fortran_lib
             character(len=*), intent(in)               :: fmt
             character(len=*), intent(in)               :: im
         end subroutine from_text_2dc64
-        impure recursive module subroutine from_text_2dc32(file_name, into, header, locale, delim, fmt, im)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_text_2dc32(file, into, header, locale, delim, fmt, im)
+            character(len=*), intent(in)               :: file
             complex(r32),     intent(out), allocatable :: into(:,:)
             logical,          intent(in)               :: header
             character(len=*), intent(in)               :: locale
@@ -2944,24 +2952,24 @@ module io_fortran_lib
             character(len=*), intent(in)               :: im
         end subroutine from_text_2dc32
 
-        impure recursive module subroutine from_text_1dr128(file_name, into, header, locale, delim, fmt)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_text_1dr128(file, into, header, locale, delim, fmt)
+            character(len=*), intent(in)               :: file
             real(r128),       intent(out), allocatable :: into(:)
             logical,          intent(in)               :: header
             character(len=*), intent(in)               :: locale
             character(len=*), intent(in)               :: delim
             character(len=*), intent(in)               :: fmt
         end subroutine from_text_1dr128
-        impure recursive module subroutine from_text_1dr64(file_name, into, header, locale, delim, fmt)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_text_1dr64(file, into, header, locale, delim, fmt)
+            character(len=*), intent(in)               :: file
             real(r64),        intent(out), allocatable :: into(:)
             logical,          intent(in)               :: header
             character(len=*), intent(in)               :: locale
             character(len=*), intent(in)               :: delim
             character(len=*), intent(in)               :: fmt
         end subroutine from_text_1dr64
-        impure recursive module subroutine from_text_1dr32(file_name, into, header, locale, delim, fmt)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_text_1dr32(file, into, header, locale, delim, fmt)
+            character(len=*), intent(in)               :: file
             real(r32),        intent(out), allocatable :: into(:)
             logical,          intent(in)               :: header
             character(len=*), intent(in)               :: locale
@@ -2969,24 +2977,24 @@ module io_fortran_lib
             character(len=*), intent(in)               :: fmt
         end subroutine from_text_1dr32
 
-        impure recursive module subroutine from_text_2dr128(file_name, into, header, locale, delim, fmt)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_text_2dr128(file, into, header, locale, delim, fmt)
+            character(len=*), intent(in)               :: file
             real(r128),       intent(out), allocatable :: into(:,:)
             logical,          intent(in)               :: header
             character(len=*), intent(in)               :: locale
             character(len=*), intent(in)               :: delim
             character(len=*), intent(in)               :: fmt
         end subroutine from_text_2dr128
-        impure recursive module subroutine from_text_2dr64(file_name, into, header, locale, delim, fmt)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_text_2dr64(file, into, header, locale, delim, fmt)
+            character(len=*), intent(in)               :: file
             real(r64),        intent(out), allocatable :: into(:,:)
             logical,          intent(in)               :: header
             character(len=*), intent(in)               :: locale
             character(len=*), intent(in)               :: delim
             character(len=*), intent(in)               :: fmt
         end subroutine from_text_2dr64
-        impure recursive module subroutine from_text_2dr32(file_name, into, header, locale, delim, fmt)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_text_2dr32(file, into, header, locale, delim, fmt)
+            character(len=*), intent(in)               :: file
             real(r32),        intent(out), allocatable :: into(:,:)
             logical,          intent(in)               :: header
             character(len=*), intent(in)               :: locale
@@ -2994,58 +3002,58 @@ module io_fortran_lib
             character(len=*), intent(in)               :: fmt
         end subroutine from_text_2dr32
 
-        impure recursive module subroutine from_text_1di64(file_name, into, header, delim, fmt)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_text_1di64(file, into, header, delim, fmt)
+            character(len=*), intent(in)               :: file
             integer(i64),     intent(out), allocatable :: into(:)
             logical,          intent(in)               :: header
             character(len=*), intent(in)               :: delim
             character(len=*), intent(in)               :: fmt
         end subroutine from_text_1di64
-        impure recursive module subroutine from_text_1di32(file_name, into, header, delim, fmt)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_text_1di32(file, into, header, delim, fmt)
+            character(len=*), intent(in)               :: file
             integer(i32),     intent(out), allocatable :: into(:)
             logical,          intent(in)               :: header
             character(len=*), intent(in)               :: delim
             character(len=*), intent(in)               :: fmt
         end subroutine from_text_1di32
-        impure recursive module subroutine from_text_1di16(file_name, into, header, delim, fmt)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_text_1di16(file, into, header, delim, fmt)
+            character(len=*), intent(in)               :: file
             integer(i16),     intent(out), allocatable :: into(:)
             logical,          intent(in)               :: header
             character(len=*), intent(in)               :: delim
             character(len=*), intent(in)               :: fmt
         end subroutine from_text_1di16
-        impure recursive module subroutine from_text_1di8(file_name, into, header, delim, fmt)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_text_1di8(file, into, header, delim, fmt)
+            character(len=*), intent(in)               :: file
             integer(i8),      intent(out), allocatable :: into(:)
             logical,          intent(in)               :: header
             character(len=*), intent(in)               :: delim
             character(len=*), intent(in)               :: fmt
         end subroutine from_text_1di8
 
-        impure recursive module subroutine from_text_2di64(file_name, into, header, delim, fmt)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_text_2di64(file, into, header, delim, fmt)
+            character(len=*), intent(in)               :: file
             integer(i64),     intent(out), allocatable :: into(:,:)
             logical,          intent(in)               :: header
             character(len=*), intent(in)               :: delim
             character(len=*), intent(in)               :: fmt
         end subroutine from_text_2di64
-        impure recursive module subroutine from_text_2di32(file_name, into, header, delim, fmt)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_text_2di32(file, into, header, delim, fmt)
+            character(len=*), intent(in)               :: file
             integer(i32),     intent(out), allocatable :: into(:,:)
             logical,          intent(in)               :: header
             character(len=*), intent(in)               :: delim
             character(len=*), intent(in)               :: fmt
         end subroutine from_text_2di32
-        impure recursive module subroutine from_text_2di16(file_name, into, header, delim, fmt)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_text_2di16(file, into, header, delim, fmt)
+            character(len=*), intent(in)               :: file
             integer(i16),     intent(out), allocatable :: into(:,:)
             logical,          intent(in)               :: header
             character(len=*), intent(in)               :: delim
             character(len=*), intent(in)               :: fmt
         end subroutine from_text_2di16
-        impure recursive module subroutine from_text_2di8(file_name, into, header, delim, fmt)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_text_2di8(file, into, header, delim, fmt)
+            character(len=*), intent(in)               :: file
             integer(i8),      intent(out), allocatable :: into(:,:)
             logical,          intent(in)               :: header
             character(len=*), intent(in)               :: delim
@@ -3057,649 +3065,649 @@ module io_fortran_lib
         !---------------------------------------------------------------------------------------------------------------
         !! Private interface for writing an array to an external binary file.
         !---------------------------------------------------------------------------------------------------------------
-        impure recursive module subroutine to_binary_1dc128(x, file_name)
+        impure recursive module subroutine to_binary_1dc128(x, file)
             complex(r128),    intent(in) :: x(:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_1dc128
-        impure recursive module subroutine to_binary_1dc64(x, file_name)
+        impure recursive module subroutine to_binary_1dc64(x, file)
             complex(r64),     intent(in) :: x(:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_1dc64
-        impure recursive module subroutine to_binary_1dc32(x, file_name)
+        impure recursive module subroutine to_binary_1dc32(x, file)
             complex(r32),     intent(in) :: x(:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_1dc32
 
-        impure recursive module subroutine to_binary_2dc128(x, file_name)
+        impure recursive module subroutine to_binary_2dc128(x, file)
             complex(r128),    intent(in) :: x(:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_2dc128
-        impure recursive module subroutine to_binary_2dc64(x, file_name)
+        impure recursive module subroutine to_binary_2dc64(x, file)
             complex(r64),     intent(in) :: x(:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_2dc64
-        impure recursive module subroutine to_binary_2dc32(x, file_name)
+        impure recursive module subroutine to_binary_2dc32(x, file)
             complex(r32),     intent(in) :: x(:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_2dc32
 
-        impure recursive module subroutine to_binary_3dc128(x, file_name)
+        impure recursive module subroutine to_binary_3dc128(x, file)
             complex(r128),    intent(in) :: x(:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_3dc128
-        impure recursive module subroutine to_binary_3dc64(x, file_name)
+        impure recursive module subroutine to_binary_3dc64(x, file)
             complex(r64),     intent(in) :: x(:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_3dc64
-        impure recursive module subroutine to_binary_3dc32(x, file_name)
+        impure recursive module subroutine to_binary_3dc32(x, file)
             complex(r32),     intent(in) :: x(:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_3dc32
 
-        impure recursive module subroutine to_binary_4dc128(x, file_name)
+        impure recursive module subroutine to_binary_4dc128(x, file)
             complex(r128),    intent(in) :: x(:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_4dc128
-        impure recursive module subroutine to_binary_4dc64(x, file_name)
+        impure recursive module subroutine to_binary_4dc64(x, file)
             complex(r64),     intent(in) :: x(:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_4dc64
-        impure recursive module subroutine to_binary_4dc32(x, file_name)
+        impure recursive module subroutine to_binary_4dc32(x, file)
             complex(r32),     intent(in) :: x(:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_4dc32
 
-        impure recursive module subroutine to_binary_5dc128(x, file_name)
+        impure recursive module subroutine to_binary_5dc128(x, file)
             complex(r128),    intent(in) :: x(:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_5dc128
-        impure recursive module subroutine to_binary_5dc64(x, file_name)
+        impure recursive module subroutine to_binary_5dc64(x, file)
             complex(r64),     intent(in) :: x(:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_5dc64
-        impure recursive module subroutine to_binary_5dc32(x, file_name)
+        impure recursive module subroutine to_binary_5dc32(x, file)
             complex(r32),     intent(in) :: x(:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_5dc32
 
-        impure recursive module subroutine to_binary_6dc128(x, file_name)
+        impure recursive module subroutine to_binary_6dc128(x, file)
             complex(r128),    intent(in) :: x(:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_6dc128
-        impure recursive module subroutine to_binary_6dc64(x, file_name)
+        impure recursive module subroutine to_binary_6dc64(x, file)
             complex(r64),     intent(in) :: x(:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_6dc64
-        impure recursive module subroutine to_binary_6dc32(x, file_name)
+        impure recursive module subroutine to_binary_6dc32(x, file)
             complex(r32),     intent(in) :: x(:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_6dc32
 
-        impure recursive module subroutine to_binary_7dc128(x, file_name)
+        impure recursive module subroutine to_binary_7dc128(x, file)
             complex(r128),    intent(in) :: x(:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_7dc128
-        impure recursive module subroutine to_binary_7dc64(x, file_name)
+        impure recursive module subroutine to_binary_7dc64(x, file)
             complex(r64),     intent(in) :: x(:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_7dc64
-        impure recursive module subroutine to_binary_7dc32(x, file_name)
+        impure recursive module subroutine to_binary_7dc32(x, file)
             complex(r32),     intent(in) :: x(:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_7dc32
 
-        impure recursive module subroutine to_binary_8dc128(x, file_name)
+        impure recursive module subroutine to_binary_8dc128(x, file)
             complex(r128),    intent(in) :: x(:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_8dc128
-        impure recursive module subroutine to_binary_8dc64(x, file_name)
+        impure recursive module subroutine to_binary_8dc64(x, file)
             complex(r64),     intent(in) :: x(:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_8dc64
-        impure recursive module subroutine to_binary_8dc32(x, file_name)
+        impure recursive module subroutine to_binary_8dc32(x, file)
             complex(r32),     intent(in) :: x(:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_8dc32
 
-        impure recursive module subroutine to_binary_9dc128(x, file_name)
+        impure recursive module subroutine to_binary_9dc128(x, file)
             complex(r128),    intent(in) :: x(:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_9dc128
-        impure recursive module subroutine to_binary_9dc64(x, file_name)
+        impure recursive module subroutine to_binary_9dc64(x, file)
             complex(r64),     intent(in) :: x(:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_9dc64
-        impure recursive module subroutine to_binary_9dc32(x, file_name)
+        impure recursive module subroutine to_binary_9dc32(x, file)
             complex(r32),     intent(in) :: x(:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_9dc32
 
-        impure recursive module subroutine to_binary_10dc128(x, file_name)
+        impure recursive module subroutine to_binary_10dc128(x, file)
             complex(r128),    intent(in) :: x(:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_10dc128
-        impure recursive module subroutine to_binary_10dc64(x, file_name)
+        impure recursive module subroutine to_binary_10dc64(x, file)
             complex(r64),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_10dc64
-        impure recursive module subroutine to_binary_10dc32(x, file_name)
+        impure recursive module subroutine to_binary_10dc32(x, file)
             complex(r32),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_10dc32
 
-        impure recursive module subroutine to_binary_11dc128(x, file_name)
+        impure recursive module subroutine to_binary_11dc128(x, file)
             complex(r128),    intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_11dc128
-        impure recursive module subroutine to_binary_11dc64(x, file_name)
+        impure recursive module subroutine to_binary_11dc64(x, file)
             complex(r64),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_11dc64
-        impure recursive module subroutine to_binary_11dc32(x, file_name)
+        impure recursive module subroutine to_binary_11dc32(x, file)
             complex(r32),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_11dc32
 
-        impure recursive module subroutine to_binary_12dc128(x, file_name)
+        impure recursive module subroutine to_binary_12dc128(x, file)
             complex(r128),    intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_12dc128
-        impure recursive module subroutine to_binary_12dc64(x, file_name)
+        impure recursive module subroutine to_binary_12dc64(x, file)
             complex(r64),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_12dc64
-        impure recursive module subroutine to_binary_12dc32(x, file_name)
+        impure recursive module subroutine to_binary_12dc32(x, file)
             complex(r32),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_12dc32
 
-        impure recursive module subroutine to_binary_13dc128(x, file_name)
+        impure recursive module subroutine to_binary_13dc128(x, file)
             complex(r128),    intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_13dc128
-        impure recursive module subroutine to_binary_13dc64(x, file_name)
+        impure recursive module subroutine to_binary_13dc64(x, file)
             complex(r64),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_13dc64
-        impure recursive module subroutine to_binary_13dc32(x, file_name)
+        impure recursive module subroutine to_binary_13dc32(x, file)
             complex(r32),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_13dc32
 
-        impure recursive module subroutine to_binary_14dc128(x, file_name)
+        impure recursive module subroutine to_binary_14dc128(x, file)
             complex(r128),    intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_14dc128
-        impure recursive module subroutine to_binary_14dc64(x, file_name)
+        impure recursive module subroutine to_binary_14dc64(x, file)
             complex(r64),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_14dc64
-        impure recursive module subroutine to_binary_14dc32(x, file_name)
+        impure recursive module subroutine to_binary_14dc32(x, file)
             complex(r32),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_14dc32
 
-        impure recursive module subroutine to_binary_15dc128(x, file_name)
+        impure recursive module subroutine to_binary_15dc128(x, file)
             complex(r128),    intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_15dc128
-        impure recursive module subroutine to_binary_15dc64(x, file_name)
+        impure recursive module subroutine to_binary_15dc64(x, file)
             complex(r64),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_15dc64
-        impure recursive module subroutine to_binary_15dc32(x, file_name)
+        impure recursive module subroutine to_binary_15dc32(x, file)
             complex(r32),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_15dc32
 
-        impure recursive module subroutine to_binary_1dr128(x, file_name)
+        impure recursive module subroutine to_binary_1dr128(x, file)
             real(r128),       intent(in) :: x(:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_1dr128
-        impure recursive module subroutine to_binary_1dr64(x, file_name)
+        impure recursive module subroutine to_binary_1dr64(x, file)
             real(r64),        intent(in) :: x(:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_1dr64
-        impure recursive module subroutine to_binary_1dr32(x, file_name)
+        impure recursive module subroutine to_binary_1dr32(x, file)
             real(r32),        intent(in) :: x(:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_1dr32
 
-        impure recursive module subroutine to_binary_2dr128(x, file_name)
+        impure recursive module subroutine to_binary_2dr128(x, file)
             real(r128),       intent(in) :: x(:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_2dr128
-        impure recursive module subroutine to_binary_2dr64(x, file_name)
+        impure recursive module subroutine to_binary_2dr64(x, file)
             real(r64),        intent(in) :: x(:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_2dr64
-        impure recursive module subroutine to_binary_2dr32(x, file_name)
+        impure recursive module subroutine to_binary_2dr32(x, file)
             real(r32),        intent(in) :: x(:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_2dr32
 
-        impure recursive module subroutine to_binary_3dr128(x, file_name)
+        impure recursive module subroutine to_binary_3dr128(x, file)
             real(r128),       intent(in) :: x(:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_3dr128
-        impure recursive module subroutine to_binary_3dr64(x, file_name)
+        impure recursive module subroutine to_binary_3dr64(x, file)
             real(r64),        intent(in) :: x(:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_3dr64
-        impure recursive module subroutine to_binary_3dr32(x, file_name)
+        impure recursive module subroutine to_binary_3dr32(x, file)
             real(r32),        intent(in) :: x(:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_3dr32
 
-        impure recursive module subroutine to_binary_4dr128(x, file_name)
+        impure recursive module subroutine to_binary_4dr128(x, file)
             real(r128),       intent(in) :: x(:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_4dr128
-        impure recursive module subroutine to_binary_4dr64(x, file_name)
+        impure recursive module subroutine to_binary_4dr64(x, file)
             real(r64),        intent(in) :: x(:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_4dr64
-        impure recursive module subroutine to_binary_4dr32(x, file_name)
+        impure recursive module subroutine to_binary_4dr32(x, file)
             real(r32),        intent(in) :: x(:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_4dr32
 
-        impure recursive module subroutine to_binary_5dr128(x, file_name)
+        impure recursive module subroutine to_binary_5dr128(x, file)
             real(r128),       intent(in) :: x(:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_5dr128
-        impure recursive module subroutine to_binary_5dr64(x, file_name)
+        impure recursive module subroutine to_binary_5dr64(x, file)
             real(r64),        intent(in) :: x(:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_5dr64
-        impure recursive module subroutine to_binary_5dr32(x, file_name)
+        impure recursive module subroutine to_binary_5dr32(x, file)
             real(r32),        intent(in) :: x(:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_5dr32
 
-        impure recursive module subroutine to_binary_6dr128(x, file_name)
+        impure recursive module subroutine to_binary_6dr128(x, file)
             real(r128),       intent(in) :: x(:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_6dr128
-        impure recursive module subroutine to_binary_6dr64(x, file_name)
+        impure recursive module subroutine to_binary_6dr64(x, file)
             real(r64),        intent(in) :: x(:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_6dr64
-        impure recursive module subroutine to_binary_6dr32(x, file_name)
+        impure recursive module subroutine to_binary_6dr32(x, file)
             real(r32),        intent(in) :: x(:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_6dr32
 
-        impure recursive module subroutine to_binary_7dr128(x, file_name)
+        impure recursive module subroutine to_binary_7dr128(x, file)
             real(r128),       intent(in) :: x(:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_7dr128
-        impure recursive module subroutine to_binary_7dr64(x, file_name)
+        impure recursive module subroutine to_binary_7dr64(x, file)
             real(r64),        intent(in) :: x(:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_7dr64
-        impure recursive module subroutine to_binary_7dr32(x, file_name)
+        impure recursive module subroutine to_binary_7dr32(x, file)
             real(r32),        intent(in) :: x(:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_7dr32
 
-        impure recursive module subroutine to_binary_8dr128(x, file_name)
+        impure recursive module subroutine to_binary_8dr128(x, file)
             real(r128),       intent(in) :: x(:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_8dr128
-        impure recursive module subroutine to_binary_8dr64(x, file_name)
+        impure recursive module subroutine to_binary_8dr64(x, file)
             real(r64),        intent(in) :: x(:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_8dr64
-        impure recursive module subroutine to_binary_8dr32(x, file_name)
+        impure recursive module subroutine to_binary_8dr32(x, file)
             real(r32),        intent(in) :: x(:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_8dr32
 
-        impure recursive module subroutine to_binary_9dr128(x, file_name)
+        impure recursive module subroutine to_binary_9dr128(x, file)
             real(r128),       intent(in) :: x(:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_9dr128
-        impure recursive module subroutine to_binary_9dr64(x, file_name)
+        impure recursive module subroutine to_binary_9dr64(x, file)
             real(r64),        intent(in) :: x(:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_9dr64
-        impure recursive module subroutine to_binary_9dr32(x, file_name)
+        impure recursive module subroutine to_binary_9dr32(x, file)
             real(r32),        intent(in) :: x(:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_9dr32
 
-        impure recursive module subroutine to_binary_10dr128(x, file_name)
+        impure recursive module subroutine to_binary_10dr128(x, file)
             real(r128),       intent(in) :: x(:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_10dr128
-        impure recursive module subroutine to_binary_10dr64(x, file_name)
+        impure recursive module subroutine to_binary_10dr64(x, file)
             real(r64),        intent(in) :: x(:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_10dr64
-        impure recursive module subroutine to_binary_10dr32(x, file_name)
+        impure recursive module subroutine to_binary_10dr32(x, file)
             real(r32),        intent(in) :: x(:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_10dr32
 
-        impure recursive module subroutine to_binary_11dr128(x, file_name)
+        impure recursive module subroutine to_binary_11dr128(x, file)
             real(r128),       intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_11dr128
-        impure recursive module subroutine to_binary_11dr64(x, file_name)
+        impure recursive module subroutine to_binary_11dr64(x, file)
             real(r64),        intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_11dr64
-        impure recursive module subroutine to_binary_11dr32(x, file_name)
+        impure recursive module subroutine to_binary_11dr32(x, file)
             real(r32),        intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_11dr32
 
-        impure recursive module subroutine to_binary_12dr128(x, file_name)
+        impure recursive module subroutine to_binary_12dr128(x, file)
             real(r128),       intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_12dr128
-        impure recursive module subroutine to_binary_12dr64(x, file_name)
+        impure recursive module subroutine to_binary_12dr64(x, file)
             real(r64),        intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_12dr64
-        impure recursive module subroutine to_binary_12dr32(x, file_name)
+        impure recursive module subroutine to_binary_12dr32(x, file)
             real(r32),        intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_12dr32
 
-        impure recursive module subroutine to_binary_13dr128(x, file_name)
+        impure recursive module subroutine to_binary_13dr128(x, file)
             real(r128),       intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_13dr128
-        impure recursive module subroutine to_binary_13dr64(x, file_name)
+        impure recursive module subroutine to_binary_13dr64(x, file)
             real(r64),        intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_13dr64
-        impure recursive module subroutine to_binary_13dr32(x, file_name)
+        impure recursive module subroutine to_binary_13dr32(x, file)
             real(r32),        intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_13dr32
 
-        impure recursive module subroutine to_binary_14dr128(x, file_name)
+        impure recursive module subroutine to_binary_14dr128(x, file)
             real(r128),       intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_14dr128
-        impure recursive module subroutine to_binary_14dr64(x, file_name)
+        impure recursive module subroutine to_binary_14dr64(x, file)
             real(r64),        intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_14dr64
-        impure recursive module subroutine to_binary_14dr32(x, file_name)
+        impure recursive module subroutine to_binary_14dr32(x, file)
             real(r32),        intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_14dr32
 
-        impure recursive module subroutine to_binary_15dr128(x, file_name)
+        impure recursive module subroutine to_binary_15dr128(x, file)
             real(r128),       intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_15dr128
-        impure recursive module subroutine to_binary_15dr64(x, file_name)
+        impure recursive module subroutine to_binary_15dr64(x, file)
             real(r64),        intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_15dr64
-        impure recursive module subroutine to_binary_15dr32(x, file_name)
+        impure recursive module subroutine to_binary_15dr32(x, file)
             real(r32),        intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_15dr32
 
-        impure recursive module subroutine to_binary_1di64(x, file_name)
+        impure recursive module subroutine to_binary_1di64(x, file)
             integer(i64),     intent(in) :: x(:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_1di64
-        impure recursive module subroutine to_binary_1di32(x, file_name)
+        impure recursive module subroutine to_binary_1di32(x, file)
             integer(i32),     intent(in) :: x(:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_1di32
-        impure recursive module subroutine to_binary_1di16(x, file_name)
+        impure recursive module subroutine to_binary_1di16(x, file)
             integer(i16),     intent(in) :: x(:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_1di16
-        impure recursive module subroutine to_binary_1di8(x, file_name)
+        impure recursive module subroutine to_binary_1di8(x, file)
             integer(i8),      intent(in) :: x(:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_1di8
 
-        impure recursive module subroutine to_binary_2di64(x, file_name)
+        impure recursive module subroutine to_binary_2di64(x, file)
             integer(i64),     intent(in) :: x(:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_2di64
-        impure recursive module subroutine to_binary_2di32(x, file_name)
+        impure recursive module subroutine to_binary_2di32(x, file)
             integer(i32),     intent(in) :: x(:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_2di32
-        impure recursive module subroutine to_binary_2di16(x, file_name)
+        impure recursive module subroutine to_binary_2di16(x, file)
             integer(i16),     intent(in) :: x(:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_2di16
-        impure recursive module subroutine to_binary_2di8(x, file_name)
+        impure recursive module subroutine to_binary_2di8(x, file)
             integer(i8),      intent(in) :: x(:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_2di8
 
-        impure recursive module subroutine to_binary_3di64(x, file_name)
+        impure recursive module subroutine to_binary_3di64(x, file)
             integer(i64),     intent(in) :: x(:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_3di64
-        impure recursive module subroutine to_binary_3di32(x, file_name)
+        impure recursive module subroutine to_binary_3di32(x, file)
             integer(i32),     intent(in) :: x(:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_3di32
-        impure recursive module subroutine to_binary_3di16(x, file_name)
+        impure recursive module subroutine to_binary_3di16(x, file)
             integer(i16),     intent(in) :: x(:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_3di16
-        impure recursive module subroutine to_binary_3di8(x, file_name)
+        impure recursive module subroutine to_binary_3di8(x, file)
             integer(i8),      intent(in) :: x(:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_3di8
 
-        impure recursive module subroutine to_binary_4di64(x, file_name)
+        impure recursive module subroutine to_binary_4di64(x, file)
             integer(i64),     intent(in) :: x(:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_4di64
-        impure recursive module subroutine to_binary_4di32(x, file_name)
+        impure recursive module subroutine to_binary_4di32(x, file)
             integer(i32),     intent(in) :: x(:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_4di32
-        impure recursive module subroutine to_binary_4di16(x, file_name)
+        impure recursive module subroutine to_binary_4di16(x, file)
             integer(i16),     intent(in) :: x(:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_4di16
-        impure recursive module subroutine to_binary_4di8(x, file_name)
+        impure recursive module subroutine to_binary_4di8(x, file)
             integer(i8),      intent(in) :: x(:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_4di8
 
-        impure recursive module subroutine to_binary_5di64(x, file_name)
+        impure recursive module subroutine to_binary_5di64(x, file)
             integer(i64),     intent(in) :: x(:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_5di64
-        impure recursive module subroutine to_binary_5di32(x, file_name)
+        impure recursive module subroutine to_binary_5di32(x, file)
             integer(i32),     intent(in) :: x(:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_5di32
-        impure recursive module subroutine to_binary_5di16(x, file_name)
+        impure recursive module subroutine to_binary_5di16(x, file)
             integer(i16),     intent(in) :: x(:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_5di16
-        impure recursive module subroutine to_binary_5di8(x, file_name)
+        impure recursive module subroutine to_binary_5di8(x, file)
             integer(i8),      intent(in) :: x(:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_5di8
 
-        impure recursive module subroutine to_binary_6di64(x, file_name)
+        impure recursive module subroutine to_binary_6di64(x, file)
             integer(i64),     intent(in) :: x(:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_6di64
-        impure recursive module subroutine to_binary_6di32(x, file_name)
+        impure recursive module subroutine to_binary_6di32(x, file)
             integer(i32),     intent(in) :: x(:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_6di32
-        impure recursive module subroutine to_binary_6di16(x, file_name)
+        impure recursive module subroutine to_binary_6di16(x, file)
             integer(i16),     intent(in) :: x(:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_6di16
-        impure recursive module subroutine to_binary_6di8(x, file_name)
+        impure recursive module subroutine to_binary_6di8(x, file)
             integer(i8),      intent(in) :: x(:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_6di8
 
-        impure recursive module subroutine to_binary_7di64(x, file_name)
+        impure recursive module subroutine to_binary_7di64(x, file)
             integer(i64),     intent(in) :: x(:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_7di64
-        impure recursive module subroutine to_binary_7di32(x, file_name)
+        impure recursive module subroutine to_binary_7di32(x, file)
             integer(i32),     intent(in) :: x(:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_7di32
-        impure recursive module subroutine to_binary_7di16(x, file_name)
+        impure recursive module subroutine to_binary_7di16(x, file)
             integer(i16),     intent(in) :: x(:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_7di16
-        impure recursive module subroutine to_binary_7di8(x, file_name)
+        impure recursive module subroutine to_binary_7di8(x, file)
             integer(i8),      intent(in) :: x(:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_7di8
 
-        impure recursive module subroutine to_binary_8di64(x, file_name)
+        impure recursive module subroutine to_binary_8di64(x, file)
             integer(i64),     intent(in) :: x(:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_8di64
-        impure recursive module subroutine to_binary_8di32(x, file_name)
+        impure recursive module subroutine to_binary_8di32(x, file)
             integer(i32),     intent(in) :: x(:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_8di32
-        impure recursive module subroutine to_binary_8di16(x, file_name)
+        impure recursive module subroutine to_binary_8di16(x, file)
             integer(i16),     intent(in) :: x(:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_8di16
-        impure recursive module subroutine to_binary_8di8(x, file_name)
+        impure recursive module subroutine to_binary_8di8(x, file)
             integer(i8),      intent(in) :: x(:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_8di8
 
-        impure recursive module subroutine to_binary_9di64(x, file_name)
+        impure recursive module subroutine to_binary_9di64(x, file)
             integer(i64),     intent(in) :: x(:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_9di64
-        impure recursive module subroutine to_binary_9di32(x, file_name)
+        impure recursive module subroutine to_binary_9di32(x, file)
             integer(i32),     intent(in) :: x(:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_9di32
-        impure recursive module subroutine to_binary_9di16(x, file_name)
+        impure recursive module subroutine to_binary_9di16(x, file)
             integer(i16),     intent(in) :: x(:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_9di16
-        impure recursive module subroutine to_binary_9di8(x, file_name)
+        impure recursive module subroutine to_binary_9di8(x, file)
             integer(i8),      intent(in) :: x(:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_9di8
 
-        impure recursive module subroutine to_binary_10di64(x, file_name)
+        impure recursive module subroutine to_binary_10di64(x, file)
             integer(i64),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_10di64
-        impure recursive module subroutine to_binary_10di32(x, file_name)
+        impure recursive module subroutine to_binary_10di32(x, file)
             integer(i32),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_10di32
-        impure recursive module subroutine to_binary_10di16(x, file_name)
+        impure recursive module subroutine to_binary_10di16(x, file)
             integer(i16),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_10di16
-        impure recursive module subroutine to_binary_10di8(x, file_name)
+        impure recursive module subroutine to_binary_10di8(x, file)
             integer(i8),      intent(in) :: x(:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_10di8
 
-        impure recursive module subroutine to_binary_11di64(x, file_name)
+        impure recursive module subroutine to_binary_11di64(x, file)
             integer(i64),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_11di64
-        impure recursive module subroutine to_binary_11di32(x, file_name)
+        impure recursive module subroutine to_binary_11di32(x, file)
             integer(i32),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_11di32
-        impure recursive module subroutine to_binary_11di16(x, file_name)
+        impure recursive module subroutine to_binary_11di16(x, file)
             integer(i16),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_11di16
-        impure recursive module subroutine to_binary_11di8(x, file_name)
+        impure recursive module subroutine to_binary_11di8(x, file)
             integer(i8),      intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_11di8
 
-        impure recursive module subroutine to_binary_12di64(x, file_name)
+        impure recursive module subroutine to_binary_12di64(x, file)
             integer(i64),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_12di64
-        impure recursive module subroutine to_binary_12di32(x, file_name)
+        impure recursive module subroutine to_binary_12di32(x, file)
             integer(i32),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_12di32
-        impure recursive module subroutine to_binary_12di16(x, file_name)
+        impure recursive module subroutine to_binary_12di16(x, file)
             integer(i16),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_12di16
-        impure recursive module subroutine to_binary_12di8(x, file_name)
+        impure recursive module subroutine to_binary_12di8(x, file)
             integer(i8),      intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_12di8
 
-        impure recursive module subroutine to_binary_13di64(x, file_name)
+        impure recursive module subroutine to_binary_13di64(x, file)
             integer(i64),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_13di64
-        impure recursive module subroutine to_binary_13di32(x, file_name)
+        impure recursive module subroutine to_binary_13di32(x, file)
             integer(i32),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_13di32
-        impure recursive module subroutine to_binary_13di16(x, file_name)
+        impure recursive module subroutine to_binary_13di16(x, file)
             integer(i16),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_13di16
-        impure recursive module subroutine to_binary_13di8(x, file_name)
+        impure recursive module subroutine to_binary_13di8(x, file)
             integer(i8),      intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_13di8
 
-        impure recursive module subroutine to_binary_14di64(x, file_name)
+        impure recursive module subroutine to_binary_14di64(x, file)
             integer(i64),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_14di64
-        impure recursive module subroutine to_binary_14di32(x, file_name)
+        impure recursive module subroutine to_binary_14di32(x, file)
             integer(i32),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_14di32
-        impure recursive module subroutine to_binary_14di16(x, file_name)
+        impure recursive module subroutine to_binary_14di16(x, file)
             integer(i16),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_14di16
-        impure recursive module subroutine to_binary_14di8(x, file_name)
+        impure recursive module subroutine to_binary_14di8(x, file)
             integer(i8),      intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_14di8
 
-        impure recursive module subroutine to_binary_15di64(x, file_name)
+        impure recursive module subroutine to_binary_15di64(x, file)
             integer(i64),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_15di64
-        impure recursive module subroutine to_binary_15di32(x, file_name)
+        impure recursive module subroutine to_binary_15di32(x, file)
             integer(i32),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_15di32
-        impure recursive module subroutine to_binary_15di16(x, file_name)
+        impure recursive module subroutine to_binary_15di16(x, file)
             integer(i16),     intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_15di16
-        impure recursive module subroutine to_binary_15di8(x, file_name)
+        impure recursive module subroutine to_binary_15di8(x, file)
             integer(i8),      intent(in) :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-            character(len=*), intent(in) :: file_name
+            character(len=*), intent(in) :: file
         end subroutine to_binary_15di8
     end interface
 
@@ -3707,797 +3715,797 @@ module io_fortran_lib
         !---------------------------------------------------------------------------------------------------------------
         !! Private interface for reading an external binary file into an array.
         !---------------------------------------------------------------------------------------------------------------
-        impure recursive module subroutine from_binary_1dc128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_1dc128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r128),    intent(out), allocatable :: into(:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_1dc128
-        impure recursive module subroutine from_binary_1dc64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_1dc64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r64),     intent(out), allocatable :: into(:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_1dc64
-        impure recursive module subroutine from_binary_1dc32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_1dc32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r32),     intent(out), allocatable :: into(:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_1dc32
 
-        impure recursive module subroutine from_binary_2dc128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_2dc128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r128),    intent(out), allocatable :: into(:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_2dc128
-        impure recursive module subroutine from_binary_2dc64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_2dc64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r64),     intent(out), allocatable :: into(:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_2dc64
-        impure recursive module subroutine from_binary_2dc32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_2dc32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r32),     intent(out), allocatable :: into(:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_2dc32
 
-        impure recursive module subroutine from_binary_3dc128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_3dc128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r128),    intent(out), allocatable :: into(:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_3dc128
-        impure recursive module subroutine from_binary_3dc64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_3dc64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r64),     intent(out), allocatable :: into(:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_3dc64
-        impure recursive module subroutine from_binary_3dc32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_3dc32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r32),     intent(out), allocatable :: into(:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_3dc32
 
-        impure recursive module subroutine from_binary_4dc128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_4dc128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r128),    intent(out), allocatable :: into(:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_4dc128
-        impure recursive module subroutine from_binary_4dc64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_4dc64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r64),     intent(out), allocatable :: into(:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_4dc64
-        impure recursive module subroutine from_binary_4dc32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_4dc32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r32),     intent(out), allocatable :: into(:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_4dc32
 
-        impure recursive module subroutine from_binary_5dc128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_5dc128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r128),    intent(out), allocatable :: into(:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_5dc128
-        impure recursive module subroutine from_binary_5dc64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_5dc64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r64),     intent(out), allocatable :: into(:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_5dc64
-        impure recursive module subroutine from_binary_5dc32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_5dc32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r32),     intent(out), allocatable :: into(:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_5dc32
 
-        impure recursive module subroutine from_binary_6dc128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_6dc128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r128),    intent(out), allocatable :: into(:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_6dc128
-        impure recursive module subroutine from_binary_6dc64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_6dc64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r64),     intent(out), allocatable :: into(:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_6dc64
-        impure recursive module subroutine from_binary_6dc32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_6dc32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r32),     intent(out), allocatable :: into(:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_6dc32
 
-        impure recursive module subroutine from_binary_7dc128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_7dc128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r128),    intent(out), allocatable :: into(:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_7dc128
-        impure recursive module subroutine from_binary_7dc64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_7dc64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r64),     intent(out), allocatable :: into(:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_7dc64
-        impure recursive module subroutine from_binary_7dc32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_7dc32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r32),     intent(out), allocatable :: into(:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_7dc32
 
-        impure recursive module subroutine from_binary_8dc128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_8dc128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r128),    intent(out), allocatable :: into(:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_8dc128
-        impure recursive module subroutine from_binary_8dc64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_8dc64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r64),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_8dc64
-        impure recursive module subroutine from_binary_8dc32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_8dc32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r32),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_8dc32
 
-        impure recursive module subroutine from_binary_9dc128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_9dc128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r128),    intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_9dc128
-        impure recursive module subroutine from_binary_9dc64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_9dc64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r64),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_9dc64
-        impure recursive module subroutine from_binary_9dc32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_9dc32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r32),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_9dc32
 
-        impure recursive module subroutine from_binary_10dc128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_10dc128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r128),    intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_10dc128
-        impure recursive module subroutine from_binary_10dc64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_10dc64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r64),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_10dc64
-        impure recursive module subroutine from_binary_10dc32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_10dc32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r32),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_10dc32
 
-        impure recursive module subroutine from_binary_11dc128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_11dc128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r128),    intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_11dc128
-        impure recursive module subroutine from_binary_11dc64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_11dc64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r64),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_11dc64
-        impure recursive module subroutine from_binary_11dc32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_11dc32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r32),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_11dc32
 
-        impure recursive module subroutine from_binary_12dc128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_12dc128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r128),    intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_12dc128
-        impure recursive module subroutine from_binary_12dc64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_12dc64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r64),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_12dc64
-        impure recursive module subroutine from_binary_12dc32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_12dc32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r32),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_12dc32
 
-        impure recursive module subroutine from_binary_13dc128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_13dc128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r128),    intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_13dc128
-        impure recursive module subroutine from_binary_13dc64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_13dc64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r64),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_13dc64
-        impure recursive module subroutine from_binary_13dc32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_13dc32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r32),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_13dc32
 
-        impure recursive module subroutine from_binary_14dc128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_14dc128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r128),    intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_14dc128
-        impure recursive module subroutine from_binary_14dc64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_14dc64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r64),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_14dc64
-        impure recursive module subroutine from_binary_14dc32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_14dc32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r32),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_14dc32
 
-        impure recursive module subroutine from_binary_15dc128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_15dc128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r128),    intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_15dc128
-        impure recursive module subroutine from_binary_15dc64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_15dc64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r64),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_15dc64
-        impure recursive module subroutine from_binary_15dc32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_15dc32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             complex(r32),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_15dc32
 
-        impure recursive module subroutine from_binary_1dr128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_1dr128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r128),       intent(out), allocatable :: into(:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_1dr128
-        impure recursive module subroutine from_binary_1dr64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_1dr64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r64),        intent(out), allocatable :: into(:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_1dr64
-        impure recursive module subroutine from_binary_1dr32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_1dr32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r32),        intent(out), allocatable :: into(:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_1dr32
 
-        impure recursive module subroutine from_binary_2dr128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_2dr128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r128),       intent(out), allocatable :: into(:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_2dr128
-        impure recursive module subroutine from_binary_2dr64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_2dr64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r64),        intent(out), allocatable :: into(:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_2dr64
-        impure recursive module subroutine from_binary_2dr32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_2dr32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r32),        intent(out), allocatable :: into(:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_2dr32
 
-        impure recursive module subroutine from_binary_3dr128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_3dr128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r128),       intent(out), allocatable :: into(:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_3dr128
-        impure recursive module subroutine from_binary_3dr64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_3dr64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r64),        intent(out), allocatable :: into(:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_3dr64
-        impure recursive module subroutine from_binary_3dr32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_3dr32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r32),        intent(out), allocatable :: into(:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_3dr32
 
-        impure recursive module subroutine from_binary_4dr128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_4dr128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r128),       intent(out), allocatable :: into(:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_4dr128
-        impure recursive module subroutine from_binary_4dr64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_4dr64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r64),        intent(out), allocatable :: into(:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_4dr64
-        impure recursive module subroutine from_binary_4dr32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_4dr32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r32),        intent(out), allocatable :: into(:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_4dr32
 
-        impure recursive module subroutine from_binary_5dr128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_5dr128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r128),       intent(out), allocatable :: into(:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_5dr128
-        impure recursive module subroutine from_binary_5dr64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_5dr64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r64),        intent(out), allocatable :: into(:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_5dr64
-        impure recursive module subroutine from_binary_5dr32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_5dr32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r32),        intent(out), allocatable :: into(:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_5dr32
 
-        impure recursive module subroutine from_binary_6dr128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_6dr128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r128),       intent(out), allocatable :: into(:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_6dr128
-        impure recursive module subroutine from_binary_6dr64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_6dr64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r64),        intent(out), allocatable :: into(:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_6dr64
-        impure recursive module subroutine from_binary_6dr32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_6dr32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r32),        intent(out), allocatable :: into(:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_6dr32
 
-        impure recursive module subroutine from_binary_7dr128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_7dr128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r128),       intent(out), allocatable :: into(:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_7dr128
-        impure recursive module subroutine from_binary_7dr64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_7dr64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r64),        intent(out), allocatable :: into(:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_7dr64
-        impure recursive module subroutine from_binary_7dr32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_7dr32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r32),        intent(out), allocatable :: into(:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_7dr32
 
-        impure recursive module subroutine from_binary_8dr128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_8dr128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r128),       intent(out), allocatable :: into(:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_8dr128
-        impure recursive module subroutine from_binary_8dr64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_8dr64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r64),        intent(out), allocatable :: into(:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_8dr64
-        impure recursive module subroutine from_binary_8dr32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_8dr32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r32),        intent(out), allocatable :: into(:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_8dr32
 
-        impure recursive module subroutine from_binary_9dr128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_9dr128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r128),       intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_9dr128
-        impure recursive module subroutine from_binary_9dr64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_9dr64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r64),        intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_9dr64
-        impure recursive module subroutine from_binary_9dr32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_9dr32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r32),        intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_9dr32
 
-        impure recursive module subroutine from_binary_10dr128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_10dr128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r128),       intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_10dr128
-        impure recursive module subroutine from_binary_10dr64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_10dr64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r64),        intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_10dr64
-        impure recursive module subroutine from_binary_10dr32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_10dr32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r32),        intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_10dr32
 
-        impure recursive module subroutine from_binary_11dr128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_11dr128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r128),       intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_11dr128
-        impure recursive module subroutine from_binary_11dr64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_11dr64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r64),        intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_11dr64
-        impure recursive module subroutine from_binary_11dr32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_11dr32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r32),        intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_11dr32
 
-        impure recursive module subroutine from_binary_12dr128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_12dr128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r128),       intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_12dr128
-        impure recursive module subroutine from_binary_12dr64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_12dr64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r64),        intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_12dr64
-        impure recursive module subroutine from_binary_12dr32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_12dr32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r32),        intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_12dr32
 
-        impure recursive module subroutine from_binary_13dr128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_13dr128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r128),       intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_13dr128
-        impure recursive module subroutine from_binary_13dr64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_13dr64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r64),        intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_13dr64
-        impure recursive module subroutine from_binary_13dr32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_13dr32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r32),        intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_13dr32
 
-        impure recursive module subroutine from_binary_14dr128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_14dr128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r128),       intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_14dr128
-        impure recursive module subroutine from_binary_14dr64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_14dr64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r64),        intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_14dr64
-        impure recursive module subroutine from_binary_14dr32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_14dr32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r32),        intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_14dr32
 
-        impure recursive module subroutine from_binary_15dr128(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_15dr128(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r128),       intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_15dr128
-        impure recursive module subroutine from_binary_15dr64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_15dr64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r64),        intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_15dr64
-        impure recursive module subroutine from_binary_15dr32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_15dr32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             real(r32),        intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_15dr32
 
-        impure recursive module subroutine from_binary_1di64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_1di64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i64),     intent(out), allocatable :: into(:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_1di64
-        impure recursive module subroutine from_binary_1di32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_1di32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i32),     intent(out), allocatable :: into(:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_1di32
-        impure recursive module subroutine from_binary_1di16(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_1di16(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i16),     intent(out), allocatable :: into(:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_1di16
-        impure recursive module subroutine from_binary_1di8(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_1di8(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i8),      intent(out), allocatable :: into(:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_1di8
 
-        impure recursive module subroutine from_binary_2di64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_2di64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i64),     intent(out), allocatable :: into(:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_2di64
-        impure recursive module subroutine from_binary_2di32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_2di32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i32),     intent(out), allocatable :: into(:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_2di32
-        impure recursive module subroutine from_binary_2di16(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_2di16(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i16),     intent(out), allocatable :: into(:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_2di16
-        impure recursive module subroutine from_binary_2di8(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_2di8(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i8),      intent(out), allocatable :: into(:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_2di8
 
-        impure recursive module subroutine from_binary_3di64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_3di64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i64),     intent(out), allocatable :: into(:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_3di64
-        impure recursive module subroutine from_binary_3di32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_3di32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i32),     intent(out), allocatable :: into(:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_3di32
-        impure recursive module subroutine from_binary_3di16(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_3di16(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i16),     intent(out), allocatable :: into(:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_3di16
-        impure recursive module subroutine from_binary_3di8(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_3di8(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i8),      intent(out), allocatable :: into(:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_3di8
 
-        impure recursive module subroutine from_binary_4di64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_4di64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i64),     intent(out), allocatable :: into(:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_4di64
-        impure recursive module subroutine from_binary_4di32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_4di32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i32),     intent(out), allocatable :: into(:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_4di32
-        impure recursive module subroutine from_binary_4di16(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_4di16(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i16),     intent(out), allocatable :: into(:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_4di16
-        impure recursive module subroutine from_binary_4di8(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_4di8(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i8),      intent(out), allocatable :: into(:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_4di8
 
-        impure recursive module subroutine from_binary_5di64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_5di64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i64),     intent(out), allocatable :: into(:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_5di64
-        impure recursive module subroutine from_binary_5di32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_5di32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i32),     intent(out), allocatable :: into(:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_5di32
-        impure recursive module subroutine from_binary_5di16(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_5di16(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i16),     intent(out), allocatable :: into(:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_5di16
-        impure recursive module subroutine from_binary_5di8(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_5di8(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i8),      intent(out), allocatable :: into(:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_5di8
 
-        impure recursive module subroutine from_binary_6di64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_6di64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i64),     intent(out), allocatable :: into(:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_6di64
-        impure recursive module subroutine from_binary_6di32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_6di32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i32),     intent(out), allocatable :: into(:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_6di32
-        impure recursive module subroutine from_binary_6di16(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_6di16(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i16),     intent(out), allocatable :: into(:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_6di16
-        impure recursive module subroutine from_binary_6di8(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_6di8(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i8),      intent(out), allocatable :: into(:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_6di8
 
-        impure recursive module subroutine from_binary_7di64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_7di64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i64),     intent(out), allocatable :: into(:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_7di64
-        impure recursive module subroutine from_binary_7di32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_7di32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i32),     intent(out), allocatable :: into(:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_7di32
-        impure recursive module subroutine from_binary_7di16(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_7di16(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i16),     intent(out), allocatable :: into(:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_7di16
-        impure recursive module subroutine from_binary_7di8(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_7di8(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i8),      intent(out), allocatable :: into(:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_7di8
 
-        impure recursive module subroutine from_binary_8di64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_8di64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i64),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_8di64
-        impure recursive module subroutine from_binary_8di32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_8di32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i32),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_8di32
-        impure recursive module subroutine from_binary_8di16(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_8di16(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i16),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_8di16
-        impure recursive module subroutine from_binary_8di8(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_8di8(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i8),      intent(out), allocatable :: into(:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_8di8
 
-        impure recursive module subroutine from_binary_9di64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_9di64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i64),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_9di64
-        impure recursive module subroutine from_binary_9di32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_9di32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i32),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_9di32
-        impure recursive module subroutine from_binary_9di16(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_9di16(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i16),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_9di16
-        impure recursive module subroutine from_binary_9di8(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_9di8(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i8),      intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_9di8
 
-        impure recursive module subroutine from_binary_10di64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_10di64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i64),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_10di64
-        impure recursive module subroutine from_binary_10di32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_10di32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i32),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_10di32
-        impure recursive module subroutine from_binary_10di16(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_10di16(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i16),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_10di16
-        impure recursive module subroutine from_binary_10di8(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_10di8(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i8),      intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_10di8
 
-        impure recursive module subroutine from_binary_11di64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_11di64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i64),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_11di64
-        impure recursive module subroutine from_binary_11di32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_11di32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i32),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_11di32
-        impure recursive module subroutine from_binary_11di16(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_11di16(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i16),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_11di16
-        impure recursive module subroutine from_binary_11di8(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_11di8(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i8),      intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_11di8
 
-        impure recursive module subroutine from_binary_12di64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_12di64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i64),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_12di64
-        impure recursive module subroutine from_binary_12di32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_12di32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i32),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_12di32
-        impure recursive module subroutine from_binary_12di16(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_12di16(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i16),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_12di16
-        impure recursive module subroutine from_binary_12di8(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_12di8(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i8),      intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_12di8
 
-        impure recursive module subroutine from_binary_13di64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_13di64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i64),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_13di64
-        impure recursive module subroutine from_binary_13di32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_13di32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i32),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_13di32
-        impure recursive module subroutine from_binary_13di16(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_13di16(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i16),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_13di16
-        impure recursive module subroutine from_binary_13di8(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_13di8(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i8),      intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_13di8
 
-        impure recursive module subroutine from_binary_14di64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_14di64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i64),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_14di64
-        impure recursive module subroutine from_binary_14di32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_14di32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i32),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_14di32
-        impure recursive module subroutine from_binary_14di16(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_14di16(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i16),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_14di16
-        impure recursive module subroutine from_binary_14di8(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_14di8(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i8),      intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_14di8
 
-        impure recursive module subroutine from_binary_15di64(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_15di64(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i64),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_15di64
-        impure recursive module subroutine from_binary_15di32(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_15di32(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i32),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_15di32
-        impure recursive module subroutine from_binary_15di16(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_15di16(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i16),     intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_15di16
-        impure recursive module subroutine from_binary_15di8(file_name, into, data_shape)
-            character(len=*), intent(in)               :: file_name
+        impure recursive module subroutine from_binary_15di8(file, into, data_shape)
+            character(len=*), intent(in)               :: file
             integer(i8),      intent(out), allocatable :: into(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
             integer,          intent(in)               :: data_shape(:)
         end subroutine from_binary_15di8
@@ -4628,14 +4636,6 @@ module io_fortran_lib
         impure recursive module subroutine aprint_2dString(x)
             class(String), intent(in) :: x(:,:)
         end subroutine aprint_2dString
-    end interface
-
-    interface
-        pure recursive module function ext_of(file_name) result(ext)
-            ! Function for parsing a file name for an extension
-            character(len=*), intent(in)  :: file_name
-            character(len=:), allocatable :: ext
-        end function ext_of
     end interface
 
 end module io_fortran_lib

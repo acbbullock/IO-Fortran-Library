@@ -296,35 +296,35 @@ submodule (io_fortran_lib) string_methods
 
         file_length=0_i64; file_unit=0; iostat=0; exists=.false.
 
-        ext = ext_of(file_name)
+        ext = ext_of(file)
 
         if ( .not. any(TEXT_EXT == ext) ) then
             if ( any(BINARY_EXT == ext) ) then
-                error stop LF//'FATAL: Error reading file "'//file_name//'" in method READ_FILE. Binary data '// &
+                error stop LF//'FATAL: Error reading file "'//file//'" in method READ_FILE. Binary data '// &
                                'cannot be read into a String.'
             else
-                error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file_name//'" in '// &
+                error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file//'" in '// &
                                'method READ_FILE.'// &
                            LF//'Supported file extensions: '//join(TEXT_EXT)
             end if
         end if
 
-        inquire(file=file_name, exist=exists)
+        inquire(file=file, exist=exists)
 
         file_unit = input_unit
 
         if ( exists ) then
-            open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+            open( newunit=file_unit, file=file, status="old", form="unformatted", &
                   action="read", access="stream", position="rewind" )
         else
-            error stop LF//'FATAL: Error reading file "'//file_name//'". No such file exists.'
+            error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
             return
         end if
 
-        inquire( file=file_name, size=file_length )
+        inquire( file=file, size=file_length )
 
         if ( file_length == 0_i64 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". File is empty.'
+            error stop LF//'FATAL: Error reading file "'//file//'". File is empty.'
             return
         end if
 
@@ -335,20 +335,20 @@ submodule (io_fortran_lib) string_methods
         close(file_unit)
 
         if ( iostat > 0 ) then
-            error stop LF//'FATAL: Error reading file "'//file_name//'". iostat is '//str(iostat)
+            error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
             return
         end if
 
         if ( .not. present(cell_array) ) then
             if ( present(row_separator) ) then
                 write(*,"(a)")  LF//'WARNING: Row separator was specified in method READ_FILE for file "'// &
-                                    file_name//'" without a cell array output. To use this option, '// &
+                                    file//'" without a cell array output. To use this option, '// &
                                     'provide an actual argument to cell_array.'
             end if
 
             if ( present(column_separator) ) then
                 write(*,"(a)")  LF//'WARNING: Column separator was specified in method READ_FILE for file "'// &
-                                    file_name//'" without a cell array output. To use this option, '// &
+                                    file//'" without a cell array output. To use this option, '// &
                                     'provide an actual argument to cell_array.'
             end if
 
@@ -358,7 +358,7 @@ submodule (io_fortran_lib) string_methods
         if ( present(row_separator) ) then
             if ( len(row_separator) == 0 ) then
                 write(*,"(a)")  LF//'WARNING: Cannot populate a cell array with the contents of file "'// &
-                                    file_name//'" using an empty row separator. Returning without cell array...'
+                                    file//'" using an empty row separator. Returning without cell array...'
                 return
             end if
         end if
@@ -366,7 +366,7 @@ submodule (io_fortran_lib) string_methods
         if ( present(column_separator) ) then
             if ( len(column_separator) == 0 ) then
                 write(*,"(a)")  LF//'WARNING: Cannot populate a cell array with the contents of file "'// &
-                                    file_name//'" using an empty column separator. Returning without cell array...'
+                                    file//'" using an empty column separator. Returning without cell array...'
                 return
             end if
         end if
@@ -1043,10 +1043,10 @@ submodule (io_fortran_lib) string_methods
         exists    = .false.; append_ = .false.
         file_unit = 0
 
-        ext = ext_of(file_name)
+        ext = ext_of(file)
 
         if ( .not. any(TEXT_EXT == ext) ) then
-            write(*,"(a)")  LF//'WARNING: Skipping write to "'//file_name//'" in method WRITE_FILE'// &
+            write(*,"(a)")  LF//'WARNING: Skipping write to "'//file//'" in method WRITE_FILE'// &
                                 'due to unsupported file extension "'//ext//'".'// &
                             LF//'Supported file extensions: '//join(TEXT_EXT)
             return
@@ -1102,19 +1102,19 @@ submodule (io_fortran_lib) string_methods
             end if
         end do positional_transfers
 
-        inquire(file=file_name, exist=exists)
+        inquire(file=file, exist=exists)
 
         file_unit = output_unit
 
         if ( .not. exists ) then
-            open( newunit=file_unit, file=file_name, status="new", form="unformatted", &
+            open( newunit=file_unit, file=file, status="new", form="unformatted", &
                   action="write", access="stream" )
         else
             if ( .not. append_ ) then
-                open( newunit=file_unit, file=file_name, status="replace", form="unformatted", &
+                open( newunit=file_unit, file=file, status="replace", form="unformatted", &
                       action="write", access="stream" )
             else
-                open( newunit=file_unit, file=file_name, status="old", form="unformatted", &
+                open( newunit=file_unit, file=file, status="old", form="unformatted", &
                       action="write", access="stream", position="append" )
             end if
         end if
