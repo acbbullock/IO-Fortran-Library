@@ -1,8 +1,7 @@
 program main
-    use, intrinsic :: iso_fortran_env, only: ik=>int64, rk=>real32, &
-                      compiler_version, compiler_options
-    use io_fortran_lib, only: String, cast, LF, SPACE, str, operator(+), operator(**)
-    use randoms,        only: random_gauss
+    use, intrinsic :: iso_fortran_env, only: ik=>int64, rk=>real32, compiler_version, compiler_options
+    use io_fortran_lib,                only: String, cast, LF, SPACE, str, operator(+), operator(**)
+    use randoms,                       only: random_gauss
     implicit none (type, external)
 
     integer,          parameter :: n = 2000
@@ -11,7 +10,7 @@ program main
     character(len=10) :: date = repeat(SPACE, len(date)), time = repeat(SPACE, len(time))
     type(String)      :: logmsg, string_var(n)
     logical           :: all_passing = .true.
-    real(rk)          :: x(n) = 0.0_rk
+    real(rk)          :: x(n) = 0e0_rk
     integer(ik)       :: i(n) = 0_ik, j(n) = 0_ik
 
     call random_init(repeatable=.false., image_distinct=.true.)
@@ -25,7 +24,7 @@ program main
 
     write(*,"(a)") logmsg%as_str()
 
-    call random_gauss(x,0.0_rk,1.0_rk); i = floor(huge(1_ik)*x, ik) + 1_ik
+    call random_gauss(x,0e0_rk,1e0_rk); i = floor(huge(1_ik)*x, ik) + 1_ik
     call cast(String(i, fmt="i"), into=j, fmt="i")
     if ( all(i == j) ) then
         write(*,*) "int 1: SUCCESS"
@@ -34,7 +33,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk); i = floor(huge(1_ik)*x, ik) + 1_ik
+    call random_gauss(x,0e0_rk,1e0_rk); i = floor(huge(1_ik)*x, ik) + 1_ik
     call cast(String(i, fmt="z"), into=j, fmt="z")
     if ( all(i == j) ) then
         write(*,*) "int 2: SUCCESS"
@@ -43,7 +42,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk); i = floor(huge(1_ik)*x, ik) + 1_ik
+    call random_gauss(x,0e0_rk,1e0_rk); i = floor(huge(1_ik)*x, ik) + 1_ik
     call cast(i, into=string_var, fmt="i"); call cast(string_var, into=j, fmt="i")
     if ( all(i == j) ) then
         write(*,*) "int 3: SUCCESS"
@@ -52,7 +51,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk); i = floor(huge(1_ik)*x, ik) + 1_ik
+    call random_gauss(x,0e0_rk,1e0_rk); i = floor(huge(1_ik)*x, ik) + 1_ik
     call cast(i, into=string_var, fmt="z"); call cast(string_var, into=j, fmt="z")
     if ( all(i == j) ) then
         write(*,*) "int 4: SUCCESS"

@@ -1,11 +1,10 @@
 program main
-    use, intrinsic :: iso_fortran_env, only: rk=>real32, &
-                      compiler_version, compiler_options
-    use io_fortran_lib, only: String, cast, LF, SPACE, str, operator(+), operator(**)
-    use randoms,        only: random_gauss
+    use, intrinsic :: iso_fortran_env, only: rk=>real32, compiler_version, compiler_options
+    use io_fortran_lib,                only: String, cast, LF, SPACE, str, operator(+), operator(**)
+    use randoms,                       only: random_gauss
     implicit none (type, external)
 
-    real(rk), parameter :: tol = 3.0_rk*epsilon(1.0_rk)
+    real(rk), parameter :: tol = 3.0_rk*epsilon(1e0_rk)
 
     character(len=*), parameter   :: logfile = "./test/tests.log"
     character(len=:), allocatable :: char_var
@@ -13,7 +12,7 @@ program main
     character(len=10) :: date = repeat(SPACE, len(date)), time = repeat(SPACE, len(time))
     type(String)      :: logmsg
     logical           :: all_passing = .true.
-    real(rk)          :: x = 0.0_rk, y = 0.0_rk
+    real(rk)          :: x = 0e0_rk, y = 0e0_rk
 
     call random_init(repeatable=.false., image_distinct=.true.)
     call date_and_time(date=date, time=time)
@@ -26,7 +25,7 @@ program main
 
     write(*,"(a)") logmsg%as_str()
 
-    call random_gauss(x,0.0_rk,1.0_rk)
+    call random_gauss(x,0e0_rk,1e0_rk)
     call cast(str(x, locale="US", fmt="e"), into=y, locale="US", fmt="e")
     if ( abs(x-y)/abs(x) < tol ) then
         write(*,*) "real 1: SUCCESS"
@@ -35,7 +34,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk)
+    call random_gauss(x,0e0_rk,1e0_rk)
     call cast(str(x, locale="US", fmt="f"), into=y, locale="US", fmt="f")
     if ( abs(x-y)/abs(x) < tol ) then
         write(*,*) "real 2: SUCCESS"
@@ -44,7 +43,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk)
+    call random_gauss(x,0e0_rk,1e0_rk)
     call cast(str(x, locale="US", fmt="z"), into=y, locale="US", fmt="z")
     if ( abs(x-y)/abs(x) < tol ) then
         write(*,*) "real 3: SUCCESS"
@@ -53,7 +52,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk)
+    call random_gauss(x,0e0_rk,1e0_rk)
     call cast(str(x, locale="EU", fmt="e"), into=y, locale="EU", fmt="e")
     if ( abs(x-y)/abs(x) < tol ) then
         write(*,*) "real 4: SUCCESS"
@@ -62,7 +61,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk)
+    call random_gauss(x,0e0_rk,1e0_rk)
     call cast(str(x, locale="EU", fmt="f"), into=y, locale="EU", fmt="f")
     if ( abs(x-y)/abs(x) < tol ) then
         write(*,*) "real 5: SUCCESS"
@@ -71,7 +70,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk)
+    call random_gauss(x,0e0_rk,1e0_rk)
     call cast(str(x, locale="EU", fmt="z"), into=y, locale="EU", fmt="z")
     if ( abs(x-y)/abs(x) < tol ) then
         write(*,*) "real 6: SUCCESS"
@@ -80,7 +79,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk)
+    call random_gauss(x,0e0_rk,1e0_rk)
     call cast(x, into=char_var, locale="US", fmt="e"); call cast(char_var, into=y, locale="US", fmt="e")
     if ( abs(x-y)/abs(x) < tol ) then
         write(*,*) "real 7: SUCCESS"
@@ -89,7 +88,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk)
+    call random_gauss(x,0e0_rk,1e0_rk)
     call cast(x, into=char_var, locale="US", fmt="f"); call cast(char_var, into=y, locale="US", fmt="f")
     if ( abs(x-y)/abs(x) < tol ) then
         write(*,*) "real 8: SUCCESS"
@@ -98,7 +97,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk)
+    call random_gauss(x,0e0_rk,1e0_rk)
     call cast(x, into=char_var, locale="US", fmt="z"); call cast(char_var, into=y, locale="US", fmt="z")
     if ( abs(x-y)/abs(x) < tol ) then
         write(*,*) "real 9: SUCCESS"
@@ -107,7 +106,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk)
+    call random_gauss(x,0e0_rk,1e0_rk)
     call cast(x, into=char_var, locale="EU", fmt="e"); call cast(char_var, into=y, locale="EU", fmt="e")
     if ( abs(x-y)/abs(x) < tol ) then
         write(*,*) "real 10: SUCCESS"
@@ -116,7 +115,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk)
+    call random_gauss(x,0e0_rk,1e0_rk)
     call cast(x, into=char_var, locale="EU", fmt="f"); call cast(char_var, into=y, locale="EU", fmt="f")
     if ( abs(x-y)/abs(x) < tol ) then
         write(*,*) "real 11: SUCCESS"
@@ -125,7 +124,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk)
+    call random_gauss(x,0e0_rk,1e0_rk)
     call cast(x, into=char_var, locale="EU", fmt="z"); call cast(char_var, into=y, locale="EU", fmt="z")
     if ( abs(x-y)/abs(x) < tol ) then
         write(*,*) "real 12: SUCCESS"

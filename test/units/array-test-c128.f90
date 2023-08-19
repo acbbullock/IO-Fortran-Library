@@ -1,19 +1,18 @@
 program main
-    use, intrinsic :: iso_fortran_env, only: rk=>real128, &
-                      compiler_version, compiler_options
-    use io_fortran_lib, only: String, cast, LF, SPACE, str, operator(+), operator(**)
-    use randoms,        only: random_gauss
+    use, intrinsic :: iso_fortran_env, only: rk=>real128, compiler_version, compiler_options
+    use io_fortran_lib,                only: String, cast, LF, SPACE, str, operator(+), operator(**)
+    use randoms,                       only: random_gauss
     implicit none (type, external)
 
-    real(rk),         parameter :: tol = 3.0_rk*epsilon(1.0_rk)
-    integer,          parameter :: n = 2000
+    real(rk),         parameter :: tol     = 3.0_rk*epsilon(1e0_rk)
+    integer,          parameter :: n       = 2000
     character(len=*), parameter :: logfile = "./test/tests.log"
 
     character(len=10) :: date = repeat(SPACE, len(date)), time = repeat(SPACE, len(time))
     type(String)      :: logmsg, string_var(n)
     logical           :: all_passing = .true.
-    real(rk)          :: x(n) = 0.0_rk, y(n) = 0.0_rk
-    complex(rk)       :: z1(n) = (0.0_rk,0.0_rk), z2(n) = (0.0_rk,0.0_rk)
+    real(rk)          :: x(n) = 0e0_rk, y(n) = 0e0_rk
+    complex(rk)       :: z1(n) = (0e0_rk,0e0_rk), z2(n) = (0e0_rk,0e0_rk)
 
     call random_init(repeatable=.false., image_distinct=.true.)
     call date_and_time(date=date, time=time)
@@ -26,7 +25,7 @@ program main
 
     write(*,"(a)") logmsg%as_str()
 
-    call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+    call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); z1 = cmplx(x,y,rk)
     call cast(String(z1, locale="US", fmt="e", im=""), into=z2, locale="US", fmt="e", im="")
     if ( maxval( abs(z1-z2)/abs(z1) ) < tol ) then
         write(*,*) "complex 1: SUCCESS"
@@ -35,7 +34,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+    call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); z1 = cmplx(x,y,rk)
     call cast(String(z1, locale="US", fmt="f", im=""), into=z2, locale="US", fmt="f", im="")
     if ( maxval( abs(z1-z2)/abs(z1) ) < tol ) then
         write(*,*) "complex 2: SUCCESS"
@@ -44,7 +43,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+    call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); z1 = cmplx(x,y,rk)
     call cast(String(z1, locale="US", fmt="z", im=""), into=z2, locale="US", fmt="z", im="")
     if ( maxval( abs(z1-z2)/abs(z1) ) < tol ) then
         write(*,*) "complex 3: SUCCESS"
@@ -53,7 +52,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+    call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); z1 = cmplx(x,y,rk)
     call cast(String(z1, locale="US", fmt="e", im="j"), into=z2, locale="US", fmt="e", im="j")
     if ( maxval( abs(z1-z2)/abs(z1) ) < tol ) then
         write(*,*) "complex 4: SUCCESS"
@@ -62,7 +61,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+    call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); z1 = cmplx(x,y,rk)
     call cast(String(z1, locale="US", fmt="f", im="j"), into=z2, locale="US", fmt="f", im="j")
     if ( maxval( abs(z1-z2)/abs(z1) ) < tol ) then
         write(*,*) "complex 5: SUCCESS"
@@ -71,7 +70,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+    call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); z1 = cmplx(x,y,rk)
     call cast(String(z1, locale="US", fmt="z", im="j"), into=z2, locale="US", fmt="z", im="j")
     if ( maxval( abs(z1-z2)/abs(z1) ) < tol ) then
         write(*,*) "complex 6: SUCCESS"
@@ -80,7 +79,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+    call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); z1 = cmplx(x,y,rk)
     call cast(String(z1, locale="US", fmt="e", im="*1i"), into=z2, locale="US", fmt="e", im="*1i")
     if ( maxval( abs(z1-z2)/abs(z1) ) < tol ) then
         write(*,*) "complex 7: SUCCESS"
@@ -89,7 +88,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+    call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); z1 = cmplx(x,y,rk)
     call cast(String(z1, locale="US", fmt="f", im="*1i"), into=z2, locale="US", fmt="f", im="*1i")
     if ( maxval( abs(z1-z2)/abs(z1) ) < tol ) then
         write(*,*) "complex 8: SUCCESS"
@@ -98,7 +97,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+    call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); z1 = cmplx(x,y,rk)
     call cast(String(z1, locale="US", fmt="z", im="*1i"), into=z2, locale="US", fmt="z", im="*1i")
     if ( maxval( abs(z1-z2)/abs(z1) ) < tol ) then
         write(*,*) "complex 9: SUCCESS"
@@ -107,7 +106,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+    call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); z1 = cmplx(x,y,rk)
     call cast(String(z1, locale="EU", fmt="e", im=""), into=z2, locale="EU", fmt="e", im="")
     if ( maxval( abs(z1-z2)/abs(z1) ) < tol ) then
         write(*,*) "complex 10: SUCCESS"
@@ -116,7 +115,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+    call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); z1 = cmplx(x,y,rk)
     call cast(String(z1, locale="EU", fmt="f", im=""), into=z2, locale="EU", fmt="f", im="")
     if ( maxval( abs(z1-z2)/abs(z1) ) < tol ) then
         write(*,*) "complex 11: SUCCESS"
@@ -125,7 +124,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+    call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); z1 = cmplx(x,y,rk)
     call cast(String(z1, locale="EU", fmt="z", im=""), into=z2, locale="EU", fmt="z", im="")
     if ( maxval( abs(z1-z2)/abs(z1) ) < tol ) then
         write(*,*) "complex 12: SUCCESS"
@@ -134,7 +133,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+    call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); z1 = cmplx(x,y,rk)
     call cast(String(z1, locale="EU", fmt="e", im="j"), into=z2, locale="EU", fmt="e", im="j")
     if ( maxval( abs(z1-z2)/abs(z1) ) < tol ) then
         write(*,*) "complex 13: SUCCESS"
@@ -143,7 +142,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+    call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); z1 = cmplx(x,y,rk)
     call cast(String(z1, locale="EU", fmt="f", im="j"), into=z2, locale="EU", fmt="f", im="j")
     if ( maxval( abs(z1-z2)/abs(z1) ) < tol ) then
         write(*,*) "complex 14: SUCCESS"
@@ -152,7 +151,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+    call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); z1 = cmplx(x,y,rk)
     call cast(String(z1, locale="EU", fmt="z", im="j"), into=z2, locale="EU", fmt="z", im="j")
     if ( maxval( abs(z1-z2)/abs(z1) ) < tol ) then
         write(*,*) "complex 15: SUCCESS"
@@ -161,7 +160,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+    call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); z1 = cmplx(x,y,rk)
     call cast(String(z1, locale="EU", fmt="e", im="*1i"), into=z2, locale="EU", fmt="e", im="*1i")
     if ( maxval( abs(z1-z2)/abs(z1) ) < tol ) then
         write(*,*) "complex 16: SUCCESS"
@@ -170,7 +169,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+    call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); z1 = cmplx(x,y,rk)
     call cast(String(z1, locale="EU", fmt="f", im="*1i"), into=z2, locale="EU", fmt="f", im="*1i")
     if ( maxval( abs(z1-z2)/abs(z1) ) < tol ) then
         write(*,*) "complex 17: SUCCESS"
@@ -179,7 +178,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+    call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); z1 = cmplx(x,y,rk)
     call cast(String(z1, locale="EU", fmt="z", im="*1i"), into=z2, locale="EU", fmt="z", im="*1i")
     if ( maxval( abs(z1-z2)/abs(z1) ) < tol ) then
         write(*,*) "complex 18: SUCCESS"
@@ -188,7 +187,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+    call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); z1 = cmplx(x,y,rk)
     call cast(z1, into=string_var, locale="US", fmt="e", im="")
     call cast(string_var, into=z2, locale="US", fmt="e", im="")
     if ( maxval( abs(z1-z2)/abs(z1) ) < tol ) then
@@ -198,7 +197,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+    call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); z1 = cmplx(x,y,rk)
     call cast(z1, into=string_var, locale="US", fmt="f", im="")
     call cast(string_var, into=z2, locale="US", fmt="f", im="")
     if ( maxval( abs(z1-z2)/abs(z1) ) < tol ) then
@@ -208,7 +207,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+    call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); z1 = cmplx(x,y,rk)
     call cast(z1, into=string_var, locale="US", fmt="z", im="")
     call cast(string_var, into=z2, locale="US", fmt="z", im="")
     if ( maxval( abs(z1-z2)/abs(z1) ) < tol ) then
@@ -218,7 +217,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+    call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); z1 = cmplx(x,y,rk)
     call cast(z1, into=string_var, locale="US", fmt="e", im="j")
     call cast(string_var, into=z2, locale="US", fmt="e", im="j")
     if ( maxval( abs(z1-z2)/abs(z1) ) < tol ) then
@@ -228,7 +227,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+    call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); z1 = cmplx(x,y,rk)
     call cast(z1, into=string_var, locale="US", fmt="f", im="j")
     call cast(string_var, into=z2, locale="US", fmt="f", im="j")
     if ( maxval( abs(z1-z2)/abs(z1) ) < tol ) then
@@ -238,7 +237,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+    call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); z1 = cmplx(x,y,rk)
     call cast(z1, into=string_var, locale="US", fmt="z", im="j")
     call cast(string_var, into=z2, locale="US", fmt="z", im="j")
     if ( maxval( abs(z1-z2)/abs(z1) ) < tol ) then
@@ -248,7 +247,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+    call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); z1 = cmplx(x,y,rk)
     call cast(z1, into=string_var, locale="US", fmt="e", im="*1i")
     call cast(string_var, into=z2, locale="US", fmt="e", im="*1i")
     if ( maxval( abs(z1-z2)/abs(z1) ) < tol ) then
@@ -258,7 +257,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+    call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); z1 = cmplx(x,y,rk)
     call cast(z1, into=string_var, locale="US", fmt="f", im="*1i")
     call cast(string_var, into=z2, locale="US", fmt="f", im="*1i")
     if ( maxval( abs(z1-z2)/abs(z1) ) < tol ) then
@@ -268,7 +267,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+    call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); z1 = cmplx(x,y,rk)
     call cast(z1, into=string_var, locale="US", fmt="z", im="*1i")
     call cast(string_var, into=z2, locale="US", fmt="z", im="*1i")
     if ( maxval( abs(z1-z2)/abs(z1) ) < tol ) then
@@ -278,7 +277,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+    call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); z1 = cmplx(x,y,rk)
     call cast(z1, into=string_var, locale="EU", fmt="e", im="")
     call cast(string_var, into=z2, locale="EU", fmt="e", im="")
     if ( maxval( abs(z1-z2)/abs(z1) ) < tol ) then
@@ -288,7 +287,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+    call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); z1 = cmplx(x,y,rk)
     call cast(z1, into=string_var, locale="EU", fmt="f", im="")
     call cast(string_var, into=z2, locale="EU", fmt="f", im="")
     if ( maxval( abs(z1-z2)/abs(z1) ) < tol ) then
@@ -298,7 +297,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+    call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); z1 = cmplx(x,y,rk)
     call cast(z1, into=string_var, locale="EU", fmt="z", im="")
     call cast(string_var, into=z2, locale="EU", fmt="z", im="")
     if ( maxval( abs(z1-z2)/abs(z1) ) < tol ) then
@@ -308,7 +307,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+    call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); z1 = cmplx(x,y,rk)
     call cast(z1, into=string_var, locale="EU", fmt="e", im="j")
     call cast(string_var, into=z2, locale="EU", fmt="e", im="j")
     if ( maxval( abs(z1-z2)/abs(z1) ) < tol ) then
@@ -318,7 +317,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+    call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); z1 = cmplx(x,y,rk)
     call cast(z1, into=string_var, locale="EU", fmt="f", im="j")
     call cast(string_var, into=z2, locale="EU", fmt="f", im="j")
     if ( maxval( abs(z1-z2)/abs(z1) ) < tol ) then
@@ -328,7 +327,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+    call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); z1 = cmplx(x,y,rk)
     call cast(z1, into=string_var, locale="EU", fmt="z", im="j")
     call cast(string_var, into=z2, locale="EU", fmt="z", im="j")
     if ( maxval( abs(z1-z2)/abs(z1) ) < tol ) then
@@ -338,7 +337,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+    call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); z1 = cmplx(x,y,rk)
     call cast(z1, into=string_var, locale="EU", fmt="e", im="*1i")
     call cast(string_var, into=z2, locale="EU", fmt="e", im="*1i")
     if ( maxval( abs(z1-z2)/abs(z1) ) < tol ) then
@@ -348,7 +347,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+    call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); z1 = cmplx(x,y,rk)
     call cast(z1, into=string_var, locale="EU", fmt="f", im="*1i")
     call cast(string_var, into=z2, locale="EU", fmt="f", im="*1i")
     if ( maxval( abs(z1-z2)/abs(z1) ) < tol ) then
@@ -358,7 +357,7 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk); call random_gauss(y,0.0_rk,1.0_rk); z1 = cmplx(x,y,rk)
+    call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); z1 = cmplx(x,y,rk)
     call cast(z1, into=string_var, locale="EU", fmt="z", im="*1i")
     call cast(string_var, into=z2, locale="EU", fmt="z", im="*1i")
     if ( maxval( abs(z1-z2)/abs(z1) ) < tol ) then

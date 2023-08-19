@@ -1,11 +1,10 @@
 program main
-    use, intrinsic :: iso_fortran_env, only: rk=>real128, &
-                      compiler_version, compiler_options
-    use io_fortran_lib, only: String, to_file, from_file, LF, SPACE, str, operator(+), operator(**)
-    use randoms,        only: random_gauss
+    use, intrinsic :: iso_fortran_env, only: rk=>real128, compiler_version, compiler_options
+    use io_fortran_lib,                only: String, to_file, from_file, LF, SPACE, str, operator(+), operator(**)
+    use randoms,                       only: random_gauss
     implicit none (type, external)
 
-    real(rk),         parameter :: tol = 3.0_rk*epsilon(1.0_rk)
+    real(rk),         parameter :: tol = 3.0_rk*epsilon(1e0_rk)
     integer,          parameter :: rows = 700, cols = 25
     character(len=*), parameter :: logfile = "./test/tests.log"
 
@@ -20,16 +19,16 @@ program main
     call random_init(repeatable=.false., image_distinct=.true.)
     call date_and_time(date=date, time=time)
 
-    logmsg = String("RUNNING TESTS (array) | date: " + trim(adjustl(date)) + &
-                    " | time: "                      + time                + &
-                    " | real kind: "                 + str(rk)             )
+    logmsg = String("RUNNING TESTS (file) | date: " + trim(adjustl(date)) + &
+                    " | time: "                     + time                + &
+                    " | real kind: "                + str(rk)             )
 
     call logmsg%push(LF + "-"**logmsg%len() + LF)
 
     write(*,"(a)") logmsg%as_str()
 
-    call random_gauss(u,0.0_rk,1.0_rk)
-    call to_file(u, file_name="./data/u_e.csv", header=[""], dim=2, locale="EU", fmt="e")
+    call random_gauss(u,0e0_rk,1e0_rk)
+    call to_file(u, file="./data/u_e.csv", header=[""], dim=2, locale="EU", fmt="e")
     call from_file("./data/u_e.csv", into=v, header=.false., locale="EU", fmt="e")
     if ( maxval( abs(u-v)/abs(u) ) < tol ) then
         write(*,*) "real 1: SUCCESS"
@@ -38,8 +37,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(u,0.0_rk,1.0_rk)
-    call to_file(u, file_name="./data/u_f.csv", header=[""], dim=2, locale="EU", fmt="f")
+    call random_gauss(u,0e0_rk,1e0_rk)
+    call to_file(u, file="./data/u_f.csv", header=[""], dim=2, locale="EU", fmt="f")
     call from_file("./data/u_f.csv", into=v, header=.false., locale="EU", fmt="f")
     if ( maxval( abs(u-v)/abs(u) ) < tol ) then
         write(*,*) "real 2: SUCCESS"
@@ -48,8 +47,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(u,0.0_rk,1.0_rk)
-    call to_file(u, file_name="./data/u_z.csv", header=[""], dim=2, locale="EU", fmt="z")
+    call random_gauss(u,0e0_rk,1e0_rk)
+    call to_file(u, file="./data/u_z.csv", header=[""], dim=2, locale="EU", fmt="z")
     call from_file("./data/u_z.csv", into=v, header=.false., locale="EU", fmt="z")
     if ( maxval( abs(u-v)/abs(u) ) < tol ) then
         write(*,*) "real 3: SUCCESS"
@@ -58,8 +57,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(u,0.0_rk,1.0_rk)
-    call to_file(u, file_name="./data/u_e.csv", header=[""], dim=2, locale="US", fmt="e")
+    call random_gauss(u,0e0_rk,1e0_rk)
+    call to_file(u, file="./data/u_e.csv", header=[""], dim=2, locale="US", fmt="e")
     call from_file("./data/u_e.csv", into=v, header=.false., locale="US", fmt="e")
     if ( maxval( abs(u-v)/abs(u) ) < tol ) then
         write(*,*) "real 4: SUCCESS"
@@ -68,8 +67,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(u,0.0_rk,1.0_rk)
-    call to_file(u, file_name="./data/u_f.csv", header=[""], dim=2, locale="US", fmt="f")
+    call random_gauss(u,0e0_rk,1e0_rk)
+    call to_file(u, file="./data/u_f.csv", header=[""], dim=2, locale="US", fmt="f")
     call from_file("./data/u_f.csv", into=v, header=.false., locale="US", fmt="f")
     if ( maxval( abs(u-v)/abs(u) ) < tol ) then
         write(*,*) "real 5: SUCCESS"
@@ -78,8 +77,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(u,0.0_rk,1.0_rk)
-    call to_file(u, file_name="./data/u_z.csv", header=[""], dim=2, locale="US", fmt="z")
+    call random_gauss(u,0e0_rk,1e0_rk)
+    call to_file(u, file="./data/u_z.csv", header=[""], dim=2, locale="US", fmt="z")
     call from_file("./data/u_z.csv", into=v, header=.false., locale="US", fmt="z")
     if ( maxval( abs(u-v)/abs(u) ) < tol ) then
         write(*,*) "real 6: SUCCESS"
@@ -88,8 +87,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(u,0.0_rk,1.0_rk)
-    call to_file(u, file_name="./data/u_e.csv", header=[""], dim=1, locale="EU", fmt="e")
+    call random_gauss(u,0e0_rk,1e0_rk)
+    call to_file(u, file="./data/u_e.csv", header=[""], dim=1, locale="EU", fmt="e")
     call from_file("./data/u_e.csv", into=v, header=.false., locale="EU", fmt="e")
     if ( maxval( abs(u-v)/abs(u) ) < tol ) then
         write(*,*) "real 7: SUCCESS"
@@ -98,8 +97,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(u,0.0_rk,1.0_rk)
-    call to_file(u, file_name="./data/u_f.csv", header=[""], dim=1, locale="EU", fmt="f")
+    call random_gauss(u,0e0_rk,1e0_rk)
+    call to_file(u, file="./data/u_f.csv", header=[""], dim=1, locale="EU", fmt="f")
     call from_file("./data/u_f.csv", into=v, header=.false., locale="EU", fmt="f")
     if ( maxval( abs(u-v)/abs(u) ) < tol ) then
         write(*,*) "real 8: SUCCESS"
@@ -108,8 +107,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(u,0.0_rk,1.0_rk)
-    call to_file(u, file_name="./data/u_z.csv", header=[""], dim=1, locale="EU", fmt="z")
+    call random_gauss(u,0e0_rk,1e0_rk)
+    call to_file(u, file="./data/u_z.csv", header=[""], dim=1, locale="EU", fmt="z")
     call from_file("./data/u_z.csv", into=v, header=.false., locale="EU", fmt="z")
     if ( maxval( abs(u-v)/abs(u) ) < tol ) then
         write(*,*) "real 9: SUCCESS"
@@ -118,8 +117,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(u,0.0_rk,1.0_rk)
-    call to_file(u, file_name="./data/u_e.csv", header=[""], dim=1, locale="US", fmt="e")
+    call random_gauss(u,0e0_rk,1e0_rk)
+    call to_file(u, file="./data/u_e.csv", header=[""], dim=1, locale="US", fmt="e")
     call from_file("./data/u_e.csv", into=v, header=.false., locale="US", fmt="e")
     if ( maxval( abs(u-v)/abs(u) ) < tol ) then
         write(*,*) "real 10: SUCCESS"
@@ -128,8 +127,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(u,0.0_rk,1.0_rk)
-    call to_file(u, file_name="./data/u_f.csv", header=[""], dim=1, locale="US", fmt="f")
+    call random_gauss(u,0e0_rk,1e0_rk)
+    call to_file(u, file="./data/u_f.csv", header=[""], dim=1, locale="US", fmt="f")
     call from_file("./data/u_f.csv", into=v, header=.false., locale="US", fmt="f")
     if ( maxval( abs(u-v)/abs(u) ) < tol ) then
         write(*,*) "real 11: SUCCESS"
@@ -138,8 +137,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(u,0.0_rk,1.0_rk)
-    call to_file(u, file_name="./data/u_z.csv", header=[""], dim=1, locale="US", fmt="z")
+    call random_gauss(u,0e0_rk,1e0_rk)
+    call to_file(u, file="./data/u_z.csv", header=[""], dim=1, locale="US", fmt="z")
     call from_file("./data/u_z.csv", into=v, header=.false., locale="US", fmt="z")
     if ( maxval( abs(u-v)/abs(u) ) < tol ) then
         write(*,*) "real 12: SUCCESS"
@@ -148,8 +147,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(u,0.0_rk,1.0_rk)
-    call to_file(u, file_name="./data/u_e.csv", header=["u"], dim=2, locale="EU", fmt="e")
+    call random_gauss(u,0e0_rk,1e0_rk)
+    call to_file(u, file="./data/u_e.csv", header=["u"], dim=2, locale="EU", fmt="e")
     call from_file("./data/u_e.csv", into=v, header=.true., locale="EU", fmt="e")
     if ( maxval( abs(u-v)/abs(u) ) < tol ) then
         write(*,*) "real 13: SUCCESS"
@@ -158,8 +157,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(u,0.0_rk,1.0_rk)
-    call to_file(u, file_name="./data/u_f.csv", header=["u"], dim=2, locale="EU", fmt="f")
+    call random_gauss(u,0e0_rk,1e0_rk)
+    call to_file(u, file="./data/u_f.csv", header=["u"], dim=2, locale="EU", fmt="f")
     call from_file("./data/u_f.csv", into=v, header=.true., locale="EU", fmt="f")
     if ( maxval( abs(u-v)/abs(u) ) < tol ) then
         write(*,*) "real 14: SUCCESS"
@@ -168,8 +167,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(u,0.0_rk,1.0_rk)
-    call to_file(u, file_name="./data/u_z.csv", header=["u"], dim=2, locale="EU", fmt="z")
+    call random_gauss(u,0e0_rk,1e0_rk)
+    call to_file(u, file="./data/u_z.csv", header=["u"], dim=2, locale="EU", fmt="z")
     call from_file("./data/u_z.csv", into=v, header=.true., locale="EU", fmt="z")
     if ( maxval( abs(u-v)/abs(u) ) < tol ) then
         write(*,*) "real 15: SUCCESS"
@@ -178,8 +177,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(u,0.0_rk,1.0_rk)
-    call to_file(u, file_name="./data/u_e.csv", header=["u"], dim=2, locale="US", fmt="e")
+    call random_gauss(u,0e0_rk,1e0_rk)
+    call to_file(u, file="./data/u_e.csv", header=["u"], dim=2, locale="US", fmt="e")
     call from_file("./data/u_e.csv", into=v, header=.true., locale="US", fmt="e")
     if ( maxval( abs(u-v)/abs(u) ) < tol ) then
         write(*,*) "real 16: SUCCESS"
@@ -188,8 +187,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(u,0.0_rk,1.0_rk)
-    call to_file(u, file_name="./data/u_f.csv", header=["u"], dim=2, locale="US", fmt="f")
+    call random_gauss(u,0e0_rk,1e0_rk)
+    call to_file(u, file="./data/u_f.csv", header=["u"], dim=2, locale="US", fmt="f")
     call from_file("./data/u_f.csv", into=v, header=.true., locale="US", fmt="f")
     if ( maxval( abs(u-v)/abs(u) ) < tol ) then
         write(*,*) "real 17: SUCCESS"
@@ -198,8 +197,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(u,0.0_rk,1.0_rk)
-    call to_file(u, file_name="./data/u_z.csv", header=["u"], dim=2, locale="US", fmt="z")
+    call random_gauss(u,0e0_rk,1e0_rk)
+    call to_file(u, file="./data/u_z.csv", header=["u"], dim=2, locale="US", fmt="z")
     call from_file("./data/u_z.csv", into=v, header=.true., locale="US", fmt="z")
     if ( maxval( abs(u-v)/abs(u) ) < tol ) then
         write(*,*) "real 18: SUCCESS"
@@ -208,8 +207,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(u,0.0_rk,1.0_rk)
-    call to_file(u, file_name="./data/u_e.csv", header=["u"], dim=1, locale="EU", fmt="e")
+    call random_gauss(u,0e0_rk,1e0_rk)
+    call to_file(u, file="./data/u_e.csv", header=["u"], dim=1, locale="EU", fmt="e")
     call from_file("./data/u_e.csv", into=v, header=.true., locale="EU", fmt="e")
     if ( maxval( abs(u-v)/abs(u) ) < tol ) then
         write(*,*) "real 19: SUCCESS"
@@ -218,8 +217,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(u,0.0_rk,1.0_rk)
-    call to_file(u, file_name="./data/u_f.csv", header=["u"], dim=1, locale="EU", fmt="f")
+    call random_gauss(u,0e0_rk,1e0_rk)
+    call to_file(u, file="./data/u_f.csv", header=["u"], dim=1, locale="EU", fmt="f")
     call from_file("./data/u_f.csv", into=v, header=.true., locale="EU", fmt="f")
     if ( maxval( abs(u-v)/abs(u) ) < tol ) then
         write(*,*) "real 20: SUCCESS"
@@ -228,8 +227,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(u,0.0_rk,1.0_rk)
-    call to_file(u, file_name="./data/u_z.csv", header=["u"], dim=1, locale="EU", fmt="z")
+    call random_gauss(u,0e0_rk,1e0_rk)
+    call to_file(u, file="./data/u_z.csv", header=["u"], dim=1, locale="EU", fmt="z")
     call from_file("./data/u_z.csv", into=v, header=.true., locale="EU", fmt="z")
     if ( maxval( abs(u-v)/abs(u) ) < tol ) then
         write(*,*) "real 21: SUCCESS"
@@ -238,8 +237,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(u,0.0_rk,1.0_rk)
-    call to_file(u, file_name="./data/u_e.csv", header=["u"], dim=1, locale="US", fmt="e")
+    call random_gauss(u,0e0_rk,1e0_rk)
+    call to_file(u, file="./data/u_e.csv", header=["u"], dim=1, locale="US", fmt="e")
     call from_file("./data/u_e.csv", into=v, header=.true., locale="US", fmt="e")
     if ( maxval( abs(u-v)/abs(u) ) < tol ) then
         write(*,*) "real 22: SUCCESS"
@@ -248,8 +247,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(u,0.0_rk,1.0_rk)
-    call to_file(u, file_name="./data/u_f.csv", header=["u"], dim=1, locale="US", fmt="f")
+    call random_gauss(u,0e0_rk,1e0_rk)
+    call to_file(u, file="./data/u_f.csv", header=["u"], dim=1, locale="US", fmt="f")
     call from_file("./data/u_f.csv", into=v, header=.true., locale="US", fmt="f")
     if ( maxval( abs(u-v)/abs(u) ) < tol ) then
         write(*,*) "real 23: SUCCESS"
@@ -258,8 +257,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(u,0.0_rk,1.0_rk)
-    call to_file(u, file_name="./data/u_z.csv", header=["u"], dim=1, locale="US", fmt="z")
+    call random_gauss(u,0e0_rk,1e0_rk)
+    call to_file(u, file="./data/u_z.csv", header=["u"], dim=1, locale="US", fmt="z")
     call from_file("./data/u_z.csv", into=v, header=.true., locale="US", fmt="z")
     if ( maxval( abs(u-v)/abs(u) ) < tol ) then
         write(*,*) "real 24: SUCCESS"
@@ -268,8 +267,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk)
-    call to_file(x, file_name="./data/x_e.csv", header=[""], locale="EU", fmt="e")
+    call random_gauss(x,0e0_rk,1e0_rk)
+    call to_file(x, file="./data/x_e.csv", header=[""], locale="EU", fmt="e")
     call from_file("./data/x_e.csv", into=y, header=.false., locale="EU", fmt="e")
     if ( maxval( abs(x-y)/abs(x) ) < tol ) then
         write(*,*) "real 25: SUCCESS"
@@ -278,8 +277,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk)
-    call to_file(x, file_name="./data/x_f.csv", header=[""], locale="EU", fmt="f")
+    call random_gauss(x,0e0_rk,1e0_rk)
+    call to_file(x, file="./data/x_f.csv", header=[""], locale="EU", fmt="f")
     call from_file("./data/x_f.csv", into=y, header=.false., locale="EU", fmt="f")
     if ( maxval( abs(x-y)/abs(x) ) < tol ) then
         write(*,*) "real 26: SUCCESS"
@@ -288,8 +287,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk)
-    call to_file(x, file_name="./data/x_z.csv", header=[""], locale="EU", fmt="z")
+    call random_gauss(x,0e0_rk,1e0_rk)
+    call to_file(x, file="./data/x_z.csv", header=[""], locale="EU", fmt="z")
     call from_file("./data/x_z.csv", into=y, header=.false., locale="EU", fmt="z")
     if ( maxval( abs(x-y)/abs(x) ) < tol ) then
         write(*,*) "real 27: SUCCESS"
@@ -298,8 +297,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk)
-    call to_file(x, file_name="./data/x_e.csv", header=[""], locale="US", fmt="e")
+    call random_gauss(x,0e0_rk,1e0_rk)
+    call to_file(x, file="./data/x_e.csv", header=[""], locale="US", fmt="e")
     call from_file("./data/x_e.csv", into=y, header=.false., locale="US", fmt="e")
     if ( maxval( abs(x-y)/abs(x) ) < tol ) then
         write(*,*) "real 28: SUCCESS"
@@ -308,8 +307,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk)
-    call to_file(x, file_name="./data/x_f.csv", header=[""], locale="US", fmt="f")
+    call random_gauss(x,0e0_rk,1e0_rk)
+    call to_file(x, file="./data/x_f.csv", header=[""], locale="US", fmt="f")
     call from_file("./data/x_f.csv", into=y, header=.false., locale="US", fmt="f")
     if ( maxval( abs(x-y)/abs(x) ) < tol ) then
         write(*,*) "real 29: SUCCESS"
@@ -318,8 +317,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk)
-    call to_file(x, file_name="./data/x_z.csv", header=[""], locale="US", fmt="z")
+    call random_gauss(x,0e0_rk,1e0_rk)
+    call to_file(x, file="./data/x_z.csv", header=[""], locale="US", fmt="z")
     call from_file("./data/x_z.csv", into=y, header=.false., locale="US", fmt="z")
     if ( maxval( abs(x-y)/abs(x) ) < tol ) then
         write(*,*) "real 30: SUCCESS"
@@ -328,8 +327,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk)
-    call to_file(x, file_name="./data/x_e.csv", header=["x"], locale="EU", fmt="e")
+    call random_gauss(x,0e0_rk,1e0_rk)
+    call to_file(x, file="./data/x_e.csv", header=["x"], locale="EU", fmt="e")
     call from_file("./data/x_e.csv", into=y, header=.true., locale="EU", fmt="e")
     if ( maxval( abs(x-y)/abs(x) ) < tol ) then
         write(*,*) "real 31: SUCCESS"
@@ -338,8 +337,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk)
-    call to_file(x, file_name="./data/x_f.csv", header=["x"], locale="EU", fmt="f")
+    call random_gauss(x,0e0_rk,1e0_rk)
+    call to_file(x, file="./data/x_f.csv", header=["x"], locale="EU", fmt="f")
     call from_file("./data/x_f.csv", into=y, header=.true., locale="EU", fmt="f")
     if ( maxval( abs(x-y)/abs(x) ) < tol ) then
         write(*,*) "real 32: SUCCESS"
@@ -348,8 +347,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk)
-    call to_file(x, file_name="./data/x_z.csv", header=["x"], locale="EU", fmt="z")
+    call random_gauss(x,0e0_rk,1e0_rk)
+    call to_file(x, file="./data/x_z.csv", header=["x"], locale="EU", fmt="z")
     call from_file("./data/x_z.csv", into=y, header=.true., locale="EU", fmt="z")
     if ( maxval( abs(x-y)/abs(x) ) < tol ) then
         write(*,*) "real 33: SUCCESS"
@@ -358,8 +357,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk)
-    call to_file(x, file_name="./data/x_e.csv", header=["x"], locale="US", fmt="e")
+    call random_gauss(x,0e0_rk,1e0_rk)
+    call to_file(x, file="./data/x_e.csv", header=["x"], locale="US", fmt="e")
     call from_file("./data/x_e.csv", into=y, header=.true., locale="US", fmt="e")
     if ( maxval( abs(x-y)/abs(x) ) < tol ) then
         write(*,*) "real 34: SUCCESS"
@@ -368,8 +367,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk)
-    call to_file(x, file_name="./data/x_f.csv", header=["x"], locale="US", fmt="f")
+    call random_gauss(x,0e0_rk,1e0_rk)
+    call to_file(x, file="./data/x_f.csv", header=["x"], locale="US", fmt="f")
     call from_file("./data/x_f.csv", into=y, header=.true., locale="US", fmt="f")
     if ( maxval( abs(x-y)/abs(x) ) < tol ) then
         write(*,*) "real 35: SUCCESS"
@@ -378,8 +377,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk)
-    call to_file(x, file_name="./data/x_z.csv", header=["x"], locale="US", fmt="z")
+    call random_gauss(x,0e0_rk,1e0_rk)
+    call to_file(x, file="./data/x_z.csv", header=["x"], locale="US", fmt="z")
     call from_file("./data/x_z.csv", into=y, header=.true., locale="US", fmt="z")
     if ( maxval( abs(x-y)/abs(x) ) < tol ) then
         write(*,*) "real 36: SUCCESS"

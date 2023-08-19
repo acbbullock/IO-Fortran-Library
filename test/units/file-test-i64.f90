@@ -1,8 +1,7 @@
 program main
-    use, intrinsic :: iso_fortran_env, only: ik=>int64, rk=>real32, &
-                      compiler_version, compiler_options
-    use io_fortran_lib, only: String, to_file, from_file, LF, SPACE, str, operator(+), operator(**)
-    use randoms,        only: random_gauss
+    use, intrinsic :: iso_fortran_env, only: ik=>int64, rk=>real32, compiler_version, compiler_options
+    use io_fortran_lib,                only: String, to_file, from_file, LF, SPACE, str, operator(+), operator(**)
+    use randoms,                       only: random_gauss
     implicit none (type, external)
 
     integer,          parameter :: rows = 700, cols = 25
@@ -20,16 +19,16 @@ program main
     call random_init(repeatable=.false., image_distinct=.true.)
     call date_and_time(date=date, time=time)
 
-    logmsg = String("RUNNING TESTS (array) | date: " + trim(adjustl(date)) + &
-                    " | time: "                      + time                + &
-                    " | int kind: "                  + str(ik)             )
+    logmsg = String("RUNNING TESTS (file) | date: " + trim(adjustl(date)) + &
+                    " | time: "                     + time                + &
+                    " | int kind: "                 + str(ik)             )
 
     call logmsg%push(LF + "-"**logmsg%len() + LF)
 
     write(*,"(a)") logmsg%as_str()
 
-    call random_gauss(u,0.0_rk,1.0_rk); i = floor(huge(1_ik)*u, ik) + 1_ik
-    call to_file(i, file_name="./data/i.csv", header=[""], dim=2, delim=",", fmt="i")
+    call random_gauss(u,0e0_rk,1e0_rk); i = floor(huge(1_ik)*u, ik) + 1_ik
+    call to_file(i, file="./data/i.csv", header=[""], dim=2, delim=",", fmt="i")
     call from_file("./data/i.csv", into=j, header=.false., delim=",", fmt="i")
     if ( all(i == j) ) then
         write(*,*) "int 1: SUCCESS"
@@ -38,8 +37,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(u,0.0_rk,1.0_rk); i = floor(huge(1_ik)*u, ik) + 1_ik
-    call to_file(i, file_name="./data/i_z.csv", header=[""], dim=2, delim=",", fmt="z")
+    call random_gauss(u,0e0_rk,1e0_rk); i = floor(huge(1_ik)*u, ik) + 1_ik
+    call to_file(i, file="./data/i_z.csv", header=[""], dim=2, delim=",", fmt="z")
     call from_file("./data/i_z.csv", into=j, header=.false., delim=",", fmt="z")
     if ( all(i == j) ) then
         write(*,*) "int 2: SUCCESS"
@@ -48,8 +47,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(u,0.0_rk,1.0_rk); i = floor(huge(1_ik)*u, ik) + 1_ik
-    call to_file(i, file_name="./data/i.csv", header=[""], dim=2, delim=";", fmt="i")
+    call random_gauss(u,0e0_rk,1e0_rk); i = floor(huge(1_ik)*u, ik) + 1_ik
+    call to_file(i, file="./data/i.csv", header=[""], dim=2, delim=";", fmt="i")
     call from_file("./data/i.csv", into=j, header=.false., delim=";", fmt="i")
     if ( all(i == j) ) then
         write(*,*) "int 3: SUCCESS"
@@ -58,8 +57,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(u,0.0_rk,1.0_rk); i = floor(huge(1_ik)*u, ik) + 1_ik
-    call to_file(i, file_name="./data/i_z.csv", header=[""], dim=2, delim=";", fmt="z")
+    call random_gauss(u,0e0_rk,1e0_rk); i = floor(huge(1_ik)*u, ik) + 1_ik
+    call to_file(i, file="./data/i_z.csv", header=[""], dim=2, delim=";", fmt="z")
     call from_file("./data/i_z.csv", into=j, header=.false., delim=";", fmt="z")
     if ( all(i == j) ) then
         write(*,*) "int 4: SUCCESS"
@@ -68,8 +67,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(u,0.0_rk,1.0_rk); i = floor(huge(1_ik)*u, ik) + 1_ik
-    call to_file(i, file_name="./data/i.csv", header=[""], dim=1, delim=",", fmt="i")
+    call random_gauss(u,0e0_rk,1e0_rk); i = floor(huge(1_ik)*u, ik) + 1_ik
+    call to_file(i, file="./data/i.csv", header=[""], dim=1, delim=",", fmt="i")
     call from_file("./data/i.csv", into=j, header=.false., delim=",", fmt="i")
     if ( all(i == j) ) then
         write(*,*) "int 5: SUCCESS"
@@ -78,8 +77,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(u,0.0_rk,1.0_rk); i = floor(huge(1_ik)*u, ik) + 1_ik
-    call to_file(i, file_name="./data/i_z.csv", header=[""], dim=1, delim=",", fmt="z")
+    call random_gauss(u,0e0_rk,1e0_rk); i = floor(huge(1_ik)*u, ik) + 1_ik
+    call to_file(i, file="./data/i_z.csv", header=[""], dim=1, delim=",", fmt="z")
     call from_file("./data/i_z.csv", into=j, header=.false., delim=",", fmt="z")
     if ( all(i == j) ) then
         write(*,*) "int 6: SUCCESS"
@@ -88,8 +87,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(u,0.0_rk,1.0_rk); i = floor(huge(1_ik)*u, ik) + 1_ik
-    call to_file(i, file_name="./data/i.csv", header=[""], dim=1, delim=";", fmt="i")
+    call random_gauss(u,0e0_rk,1e0_rk); i = floor(huge(1_ik)*u, ik) + 1_ik
+    call to_file(i, file="./data/i.csv", header=[""], dim=1, delim=";", fmt="i")
     call from_file("./data/i.csv", into=j, header=.false., delim=";", fmt="i")
     if ( all(i == j) ) then
         write(*,*) "int 7: SUCCESS"
@@ -98,8 +97,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(u,0.0_rk,1.0_rk); i = floor(huge(1_ik)*u, ik) + 1_ik
-    call to_file(i, file_name="./data/i_z.csv", header=[""], dim=1, delim=";", fmt="z")
+    call random_gauss(u,0e0_rk,1e0_rk); i = floor(huge(1_ik)*u, ik) + 1_ik
+    call to_file(i, file="./data/i_z.csv", header=[""], dim=1, delim=";", fmt="z")
     call from_file("./data/i_z.csv", into=j, header=.false., delim=";", fmt="z")
     if ( all(i == j) ) then
         write(*,*) "int 8: SUCCESS"
@@ -108,8 +107,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(u,0.0_rk,1.0_rk); i = floor(huge(1_ik)*u, ik) + 1_ik
-    call to_file(i, file_name="./data/i.csv", header=["i"], dim=2, delim=",", fmt="i")
+    call random_gauss(u,0e0_rk,1e0_rk); i = floor(huge(1_ik)*u, ik) + 1_ik
+    call to_file(i, file="./data/i.csv", header=["i"], dim=2, delim=",", fmt="i")
     call from_file("./data/i.csv", into=j, header=.true., delim=",", fmt="i")
     if ( all(i == j) ) then
         write(*,*) "int 9: SUCCESS"
@@ -118,8 +117,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(u,0.0_rk,1.0_rk); i = floor(huge(1_ik)*u, ik) + 1_ik
-    call to_file(i, file_name="./data/i_z.csv", header=["i"], dim=2, delim=",", fmt="z")
+    call random_gauss(u,0e0_rk,1e0_rk); i = floor(huge(1_ik)*u, ik) + 1_ik
+    call to_file(i, file="./data/i_z.csv", header=["i"], dim=2, delim=",", fmt="z")
     call from_file("./data/i_z.csv", into=j, header=.true., delim=",", fmt="z")
     if ( all(i == j) ) then
         write(*,*) "int 10: SUCCESS"
@@ -128,8 +127,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(u,0.0_rk,1.0_rk); i = floor(huge(1_ik)*u, ik) + 1_ik
-    call to_file(i, file_name="./data/i.csv", header=["i"], dim=2, delim=";", fmt="i")
+    call random_gauss(u,0e0_rk,1e0_rk); i = floor(huge(1_ik)*u, ik) + 1_ik
+    call to_file(i, file="./data/i.csv", header=["i"], dim=2, delim=";", fmt="i")
     call from_file("./data/i.csv", into=j, header=.true., delim=";", fmt="i")
     if ( all(i == j) ) then
         write(*,*) "int 11: SUCCESS"
@@ -138,8 +137,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(u,0.0_rk,1.0_rk); i = floor(huge(1_ik)*u, ik) + 1_ik
-    call to_file(i, file_name="./data/i_z.csv", header=["i"], dim=2, delim=";", fmt="z")
+    call random_gauss(u,0e0_rk,1e0_rk); i = floor(huge(1_ik)*u, ik) + 1_ik
+    call to_file(i, file="./data/i_z.csv", header=["i"], dim=2, delim=";", fmt="z")
     call from_file("./data/i_z.csv", into=j, header=.true., delim=";", fmt="z")
     if ( all(i == j) ) then
         write(*,*) "int 12: SUCCESS"
@@ -148,8 +147,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(u,0.0_rk,1.0_rk); i = floor(huge(1_ik)*u, ik) + 1_ik
-    call to_file(i, file_name="./data/i.csv", header=["i"], dim=1, delim=",", fmt="i")
+    call random_gauss(u,0e0_rk,1e0_rk); i = floor(huge(1_ik)*u, ik) + 1_ik
+    call to_file(i, file="./data/i.csv", header=["i"], dim=1, delim=",", fmt="i")
     call from_file("./data/i.csv", into=j, header=.true., delim=",", fmt="i")
     if ( all(i == j) ) then
         write(*,*) "int 13: SUCCESS"
@@ -158,8 +157,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(u,0.0_rk,1.0_rk); i = floor(huge(1_ik)*u, ik) + 1_ik
-    call to_file(i, file_name="./data/i_z.csv", header=["i"], dim=1, delim=",", fmt="z")
+    call random_gauss(u,0e0_rk,1e0_rk); i = floor(huge(1_ik)*u, ik) + 1_ik
+    call to_file(i, file="./data/i_z.csv", header=["i"], dim=1, delim=",", fmt="z")
     call from_file("./data/i_z.csv", into=j, header=.true., delim=",", fmt="z")
     if ( all(i == j) ) then
         write(*,*) "int 14: SUCCESS"
@@ -168,8 +167,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(u,0.0_rk,1.0_rk); i = floor(huge(1_ik)*u, ik) + 1_ik
-    call to_file(i, file_name="./data/i.csv", header=["i"], dim=1, delim=";", fmt="i")
+    call random_gauss(u,0e0_rk,1e0_rk); i = floor(huge(1_ik)*u, ik) + 1_ik
+    call to_file(i, file="./data/i.csv", header=["i"], dim=1, delim=";", fmt="i")
     call from_file("./data/i.csv", into=j, header=.true., delim=";", fmt="i")
     if ( all(i == j) ) then
         write(*,*) "int 15: SUCCESS"
@@ -178,8 +177,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(u,0.0_rk,1.0_rk); i = floor(huge(1_ik)*u, ik) + 1_ik
-    call to_file(i, file_name="./data/i_z.csv", header=["i"], dim=1, delim=";", fmt="z")
+    call random_gauss(u,0e0_rk,1e0_rk); i = floor(huge(1_ik)*u, ik) + 1_ik
+    call to_file(i, file="./data/i_z.csv", header=["i"], dim=1, delim=";", fmt="z")
     call from_file("./data/i_z.csv", into=j, header=.true., delim=";", fmt="z")
     if ( all(i == j) ) then
         write(*,*) "int 16: SUCCESS"
@@ -188,8 +187,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk); k = floor(huge(1_ik)*x, ik) + 1_ik
-    call to_file(k, file_name="./data/k.csv", header=[""], delim=",", fmt="i")
+    call random_gauss(x,0e0_rk,1e0_rk); k = floor(huge(1_ik)*x, ik) + 1_ik
+    call to_file(k, file="./data/k.csv", header=[""], delim=",", fmt="i")
     call from_file("./data/k.csv", into=l, header=.false., delim=",", fmt="i")
     if ( all(k == l) ) then
         write(*,*) "int 17: SUCCESS"
@@ -198,8 +197,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk); k = floor(huge(1_ik)*x, ik) + 1_ik
-    call to_file(k, file_name="./data/k_z.csv", header=[""], delim=",", fmt="z")
+    call random_gauss(x,0e0_rk,1e0_rk); k = floor(huge(1_ik)*x, ik) + 1_ik
+    call to_file(k, file="./data/k_z.csv", header=[""], delim=",", fmt="z")
     call from_file("./data/k_z.csv", into=l, header=.false., delim=",", fmt="z")
     if ( all(k == l) ) then
         write(*,*) "int 18: SUCCESS"
@@ -208,8 +207,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk); k = floor(huge(1_ik)*x, ik) + 1_ik
-    call to_file(k, file_name="./data/k.csv", header=[""], delim=";", fmt="i")
+    call random_gauss(x,0e0_rk,1e0_rk); k = floor(huge(1_ik)*x, ik) + 1_ik
+    call to_file(k, file="./data/k.csv", header=[""], delim=";", fmt="i")
     call from_file("./data/k.csv", into=l, header=.false., delim=";", fmt="i")
     if ( all(k == l) ) then
         write(*,*) "int 19: SUCCESS"
@@ -218,8 +217,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk); k = floor(huge(1_ik)*x, ik) + 1_ik
-    call to_file(k, file_name="./data/k_z.csv", header=[""], delim=";", fmt="z")
+    call random_gauss(x,0e0_rk,1e0_rk); k = floor(huge(1_ik)*x, ik) + 1_ik
+    call to_file(k, file="./data/k_z.csv", header=[""], delim=";", fmt="z")
     call from_file("./data/k_z.csv", into=l, header=.false., delim=";", fmt="z")
     if ( all(k == l) ) then
         write(*,*) "int 20: SUCCESS"
@@ -228,8 +227,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk); k = floor(huge(1_ik)*x, ik) + 1_ik
-    call to_file(k, file_name="./data/k.csv", header=["k"], delim=",", fmt="i")
+    call random_gauss(x,0e0_rk,1e0_rk); k = floor(huge(1_ik)*x, ik) + 1_ik
+    call to_file(k, file="./data/k.csv", header=["k"], delim=",", fmt="i")
     call from_file("./data/k.csv", into=l, header=.true., delim=",", fmt="i")
     if ( all(k == l) ) then
         write(*,*) "int 21: SUCCESS"
@@ -238,8 +237,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk); k = floor(huge(1_ik)*x, ik) + 1_ik
-    call to_file(k, file_name="./data/k_z.csv", header=["k"], delim=",", fmt="z")
+    call random_gauss(x,0e0_rk,1e0_rk); k = floor(huge(1_ik)*x, ik) + 1_ik
+    call to_file(k, file="./data/k_z.csv", header=["k"], delim=",", fmt="z")
     call from_file("./data/k_z.csv", into=l, header=.true., delim=",", fmt="z")
     if ( all(k == l) ) then
         write(*,*) "int 22: SUCCESS"
@@ -248,8 +247,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk); k = floor(huge(1_ik)*x, ik) + 1_ik
-    call to_file(k, file_name="./data/k.csv", header=["k"], delim=";", fmt="i")
+    call random_gauss(x,0e0_rk,1e0_rk); k = floor(huge(1_ik)*x, ik) + 1_ik
+    call to_file(k, file="./data/k.csv", header=["k"], delim=";", fmt="i")
     call from_file("./data/k.csv", into=l, header=.true., delim=";", fmt="i")
     if ( all(k == l) ) then
         write(*,*) "int 23: SUCCESS"
@@ -258,8 +257,8 @@ program main
         all_passing = .false.
     end if
 
-    call random_gauss(x,0.0_rk,1.0_rk); k = floor(huge(1_ik)*x, ik) + 1_ik
-    call to_file(k, file_name="./data/k_z.csv", header=["k"], delim=";", fmt="z")
+    call random_gauss(x,0e0_rk,1e0_rk); k = floor(huge(1_ik)*x, ik) + 1_ik
+    call to_file(k, file="./data/k_z.csv", header=["k"], delim=";", fmt="z")
     call from_file("./data/k_z.csv", into=l, header=.true., delim=";", fmt="z")
     if ( all(k == l) ) then
         write(*,*) "int 24: SUCCESS"
