@@ -1,59 +1,14 @@
-module randoms
+submodule (randoms) gaussian_sampling
     !-------------------------------------------------------------------------------------------------------------------
-    !! This module provides Gaussian sampling routines for use in unit tests (random data generation).
+    !! This submodule provides module procedure implementations for the **public interface** `random_gauss` and the
+    !! **private interface** `gauss`.
     !-------------------------------------------------------------------------------------------------------------------
-    use, intrinsic :: iso_fortran_env, only: r128=>real128, r64=>real64, r32=>real32
     implicit none (type, external)
-    private
 
-    ! Public API list ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    public :: random_gauss
+    contains ! Procedure bodies for module subprograms <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>!
 
-    ! Definitions and Interfaces ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    interface random_gauss
-        !---------------------------------------------------------------------------------------------------------------
-        !! Applies `gauss` to whole arrays and scalars.
-        !---------------------------------------------------------------------------------------------------------------
-        module procedure :: random_gauss_r128, random_gauss_r64, random_gauss_r32
-    end interface
-
-    interface gauss
-        !---------------------------------------------------------------------------------------------------------------
-        !! Samples random numbers from the standard Normal (Gaussian) Distribution with the given mean and sigma.
-        !! Uses the Acceptance-complement ratio from W. Hoermann and G. Derflinger.
-        !! This is one of the fastest existing methods for generating normal random variables.
-        !!
-        !! REFERENCE: - W. Hoermann and G. Derflinger (1990):
-        !!              The ACR Method for generating normal random variables,
-        !!              OR Spektrum 12 (1990), 181-185.
-        !!
-        !! Implementation taken from <https://root.cern.ch/doc/master/TRandom_8cxx_source.html#l00274>
-        !! UNURAN (c) 2000  W. Hoermann & J. Leydold, Institut f. Statistik, WU Wien
-        !---------------------------------------------------------------------------------------------------------------
-        module procedure :: gauss_r128, gauss_r64, gauss_r32
-    end interface
-
-    contains
-
-    impure elemental subroutine random_gauss_r128(x, mu, sig)
-        real(r128), intent(inout) :: x
-        real(r128), intent(in)    :: mu, sig
-        x = gauss(mu, sig)
-    end subroutine random_gauss_r128
-    impure elemental subroutine random_gauss_r64(x, mu, sig)
-        real(r64), intent(inout) :: x
-        real(r64), intent(in)    :: mu, sig
-        x = gauss(mu, sig)
-    end subroutine random_gauss_r64
-    impure elemental subroutine random_gauss_r32(x, mu, sig)
-        real(r32), intent(inout) :: x
-        real(r32), intent(in)    :: mu, sig
-        x = gauss(mu, sig)
-    end subroutine random_gauss_r32
-
-    impure real(r128) function gauss_r128(mu, sig) result(gauss_res)
-        real(r128), intent(in) :: mu, sig
-
+    ! Gaussian sampling procedures ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    module procedure gauss_r128
         real(r128) :: kC1, kC2, kC3, kD1, kD2, kD3, kHm, kZm, kHp, kZp, kPhln, kHm1
         real(r128) :: kHp1, kHzm, kHzmp, kAs, kBs, kCs, kB, kX0, kYm, kS, kT
         real(r128) :: rn, x, y, z, res
@@ -148,10 +103,8 @@ module randoms
         end do outer
 
         gauss_res = res*sig + mu
-    end function gauss_r128
-    impure real(r64) function gauss_r64(mu, sig) result(gauss_res)
-        real(r64), intent(in) :: mu, sig
-
+    end procedure gauss_r128
+    module procedure gauss_r64
         real(r64) :: kC1, kC2, kC3, kD1, kD2, kD3, kHm, kZm, kHp, kZp, kPhln, kHm1
         real(r64) :: kHp1, kHzm, kHzmp, kAs, kBs, kCs, kB, kX0, kYm, kS, kT
         real(r64) :: rn, x, y, z, res
@@ -246,10 +199,8 @@ module randoms
         end do outer
 
         gauss_res = res*sig + mu
-    end function gauss_r64
-    impure real(r32) function gauss_r32(mu, sig) result(gauss_res)
-        real(r32), intent(in) :: mu, sig
-
+    end procedure gauss_r64
+    module procedure gauss_r32
         real(r32) :: kC1, kC2, kC3, kD1, kD2, kD3, kHm, kZm, kHp, kZp, kPhln, kHm1
         real(r32) :: kHp1, kHzm, kHzmp, kAs, kBs, kCs, kB, kX0, kYm, kS, kT
         real(r32) :: rn, x, y, z, res
@@ -344,6 +295,16 @@ module randoms
         end do outer
 
         gauss_res = res*sig + mu
-    end function gauss_r32
+    end procedure gauss_r32
 
-end module randoms
+    ! Elemental procedures for gauss ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    module procedure random_gauss_r128
+        x = gauss(mu, sig)
+    end procedure random_gauss_r128
+    module procedure random_gauss_r64
+        x = gauss(mu, sig)
+    end procedure random_gauss_r64
+    module procedure random_gauss_r32
+        x = gauss(mu, sig)
+    end procedure random_gauss_r32
+end submodule gaussian_sampling
