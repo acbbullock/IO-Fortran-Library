@@ -11,4 +11,4 @@ auto-tests = true
 auto-examples = true
 
 [install]
-library = false
+library = true

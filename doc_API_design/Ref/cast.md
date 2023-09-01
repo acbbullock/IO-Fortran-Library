@@ -12,7 +12,7 @@ author: Austin C Bullock
 For casting `x` of type `integer` into a variable `into` of type `character` (scalar only) or `String` (any rank):
 
 ```fortran
-call cast(x, into, fmt)
+call cast(x, into [, fmt])
 ```
 
 * `fmt` is `optional`, may be one of `INT_FMTS`
@@ -20,7 +20,7 @@ call cast(x, into, fmt)
 For casting `x` of type `real` into a variable `into` of type `character` (scalar only) or `String` (any rank):
 
 ```fortran
-call cast(x, into, locale, fmt, decimals)
+call cast(x, into [, locale, fmt, decimals])
 ```
 
 * `locale` is `optional`, may be one of `LOCALES`
@@ -30,7 +30,7 @@ call cast(x, into, locale, fmt, decimals)
 For casting `x` of type `complex` into a variable `into` of type `character` (scalar only) or `String` (any rank):
 
 ```fortran
-call cast(x, into, locale, fmt, decimals, im)
+call cast(x, into [, locale, fmt, decimals, im])
 ```
 
 * `locale` is `optional`, may be one of `LOCALES`
@@ -45,11 +45,11 @@ call cast(x, into, locale, fmt, decimals, im)
 For casting `substring` of type `character` (scalar only) or `String` (any rank) into a variable `into` of type `integer`:
 
 ```fortran
-call cast(substring, into, fmt)
+call cast(substring, into [, fmt])
 ```
 
 ```fortran
-call substring%cast(into, fmt)
+call substring%cast(into [, fmt])
 ```
 
 * `fmt` is `optional`, may be one of `INT_FMTS`
@@ -57,11 +57,11 @@ call substring%cast(into, fmt)
 For casting `substring` of type `character` (scalar only) or `String` (any rank) into a variable `into` of type `real`:
 
 ```fortran
-call cast(substring, into, locale, fmt)
+call cast(substring, into [, locale, fmt])
 ```
 
 ```fortran
-call substring%cast(into, locale, fmt)
+call substring%cast(into [, locale, fmt])
 ```
 
 * `locale` is `optional`, may be one of `LOCALES`
@@ -70,11 +70,11 @@ call substring%cast(into, locale, fmt)
 For casting `substring` of type `character` (scalar only) or `String` (any rank) into a variable `into` of type `complex`:
 
 ```fortran
-call cast(substring, into, locale, fmt, im)
+call cast(substring, into [, locale, fmt, im])
 ```
 
 ```fortran
-call substring%cast(into, locale, fmt, im)
+call substring%cast(into [, locale, fmt, im])
 ```
 
 * `locale` is `optional`, may be one of `LOCALES`
@@ -87,22 +87,22 @@ call substring%cast(into, locale, fmt, im)
 
 ### Optional Arguments
 
-Integer formats (default is `'i'`):
+Integer formats (default is `"i"`):
 
 ```fortran
-INT_FMTS = [ 'i', 'z' ]
+INT_FMTS = [ "i", "z" ]
 ```
 
-Real formats (default is `'e'`):
+Real formats (default is `"e"`):
 
 ```fortran
-REAL_FMTS = [ 'e', 'f', 'z' ]
+REAL_FMTS = [ "e", "f", "z" ]
 ```
 
-Locales (default is `'US'`):
+Locales (default is `"US"`):
 
 ```fortran
-LOCALES = [ 'US', 'EU' ]
+LOCALES = [ "US", "EU" ]
 ```
 
 Decimals: `decimals` specifies the number of digits on the rhs of the radix point, with a default determined internally based on the [text format](../UserInfo/text-fmts.html) and precision.

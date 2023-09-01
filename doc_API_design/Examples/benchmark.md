@@ -23,45 +23,45 @@ program main
     real(rk), allocatable, dimension(:,:) :: x, y
 
     allocate( x(n,n), cells(n,n) ); call random_gauss(x,0.0_rk,1.0_rk)
-    write(*,'(a)')  'Compiler version: ' + compiler_version()
-    write(*,'(a)')  'Compiler options: ' + compiler_options() + LF
+    write(*,"(a)")  "Compiler version: " + compiler_version()
+    write(*,"(a)")  "Compiler options: " + compiler_options() + LF
 
     call system_clock(t1)
-    call cast(x, into=cells, fmt='z')
+    call cast(x, into=cells, fmt="z")
     call system_clock(t2, count_rate=rate); wall_time = real(t2-t1,dp)/rate
 
-    write(*,'(a)')  'Wall time for cast: ' + str(wall_time, fmt='f', decimals=3) + ' s'
-    write(*,'(a)')  'Number of string conversions/second: ' + str(nint(size(x)/wall_time)) + LF
+    write(*,"(a)")  "Wall time for cast: " + str(wall_time, fmt="f", decimals=3) + " s"
+    write(*,"(a)")  "Number of string conversions/second: " + str(nint(size(x)/wall_time)) + LF
 
     call system_clock(t1)
-    call csv%write_file(cells, file_name='bigx.csv')
+    call csv%write_file(cells, file="bigx.csv")
     call system_clock(t2, count_rate=rate); wall_time = real(t2-t1,dp)/rate
 
-    write(*,'(a)')  'Wall time for write_file: ' + str(wall_time, fmt='f', decimals=3) + ' s'
-    write(*,'(a)')  'Estimated file size: ' + str(csv%len64()/1e9, fmt='f', decimals=6) + ' GB' + LF
+    write(*,"(a)")  "Wall time for write_file: " + str(wall_time, fmt="f", decimals=3) + " s"
+    write(*,"(a)")  "Estimated file size: " + str(csv%len64()/1e9, fmt="f", decimals=6) + " GB" + LF
 
     call system_clock(t1)
-    call csv%read_file('bigx.csv', cell_array=cells)
+    call csv%read_file("bigx.csv", cell_array=cells)
     call system_clock(t2, count_rate=rate); wall_time = real(t2-t1,dp)/rate
 
-    write(*,'(a)')  'Wall time for read_file: ' + str(wall_time, fmt='f', decimals=3) + ' s' + LF
+    write(*,"(a)")  "Wall time for read_file: " + str(wall_time, fmt="f", decimals=3) + " s" + LF
 
     call csv%empty(); allocate( y(n,n) )
 
     call system_clock(t1)
-    call cast(cells, into=y, fmt='z')
+    call cast(cells, into=y, fmt="z")
     call system_clock(t2, count_rate=rate); wall_time = real(t2-t1,dp)/rate
 
-    write(*,'(a)')  'Wall time for cast: ' + str(wall_time, fmt='f', decimals=3) + ' s'
-    write(*,'(a)')  'Number of string casts/second: ' + str(nint(size(x)/wall_time))
-    write(*,'(a,l)')'Data is exact match: ', all(x == y)
+    write(*,"(a)")  "Wall time for cast: " + str(wall_time, fmt="f", decimals=3) + " s"
+    write(*,"(a)")  "Number of string casts/second: " + str(nint(size(x)/wall_time))
+    write(*,"(a,l)")"Data is exact match: ", all(x == y)
 
     contains
     ! random_gauss
 end program main
 ```
 
-Here, we populate an `n`-by-`n` single-precision array `x` with samples from the standard Gaussian distribution and convert each to a hexadecimal string to populate a cell array, write the cell array to a text file `'bigx.csv'`, read the file back into the program to re-populate the cell array, then finally cast the cell data into `y` and compare with `x` to observe an exact match. For `n = 15000`, the total data size is `225e6` and the resulting csv file size is `2.47 GB`.
+Here, we populate an `n`-by-`n` single-precision array `x` with samples from the standard Gaussian distribution and convert each to a hexadecimal string to populate a cell array, write the cell array to a text file `"bigx.csv"`, read the file back into the program to re-populate the cell array, then finally cast the cell data into `y` and compare with `x` to observe an exact match. For `n = 15000`, the total data size is `225e6` and the resulting csv file size is `2.47 GB`.
 
 With highest optimizations enabled for each compiler on Linux (`-O3`), we observe the following sample output:
 
@@ -120,65 +120,53 @@ For a more extreme example, consider the following program to write every 32-bit
 
 ```fortran
 program main
-    use, intrinsic :: iso_fortran_env, only: int64, real64
-    use io_fortran_lib, only: String, cast, str, LF, operator(+)
+    use, intrinsic :: iso_fortran_env, only : int64, rk=>real32, dp=>real64, compiler_version, compiler_options
+    use randoms,                       only : random_gauss
+    use io_fortran_lib,                only : String, cast, str, LF, operator(+)
     implicit none (type,external)
 
-    type(String) :: int_file
-    type(String), allocatable, dimension(:), target :: hex_ints, hex_ints_extra
-    type(String), dimension(:,:), pointer :: hex_ints_map => null()
+    type(String)              :: csv
+    type(String), allocatable :: cells(:,:)
 
-    integer, allocatable, dimension(:), target :: indices, indices_extra
-    integer, dimension(:), pointer :: indices_map => null()
-    integer :: largest, smallest, step, start, i, j
+    integer(int64) :: t1, t2
+    real(dp)       :: wall_time, rate
 
-    integer(int64) :: t1, t2, total_length
-    real(real64) :: wall_time, rate
+    integer,  parameter   :: n = 15000
+    real(rk), allocatable :: x(:,:), y(:,:)
 
-    largest = huge(1); smallest = - largest - 1; step = (int(largest,int64) - int(smallest,int64))/128
-
-    write(*,'(a)')  'Writing integers from ' + str(smallest) + ' to ' + str(largest) + ' in chunks of ' + str(step)
-
-    total_length = 0_int64
-    allocate( indices(step), hex_ints(step) )
-    allocate( indices_extra(smallest+128*step:largest), hex_ints_extra(smallest+128*step:largest) )
+    allocate( x(n,n), cells(n,n) ); call random_gauss(x, 0e0_rk, 1.0_rk)
+    write(*,"(a)")  "Compiler version: " + compiler_version()
+    write(*,"(a)")  "Compiler options: " + compiler_options() + LF
 
     call system_clock(t1)
+    call cast(x, into=cells, fmt="z")
+    call system_clock(t2, count_rate=rate); wall_time = real(t2-t1,dp)/rate
 
-    do j = 1, 128
-        start = smallest + (j-1)*step
+    write(*,"(a)")  "Wall time for cast: " + str(wall_time, fmt="f", decimals=3) + " s"
+    write(*,"(a)")  "Number of string conversions/second: " + str(nint(size(x)/wall_time)) + LF
 
-        indices_map(start:start+step-1) => indices
+    call system_clock(t1)
+    call csv%write_file(cells, file="bigx.csv")
+    call system_clock(t2, count_rate=rate); wall_time = real(t2-t1,dp)/rate
 
-        do concurrent ( i = start:start+step-1 )
-            indices_map(i) = i
-        end do
+    write(*,"(a)")  "Wall time for write_file: " + str(wall_time, fmt="f", decimals=3) + " s"
+    write(*,"(a)")  "Estimated file size: " + str(csv%len64()/1e9, fmt="f", decimals=6) + " GB" + LF
 
-        call cast(indices, into=hex_ints, fmt='z')
+    call system_clock(t1)
+    call csv%read_file("bigx.csv", cell_array=cells)
+    call system_clock(t2, count_rate=rate); wall_time = real(t2-t1,dp)/rate
 
-        hex_ints_map(1:step,1:1) => hex_ints
-        call int_file%write_file(hex_ints_map, file_name='int32.txt', append=.true.)
-        total_length = total_length + int_file%len64()
+    write(*,"(a)")  "Wall time for read_file: " + str(wall_time, fmt="f", decimals=3) + " s" + LF
 
-        write(*,'(a)')  'File length: ' + str(total_length/1e9, fmt='f', decimals=3) + ' GB in cycle ' + str(j)
-    end do
+    call csv%empty(); allocate( y(n,n) )
 
-    do concurrent ( i = smallest+128*step:largest-1 )
-        indices_extra(i) = i
-    end do; indices_extra(largest) = largest
+    call system_clock(t1)
+    call cast(cells, into=y, fmt="z")
+    call system_clock(t2, count_rate=rate); wall_time = real(t2-t1,dp)/rate
 
-    call cast(indices_extra, into=hex_ints_extra, fmt='z')
-
-    hex_ints_map(smallest+128*step:largest,1:1) => hex_ints_extra
-    call int_file%write_file(hex_ints_map, file_name='int32.txt', append=.true.)
-    total_length = total_length + int_file%len64()
-
-    write(*,'(a)')  'File length: ' + str(total_length/1e9, fmt='f', decimals=3) + ' GB at end of file.'
-
-    call system_clock(t2, count_rate=rate); wall_time = real(t2-t1,real64)/rate
-    write(*,'(a)')  'Total time for write: ' + str(wall_time/60, fmt='f', decimals=3) + ' minutes'
-
-    nullify(indices_map, hex_ints_map); deallocate(indices, indices_extra, hex_ints, hex_ints_extra)
+    write(*,"(a)")  "Wall time for cast: " + str(wall_time, fmt="f", decimals=3) + " s"
+    write(*,"(a)")  "Number of string casts/second: " + str(nint(size(x)/wall_time))
+    write(*,"(a,l)")"Data is exact match: ", all(x == y)
 end program main
 ```
 

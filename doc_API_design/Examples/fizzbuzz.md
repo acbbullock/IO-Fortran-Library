@@ -27,13 +27,13 @@ program main
             if ( mod(number,3) /= 0 ) then
                 res = String(number)
             else
-                res = String('fizz')
+                res = String("fizz")
             end if
         else
             if ( mod(number,3) /= 0 ) then
-                res = String('buzz')
+                res = String("buzz")
             else
-                res = String('fizzbuzz')
+                res = String("fizzbuzz")
             end if
         end if
     end function FizzBuzz

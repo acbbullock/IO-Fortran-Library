@@ -16,7 +16,7 @@ call aprint(x)
 For `x` an array of rank `1` or `2` and of type `integer`:
 
 ```fortran
-call aprint(x, fmt)
+call aprint(x [, fmt])
 ```
 
 * `fmt` is `optional`, may be one of `INT_FMTS`
@@ -24,7 +24,7 @@ call aprint(x, fmt)
 For `x` an array of rank `1` or `2` and of type `real`:
 
 ```fortran
-call aprint(x, fmt, decimals)
+call aprint(x [, fmt, decimals])
 ```
 
 * `fmt` is `optional`, may be one of `REAL_FMTS`
@@ -33,7 +33,7 @@ call aprint(x, fmt, decimals)
 For `x` an array of rank `1` or `2` and of type `complex`:
 
 ```fortran
-call aprint(x, fmt, decimals, im)
+call aprint(x [, fmt, decimals, im])
 ```
 
 * `fmt` is `optional`, may be one of `REAL_FMTS`
@@ -42,20 +42,20 @@ call aprint(x, fmt, decimals, im)
 
 ### Optional Arguments
 
-Integer formats (default is `'i'`):
+Integer formats (default is `"i"`):
 
 ```fortran
-INT_FMTS = [ 'i', 'z' ]
+INT_FMTS = [ "i", "z" ]
 ```
 
-Real formats (default is `'f'`):
+Real formats (default is `"f"`):
 
 ```fortran
-REAL_FMTS = [ 'e', 'f', 'z' ]
+REAL_FMTS = [ "e", "f", "z" ]
 ```
 
 Decimals (default is `2`): `decimals` specifies the number of digits on the rhs of the radix point.
 
-Imaginary unit (default is `'j'`): `im` specifies the form of a complex number.
+Imaginary unit (default is `"j"`): `im` specifies the form of a complex number.
 
 @note The optional arguments for `aprint` are different than elsewhere, and better suited for easy viewing of array sections.

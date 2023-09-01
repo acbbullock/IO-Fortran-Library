@@ -10,7 +10,7 @@ author: Austin C Bullock
 To join a one-dimensional array `tokens` of type `character` or `String`:
 
 ```fortran
-result = join(tokens, separator)
+result = join(tokens [, separator])
 ```
 
 * `separator` is `optional` and of type `character(len=*)`
@@ -26,7 +26,7 @@ For a subroutine version of `join`, see [join](String-methods.html#join).
 For `substring` a scalar `character` or `String`:
 
 ```fortran
-result = split(substring, separator)
+result = split(substring [, separator])
 ```
 
 * `separator` is `optional` and of type `character(len=*)`
@@ -34,8 +34,10 @@ result = split(substring, separator)
 For `substring` a scalar variable of type `String`:
 
 ```fortran
-result = substring%split(separator)
+result = substring%split([separator])
 ```
+
+* `separator` is `optional` and of type `character(len=*)`
 
 @note The type-bound procedure access of the form `substring%split()` is valid when `substring` is a `String` variable. To split a `String`-valued expression, the expression must be passed to `split` by the form `split(substring)`.
 

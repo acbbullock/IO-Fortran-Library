@@ -24,7 +24,7 @@ This is for `character` to `String` conversion.
 For `x` a scalar or array of any rank and of type `integer`:
 
 ```fortran
-result = String(x, fmt)
+result = String(x [, fmt])
 ```
 
 * `fmt` is `optional`, may be one of `INT_FMTS`
@@ -32,7 +32,7 @@ result = String(x, fmt)
 For `x` a scalar or array of any rank and of type `real`:
 
 ```fortran
-result = String(x, locale, fmt, decimals)
+result = String(x [, locale, fmt, decimals])
 ```
 
 * `locale` is `optional`, may be one of `LOCALES`
@@ -42,7 +42,7 @@ result = String(x, locale, fmt, decimals)
 For `x` a scalar or array of any rank and of type `complex`:
 
 ```fortran
-result = String(x, locale, fmt, decimals, im)
+result = String(x [, locale, fmt, decimals, im])
 ```
 
 * `locale` is `optional`, may be one of `LOCALES`
@@ -54,24 +54,24 @@ result = String(x, locale, fmt, decimals, im)
 
 ### Optional Arguments
 
-Integer formats (default is `'i'`):
+Integer formats (default is `"i"`):
 
 ```fortran
-INT_FMTS = [ 'i', 'z' ]
+INT_FMTS = [ "i", "z" ]
 ```
 
-Real formats (default is `'e'`):
+Real formats (default is `"e"`):
 
 ```fortran
-REAL_FMTS = [ 'e', 'f', 'z' ]
+REAL_FMTS = [ "e", "f", "z" ]
 ```
 
-Locales (default is `'US'`):
+Locales (default is `"US"`):
 
 ```fortran
-LOCALES = [ 'US', 'EU' ]
+LOCALES = [ "US", "EU" ]
 ```
 
 Decimals: `decimals` specifies the number of digits on the rhs of the radix point, with a default determined internally based on the [text format](../UserInfo/text-fmts.html) and precision.
 
-Imaginary unit: `im` specifies the form of a complex number. By default, `complex` numbers will be written as ordered pairs, e.g. `(2.45,3.45)`. If `im` is specified, then the number will be written as a sum with the specified imaginary unit, e.g. `2.45+3.45j` for `im='j'` or `2.45+3.45*1i` for `im='*1i'`.
+Imaginary unit: `im` specifies the form of a complex number. By default, `complex` numbers will be written as ordered pairs, e.g. `(2.45,3.45)`. If `im` is specified, then the number will be written as a sum with the specified imaginary unit, e.g. `2.45+3.45j` for `im="j"` or `2.45+3.45*1i` for `im="*1i"`.

@@ -18,24 +18,24 @@ program main
     
     compiler = String(compiler_version())
 
-    GCC = compiler%count(match='GCC') > 0
-    GCC_RECENT = GCC .and. ( compiler%count(match='11.3.0') > 0 )
-    INTEL = compiler%count(match='Intel') > 0
-    INTEL_RECENT = INTEL .and. ( compiler%count(match='2023.0.0') > 0 )
+    GCC = compiler%count(match="GCC") > 0
+    GCC_RECENT = GCC .and. ( compiler%count(match="11.3.0") > 0 )
+    INTEL = compiler%count(match="Intel") > 0
+    INTEL_RECENT = INTEL .and. ( compiler%count(match="2023.0.0") > 0 )
     
     write(*,*) compiler
 
     if ( GCC ) then
         if ( GCC_RECENT ) then
-            write(*,*) 'Hello from a recent GNU Fortran Compiler.'
+            write(*,*) "Hello from a recent GNU Fortran Compiler."
         else
-            write(*,*) 'Hello from an older GNU Fortran Compiler.'
+            write(*,*) "Hello from an older GNU Fortran Compiler."
         end if
     else if ( INTEL ) then
         if ( INTEL_RECENT ) then
-            write(*,*) 'Hello from a recent Intel Fortran Compiler.'
+            write(*,*) "Hello from a recent Intel Fortran Compiler."
         else
-            write(*,*) 'Hello from an older Intel Fortran Compiler.'
+            write(*,*) "Hello from an older Intel Fortran Compiler."
         end if
     end if
 end program main
@@ -59,14 +59,14 @@ program main
 
     call date_and_time(date=date, time=time)
 
-    time_stamp = String('Date : ' + date + LF + 'Time : ' + time)
+    time_stamp = String("Date : " + date + LF + "Time : " + time)
 
-    write(*,'(a)') 'ORIGINAL TIME STAMP:' + LF + time_stamp%as_str() + LF
+    write(*,"(a)") "ORIGINAL TIME STAMP:" + LF + time_stamp%as_str() + LF
 
-    tokens = split(time_stamp, separator=LF) - 'Date : ' - 'Time : ' + [' : Date', ' : Time']
-    new_time_stamp = join(tokens, separator=' | ')
+    tokens = split(time_stamp, separator=LF) - "Date : " - "Time : " + [" : Date", " : Time"]
+    new_time_stamp = join(tokens, separator=" | ")
 
-    write(*,'(a)') 'RECONSTRUCTED TIME STAMP:' + LF + new_time_stamp%as_str()
+    write(*,"(a)") "RECONSTRUCTED TIME STAMP:" + LF + new_time_stamp%as_str()
 end program main
 ```
 

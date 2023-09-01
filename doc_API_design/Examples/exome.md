@@ -23,14 +23,14 @@ program main
 
     call system_clock(t1)
 
-    call hg38%read_file('./data/hg38.bed', cell_array=cells, column_separator=TAB)
-    call hg38_new%write_file(cells, './data/hg38_new.bed', column_separator=TAB)
+    call hg38%read_file("./data/hg38.bed", cell_array=cells, column_separator=TAB)
+    call hg38_new%write_file(cells, "./data/hg38_new.bed", column_separator=TAB)
 
     call system_clock(t2, count_rate=rate); wall_time = real(t2-t1,real64)/rate
 
-    write(*,'(a,l)')    'New file and original are exact match: ', hg38_new == hg38
-    write(*,'(a)')      'Wall time: ' + str(wall_time, fmt='f', decimals=3) + ' s ' + &
-                        'using compiler: "' + compiler_version() + '".'
+    write(*,"(a,l)")    "New file and original are exact match: ", hg38_new == hg38
+    write(*,"(a)")      "Wall time: " + str(wall_time, fmt="f", decimals=3) + " s " + &
+                        "using compiler: "" + compiler_version() + ""."
 end program main
 ```
 
