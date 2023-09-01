@@ -86,6 +86,7 @@ module io_fortran_lib
             generic, public :: write(formatted) => write_string
 
             ! Specifics ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
             procedure, pass(self), public :: as_str
             procedure, pass(substring)    :: cast_string_to_c128, cast_string_to_c64, cast_string_to_c32, &
                                              cast_string_to_r128, cast_string_to_r64, cast_string_to_r32, &
