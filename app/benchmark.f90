@@ -2,7 +2,7 @@ program main
     use, intrinsic :: iso_fortran_env, only: int64, rk=>real32, dp=>real64, compiler_version, compiler_options
     use randoms,                       only: random_gauss
     use io_fortran_lib,                only: String, cast, str, LF, operator(+)
-    implicit none (type,external)
+    implicit none (type, external)
 
     type(String)              :: csv
     type(String), allocatable :: cells(:,:)
