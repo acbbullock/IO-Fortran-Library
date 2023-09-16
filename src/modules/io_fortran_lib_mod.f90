@@ -41,7 +41,7 @@ module io_fortran_lib
     character(len=1), parameter :: REAL_FMTS(*)  = [ "e"  , "f"  , "z" ] ! Allowed formats for floats
     character(len=2), parameter :: LOCALES(*)    = [ "US" , "EU"       ] ! Allowed locale specifiers
     character(len=3), parameter :: BINARY_EXT(*) = [ "dat", "bin"      ] ! Allowed binary extensions
-    character(len=3), parameter :: TEXT_EXT(*)   = [ "csv", "txt", &
+    character(len=3), parameter :: TEXT_EXT(*)   = [ "csv", "txt", &     ! Allowed text extensions
                                                      "log", "rtf", &
                                                      "odm", "odt", &
                                                      "ods", "odf", &
@@ -86,7 +86,6 @@ module io_fortran_lib
             generic, public :: write(formatted) => write_string
 
             ! Specifics ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
             procedure, pass(self), public :: as_str
             procedure, pass(substring)    :: cast_string_to_c128, cast_string_to_c64, cast_string_to_c32, &
                                              cast_string_to_r128, cast_string_to_r64, cast_string_to_r32, &
@@ -800,21 +799,21 @@ module io_fortran_lib
 
         pure elemental recursive module subroutine cast_string_to_c128(substring, into, locale, fmt, im)
             class(String),    intent(in)           :: substring
-            complex(r128),    intent(inout)        :: into
+            complex(r128),    intent(out)          :: into
             character(len=*), intent(in), optional :: locale
             character(len=*), intent(in), optional :: fmt
             character(len=*), intent(in), optional :: im
         end subroutine cast_string_to_c128
         pure elemental recursive module subroutine cast_string_to_c64(substring, into, locale, fmt, im)
             class(String),    intent(in)           :: substring
-            complex(r64),     intent(inout)        :: into
+            complex(r64),     intent(out)          :: into
             character(len=*), intent(in), optional :: locale
             character(len=*), intent(in), optional :: fmt
             character(len=*), intent(in), optional :: im
         end subroutine cast_string_to_c64
         pure elemental recursive module subroutine cast_string_to_c32(substring, into, locale, fmt, im)
             class(String),    intent(in)           :: substring
-            complex(r32),     intent(inout)        :: into
+            complex(r32),     intent(out)          :: into
             character(len=*), intent(in), optional :: locale
             character(len=*), intent(in), optional :: fmt
             character(len=*), intent(in), optional :: im
@@ -822,61 +821,61 @@ module io_fortran_lib
 
         pure elemental recursive module subroutine cast_string_to_r128(substring, into, locale, fmt)
             class(String),    intent(in)           :: substring
-            real(r128),       intent(inout)        :: into
+            real(r128),       intent(out)          :: into
             character(len=*), intent(in), optional :: locale
             character(len=*), intent(in), optional :: fmt
         end subroutine cast_string_to_r128
         pure elemental recursive module subroutine cast_string_to_r64(substring, into, locale, fmt)
             class(String),    intent(in)           :: substring
-            real(r64),        intent(inout)        :: into
+            real(r64),        intent(out)          :: into
             character(len=*), intent(in), optional :: locale
             character(len=*), intent(in), optional :: fmt
         end subroutine cast_string_to_r64
         pure elemental recursive module subroutine cast_string_to_r32(substring, into, locale, fmt)
             class(String),    intent(in)           :: substring
-            real(r32),        intent(inout)        :: into
+            real(r32),        intent(out)          :: into
             character(len=*), intent(in), optional :: locale
             character(len=*), intent(in), optional :: fmt
         end subroutine cast_string_to_r32
 
         pure elemental recursive module subroutine cast_string_to_i64(substring, into, fmt)
             class(String),    intent(in)           :: substring
-            integer(i64),     intent(inout)        :: into
+            integer(i64),     intent(out)          :: into
             character(len=*), intent(in), optional :: fmt
         end subroutine cast_string_to_i64
         pure elemental recursive module subroutine cast_string_to_i32(substring, into, fmt)
             class(String),    intent(in)           :: substring
-            integer(i32),     intent(inout)        :: into
+            integer(i32),     intent(out)          :: into
             character(len=*), intent(in), optional :: fmt
         end subroutine cast_string_to_i32
         pure elemental recursive module subroutine cast_string_to_i16(substring, into, fmt)
             class(String),    intent(in)           :: substring
-            integer(i16),     intent(inout)        :: into
+            integer(i16),     intent(out)          :: into
             character(len=*), intent(in), optional :: fmt
         end subroutine cast_string_to_i16
         pure elemental recursive module subroutine cast_string_to_i8(substring, into, fmt)
             class(String),    intent(in)           :: substring
-            integer(i8),      intent(inout)        :: into
+            integer(i8),      intent(out)          :: into
             character(len=*), intent(in), optional :: fmt
         end subroutine cast_string_to_i8
 
         pure recursive module subroutine cast_char_to_c128(substring, into, locale, fmt, im)
             character(len=*), intent(in)           :: substring
-            complex(r128),    intent(inout)        :: into
+            complex(r128),    intent(out)          :: into
             character(len=*), intent(in), optional :: locale
             character(len=*), intent(in), optional :: fmt
             character(len=*), intent(in), optional :: im
         end subroutine cast_char_to_c128
         pure recursive module subroutine cast_char_to_c64(substring, into, locale, fmt, im)
             character(len=*), intent(in)           :: substring
-            complex(r64),     intent(inout)        :: into
+            complex(r64),     intent(out)          :: into
             character(len=*), intent(in), optional :: locale
             character(len=*), intent(in), optional :: fmt
             character(len=*), intent(in), optional :: im
         end subroutine cast_char_to_c64
         pure recursive module subroutine cast_char_to_c32(substring, into, locale, fmt, im)
             character(len=*), intent(in)           :: substring
-            complex(r32),     intent(inout)        :: into
+            complex(r32),     intent(out)          :: into
             character(len=*), intent(in), optional :: locale
             character(len=*), intent(in), optional :: fmt
             character(len=*), intent(in), optional :: im
@@ -884,41 +883,41 @@ module io_fortran_lib
 
         pure recursive module subroutine cast_char_to_r128(substring, into, locale, fmt)
             character(len=*), intent(in)           :: substring
-            real(r128),       intent(inout)        :: into
+            real(r128),       intent(out)          :: into
             character(len=*), intent(in), optional :: locale
             character(len=*), intent(in), optional :: fmt
         end subroutine cast_char_to_r128
         pure recursive module subroutine cast_char_to_r64(substring, into, locale, fmt)
             character(len=*), intent(in)           :: substring
-            real(r64),        intent(inout)        :: into
+            real(r64),        intent(out)          :: into
             character(len=*), intent(in), optional :: locale
             character(len=*), intent(in), optional :: fmt
         end subroutine cast_char_to_r64
         pure recursive module subroutine cast_char_to_r32(substring, into, locale, fmt)
             character(len=*), intent(in)           :: substring
-            real(r32),        intent(inout)        :: into
+            real(r32),        intent(out)          :: into
             character(len=*), intent(in), optional :: locale
             character(len=*), intent(in), optional :: fmt
         end subroutine cast_char_to_r32
 
         pure recursive module subroutine cast_char_to_i64(substring, into, fmt)
             character(len=*), intent(in)           :: substring
-            integer(i64),     intent(inout)        :: into
+            integer(i64),     intent(out)          :: into
             character(len=*), intent(in), optional :: fmt
         end subroutine cast_char_to_i64
         pure recursive module subroutine cast_char_to_i32(substring, into, fmt)
             character(len=*), intent(in)           :: substring
-            integer(i32),     intent(inout)        :: into
+            integer(i32),     intent(out)          :: into
             character(len=*), intent(in), optional :: fmt
         end subroutine cast_char_to_i32
         pure recursive module subroutine cast_char_to_i16(substring, into, fmt)
             character(len=*), intent(in)           :: substring
-            integer(i16),     intent(inout)        :: into
+            integer(i16),     intent(out)          :: into
             character(len=*), intent(in), optional :: fmt
         end subroutine cast_char_to_i16
         pure recursive module subroutine cast_char_to_i8(substring, into, fmt)
             character(len=*), intent(in)           :: substring
-            integer(i8),      intent(inout)        :: into
+            integer(i8),      intent(out)          :: into
             character(len=*), intent(in), optional :: fmt
         end subroutine cast_char_to_i8
     end interface

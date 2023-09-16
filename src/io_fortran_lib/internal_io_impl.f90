@@ -3945,7 +3945,7 @@ submodule (io_fortran_lib) internal_io
         end if
 
         if ( fmt_ == "i" ) then
-            if ( x < 0 ) then
+            if ( x < 0_i32 ) then
                 if ( x == smallest_i32 ) then
                     into%s = "-2147483648"; return
                 end if
@@ -3965,7 +3965,7 @@ submodule (io_fortran_lib) internal_io
                 into%s = buffer(i:); return
             end if
         else
-            if ( x < 0 ) then
+            if ( x < 0_i32 ) then
                 num = (x + 1) + largest_i32; negative = .true.; buffer(2:) = "0x00000000"
             else
                 num = x; negative = .false.
@@ -5310,7 +5310,7 @@ submodule (io_fortran_lib) internal_io
         end if
 
         if ( fmt_ == "i" ) then
-            if ( x < 0 ) then
+            if ( x < 0_i32 ) then
                 if ( x == smallest_i32 ) then
                     into = "-2147483648"; return
                 end if
@@ -5330,7 +5330,7 @@ submodule (io_fortran_lib) internal_io
                 into = buffer(i:); return
             end if
         else
-            if ( x < 0 ) then
+            if ( x < 0_i32 ) then
                 num = (x + 1) + largest_i32; negative = .true.; buffer(2:) = "0x00000000"
             else
                 num = x; negative = .false.
@@ -6236,7 +6236,7 @@ submodule (io_fortran_lib) internal_io
                 negative = .false.
             end if
 
-            into = 0
+            into = 0_i32
 
             do i = 0, ubound(TENS_i32, dim=1)
                 into = into + (iachar(substring%s(r:r)) - 48)*TENS_i32(i); if ( r == l ) exit
@@ -6268,7 +6268,7 @@ submodule (io_fortran_lib) internal_io
                 negative = .false.
             end if
 
-            into = 0
+            into = 0_i32
 
             do i = 0, ubound(SIXTEENS_i32, dim=1)
                 digit = iachar(substring%s(r:r)) - 48
@@ -6497,7 +6497,7 @@ submodule (io_fortran_lib) internal_io
         character(len=:), allocatable :: im_
 
         real(r128) :: z_re, z_im
-        integer :: substring_len, l, r, i, sep_code, e_code, im_len
+        integer    :: substring_len, l, r, i, sep_code, e_code, im_len
 
         z_re=0e0_r128; z_im=0e0_r128; substring_len=0; l=0; r=0; i=0; sep_code=0; e_code=0; im_len=0
 
@@ -6650,7 +6650,7 @@ submodule (io_fortran_lib) internal_io
         character(len=:), allocatable :: im_
 
         real(r64) :: z_re, z_im
-        integer :: substring_len, l, r, i, sep_code, e_code, im_len
+        integer   :: substring_len, l, r, i, sep_code, e_code, im_len
 
         z_re=0e0_r64; z_im=0e0_r64; substring_len=0; l=0; r=0; i=0; sep_code=0; e_code=0; im_len=0
 
@@ -6773,7 +6773,7 @@ submodule (io_fortran_lib) internal_io
         character(len=:), allocatable :: im_
 
         real(r32) :: z_re, z_im
-        integer :: substring_len, l, r, i, sep_code, e_code, im_len
+        integer   :: substring_len, l, r, i, sep_code, e_code, im_len
 
         z_re=0e0_r32; z_im=0e0_r32; substring_len=0; l=0; r=0; i=0; sep_code=0; e_code=0; im_len=0
 
@@ -6938,6 +6938,7 @@ submodule (io_fortran_lib) internal_io
     module procedure cast_char_to_r64
         character(len=1) :: fmt_
         character(len=5) :: decimal
+        integer(i64)     :: num
 
         if ( len(substring) < 1 ) then
             into = 0e0_r64; return
@@ -6954,9 +6955,9 @@ submodule (io_fortran_lib) internal_io
         end if
 
         if ( fmt_ == "z" ) then
-            block; integer(i64) :: num
-                call cast(substring, into=num, fmt="z"); into = transfer(source=num, mold=into); return
-            end block
+            call cast(substring, into=num, fmt="z")
+            into = transfer(source=num, mold=into)
+            return
         end if
 
         if ( .not. present(locale) ) then
@@ -6976,6 +6977,7 @@ submodule (io_fortran_lib) internal_io
     module procedure cast_char_to_r32
         character(len=1) :: fmt_
         character(len=5) :: decimal
+        integer(i32)     :: num
 
         if ( len(substring) < 1 ) then
             into = 0e0_r32; return
@@ -6992,9 +6994,9 @@ submodule (io_fortran_lib) internal_io
         end if
 
         if ( fmt_ == "z" ) then
-            block; integer(i32) :: num
-                call cast(substring, into=num, fmt="z"); into = transfer(source=num, mold=into); return
-            end block
+            call cast(substring, into=num, fmt="z")
+            into = transfer(source=num, mold=into)
+            return
         end if
 
         if ( .not. present(locale) ) then
@@ -7150,7 +7152,7 @@ submodule (io_fortran_lib) internal_io
                 negative = .false.
             end if
 
-            into = 0
+            into = 0_i32
 
             do i = 0, ubound(TENS_i32, dim=1)
                 into = into + (iachar(substring(r:r)) - 48)*TENS_i32(i); if ( r == l ) exit
@@ -7182,7 +7184,7 @@ submodule (io_fortran_lib) internal_io
                 negative = .false.
             end if
 
-            into = 0
+            into = 0_i32
 
             do i = 0, ubound(SIXTEENS_i32, dim=1)
                 digit = iachar(substring(r:r)) - 48
