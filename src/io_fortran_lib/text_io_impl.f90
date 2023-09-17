@@ -1064,7 +1064,7 @@ submodule (io_fortran_lib) text_io
 
       col_sep_len = len(delim)
       row_sep = iachar(NL); col_sep = iachar(delim(1:1))
-      open_paren = iachar('('); close_paren = iachar(')'); in_paren = .false.
+      open_paren = iachar("("); close_paren = iachar(")"); in_paren = .false.
 
       n_rows = text_file%count(match=NL)
 
@@ -1240,7 +1240,7 @@ submodule (io_fortran_lib) text_io
 
       col_sep_len = len(delim)
       row_sep = iachar(NL); col_sep = iachar(delim(1:1))
-      open_paren = iachar('('); close_paren = iachar(')'); in_paren = .false.
+      open_paren = iachar("("); close_paren = iachar(")"); in_paren = .false.
 
       n_rows = text_file%count(match=NL)
 
@@ -1416,7 +1416,7 @@ submodule (io_fortran_lib) text_io
 
       col_sep_len = len(delim)
       row_sep = iachar(NL); col_sep = iachar(delim(1:1))
-      open_paren = iachar('('); close_paren = iachar(')'); in_paren = .false.
+      open_paren = iachar("("); close_paren = iachar(")"); in_paren = .false.
 
       n_rows = text_file%count(match=NL)
 
@@ -1593,7 +1593,7 @@ submodule (io_fortran_lib) text_io
 
       col_sep_len = len(delim)
       row_sep = iachar(NL); col_sep = iachar(delim(1:1))
-      open_paren = iachar('('); close_paren = iachar(')'); in_paren = .false.
+      open_paren = iachar("("); close_paren = iachar(")"); in_paren = .false.
 
       n_rows = text_file%count(match=NL)
 
@@ -1741,7 +1741,7 @@ submodule (io_fortran_lib) text_io
 
       col_sep_len = len(delim)
       row_sep = iachar(NL); col_sep = iachar(delim(1:1))
-      open_paren = iachar('('); close_paren = iachar(')'); in_paren = .false.
+      open_paren = iachar("("); close_paren = iachar(")"); in_paren = .false.
 
       n_rows = text_file%count(match=NL)
 
@@ -1889,7 +1889,7 @@ submodule (io_fortran_lib) text_io
 
       col_sep_len = len(delim)
       row_sep = iachar(NL); col_sep = iachar(delim(1:1))
-      open_paren = iachar('('); close_paren = iachar(')'); in_paren = .false.
+      open_paren = iachar("("); close_paren = iachar(")"); in_paren = .false.
 
       n_rows = text_file%count(match=NL)
 

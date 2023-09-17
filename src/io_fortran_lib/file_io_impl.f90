@@ -40,7 +40,7 @@ submodule (io_fortran_lib) file_io
         header_ = [ EMPTY_STR ]
         hstat = 0
       else
-        if ( (size(header,kind=i64) /= 1_i64) .and. (size(header,kind=i64) /= size(x,kind=i64)) ) then
+        if ( (size(header, kind=i64) /= 1_i64) .and. (size(header, kind=i64) /= size(x, kind=i64)) ) then
           header_ = [ EMPTY_STR ]
           hstat = -1
           write(*,"(a)") LF//'WARNING: Invalid header for file "'//file//'".'// &
@@ -171,7 +171,7 @@ submodule (io_fortran_lib) file_io
         header_ = [ EMPTY_STR ]
         hstat = 0
       else
-        if ( (size(header,kind=i64) /= 1_i64) .and. (size(header,kind=i64) /= size(x,kind=i64)) ) then
+        if ( (size(header, kind=i64) /= 1_i64) .and. (size(header, kind=i64) /= size(x, kind=i64)) ) then
           header_ = [ EMPTY_STR ]
           hstat = -1
           write(*,"(a)") LF//'WARNING: Invalid header for file "'//file//'".'// &
@@ -302,7 +302,7 @@ submodule (io_fortran_lib) file_io
         header_ = [ EMPTY_STR ]
         hstat = 0
       else
-        if ( (size(header,kind=i64) /= 1_i64) .and. (size(header,kind=i64) /= size(x,kind=i64)) ) then
+        if ( (size(header, kind=i64) /= 1_i64) .and. (size(header, kind=i64) /= size(x, kind=i64)) ) then
           header_ = [ EMPTY_STR ]
           hstat = -1
           write(*,"(a)") LF//'WARNING: Invalid header for file "'//file//'".'// &
@@ -431,7 +431,7 @@ submodule (io_fortran_lib) file_io
       if ( .not. present(header) ) then
         header_ = [ EMPTY_STR ]
       else
-        if ( (size(header,kind=i64)/=1_i64).and.(size(header,kind=i64)/=size(x,dim=2,kind=i64)) ) then
+        if ( (size(header, kind=i64) /= 1_i64) .and. (size(header, kind=i64) /= size(x,dim=2, kind=i64)) ) then
           header_ = [ EMPTY_STR ]
           write(*,"(a)") LF//'WARNING: Invalid header for file "'//file//'".'// &
                    LF//'Header for this data must have size (1) or '// &
@@ -518,7 +518,7 @@ submodule (io_fortran_lib) file_io
       if ( .not. present(header) ) then
         header_ = [ EMPTY_STR ]
       else
-        if ( (size(header,kind=i64)/=1_i64).and.(size(header,kind=i64)/=size(x,dim=2,kind=i64)) ) then
+        if ( (size(header, kind=i64) /= 1_i64) .and. (size(header, kind=i64) /= size(x,dim=2, kind=i64)) ) then
           header_ = [ EMPTY_STR ]
           write(*,"(a)") LF//'WARNING: Invalid header for file "'//file//'".'// &
                    LF//'Header for this data must have size (1) or '// &
@@ -605,7 +605,7 @@ submodule (io_fortran_lib) file_io
       if ( .not. present(header) ) then
         header_ = [ EMPTY_STR ]
       else
-        if ( (size(header,kind=i64)/=1_i64).and.(size(header,kind=i64)/=size(x,dim=2,kind=i64)) ) then
+        if ( (size(header, kind=i64) /= 1_i64) .and. (size(header, kind=i64) /= size(x,dim=2, kind=i64)) ) then
           header_ = [ EMPTY_STR ]
           write(*,"(a)") LF//'WARNING: Invalid header for file "'//file//'".'// &
                    LF//'Header for this data must have size (1) or '// &
@@ -1450,7 +1450,7 @@ submodule (io_fortran_lib) file_io
         header_ = [ EMPTY_STR ]
         hstat = 0
       else
-        if ( (size(header,kind=i64) /= 1_i64) .and. (size(header,kind=i64) /= size(x,kind=i64)) ) then
+        if ( (size(header, kind=i64) /= 1_i64) .and. (size(header, kind=i64) /= size(x, kind=i64)) ) then
           header_ = [ EMPTY_STR ]
           hstat = -1
           write(*,"(a)") LF//'WARNING: Invalid header for file "'//file//'".'// &
@@ -1574,7 +1574,7 @@ submodule (io_fortran_lib) file_io
         header_ = [ EMPTY_STR ]
         hstat = 0
       else
-        if ( (size(header,kind=i64) /= 1_i64) .and. (size(header,kind=i64) /= size(x,kind=i64)) ) then
+        if ( (size(header, kind=i64) /= 1_i64) .and. (size(header, kind=i64) /= size(x, kind=i64)) ) then
           header_ = [ EMPTY_STR ]
           hstat = -1
           write(*,"(a)") LF//'WARNING: Invalid header for file "'//file//'".'// &
@@ -1698,7 +1698,7 @@ submodule (io_fortran_lib) file_io
         header_ = [ EMPTY_STR ]
         hstat = 0
       else
-        if ( (size(header,kind=i64) /= 1_i64) .and. (size(header,kind=i64) /= size(x,kind=i64)) ) then
+        if ( (size(header, kind=i64) /= 1_i64) .and. (size(header, kind=i64) /= size(x, kind=i64)) ) then
           header_ = [ EMPTY_STR ]
           hstat = -1
           write(*,"(a)") LF//'WARNING: Invalid header for file "'//file//'".'// &
@@ -1822,7 +1822,7 @@ submodule (io_fortran_lib) file_io
       if ( .not. present(header) ) then
         header_ = [ EMPTY_STR ]
       else
-        if ( (size(header,kind=i64)/=1_i64).and.(size(header,kind=i64)/=size(x,dim=2,kind=i64)) ) then
+        if ( (size(header, kind=i64) /= 1_i64) .and. (size(header, kind=i64) /= size(x,dim=2, kind=i64)) ) then
           header_ = [ EMPTY_STR ]
           write(*,"(a)") LF//'WARNING: Invalid header for file "'//file//'".'// &
                    LF//'Header for this data must have size (1) or '// &
@@ -1904,7 +1904,7 @@ submodule (io_fortran_lib) file_io
       if ( .not. present(header) ) then
         header_ = [ EMPTY_STR ]
       else
-        if ( (size(header,kind=i64)/=1_i64).and.(size(header,kind=i64)/=size(x,dim=2,kind=i64)) ) then
+        if ( (size(header, kind=i64) /= 1_i64) .and. (size(header, kind=i64) /= size(x,dim=2, kind=i64)) ) then
           header_ = [ EMPTY_STR ]
           write(*,"(a)") LF//'WARNING: Invalid header for file "'//file//'".'// &
                    LF//'Header for this data must have size (1) or '// &
@@ -1986,7 +1986,7 @@ submodule (io_fortran_lib) file_io
       if ( .not. present(header) ) then
         header_ = [ EMPTY_STR ]
       else
-        if ( (size(header,kind=i64)/=1_i64).and.(size(header,kind=i64)/=size(x,dim=2,kind=i64)) ) then
+        if ( (size(header, kind=i64) /= 1_i64) .and. (size(header, kind=i64) /= size(x,dim=2, kind=i64)) ) then
           header_ = [ EMPTY_STR ]
           write(*,"(a)") LF//'WARNING: Invalid header for file "'//file//'".'// &
                    LF//'Header for this data must have size (1) or '// &
@@ -2824,7 +2824,7 @@ submodule (io_fortran_lib) file_io
         header_ = [ EMPTY_STR ]
         hstat = 0
       else
-        if ( (size(header,kind=i64) /= 1_i64) .and. (size(header,kind=i64) /= size(x,kind=i64)) ) then
+        if ( (size(header, kind=i64) /= 1_i64) .and. (size(header, kind=i64) /= size(x, kind=i64)) ) then
           header_ = [ EMPTY_STR ]
           hstat = -1
           write(*,"(a)") LF//'WARNING: Invalid header for file "'//file//'".'// &
@@ -2881,12 +2881,12 @@ submodule (io_fortran_lib) file_io
       end if
 
       if ( .not. present(fmt) ) then
-        fmt_ = 'i'
+        fmt_ = "i"
       else
         if ( any(INT_FMTS == fmt) ) then
           fmt_ = fmt
         else
-          fmt_ = 'i'
+          fmt_ = "i"
           write(*,"(a)") LF//'WARNING: Invalid format "'//fmt//'" for file "'//file//'". '// &
                      'Defaulting to integer format.'// &
                    LF//'Format must be one of: '//join(INT_FMTS)
@@ -2922,7 +2922,7 @@ submodule (io_fortran_lib) file_io
         header_ = [ EMPTY_STR ]
         hstat = 0
       else
-        if ( (size(header,kind=i64) /= 1_i64) .and. (size(header,kind=i64) /= size(x,kind=i64)) ) then
+        if ( (size(header, kind=i64) /= 1_i64) .and. (size(header, kind=i64) /= size(x, kind=i64)) ) then
           header_ = [ EMPTY_STR ]
           hstat = -1
           write(*,"(a)") LF//'WARNING: Invalid header for file "'//file//'".'// &
@@ -2979,12 +2979,12 @@ submodule (io_fortran_lib) file_io
       end if
 
       if ( .not. present(fmt) ) then
-        fmt_ = 'i'
+        fmt_ = "i"
       else
         if ( any(INT_FMTS == fmt) ) then
           fmt_ = fmt
         else
-          fmt_ = 'i'
+          fmt_ = "i"
           write(*,"(a)") LF//'WARNING: Invalid format "'//fmt//'" for file "'//file//'". '// &
                      'Defaulting to integer format.'// &
                    LF//'Format must be one of: '//join(INT_FMTS)
@@ -3020,7 +3020,7 @@ submodule (io_fortran_lib) file_io
         header_ = [ EMPTY_STR ]
         hstat = 0
       else
-        if ( (size(header,kind=i64) /= 1_i64) .and. (size(header,kind=i64) /= size(x,kind=i64)) ) then
+        if ( (size(header, kind=i64) /= 1_i64) .and. (size(header, kind=i64) /= size(x, kind=i64)) ) then
           header_ = [ EMPTY_STR ]
           hstat = -1
           write(*,"(a)") LF//'WARNING: Invalid header for file "'//file//'".'// &
@@ -3077,12 +3077,12 @@ submodule (io_fortran_lib) file_io
       end if
 
       if ( .not. present(fmt) ) then
-        fmt_ = 'i'
+        fmt_ = "i"
       else
         if ( any(INT_FMTS == fmt) ) then
           fmt_ = fmt
         else
-          fmt_ = 'i'
+          fmt_ = "i"
           write(*,"(a)") LF//'WARNING: Invalid format "'//fmt//'" for file "'//file//'". '// &
                      'Defaulting to integer format.'// &
                    LF//'Format must be one of: '//join(INT_FMTS)
@@ -3118,7 +3118,7 @@ submodule (io_fortran_lib) file_io
         header_ = [ EMPTY_STR ]
         hstat = 0
       else
-        if ( (size(header,kind=i64) /= 1_i64) .and. (size(header,kind=i64) /= size(x,kind=i64)) ) then
+        if ( (size(header, kind=i64) /= 1_i64) .and. (size(header, kind=i64) /= size(x, kind=i64)) ) then
           header_ = [ EMPTY_STR ]
           hstat = -1
           write(*,"(a)") LF//'WARNING: Invalid header for file "'//file//'".'// &
@@ -3175,12 +3175,12 @@ submodule (io_fortran_lib) file_io
       end if
 
       if ( .not. present(fmt) ) then
-        fmt_ = 'i'
+        fmt_ = "i"
       else
         if ( any(INT_FMTS == fmt) ) then
           fmt_ = fmt
         else
-          fmt_ = 'i'
+          fmt_ = "i"
           write(*,"(a)") LF//'WARNING: Invalid format "'//fmt//'" for file "'//file//'". '// &
                      'Defaulting to integer format.'// &
                    LF//'Format must be one of: '//join(INT_FMTS)
@@ -3213,7 +3213,7 @@ submodule (io_fortran_lib) file_io
       if ( .not. present(header) ) then
         header_ = [ EMPTY_STR ]
       else
-        if ( (size(header,kind=i64)/=1_i64).and.(size(header,kind=i64)/=size(x,dim=2,kind=i64)) ) then
+        if ( (size(header, kind=i64) /= 1_i64) .and. (size(header, kind=i64) /= size(x,dim=2, kind=i64)) ) then
           header_ = [ EMPTY_STR ]
           write(*,"(a)") LF//'WARNING: Invalid header for file "'//file//'".'// &
                    LF//'Header for this data must have size (1) or '// &
@@ -3230,12 +3230,12 @@ submodule (io_fortran_lib) file_io
       end if
 
       if ( .not. present(fmt) ) then
-        fmt_ = 'i'
+        fmt_ = "i"
       else
         if ( any(INT_FMTS == fmt) ) then
           fmt_ = fmt
         else
-          fmt_ = 'i'
+          fmt_ = "i"
           write(*,"(a)") LF//'WARNING: Invalid format "'//fmt//'" for file "'//file//'". '// &
                      'Defaulting to integer format.'// &
                    LF//'Format must be one of: '//join(INT_FMTS)
@@ -3266,7 +3266,7 @@ submodule (io_fortran_lib) file_io
       if ( .not. present(header) ) then
         header_ = [ EMPTY_STR ]
       else
-        if ( (size(header,kind=i64)/=1_i64).and.(size(header,kind=i64)/=size(x,dim=2,kind=i64)) ) then
+        if ( (size(header, kind=i64) /= 1_i64) .and. (size(header, kind=i64) /= size(x,dim=2, kind=i64)) ) then
           header_ = [ EMPTY_STR ]
           write(*,"(a)") LF//'WARNING: Invalid header for file "'//file//'".'// &
                    LF//'Header for this data must have size (1) or '// &
@@ -3283,12 +3283,12 @@ submodule (io_fortran_lib) file_io
       end if
 
       if ( .not. present(fmt) ) then
-        fmt_ = 'i'
+        fmt_ = "i"
       else
         if ( any(INT_FMTS == fmt) ) then
           fmt_ = fmt
         else
-          fmt_ = 'i'
+          fmt_ = "i"
           write(*,"(a)") LF//'WARNING: Invalid format "'//fmt//'" for file "'//file//'". '// &
                      'Defaulting to integer format.'// &
                    LF//'Format must be one of: '//join(INT_FMTS)
@@ -3319,7 +3319,7 @@ submodule (io_fortran_lib) file_io
       if ( .not. present(header) ) then
         header_ = [ EMPTY_STR ]
       else
-        if ( (size(header,kind=i64)/=1_i64).and.(size(header,kind=i64)/=size(x,dim=2,kind=i64)) ) then
+        if ( (size(header, kind=i64) /= 1_i64) .and. (size(header, kind=i64) /= size(x,dim=2, kind=i64)) ) then
           header_ = [ EMPTY_STR ]
           write(*,"(a)") LF//'WARNING: Invalid header for file "'//file//'".'// &
                    LF//'Header for this data must have size (1) or '// &
@@ -3336,12 +3336,12 @@ submodule (io_fortran_lib) file_io
       end if
 
       if ( .not. present(fmt) ) then
-        fmt_ = 'i'
+        fmt_ = "i"
       else
         if ( any(INT_FMTS == fmt) ) then
           fmt_ = fmt
         else
-          fmt_ = 'i'
+          fmt_ = "i"
           write(*,"(a)") LF//'WARNING: Invalid format "'//fmt//'" for file "'//file//'". '// &
                      'Defaulting to integer format.'// &
                    LF//'Format must be one of: '//join(INT_FMTS)
@@ -3372,7 +3372,7 @@ submodule (io_fortran_lib) file_io
       if ( .not. present(header) ) then
         header_ = [ EMPTY_STR ]
       else
-        if ( (size(header,kind=i64)/=1_i64).and.(size(header,kind=i64)/=size(x,dim=2,kind=i64)) ) then
+        if ( (size(header, kind=i64) /= 1_i64) .and. (size(header, kind=i64) /= size(x,dim=2, kind=i64)) ) then
           header_ = [ EMPTY_STR ]
           write(*,"(a)") LF//'WARNING: Invalid header for file "'//file//'".'// &
                    LF//'Header for this data must have size (1) or '// &
@@ -3389,12 +3389,12 @@ submodule (io_fortran_lib) file_io
       end if
 
       if ( .not. present(fmt) ) then
-        fmt_ = 'i'
+        fmt_ = "i"
       else
         if ( any(INT_FMTS == fmt) ) then
           fmt_ = fmt
         else
-          fmt_ = 'i'
+          fmt_ = "i"
           write(*,"(a)") LF//'WARNING: Invalid format "'//fmt//'" for file "'//file//'". '// &
                      'Defaulting to integer format.'// &
                    LF//'Format must be one of: '//join(INT_FMTS)
@@ -4422,7 +4422,7 @@ submodule (io_fortran_lib) file_io
     character(len=:), allocatable :: ext, locale_, delim_, fmt_, im_
     logical                       :: header_
 
-    header_=.false.
+    header_ = .false.
 
     ext = ext_of(file)
 
@@ -4522,7 +4522,7 @@ submodule (io_fortran_lib) file_io
     character(len=:), allocatable :: ext, locale_, delim_, fmt_, im_
     logical                       :: header_
 
-    header_=.false.
+    header_ = .false.
 
     ext = ext_of(file)
 
@@ -4622,7 +4622,7 @@ submodule (io_fortran_lib) file_io
     character(len=:), allocatable :: ext, locale_, delim_, fmt_, im_
     logical                       :: header_
 
-    header_=.false.
+    header_ = .false.
 
     ext = ext_of(file)
 
@@ -4723,7 +4723,7 @@ submodule (io_fortran_lib) file_io
     character(len=:), allocatable :: ext, locale_, delim_, fmt_, im_
     logical                       :: header_
 
-    header_=.false.
+    header_ = .false.
 
     ext = ext_of(file)
 
@@ -4823,7 +4823,7 @@ submodule (io_fortran_lib) file_io
     character(len=:), allocatable :: ext, locale_, delim_, fmt_, im_
     logical                       :: header_
 
-    header_=.false.
+    header_ = .false.
 
     ext = ext_of(file)
 
@@ -4923,7 +4923,7 @@ submodule (io_fortran_lib) file_io
     character(len=:), allocatable :: ext, locale_, delim_, fmt_, im_
     logical                       :: header_
 
-    header_=.false.
+    header_ = .false.
 
     ext = ext_of(file)
 
@@ -5934,7 +5934,7 @@ submodule (io_fortran_lib) file_io
     character(len=:), allocatable :: ext, locale_, delim_, fmt_
     logical                       :: header_
 
-    header_=.false.
+    header_ = .false.
 
     ext = ext_of(file)
 
@@ -6027,7 +6027,7 @@ submodule (io_fortran_lib) file_io
     character(len=:), allocatable :: ext, locale_, delim_, fmt_
     logical                       :: header_
 
-    header_=.false.
+    header_ = .false.
 
     ext = ext_of(file)
 
@@ -6120,7 +6120,7 @@ submodule (io_fortran_lib) file_io
     character(len=:), allocatable :: ext, locale_, delim_, fmt_
     logical                       :: header_
 
-    header_=.false.
+    header_ = .false.
 
     ext = ext_of(file)
 
@@ -6214,7 +6214,7 @@ submodule (io_fortran_lib) file_io
     character(len=:), allocatable :: ext, locale_, delim_, fmt_
     logical                       :: header_
 
-    header_=.false.
+    header_ = .false.
 
     ext = ext_of(file)
 
@@ -6307,7 +6307,7 @@ submodule (io_fortran_lib) file_io
     character(len=:), allocatable :: ext, locale_, delim_, fmt_
     logical                       :: header_
 
-    header_=.false.
+    header_ = .false.
 
     ext = ext_of(file)
 
@@ -6400,7 +6400,7 @@ submodule (io_fortran_lib) file_io
     character(len=:), allocatable :: ext, locale_, delim_, fmt_
     logical                       :: header_
 
-    header_=.false.
+    header_ = .false.
 
     ext = ext_of(file)
 
@@ -7404,7 +7404,7 @@ submodule (io_fortran_lib) file_io
     character(len=:), allocatable :: ext, delim_, fmt_
     logical                       :: header_
 
-    header_=.false.
+    header_ = .false.
 
     ext = ext_of(file)
 
@@ -7422,7 +7422,7 @@ submodule (io_fortran_lib) file_io
       end if
 
       if ( .not. present(fmt) ) then
-        fmt_ = 'i'
+        fmt_ = "i"
       else
         if ( any(INT_FMTS == fmt) ) then
           fmt_ = fmt
@@ -7473,7 +7473,7 @@ submodule (io_fortran_lib) file_io
     character(len=:), allocatable :: ext, delim_, fmt_
     logical                       :: header_
 
-    header_=.false.
+    header_ = .false.
 
     ext = ext_of(file)
 
@@ -7491,7 +7491,7 @@ submodule (io_fortran_lib) file_io
       end if
 
       if ( .not. present(fmt) ) then
-        fmt_ = 'i'
+        fmt_ = "i"
       else
         if ( any(INT_FMTS == fmt) ) then
           fmt_ = fmt
@@ -7542,7 +7542,7 @@ submodule (io_fortran_lib) file_io
     character(len=:), allocatable :: ext, delim_, fmt_
     logical                       :: header_
 
-    header_=.false.
+    header_ = .false.
 
     ext = ext_of(file)
 
@@ -7560,7 +7560,7 @@ submodule (io_fortran_lib) file_io
       end if
 
       if ( .not. present(fmt) ) then
-        fmt_ = 'i'
+        fmt_ = "i"
       else
         if ( any(INT_FMTS == fmt) ) then
           fmt_ = fmt
@@ -7611,7 +7611,7 @@ submodule (io_fortran_lib) file_io
     character(len=:), allocatable :: ext, delim_, fmt_
     logical                       :: header_
 
-    header_=.false.
+    header_ = .false.
 
     ext = ext_of(file)
 
@@ -7629,7 +7629,7 @@ submodule (io_fortran_lib) file_io
       end if
 
       if ( .not. present(fmt) ) then
-        fmt_ = 'i'
+        fmt_ = "i"
       else
         if ( any(INT_FMTS == fmt) ) then
           fmt_ = fmt
@@ -7681,7 +7681,7 @@ submodule (io_fortran_lib) file_io
     character(len=:), allocatable :: ext, delim_, fmt_
     logical                       :: header_
 
-    header_=.false.
+    header_ = .false.
 
     ext = ext_of(file)
 
@@ -7699,7 +7699,7 @@ submodule (io_fortran_lib) file_io
       end if
 
       if ( .not. present(fmt) ) then
-        fmt_ = 'i'
+        fmt_ = "i"
       else
         if ( any(INT_FMTS == fmt) ) then
           fmt_ = fmt
@@ -7750,7 +7750,7 @@ submodule (io_fortran_lib) file_io
     character(len=:), allocatable :: ext, delim_, fmt_
     logical                       :: header_
 
-    header_=.false.
+    header_ = .false.
 
     ext = ext_of(file)
 
@@ -7768,7 +7768,7 @@ submodule (io_fortran_lib) file_io
       end if
 
       if ( .not. present(fmt) ) then
-        fmt_ = 'i'
+        fmt_ = "i"
       else
         if ( any(INT_FMTS == fmt) ) then
           fmt_ = fmt
@@ -7819,7 +7819,7 @@ submodule (io_fortran_lib) file_io
     character(len=:), allocatable :: ext, delim_, fmt_
     logical                       :: header_
 
-    header_=.false.
+    header_ = .false.
 
     ext = ext_of(file)
 
@@ -7837,7 +7837,7 @@ submodule (io_fortran_lib) file_io
       end if
 
       if ( .not. present(fmt) ) then
-        fmt_ = 'i'
+        fmt_ = "i"
       else
         if ( any(INT_FMTS == fmt) ) then
           fmt_ = fmt
@@ -7888,7 +7888,7 @@ submodule (io_fortran_lib) file_io
     character(len=:), allocatable :: ext, delim_, fmt_
     logical                       :: header_
 
-    header_=.false.
+    header_ = .false.
 
     ext = ext_of(file)
 
@@ -7906,7 +7906,7 @@ submodule (io_fortran_lib) file_io
       end if
 
       if ( .not. present(fmt) ) then
-        fmt_ = 'i'
+        fmt_ = "i"
       else
         if ( any(INT_FMTS == fmt) ) then
           fmt_ = fmt
