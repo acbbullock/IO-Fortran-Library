@@ -5,6 +5,10 @@ submodule (io_fortran_lib) text_io
   !---------------------------------------------------------------------------------------------------------------------
   implicit none (type, external)
 
+  ! Definitions and interfaces ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  integer,          target :: ROW_DIM         = 1
+  integer,          target :: COL_DIM         = 2
+
   contains ! Procedure bodies for module subprograms <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><
 
   ! Writing Procedures ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -121,899 +125,819 @@ submodule (io_fortran_lib) text_io
   end procedure echo_string
 
   module procedure to_text_1dc128
-    type(String)                  :: text_file
-    type(String),     allocatable :: cells(:,:)
-    character(len=:), allocatable :: label
-    integer(i64)                  :: nx, j
-    logical                       :: header_present
+    type(String)                      :: text_file
+    type(String), allocatable         :: cells(:,:)
+    type(String), pointer, contiguous :: numerical_data(:,:)
 
-    nx=size(x, kind=i64); j=0_i64; header_present=.false.
+    integer :: nx, nrows, ncols, j
+    logical :: header_present
 
-    if ( size(header, kind=i64) == 1_i64 ) then
-      if ( all(header == EMPTY_STR) ) then
-        if ( dim == 1 ) then
-          allocate( cells(nx,1_i64) )
-        else
-          allocate( cells(1_i64,nx) )
-        end if
-      else
-        header_present = .true.
-        if ( dim == 1 ) then
-          allocate( cells(nx+1_i64,1_i64) )
-          cells(1_i64,1_i64)%s = trim(adjustl(header(1_i64)))
-        else
-          allocate( cells(2_i64,nx) )
-          label = trim(adjustl(header(1_i64)))
-          do j = lbound(x, dim=1, kind=i64), ubound(x, dim=1, kind=i64)
-            cells(1_i64,j)%s = label//str(j)
-          end do
-        end if
-      end if
-    else
-      header_present = .true.
-      allocate( cells(2_i64,nx) )
-      do j = lbound(x, dim=1, kind=i64), ubound(x, dim=1, kind=i64)
-        cells(1_i64,j)%s = header(j)
-      end do
+    nx=size(x); nrows=0; ncols=0; j=0
+    header_present = .false.
+    if ( len(header) /= 0 ) header_present = .true.
+
+    nrows = nx; ncols = 1
+    if ( dim == COL_DIM ) then
+      nrows = 1; ncols = nx
+    end if
+    if ( header_present ) nrows = nrows + 1
+
+    allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
     end if
 
     if ( header_present ) then
-      if ( dim == 1 ) then
-        call cast(x, into=cells(2_i64:,1_i64), locale=locale, fmt=fmt, decimals=decimals, im=im)
+      if ( dim == ROW_DIM ) then
+        cells(1,1)%s = header(1)
+      else if ( (dim == COL_DIM) .and. (size(header) == 1) ) then
+        do j = 1, nx
+          cells(1,j)%s = header(1)//str(j)
+        end do
       else
-        call cast(x, into=cells(2_i64,:), locale=locale, fmt=fmt, decimals=decimals, im=im)
-      end if
-    else
-      if ( dim == 1 ) then
-        call cast(x, into=cells(:,1_i64), locale=locale, fmt=fmt, decimals=decimals, im=im)
-      else
-        call cast(x, into=cells(1_i64,:), locale=locale, fmt=fmt, decimals=decimals, im=im)
+        do j = 1, nx
+          cells(1,j)%s = header(j)
+        end do
       end if
     end if
 
-    call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
+    numerical_data => cells
+    if ( header_present ) numerical_data => cells(2:,:)
+
+    call cast(x, numerical_data, locale, fmt, decimals, im)
+    call text_file%write_file(cells, file, NL, delim, .false. stat, errmsg)
   end procedure to_text_1dc128
   module procedure to_text_1dc64
-    type(String)                  :: text_file
-    type(String),     allocatable :: cells(:,:)
-    character(len=:), allocatable :: label
-    integer(i64)                  :: nx, j
-    logical                       :: header_present
+    type(String)                      :: text_file
+    type(String), allocatable         :: cells(:,:)
+    type(String), pointer, contiguous :: numerical_data(:,:)
 
-    nx=size(x, kind=i64); j=0_i64; header_present=.false.
+    integer :: nx, nrows, ncols, j
+    logical :: header_present
 
-    if ( size(header, kind=i64) == 1_i64 ) then
-      if ( all(header == EMPTY_STR) ) then
-        if ( dim == 1 ) then
-          allocate( cells(nx,1_i64) )
-        else
-          allocate( cells(1_i64,nx) )
-        end if
-      else
-        header_present = .true.
-        if ( dim == 1 ) then
-          allocate( cells(nx+1_i64,1_i64) )
-          cells(1_i64,1_i64)%s = trim(adjustl(header(1_i64)))
-        else
-          allocate( cells(2_i64,nx) )
-          label = trim(adjustl(header(1_i64)))
-          do j = lbound(x, dim=1, kind=i64), ubound(x, dim=1, kind=i64)
-            cells(1_i64,j)%s = label//str(j)
-          end do
-        end if
-      end if
-    else
-      header_present = .true.
-      allocate( cells(2_i64,nx) )
-      do j = lbound(x, dim=1, kind=i64), ubound(x, dim=1, kind=i64)
-        cells(1_i64,j)%s = header(j)
-      end do
+    nx=size(x); nrows=0; ncols=0; j=0
+    header_present = .false.
+    if ( len(header) /= 0 ) header_present = .true.
+
+    nrows = nx; ncols = 1
+    if ( dim == COL_DIM ) then
+      nrows = 1; ncols = nx
+    end if
+    if ( header_present ) nrows = nrows + 1
+
+    allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
     end if
 
     if ( header_present ) then
-      if ( dim == 1 ) then
-        call cast(x, into=cells(2_i64:,1_i64), locale=locale, fmt=fmt, decimals=decimals, im=im)
+      if ( dim == ROW_DIM ) then
+        cells(1,1)%s = header(1)
+      else if ( (dim == COL_DIM) .and. (size(header) == 1) ) then
+        do j = 1, nx
+          cells(1,j)%s = header(1)//str(j)
+        end do
       else
-        call cast(x, into=cells(2_i64,:), locale=locale, fmt=fmt, decimals=decimals, im=im)
-      end if
-    else
-      if ( dim == 1 ) then
-        call cast(x, into=cells(:,1_i64), locale=locale, fmt=fmt, decimals=decimals, im=im)
-      else
-        call cast(x, into=cells(1_i64,:), locale=locale, fmt=fmt, decimals=decimals, im=im)
+        do j = 1, nx
+          cells(1,j)%s = header(j)
+        end do
       end if
     end if
 
-    call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
+    numerical_data => cells
+    if ( header_present ) numerical_data => cells(2:,:)
+
+    call cast(x, numerical_data, locale, fmt, decimals, im)
+    call text_file%write_file(cells, file, NL, delim, .false. stat, errmsg)
   end procedure to_text_1dc64
   module procedure to_text_1dc32
-    type(String)                  :: text_file
-    type(String),     allocatable :: cells(:,:)
-    character(len=:), allocatable :: label
-    integer(i64)                  :: nx, j
-    logical                       :: header_present
+    type(String)                      :: text_file
+    type(String), allocatable         :: cells(:,:)
+    type(String), pointer, contiguous :: numerical_data(:,:)
 
-    nx=size(x, kind=i64); j=0_i64; header_present=.false.
+    integer :: nx, nrows, ncols, j
+    logical :: header_present
 
-    if ( size(header, kind=i64) == 1_i64 ) then
-      if ( all(header == EMPTY_STR) ) then
-        if ( dim == 1 ) then
-          allocate( cells(nx,1_i64) )
-        else
-          allocate( cells(1_i64,nx) )
-        end if
-      else
-        header_present = .true.
-        if ( dim == 1 ) then
-          allocate( cells(nx+1_i64,1_i64) )
-          cells(1_i64,1_i64)%s = trim(adjustl(header(1_i64)))
-        else
-          allocate( cells(2_i64,nx) )
-          label = trim(adjustl(header(1_i64)))
-          do j = lbound(x, dim=1, kind=i64), ubound(x, dim=1, kind=i64)
-            cells(1_i64,j)%s = label//str(j)
-          end do
-        end if
-      end if
-    else
-      header_present = .true.
-      allocate( cells(2_i64,nx) )
-      do j = lbound(x, dim=1, kind=i64), ubound(x, dim=1, kind=i64)
-        cells(1_i64,j)%s = header(j)
-      end do
+    nx=size(x); nrows=0; ncols=0; j=0
+    header_present = .false.
+    if ( len(header) /= 0 ) header_present = .true.
+
+    nrows = nx; ncols = 1
+    if ( dim == COL_DIM ) then
+      nrows = 1; ncols = nx
+    end if
+    if ( header_present ) nrows = nrows + 1
+
+    allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
     end if
 
     if ( header_present ) then
-      if ( dim == 1 ) then
-        call cast(x, into=cells(2_i64:,1_i64), locale=locale, fmt=fmt, decimals=decimals, im=im)
+      if ( dim == ROW_DIM ) then
+        cells(1,1)%s = header(1)
+      else if ( (dim == COL_DIM) .and. (size(header) == 1) ) then
+        do j = 1, nx
+          cells(1,j)%s = header(1)//str(j)
+        end do
       else
-        call cast(x, into=cells(2_i64,:), locale=locale, fmt=fmt, decimals=decimals, im=im)
-      end if
-    else
-      if ( dim == 1 ) then
-        call cast(x, into=cells(:,1_i64), locale=locale, fmt=fmt, decimals=decimals, im=im)
-      else
-        call cast(x, into=cells(1_i64,:), locale=locale, fmt=fmt, decimals=decimals, im=im)
+        do j = 1, nx
+          cells(1,j)%s = header(j)
+        end do
       end if
     end if
 
-    call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
+    numerical_data => cells
+    if ( header_present ) numerical_data => cells(2:,:)
+
+    call cast(x, numerical_data, locale, fmt, decimals, im)
+    call text_file%write_file(cells, file, NL, delim, .false. stat, errmsg)
   end procedure to_text_1dc32
 
   module procedure to_text_2dc128
-    type(String)                  :: text_file
-    type(String),     allocatable :: cells(:,:)
-    character(len=:), allocatable :: label
-    integer(i64)                  :: n_rows, n_cols, j
-    logical                       :: header_present
+    type(String)                      :: text_file
+    type(String), allocatable         :: cells(:,:)
+    type(String), pointer, contiguous :: numerical_data(:,:)
 
-    n_rows=size(x, dim=1, kind=i64); n_cols=size(x, dim=2, kind=i64); j=0_i64; header_present=.false.
+    integer :: nrows, ncols, j
+    logical :: header_present
 
-    if ( size(header, kind=i64) == 1_i64 ) then
-      if ( all(header == EMPTY_STR) ) then
-        allocate( cells(n_rows,n_cols) )
-      else
-        header_present = .true.
-        allocate( cells(n_rows+1_i64,n_cols) )
-        label = trim(adjustl(header(1_i64)))
-        do j = lbound(x, dim=2, kind=i64), ubound(x, dim=2, kind=i64)
-          cells(1_i64,j)%s = label//str(j)
-        end do
-      end if
-    else
-      header_present = .true.
-      allocate( cells(n_rows+1_i64,n_cols) )
-      do j = lbound(x, dim=2, kind=i64), ubound(x, dim=2, kind=i64)
-        cells(1_i64,j)%s = header(j)
-      end do
+    nrows=size(x, dim=1); ncols=size(x, dim=2); j=0
+    header_present = .false.
+    if ( len(header) /= 0 ) header_present = .true.
+    if ( header_present ) nrows = nrows + 1
+
+    allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
     end if
 
     if ( header_present ) then
-      call cast(x, into=cells(2_i64:,:), locale=locale, fmt=fmt, decimals=decimals, im=im)
-    else
-      call cast(x, into=cells, locale=locale, fmt=fmt, decimals=decimals, im=im)
+      if ( size(header) == 1 ) then
+        do j = 1, ncols
+          cells(1,j)%s = header(1)//str(j)
+        end do
+      else
+        do j = 1, ncols
+          cells(1,j)%s = header(j)
+        end do
+      end if
     end if
 
-    call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
+    numerical_data => cells
+    if ( header_present ) numerical_data => cells(2:,:)
+
+    call cast(x, numerical_data, locale, fmt, decimals, im)
+    call text_file%write_file(cells, file, NL, delim, .false. stat, errmsg)
   end procedure to_text_2dc128
   module procedure to_text_2dc64
-    type(String)                  :: text_file
-    type(String),     allocatable :: cells(:,:)
-    character(len=:), allocatable :: label
-    integer(i64)                  :: n_rows, n_cols, j
-    logical                       :: header_present
+    type(String)                      :: text_file
+    type(String), allocatable         :: cells(:,:)
+    type(String), pointer, contiguous :: numerical_data(:,:)
 
-    n_rows=size(x, dim=1, kind=i64); n_cols=size(x, dim=2, kind=i64); j=0_i64; header_present=.false.
+    integer :: nrows, ncols, j
+    logical :: header_present
 
-    if ( size(header, kind=i64) == 1_i64 ) then
-      if ( all(header == EMPTY_STR) ) then
-        allocate( cells(n_rows,n_cols) )
-      else
-        header_present = .true.
-        allocate( cells(n_rows+1_i64,n_cols) )
-        label = trim(adjustl(header(1_i64)))
-        do j = lbound(x, dim=2, kind=i64), ubound(x, dim=2, kind=i64)
-          cells(1_i64,j)%s = label//str(j)
-        end do
-      end if
-    else
-      header_present = .true.
-      allocate( cells(n_rows+1_i64,n_cols) )
-      do j = lbound(x, dim=2, kind=i64), ubound(x, dim=2, kind=i64)
-        cells(1_i64,j)%s = header(j)
-      end do
+    nrows=size(x, dim=1); ncols=size(x, dim=2); j=0
+    header_present = .false.
+    if ( len(header) /= 0 ) header_present = .true.
+    if ( header_present ) nrows = nrows + 1
+
+    allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
     end if
 
     if ( header_present ) then
-      call cast(x, into=cells(2_i64:,:), locale=locale, fmt=fmt, decimals=decimals, im=im)
-    else
-      call cast(x, into=cells, locale=locale, fmt=fmt, decimals=decimals, im=im)
+      if ( size(header) == 1 ) then
+        do j = 1, ncols
+          cells(1,j)%s = header(1)//str(j)
+        end do
+      else
+        do j = 1, ncols
+          cells(1,j)%s = header(j)
+        end do
+      end if
     end if
 
-    call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
+    numerical_data => cells
+    if ( header_present ) numerical_data => cells(2:,:)
+
+    call cast(x, numerical_data, locale, fmt, decimals, im)
+    call text_file%write_file(cells, file, NL, delim, .false. stat, errmsg)
   end procedure to_text_2dc64
   module procedure to_text_2dc32
-    type(String)                  :: text_file
-    type(String),     allocatable :: cells(:,:)
-    character(len=:), allocatable :: label
-    integer(i64)                  :: n_rows, n_cols, j
-    logical                       :: header_present
+    type(String)                      :: text_file
+    type(String), allocatable         :: cells(:,:)
+    type(String), pointer, contiguous :: numerical_data(:,:)
 
-    n_rows=size(x, dim=1, kind=i64); n_cols=size(x, dim=2, kind=i64); j=0_i64; header_present=.false.
+    integer :: nrows, ncols, j
+    logical :: header_present
 
-    if ( size(header, kind=i64) == 1_i64 ) then
-      if ( all(header == EMPTY_STR) ) then
-        allocate( cells(n_rows,n_cols) )
-      else
-        header_present = .true.
-        allocate( cells(n_rows+1_i64,n_cols) )
-        label = trim(adjustl(header(1_i64)))
-        do j = lbound(x, dim=2, kind=i64), ubound(x, dim=2, kind=i64)
-          cells(1_i64,j)%s = label//str(j)
-        end do
-      end if
-    else
-      header_present = .true.
-      allocate( cells(n_rows+1_i64,n_cols) )
-      do j = lbound(x, dim=2, kind=i64), ubound(x, dim=2, kind=i64)
-        cells(1_i64,j)%s = header(j)
-      end do
+    nrows=size(x, dim=1); ncols=size(x, dim=2); j=0
+    header_present = .false.
+    if ( len(header) /= 0 ) header_present = .true.
+    if ( header_present ) nrows = nrows + 1
+
+    allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
     end if
 
     if ( header_present ) then
-      call cast(x, into=cells(2_i64:,:), locale=locale, fmt=fmt, decimals=decimals, im=im)
-    else
-      call cast(x, into=cells, locale=locale, fmt=fmt, decimals=decimals, im=im)
+      if ( size(header) == 1 ) then
+        do j = 1, ncols
+          cells(1,j)%s = header(1)//str(j)
+        end do
+      else
+        do j = 1, ncols
+          cells(1,j)%s = header(j)
+        end do
+      end if
     end if
 
-    call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
+    numerical_data => cells
+    if ( header_present ) numerical_data => cells(2:,:)
+
+    call cast(x, numerical_data, locale, fmt, decimals, im)
+    call text_file%write_file(cells, file, NL, delim, .false. stat, errmsg)
   end procedure to_text_2dc32
 
   module procedure to_text_1dr128
-    type(String)                  :: text_file
-    type(String),     allocatable :: cells(:,:)
-    character(len=:), allocatable :: label
-    integer(i64)                  :: nx, j
-    logical                       :: header_present
+    type(String)                      :: text_file
+    type(String), allocatable         :: cells(:,:)
+    type(String), pointer, contiguous :: numerical_data(:,:)
 
-    nx=size(x, kind=i64); j=0_i64; header_present=.false.
+    integer :: nx, nrows, ncols, j
+    logical :: header_present
 
-    if ( size(header, kind=i64) == 1_i64 ) then
-      if ( all(header == EMPTY_STR) ) then
-        if ( dim == 1 ) then
-          allocate( cells(nx,1_i64) )
-        else
-          allocate( cells(1_i64,nx) )
-        end if
-      else
-        header_present = .true.
-        if ( dim == 1 ) then
-          allocate( cells(nx+1_i64,1_i64) )
-          cells(1_i64,1_i64)%s = trim(adjustl(header(1_i64)))
-        else
-          allocate( cells(2_i64,nx) )
-          label = trim(adjustl(header(1_i64)))
-          do j = lbound(x, dim=1, kind=i64), ubound(x, dim=1, kind=i64)
-            cells(1_i64,j)%s = label//str(j)
-          end do
-        end if
-      end if
-    else
-      header_present = .true.
-      allocate( cells(2_i64,nx) )
-      do j = lbound(x, dim=1, kind=i64), ubound(x, dim=1, kind=i64)
-        cells(1_i64,j)%s = header(j)
-      end do
+    nx=size(x); nrows=0; ncols=0; j=0
+    header_present = .false.
+    if ( len(header) /= 0 ) header_present = .true.
+
+    nrows = nx; ncols = 1
+    if ( dim == COL_DIM ) then
+      nrows = 1; ncols = nx
+    end if
+    if ( header_present ) nrows = nrows + 1
+
+    allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
     end if
 
     if ( header_present ) then
-      if ( dim == 1 ) then
-        call cast(x, into=cells(2_i64:,1_i64), locale=locale, fmt=fmt, decimals=decimals)
+      if ( dim == ROW_DIM ) then
+        cells(1,1)%s = header(1)
+      else if ( (dim == COL_DIM) .and. (size(header) == 1) ) then
+        do j = 1, nx
+          cells(1,j)%s = header(1)//str(j)
+        end do
       else
-        call cast(x, into=cells(2_i64,:), locale=locale, fmt=fmt, decimals=decimals)
-      end if
-    else
-      if ( dim == 1 ) then
-        call cast(x, into=cells(:,1_i64), locale=locale, fmt=fmt, decimals=decimals)
-      else
-        call cast(x, into=cells(1_i64,:), locale=locale, fmt=fmt, decimals=decimals)
+        do j = 1, nx
+          cells(1,j)%s = header(j)
+        end do
       end if
     end if
 
-    call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
+    numerical_data => cells
+    if ( header_present ) numerical_data => cells(2:,:)
+
+    call cast(x, numerical_data, locale, fmt, decimals)
+    call text_file%write_file(cells, file, NL, delim, .false. stat, errmsg)
   end procedure to_text_1dr128
   module procedure to_text_1dr64
-    type(String)                  :: text_file
-    type(String),     allocatable :: cells(:,:)
-    character(len=:), allocatable :: label
-    integer(i64)                  :: nx, j
-    logical                       :: header_present
+    type(String)                      :: text_file
+    type(String), allocatable         :: cells(:,:)
+    type(String), pointer, contiguous :: numerical_data(:,:)
 
-    nx=size(x, kind=i64); j=0_i64; header_present=.false.
+    integer :: nx, nrows, ncols, j
+    logical :: header_present
 
-    if ( size(header, kind=i64) == 1_i64 ) then
-      if ( all(header == EMPTY_STR) ) then
-        if ( dim == 1 ) then
-          allocate( cells(nx,1_i64) )
-        else
-          allocate( cells(1_i64,nx) )
-        end if
-      else
-        header_present = .true.
-        if ( dim == 1 ) then
-          allocate( cells(nx+1_i64,1_i64) )
-          cells(1_i64,1_i64)%s = trim(adjustl(header(1_i64)))
-        else
-          allocate( cells(2_i64,nx) )
-          label = trim(adjustl(header(1_i64)))
-          do j = lbound(x, dim=1, kind=i64), ubound(x, dim=1, kind=i64)
-            cells(1_i64,j)%s = label//str(j)
-          end do
-        end if
-      end if
-    else
-      header_present = .true.
-      allocate( cells(2_i64,nx) )
-      do j = lbound(x, dim=1, kind=i64), ubound(x, dim=1, kind=i64)
-        cells(1_i64,j)%s = header(j)
-      end do
+    nx=size(x); nrows=0; ncols=0; j=0
+    header_present = .false.
+    if ( len(header) /= 0 ) header_present = .true.
+
+    nrows = nx; ncols = 1
+    if ( dim == COL_DIM ) then
+      nrows = 1; ncols = nx
+    end if
+    if ( header_present ) nrows = nrows + 1
+
+    allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
     end if
 
     if ( header_present ) then
-      if ( dim == 1 ) then
-        call cast(x, into=cells(2_i64:,1_i64), locale=locale, fmt=fmt, decimals=decimals)
+      if ( dim == ROW_DIM ) then
+        cells(1,1)%s = header(1)
+      else if ( (dim == COL_DIM) .and. (size(header) == 1) ) then
+        do j = 1, nx
+          cells(1,j)%s = header(1)//str(j)
+        end do
       else
-        call cast(x, into=cells(2_i64,:), locale=locale, fmt=fmt, decimals=decimals)
-      end if
-    else
-      if ( dim == 1 ) then
-        call cast(x, into=cells(:,1_i64), locale=locale, fmt=fmt, decimals=decimals)
-      else
-        call cast(x, into=cells(1_i64,:), locale=locale, fmt=fmt, decimals=decimals)
+        do j = 1, nx
+          cells(1,j)%s = header(j)
+        end do
       end if
     end if
 
-    call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
+    numerical_data => cells
+    if ( header_present ) numerical_data => cells(2:,:)
+
+    call cast(x, numerical_data, locale, fmt, decimals)
+    call text_file%write_file(cells, file, NL, delim, .false. stat, errmsg)
   end procedure to_text_1dr64
   module procedure to_text_1dr32
-    type(String)                  :: text_file
-    type(String),     allocatable :: cells(:,:)
-    character(len=:), allocatable :: label
-    integer(i64)                  :: nx, j
-    logical                       :: header_present
+    type(String)                      :: text_file
+    type(String), allocatable         :: cells(:,:)
+    type(String), pointer, contiguous :: numerical_data(:,:)
 
-    nx=size(x, kind=i64); j=0_i64; header_present=.false.
+    integer :: nx, nrows, ncols, j
+    logical :: header_present
 
-    if ( size(header, kind=i64) == 1_i64 ) then
-      if ( all(header == EMPTY_STR) ) then
-        if ( dim == 1 ) then
-          allocate( cells(nx,1_i64) )
-        else
-          allocate( cells(1_i64,nx) )
-        end if
-      else
-        header_present = .true.
-        if ( dim == 1 ) then
-          allocate( cells(nx+1_i64,1_i64) )
-          cells(1_i64,1_i64)%s = trim(adjustl(header(1_i64)))
-        else
-          allocate( cells(2_i64,nx) )
-          label = trim(adjustl(header(1_i64)))
-          do j = lbound(x, dim=1, kind=i64), ubound(x, dim=1, kind=i64)
-            cells(1_i64,j)%s = label//str(j)
-          end do
-        end if
-      end if
-    else
-      header_present = .true.
-      allocate( cells(2_i64,nx) )
-      do j = lbound(x, dim=1, kind=i64), ubound(x, dim=1, kind=i64)
-        cells(1_i64,j)%s = header(j)
-      end do
+    nx=size(x); nrows=0; ncols=0; j=0
+    header_present = .false.
+    if ( len(header) /= 0 ) header_present = .true.
+
+    nrows = nx; ncols = 1
+    if ( dim == COL_DIM ) then
+      nrows = 1; ncols = nx
+    end if
+    if ( header_present ) nrows = nrows + 1
+
+    allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
     end if
 
     if ( header_present ) then
-      if ( dim == 1 ) then
-        call cast(x, into=cells(2_i64:,1_i64), locale=locale, fmt=fmt, decimals=decimals)
+      if ( dim == ROW_DIM ) then
+        cells(1,1)%s = header(1)
+      else if ( (dim == COL_DIM) .and. (size(header) == 1) ) then
+        do j = 1, nx
+          cells(1,j)%s = header(1)//str(j)
+        end do
       else
-        call cast(x, into=cells(2_i64,:), locale=locale, fmt=fmt, decimals=decimals)
-      end if
-    else
-      if ( dim == 1 ) then
-        call cast(x, into=cells(:,1_i64), locale=locale, fmt=fmt, decimals=decimals)
-      else
-        call cast(x, into=cells(1_i64,:), locale=locale, fmt=fmt, decimals=decimals)
+        do j = 1, nx
+          cells(1,j)%s = header(j)
+        end do
       end if
     end if
 
-    call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
+    numerical_data => cells
+    if ( header_present ) numerical_data => cells(2:,:)
+
+    call cast(x, numerical_data, locale, fmt, decimals)
+    call text_file%write_file(cells, file, NL, delim, .false. stat, errmsg)
   end procedure to_text_1dr32
 
   module procedure to_text_2dr128
-    type(String)                  :: text_file
-    type(String),     allocatable :: cells(:,:)
-    character(len=:), allocatable :: label
-    integer(i64)                  :: n_rows, n_cols, j
-    logical                       :: header_present
+    type(String)                      :: text_file
+    type(String), allocatable         :: cells(:,:)
+    type(String), pointer, contiguous :: numerical_data(:,:)
 
-    n_rows=size(x, dim=1, kind=i64); n_cols=size(x, dim=2, kind=i64); j=0_i64; header_present=.false.
+    integer :: nrows, ncols, j
+    logical :: header_present
 
-    if ( size(header, kind=i64) == 1_i64 ) then
-      if ( all(header == EMPTY_STR) ) then
-        allocate( cells(n_rows,n_cols) )
-      else
-        header_present = .true.
-        allocate( cells(n_rows+1_i64,n_cols) )
-        label = trim(adjustl(header(1_i64)))
-        do j = lbound(x, dim=2, kind=i64), ubound(x, dim=2, kind=i64)
-          cells(1_i64,j)%s = label//str(j)
-        end do
-      end if
-    else
-      header_present = .true.
-      allocate( cells(n_rows+1_i64,n_cols) )
-      do j = lbound(x, dim=2, kind=i64), ubound(x, dim=2, kind=i64)
-        cells(1_i64,j)%s = header(j)
-      end do
+    nrows=size(x, dim=1); ncols=size(x, dim=2); j=0
+    header_present = .false.
+    if ( len(header) /= 0 ) header_present = .true.
+    if ( header_present ) nrows = nrows + 1
+
+    allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
     end if
 
     if ( header_present ) then
-      call cast(x, into=cells(2_i64:,:), locale=locale, fmt=fmt, decimals=decimals)
-    else
-      call cast(x, into=cells, locale=locale, fmt=fmt, decimals=decimals)
+      if ( size(header) == 1 ) then
+        do j = 1, ncols
+          cells(1,j)%s = header(1)//str(j)
+        end do
+      else
+        do j = 1, ncols
+          cells(1,j)%s = header(j)
+        end do
+      end if
     end if
 
-    call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
+    numerical_data => cells
+    if ( header_present ) numerical_data => cells(2:,:)
+
+    call cast(x, numerical_data, locale, fmt, decimals)
+    call text_file%write_file(cells, file, NL, delim, .false. stat, errmsg)
   end procedure to_text_2dr128
   module procedure to_text_2dr64
-    type(String)                  :: text_file
-    type(String),     allocatable :: cells(:,:)
-    character(len=:), allocatable :: label
-    integer(i64)                  :: n_rows, n_cols, j
-    logical                       :: header_present
+    type(String)                      :: text_file
+    type(String), allocatable         :: cells(:,:)
+    type(String), pointer, contiguous :: numerical_data(:,:)
 
-    n_rows=size(x, dim=1, kind=i64); n_cols=size(x, dim=2, kind=i64); j=0_i64; header_present=.false.
+    integer :: nrows, ncols, j
+    logical :: header_present
 
-    if ( size(header, kind=i64) == 1_i64 ) then
-      if ( all(header == EMPTY_STR) ) then
-        allocate( cells(n_rows,n_cols) )
-      else
-        header_present = .true.
-        allocate( cells(n_rows+1_i64,n_cols) )
-        label = trim(adjustl(header(1_i64)))
-        do j = lbound(x, dim=2, kind=i64), ubound(x, dim=2, kind=i64)
-          cells(1_i64,j)%s = label//str(j)
-        end do
-      end if
-    else
-      header_present = .true.
-      allocate( cells(n_rows+1_i64,n_cols) )
-      do j = lbound(x, dim=2, kind=i64), ubound(x, dim=2, kind=i64)
-        cells(1_i64,j)%s = header(j)
-      end do
+    nrows=size(x, dim=1); ncols=size(x, dim=2); j=0
+    header_present = .false.
+    if ( len(header) /= 0 ) header_present = .true.
+    if ( header_present ) nrows = nrows + 1
+
+    allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
     end if
 
     if ( header_present ) then
-      call cast(x, into=cells(2_i64:,:), locale=locale, fmt=fmt, decimals=decimals)
-    else
-      call cast(x, into=cells, locale=locale, fmt=fmt, decimals=decimals)
+      if ( size(header) == 1 ) then
+        do j = 1, ncols
+          cells(1,j)%s = header(1)//str(j)
+        end do
+      else
+        do j = 1, ncols
+          cells(1,j)%s = header(j)
+        end do
+      end if
     end if
 
-    call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
+    numerical_data => cells
+    if ( header_present ) numerical_data => cells(2:,:)
+
+    call cast(x, numerical_data, locale, fmt, decimals)
+    call text_file%write_file(cells, file, NL, delim, .false. stat, errmsg)
   end procedure to_text_2dr64
   module procedure to_text_2dr32
-    type(String)                  :: text_file
-    type(String),     allocatable :: cells(:,:)
-    character(len=:), allocatable :: label
-    integer(i64)                  :: n_rows, n_cols, j
-    logical                       :: header_present
+    type(String)                      :: text_file
+    type(String), allocatable         :: cells(:,:)
+    type(String), pointer, contiguous :: numerical_data(:,:)
 
-    n_rows=size(x, dim=1, kind=i64); n_cols=size(x, dim=2, kind=i64); j=0_i64; header_present=.false.
+    integer :: nrows, ncols, j
+    logical :: header_present
 
-    if ( size(header, kind=i64) == 1_i64 ) then
-      if ( all(header == EMPTY_STR) ) then
-        allocate( cells(n_rows,n_cols) )
-      else
-        header_present = .true.
-        allocate( cells(n_rows+1_i64,n_cols) )
-        label = trim(adjustl(header(1_i64)))
-        do j = lbound(x, dim=2, kind=i64), ubound(x, dim=2, kind=i64)
-          cells(1_i64,j)%s = label//str(j)
-        end do
-      end if
-    else
-      header_present = .true.
-      allocate( cells(n_rows+1_i64,n_cols) )
-      do j = lbound(x, dim=2, kind=i64), ubound(x, dim=2, kind=i64)
-        cells(1_i64,j)%s = header(j)
-      end do
+    nrows=size(x, dim=1); ncols=size(x, dim=2); j=0
+    header_present = .false.
+    if ( len(header) /= 0 ) header_present = .true.
+    if ( header_present ) nrows = nrows + 1
+
+    allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
     end if
 
     if ( header_present ) then
-      call cast(x, into=cells(2_i64:,:), locale=locale, fmt=fmt, decimals=decimals)
-    else
-      call cast(x, into=cells, locale=locale, fmt=fmt, decimals=decimals)
+      if ( size(header) == 1 ) then
+        do j = 1, ncols
+          cells(1,j)%s = header(1)//str(j)
+        end do
+      else
+        do j = 1, ncols
+          cells(1,j)%s = header(j)
+        end do
+      end if
     end if
 
-    call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
+    numerical_data => cells
+    if ( header_present ) numerical_data => cells(2:,:)
+
+    call cast(x, numerical_data, locale, fmt, decimals)
+    call text_file%write_file(cells, file, NL, delim, .false. stat, errmsg)
   end procedure to_text_2dr32
 
   module procedure to_text_1di64
-    type(String)                  :: text_file
-    type(String),     allocatable :: cells(:,:)
-    character(len=:), allocatable :: label
-    integer(i64)                  :: nx, j
-    logical                       :: header_present
+    type(String)                      :: text_file
+    type(String), allocatable         :: cells(:,:)
+    type(String), pointer, contiguous :: numerical_data(:,:)
 
-    nx=size(x, kind=i64); j=0_i64; header_present=.false.
+    integer :: nx, nrows, ncols, j
+    logical :: header_present
 
-    if ( size(header, kind=i64) == 1_i64 ) then
-      if ( all(header == EMPTY_STR) ) then
-        if ( dim == 1 ) then
-          allocate( cells(nx,1_i64) )
-        else
-          allocate( cells(1_i64,nx) )
-        end if
-      else
-        header_present = .true.
-        if ( dim == 1 ) then
-          allocate( cells(nx+1_i64,1_i64) )
-          cells(1_i64,1_i64)%s = trim(adjustl(header(1_i64)))
-        else
-          allocate( cells(2_i64,nx) )
-          label = trim(adjustl(header(1_i64)))
-          do j = lbound(x, dim=1, kind=i64), ubound(x, dim=1, kind=i64)
-            cells(1_i64,j)%s = label//str(j)
-          end do
-        end if
-      end if
-    else
-      header_present = .true.
-      allocate( cells(2_i64,nx) )
-      do j = lbound(x, dim=1, kind=i64), ubound(x, dim=1, kind=i64)
-        cells(1_i64,j)%s = header(j)
-      end do
+    nx=size(x); nrows=0; ncols=0; j=0
+    header_present = .false.
+    if ( len(header) /= 0 ) header_present = .true.
+
+    nrows = nx; ncols = 1
+    if ( dim == COL_DIM ) then
+      nrows = 1; ncols = nx
+    end if
+    if ( header_present ) nrows = nrows + 1
+
+    allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
     end if
 
     if ( header_present ) then
-      if ( dim == 1 ) then
-        call cast(x, into=cells(2_i64:,1_i64), fmt=fmt)
+      if ( dim == ROW_DIM ) then
+        cells(1,1)%s = header(1)
+      else if ( (dim == COL_DIM) .and. (size(header) == 1) ) then
+        do j = 1, nx
+          cells(1,j)%s = header(1)//str(j)
+        end do
       else
-        call cast(x, into=cells(2_i64,:), fmt=fmt)
-      end if
-    else
-      if ( dim == 1 ) then
-        call cast(x, into=cells(:,1_i64), fmt=fmt)
-      else
-        call cast(x, into=cells(1_i64,:), fmt=fmt)
+        do j = 1, nx
+          cells(1,j)%s = header(j)
+        end do
       end if
     end if
 
-    call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
+    numerical_data => cells
+    if ( header_present ) numerical_data => cells(2:,:)
+
+    call cast(x, numerical_data, fmt)
+    call text_file%write_file(cells, file, NL, delim, .false. stat, errmsg)
   end procedure to_text_1di64
   module procedure to_text_1di32
-    type(String)                  :: text_file
-    type(String),     allocatable :: cells(:,:)
-    character(len=:), allocatable :: label
-    integer(i64)                  :: nx, j
-    logical                       :: header_present
+    type(String)                      :: text_file
+    type(String), allocatable         :: cells(:,:)
+    type(String), pointer, contiguous :: numerical_data(:,:)
 
-    nx=size(x, kind=i64); j=0_i64; header_present=.false.
+    integer :: nx, nrows, ncols, j
+    logical :: header_present
 
-    if ( size(header, kind=i64) == 1_i64 ) then
-      if ( all(header == EMPTY_STR) ) then
-        if ( dim == 1 ) then
-          allocate( cells(nx,1_i64) )
-        else
-          allocate( cells(1_i64,nx) )
-        end if
-      else
-        header_present = .true.
-        if ( dim == 1 ) then
-          allocate( cells(nx+1_i64,1_i64) )
-          cells(1_i64,1_i64)%s = trim(adjustl(header(1_i64)))
-        else
-          allocate( cells(2_i64,nx) )
-          label = trim(adjustl(header(1_i64)))
-          do j = lbound(x, dim=1, kind=i64), ubound(x, dim=1, kind=i64)
-            cells(1_i64,j)%s = label//str(j)
-          end do
-        end if
-      end if
-    else
-      header_present = .true.
-      allocate( cells(2_i64,nx) )
-      do j = lbound(x, dim=1, kind=i64), ubound(x, dim=1, kind=i64)
-        cells(1_i64,j)%s = header(j)
-      end do
+    nx=size(x); nrows=0; ncols=0; j=0
+    header_present = .false.
+    if ( len(header) /= 0 ) header_present = .true.
+
+    nrows = nx; ncols = 1
+    if ( dim == COL_DIM ) then
+      nrows = 1; ncols = nx
+    end if
+    if ( header_present ) nrows = nrows + 1
+
+    allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
     end if
 
     if ( header_present ) then
-      if ( dim == 1 ) then
-        call cast(x, into=cells(2_i64:,1_i64), fmt=fmt)
+      if ( dim == ROW_DIM ) then
+        cells(1,1)%s = header(1)
+      else if ( (dim == COL_DIM) .and. (size(header) == 1) ) then
+        do j = 1, nx
+          cells(1,j)%s = header(1)//str(j)
+        end do
       else
-        call cast(x, into=cells(2_i64,:), fmt=fmt)
-      end if
-    else
-      if ( dim == 1 ) then
-        call cast(x, into=cells(:,1_i64), fmt=fmt)
-      else
-        call cast(x, into=cells(1_i64,:), fmt=fmt)
+        do j = 1, nx
+          cells(1,j)%s = header(j)
+        end do
       end if
     end if
 
-    call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
+    numerical_data => cells
+    if ( header_present ) numerical_data => cells(2:,:)
+
+    call cast(x, numerical_data, fmt)
+    call text_file%write_file(cells, file, NL, delim, .false. stat, errmsg)
   end procedure to_text_1di32
   module procedure to_text_1di16
-    type(String)                  :: text_file
-    type(String),     allocatable :: cells(:,:)
-    character(len=:), allocatable :: label
-    integer(i64)                  :: nx, j
-    logical                       :: header_present
+    type(String)                      :: text_file
+    type(String), allocatable         :: cells(:,:)
+    type(String), pointer, contiguous :: numerical_data(:,:)
 
-    nx=size(x, kind=i64); j=0_i64; header_present=.false.
+    integer :: nx, nrows, ncols, j
+    logical :: header_present
 
-    if ( size(header, kind=i64) == 1_i64 ) then
-      if ( all(header == EMPTY_STR) ) then
-        if ( dim == 1 ) then
-          allocate( cells(nx,1_i64) )
-        else
-          allocate( cells(1_i64,nx) )
-        end if
-      else
-        header_present = .true.
-        if ( dim == 1 ) then
-          allocate( cells(nx+1_i64,1_i64) )
-          cells(1_i64,1_i64)%s = trim(adjustl(header(1_i64)))
-        else
-          allocate( cells(2_i64,nx) )
-          label = trim(adjustl(header(1_i64)))
-          do j = lbound(x, dim=1, kind=i64), ubound(x, dim=1, kind=i64)
-            cells(1_i64,j)%s = label//str(j)
-          end do
-        end if
-      end if
-    else
-      header_present = .true.
-      allocate( cells(2_i64,nx) )
-      do j = lbound(x, dim=1, kind=i64), ubound(x, dim=1, kind=i64)
-        cells(1_i64,j)%s = header(j)
-      end do
+    nx=size(x); nrows=0; ncols=0; j=0
+    header_present = .false.
+    if ( len(header) /= 0 ) header_present = .true.
+
+    nrows = nx; ncols = 1
+    if ( dim == COL_DIM ) then
+      nrows = 1; ncols = nx
+    end if
+    if ( header_present ) nrows = nrows + 1
+
+    allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
     end if
 
     if ( header_present ) then
-      if ( dim == 1 ) then
-        call cast(x, into=cells(2_i64:,1_i64), fmt=fmt)
+      if ( dim == ROW_DIM ) then
+        cells(1,1)%s = header(1)
+      else if ( (dim == COL_DIM) .and. (size(header) == 1) ) then
+        do j = 1, nx
+          cells(1,j)%s = header(1)//str(j)
+        end do
       else
-        call cast(x, into=cells(2_i64,:), fmt=fmt)
-      end if
-    else
-      if ( dim == 1 ) then
-        call cast(x, into=cells(:,1_i64), fmt=fmt)
-      else
-        call cast(x, into=cells(1_i64,:), fmt=fmt)
+        do j = 1, nx
+          cells(1,j)%s = header(j)
+        end do
       end if
     end if
 
-    call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
+    numerical_data => cells
+    if ( header_present ) numerical_data => cells(2:,:)
+
+    call cast(x, numerical_data, fmt)
+    call text_file%write_file(cells, file, NL, delim, .false. stat, errmsg)
   end procedure to_text_1di16
   module procedure to_text_1di8
-    type(String)                  :: text_file
-    type(String),     allocatable :: cells(:,:)
-    character(len=:), allocatable :: label
-    integer(i64)                  :: nx, j
-    logical                       :: header_present
+    type(String)                      :: text_file
+    type(String), allocatable         :: cells(:,:)
+    type(String), pointer, contiguous :: numerical_data(:,:)
 
-    nx=size(x, kind=i64); j=0_i64; header_present=.false.
+    integer :: nx, nrows, ncols, j
+    logical :: header_present
 
-    if ( size(header, kind=i64) == 1_i64 ) then
-      if ( all(header == EMPTY_STR) ) then
-        if ( dim == 1 ) then
-          allocate( cells(nx,1_i64) )
-        else
-          allocate( cells(1_i64,nx) )
-        end if
-      else
-        header_present = .true.
-        if ( dim == 1 ) then
-          allocate( cells(nx+1_i64,1_i64) )
-          cells(1_i64,1_i64)%s = trim(adjustl(header(1_i64)))
-        else
-          allocate( cells(2_i64,nx) )
-          label = trim(adjustl(header(1_i64)))
-          do j = lbound(x, dim=1, kind=i64), ubound(x, dim=1, kind=i64)
-            cells(1_i64,j)%s = label//str(j)
-          end do
-        end if
-      end if
-    else
-      header_present = .true.
-      allocate( cells(2_i64,nx) )
-      do j = lbound(x, dim=1, kind=i64), ubound(x, dim=1, kind=i64)
-        cells(1_i64,j)%s = header(j)
-      end do
+    nx=size(x); nrows=0; ncols=0; j=0
+    header_present = .false.
+    if ( len(header) /= 0 ) header_present = .true.
+
+    nrows = nx; ncols = 1
+    if ( dim == COL_DIM ) then
+      nrows = 1; ncols = nx
+    end if
+    if ( header_present ) nrows = nrows + 1
+
+    allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
     end if
 
     if ( header_present ) then
-      if ( dim == 1 ) then
-        call cast(x, into=cells(2_i64:,1_i64), fmt=fmt)
+      if ( dim == ROW_DIM ) then
+        cells(1,1)%s = header(1)
+      else if ( (dim == COL_DIM) .and. (size(header) == 1) ) then
+        do j = 1, nx
+          cells(1,j)%s = header(1)//str(j)
+        end do
       else
-        call cast(x, into=cells(2_i64,:), fmt=fmt)
-      end if
-    else
-      if ( dim == 1 ) then
-        call cast(x, into=cells(:,1_i64), fmt=fmt)
-      else
-        call cast(x, into=cells(1_i64,:), fmt=fmt)
+        do j = 1, nx
+          cells(1,j)%s = header(j)
+        end do
       end if
     end if
 
-    call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
+    numerical_data => cells
+    if ( header_present ) numerical_data => cells(2:,:)
+
+    call cast(x, numerical_data, fmt)
+    call text_file%write_file(cells, file, NL, delim, .false. stat, errmsg)
   end procedure to_text_1di8
 
   module procedure to_text_2di64
-    type(String)                  :: text_file
-    type(String),     allocatable :: cells(:,:)
-    character(len=:), allocatable :: label
-    integer(i64)                  :: n_rows, n_cols, j
-    logical                       :: header_present
+    type(String)                      :: text_file
+    type(String), allocatable         :: cells(:,:)
+    type(String), pointer, contiguous :: numerical_data(:,:)
 
-    n_rows=size(x, dim=1, kind=i64); n_cols=size(x, dim=2, kind=i64); j=0_i64; header_present=.false.
+    integer :: nrows, ncols, j
+    logical :: header_present
 
-    if ( size(header, kind=i64) == 1_i64 ) then
-      if ( all(header == EMPTY_STR) ) then
-        allocate( cells(n_rows,n_cols) )
-      else
-        header_present = .true.
-        allocate( cells(n_rows+1_i64,n_cols) )
-        label = trim(adjustl(header(1_i64)))
-        do j = lbound(x, dim=2, kind=i64), ubound(x, dim=2, kind=i64)
-          cells(1_i64,j)%s = label//str(j)
-        end do
-      end if
-    else
-      header_present = .true.
-      allocate( cells(n_rows+1_i64,n_cols) )
-      do j = lbound(x, dim=2, kind=i64), ubound(x, dim=2, kind=i64)
-        cells(1_i64,j)%s = header(j)
-      end do
+    nrows=size(x, dim=1); ncols=size(x, dim=2); j=0
+    header_present = .false.
+    if ( len(header) /= 0 ) header_present = .true.
+    if ( header_present ) nrows = nrows + 1
+
+    allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
     end if
 
     if ( header_present ) then
-      call cast(x, into=cells(2_i64:,:), fmt=fmt)
-    else
-      call cast(x, into=cells, fmt=fmt)
+      if ( size(header) == 1 ) then
+        do j = 1, ncols
+          cells(1,j)%s = header(1)//str(j)
+        end do
+      else
+        do j = 1, ncols
+          cells(1,j)%s = header(j)
+        end do
+      end if
     end if
 
-    call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
+    numerical_data => cells
+    if ( header_present ) numerical_data => cells(2:,:)
+
+    call cast(x, numerical_data, fmt)
+    call text_file%write_file(cells, file, NL, delim, .false. stat, errmsg)
   end procedure to_text_2di64
   module procedure to_text_2di32
-    type(String)                  :: text_file
-    type(String),     allocatable :: cells(:,:)
-    character(len=:), allocatable :: label
-    integer(i64)                  :: n_rows, n_cols, j
-    logical                       :: header_present
+    type(String)                      :: text_file
+    type(String), allocatable         :: cells(:,:)
+    type(String), pointer, contiguous :: numerical_data(:,:)
 
-    n_rows=size(x, dim=1, kind=i64); n_cols=size(x, dim=2, kind=i64); j=0_i64; header_present=.false.
+    integer :: nrows, ncols, j
+    logical :: header_present
 
-    if ( size(header, kind=i64) == 1_i64 ) then
-      if ( all(header == EMPTY_STR) ) then
-        allocate( cells(n_rows,n_cols) )
-      else
-        header_present = .true.
-        allocate( cells(n_rows+1_i64,n_cols) )
-        label = trim(adjustl(header(1_i64)))
-        do j = lbound(x, dim=2, kind=i64), ubound(x, dim=2, kind=i64)
-          cells(1_i64,j)%s = label//str(j)
-        end do
-      end if
-    else
-      header_present = .true.
-      allocate( cells(n_rows+1_i64,n_cols) )
-      do j = lbound(x, dim=2, kind=i64), ubound(x, dim=2, kind=i64)
-        cells(1_i64,j)%s = header(j)
-      end do
+    nrows=size(x, dim=1); ncols=size(x, dim=2); j=0
+    header_present = .false.
+    if ( len(header) /= 0 ) header_present = .true.
+    if ( header_present ) nrows = nrows + 1
+
+    allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
     end if
 
     if ( header_present ) then
-      call cast(x, into=cells(2_i64:,:), fmt=fmt)
-    else
-      call cast(x, into=cells, fmt=fmt)
+      if ( size(header) == 1 ) then
+        do j = 1, ncols
+          cells(1,j)%s = header(1)//str(j)
+        end do
+      else
+        do j = 1, ncols
+          cells(1,j)%s = header(j)
+        end do
+      end if
     end if
 
-    call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
+    numerical_data => cells
+    if ( header_present ) numerical_data => cells(2:,:)
+
+    call cast(x, numerical_data, fmt)
+    call text_file%write_file(cells, file, NL, delim, .false. stat, errmsg)
   end procedure to_text_2di32
   module procedure to_text_2di16
-    type(String)                  :: text_file
-    type(String),     allocatable :: cells(:,:)
-    character(len=:), allocatable :: label
-    integer(i64)                  :: n_rows, n_cols, j
-    logical                       :: header_present
+    type(String)                      :: text_file
+    type(String), allocatable         :: cells(:,:)
+    type(String), pointer, contiguous :: numerical_data(:,:)
 
-    n_rows=size(x, dim=1, kind=i64); n_cols=size(x, dim=2, kind=i64); j=0_i64; header_present=.false.
+    integer :: nrows, ncols, j
+    logical :: header_present
 
-    if ( size(header, kind=i64) == 1_i64 ) then
-      if ( all(header == EMPTY_STR) ) then
-        allocate( cells(n_rows,n_cols) )
-      else
-        header_present = .true.
-        allocate( cells(n_rows+1_i64,n_cols) )
-        label = trim(adjustl(header(1_i64)))
-        do j = lbound(x, dim=2, kind=i64), ubound(x, dim=2, kind=i64)
-          cells(1_i64,j)%s = label//str(j)
-        end do
-      end if
-    else
-      header_present = .true.
-      allocate( cells(n_rows+1_i64,n_cols) )
-      do j = lbound(x, dim=2, kind=i64), ubound(x, dim=2, kind=i64)
-        cells(1_i64,j)%s = header(j)
-      end do
+    nrows=size(x, dim=1); ncols=size(x, dim=2); j=0
+    header_present = .false.
+    if ( len(header) /= 0 ) header_present = .true.
+    if ( header_present ) nrows = nrows + 1
+
+    allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
     end if
 
     if ( header_present ) then
-      call cast(x, into=cells(2_i64:,:), fmt=fmt)
-    else
-      call cast(x, into=cells, fmt=fmt)
+      if ( size(header) == 1 ) then
+        do j = 1, ncols
+          cells(1,j)%s = header(1)//str(j)
+        end do
+      else
+        do j = 1, ncols
+          cells(1,j)%s = header(j)
+        end do
+      end if
     end if
 
-    call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
+    numerical_data => cells
+    if ( header_present ) numerical_data => cells(2:,:)
+
+    call cast(x, numerical_data, fmt)
+    call text_file%write_file(cells, file, NL, delim, .false. stat, errmsg)
   end procedure to_text_2di16
   module procedure to_text_2di8
-    type(String)                  :: text_file
-    type(String),     allocatable :: cells(:,:)
-    character(len=:), allocatable :: label
-    integer(i64)                  :: n_rows, n_cols, j
-    logical                       :: header_present
+    type(String)                      :: text_file
+    type(String), allocatable         :: cells(:,:)
+    type(String), pointer, contiguous :: numerical_data(:,:)
 
-    n_rows=size(x, dim=1, kind=i64); n_cols=size(x, dim=2, kind=i64); j=0_i64; header_present=.false.
+    integer :: nrows, ncols, j
+    logical :: header_present
 
-    if ( size(header, kind=i64) == 1_i64 ) then
-      if ( all(header == EMPTY_STR) ) then
-        allocate( cells(n_rows,n_cols) )
-      else
-        header_present = .true.
-        allocate( cells(n_rows+1_i64,n_cols) )
-        label = trim(adjustl(header(1_i64)))
-        do j = lbound(x, dim=2, kind=i64), ubound(x, dim=2, kind=i64)
-          cells(1_i64,j)%s = label//str(j)
-        end do
-      end if
-    else
-      header_present = .true.
-      allocate( cells(n_rows+1_i64,n_cols) )
-      do j = lbound(x, dim=2, kind=i64), ubound(x, dim=2, kind=i64)
-        cells(1_i64,j)%s = header(j)
-      end do
+    nrows=size(x, dim=1); ncols=size(x, dim=2); j=0
+    header_present = .false.
+    if ( len(header) /= 0 ) header_present = .true.
+    if ( header_present ) nrows = nrows + 1
+
+    allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
     end if
 
     if ( header_present ) then
-      call cast(x, into=cells(2_i64:,:), fmt=fmt)
-    else
-      call cast(x, into=cells, fmt=fmt)
+      if ( size(header) == 1 ) then
+        do j = 1, ncols
+          cells(1,j)%s = header(1)//str(j)
+        end do
+      else
+        do j = 1, ncols
+          cells(1,j)%s = header(j)
+        end do
+      end if
     end if
 
-    call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
+    numerical_data => cells
+    if ( header_present ) numerical_data => cells(2:,:)
+
+    call cast(x, numerical_data, fmt)
+    call text_file%write_file(cells, file, NL, delim, .false. stat, errmsg)
   end procedure to_text_2di8
 
   ! Reading Procedures ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

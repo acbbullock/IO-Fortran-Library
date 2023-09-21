@@ -4,6 +4,10 @@ submodule (io_fortran_lib) string_methods
   !---------------------------------------------------------------------------------------------------------------------
   implicit none (type, external)
 
+  ! Definitions and interfaces ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  character(len=1), target :: LINE_FEED = LF, COMMA_DELIMITER = COMMA
+  logical,          target :: NO_APPEND = .false.
+
   contains ! Procedure bodies for module subprograms <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><
 
   module procedure as_str
@@ -1032,96 +1036,143 @@ submodule (io_fortran_lib) string_methods
   end procedure trim_inplace
 
   module procedure write_file
-    character(len=:), allocatable :: ext, row_separator_, column_separator_
-    integer(i64),     allocatable :: lengths(:,:)
-    integer(i64)                  :: n_rows, n_cols, row_sep_len, col_sep_len, total_len, row, col, pos
-    logical                       :: exists, append_
-    integer                       :: file_unit
+    character(len=:), allocatable :: ext
 
-    n_rows    = 0_i64;   n_cols  = 0_i64; row_sep_len = 0_i64; col_sep_len = 0_i64
-    total_len = 0_i64;   row     = 0_i64; col         = 0_i64; pos         = 0_i64
-    exists    = .false.; append_ = .false.
-    file_unit = 0
+    character(len=:), pointer :: row_separator_, column_separator_, errmsg_
+    logical,          pointer :: append_
+    integer,          pointer :: stat_
+
+    character(len=0), target :: dummy_msg
+    integer,          target :: dummy_stat
+
+    integer(i64), allocatable :: lengths(:,:)
+
+    integer(i64) :: total_len, pos
+    integer      :: file_unit, nrows, ncols, row_sep_len, col_sep_len, row, col
+    logical      :: exists
+
+    dummy_msg=EMPTY_STR; dummy_stat=0
+    total_len=0_i64; pos=0_i64
+    file_unit=0; nrows=0; ncols=0; row_sep_len=0; col_sep_len=0; row=0; col=0
+    exists=.false.
 
     ext = ext_of(file)
 
+    if ( .not. present(stat) ) then
+      stat_ => dummy_stat
+    else
+      stat_ => stat
+    end if
+
+    if ( .not. present(errmsg) ) then
+      errmsg_ => dummy_msg
+    else
+      errmsg_ => errmsg
+    end if
+
+    stat_=0; errmsg_=EMPTY_STR
+
     if ( .not. any(TEXT_EXT == ext) ) then
-      write(*,"(a)")  LF//'WARNING: Skipping write to "'//file//'" in method WRITE_FILE'// &
-                'due to unsupported file extension "'//ext//'".'// &
-              LF//'Supported file extensions: '//join(TEXT_EXT)
+      stat_ = ARG_ERR
+      errmsg_ = 'Cannot write to file "'//file//'" due to unsupported file extension "'//ext//'". '// &
+                'Supported file extensions: '//join(TEXT_EXT)
       return
     end if
 
     if ( .not. present(row_separator) ) then
-      row_separator_ = LF
+      row_separator_ => LINE_FEED
     else
-      row_separator_ = row_separator
+      row_separator_ => row_separator
     end if
 
     if ( .not. present(column_separator) ) then
-      column_separator_ = COMMA
+      column_separator_ => COMMA_DELIMITER
     else
-      column_separator_ = column_separator
+      column_separator_ => column_separator
     end if
 
     if ( .not. present(append) ) then
-      append_ = .false.
+      append_ => NO_APPEND
     else
-      append_ = append
+      append_ => append
     end if
 
-    n_rows = size(cell_array, dim=1, kind=i64)
-    n_cols = size(cell_array, dim=2, kind=i64)
-    row_sep_len = len(row_separator_, kind=i64)
-    col_sep_len = len(column_separator_, kind=i64)
+    nrows = size(cell_array, dim=1)
+    ncols = size(cell_array, dim=2)
+    row_sep_len = len(row_separator_)
+    col_sep_len = len(column_separator_)
 
-    if ( allocated(self%s) ) deallocate(self%s)
+    if ( allocated(self%s) ) deallocate(self%s, stat=stat_, errmsg=errmsg_)
+
+    if ( stat_ /= 0 ) then
+      stat_ = ALLOC_ERR; return
+    end if
 
     lengths = cell_array%len64()
-    total_len = sum(lengths) + n_rows*row_sep_len + n_rows*(n_cols - 1_i64)*col_sep_len
+    total_len = sum(lengths) + int(nrows*row_sep_len, kind=i64) + int(nrows*(ncols - 1)*col_sep_len, kind=i64)
 
-    allocate( character(len=total_len) :: self%s )
+    allocate( character(len=total_len) :: self%s, stat=stat_, errmsg=errmsg_ )
 
-    row = 1_i64; col = 1_i64; pos = 1_i64; positional_transfers: do
+    if ( stat_ /= 0 ) then
+      stat_ = ALLOC_ERR; return
+    end if
+
+    row = 1; col = 1; pos = 1_i64; positional_transfers: do
       if ( lengths(row,col) > 0_i64 ) then
         self%s(pos:pos+lengths(row,col)-1_i64) = cell_array(row,col)%s
         pos = pos + lengths(row,col)
       end if
 
-      if ( col < n_cols ) then
-        if ( col_sep_len > 0_i64 ) self%s(pos:pos+col_sep_len-1_i64) = column_separator_
-        pos = pos + col_sep_len; col = col + 1_i64; cycle
+      if ( col < ncols ) then
+        if ( col_sep_len > 0 ) self%s(pos:pos+col_sep_len-1_i64) = column_separator_
+        pos = pos + col_sep_len; col = col + 1; cycle
       else
-        if ( row_sep_len > 0_i64 ) self%s(pos:pos+row_sep_len-1_i64) = row_separator_
+        if ( row_sep_len > 0 ) self%s(pos:pos+row_sep_len-1_i64) = row_separator_
 
         if ( row < n_rows ) then
-          pos = pos + row_sep_len; row = row + 1_i64; col = 1_i64; cycle
+          pos = pos + row_sep_len; row = row + 1; col = 1; cycle
         else
           exit
         end if
       end if
     end do positional_transfers
 
-    inquire(file=file, exist=exists)
+    inquire(file, exist=exists, iostat=stat_, iomsg=errmsg_)
+
+    if ( stat_ /= 0 ) then
+      stat_ = WRITE_ERR; return
+    end if
 
     file_unit = output_unit
 
     if ( .not. exists ) then
       open( newunit=file_unit, file=file, status="new", form="unformatted", &
-          action="write", access="stream" )
+            action="write", access="stream", iostat=stat_, iomsg=errmsg_ )
     else
       if ( .not. append_ ) then
         open( newunit=file_unit, file=file, status="replace", form="unformatted", &
-            action="write", access="stream" )
+              action="write", access="stream", iostat=stat_, iomsg=errmsg_ )
       else
         open( newunit=file_unit, file=file, status="old", form="unformatted", &
-            action="write", access="stream", position="append" )
+              action="write", access="stream", position="append", iostat=stat_, iomsg=errmsg_ )
       end if
     end if
 
-    write( unit=file_unit ) self%s
+    if ( stat_ /= 0 ) then
+      stat_ = WRITE_ERR; return
+    end if
 
-    close(file_unit)
+    write(unit=file_unit, iostat=stat_, iomsg=errmsg_) self%s
+
+    if ( stat_ /= 0 ) then
+      stat_ = WRITE_ERR; return
+    end if
+
+    close(file_unit, iostat=stat_, iomsg=errmsg_)
+
+    if ( stat_ /= 0 ) then
+      stat_ = WRITE_ERR; return
+    end if
   end procedure write_file
 
   module procedure write_string
