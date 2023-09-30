@@ -380,7 +380,7 @@ module io_fortran_lib
       character(len=*), intent(in) :: charsl
       class(String),    intent(in) :: Stringr
     end function char_string_concatenation
-  end interface
+  end interface operator(//)
 
   interface operator(+)                                                                            ! Submodule operators
     !-------------------------------------------------------------------------------------------------------------------
@@ -407,7 +407,7 @@ module io_fortran_lib
       character(len=*), intent(in) :: charsl
       class(String),    intent(in) :: Stringr
     end function char_string_concat_plus
-  end interface
+  end interface operator(+)
 
   interface operator(-)                                                                            ! Submodule operators
     !-------------------------------------------------------------------------------------------------------------------
@@ -433,7 +433,7 @@ module io_fortran_lib
       character(len=*), intent(in) :: charsl
       class(String),    intent(in) :: Stringr
     end function char_string_excision
-  end interface
+  end interface operator(-)
 
   interface operator(**)                                                                           ! Submodule operators
     !-------------------------------------------------------------------------------------------------------------------
@@ -451,7 +451,7 @@ module io_fortran_lib
       class(String), intent(in) :: String_base
       integer,       intent(in) :: ncopies
     end function repeat_String
-  end interface
+  end interface operator(**)
 
   interface operator(==)                                                                           ! Submodule operators
     !-------------------------------------------------------------------------------------------------------------------
@@ -475,7 +475,7 @@ module io_fortran_lib
       character(len=*), intent(in) :: charsl
       class(String),    intent(in) :: Stringr
     end function char_string_equivalence
-  end interface
+  end interface operator(==)
 
   interface operator(/=)                                                                           ! Submodule operators
     !-------------------------------------------------------------------------------------------------------------------
@@ -499,7 +499,7 @@ module io_fortran_lib
       character(len=*), intent(in) :: charsl
       class(String),    intent(in) :: Stringr
     end function char_string_nonequivalence
-  end interface
+  end interface operator(/=)
 
   interface String                                                                               ! Submodule internal_io
     !-------------------------------------------------------------------------------------------------------------------
@@ -575,7 +575,7 @@ module io_fortran_lib
     pure elemental recursive type(String) module function new_string_from_empty() result(new)
       ! No arguments
     end function new_string_from_empty
-  end interface
+  end interface String
 
   interface str                                                                                  ! Submodule internal_io
     !-------------------------------------------------------------------------------------------------------------------
@@ -662,7 +662,7 @@ module io_fortran_lib
     pure recursive module function str_from_empty() result(x_str)
       character(len=:), allocatable :: x_str
     end function str_from_empty
-  end interface
+  end interface str
 
   interface cast                                                                                 ! Submodule internal_io
     !-------------------------------------------------------------------------------------------------------------------
@@ -929,7 +929,7 @@ module io_fortran_lib
       integer(i8),      intent(out)          :: into
       character(len=*), intent(in), optional :: fmt
     end subroutine cast_char_to_i8
-  end interface
+  end interface cast
 
   interface join                                                                                  ! Submodule join_split
     !-------------------------------------------------------------------------------------------------------------------
@@ -947,7 +947,7 @@ module io_fortran_lib
       type(String),     intent(in)           :: tokens(:)
       character(len=*), intent(in), optional :: separator
     end function join_string
-  end interface
+  end interface join
 
   interface split                                                                                 ! Submodule join_split
     !-------------------------------------------------------------------------------------------------------------------
@@ -966,7 +966,7 @@ module io_fortran_lib
       character(len=*), intent(in), optional    :: separator
       type(String),                 allocatable :: tokens(:)
     end function split_string
-  end interface
+  end interface split
 
   interface                                                                                          ! Submodule file_io
     !-------------------------------------------------------------------------------------------------------------------
@@ -984,48 +984,8 @@ module io_fortran_lib
     !!
     !! For a user reference, see [to_file](../page/Ref/to_file.html).
     !-------------------------------------------------------------------------------------------------------------------
-    impure recursive module subroutine to_file_1dc128(x, file, header, dim, locale, delim, fmt, decimals,im,stat,errmsg)
-      complex(r128),    intent(in)                    :: x(:)
-      character(len=*), intent(in)                    :: file
-      character(len=*), intent(in),  optional, target :: header(:)
-      integer,          intent(in),  optional, target :: dim
-      character(len=*), intent(in),  optional, target :: locale
-      character(len=*), intent(in),  optional, target :: delim
-      character(len=*), intent(in),  optional, target :: fmt
-      integer,          intent(in),  optional, target :: decimals
-      character(len=*), intent(in),  optional, target :: im
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_1dc128
-    impure recursive module subroutine to_file_1dc64(x, file, header, dim, locale, delim, fmt, decimals, im,stat,errmsg)
-      complex(r64),     intent(in)                    :: x(:)
-      character(len=*), intent(in)                    :: file
-      character(len=*), intent(in),  optional, target :: header(:)
-      integer,          intent(in),  optional, target :: dim
-      character(len=*), intent(in),  optional, target :: locale
-      character(len=*), intent(in),  optional, target :: delim
-      character(len=*), intent(in),  optional, target :: fmt
-      integer,          intent(in),  optional, target :: decimals
-      character(len=*), intent(in),  optional, target :: im
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_1dc64
-    impure recursive module subroutine to_file_1dc32(x, file, header, dim, locale, delim, fmt, decimals, im,stat,errmsg)
-      complex(r32),     intent(in)                    :: x(:)
-      character(len=*), intent(in)                    :: file
-      character(len=*), intent(in),  optional, target :: header(:)
-      integer,          intent(in),  optional, target :: dim
-      character(len=*), intent(in),  optional, target :: locale
-      character(len=*), intent(in),  optional, target :: delim
-      character(len=*), intent(in),  optional, target :: fmt
-      integer,          intent(in),  optional, target :: decimals
-      character(len=*), intent(in),  optional, target :: im
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_1dc32
-
-    impure recursive module subroutine to_file_2dc128(x, file, header, locale, delim, fmt, decimals, im, stat, errmsg)
-      complex(r128),    intent(in)                    :: x(:,:)
+    impure recursive module subroutine to_file_c128(x, file, header, locale, delim, fmt, decimals, im, stat, errmsg)
+      complex(r128),    intent(in)                    :: x(..)
       character(len=*), intent(in)                    :: file
       character(len=*), intent(in),  optional, target :: header(:)
       character(len=*), intent(in),  optional, target :: locale
@@ -1035,9 +995,9 @@ module io_fortran_lib
       character(len=*), intent(in),  optional, target :: im
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_2dc128
-    impure recursive module subroutine to_file_2dc64(x, file, header, locale, delim, fmt, decimals, im, stat, errmsg)
-      complex(r64),     intent(in)                    :: x(:,:)
+    end subroutine to_textfile_c128
+    impure recursive module subroutine to_file_c64(x, file, header, locale, delim, fmt, decimals, im, stat, errmsg)
+      complex(r64),     intent(in)                    :: x(..)
       character(len=*), intent(in)                    :: file
       character(len=*), intent(in),  optional, target :: header(:)
       character(len=*), intent(in),  optional, target :: locale
@@ -1047,9 +1007,9 @@ module io_fortran_lib
       character(len=*), intent(in),  optional, target :: im
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_2dc64
-    impure recursive module subroutine to_file_2dc32(x, file, header, locale, delim, fmt, decimals, im, stat, errmsg)
-      complex(r32),     intent(in)                    :: x(:,:)
+    end subroutine to_textfile_c64
+    impure recursive module subroutine to_file_c32(x, file, header, locale, delim, fmt, decimals, im, stat, errmsg)
+      complex(r32),     intent(in)                    :: x(..)
       character(len=*), intent(in)                    :: file
       character(len=*), intent(in),  optional, target :: header(:)
       character(len=*), intent(in),  optional, target :: locale
@@ -1059,294 +1019,10 @@ module io_fortran_lib
       character(len=*), intent(in),  optional, target :: im
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_2dc32
+    end subroutine to_file_c32
 
-    impure recursive module subroutine to_file_3dc128(x, file, stat, errmsg)
-      complex(r128),    intent(in)                    :: x(:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_3dc128
-    impure recursive module subroutine to_file_3dc64(x, file, stat, errmsg)
-      complex(r64),     intent(in)                    :: x(:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_3dc64
-    impure recursive module subroutine to_file_3dc32(x, file, stat, errmsg)
-      complex(r32),     intent(in)                    :: x(:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_3dc32
-
-    impure recursive module subroutine to_file_4dc128(x, file, stat, errmsg)
-      complex(r128),    intent(in)                    :: x(:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_4dc128
-    impure recursive module subroutine to_file_4dc64(x, file, stat, errmsg)
-      complex(r64),     intent(in)                    :: x(:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_4dc64
-    impure recursive module subroutine to_file_4dc32(x, file, stat, errmsg)
-      complex(r32),     intent(in)                    :: x(:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_4dc32
-
-    impure recursive module subroutine to_file_5dc128(x, file, stat, errmsg)
-      complex(r128),    intent(in)                    :: x(:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_5dc128
-    impure recursive module subroutine to_file_5dc64(x, file, stat, errmsg)
-      complex(r64),     intent(in)                    :: x(:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_5dc64
-    impure recursive module subroutine to_file_5dc32(x, file, stat, errmsg)
-      complex(r32),     intent(in)                    :: x(:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_5dc32
-
-    impure recursive module subroutine to_file_6dc128(x, file, stat, errmsg)
-      complex(r128),    intent(in)                    :: x(:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_6dc128
-    impure recursive module subroutine to_file_6dc64(x, file, stat, errmsg)
-      complex(r64),     intent(in)                    :: x(:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_6dc64
-    impure recursive module subroutine to_file_6dc32(x, file, stat, errmsg)
-      complex(r32),     intent(in)                    :: x(:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_6dc32
-
-    impure recursive module subroutine to_file_7dc128(x, file, stat, errmsg)
-      complex(r128),    intent(in)                    :: x(:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_7dc128
-    impure recursive module subroutine to_file_7dc64(x, file, stat, errmsg)
-      complex(r64),     intent(in)                    :: x(:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_7dc64
-    impure recursive module subroutine to_file_7dc32(x, file, stat, errmsg)
-      complex(r32),     intent(in)                    :: x(:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_7dc32
-
-    impure recursive module subroutine to_file_8dc128(x, file, stat, errmsg)
-      complex(r128),    intent(in)                    :: x(:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_8dc128
-    impure recursive module subroutine to_file_8dc64(x, file, stat, errmsg)
-      complex(r64),     intent(in)                    :: x(:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_8dc64
-    impure recursive module subroutine to_file_8dc32(x, file, stat, errmsg)
-      complex(r32),     intent(in)                    :: x(:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_8dc32
-
-    impure recursive module subroutine to_file_9dc128(x, file, stat, errmsg)
-      complex(r128),    intent(in)                    :: x(:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_9dc128
-    impure recursive module subroutine to_file_9dc64(x, file, stat, errmsg)
-      complex(r64),     intent(in)                    :: x(:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_9dc64
-    impure recursive module subroutine to_file_9dc32(x, file, stat, errmsg)
-      complex(r32),     intent(in)                    :: x(:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_9dc32
-
-    impure recursive module subroutine to_file_10dc128(x, file, stat, errmsg)
-      complex(r128),    intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_10dc128
-    impure recursive module subroutine to_file_10dc64(x, file, stat, errmsg)
-      complex(r64),     intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_10dc64
-    impure recursive module subroutine to_file_10dc32(x, file, stat, errmsg)
-      complex(r32),     intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_10dc32
-
-    impure recursive module subroutine to_file_11dc128(x, file, stat, errmsg)
-      complex(r128),    intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_11dc128
-    impure recursive module subroutine to_file_11dc64(x, file, stat, errmsg)
-      complex(r64),     intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_11dc64
-    impure recursive module subroutine to_file_11dc32(x, file, stat, errmsg)
-      complex(r32),     intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_11dc32
-
-    impure recursive module subroutine to_file_12dc128(x, file, stat, errmsg)
-      complex(r128),    intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_12dc128
-    impure recursive module subroutine to_file_12dc64(x, file, stat, errmsg)
-      complex(r64),     intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_12dc64
-    impure recursive module subroutine to_file_12dc32(x, file, stat, errmsg)
-      complex(r32),     intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_12dc32
-
-    impure recursive module subroutine to_file_13dc128(x, file, stat, errmsg)
-      complex(r128),    intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_13dc128
-    impure recursive module subroutine to_file_13dc64(x, file, stat, errmsg)
-      complex(r64),     intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_13dc64
-    impure recursive module subroutine to_file_13dc32(x, file, stat, errmsg)
-      complex(r32),     intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_13dc32
-
-    impure recursive module subroutine to_file_14dc128(x, file, stat, errmsg)
-      complex(r128),    intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_14dc128
-    impure recursive module subroutine to_file_14dc64(x, file, stat, errmsg)
-      complex(r64),     intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_14dc64
-    impure recursive module subroutine to_file_14dc32(x, file, stat, errmsg)
-      complex(r32),     intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_14dc32
-
-    impure recursive module subroutine to_file_15dc128(x, file, stat, errmsg)
-      complex(r128),    intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_15dc128
-    impure recursive module subroutine to_file_15dc64(x, file, stat, errmsg)
-      complex(r64),     intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_15dc64
-    impure recursive module subroutine to_file_15dc32(x, file, stat, errmsg)
-      complex(r32),     intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_15dc32
-
-    impure recursive module subroutine to_file_1dr128(x, file, header, dim, locale, delim, fmt, decimals, stat, errmsg)
-      real(r128),       intent(in)                    :: x(:)
-      character(len=*), intent(in)                    :: file
-      character(len=*), intent(in),  optional, target :: header(:)
-      integer,          intent(in),  optional, target :: dim
-      character(len=*), intent(in),  optional, target :: locale
-      character(len=*), intent(in),  optional, target :: delim
-      character(len=*), intent(in),  optional, target :: fmt
-      integer,          intent(in),  optional, target :: decimals
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_1dr128
-    impure recursive module subroutine to_file_1dr64(x, file, header, dim, locale, delim, fmt, decimals, stat, errmsg)
-      real(r64),        intent(in)                    :: x(:)
-      character(len=*), intent(in)                    :: file
-      character(len=*), intent(in),  optional, target :: header(:)
-      integer,          intent(in),  optional, target :: dim
-      character(len=*), intent(in),  optional, target :: locale
-      character(len=*), intent(in),  optional, target :: delim
-      character(len=*), intent(in),  optional, target :: fmt
-      integer,          intent(in),  optional, target :: decimals
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_1dr64
-    impure recursive module subroutine to_file_1dr32(x, file, header, dim, locale, delim, fmt, decimals, stat, errmsg)
-      real(r32),        intent(in)                    :: x(:)
-      character(len=*), intent(in)                    :: file
-      character(len=*), intent(in),  optional, target :: header(:)
-      integer,          intent(in),  optional, target :: dim
-      character(len=*), intent(in),  optional, target :: locale
-      character(len=*), intent(in),  optional, target :: delim
-      character(len=*), intent(in),  optional, target :: fmt
-      integer,          intent(in),  optional, target :: decimals
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_1dr32
-
-    impure recursive module subroutine to_file_2dr128(x, file, header, locale, delim, fmt, decimals, stat, errmsg)
-      real(r128),       intent(in)                    :: x(:,:)
+    impure recursive module subroutine to_file_r128(x, file, header, locale, delim, fmt, decimals, stat, errmsg)
+      real(r128),       intent(in)                    :: x(..)
       character(len=*), intent(in)                    :: file
       character(len=*), intent(in),  optional, target :: header(:)
       character(len=*), intent(in),  optional, target :: locale
@@ -1355,9 +1031,9 @@ module io_fortran_lib
       integer,          intent(in),  optional, target :: decimals
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_2dr128
-    impure recursive module subroutine to_file_2dr64(x, file, header, locale, delim, fmt, decimals, stat, errmsg)
-      real(r64),        intent(in)                    :: x(:,:)
+    end subroutine to_file_r128
+    impure recursive module subroutine to_file_r64(x, file, header, locale, delim, fmt, decimals, stat, errmsg)
+      real(r64),        intent(in)                    :: x(..)
       character(len=*), intent(in)                    :: file
       character(len=*), intent(in),  optional, target :: header(:)
       character(len=*), intent(in),  optional, target :: locale
@@ -1366,9 +1042,9 @@ module io_fortran_lib
       integer,          intent(in),  optional, target :: decimals
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_2dr64
-    impure recursive module subroutine to_file_2dr32(x, file, header, locale, delim, fmt, decimals, stat, errmsg)
-      real(r32),        intent(in)                    :: x(:,:)
+    end subroutine to_file_r64
+    impure recursive module subroutine to_file_r32(x, file, header, locale, delim, fmt, decimals, stat, errmsg)
+      real(r32),        intent(in)                    :: x(..)
       character(len=*), intent(in)                    :: file
       character(len=*), intent(in),  optional, target :: header(:)
       character(len=*), intent(in),  optional, target :: locale
@@ -1377,658 +1053,45 @@ module io_fortran_lib
       integer,          intent(in),  optional, target :: decimals
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_2dr32
+    end subroutine to_file_r32
 
-    impure recursive module subroutine to_file_3dr128(x, file, stat, errmsg)
-      real(r128),       intent(in)                    :: x(:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_3dr128
-    impure recursive module subroutine to_file_3dr64(x, file, stat, errmsg)
-      real(r64),        intent(in)                    :: x(:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_3dr64
-    impure recursive module subroutine to_file_3dr32(x, file, stat, errmsg)
-      real(r32),        intent(in)                    :: x(:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_3dr32
-
-    impure recursive module subroutine to_file_4dr128(x, file, stat, errmsg)
-      real(r128),       intent(in)                    :: x(:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_4dr128
-    impure recursive module subroutine to_file_4dr64(x, file, stat, errmsg)
-      real(r64),        intent(in)                    :: x(:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_4dr64
-    impure recursive module subroutine to_file_4dr32(x, file, stat, errmsg)
-      real(r32),        intent(in)                    :: x(:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_4dr32
-
-    impure recursive module subroutine to_file_5dr128(x, file, stat, errmsg)
-      real(r128),       intent(in)                    :: x(:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_5dr128
-    impure recursive module subroutine to_file_5dr64(x, file, stat, errmsg)
-      real(r64),        intent(in)                    :: x(:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_5dr64
-    impure recursive module subroutine to_file_5dr32(x, file, stat, errmsg)
-      real(r32),        intent(in)                    :: x(:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_5dr32
-
-    impure recursive module subroutine to_file_6dr128(x, file, stat, errmsg)
-      real(r128),       intent(in)                    :: x(:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_6dr128
-    impure recursive module subroutine to_file_6dr64(x, file, stat, errmsg)
-      real(r64),        intent(in)                    :: x(:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_6dr64
-    impure recursive module subroutine to_file_6dr32(x, file, stat, errmsg)
-      real(r32),        intent(in)                    :: x(:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_6dr32
-
-    impure recursive module subroutine to_file_7dr128(x, file, stat, errmsg)
-      real(r128),       intent(in)                    :: x(:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_7dr128
-    impure recursive module subroutine to_file_7dr64(x, file, stat, errmsg)
-      real(r64),        intent(in)                    :: x(:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_7dr64
-    impure recursive module subroutine to_file_7dr32(x, file, stat, errmsg)
-      real(r32),        intent(in)                    :: x(:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_7dr32
-
-    impure recursive module subroutine to_file_8dr128(x, file, stat, errmsg)
-      real(r128),       intent(in)                    :: x(:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_8dr128
-    impure recursive module subroutine to_file_8dr64(x, file, stat, errmsg)
-      real(r64),        intent(in)                    :: x(:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_8dr64
-    impure recursive module subroutine to_file_8dr32(x, file, stat, errmsg)
-      real(r32),        intent(in)                    :: x(:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_8dr32
-
-    impure recursive module subroutine to_file_9dr128(x, file, stat, errmsg)
-      real(r128),       intent(in)                    :: x(:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_9dr128
-    impure recursive module subroutine to_file_9dr64(x, file, stat, errmsg)
-      real(r64),        intent(in)                    :: x(:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_9dr64
-    impure recursive module subroutine to_file_9dr32(x, file, stat, errmsg)
-      real(r32),        intent(in)                    :: x(:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_9dr32
-
-    impure recursive module subroutine to_file_10dr128(x, file, stat, errmsg)
-      real(r128),       intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_10dr128
-    impure recursive module subroutine to_file_10dr64(x, file, stat, errmsg)
-      real(r64),        intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_10dr64
-    impure recursive module subroutine to_file_10dr32(x, file, stat, errmsg)
-      real(r32),        intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_10dr32
-
-    impure recursive module subroutine to_file_11dr128(x, file, stat, errmsg)
-      real(r128),       intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_11dr128
-    impure recursive module subroutine to_file_11dr64(x, file, stat, errmsg)
-      real(r64),        intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_11dr64
-    impure recursive module subroutine to_file_11dr32(x, file, stat, errmsg)
-      real(r32),        intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_11dr32
-
-    impure recursive module subroutine to_file_12dr128(x, file, stat, errmsg)
-      real(r128),       intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_12dr128
-    impure recursive module subroutine to_file_12dr64(x, file, stat, errmsg)
-      real(r64),        intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_12dr64
-    impure recursive module subroutine to_file_12dr32(x, file, stat, errmsg)
-      real(r32),        intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_12dr32
-
-    impure recursive module subroutine to_file_13dr128(x, file, stat, errmsg)
-      real(r128),       intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_13dr128
-    impure recursive module subroutine to_file_13dr64(x, file, stat, errmsg)
-      real(r64),        intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_13dr64
-    impure recursive module subroutine to_file_13dr32(x, file, stat, errmsg)
-      real(r32),        intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_13dr32
-
-    impure recursive module subroutine to_file_14dr128(x, file, stat, errmsg)
-      real(r128),       intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_14dr128
-    impure recursive module subroutine to_file_14dr64(x, file, stat, errmsg)
-      real(r64),        intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_14dr64
-    impure recursive module subroutine to_file_14dr32(x, file, stat, errmsg)
-      real(r32),        intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_14dr32
-
-    impure recursive module subroutine to_file_15dr128(x, file, stat, errmsg)
-      real(r128),       intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_15dr128
-    impure recursive module subroutine to_file_15dr64(x, file, stat, errmsg)
-      real(r64),        intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_15dr64
-    impure recursive module subroutine to_file_15dr32(x, file, stat, errmsg)
-      real(r32),        intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_15dr32
-
-    impure recursive module subroutine to_file_1di64(x, file, header, dim, delim, fmt, stat, errmsg)
-      integer(i64),     intent(in)                    :: x(:)
-      character(len=*), intent(in)                    :: file
-      character(len=*), intent(in),  optional, target :: header(:)
-      integer,          intent(in),  optional, target :: dim
-      character(len=*), intent(in),  optional, target :: delim
-      character(len=*), intent(in),  optional, target :: fmt
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_1di64
-    impure recursive module subroutine to_file_1di32(x, file, header, dim, delim, fmt, stat, errmsg)
-      integer(i32),     intent(in)                    :: x(:)
-      character(len=*), intent(in)                    :: file
-      character(len=*), intent(in),  optional, target :: header(:)
-      integer,          intent(in),  optional, target :: dim
-      character(len=*), intent(in),  optional, target :: delim
-      character(len=*), intent(in),  optional, target :: fmt
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_1di32
-    impure recursive module subroutine to_file_1di16(x, file, header, dim, delim, fmt, stat, errmsg)
-      integer(i16),     intent(in)                    :: x(:)
-      character(len=*), intent(in)                    :: file
-      character(len=*), intent(in),  optional, target :: header(:)
-      integer,          intent(in),  optional, target :: dim
-      character(len=*), intent(in),  optional, target :: delim
-      character(len=*), intent(in),  optional, target :: fmt
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_1di16
-    impure recursive module subroutine to_file_1di8(x, file, header, dim, delim, fmt, stat, errmsg)
-      integer(i8),      intent(in)                    :: x(:)
-      character(len=*), intent(in)                    :: file
-      character(len=*), intent(in),  optional, target :: header(:)
-      integer,          intent(in),  optional, target :: dim
-      character(len=*), intent(in),  optional, target :: delim
-      character(len=*), intent(in),  optional, target :: fmt
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_1di8
-
-    impure recursive module subroutine to_file_2di64(x, file, header, delim, fmt, stat, errmsg)
-      integer(i64),     intent(in)                    :: x(:,:)
+    impure recursive module subroutine to_file_i64(x, file, header, delim, fmt, stat, errmsg)
+      integer(i64),     intent(in)                    :: x(..)
       character(len=*), intent(in)                    :: file
       character(len=*), intent(in),  optional, target :: header(:)
       character(len=*), intent(in),  optional, target :: delim
       character(len=*), intent(in),  optional, target :: fmt
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_2di64
-    impure recursive module subroutine to_file_2di32(x, file, header, delim, fmt, stat, errmsg)
-      integer(i32),     intent(in)                    :: x(:,:)
+    end subroutine to_file_i64
+    impure recursive module subroutine to_file_i32(x, file, header, delim, fmt, stat, errmsg)
+      integer(i32),     intent(in)                    :: x(..)
       character(len=*), intent(in)                    :: file
       character(len=*), intent(in),  optional, target :: header(:)
       character(len=*), intent(in),  optional, target :: delim
       character(len=*), intent(in),  optional, target :: fmt
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_2di32
-    impure recursive module subroutine to_file_2di16(x, file, header, delim, fmt, stat, errmsg)
-      integer(i16),     intent(in)                    :: x(:,:)
+    end subroutine to_file_i32
+    impure recursive module subroutine to_file_i16(x, file, header, delim, fmt, stat, errmsg)
+      integer(i16),     intent(in)                    :: x(..)
       character(len=*), intent(in)                    :: file
       character(len=*), intent(in),  optional, target :: header(:)
       character(len=*), intent(in),  optional, target :: delim
       character(len=*), intent(in),  optional, target :: fmt
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_2di16
-    impure recursive module subroutine to_file_2di8(x, file, header, delim, fmt, stat, errmsg)
-      integer(i8),      intent(in)                    :: x(:,:)
+    end subroutine to_file_i16
+    impure recursive module subroutine to_file_i8(x, file, header, delim, fmt, stat, errmsg)
+      integer(i8),      intent(in)                    :: x(..)
       character(len=*), intent(in)                    :: file
       character(len=*), intent(in),  optional, target :: header(:)
       character(len=*), intent(in),  optional, target :: delim
       character(len=*), intent(in),  optional, target :: fmt
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_2di8
-
-    impure recursive module subroutine to_file_3di64(x, file, stat, errmsg)
-      integer(i64),     intent(in)                    :: x(:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_3di64
-    impure recursive module subroutine to_file_3di32(x, file, stat, errmsg)
-      integer(i32),     intent(in)                    :: x(:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_3di32
-    impure recursive module subroutine to_file_3di16(x, file, stat, errmsg)
-      integer(i16),     intent(in)                    :: x(:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_3di16
-    impure recursive module subroutine to_file_3di8(x, file, stat, errmsg)
-      integer(i8),      intent(in)                    :: x(:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_3di8
-
-    impure recursive module subroutine to_file_4di64(x, file, stat, errmsg)
-      integer(i64),     intent(in)                    :: x(:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_4di64
-    impure recursive module subroutine to_file_4di32(x, file, stat, errmsg)
-      integer(i32),     intent(in)                    :: x(:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_4di32
-    impure recursive module subroutine to_file_4di16(x, file, stat, errmsg)
-      integer(i16),     intent(in)                    :: x(:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_4di16
-    impure recursive module subroutine to_file_4di8(x, file, stat, errmsg)
-      integer(i8),      intent(in)                    :: x(:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_4di8
-
-    impure recursive module subroutine to_file_5di64(x, file, stat, errmsg)
-      integer(i64),     intent(in)                    :: x(:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_5di64
-    impure recursive module subroutine to_file_5di32(x, file, stat, errmsg)
-      integer(i32),     intent(in)                    :: x(:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_5di32
-    impure recursive module subroutine to_file_5di16(x, file, stat, errmsg)
-      integer(i16),     intent(in)                    :: x(:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_5di16
-    impure recursive module subroutine to_file_5di8(x, file, stat, errmsg)
-      integer(i8),      intent(in)                    :: x(:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_5di8
-
-    impure recursive module subroutine to_file_6di64(x, file, stat, errmsg)
-      integer(i64),     intent(in)                    :: x(:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_6di64
-    impure recursive module subroutine to_file_6di32(x, file, stat, errmsg)
-      integer(i32),     intent(in)                    :: x(:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_6di32
-    impure recursive module subroutine to_file_6di16(x, file, stat, errmsg)
-      integer(i16),     intent(in)                    :: x(:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_6di16
-    impure recursive module subroutine to_file_6di8(x, file, stat, errmsg)
-      integer(i8),      intent(in)                    :: x(:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_6di8
-
-    impure recursive module subroutine to_file_7di64(x, file, stat, errmsg)
-      integer(i64),     intent(in)                    :: x(:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_7di64
-    impure recursive module subroutine to_file_7di32(x, file, stat, errmsg)
-      integer(i32),     intent(in)                    :: x(:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_7di32
-    impure recursive module subroutine to_file_7di16(x, file, stat, errmsg)
-      integer(i16),     intent(in)                    :: x(:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_7di16
-    impure recursive module subroutine to_file_7di8(x, file, stat, errmsg)
-      integer(i8),      intent(in)                    :: x(:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_7di8
-
-    impure recursive module subroutine to_file_8di64(x, file, stat, errmsg)
-      integer(i64),     intent(in)                    :: x(:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_8di64
-    impure recursive module subroutine to_file_8di32(x, file, stat, errmsg)
-      integer(i32),     intent(in)                    :: x(:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_8di32
-    impure recursive module subroutine to_file_8di16(x, file, stat, errmsg)
-      integer(i16),     intent(in)                    :: x(:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_8di16
-    impure recursive module subroutine to_file_8di8(x, file, stat, errmsg)
-      integer(i8),      intent(in)                    :: x(:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_8di8
-
-    impure recursive module subroutine to_file_9di64(x, file, stat, errmsg)
-      integer(i64),     intent(in)                    :: x(:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_9di64
-    impure recursive module subroutine to_file_9di32(x, file, stat, errmsg)
-      integer(i32),     intent(in)                    :: x(:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_9di32
-    impure recursive module subroutine to_file_9di16(x, file, stat, errmsg)
-      integer(i16),     intent(in)                    :: x(:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_9di16
-    impure recursive module subroutine to_file_9di8(x, file, stat, errmsg)
-      integer(i8),      intent(in)                    :: x(:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_9di8
-
-    impure recursive module subroutine to_file_10di64(x, file, stat, errmsg)
-      integer(i64),     intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_10di64
-    impure recursive module subroutine to_file_10di32(x, file, stat, errmsg)
-      integer(i32),     intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_10di32
-    impure recursive module subroutine to_file_10di16(x, file, stat, errmsg)
-      integer(i16),     intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_10di16
-    impure recursive module subroutine to_file_10di8(x, file, stat, errmsg)
-      integer(i8),      intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_10di8
-
-    impure recursive module subroutine to_file_11di64(x, file, stat, errmsg)
-      integer(i64),     intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_11di64
-    impure recursive module subroutine to_file_11di32(x, file, stat, errmsg)
-      integer(i32),     intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_11di32
-    impure recursive module subroutine to_file_11di16(x, file, stat, errmsg)
-      integer(i16),     intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_11di16
-    impure recursive module subroutine to_file_11di8(x, file, stat, errmsg)
-      integer(i8),      intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_11di8
-
-    impure recursive module subroutine to_file_12di64(x, file, stat, errmsg)
-      integer(i64),     intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_12di64
-    impure recursive module subroutine to_file_12di32(x, file, stat, errmsg)
-      integer(i32),     intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_12di32
-    impure recursive module subroutine to_file_12di16(x, file, stat, errmsg)
-      integer(i16),     intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_12di16
-    impure recursive module subroutine to_file_12di8(x, file, stat, errmsg)
-      integer(i8),      intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_12di8
-
-    impure recursive module subroutine to_file_13di64(x, file, stat, errmsg)
-      integer(i64),     intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_13di64
-    impure recursive module subroutine to_file_13di32(x, file, stat, errmsg)
-      integer(i32),     intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_13di32
-    impure recursive module subroutine to_file_13di16(x, file, stat, errmsg)
-      integer(i16),     intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_13di16
-    impure recursive module subroutine to_file_13di8(x, file, stat, errmsg)
-      integer(i8),      intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_13di8
-
-    impure recursive module subroutine to_file_14di64(x, file, stat, errmsg)
-      integer(i64),     intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_14di64
-    impure recursive module subroutine to_file_14di32(x, file, stat, errmsg)
-      integer(i32),     intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_14di32
-    impure recursive module subroutine to_file_14di16(x, file, stat, errmsg)
-      integer(i16),     intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_14di16
-    impure recursive module subroutine to_file_14di8(x, file, stat, errmsg)
-      integer(i8),      intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_14di8
-
-    impure recursive module subroutine to_file_15di64(x, file, stat, errmsg)
-      integer(i64),     intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_15di64
-    impure recursive module subroutine to_file_15di32(x, file, stat, errmsg)
-      integer(i32),     intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_15di32
-    impure recursive module subroutine to_file_15di16(x, file, stat, errmsg)
-      integer(i16),     intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_15di16
-    impure recursive module subroutine to_file_15di8(x, file, stat, errmsg)
-      integer(i8),      intent(in)                    :: x(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
-      character(len=*), intent(in)                    :: file
-      integer,          intent(out), optional, target :: stat
-      character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_file_15di8
-  end interface
+    end subroutine to_file_i8
+  end interface to_file
 
   interface from_file                                                                                ! Submodule file_io
     !-------------------------------------------------------------------------------------------------------------------
@@ -2210,7 +1273,7 @@ module io_fortran_lib
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
     end subroutine from_binaryfile_i8
-  end interface
+  end interface from_file
 
   interface echo                                                                                     ! Submodule text_io
     !-------------------------------------------------------------------------------------------------------------------
@@ -2231,17 +1294,16 @@ module io_fortran_lib
       logical,          intent(in), optional :: append
       character(len=*), intent(in), optional :: terminator
     end subroutine echo_string
-  end interface
+  end interface echo
 
   interface to_text                                                                                  ! Submodule text_io
     !-------------------------------------------------------------------------------------------------------------------
     !! Private interface for writing an array to an external text file.
     !-------------------------------------------------------------------------------------------------------------------
-    impure recursive module subroutine to_text_1dc128(x, file, header, dim, locale, delim, fmt, decimals,im,stat,errmsg)
-      complex(r128),    intent(in)  :: x(:)
+    impure recursive module subroutine to_text_c128(x, file, header, locale, delim, fmt, decimals, im, stat, errmsg)
+      complex(r128),    intent(in)  :: x(..)
       character(len=*), intent(in)  :: file
       character(len=*), intent(in)  :: header(:)
-      integer,          intent(in)  :: dim
       character(len=*), intent(in)  :: locale
       character(len=*), intent(in)  :: delim
       character(len=*), intent(in)  :: fmt
@@ -2249,12 +1311,11 @@ module io_fortran_lib
       character(len=*), intent(in)  :: im
       integer,          intent(out) :: stat
       character(len=*), intent(out) :: errmsg
-    end subroutine to_text_1dc128
-    impure recursive module subroutine to_text_1dc64(x, file, header, dim, locale, delim, fmt, decimals, im,stat,errmsg)
-      complex(r64),     intent(in)  :: x(:)
+    end subroutine to_text_c128
+    impure recursive module subroutine to_text_c64(x, file, header, locale, delim, fmt, decimals, im, stat, errmsg)
+      complex(r64),     intent(in)  :: x(..)
       character(len=*), intent(in)  :: file
       character(len=*), intent(in)  :: header(:)
-      integer,          intent(in)  :: dim
       character(len=*), intent(in)  :: locale
       character(len=*), intent(in)  :: delim
       character(len=*), intent(in)  :: fmt
@@ -2262,12 +1323,11 @@ module io_fortran_lib
       character(len=*), intent(in)  :: im
       integer,          intent(out) :: stat
       character(len=*), intent(out) :: errmsg
-    end subroutine to_text_1dc64
-    impure recursive module subroutine to_text_1dc32(x, file, header, dim, locale, delim, fmt, decimals, im,stat,errmsg)
-      complex(r32),     intent(in)  :: x(:)
+    end subroutine to_text_c64
+    impure recursive module subroutine to_text_c32(x, file, header, locale, delim, fmt, decimals, im, stat, errmsg)
+      complex(r32),     intent(in)  :: x(..)
       character(len=*), intent(in)  :: file
       character(len=*), intent(in)  :: header(:)
-      integer,          intent(in)  :: dim
       character(len=*), intent(in)  :: locale
       character(len=*), intent(in)  :: delim
       character(len=*), intent(in)  :: fmt
@@ -2275,194 +1335,79 @@ module io_fortran_lib
       character(len=*), intent(in)  :: im
       integer,          intent(out) :: stat
       character(len=*), intent(out) :: errmsg
-    end subroutine to_text_1dc32
+    end subroutine to_text_c32
 
-    impure recursive module subroutine to_text_2dc128(x, file, header, locale, delim, fmt, decimals, im, stat, errmsg)
-      complex(r128),    intent(in)  :: x(:,:)
+    impure recursive module subroutine to_text_r128(x, file, header, locale, delim, fmt, decimals, stat, errmsg)
+      real(r128),       intent(in)  :: x(..)
       character(len=*), intent(in)  :: file
       character(len=*), intent(in)  :: header(:)
       character(len=*), intent(in)  :: locale
       character(len=*), intent(in)  :: delim
       character(len=*), intent(in)  :: fmt
       integer,          intent(in)  :: decimals
-      character(len=*), intent(in)  :: im
       integer,          intent(out) :: stat
       character(len=*), intent(out) :: errmsg
-    end subroutine to_text_2dc128
-    impure recursive module subroutine to_text_2dc64(x, file, header, locale, delim, fmt, decimals, im, stat, errmsg)
-      complex(r64),     intent(in)  :: x(:,:)
+    end subroutine to_text_r128
+    impure recursive module subroutine to_text_r64(x, file, header, locale, delim, fmt, decimals, stat, errmsg)
+      real(r64),        intent(in)  :: x(..)
       character(len=*), intent(in)  :: file
       character(len=*), intent(in)  :: header(:)
       character(len=*), intent(in)  :: locale
       character(len=*), intent(in)  :: delim
       character(len=*), intent(in)  :: fmt
       integer,          intent(in)  :: decimals
-      character(len=*), intent(in)  :: im
       integer,          intent(out) :: stat
       character(len=*), intent(out) :: errmsg
-    end subroutine to_text_2dc64
-    impure recursive module subroutine to_text_2dc32(x, file, header, locale, delim, fmt, decimals, im, stat, errmsg)
-      complex(r32),     intent(in)  :: x(:,:)
+    end subroutine to_text_r64
+    impure recursive module subroutine to_text_r32(x, file, header, locale, delim, fmt, decimals, stat, errmsg)
+      real(r32),        intent(in)  :: x(..)
       character(len=*), intent(in)  :: file
       character(len=*), intent(in)  :: header(:)
       character(len=*), intent(in)  :: locale
       character(len=*), intent(in)  :: delim
       character(len=*), intent(in)  :: fmt
       integer,          intent(in)  :: decimals
-      character(len=*), intent(in)  :: im
       integer,          intent(out) :: stat
       character(len=*), intent(out) :: errmsg
-    end subroutine to_text_2dc32
+    end subroutine to_text_r32
 
-    impure recursive module subroutine to_text_1dr128(x, file, header, dim, locale, delim, fmt, decimals, stat, errmsg)
-      real(r128),       intent(in)  :: x(:)
-      character(len=*), intent(in)  :: file
-      character(len=*), intent(in)  :: header(:)
-      integer,          intent(in)  :: dim
-      character(len=*), intent(in)  :: locale
-      character(len=*), intent(in)  :: delim
-      character(len=*), intent(in)  :: fmt
-      integer,          intent(in)  :: decimals
-      integer,          intent(out) :: stat
-      character(len=*), intent(out) :: errmsg
-    end subroutine to_text_1dr128
-    impure recursive module subroutine to_text_1dr64(x, file, header, dim, locale, delim, fmt, decimals, stat, errmsg)
-      real(r64),        intent(in)  :: x(:)
-      character(len=*), intent(in)  :: file
-      character(len=*), intent(in)  :: header(:)
-      integer,          intent(in)  :: dim
-      character(len=*), intent(in)  :: locale
-      character(len=*), intent(in)  :: delim
-      character(len=*), intent(in)  :: fmt
-      integer,          intent(in)  :: decimals
-      integer,          intent(out) :: stat
-      character(len=*), intent(out) :: errmsg
-    end subroutine to_text_1dr64
-    impure recursive module subroutine to_text_1dr32(x, file, header, dim, locale, delim, fmt, decimals, stat, errmsg)
-      real(r32),        intent(in)  :: x(:)
-      character(len=*), intent(in)  :: file
-      character(len=*), intent(in)  :: header(:)
-      integer,          intent(in)  :: dim
-      character(len=*), intent(in)  :: locale
-      character(len=*), intent(in)  :: delim
-      character(len=*), intent(in)  :: fmt
-      integer,          intent(in)  :: decimals
-      integer,          intent(out) :: stat
-      character(len=*), intent(out) :: errmsg
-    end subroutine to_text_1dr32
-
-    impure recursive module subroutine to_text_2dr128(x, file, header, locale, delim, fmt, decimals, stat, errmsg)
-      real(r128),       intent(in)  :: x(:,:)
-      character(len=*), intent(in)  :: file
-      character(len=*), intent(in)  :: header(:)
-      character(len=*), intent(in)  :: locale
-      character(len=*), intent(in)  :: delim
-      character(len=*), intent(in)  :: fmt
-      integer,          intent(in)  :: decimals
-      integer,          intent(out) :: stat
-      character(len=*), intent(out) :: errmsg
-    end subroutine to_text_2dr128
-    impure recursive module subroutine to_text_2dr64(x, file, header, locale, delim, fmt, decimals, stat, errmsg)
-      real(r64),        intent(in)  :: x(:,:)
-      character(len=*), intent(in)  :: file
-      character(len=*), intent(in)  :: header(:)
-      character(len=*), intent(in)  :: locale
-      character(len=*), intent(in)  :: delim
-      character(len=*), intent(in)  :: fmt
-      integer,          intent(in)  :: decimals
-      integer,          intent(out) :: stat
-      character(len=*), intent(out) :: errmsg
-    end subroutine to_text_2dr64
-    impure recursive module subroutine to_text_2dr32(x, file, header, locale, delim, fmt, decimals, stat, errmsg)
-      real(r32),        intent(in)  :: x(:,:)
-      character(len=*), intent(in)  :: file
-      character(len=*), intent(in)  :: header(:)
-      character(len=*), intent(in)  :: locale
-      character(len=*), intent(in)  :: delim
-      character(len=*), intent(in)  :: fmt
-      integer,          intent(in)  :: decimals
-      integer,          intent(out) :: stat
-      character(len=*), intent(out) :: errmsg
-    end subroutine to_text_2dr32
-
-    impure recursive module subroutine to_text_1di64(x, file, header, dim, delim, fmt, stat, errmsg)
-      integer(i64),     intent(in)  :: x(:)
-      character(len=*), intent(in)  :: file
-      character(len=*), intent(in)  :: header(:)
-      integer,          intent(in)  :: dim
-      character(len=*), intent(in)  :: delim
-      character(len=*), intent(in)  :: fmt
-      integer,          intent(out) :: stat
-      character(len=*), intent(out) :: errmsg
-    end subroutine to_text_1di64
-    impure recursive module subroutine to_text_1di32(x, file, header, dim, delim, fmt, stat, errmsg)
-      integer(i32),     intent(in)  :: x(:)
-      character(len=*), intent(in)  :: file
-      character(len=*), intent(in)  :: header(:)
-      integer,          intent(in)  :: dim
-      character(len=*), intent(in)  :: delim
-      character(len=*), intent(in)  :: fmt
-      integer,          intent(out) :: stat
-      character(len=*), intent(out) :: errmsg
-    end subroutine to_text_1di32
-    impure recursive module subroutine to_text_1di16(x, file, header, dim, delim, fmt, stat, errmsg)
-      integer(i16),     intent(in)  :: x(:)
-      character(len=*), intent(in)  :: file
-      character(len=*), intent(in)  :: header(:)
-      integer,          intent(in)  :: dim
-      character(len=*), intent(in)  :: delim
-      character(len=*), intent(in)  :: fmt
-      integer,          intent(out) :: stat
-      character(len=*), intent(out) :: errmsg
-    end subroutine to_text_1di16
-    impure recursive module subroutine to_text_1di8(x, file, header, dim, delim, fmt, stat, errmsg)
-      integer(i8),      intent(in)  :: x(:)
-      character(len=*), intent(in)  :: file
-      character(len=*), intent(in)  :: header(:)
-      integer,          intent(in)  :: dim
-      character(len=*), intent(in)  :: delim
-      character(len=*), intent(in)  :: fmt
-      integer,          intent(out) :: stat
-      character(len=*), intent(out) :: errmsg
-    end subroutine to_text_1di8
-
-    impure recursive module subroutine to_text_2di64(x, file, header, delim, fmt, stat, errmsg)
-      integer(i64),     intent(in)  :: x(:,:)
+    impure recursive module subroutine to_text_i64(x, file, header, delim, fmt, stat, errmsg)
+      integer(i64),     intent(in)  :: x(..)
       character(len=*), intent(in)  :: file
       character(len=*), intent(in)  :: header(:)
       character(len=*), intent(in)  :: delim
       character(len=*), intent(in)  :: fmt
       integer,          intent(out) :: stat
       character(len=*), intent(out) :: errmsg
-    end subroutine to_text_2di64
-    impure recursive module subroutine to_text_2di32(x, file, header, delim, fmt, stat, errmsg)
-      integer(i32),     intent(in)  :: x(:,:)
+    end subroutine to_text_i64
+    impure recursive module subroutine to_text_i32(x, file, header, delim, fmt, stat, errmsg)
+      integer(i32),     intent(in)  :: x(..)
       character(len=*), intent(in)  :: file
       character(len=*), intent(in)  :: header(:)
       character(len=*), intent(in)  :: delim
       character(len=*), intent(in)  :: fmt
       integer,          intent(out) :: stat
       character(len=*), intent(out) :: errmsg
-    end subroutine to_text_2di32
-    impure recursive module subroutine to_text_2di16(x, file, header, delim, fmt, stat, errmsg)
-      integer(i16),     intent(in)  :: x(:,:)
+    end subroutine to_text_i32
+    impure recursive module subroutine to_text_i16(x, file, header, delim, fmt, stat, errmsg)
+      integer(i16),     intent(in)  :: x(..)
       character(len=*), intent(in)  :: file
       character(len=*), intent(in)  :: header(:)
       character(len=*), intent(in)  :: delim
       character(len=*), intent(in)  :: fmt
       integer,          intent(out) :: stat
       character(len=*), intent(out) :: errmsg
-    end subroutine to_text_2di16
-    impure recursive module subroutine to_text_2di8(x, file, header, delim, fmt, stat, errmsg)
-      integer(i8),      intent(in)  :: x(:,:)
+    end subroutine to_text_i16
+    impure recursive module subroutine to_text_i8(x, file, header, delim, fmt, stat, errmsg)
+      integer(i8),      intent(in)  :: x(..)
       character(len=*), intent(in)  :: file
       character(len=*), intent(in)  :: header(:)
       character(len=*), intent(in)  :: delim
       character(len=*), intent(in)  :: fmt
       integer,          intent(out) :: stat
       character(len=*), intent(out) :: errmsg
-    end subroutine to_text_2di8
-  end interface
+    end subroutine to_text_i8
+  end interface to_text
 
   interface from_text                                                                                ! Submodule text_io
     !-------------------------------------------------------------------------------------------------------------------
@@ -2631,7 +1576,7 @@ module io_fortran_lib
       character(len=*), intent(in)               :: delim
       character(len=*), intent(in)               :: fmt
     end subroutine from_text_2di8
-  end interface
+  end interface from_text
 
   interface to_binary                                                                              ! Submodule binary_io
     !-------------------------------------------------------------------------------------------------------------------
@@ -2699,7 +1644,7 @@ module io_fortran_lib
       integer,          intent(out) :: stat
       character(len=*), intent(out) :: errmsg
     end subroutine to_binary_i8
-  end interface
+  end interface to_binary
 
   interface from_binary                                                                            ! Submodule binary_io
     !-------------------------------------------------------------------------------------------------------------------
@@ -2777,7 +1722,7 @@ module io_fortran_lib
       integer,          intent(out)              :: stat
       character(len=*), intent(out)              :: errmsg
     end subroutine from_binary_i8
-  end interface
+  end interface from_binary
 
   interface aprint                                                                            ! Submodule array_printing
     !-------------------------------------------------------------------------------------------------------------------
@@ -2904,7 +1849,7 @@ module io_fortran_lib
     impure recursive module subroutine aprint_2dString(x)
       class(String), intent(in) :: x(:,:)
     end subroutine aprint_2dString
-  end interface
+  end interface aprint
 
 end module io_fortran_lib
 

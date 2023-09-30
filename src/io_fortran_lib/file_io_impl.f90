@@ -13,12 +13,7 @@ submodule (io_fortran_lib) file_io
   character(len=1), target :: COMMA_DELIMITER = COMMA
   character(len=1), target :: SEMICOLON_DELIM = SEMICOLON
   character(len=2), target :: US_LOCALE       = LOCALES(1)
-  integer,          target :: ROW_DIM         = 1
-  integer,          target :: COL_DIM         = 2
   integer,          target :: MAX_DECIMALS    = 150
-  integer,          target :: NO_HEADER       = 0
-  integer,          target :: SINGLE_HEADER   = 1
-  integer,          target :: FULL_HEADER     = 2
   logical,          target :: ABSENT_HEADER   = .false.
 
   contains ! Procedure bodies for module subprograms <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><
@@ -42,473 +37,7 @@ submodule (io_fortran_lib) file_io
   end procedure ext_of
 
   ! Writing Procedures ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  module procedure to_file_1dc128
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer, contiguous :: header_(:)
-    character(len=:), pointer             :: locale_, delim_, fmt_, im_, errmsg_
-    integer,          pointer             :: dim_, decimals_, stat_, header_status
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(TEXT_EXT == ext) ) then
-      if ( .not. present(header) ) then
-        header_ => EMPTY_HEADER
-        header_status => NO_HEADER
-      else
-        if ( (size(header) /= 1) .and. (size(header) /= size(x)) ) then
-          stat_   = ARG_ERR
-          errmsg_ = 'Invalid header for file "'//file//'". '//"Header for this data must have size (1) or "// &
-                    "("//str(size(x))//")."
-          return
-        else
-          header_ => header
-          if ( size(header) == 1 ) then
-            header_status => SINGLE_HEADER
-          else
-            header_status => FULL_HEADER
-          end if
-        end if
-      end if
-
-      if ( .not. present(dim) ) then
-        if ( header_status == FULL_HEADER ) then
-          dim_ => COL_DIM
-        else
-          dim_ => ROW_DIM
-        end if
-      else
-        if ( header_status == FULL_HEADER ) then
-          dim_ => COL_DIM
-          if ( dim /= dim_ ) then
-            stat_   = ARG_ERR
-            errmsg_ = "Invalid dim ("//str(dim)//') in write to file "'//file//'" for given header: dim must be (2).'
-            return
-          end if
-        else if ( header_status == SINGLE_HEADER ) then
-          dim_ => ROW_DIM
-          if ( dim /= dim_ ) then
-            stat_   = ARG_ERR
-            errmsg_ = "Invalid dim ("//str(dim)//') in write to file "'//file//'" for given header: dim must be (1).'
-            return
-          end if
-        else
-          dim_ => dim
-          if ( (dim_ /= ROW_DIM) .and. (dim_ /= COL_DIM) ) then
-            stat_   = ARG_ERR
-            errmsg_ = "Invalid dim ("//str(dim)//') in write to file "'//file//'" for given header:'// &
-                      " dim must be (1) or (2)."
-            return
-          end if
-        end if
-      end if
-
-      if ( .not. present(locale) ) then
-        locale_ => US_LOCALE
-      else
-        if ( any(LOCALES == locale) ) then
-          locale_ => locale
-        else
-          stat_   = ARG_ERR
-          errmsg_ = 'Invalid locale "'//locale//'" for file "'//file//'". Locale must be one of: '//join(LOCALES)
-          return
-        end if
-      end if
-
-      if ( .not. present(delim) ) then
-        if ( dim_ == ROW_DIM ) then
-          delim_ => EMPTY_STRING
-        else
-          if ( locale_ == US_LOCALE ) then
-            delim_ => COMMA
-          else
-            delim_ => SEMICOLON
-          end if
-        end if
-      else
-        if ( dim_ == ROW_DIM ) then
-          delim_ => EMPTY_STRING
-          if ( delim /= delim_ ) then
-            stat_   = ARG_ERR
-            errmsg_ = 'Invalid delimiter "'//delim//'" for file "'//file//'". '// &
-                      "There must be no delimiter when writing 1D data as rows."
-            return
-          end if
-        else
-          delim_ => delim
-        end if
-      end if
-
-      if ( .not. present(fmt) ) then
-        fmt_ => EXP_FMT
-      else
-        if ( any(REAL_FMTS == fmt) ) then
-          fmt_ => fmt
-        else
-          stat_   = ARG_ERR
-          errmsg_ = 'Invalid format "'//fmt//'" for file "'//file//'". Format must be one of: '//join(REAL_FMTS)
-          return
-        end if
-      end if
-
-      if ( .not. present(decimals) ) then
-        decimals_ => MAX_DECIMALS
-      else
-        decimals_ => decimals
-      end if
-
-      if ( .not. present(im) ) then
-        im_ => EMPTY_STRING
-      else
-        im_ => im
-      end if
-
-      call to_text(x, file, header_, dim_, locale_, delim_, fmt_, decimals_, im_, stat_, errmsg_)
-    else if ( any(BINARY_EXT == ext) ) then
-      if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
-      if ( present(dim     ) ) write(*,"(a)") LF//'WARNING: dim not supported for file type "'//ext//'".'
-      if ( present(locale  ) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
-      if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
-      if ( present(fmt     ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
-      if ( present(decimals) ) write(*,"(a)") LF//'WARNING: decimals not supported for file type "'//ext//'".'
-      if ( present(im      ) ) write(*,"(a)") LF//'WARNING: im not supported for file type "'//ext//'".'
-
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      stat_   = ARG_ERR
-      errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-    end if
-  end procedure to_file_1dc128
-  module procedure to_file_1dc64
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer, contiguous :: header_(:)
-    character(len=:), pointer             :: locale_, delim_, fmt_, im_, errmsg_
-    integer,          pointer             :: dim_, decimals_, stat_, header_status
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(TEXT_EXT == ext) ) then
-      if ( .not. present(header) ) then
-        header_ => EMPTY_HEADER
-        header_status => NO_HEADER
-      else
-        if ( (size(header) /= 1) .and. (size(header) /= size(x)) ) then
-          stat_   = ARG_ERR
-          errmsg_ = 'Invalid header for file "'//file//'". '//"Header for this data must have size (1) or "// &
-                    "("//str(size(x))//")."
-          return
-        else
-          header_ => header
-          if ( size(header) == 1 ) then
-            header_status => SINGLE_HEADER
-          else
-            header_status => FULL_HEADER
-          end if
-        end if
-      end if
-
-      if ( .not. present(dim) ) then
-        if ( header_status == FULL_HEADER ) then
-          dim_ => COL_DIM
-        else
-          dim_ => ROW_DIM
-        end if
-      else
-        if ( header_status == FULL_HEADER ) then
-          dim_ => COL_DIM
-          if ( dim /= dim_ ) then
-            stat_   = ARG_ERR
-            errmsg_ = "Invalid dim ("//str(dim)//') in write to file "'//file//'" for given header: dim must be (2).'
-            return
-          end if
-        else if ( header_status == SINGLE_HEADER ) then
-          dim_ => ROW_DIM
-          if ( dim /= dim_ ) then
-            stat_   = ARG_ERR
-            errmsg_ = "Invalid dim ("//str(dim)//') in write to file "'//file//'" for given header: dim must be (1).'
-            return
-          end if
-        else
-          dim_ => dim
-          if ( (dim_ /= ROW_DIM) .and. (dim_ /= COL_DIM) ) then
-            stat_   = ARG_ERR
-            errmsg_ = "Invalid dim ("//str(dim)//') in write to file "'//file//'" for given header:'// &
-                      " dim must be (1) or (2)."
-            return
-          end if
-        end if
-      end if
-
-      if ( .not. present(locale) ) then
-        locale_ => US_LOCALE
-      else
-        if ( any(LOCALES == locale) ) then
-          locale_ => locale
-        else
-          stat_   = ARG_ERR
-          errmsg_ = 'Invalid locale "'//locale//'" for file "'//file//'". Locale must be one of: '//join(LOCALES)
-          return
-        end if
-      end if
-
-      if ( .not. present(delim) ) then
-        if ( dim_ == ROW_DIM ) then
-          delim_ => EMPTY_STRING
-        else
-          if ( locale_ == US_LOCALE ) then
-            delim_ => COMMA
-          else
-            delim_ => SEMICOLON
-          end if
-        end if
-      else
-        if ( dim_ == ROW_DIM ) then
-          delim_ => EMPTY_STRING
-          if ( delim /= delim_ ) then
-            stat_   = ARG_ERR
-            errmsg_ = 'Invalid delimiter "'//delim//'" for file "'//file//'". '// &
-                      "There must be no delimiter when writing 1D data as rows."
-            return
-          end if
-        else
-          delim_ => delim
-        end if
-      end if
-
-      if ( .not. present(fmt) ) then
-        fmt_ => EXP_FMT
-      else
-        if ( any(REAL_FMTS == fmt) ) then
-          fmt_ => fmt
-        else
-          stat_   = ARG_ERR
-          errmsg_ = 'Invalid format "'//fmt//'" for file "'//file//'". Format must be one of: '//join(REAL_FMTS)
-          return
-        end if
-      end if
-
-      if ( .not. present(decimals) ) then
-        decimals_ => MAX_DECIMALS
-      else
-        decimals_ => decimals
-      end if
-
-      if ( .not. present(im) ) then
-        im_ => EMPTY_STRING
-      else
-        im_ => im
-      end if
-
-      call to_text(x, file, header_, dim_, locale_, delim_, fmt_, decimals_, im_, stat_, errmsg_)
-    else if ( any(BINARY_EXT == ext) ) then
-      if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
-      if ( present(dim     ) ) write(*,"(a)") LF//'WARNING: dim not supported for file type "'//ext//'".'
-      if ( present(locale  ) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
-      if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
-      if ( present(fmt     ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
-      if ( present(decimals) ) write(*,"(a)") LF//'WARNING: decimals not supported for file type "'//ext//'".'
-      if ( present(im      ) ) write(*,"(a)") LF//'WARNING: im not supported for file type "'//ext//'".'
-
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      stat_   = ARG_ERR
-      errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-    end if
-  end procedure to_file_1dc64
-  module procedure to_file_1dc32
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer, contiguous :: header_(:)
-    character(len=:), pointer             :: locale_, delim_, fmt_, im_, errmsg_
-    integer,          pointer             :: dim_, decimals_, stat_, header_status
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(TEXT_EXT == ext) ) then
-      if ( .not. present(header) ) then
-        header_ => EMPTY_HEADER
-        header_status => NO_HEADER
-      else
-        if ( (size(header) /= 1) .and. (size(header) /= size(x)) ) then
-          stat_   = ARG_ERR
-          errmsg_ = 'Invalid header for file "'//file//'". '//"Header for this data must have size (1) or "// &
-                    "("//str(size(x))//")."
-          return
-        else
-          header_ => header
-          if ( size(header) == 1 ) then
-            header_status => SINGLE_HEADER
-          else
-            header_status => FULL_HEADER
-          end if
-        end if
-      end if
-
-      if ( .not. present(dim) ) then
-        if ( header_status == FULL_HEADER ) then
-          dim_ => COL_DIM
-        else
-          dim_ => ROW_DIM
-        end if
-      else
-        if ( header_status == FULL_HEADER ) then
-          dim_ => COL_DIM
-          if ( dim /= dim_ ) then
-            stat_   = ARG_ERR
-            errmsg_ = "Invalid dim ("//str(dim)//') in write to file "'//file//'" for given header: dim must be (2).'
-            return
-          end if
-        else if ( header_status == SINGLE_HEADER ) then
-          dim_ => ROW_DIM
-          if ( dim /= dim_ ) then
-            stat_   = ARG_ERR
-            errmsg_ = "Invalid dim ("//str(dim)//') in write to file "'//file//'" for given header: dim must be (1).'
-            return
-          end if
-        else
-          dim_ => dim
-          if ( (dim_ /= ROW_DIM) .and. (dim_ /= COL_DIM) ) then
-            stat_   = ARG_ERR
-            errmsg_ = "Invalid dim ("//str(dim)//') in write to file "'//file//'" for given header:'// &
-                      " dim must be (1) or (2)."
-            return
-          end if
-        end if
-      end if
-
-      if ( .not. present(locale) ) then
-        locale_ => US_LOCALE
-      else
-        if ( any(LOCALES == locale) ) then
-          locale_ => locale
-        else
-          stat_   = ARG_ERR
-          errmsg_ = 'Invalid locale "'//locale//'" for file "'//file//'". Locale must be one of: '//join(LOCALES)
-          return
-        end if
-      end if
-
-      if ( .not. present(delim) ) then
-        if ( dim_ == ROW_DIM ) then
-          delim_ => EMPTY_STRING
-        else
-          if ( locale_ == US_LOCALE ) then
-            delim_ => COMMA
-          else
-            delim_ => SEMICOLON
-          end if
-        end if
-      else
-        if ( dim_ == ROW_DIM ) then
-          delim_ => EMPTY_STRING
-          if ( delim /= delim_ ) then
-            stat_   = ARG_ERR
-            errmsg_ = 'Invalid delimiter "'//delim//'" for file "'//file//'". '// &
-                      "There must be no delimiter when writing 1D data as rows."
-            return
-          end if
-        else
-          delim_ => delim
-        end if
-      end if
-
-      if ( .not. present(fmt) ) then
-        fmt_ => EXP_FMT
-      else
-        if ( any(REAL_FMTS == fmt) ) then
-          fmt_ => fmt
-        else
-          stat_   = ARG_ERR
-          errmsg_ = 'Invalid format "'//fmt//'" for file "'//file//'". Format must be one of: '//join(REAL_FMTS)
-          return
-        end if
-      end if
-
-      if ( .not. present(decimals) ) then
-        decimals_ => MAX_DECIMALS
-      else
-        decimals_ => decimals
-      end if
-
-      if ( .not. present(im) ) then
-        im_ => EMPTY_STRING
-      else
-        im_ => im
-      end if
-
-      call to_text(x, file, header_, dim_, locale_, delim_, fmt_, decimals_, im_, stat_, errmsg_)
-    else if ( any(BINARY_EXT == ext) ) then
-      if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
-      if ( present(dim     ) ) write(*,"(a)") LF//'WARNING: dim not supported for file type "'//ext//'".'
-      if ( present(locale  ) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
-      if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
-      if ( present(fmt     ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
-      if ( present(decimals) ) write(*,"(a)") LF//'WARNING: decimals not supported for file type "'//ext//'".'
-      if ( present(im      ) ) write(*,"(a)") LF//'WARNING: im not supported for file type "'//ext//'".'
-
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      stat_   = ARG_ERR
-      errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-    end if
-  end procedure to_file_1dc32
-
-  module procedure to_file_2dc128
+  module procedure to_file_c128
     character(len=:), allocatable :: ext
 
     character(len=:), pointer, contiguous :: header_(:)
@@ -535,17 +64,34 @@ submodule (io_fortran_lib) file_io
     stat_=0; errmsg_=EMPTY_STR
 
     if ( any(TEXT_EXT == ext) ) then
+      select rank(x)
+        rank(1); continue
+        rank(2); continue
+        rank default
+          stat_   = ARG_ERR
+          errmsg_ = "Cannot write an array of rank "//str(rank(x))//" to text file."
+          return
+      end select
+
       if ( .not. present(header) ) then
         header_ => EMPTY_HEADER
       else
-        if ( (size(header) /= 1) .and. (size(header) /= size(x, dim=2)) ) then
-          stat_   = ARG_ERR
-          errmsg_ = 'Invalid header for file "'//file//'". '//"Header for this data must have size (1) or "// &
-                    "("//str(size(x, dim=2, kind=i64))//")."
-          return
-        else
-          header_ => header
+        if ( size(header) /= 1 ) then
+          select rank(x)
+            rank(1)
+              stat_ = ARG_ERR
+              errmsg_ = 'Invalid header for file "'//file//'". Header for this data must have size 1.'
+              return
+            rank(2)
+              if ( size(header) /= size(x, dim=2) ) then
+                stat_ = ARG_ERR
+                errmsg_ = 'Invalid header for file "'//file//'". Header for this data must have size 1 or size '// &
+                          str(size(x, dim=2))//"."
+                return
+              end if
+          end select
         end if
+        header_ => header
       end if
 
       if ( .not. present(locale) ) then
@@ -562,9 +108,9 @@ submodule (io_fortran_lib) file_io
 
       if ( .not. present(delim) ) then
         if ( locale_ == US_LOCALE ) then
-          delim_ => COMMA
+          delim_ => COMMA_DELIMITER
         else
-          delim_ => SEMICOLON
+          delim_ => SEMICOLON_DELIM
         end if
       else
         delim_ => delim
@@ -594,7 +140,10 @@ submodule (io_fortran_lib) file_io
         im_ => im
       end if
 
-      call to_text(x, file, header_, locale_, delim_, fmt_, decimals_, im_, stat_, errmsg_)
+      select rank(x)
+        rank(1); call to_text(x, file, header_, locale_, delim_, fmt_, decimals_, im_, stat_, errmsg_)
+        rank(2); call to_text(x, file, header_, locale_, delim_, fmt_, decimals_, im_, stat_, errmsg_)
+      end select
     else if ( any(BINARY_EXT == ext) ) then
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
       if ( present(locale  ) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
@@ -603,14 +152,34 @@ submodule (io_fortran_lib) file_io
       if ( present(decimals) ) write(*,"(a)") LF//'WARNING: decimals not supported for file type "'//ext//'".'
       if ( present(im      ) ) write(*,"(a)") LF//'WARNING: im not supported for file type "'//ext//'".'
 
-      call to_binary(x, file, stat_, errmsg_)
+      select rank(x)
+        rank(1);  call to_binary(x, file, stat_, errmsg_)
+        rank(2);  call to_binary(x, file, stat_, errmsg_)
+        rank(3);  call to_binary(x, file, stat_, errmsg_)
+        rank(4);  call to_binary(x, file, stat_, errmsg_)
+        rank(5);  call to_binary(x, file, stat_, errmsg_)
+        rank(6);  call to_binary(x, file, stat_, errmsg_)
+        rank(7);  call to_binary(x, file, stat_, errmsg_)
+        rank(8);  call to_binary(x, file, stat_, errmsg_)
+        rank(9);  call to_binary(x, file, stat_, errmsg_)
+        rank(10); call to_binary(x, file, stat_, errmsg_)
+        rank(11); call to_binary(x, file, stat_, errmsg_)
+        rank(12); call to_binary(x, file, stat_, errmsg_)
+        rank(13); call to_binary(x, file, stat_, errmsg_)
+        rank(14); call to_binary(x, file, stat_, errmsg_)
+        rank(15); call to_binary(x, file, stat_, errmsg_)
+        rank default
+          stat   = ARG_ERR
+          errmsg = "Array has invalid rank. Supported ranks: 1-15."
+          return
+      end select
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
                 join(TEXT_EXT)//SPACE//join(BINARY_EXT)
     end if
-  end procedure to_file_2dc128
-  module procedure to_file_2dc64
+  end procedure to_file_c128
+  module procedure to_file_c64
     character(len=:), allocatable :: ext
 
     character(len=:), pointer, contiguous :: header_(:)
@@ -637,17 +206,34 @@ submodule (io_fortran_lib) file_io
     stat_=0; errmsg_=EMPTY_STR
 
     if ( any(TEXT_EXT == ext) ) then
+      select rank(x)
+        rank(1); continue
+        rank(2); continue
+        rank default
+          stat_   = ARG_ERR
+          errmsg_ = "Cannot write an array of rank "//str(rank(x))//" to text file."
+          return
+      end select
+
       if ( .not. present(header) ) then
         header_ => EMPTY_HEADER
       else
-        if ( (size(header) /= 1) .and. (size(header) /= size(x, dim=2)) ) then
-          stat_   = ARG_ERR
-          errmsg_ = 'Invalid header for file "'//file//'". '//"Header for this data must have size (1) or "// &
-                    "("//str(size(x, dim=2, kind=i64))//")."
-          return
-        else
-          header_ => header
+        if ( size(header) /= 1 ) then
+          select rank(x)
+            rank(1)
+              stat_ = ARG_ERR
+              errmsg_ = 'Invalid header for file "'//file//'". Header for this data must have size 1.'
+              return
+            rank(2)
+              if ( size(header) /= size(x, dim=2) ) then
+                stat_ = ARG_ERR
+                errmsg_ = 'Invalid header for file "'//file//'". Header for this data must have size 1 or size '// &
+                          str(size(x, dim=2))//"."
+                return
+              end if
+          end select
         end if
+        header_ => header
       end if
 
       if ( .not. present(locale) ) then
@@ -664,9 +250,9 @@ submodule (io_fortran_lib) file_io
 
       if ( .not. present(delim) ) then
         if ( locale_ == US_LOCALE ) then
-          delim_ => COMMA
+          delim_ => COMMA_DELIMITER
         else
-          delim_ => SEMICOLON
+          delim_ => SEMICOLON_DELIM
         end if
       else
         delim_ => delim
@@ -696,7 +282,10 @@ submodule (io_fortran_lib) file_io
         im_ => im
       end if
 
-      call to_text(x, file, header_, locale_, delim_, fmt_, decimals_, im_, stat_, errmsg_)
+      select rank(x)
+        rank(1); call to_text(x, file, header_, locale_, delim_, fmt_, decimals_, im_, stat_, errmsg_)
+        rank(2); call to_text(x, file, header_, locale_, delim_, fmt_, decimals_, im_, stat_, errmsg_)
+      end select
     else if ( any(BINARY_EXT == ext) ) then
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
       if ( present(locale  ) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
@@ -705,14 +294,34 @@ submodule (io_fortran_lib) file_io
       if ( present(decimals) ) write(*,"(a)") LF//'WARNING: decimals not supported for file type "'//ext//'".'
       if ( present(im      ) ) write(*,"(a)") LF//'WARNING: im not supported for file type "'//ext//'".'
 
-      call to_binary(x, file, stat_, errmsg_)
+      select rank(x)
+        rank(1);  call to_binary(x, file, stat_, errmsg_)
+        rank(2);  call to_binary(x, file, stat_, errmsg_)
+        rank(3);  call to_binary(x, file, stat_, errmsg_)
+        rank(4);  call to_binary(x, file, stat_, errmsg_)
+        rank(5);  call to_binary(x, file, stat_, errmsg_)
+        rank(6);  call to_binary(x, file, stat_, errmsg_)
+        rank(7);  call to_binary(x, file, stat_, errmsg_)
+        rank(8);  call to_binary(x, file, stat_, errmsg_)
+        rank(9);  call to_binary(x, file, stat_, errmsg_)
+        rank(10); call to_binary(x, file, stat_, errmsg_)
+        rank(11); call to_binary(x, file, stat_, errmsg_)
+        rank(12); call to_binary(x, file, stat_, errmsg_)
+        rank(13); call to_binary(x, file, stat_, errmsg_)
+        rank(14); call to_binary(x, file, stat_, errmsg_)
+        rank(15); call to_binary(x, file, stat_, errmsg_)
+        rank default
+          stat   = ARG_ERR
+          errmsg = "Array has invalid rank. Supported ranks: 1-15."
+          return
+      end select
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
                 join(TEXT_EXT)//SPACE//join(BINARY_EXT)
     end if
-  end procedure to_file_2dc64
-  module procedure to_file_2dc32
+  end procedure to_file_c64
+  module procedure to_file_c32
     character(len=:), allocatable :: ext
 
     character(len=:), pointer, contiguous :: header_(:)
@@ -739,17 +348,34 @@ submodule (io_fortran_lib) file_io
     stat_=0; errmsg_=EMPTY_STR
 
     if ( any(TEXT_EXT == ext) ) then
+      select rank(x)
+        rank(1); continue
+        rank(2); continue
+        rank default
+          stat_   = ARG_ERR
+          errmsg_ = "Cannot write an array of rank "//str(rank(x))//" to text file."
+          return
+      end select
+
       if ( .not. present(header) ) then
         header_ => EMPTY_HEADER
       else
-        if ( (size(header) /= 1) .and. (size(header) /= size(x, dim=2)) ) then
-          stat_   = ARG_ERR
-          errmsg_ = 'Invalid header for file "'//file//'". '//"Header for this data must have size (1) or "// &
-                    "("//str(size(x, dim=2, kind=i64))//")."
-          return
-        else
-          header_ => header
+        if ( size(header) /= 1 ) then
+          select rank(x)
+            rank(1)
+              stat_ = ARG_ERR
+              errmsg_ = 'Invalid header for file "'//file//'". Header for this data must have size 1.'
+              return
+            rank(2)
+              if ( size(header) /= size(x, dim=2) ) then
+                stat_ = ARG_ERR
+                errmsg_ = 'Invalid header for file "'//file//'". Header for this data must have size 1 or size '// &
+                          str(size(x, dim=2))//"."
+                return
+              end if
+          end select
         end if
+        header_ => header
       end if
 
       if ( .not. present(locale) ) then
@@ -766,9 +392,9 @@ submodule (io_fortran_lib) file_io
 
       if ( .not. present(delim) ) then
         if ( locale_ == US_LOCALE ) then
-          delim_ => COMMA
+          delim_ => COMMA_DELIMITER
         else
-          delim_ => SEMICOLON
+          delim_ => SEMICOLON_DELIM
         end if
       else
         delim_ => delim
@@ -798,7 +424,10 @@ submodule (io_fortran_lib) file_io
         im_ => im
       end if
 
-      call to_text(x, file, header_, locale_, delim_, fmt_, decimals_, im_, stat_, errmsg_)
+      select rank(x)
+        rank(1); call to_text(x, file, header_, locale_, delim_, fmt_, decimals_, im_, stat_, errmsg_)
+        rank(2); call to_text(x, file, header_, locale_, delim_, fmt_, decimals_, im_, stat_, errmsg_)
+      end select
     else if ( any(BINARY_EXT == ext) ) then
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
       if ( present(locale  ) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
@@ -807,1994 +436,35 @@ submodule (io_fortran_lib) file_io
       if ( present(decimals) ) write(*,"(a)") LF//'WARNING: decimals not supported for file type "'//ext//'".'
       if ( present(im      ) ) write(*,"(a)") LF//'WARNING: im not supported for file type "'//ext//'".'
 
-      call to_binary(x, file, stat_, errmsg_)
+      select rank(x)
+        rank(1);  call to_binary(x, file, stat_, errmsg_)
+        rank(2);  call to_binary(x, file, stat_, errmsg_)
+        rank(3);  call to_binary(x, file, stat_, errmsg_)
+        rank(4);  call to_binary(x, file, stat_, errmsg_)
+        rank(5);  call to_binary(x, file, stat_, errmsg_)
+        rank(6);  call to_binary(x, file, stat_, errmsg_)
+        rank(7);  call to_binary(x, file, stat_, errmsg_)
+        rank(8);  call to_binary(x, file, stat_, errmsg_)
+        rank(9);  call to_binary(x, file, stat_, errmsg_)
+        rank(10); call to_binary(x, file, stat_, errmsg_)
+        rank(11); call to_binary(x, file, stat_, errmsg_)
+        rank(12); call to_binary(x, file, stat_, errmsg_)
+        rank(13); call to_binary(x, file, stat_, errmsg_)
+        rank(14); call to_binary(x, file, stat_, errmsg_)
+        rank(15); call to_binary(x, file, stat_, errmsg_)
+        rank default
+          stat   = ARG_ERR
+          errmsg = "Array has invalid rank. Supported ranks: 1-15."
+          return
+      end select
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
                 join(TEXT_EXT)//SPACE//join(BINARY_EXT)
     end if
-  end procedure to_file_2dc32
+  end procedure to_file_c32
 
-  module procedure to_file_3dc128
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_3dc128
-  module procedure to_file_3dc64
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_3dc64
-  module procedure to_file_3dc32
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_3dc32
-
-  module procedure to_file_4dc128
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_4dc128
-  module procedure to_file_4dc64
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_4dc64
-  module procedure to_file_4dc32
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_4dc32
-
-  module procedure to_file_5dc128
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_5dc128
-  module procedure to_file_5dc64
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_5dc64
-  module procedure to_file_5dc32
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_5dc32
-
-  module procedure to_file_6dc128
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_6dc128
-  module procedure to_file_6dc64
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_6dc64
-  module procedure to_file_6dc32
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_6dc32
-
-  module procedure to_file_7dc128
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_7dc128
-  module procedure to_file_7dc64
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_7dc64
-  module procedure to_file_7dc32
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_7dc32
-
-  module procedure to_file_8dc128
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_8dc128
-  module procedure to_file_8dc64
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_8dc64
-  module procedure to_file_8dc32
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_8dc32
-
-  module procedure to_file_9dc128
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_9dc128
-  module procedure to_file_9dc64
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_9dc64
-  module procedure to_file_9dc32
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_9dc32
-
-  module procedure to_file_10dc128
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_10dc128
-  module procedure to_file_10dc64
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_10dc64
-  module procedure to_file_10dc32
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_10dc32
-
-  module procedure to_file_11dc128
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_11dc128
-  module procedure to_file_11dc64
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_11dc64
-  module procedure to_file_11dc32
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_11dc32
-
-  module procedure to_file_12dc128
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_12dc128
-  module procedure to_file_12dc64
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_12dc64
-  module procedure to_file_12dc32
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_12dc32
-
-  module procedure to_file_13dc128
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_13dc128
-  module procedure to_file_13dc64
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_13dc64
-  module procedure to_file_13dc32
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_13dc32
-
-  module procedure to_file_14dc128
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_14dc128
-  module procedure to_file_14dc64
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_14dc64
-  module procedure to_file_14dc32
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_14dc32
-
-  module procedure to_file_15dc128
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_15dc128
-  module procedure to_file_15dc64
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_15dc64
-  module procedure to_file_15dc32
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_15dc32
-
-  module procedure to_file_1dr128
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer, contiguous :: header_(:)
-    character(len=:), pointer             :: locale_, delim_, fmt_, errmsg_
-    integer,          pointer             :: dim_, decimals_, stat_, header_status
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(TEXT_EXT == ext) ) then
-      if ( .not. present(header) ) then
-        header_ => EMPTY_HEADER
-        header_status => NO_HEADER
-      else
-        if ( (size(header) /= 1) .and. (size(header) /= size(x)) ) then
-          stat_   = ARG_ERR
-          errmsg_ = 'Invalid header for file "'//file//'". '//"Header for this data must have size (1) or "// &
-                    "("//str(size(x))//")."
-          return
-        else
-          header_ => header
-          if ( size(header) == 1 ) then
-            header_status => SINGLE_HEADER
-          else
-            header_status => FULL_HEADER
-          end if
-        end if
-      end if
-
-      if ( .not. present(dim) ) then
-        if ( header_status == FULL_HEADER ) then
-          dim_ => COL_DIM
-        else
-          dim_ => ROW_DIM
-        end if
-      else
-        if ( header_status == FULL_HEADER ) then
-          dim_ => COL_DIM
-          if ( dim /= dim_ ) then
-            stat_   = ARG_ERR
-            errmsg_ = "Invalid dim ("//str(dim)//') in write to file "'//file//'" for given header: dim must be (2).'
-            return
-          end if
-        else if ( header_status == SINGLE_HEADER ) then
-          dim_ => ROW_DIM
-          if ( dim /= dim_ ) then
-            stat_   = ARG_ERR
-            errmsg_ = "Invalid dim ("//str(dim)//') in write to file "'//file//'" for given header: dim must be (1).'
-            return
-          end if
-        else
-          dim_ => dim
-          if ( (dim_ /= ROW_DIM) .and. (dim_ /= COL_DIM) ) then
-            stat_   = ARG_ERR
-            errmsg_ = "Invalid dim ("//str(dim)//') in write to file "'//file//'" for given header:'// &
-                      " dim must be (1) or (2)."
-            return
-          end if
-        end if
-      end if
-
-      if ( .not. present(locale) ) then
-        locale_ => US_LOCALE
-      else
-        if ( any(LOCALES == locale) ) then
-          locale_ => locale
-        else
-          stat_   = ARG_ERR
-          errmsg_ = 'Invalid locale "'//locale//'" for file "'//file//'". Locale must be one of: '//join(LOCALES)
-          return
-        end if
-      end if
-
-      if ( .not. present(delim) ) then
-        if ( dim_ == ROW_DIM ) then
-          delim_ => EMPTY_STRING
-        else
-          if ( locale_ == US_LOCALE ) then
-            delim_ => COMMA
-          else
-            delim_ => SEMICOLON
-          end if
-        end if
-      else
-        if ( dim_ == ROW_DIM ) then
-          delim_ => EMPTY_STRING
-          if ( delim /= delim_ ) then
-            stat_   = ARG_ERR
-            errmsg_ = 'Invalid delimiter "'//delim//'" for file "'//file//'". '// &
-                      "There must be no delimiter when writing 1D data as rows."
-            return
-          end if
-        else
-          delim_ => delim
-        end if
-      end if
-
-      if ( .not. present(fmt) ) then
-        fmt_ => EXP_FMT
-      else
-        if ( any(REAL_FMTS == fmt) ) then
-          fmt_ => fmt
-        else
-          stat_   = ARG_ERR
-          errmsg_ = 'Invalid format "'//fmt//'" for file "'//file//'". Format must be one of: '//join(REAL_FMTS)
-          return
-        end if
-      end if
-
-      if ( .not. present(decimals) ) then
-        decimals_ => MAX_DECIMALS
-      else
-        decimals_ => decimals
-      end if
-
-      call to_text(x, file, header_, dim_, locale_, delim_, fmt_, decimals_, stat_, errmsg_)
-    else if ( any(BINARY_EXT == ext) ) then
-      if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
-      if ( present(dim     ) ) write(*,"(a)") LF//'WARNING: dim not supported for file type "'//ext//'".'
-      if ( present(locale  ) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
-      if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
-      if ( present(fmt     ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
-      if ( present(decimals) ) write(*,"(a)") LF//'WARNING: decimals not supported for file type "'//ext//'".'
-
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      stat_   = ARG_ERR
-      errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-    end if
-  end procedure to_file_1dr128
-  module procedure to_file_1dr64
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer, contiguous :: header_(:)
-    character(len=:), pointer             :: locale_, delim_, fmt_, errmsg_
-    integer,          pointer             :: dim_, decimals_, stat_, header_status
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(TEXT_EXT == ext) ) then
-      if ( .not. present(header) ) then
-        header_ => EMPTY_HEADER
-        header_status => NO_HEADER
-      else
-        if ( (size(header) /= 1) .and. (size(header) /= size(x)) ) then
-          stat_   = ARG_ERR
-          errmsg_ = 'Invalid header for file "'//file//'". '//"Header for this data must have size (1) or "// &
-                    "("//str(size(x))//")."
-          return
-        else
-          header_ => header
-          if ( size(header) == 1 ) then
-            header_status => SINGLE_HEADER
-          else
-            header_status => FULL_HEADER
-          end if
-        end if
-      end if
-
-      if ( .not. present(dim) ) then
-        if ( header_status == FULL_HEADER ) then
-          dim_ => COL_DIM
-        else
-          dim_ => ROW_DIM
-        end if
-      else
-        if ( header_status == FULL_HEADER ) then
-          dim_ => COL_DIM
-          if ( dim /= dim_ ) then
-            stat_   = ARG_ERR
-            errmsg_ = "Invalid dim ("//str(dim)//') in write to file "'//file//'" for given header: dim must be (2).'
-            return
-          end if
-        else if ( header_status == SINGLE_HEADER ) then
-          dim_ => ROW_DIM
-          if ( dim /= dim_ ) then
-            stat_   = ARG_ERR
-            errmsg_ = "Invalid dim ("//str(dim)//') in write to file "'//file//'" for given header: dim must be (1).'
-            return
-          end if
-        else
-          dim_ => dim
-          if ( (dim_ /= ROW_DIM) .and. (dim_ /= COL_DIM) ) then
-            stat_   = ARG_ERR
-            errmsg_ = "Invalid dim ("//str(dim)//') in write to file "'//file//'" for given header:'// &
-                      " dim must be (1) or (2)."
-            return
-          end if
-        end if
-      end if
-
-      if ( .not. present(locale) ) then
-        locale_ => US_LOCALE
-      else
-        if ( any(LOCALES == locale) ) then
-          locale_ => locale
-        else
-          stat_   = ARG_ERR
-          errmsg_ = 'Invalid locale "'//locale//'" for file "'//file//'". Locale must be one of: '//join(LOCALES)
-          return
-        end if
-      end if
-
-      if ( .not. present(delim) ) then
-        if ( dim_ == ROW_DIM ) then
-          delim_ => EMPTY_STRING
-        else
-          if ( locale_ == US_LOCALE ) then
-            delim_ => COMMA
-          else
-            delim_ => SEMICOLON
-          end if
-        end if
-      else
-        if ( dim_ == ROW_DIM ) then
-          delim_ => EMPTY_STRING
-          if ( delim /= delim_ ) then
-            stat_   = ARG_ERR
-            errmsg_ = 'Invalid delimiter "'//delim//'" for file "'//file//'". '// &
-                      "There must be no delimiter when writing 1D data as rows."
-            return
-          end if
-        else
-          delim_ => delim
-        end if
-      end if
-
-      if ( .not. present(fmt) ) then
-        fmt_ => EXP_FMT
-      else
-        if ( any(REAL_FMTS == fmt) ) then
-          fmt_ => fmt
-        else
-          stat_   = ARG_ERR
-          errmsg_ = 'Invalid format "'//fmt//'" for file "'//file//'". Format must be one of: '//join(REAL_FMTS)
-          return
-        end if
-      end if
-
-      if ( .not. present(decimals) ) then
-        decimals_ => MAX_DECIMALS
-      else
-        decimals_ => decimals
-      end if
-
-      call to_text(x, file, header_, dim_, locale_, delim_, fmt_, decimals_, stat_, errmsg_)
-    else if ( any(BINARY_EXT == ext) ) then
-      if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
-      if ( present(dim     ) ) write(*,"(a)") LF//'WARNING: dim not supported for file type "'//ext//'".'
-      if ( present(locale  ) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
-      if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
-      if ( present(fmt     ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
-      if ( present(decimals) ) write(*,"(a)") LF//'WARNING: decimals not supported for file type "'//ext//'".'
-
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      stat_   = ARG_ERR
-      errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-    end if
-  end procedure to_file_1dr64
-  module procedure to_file_1dr32
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer, contiguous :: header_(:)
-    character(len=:), pointer             :: locale_, delim_, fmt_, errmsg_
-    integer,          pointer             :: dim_, decimals_, stat_, header_status
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(TEXT_EXT == ext) ) then
-      if ( .not. present(header) ) then
-        header_ => EMPTY_HEADER
-        header_status => NO_HEADER
-      else
-        if ( (size(header) /= 1) .and. (size(header) /= size(x)) ) then
-          stat_   = ARG_ERR
-          errmsg_ = 'Invalid header for file "'//file//'". '//"Header for this data must have size (1) or "// &
-                    "("//str(size(x))//")."
-          return
-        else
-          header_ => header
-          if ( size(header) == 1 ) then
-            header_status => SINGLE_HEADER
-          else
-            header_status => FULL_HEADER
-          end if
-        end if
-      end if
-
-      if ( .not. present(dim) ) then
-        if ( header_status == FULL_HEADER ) then
-          dim_ => COL_DIM
-        else
-          dim_ => ROW_DIM
-        end if
-      else
-        if ( header_status == FULL_HEADER ) then
-          dim_ => COL_DIM
-          if ( dim /= dim_ ) then
-            stat_   = ARG_ERR
-            errmsg_ = "Invalid dim ("//str(dim)//') in write to file "'//file//'" for given header: dim must be (2).'
-            return
-          end if
-        else if ( header_status == SINGLE_HEADER ) then
-          dim_ => ROW_DIM
-          if ( dim /= dim_ ) then
-            stat_   = ARG_ERR
-            errmsg_ = "Invalid dim ("//str(dim)//') in write to file "'//file//'" for given header: dim must be (1).'
-            return
-          end if
-        else
-          dim_ => dim
-          if ( (dim_ /= ROW_DIM) .and. (dim_ /= COL_DIM) ) then
-            stat_   = ARG_ERR
-            errmsg_ = "Invalid dim ("//str(dim)//') in write to file "'//file//'" for given header:'// &
-                      " dim must be (1) or (2)."
-            return
-          end if
-        end if
-      end if
-
-      if ( .not. present(locale) ) then
-        locale_ => US_LOCALE
-      else
-        if ( any(LOCALES == locale) ) then
-          locale_ => locale
-        else
-          stat_   = ARG_ERR
-          errmsg_ = 'Invalid locale "'//locale//'" for file "'//file//'". Locale must be one of: '//join(LOCALES)
-          return
-        end if
-      end if
-
-      if ( .not. present(delim) ) then
-        if ( dim_ == ROW_DIM ) then
-          delim_ => EMPTY_STRING
-        else
-          if ( locale_ == US_LOCALE ) then
-            delim_ => COMMA
-          else
-            delim_ => SEMICOLON
-          end if
-        end if
-      else
-        if ( dim_ == ROW_DIM ) then
-          delim_ => EMPTY_STRING
-          if ( delim /= delim_ ) then
-            stat_   = ARG_ERR
-            errmsg_ = 'Invalid delimiter "'//delim//'" for file "'//file//'". '// &
-                      "There must be no delimiter when writing 1D data as rows."
-            return
-          end if
-        else
-          delim_ => delim
-        end if
-      end if
-
-      if ( .not. present(fmt) ) then
-        fmt_ => EXP_FMT
-      else
-        if ( any(REAL_FMTS == fmt) ) then
-          fmt_ => fmt
-        else
-          stat_   = ARG_ERR
-          errmsg_ = 'Invalid format "'//fmt//'" for file "'//file//'". Format must be one of: '//join(REAL_FMTS)
-          return
-        end if
-      end if
-
-      if ( .not. present(decimals) ) then
-        decimals_ => MAX_DECIMALS
-      else
-        decimals_ => decimals
-      end if
-
-      call to_text(x, file, header_, dim_, locale_, delim_, fmt_, decimals_, stat_, errmsg_)
-    else if ( any(BINARY_EXT == ext) ) then
-      if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
-      if ( present(dim     ) ) write(*,"(a)") LF//'WARNING: dim not supported for file type "'//ext//'".'
-      if ( present(locale  ) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
-      if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
-      if ( present(fmt     ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
-      if ( present(decimals) ) write(*,"(a)") LF//'WARNING: decimals not supported for file type "'//ext//'".'
-
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      stat_   = ARG_ERR
-      errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-    end if
-  end procedure to_file_1dr32
-
-  module procedure to_file_2dr128
+  module procedure to_file_r128
     character(len=:), allocatable :: ext
 
     character(len=:), pointer, contiguous :: header_(:)
@@ -2821,17 +491,34 @@ submodule (io_fortran_lib) file_io
     stat_=0; errmsg_=EMPTY_STR
 
     if ( any(TEXT_EXT == ext) ) then
+      select rank(x)
+        rank(1); continue
+        rank(2); continue
+        rank default
+          stat_   = ARG_ERR
+          errmsg_ = "Cannot write an array of rank "//str(rank(x))//" to text file."
+          return
+      end select
+
       if ( .not. present(header) ) then
         header_ => EMPTY_HEADER
       else
-        if ( (size(header) /= 1) .and. (size(header) /= size(x, dim=2)) ) then
-          stat_   = ARG_ERR
-          errmsg_ = 'Invalid header for file "'//file//'". '//"Header for this data must have size (1) or "// &
-                    "("//str(size(x, dim=2, kind=i64))//")."
-          return
-        else
-          header_ => header
+        if ( size(header) /= 1 ) then
+          select rank(x)
+            rank(1)
+              stat_ = ARG_ERR
+              errmsg_ = 'Invalid header for file "'//file//'". Header for this data must have size 1.'
+              return
+            rank(2)
+              if ( size(header) /= size(x, dim=2) ) then
+                stat_ = ARG_ERR
+                errmsg_ = 'Invalid header for file "'//file//'". Header for this data must have size 1 or size '// &
+                          str(size(x, dim=2))//"."
+                return
+              end if
+          end select
         end if
+        header_ => header
       end if
 
       if ( .not. present(locale) ) then
@@ -2848,9 +535,9 @@ submodule (io_fortran_lib) file_io
 
       if ( .not. present(delim) ) then
         if ( locale_ == US_LOCALE ) then
-          delim_ => COMMA
+          delim_ => COMMA_DELIMITER
         else
-          delim_ => SEMICOLON
+          delim_ => SEMICOLON_DELIM
         end if
       else
         delim_ => delim
@@ -2874,7 +561,10 @@ submodule (io_fortran_lib) file_io
         decimals_ => decimals
       end if
 
-      call to_text(x, file, header_, locale_, delim_, fmt_, decimals_, stat_, errmsg_)
+      select rank(x)
+        rank(1); call to_text(x, file, header_, locale_, delim_, fmt_, decimals_, stat_, errmsg_)
+        rank(2); call to_text(x, file, header_, locale_, delim_, fmt_, decimals_, stat_, errmsg_)
+      end select
     else if ( any(BINARY_EXT == ext) ) then
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
       if ( present(locale  ) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
@@ -2882,14 +572,34 @@ submodule (io_fortran_lib) file_io
       if ( present(fmt     ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
       if ( present(decimals) ) write(*,"(a)") LF//'WARNING: decimals not supported for file type "'//ext//'".'
 
-      call to_binary(x, file, stat_, errmsg_)
+      select rank(x)
+        rank(1);  call to_binary(x, file, stat_, errmsg_)
+        rank(2);  call to_binary(x, file, stat_, errmsg_)
+        rank(3);  call to_binary(x, file, stat_, errmsg_)
+        rank(4);  call to_binary(x, file, stat_, errmsg_)
+        rank(5);  call to_binary(x, file, stat_, errmsg_)
+        rank(6);  call to_binary(x, file, stat_, errmsg_)
+        rank(7);  call to_binary(x, file, stat_, errmsg_)
+        rank(8);  call to_binary(x, file, stat_, errmsg_)
+        rank(9);  call to_binary(x, file, stat_, errmsg_)
+        rank(10); call to_binary(x, file, stat_, errmsg_)
+        rank(11); call to_binary(x, file, stat_, errmsg_)
+        rank(12); call to_binary(x, file, stat_, errmsg_)
+        rank(13); call to_binary(x, file, stat_, errmsg_)
+        rank(14); call to_binary(x, file, stat_, errmsg_)
+        rank(15); call to_binary(x, file, stat_, errmsg_)
+        rank default
+          stat   = ARG_ERR
+          errmsg = "Array has invalid rank. Supported ranks: 1-15."
+          return
+      end select
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
                 join(TEXT_EXT)//SPACE//join(BINARY_EXT)
     end if
-  end procedure to_file_2dr128
-  module procedure to_file_2dr64
+  end procedure to_file_r128
+  module procedure to_file_r64
     character(len=:), allocatable :: ext
 
     character(len=:), pointer, contiguous :: header_(:)
@@ -2916,17 +626,34 @@ submodule (io_fortran_lib) file_io
     stat_=0; errmsg_=EMPTY_STR
 
     if ( any(TEXT_EXT == ext) ) then
+      select rank(x)
+        rank(1); continue
+        rank(2); continue
+        rank default
+          stat_   = ARG_ERR
+          errmsg_ = "Cannot write an array of rank "//str(rank(x))//" to text file."
+          return
+      end select
+
       if ( .not. present(header) ) then
         header_ => EMPTY_HEADER
       else
-        if ( (size(header) /= 1) .and. (size(header) /= size(x, dim=2)) ) then
-          stat_   = ARG_ERR
-          errmsg_ = 'Invalid header for file "'//file//'". '//"Header for this data must have size (1) or "// &
-                    "("//str(size(x, dim=2, kind=i64))//")."
-          return
-        else
-          header_ => header
+        if ( size(header) /= 1 ) then
+          select rank(x)
+            rank(1)
+              stat_ = ARG_ERR
+              errmsg_ = 'Invalid header for file "'//file//'". Header for this data must have size 1.'
+              return
+            rank(2)
+              if ( size(header) /= size(x, dim=2) ) then
+                stat_ = ARG_ERR
+                errmsg_ = 'Invalid header for file "'//file//'". Header for this data must have size 1 or size '// &
+                          str(size(x, dim=2))//"."
+                return
+              end if
+          end select
         end if
+        header_ => header
       end if
 
       if ( .not. present(locale) ) then
@@ -2943,9 +670,9 @@ submodule (io_fortran_lib) file_io
 
       if ( .not. present(delim) ) then
         if ( locale_ == US_LOCALE ) then
-          delim_ => COMMA
+          delim_ => COMMA_DELIMITER
         else
-          delim_ => SEMICOLON
+          delim_ => SEMICOLON_DELIM
         end if
       else
         delim_ => delim
@@ -2969,7 +696,10 @@ submodule (io_fortran_lib) file_io
         decimals_ => decimals
       end if
 
-      call to_text(x, file, header_, locale_, delim_, fmt_, decimals_, stat_, errmsg_)
+      select rank(x)
+        rank(1); call to_text(x, file, header_, locale_, delim_, fmt_, decimals_, stat_, errmsg_)
+        rank(2); call to_text(x, file, header_, locale_, delim_, fmt_, decimals_, stat_, errmsg_)
+      end select
     else if ( any(BINARY_EXT == ext) ) then
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
       if ( present(locale  ) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
@@ -2977,14 +707,34 @@ submodule (io_fortran_lib) file_io
       if ( present(fmt     ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
       if ( present(decimals) ) write(*,"(a)") LF//'WARNING: decimals not supported for file type "'//ext//'".'
 
-      call to_binary(x, file, stat_, errmsg_)
+      select rank(x)
+        rank(1);  call to_binary(x, file, stat_, errmsg_)
+        rank(2);  call to_binary(x, file, stat_, errmsg_)
+        rank(3);  call to_binary(x, file, stat_, errmsg_)
+        rank(4);  call to_binary(x, file, stat_, errmsg_)
+        rank(5);  call to_binary(x, file, stat_, errmsg_)
+        rank(6);  call to_binary(x, file, stat_, errmsg_)
+        rank(7);  call to_binary(x, file, stat_, errmsg_)
+        rank(8);  call to_binary(x, file, stat_, errmsg_)
+        rank(9);  call to_binary(x, file, stat_, errmsg_)
+        rank(10); call to_binary(x, file, stat_, errmsg_)
+        rank(11); call to_binary(x, file, stat_, errmsg_)
+        rank(12); call to_binary(x, file, stat_, errmsg_)
+        rank(13); call to_binary(x, file, stat_, errmsg_)
+        rank(14); call to_binary(x, file, stat_, errmsg_)
+        rank(15); call to_binary(x, file, stat_, errmsg_)
+        rank default
+          stat   = ARG_ERR
+          errmsg = "Array has invalid rank. Supported ranks: 1-15."
+          return
+      end select
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
                 join(TEXT_EXT)//SPACE//join(BINARY_EXT)
     end if
-  end procedure to_file_2dr64
-  module procedure to_file_2dr32
+  end procedure to_file_r64
+  module procedure to_file_r32
     character(len=:), allocatable :: ext
 
     character(len=:), pointer, contiguous :: header_(:)
@@ -3011,17 +761,34 @@ submodule (io_fortran_lib) file_io
     stat_=0; errmsg_=EMPTY_STR
 
     if ( any(TEXT_EXT == ext) ) then
+      select rank(x)
+        rank(1); continue
+        rank(2); continue
+        rank default
+          stat_   = ARG_ERR
+          errmsg_ = "Cannot write an array of rank "//str(rank(x))//" to text file."
+          return
+      end select
+
       if ( .not. present(header) ) then
         header_ => EMPTY_HEADER
       else
-        if ( (size(header) /= 1) .and. (size(header) /= size(x, dim=2)) ) then
-          stat_   = ARG_ERR
-          errmsg_ = 'Invalid header for file "'//file//'". '//"Header for this data must have size (1) or "// &
-                    "("//str(size(x, dim=2, kind=i64))//")."
-          return
-        else
-          header_ => header
+        if ( size(header) /= 1 ) then
+          select rank(x)
+            rank(1)
+              stat_ = ARG_ERR
+              errmsg_ = 'Invalid header for file "'//file//'". Header for this data must have size 1.'
+              return
+            rank(2)
+              if ( size(header) /= size(x, dim=2) ) then
+                stat_ = ARG_ERR
+                errmsg_ = 'Invalid header for file "'//file//'". Header for this data must have size 1 or size '// &
+                          str(size(x, dim=2))//"."
+                return
+              end if
+          end select
         end if
+        header_ => header
       end if
 
       if ( .not. present(locale) ) then
@@ -3038,9 +805,9 @@ submodule (io_fortran_lib) file_io
 
       if ( .not. present(delim) ) then
         if ( locale_ == US_LOCALE ) then
-          delim_ => COMMA
+          delim_ => COMMA_DELIMITER
         else
-          delim_ => SEMICOLON
+          delim_ => SEMICOLON_DELIM
         end if
       else
         delim_ => delim
@@ -3064,7 +831,10 @@ submodule (io_fortran_lib) file_io
         decimals_ => decimals
       end if
 
-      call to_text(x, file, header_, locale_, delim_, fmt_, decimals_, stat_, errmsg_)
+      select rank(x)
+        rank(1); call to_text(x, file, header_, locale_, delim_, fmt_, decimals_, stat_, errmsg_)
+        rank(2); call to_text(x, file, header_, locale_, delim_, fmt_, decimals_, stat_, errmsg_)
+      end select
     else if ( any(BINARY_EXT == ext) ) then
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
       if ( present(locale  ) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
@@ -3072,2022 +842,35 @@ submodule (io_fortran_lib) file_io
       if ( present(fmt     ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
       if ( present(decimals) ) write(*,"(a)") LF//'WARNING: decimals not supported for file type "'//ext//'".'
 
-      call to_binary(x, file, stat_, errmsg_)
+      select rank(x)
+        rank(1);  call to_binary(x, file, stat_, errmsg_)
+        rank(2);  call to_binary(x, file, stat_, errmsg_)
+        rank(3);  call to_binary(x, file, stat_, errmsg_)
+        rank(4);  call to_binary(x, file, stat_, errmsg_)
+        rank(5);  call to_binary(x, file, stat_, errmsg_)
+        rank(6);  call to_binary(x, file, stat_, errmsg_)
+        rank(7);  call to_binary(x, file, stat_, errmsg_)
+        rank(8);  call to_binary(x, file, stat_, errmsg_)
+        rank(9);  call to_binary(x, file, stat_, errmsg_)
+        rank(10); call to_binary(x, file, stat_, errmsg_)
+        rank(11); call to_binary(x, file, stat_, errmsg_)
+        rank(12); call to_binary(x, file, stat_, errmsg_)
+        rank(13); call to_binary(x, file, stat_, errmsg_)
+        rank(14); call to_binary(x, file, stat_, errmsg_)
+        rank(15); call to_binary(x, file, stat_, errmsg_)
+        rank default
+          stat   = ARG_ERR
+          errmsg = "Array has invalid rank. Supported ranks: 1-15."
+          return
+      end select
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
                 join(TEXT_EXT)//SPACE//join(BINARY_EXT)
     end if
-  end procedure to_file_2dr32
+  end procedure to_file_r32
 
-  module procedure to_file_3dr128
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_3dr128
-  module procedure to_file_3dr64
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_3dr64
-  module procedure to_file_3dr32
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_3dr32
-
-  module procedure to_file_4dr128
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_4dr128
-  module procedure to_file_4dr64
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_4dr64
-  module procedure to_file_4dr32
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_4dr32
-
-  module procedure to_file_5dr128
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_5dr128
-  module procedure to_file_5dr64
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_5dr64
-  module procedure to_file_5dr32
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_5dr32
-
-  module procedure to_file_6dr128
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_6dr128
-  module procedure to_file_6dr64
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_6dr64
-  module procedure to_file_6dr32
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_6dr32
-
-  module procedure to_file_7dr128
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_7dr128
-  module procedure to_file_7dr64
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_7dr64
-  module procedure to_file_7dr32
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_7dr32
-
-  module procedure to_file_8dr128
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_8dr128
-  module procedure to_file_8dr64
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_8dr64
-  module procedure to_file_8dr32
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_8dr32
-
-  module procedure to_file_9dr128
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_9dr128
-  module procedure to_file_9dr64
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_9dr64
-  module procedure to_file_9dr32
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_9dr32
-
-  module procedure to_file_10dr128
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_10dr128
-  module procedure to_file_10dr64
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_10dr64
-  module procedure to_file_10dr32
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_10dr32
-
-  module procedure to_file_11dr128
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_11dr128
-  module procedure to_file_11dr64
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_11dr64
-  module procedure to_file_11dr32
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_11dr32
-
-  module procedure to_file_12dr128
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_12dr128
-  module procedure to_file_12dr64
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_12dr64
-  module procedure to_file_12dr32
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_12dr32
-
-  module procedure to_file_13dr128
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_13dr128
-  module procedure to_file_13dr64
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_13dr64
-  module procedure to_file_13dr32
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_13dr32
-
-  module procedure to_file_14dr128
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_14dr128
-  module procedure to_file_14dr64
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_14dr64
-  module procedure to_file_14dr32
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_14dr32
-
-  module procedure to_file_15dr128
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_15dr128
-  module procedure to_file_15dr64
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_15dr64
-  module procedure to_file_15dr32
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_15dr32
-
-  module procedure to_file_1di64
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer, contiguous :: header_(:)
-    character(len=:), pointer             :: delim_, fmt_, errmsg_
-    integer,          pointer             :: dim_, stat_, header_status
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(TEXT_EXT == ext) ) then
-      if ( .not. present(header) ) then
-        header_ => EMPTY_HEADER
-        header_status => NO_HEADER
-      else
-        if ( (size(header) /= 1) .and. (size(header) /= size(x)) ) then
-          stat_   = ARG_ERR
-          errmsg_ = 'Invalid header for file "'//file//'". '//"Header for this data must have size (1) or "// &
-                    "("//str(size(x))//")."
-          return
-        else
-          header_ => header
-          if ( size(header) == 1 ) then
-            header_status => SINGLE_HEADER
-          else
-            header_status => FULL_HEADER
-          end if
-        end if
-      end if
-
-      if ( .not. present(dim) ) then
-        if ( header_status == FULL_HEADER ) then
-          dim_ => COL_DIM
-        else
-          dim_ => ROW_DIM
-        end if
-      else
-        if ( header_status == FULL_HEADER ) then
-          dim_ => COL_DIM
-          if ( dim /= dim_ ) then
-            stat_   = ARG_ERR
-            errmsg_ = "Invalid dim ("//str(dim)//') in write to file "'//file//'" for given header: dim must be (2).'
-            return
-          end if
-        else if ( header_status == SINGLE_HEADER ) then
-          dim_ => ROW_DIM
-          if ( dim /= dim_ ) then
-            stat_   = ARG_ERR
-            errmsg_ = "Invalid dim ("//str(dim)//') in write to file "'//file//'" for given header: dim must be (1).'
-            return
-          end if
-        else
-          dim_ => dim
-          if ( (dim_ /= ROW_DIM) .and. (dim_ /= COL_DIM) ) then
-            stat_   = ARG_ERR
-            errmsg_ = "Invalid dim ("//str(dim)//') in write to file "'//file//'" for given header:'// &
-                      " dim must be (1) or (2)."
-            return
-          end if
-        end if
-      end if
-
-      if ( .not. present(delim) ) then
-        if ( dim_ == ROW_DIM ) then
-          delim_ => EMPTY_STRING
-        else
-          delim_ => COMMA
-        end if
-      else
-        if ( dim_ == ROW_DIM ) then
-          delim_ => EMPTY_STRING
-        else
-          delim_ => delim
-        end if
-      end if
-
-      if ( .not. present(fmt) ) then
-        fmt_ => INT_FMT
-      else
-        if ( any(INT_FMTS == fmt) ) then
-          fmt_ => fmt
-        else
-          stat_   = ARG_ERR
-          errmsg_ = 'Invalid format "'//fmt//'" for file "'//file//'". Format must be one of: '//join(INT_FMTS)
-          return
-        end if
-      end if
-
-      call to_text(x, file, header_, dim_, delim_, fmt_, stat_, errmsg_)
-    else if ( any(BINARY_EXT == ext) ) then
-      if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
-      if ( present(dim   ) ) write(*,"(a)") LF//'WARNING: dim not supported for file type "'//ext//'".'
-      if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
-      if ( present(fmt   ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
-
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      stat_   = ARG_ERR
-      errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-    end if
-  end procedure to_file_1di64
-  module procedure to_file_1di32
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer, contiguous :: header_(:)
-    character(len=:), pointer             :: delim_, fmt_, errmsg_
-    integer,          pointer             :: dim_, stat_, header_status
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(TEXT_EXT == ext) ) then
-      if ( .not. present(header) ) then
-        header_ => EMPTY_HEADER
-        header_status => NO_HEADER
-      else
-        if ( (size(header) /= 1) .and. (size(header) /= size(x)) ) then
-          stat_   = ARG_ERR
-          errmsg_ = 'Invalid header for file "'//file//'". '//"Header for this data must have size (1) or "// &
-                    "("//str(size(x))//")."
-          return
-        else
-          header_ => header
-          if ( size(header) == 1 ) then
-            header_status => SINGLE_HEADER
-          else
-            header_status => FULL_HEADER
-          end if
-        end if
-      end if
-
-      if ( .not. present(dim) ) then
-        if ( header_status == FULL_HEADER ) then
-          dim_ => COL_DIM
-        else
-          dim_ => ROW_DIM
-        end if
-      else
-        if ( header_status == FULL_HEADER ) then
-          dim_ => COL_DIM
-          if ( dim /= dim_ ) then
-            stat_   = ARG_ERR
-            errmsg_ = "Invalid dim ("//str(dim)//') in write to file "'//file//'" for given header: dim must be (2).'
-            return
-          end if
-        else if ( header_status == SINGLE_HEADER ) then
-          dim_ => ROW_DIM
-          if ( dim /= dim_ ) then
-            stat_   = ARG_ERR
-            errmsg_ = "Invalid dim ("//str(dim)//') in write to file "'//file//'" for given header: dim must be (1).'
-            return
-          end if
-        else
-          dim_ => dim
-          if ( (dim_ /= ROW_DIM) .and. (dim_ /= COL_DIM) ) then
-            stat_   = ARG_ERR
-            errmsg_ = "Invalid dim ("//str(dim)//') in write to file "'//file//'" for given header:'// &
-                      " dim must be (1) or (2)."
-            return
-          end if
-        end if
-      end if
-
-      if ( .not. present(delim) ) then
-        if ( dim_ == ROW_DIM ) then
-          delim_ => EMPTY_STRING
-        else
-          delim_ => COMMA
-        end if
-      else
-        if ( dim_ == ROW_DIM ) then
-          delim_ => EMPTY_STRING
-        else
-          delim_ => delim
-        end if
-      end if
-
-      if ( .not. present(fmt) ) then
-        fmt_ => INT_FMT
-      else
-        if ( any(INT_FMTS == fmt) ) then
-          fmt_ => fmt
-        else
-          stat_   = ARG_ERR
-          errmsg_ = 'Invalid format "'//fmt//'" for file "'//file//'". Format must be one of: '//join(INT_FMTS)
-          return
-        end if
-      end if
-
-      call to_text(x, file, header_, dim_, delim_, fmt_, stat_, errmsg_)
-    else if ( any(BINARY_EXT == ext) ) then
-      if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
-      if ( present(dim   ) ) write(*,"(a)") LF//'WARNING: dim not supported for file type "'//ext//'".'
-      if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
-      if ( present(fmt   ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
-
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      stat_   = ARG_ERR
-      errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-    end if
-  end procedure to_file_1di32
-  module procedure to_file_1di16
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer, contiguous :: header_(:)
-    character(len=:), pointer             :: delim_, fmt_, errmsg_
-    integer,          pointer             :: dim_, stat_, header_status
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(TEXT_EXT == ext) ) then
-      if ( .not. present(header) ) then
-        header_ => EMPTY_HEADER
-        header_status => NO_HEADER
-      else
-        if ( (size(header) /= 1) .and. (size(header) /= size(x)) ) then
-          stat_   = ARG_ERR
-          errmsg_ = 'Invalid header for file "'//file//'". '//"Header for this data must have size (1) or "// &
-                    "("//str(size(x))//")."
-          return
-        else
-          header_ => header
-          if ( size(header) == 1 ) then
-            header_status => SINGLE_HEADER
-          else
-            header_status => FULL_HEADER
-          end if
-        end if
-      end if
-
-      if ( .not. present(dim) ) then
-        if ( header_status == FULL_HEADER ) then
-          dim_ => COL_DIM
-        else
-          dim_ => ROW_DIM
-        end if
-      else
-        if ( header_status == FULL_HEADER ) then
-          dim_ => COL_DIM
-          if ( dim /= dim_ ) then
-            stat_   = ARG_ERR
-            errmsg_ = "Invalid dim ("//str(dim)//') in write to file "'//file//'" for given header: dim must be (2).'
-            return
-          end if
-        else if ( header_status == SINGLE_HEADER ) then
-          dim_ => ROW_DIM
-          if ( dim /= dim_ ) then
-            stat_   = ARG_ERR
-            errmsg_ = "Invalid dim ("//str(dim)//') in write to file "'//file//'" for given header: dim must be (1).'
-            return
-          end if
-        else
-          dim_ => dim
-          if ( (dim_ /= ROW_DIM) .and. (dim_ /= COL_DIM) ) then
-            stat_   = ARG_ERR
-            errmsg_ = "Invalid dim ("//str(dim)//') in write to file "'//file//'" for given header:'// &
-                      " dim must be (1) or (2)."
-            return
-          end if
-        end if
-      end if
-
-      if ( .not. present(delim) ) then
-        if ( dim_ == ROW_DIM ) then
-          delim_ => EMPTY_STRING
-        else
-          delim_ => COMMA
-        end if
-      else
-        if ( dim_ == ROW_DIM ) then
-          delim_ => EMPTY_STRING
-        else
-          delim_ => delim
-        end if
-      end if
-
-      if ( .not. present(fmt) ) then
-        fmt_ => INT_FMT
-      else
-        if ( any(INT_FMTS == fmt) ) then
-          fmt_ => fmt
-        else
-          stat_   = ARG_ERR
-          errmsg_ = 'Invalid format "'//fmt//'" for file "'//file//'". Format must be one of: '//join(INT_FMTS)
-          return
-        end if
-      end if
-
-      call to_text(x, file, header_, dim_, delim_, fmt_, stat_, errmsg_)
-    else if ( any(BINARY_EXT == ext) ) then
-      if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
-      if ( present(dim   ) ) write(*,"(a)") LF//'WARNING: dim not supported for file type "'//ext//'".'
-      if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
-      if ( present(fmt   ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
-
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      stat_   = ARG_ERR
-      errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-    end if
-  end procedure to_file_1di16
-  module procedure to_file_1di8
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer, contiguous :: header_(:)
-    character(len=:), pointer             :: delim_, fmt_, errmsg_
-    integer,          pointer             :: dim_, stat_, header_status
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(TEXT_EXT == ext) ) then
-      if ( .not. present(header) ) then
-        header_ => EMPTY_HEADER
-        header_status => NO_HEADER
-      else
-        if ( (size(header) /= 1) .and. (size(header) /= size(x)) ) then
-          stat_   = ARG_ERR
-          errmsg_ = 'Invalid header for file "'//file//'". '//"Header for this data must have size (1) or "// &
-                    "("//str(size(x))//")."
-          return
-        else
-          header_ => header
-          if ( size(header) == 1 ) then
-            header_status => SINGLE_HEADER
-          else
-            header_status => FULL_HEADER
-          end if
-        end if
-      end if
-
-      if ( .not. present(dim) ) then
-        if ( header_status == FULL_HEADER ) then
-          dim_ => COL_DIM
-        else
-          dim_ => ROW_DIM
-        end if
-      else
-        if ( header_status == FULL_HEADER ) then
-          dim_ => COL_DIM
-          if ( dim /= dim_ ) then
-            stat_   = ARG_ERR
-            errmsg_ = "Invalid dim ("//str(dim)//') in write to file "'//file//'" for given header: dim must be (2).'
-            return
-          end if
-        else if ( header_status == SINGLE_HEADER ) then
-          dim_ => ROW_DIM
-          if ( dim /= dim_ ) then
-            stat_   = ARG_ERR
-            errmsg_ = "Invalid dim ("//str(dim)//') in write to file "'//file//'" for given header: dim must be (1).'
-            return
-          end if
-        else
-          dim_ => dim
-          if ( (dim_ /= ROW_DIM) .and. (dim_ /= COL_DIM) ) then
-            stat_   = ARG_ERR
-            errmsg_ = "Invalid dim ("//str(dim)//') in write to file "'//file//'" for given header:'// &
-                      " dim must be (1) or (2)."
-            return
-          end if
-        end if
-      end if
-
-      if ( .not. present(delim) ) then
-        if ( dim_ == ROW_DIM ) then
-          delim_ => EMPTY_STRING
-        else
-          delim_ => COMMA
-        end if
-      else
-        if ( dim_ == ROW_DIM ) then
-          delim_ => EMPTY_STRING
-        else
-          delim_ => delim
-        end if
-      end if
-
-      if ( .not. present(fmt) ) then
-        fmt_ => INT_FMT
-      else
-        if ( any(INT_FMTS == fmt) ) then
-          fmt_ => fmt
-        else
-          stat_   = ARG_ERR
-          errmsg_ = 'Invalid format "'//fmt//'" for file "'//file//'". Format must be one of: '//join(INT_FMTS)
-          return
-        end if
-      end if
-
-      call to_text(x, file, header_, dim_, delim_, fmt_, stat_, errmsg_)
-    else if ( any(BINARY_EXT == ext) ) then
-      if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
-      if ( present(dim   ) ) write(*,"(a)") LF//'WARNING: dim not supported for file type "'//ext//'".'
-      if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
-      if ( present(fmt   ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
-
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      stat_   = ARG_ERR
-      errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-    end if
-  end procedure to_file_1di8
-
-  module procedure to_file_2di64
+  module procedure to_file_i64
     character(len=:), allocatable :: ext
 
     character(len=:), pointer, contiguous :: header_(:)
@@ -5114,21 +897,38 @@ submodule (io_fortran_lib) file_io
     stat_=0; errmsg_=EMPTY_STR
 
     if ( any(TEXT_EXT == ext) ) then
+      select rank(x)
+        rank(1); continue
+        rank(2); continue
+        rank default
+          stat_   = ARG_ERR
+          errmsg_ = "Cannot write an array of rank "//str(rank(x))//" to text file."
+          return
+      end select
+
       if ( .not. present(header) ) then
         header_ => EMPTY_HEADER
       else
-        if ( (size(header) /= 1) .and. (size(header) /= size(x, dim=2)) ) then
-          stat_   = ARG_ERR
-          errmsg_ = 'Invalid header for file "'//file//'". '//"Header for this data must have size (1) or "// &
-                    "("//str(size(x, dim=2, kind=i64))//")."
-          return
-        else
-          header_ => header
+        if ( size(header) /= 1 ) then
+          select rank(x)
+            rank(1)
+              stat_ = ARG_ERR
+              errmsg_ = 'Invalid header for file "'//file//'". Header for this data must have size 1.'
+              return
+            rank(2)
+              if ( size(header) /= size(x, dim=2) ) then
+                stat_ = ARG_ERR
+                errmsg_ = 'Invalid header for file "'//file//'". Header for this data must have size 1 or size '// &
+                          str(size(x, dim=2))//"."
+                return
+              end if
+          end select
         end if
+        header_ => header
       end if
 
       if ( .not. present(delim) ) then
-        delim_ => COMMA
+        delim_ => COMMA_DELIMITER
       else
         delim_ => delim
       end if
@@ -5145,20 +945,43 @@ submodule (io_fortran_lib) file_io
         end if
       end if
 
-      call to_text(x, file, header_, delim_, fmt_, stat_, errmsg_)
+      select rank(x)
+        rank(1); call to_text(x, file, header_, delim_, fmt_, stat_, errmsg_)
+        rank(2); call to_text(x, file, header_, delim_, fmt_, stat_, errmsg_)
+      end select
     else if ( any(BINARY_EXT == ext) ) then
-      if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
-      if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
-      if ( present(fmt   ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
+      if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
+      if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
+      if ( present(fmt     ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
 
-      call to_binary(x, file, stat_, errmsg_)
+      select rank(x)
+        rank(1);  call to_binary(x, file, stat_, errmsg_)
+        rank(2);  call to_binary(x, file, stat_, errmsg_)
+        rank(3);  call to_binary(x, file, stat_, errmsg_)
+        rank(4);  call to_binary(x, file, stat_, errmsg_)
+        rank(5);  call to_binary(x, file, stat_, errmsg_)
+        rank(6);  call to_binary(x, file, stat_, errmsg_)
+        rank(7);  call to_binary(x, file, stat_, errmsg_)
+        rank(8);  call to_binary(x, file, stat_, errmsg_)
+        rank(9);  call to_binary(x, file, stat_, errmsg_)
+        rank(10); call to_binary(x, file, stat_, errmsg_)
+        rank(11); call to_binary(x, file, stat_, errmsg_)
+        rank(12); call to_binary(x, file, stat_, errmsg_)
+        rank(13); call to_binary(x, file, stat_, errmsg_)
+        rank(14); call to_binary(x, file, stat_, errmsg_)
+        rank(15); call to_binary(x, file, stat_, errmsg_)
+        rank default
+          stat   = ARG_ERR
+          errmsg = "Array has invalid rank. Supported ranks: 1-15."
+          return
+      end select
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
                 join(TEXT_EXT)//SPACE//join(BINARY_EXT)
     end if
-  end procedure to_file_2di64
-  module procedure to_file_2di32
+  end procedure to_file_i64
+  module procedure to_file_i32
     character(len=:), allocatable :: ext
 
     character(len=:), pointer, contiguous :: header_(:)
@@ -5185,21 +1008,38 @@ submodule (io_fortran_lib) file_io
     stat_=0; errmsg_=EMPTY_STR
 
     if ( any(TEXT_EXT == ext) ) then
+      select rank(x)
+        rank(1); continue
+        rank(2); continue
+        rank default
+          stat_   = ARG_ERR
+          errmsg_ = "Cannot write an array of rank "//str(rank(x))//" to text file."
+          return
+      end select
+
       if ( .not. present(header) ) then
         header_ => EMPTY_HEADER
       else
-        if ( (size(header) /= 1) .and. (size(header) /= size(x, dim=2)) ) then
-          stat_   = ARG_ERR
-          errmsg_ = 'Invalid header for file "'//file//'". '//"Header for this data must have size (1) or "// &
-                    "("//str(size(x, dim=2, kind=i64))//")."
-          return
-        else
-          header_ => header
+        if ( size(header) /= 1 ) then
+          select rank(x)
+            rank(1)
+              stat_ = ARG_ERR
+              errmsg_ = 'Invalid header for file "'//file//'". Header for this data must have size 1.'
+              return
+            rank(2)
+              if ( size(header) /= size(x, dim=2) ) then
+                stat_ = ARG_ERR
+                errmsg_ = 'Invalid header for file "'//file//'". Header for this data must have size 1 or size '// &
+                          str(size(x, dim=2))//"."
+                return
+              end if
+          end select
         end if
+        header_ => header
       end if
 
       if ( .not. present(delim) ) then
-        delim_ => COMMA
+        delim_ => COMMA_DELIMITER
       else
         delim_ => delim
       end if
@@ -5216,20 +1056,43 @@ submodule (io_fortran_lib) file_io
         end if
       end if
 
-      call to_text(x, file, header_, delim_, fmt_, stat_, errmsg_)
+      select rank(x)
+        rank(1); call to_text(x, file, header_, delim_, fmt_, stat_, errmsg_)
+        rank(2); call to_text(x, file, header_, delim_, fmt_, stat_, errmsg_)
+      end select
     else if ( any(BINARY_EXT == ext) ) then
-      if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
-      if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
-      if ( present(fmt   ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
+      if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
+      if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
+      if ( present(fmt     ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
 
-      call to_binary(x, file, stat_, errmsg_)
+      select rank(x)
+        rank(1);  call to_binary(x, file, stat_, errmsg_)
+        rank(2);  call to_binary(x, file, stat_, errmsg_)
+        rank(3);  call to_binary(x, file, stat_, errmsg_)
+        rank(4);  call to_binary(x, file, stat_, errmsg_)
+        rank(5);  call to_binary(x, file, stat_, errmsg_)
+        rank(6);  call to_binary(x, file, stat_, errmsg_)
+        rank(7);  call to_binary(x, file, stat_, errmsg_)
+        rank(8);  call to_binary(x, file, stat_, errmsg_)
+        rank(9);  call to_binary(x, file, stat_, errmsg_)
+        rank(10); call to_binary(x, file, stat_, errmsg_)
+        rank(11); call to_binary(x, file, stat_, errmsg_)
+        rank(12); call to_binary(x, file, stat_, errmsg_)
+        rank(13); call to_binary(x, file, stat_, errmsg_)
+        rank(14); call to_binary(x, file, stat_, errmsg_)
+        rank(15); call to_binary(x, file, stat_, errmsg_)
+        rank default
+          stat   = ARG_ERR
+          errmsg = "Array has invalid rank. Supported ranks: 1-15."
+          return
+      end select
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
                 join(TEXT_EXT)//SPACE//join(BINARY_EXT)
     end if
-  end procedure to_file_2di32
-  module procedure to_file_2di16
+  end procedure to_file_i32
+  module procedure to_file_i16
     character(len=:), allocatable :: ext
 
     character(len=:), pointer, contiguous :: header_(:)
@@ -5256,21 +1119,38 @@ submodule (io_fortran_lib) file_io
     stat_=0; errmsg_=EMPTY_STR
 
     if ( any(TEXT_EXT == ext) ) then
+      select rank(x)
+        rank(1); continue
+        rank(2); continue
+        rank default
+          stat_   = ARG_ERR
+          errmsg_ = "Cannot write an array of rank "//str(rank(x))//" to text file."
+          return
+      end select
+
       if ( .not. present(header) ) then
         header_ => EMPTY_HEADER
       else
-        if ( (size(header) /= 1) .and. (size(header) /= size(x, dim=2)) ) then
-          stat_   = ARG_ERR
-          errmsg_ = 'Invalid header for file "'//file//'". '//"Header for this data must have size (1) or "// &
-                    "("//str(size(x, dim=2, kind=i64))//")."
-          return
-        else
-          header_ => header
+        if ( size(header) /= 1 ) then
+          select rank(x)
+            rank(1)
+              stat_ = ARG_ERR
+              errmsg_ = 'Invalid header for file "'//file//'". Header for this data must have size 1.'
+              return
+            rank(2)
+              if ( size(header) /= size(x, dim=2) ) then
+                stat_ = ARG_ERR
+                errmsg_ = 'Invalid header for file "'//file//'". Header for this data must have size 1 or size '// &
+                          str(size(x, dim=2))//"."
+                return
+              end if
+          end select
         end if
+        header_ => header
       end if
 
       if ( .not. present(delim) ) then
-        delim_ => COMMA
+        delim_ => COMMA_DELIMITER
       else
         delim_ => delim
       end if
@@ -5287,20 +1167,43 @@ submodule (io_fortran_lib) file_io
         end if
       end if
 
-      call to_text(x, file, header_, delim_, fmt_, stat_, errmsg_)
+      select rank(x)
+        rank(1); call to_text(x, file, header_, delim_, fmt_, stat_, errmsg_)
+        rank(2); call to_text(x, file, header_, delim_, fmt_, stat_, errmsg_)
+      end select
     else if ( any(BINARY_EXT == ext) ) then
-      if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
-      if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
-      if ( present(fmt   ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
+      if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
+      if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
+      if ( present(fmt     ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
 
-      call to_binary(x, file, stat_, errmsg_)
+      select rank(x)
+        rank(1);  call to_binary(x, file, stat_, errmsg_)
+        rank(2);  call to_binary(x, file, stat_, errmsg_)
+        rank(3);  call to_binary(x, file, stat_, errmsg_)
+        rank(4);  call to_binary(x, file, stat_, errmsg_)
+        rank(5);  call to_binary(x, file, stat_, errmsg_)
+        rank(6);  call to_binary(x, file, stat_, errmsg_)
+        rank(7);  call to_binary(x, file, stat_, errmsg_)
+        rank(8);  call to_binary(x, file, stat_, errmsg_)
+        rank(9);  call to_binary(x, file, stat_, errmsg_)
+        rank(10); call to_binary(x, file, stat_, errmsg_)
+        rank(11); call to_binary(x, file, stat_, errmsg_)
+        rank(12); call to_binary(x, file, stat_, errmsg_)
+        rank(13); call to_binary(x, file, stat_, errmsg_)
+        rank(14); call to_binary(x, file, stat_, errmsg_)
+        rank(15); call to_binary(x, file, stat_, errmsg_)
+        rank default
+          stat   = ARG_ERR
+          errmsg = "Array has invalid rank. Supported ranks: 1-15."
+          return
+      end select
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
                 join(TEXT_EXT)//SPACE//join(BINARY_EXT)
     end if
-  end procedure to_file_2di16
-  module procedure to_file_2di8
+  end procedure to_file_i16
+  module procedure to_file_i8
     character(len=:), allocatable :: ext
 
     character(len=:), pointer, contiguous :: header_(:)
@@ -5327,21 +1230,38 @@ submodule (io_fortran_lib) file_io
     stat_=0; errmsg_=EMPTY_STR
 
     if ( any(TEXT_EXT == ext) ) then
+      select rank(x)
+        rank(1); continue
+        rank(2); continue
+        rank default
+          stat_   = ARG_ERR
+          errmsg_ = "Cannot write an array of rank "//str(rank(x))//" to text file."
+          return
+      end select
+
       if ( .not. present(header) ) then
         header_ => EMPTY_HEADER
       else
-        if ( (size(header) /= 1) .and. (size(header) /= size(x, dim=2)) ) then
-          stat_   = ARG_ERR
-          errmsg_ = 'Invalid header for file "'//file//'". '//"Header for this data must have size (1) or "// &
-                    "("//str(size(x, dim=2, kind=i64))//")."
-          return
-        else
-          header_ => header
+        if ( size(header) /= 1 ) then
+          select rank(x)
+            rank(1)
+              stat_ = ARG_ERR
+              errmsg_ = 'Invalid header for file "'//file//'". Header for this data must have size 1.'
+              return
+            rank(2)
+              if ( size(header) /= size(x, dim=2) ) then
+                stat_ = ARG_ERR
+                errmsg_ = 'Invalid header for file "'//file//'". Header for this data must have size 1 or size '// &
+                          str(size(x, dim=2))//"."
+                return
+              end if
+          end select
         end if
+        header_ => header
       end if
 
       if ( .not. present(delim) ) then
-        delim_ => COMMA
+        delim_ => COMMA_DELIMITER
       else
         delim_ => delim
       end if
@@ -5358,2060 +1278,42 @@ submodule (io_fortran_lib) file_io
         end if
       end if
 
-      call to_text(x, file, header_, delim_, fmt_, stat_, errmsg_)
+      select rank(x)
+        rank(1); call to_text(x, file, header_, delim_, fmt_, stat_, errmsg_)
+        rank(2); call to_text(x, file, header_, delim_, fmt_, stat_, errmsg_)
+      end select
     else if ( any(BINARY_EXT == ext) ) then
-      if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
-      if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
-      if ( present(fmt   ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
+      if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
+      if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
+      if ( present(fmt     ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
 
-      call to_binary(x, file, stat_, errmsg_)
+      select rank(x)
+        rank(1);  call to_binary(x, file, stat_, errmsg_)
+        rank(2);  call to_binary(x, file, stat_, errmsg_)
+        rank(3);  call to_binary(x, file, stat_, errmsg_)
+        rank(4);  call to_binary(x, file, stat_, errmsg_)
+        rank(5);  call to_binary(x, file, stat_, errmsg_)
+        rank(6);  call to_binary(x, file, stat_, errmsg_)
+        rank(7);  call to_binary(x, file, stat_, errmsg_)
+        rank(8);  call to_binary(x, file, stat_, errmsg_)
+        rank(9);  call to_binary(x, file, stat_, errmsg_)
+        rank(10); call to_binary(x, file, stat_, errmsg_)
+        rank(11); call to_binary(x, file, stat_, errmsg_)
+        rank(12); call to_binary(x, file, stat_, errmsg_)
+        rank(13); call to_binary(x, file, stat_, errmsg_)
+        rank(14); call to_binary(x, file, stat_, errmsg_)
+        rank(15); call to_binary(x, file, stat_, errmsg_)
+        rank default
+          stat   = ARG_ERR
+          errmsg = "Array has invalid rank. Supported ranks: 1-15."
+          return
+      end select
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
                 join(TEXT_EXT)//SPACE//join(BINARY_EXT)
     end if
-  end procedure to_file_2di8
-
-  module procedure to_file_3di64
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_3di64
-  module procedure to_file_3di32
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_3di32
-  module procedure to_file_3di16
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_3di16
-  module procedure to_file_3di8
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_3di8
-
-  module procedure to_file_4di64
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_4di64
-  module procedure to_file_4di32
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_4di32
-  module procedure to_file_4di16
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_4di16
-  module procedure to_file_4di8
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_4di8
-
-  module procedure to_file_5di64
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_5di64
-  module procedure to_file_5di32
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_5di32
-  module procedure to_file_5di16
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_5di16
-  module procedure to_file_5di8
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_5di8
-
-  module procedure to_file_6di64
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_6di64
-  module procedure to_file_6di32
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_6di32
-  module procedure to_file_6di16
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_6di16
-  module procedure to_file_6di8
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_6di8
-
-  module procedure to_file_7di64
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_7di64
-  module procedure to_file_7di32
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_7di32
-  module procedure to_file_7di16
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_7di16
-  module procedure to_file_7di8
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_7di8
-
-  module procedure to_file_8di64
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_8di64
-  module procedure to_file_8di32
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_8di32
-  module procedure to_file_8di16
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_8di16
-  module procedure to_file_8di8
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_8di8
-
-  module procedure to_file_9di64
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_9di64
-  module procedure to_file_9di32
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_9di32
-  module procedure to_file_9di16
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_9di16
-  module procedure to_file_9di8
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_9di8
-
-  module procedure to_file_10di64
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_10di64
-  module procedure to_file_10di32
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_10di32
-  module procedure to_file_10di16
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_10di16
-  module procedure to_file_10di8
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_10di8
-
-  module procedure to_file_11di64
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_11di64
-  module procedure to_file_11di32
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_11di32
-  module procedure to_file_11di16
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_11di16
-  module procedure to_file_11di8
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_11di8
-
-  module procedure to_file_12di64
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_12di64
-  module procedure to_file_12di32
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_12di32
-  module procedure to_file_12di16
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_12di16
-  module procedure to_file_12di8
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_12di8
-
-  module procedure to_file_13di64
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_13di64
-  module procedure to_file_13di32
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_13di32
-  module procedure to_file_13di16
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_13di16
-  module procedure to_file_13di8
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_13di8
-
-  module procedure to_file_14di64
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_14di64
-  module procedure to_file_14di32
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_14di32
-  module procedure to_file_14di16
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_14di16
-  module procedure to_file_14di8
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_14di8
-
-  module procedure to_file_15di64
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_15di64
-  module procedure to_file_15di32
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_15di32
-  module procedure to_file_15di16
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_15di16
-  module procedure to_file_15di8
-    character(len=:), allocatable :: ext
-
-    character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
-
-    character(len=0), target :: dummy_msg
-    integer,          target :: dummy_stat
-
-    ext = ext_of(file)
-
-    if ( .not. present(stat) ) then
-      stat_ => dummy_stat
-    else
-      stat_ => stat
-    end if
-
-    if ( .not. present(errmsg) ) then
-      errmsg_ => dummy_msg
-    else
-      errmsg_ => errmsg
-    end if
-
-    stat_=0; errmsg_=EMPTY_STR
-
-    if ( any(BINARY_EXT == ext) ) then
-      call to_binary(x, file, stat_, errmsg_)
-    else
-      if ( any(TEXT_EXT == ext) ) then
-        stat_   = ARG_ERR
-        errmsg_ = 'Invalid file extension "'//ext//'" in write to "'//file//'". Cannot write array of '// &
-                  'rank ('//str(rank(x))//') to text. Supported file extensions: '//join(BINARY_EXT)
-      else
-        stat_   = ARG_ERR
-        errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                  join(TEXT_EXT)//SPACE//join(BINARY_EXT)
-      end if
-    end if
-  end procedure to_file_15di8
+  end procedure to_file_i8
 
   ! Reading Procedures ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   module procedure from_textfile_c128

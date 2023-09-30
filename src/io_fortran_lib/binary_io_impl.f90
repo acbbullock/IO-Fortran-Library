@@ -51,10 +51,6 @@ submodule (io_fortran_lib) binary_io
       rank(13); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(14); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(15); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank default
-        stat   = ARG_ERR
-        errmsg = "Array has invalid rank. Supported ranks: 1-15."
-        return
     end select
 
     if ( stat /= 0 ) then
@@ -112,10 +108,6 @@ submodule (io_fortran_lib) binary_io
       rank(13); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(14); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(15); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank default
-        stat   = ARG_ERR
-        errmsg = "Array has invalid rank. Supported ranks: 1-15."
-        return
     end select
 
     if ( stat /= 0 ) then
@@ -173,10 +165,6 @@ submodule (io_fortran_lib) binary_io
       rank(13); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(14); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(15); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank default
-        stat   = ARG_ERR
-        errmsg = "Array has invalid rank. Supported ranks: 1-15."
-        return
     end select
 
     if ( stat /= 0 ) then
@@ -235,10 +223,6 @@ submodule (io_fortran_lib) binary_io
       rank(13); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(14); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(15); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank default
-        stat   = ARG_ERR
-        errmsg = "Array has invalid rank. Supported ranks: 1-15."
-        return
     end select
 
     if ( stat /= 0 ) then
@@ -296,10 +280,6 @@ submodule (io_fortran_lib) binary_io
       rank(13); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(14); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(15); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank default
-        stat   = ARG_ERR
-        errmsg = "Array has invalid rank. Supported ranks: 1-15."
-        return
     end select
 
     if ( stat /= 0 ) then
@@ -357,10 +337,6 @@ submodule (io_fortran_lib) binary_io
       rank(13); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(14); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(15); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank default
-        stat   = ARG_ERR
-        errmsg = "Array has invalid rank. Supported ranks: 1-15."
-        return
     end select
 
     if ( stat /= 0 ) then
@@ -419,10 +395,6 @@ submodule (io_fortran_lib) binary_io
       rank(13); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(14); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(15); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank default
-        stat   = ARG_ERR
-        errmsg = "Array has invalid rank. Supported ranks: 1-15."
-        return
     end select
 
     if ( stat /= 0 ) then
@@ -480,10 +452,6 @@ submodule (io_fortran_lib) binary_io
       rank(13); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(14); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(15); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank default
-        stat   = ARG_ERR
-        errmsg = "Array has invalid rank. Supported ranks: 1-15."
-        return
     end select
 
     if ( stat /= 0 ) then
@@ -541,10 +509,6 @@ submodule (io_fortran_lib) binary_io
       rank(13); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(14); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(15); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank default
-        stat   = ARG_ERR
-        errmsg = "Array has invalid rank. Supported ranks: 1-15."
-        return
     end select
 
     if ( stat /= 0 ) then
@@ -602,10 +566,6 @@ submodule (io_fortran_lib) binary_io
       rank(13); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(14); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(15); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank default
-        stat   = ARG_ERR
-        errmsg = "Array has invalid rank. Supported ranks: 1-15."
-        return
     end select
 
     if ( stat /= 0 ) then

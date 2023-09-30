@@ -5,10 +5,6 @@ submodule (io_fortran_lib) text_io
   !---------------------------------------------------------------------------------------------------------------------
   implicit none (type, external)
 
-  ! Definitions and interfaces ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  integer,          target :: ROW_DIM         = 1
-  integer,          target :: COL_DIM         = 2
-
   contains ! Procedure bodies for module subprograms <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><
 
   ! Writing Procedures ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -124,140 +120,7 @@ submodule (io_fortran_lib) text_io
     close(file_unit)
   end procedure echo_string
 
-  module procedure to_text_1dc128
-    type(String)                      :: text_file
-    type(String), allocatable         :: cells(:,:)
-    type(String), pointer, contiguous :: numerical_data(:,:)
-
-    integer :: nx, nrows, ncols, j
-    logical :: header_present
-
-    nx=size(x); nrows=0; ncols=0; j=0
-    header_present = .false.
-    if ( len(header) /= 0 ) header_present = .true.
-
-    nrows = nx; ncols = 1
-    if ( dim == COL_DIM ) then
-      nrows = 1; ncols = nx
-    end if
-    if ( header_present ) nrows = nrows + 1
-
-    allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
-
-    if ( stat /= 0 ) then
-      stat = ALLOC_ERR; return
-    end if
-
-    if ( header_present ) then
-      if ( dim == ROW_DIM ) then
-        cells(1,1)%s = header(1)
-      else if ( (dim == COL_DIM) .and. (size(header) == 1) ) then
-        do j = 1, nx
-          cells(1,j)%s = header(1)//str(j)
-        end do
-      else
-        do j = 1, nx
-          cells(1,j)%s = header(j)
-        end do
-      end if
-    end if
-
-    numerical_data => cells
-    if ( header_present ) numerical_data => cells(2:,:)
-
-    call cast(x, numerical_data, locale, fmt, decimals, im)
-    call text_file%write_file(cells, file, NL, delim, .false. stat, errmsg)
-  end procedure to_text_1dc128
-  module procedure to_text_1dc64
-    type(String)                      :: text_file
-    type(String), allocatable         :: cells(:,:)
-    type(String), pointer, contiguous :: numerical_data(:,:)
-
-    integer :: nx, nrows, ncols, j
-    logical :: header_present
-
-    nx=size(x); nrows=0; ncols=0; j=0
-    header_present = .false.
-    if ( len(header) /= 0 ) header_present = .true.
-
-    nrows = nx; ncols = 1
-    if ( dim == COL_DIM ) then
-      nrows = 1; ncols = nx
-    end if
-    if ( header_present ) nrows = nrows + 1
-
-    allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
-
-    if ( stat /= 0 ) then
-      stat = ALLOC_ERR; return
-    end if
-
-    if ( header_present ) then
-      if ( dim == ROW_DIM ) then
-        cells(1,1)%s = header(1)
-      else if ( (dim == COL_DIM) .and. (size(header) == 1) ) then
-        do j = 1, nx
-          cells(1,j)%s = header(1)//str(j)
-        end do
-      else
-        do j = 1, nx
-          cells(1,j)%s = header(j)
-        end do
-      end if
-    end if
-
-    numerical_data => cells
-    if ( header_present ) numerical_data => cells(2:,:)
-
-    call cast(x, numerical_data, locale, fmt, decimals, im)
-    call text_file%write_file(cells, file, NL, delim, .false. stat, errmsg)
-  end procedure to_text_1dc64
-  module procedure to_text_1dc32
-    type(String)                      :: text_file
-    type(String), allocatable         :: cells(:,:)
-    type(String), pointer, contiguous :: numerical_data(:,:)
-
-    integer :: nx, nrows, ncols, j
-    logical :: header_present
-
-    nx=size(x); nrows=0; ncols=0; j=0
-    header_present = .false.
-    if ( len(header) /= 0 ) header_present = .true.
-
-    nrows = nx; ncols = 1
-    if ( dim == COL_DIM ) then
-      nrows = 1; ncols = nx
-    end if
-    if ( header_present ) nrows = nrows + 1
-
-    allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
-
-    if ( stat /= 0 ) then
-      stat = ALLOC_ERR; return
-    end if
-
-    if ( header_present ) then
-      if ( dim == ROW_DIM ) then
-        cells(1,1)%s = header(1)
-      else if ( (dim == COL_DIM) .and. (size(header) == 1) ) then
-        do j = 1, nx
-          cells(1,j)%s = header(1)//str(j)
-        end do
-      else
-        do j = 1, nx
-          cells(1,j)%s = header(j)
-        end do
-      end if
-    end if
-
-    numerical_data => cells
-    if ( header_present ) numerical_data => cells(2:,:)
-
-    call cast(x, numerical_data, locale, fmt, decimals, im)
-    call text_file%write_file(cells, file, NL, delim, .false. stat, errmsg)
-  end procedure to_text_1dc32
-
-  module procedure to_text_2dc128
+  module procedure to_text_c128
     type(String)                      :: text_file
     type(String), allocatable         :: cells(:,:)
     type(String), pointer, contiguous :: numerical_data(:,:)
@@ -265,8 +128,13 @@ submodule (io_fortran_lib) text_io
     integer :: nrows, ncols, j
     logical :: header_present
 
-    nrows=size(x, dim=1); ncols=size(x, dim=2); j=0
-    header_present = .false.
+    j=0; header_present=.false.
+
+    select rank(x)
+      rank(1); nrows = size(x); ncols = 1
+      rank(2); nrows = size(x, dim=1); ncols = size(x, dim=2)
+    end select
+
     if ( len(header) /= 0 ) header_present = .true.
     if ( header_present ) nrows = nrows + 1
 
@@ -277,24 +145,33 @@ submodule (io_fortran_lib) text_io
     end if
 
     if ( header_present ) then
-      if ( size(header) == 1 ) then
-        do j = 1, ncols
-          cells(1,j)%s = header(1)//str(j)
-        end do
-      else
-        do j = 1, ncols
-          cells(1,j)%s = header(j)
-        end do
-      end if
+      select rank(x)
+        rank(1)
+          cells(1,1)%s = header(1)
+        rank(2)
+          if ( size(header) == 1 ) then
+            do j = 1, ncols
+              cells(1,j)%s = header(1)//str(j)
+            end do
+          else
+            do j = 1, ncols
+              cells(1,j)%s = header(j)
+            end do
+          end if
+      end select
     end if
 
     numerical_data => cells
     if ( header_present ) numerical_data => cells(2:,:)
 
-    call cast(x, numerical_data, locale, fmt, decimals, im)
+    select rank(x)
+      rank(1); call cast(x, numerical_data(:,1), locale, fmt, decimals, im)
+      rank(2); call cast(x, numerical_data, locale, fmt, decimals, im)
+    end select
+
     call text_file%write_file(cells, file, NL, delim, .false. stat, errmsg)
-  end procedure to_text_2dc128
-  module procedure to_text_2dc64
+  end procedure to_text_c128
+  module procedure to_text_c64
     type(String)                      :: text_file
     type(String), allocatable         :: cells(:,:)
     type(String), pointer, contiguous :: numerical_data(:,:)
@@ -302,8 +179,13 @@ submodule (io_fortran_lib) text_io
     integer :: nrows, ncols, j
     logical :: header_present
 
-    nrows=size(x, dim=1); ncols=size(x, dim=2); j=0
-    header_present = .false.
+    j=0; header_present=.false.
+
+    select rank(x)
+      rank(1); nrows = size(x); ncols = 1
+      rank(2); nrows = size(x, dim=1); ncols = size(x, dim=2)
+    end select
+
     if ( len(header) /= 0 ) header_present = .true.
     if ( header_present ) nrows = nrows + 1
 
@@ -314,24 +196,33 @@ submodule (io_fortran_lib) text_io
     end if
 
     if ( header_present ) then
-      if ( size(header) == 1 ) then
-        do j = 1, ncols
-          cells(1,j)%s = header(1)//str(j)
-        end do
-      else
-        do j = 1, ncols
-          cells(1,j)%s = header(j)
-        end do
-      end if
+      select rank(x)
+        rank(1)
+          cells(1,1)%s = header(1)
+        rank(2)
+          if ( size(header) == 1 ) then
+            do j = 1, ncols
+              cells(1,j)%s = header(1)//str(j)
+            end do
+          else
+            do j = 1, ncols
+              cells(1,j)%s = header(j)
+            end do
+          end if
+      end select
     end if
 
     numerical_data => cells
     if ( header_present ) numerical_data => cells(2:,:)
 
-    call cast(x, numerical_data, locale, fmt, decimals, im)
+    select rank(x)
+      rank(1); call cast(x, numerical_data(:,1), locale, fmt, decimals, im)
+      rank(2); call cast(x, numerical_data, locale, fmt, decimals, im)
+    end select
+
     call text_file%write_file(cells, file, NL, delim, .false. stat, errmsg)
-  end procedure to_text_2dc64
-  module procedure to_text_2dc32
+  end procedure to_text_c64
+  module procedure to_text_c32
     type(String)                      :: text_file
     type(String), allocatable         :: cells(:,:)
     type(String), pointer, contiguous :: numerical_data(:,:)
@@ -339,8 +230,13 @@ submodule (io_fortran_lib) text_io
     integer :: nrows, ncols, j
     logical :: header_present
 
-    nrows=size(x, dim=1); ncols=size(x, dim=2); j=0
-    header_present = .false.
+    j=0; header_present=.false.
+
+    select rank(x)
+      rank(1); nrows = size(x); ncols = 1
+      rank(2); nrows = size(x, dim=1); ncols = size(x, dim=2)
+    end select
+
     if ( len(header) /= 0 ) header_present = .true.
     if ( header_present ) nrows = nrows + 1
 
@@ -351,158 +247,34 @@ submodule (io_fortran_lib) text_io
     end if
 
     if ( header_present ) then
-      if ( size(header) == 1 ) then
-        do j = 1, ncols
-          cells(1,j)%s = header(1)//str(j)
-        end do
-      else
-        do j = 1, ncols
-          cells(1,j)%s = header(j)
-        end do
-      end if
+      select rank(x)
+        rank(1)
+          cells(1,1)%s = header(1)
+        rank(2)
+          if ( size(header) == 1 ) then
+            do j = 1, ncols
+              cells(1,j)%s = header(1)//str(j)
+            end do
+          else
+            do j = 1, ncols
+              cells(1,j)%s = header(j)
+            end do
+          end if
+      end select
     end if
 
     numerical_data => cells
     if ( header_present ) numerical_data => cells(2:,:)
 
-    call cast(x, numerical_data, locale, fmt, decimals, im)
+    select rank(x)
+      rank(1); call cast(x, numerical_data(:,1), locale, fmt, decimals, im)
+      rank(2); call cast(x, numerical_data, locale, fmt, decimals, im)
+    end select
+
     call text_file%write_file(cells, file, NL, delim, .false. stat, errmsg)
-  end procedure to_text_2dc32
+  end procedure to_text_c32
 
-  module procedure to_text_1dr128
-    type(String)                      :: text_file
-    type(String), allocatable         :: cells(:,:)
-    type(String), pointer, contiguous :: numerical_data(:,:)
-
-    integer :: nx, nrows, ncols, j
-    logical :: header_present
-
-    nx=size(x); nrows=0; ncols=0; j=0
-    header_present = .false.
-    if ( len(header) /= 0 ) header_present = .true.
-
-    nrows = nx; ncols = 1
-    if ( dim == COL_DIM ) then
-      nrows = 1; ncols = nx
-    end if
-    if ( header_present ) nrows = nrows + 1
-
-    allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
-
-    if ( stat /= 0 ) then
-      stat = ALLOC_ERR; return
-    end if
-
-    if ( header_present ) then
-      if ( dim == ROW_DIM ) then
-        cells(1,1)%s = header(1)
-      else if ( (dim == COL_DIM) .and. (size(header) == 1) ) then
-        do j = 1, nx
-          cells(1,j)%s = header(1)//str(j)
-        end do
-      else
-        do j = 1, nx
-          cells(1,j)%s = header(j)
-        end do
-      end if
-    end if
-
-    numerical_data => cells
-    if ( header_present ) numerical_data => cells(2:,:)
-
-    call cast(x, numerical_data, locale, fmt, decimals)
-    call text_file%write_file(cells, file, NL, delim, .false. stat, errmsg)
-  end procedure to_text_1dr128
-  module procedure to_text_1dr64
-    type(String)                      :: text_file
-    type(String), allocatable         :: cells(:,:)
-    type(String), pointer, contiguous :: numerical_data(:,:)
-
-    integer :: nx, nrows, ncols, j
-    logical :: header_present
-
-    nx=size(x); nrows=0; ncols=0; j=0
-    header_present = .false.
-    if ( len(header) /= 0 ) header_present = .true.
-
-    nrows = nx; ncols = 1
-    if ( dim == COL_DIM ) then
-      nrows = 1; ncols = nx
-    end if
-    if ( header_present ) nrows = nrows + 1
-
-    allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
-
-    if ( stat /= 0 ) then
-      stat = ALLOC_ERR; return
-    end if
-
-    if ( header_present ) then
-      if ( dim == ROW_DIM ) then
-        cells(1,1)%s = header(1)
-      else if ( (dim == COL_DIM) .and. (size(header) == 1) ) then
-        do j = 1, nx
-          cells(1,j)%s = header(1)//str(j)
-        end do
-      else
-        do j = 1, nx
-          cells(1,j)%s = header(j)
-        end do
-      end if
-    end if
-
-    numerical_data => cells
-    if ( header_present ) numerical_data => cells(2:,:)
-
-    call cast(x, numerical_data, locale, fmt, decimals)
-    call text_file%write_file(cells, file, NL, delim, .false. stat, errmsg)
-  end procedure to_text_1dr64
-  module procedure to_text_1dr32
-    type(String)                      :: text_file
-    type(String), allocatable         :: cells(:,:)
-    type(String), pointer, contiguous :: numerical_data(:,:)
-
-    integer :: nx, nrows, ncols, j
-    logical :: header_present
-
-    nx=size(x); nrows=0; ncols=0; j=0
-    header_present = .false.
-    if ( len(header) /= 0 ) header_present = .true.
-
-    nrows = nx; ncols = 1
-    if ( dim == COL_DIM ) then
-      nrows = 1; ncols = nx
-    end if
-    if ( header_present ) nrows = nrows + 1
-
-    allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
-
-    if ( stat /= 0 ) then
-      stat = ALLOC_ERR; return
-    end if
-
-    if ( header_present ) then
-      if ( dim == ROW_DIM ) then
-        cells(1,1)%s = header(1)
-      else if ( (dim == COL_DIM) .and. (size(header) == 1) ) then
-        do j = 1, nx
-          cells(1,j)%s = header(1)//str(j)
-        end do
-      else
-        do j = 1, nx
-          cells(1,j)%s = header(j)
-        end do
-      end if
-    end if
-
-    numerical_data => cells
-    if ( header_present ) numerical_data => cells(2:,:)
-
-    call cast(x, numerical_data, locale, fmt, decimals)
-    call text_file%write_file(cells, file, NL, delim, .false. stat, errmsg)
-  end procedure to_text_1dr32
-
-  module procedure to_text_2dr128
+  module procedure to_text_r128
     type(String)                      :: text_file
     type(String), allocatable         :: cells(:,:)
     type(String), pointer, contiguous :: numerical_data(:,:)
@@ -510,8 +282,13 @@ submodule (io_fortran_lib) text_io
     integer :: nrows, ncols, j
     logical :: header_present
 
-    nrows=size(x, dim=1); ncols=size(x, dim=2); j=0
-    header_present = .false.
+    j=0; header_present=.false.
+
+    select rank(x)
+      rank(1); nrows = size(x); ncols = 1
+      rank(2); nrows = size(x, dim=1); ncols = size(x, dim=2)
+    end select
+
     if ( len(header) /= 0 ) header_present = .true.
     if ( header_present ) nrows = nrows + 1
 
@@ -522,24 +299,33 @@ submodule (io_fortran_lib) text_io
     end if
 
     if ( header_present ) then
-      if ( size(header) == 1 ) then
-        do j = 1, ncols
-          cells(1,j)%s = header(1)//str(j)
-        end do
-      else
-        do j = 1, ncols
-          cells(1,j)%s = header(j)
-        end do
-      end if
+      select rank(x)
+        rank(1)
+          cells(1,1)%s = header(1)
+        rank(2)
+          if ( size(header) == 1 ) then
+            do j = 1, ncols
+              cells(1,j)%s = header(1)//str(j)
+            end do
+          else
+            do j = 1, ncols
+              cells(1,j)%s = header(j)
+            end do
+          end if
+      end select
     end if
 
     numerical_data => cells
     if ( header_present ) numerical_data => cells(2:,:)
 
-    call cast(x, numerical_data, locale, fmt, decimals)
+    select rank(x)
+      rank(1); call cast(x, numerical_data(:,1), locale, fmt, decimals)
+      rank(2); call cast(x, numerical_data, locale, fmt, decimals)
+    end select
+
     call text_file%write_file(cells, file, NL, delim, .false. stat, errmsg)
-  end procedure to_text_2dr128
-  module procedure to_text_2dr64
+  end procedure to_text_r128
+  module procedure to_text_r64
     type(String)                      :: text_file
     type(String), allocatable         :: cells(:,:)
     type(String), pointer, contiguous :: numerical_data(:,:)
@@ -547,8 +333,13 @@ submodule (io_fortran_lib) text_io
     integer :: nrows, ncols, j
     logical :: header_present
 
-    nrows=size(x, dim=1); ncols=size(x, dim=2); j=0
-    header_present = .false.
+    j=0; header_present=.false.
+
+    select rank(x)
+      rank(1); nrows = size(x); ncols = 1
+      rank(2); nrows = size(x, dim=1); ncols = size(x, dim=2)
+    end select
+
     if ( len(header) /= 0 ) header_present = .true.
     if ( header_present ) nrows = nrows + 1
 
@@ -559,24 +350,33 @@ submodule (io_fortran_lib) text_io
     end if
 
     if ( header_present ) then
-      if ( size(header) == 1 ) then
-        do j = 1, ncols
-          cells(1,j)%s = header(1)//str(j)
-        end do
-      else
-        do j = 1, ncols
-          cells(1,j)%s = header(j)
-        end do
-      end if
+      select rank(x)
+        rank(1)
+          cells(1,1)%s = header(1)
+        rank(2)
+          if ( size(header) == 1 ) then
+            do j = 1, ncols
+              cells(1,j)%s = header(1)//str(j)
+            end do
+          else
+            do j = 1, ncols
+              cells(1,j)%s = header(j)
+            end do
+          end if
+      end select
     end if
 
     numerical_data => cells
     if ( header_present ) numerical_data => cells(2:,:)
 
-    call cast(x, numerical_data, locale, fmt, decimals)
+    select rank(x)
+      rank(1); call cast(x, numerical_data(:,1), locale, fmt, decimals)
+      rank(2); call cast(x, numerical_data, locale, fmt, decimals)
+    end select
+
     call text_file%write_file(cells, file, NL, delim, .false. stat, errmsg)
-  end procedure to_text_2dr64
-  module procedure to_text_2dr32
+  end procedure to_text_r64
+  module procedure to_text_r32
     type(String)                      :: text_file
     type(String), allocatable         :: cells(:,:)
     type(String), pointer, contiguous :: numerical_data(:,:)
@@ -584,8 +384,13 @@ submodule (io_fortran_lib) text_io
     integer :: nrows, ncols, j
     logical :: header_present
 
-    nrows=size(x, dim=1); ncols=size(x, dim=2); j=0
-    header_present = .false.
+    j=0; header_present=.false.
+
+    select rank(x)
+      rank(1); nrows = size(x); ncols = 1
+      rank(2); nrows = size(x, dim=1); ncols = size(x, dim=2)
+    end select
+
     if ( len(header) /= 0 ) header_present = .true.
     if ( header_present ) nrows = nrows + 1
 
@@ -596,202 +401,34 @@ submodule (io_fortran_lib) text_io
     end if
 
     if ( header_present ) then
-      if ( size(header) == 1 ) then
-        do j = 1, ncols
-          cells(1,j)%s = header(1)//str(j)
-        end do
-      else
-        do j = 1, ncols
-          cells(1,j)%s = header(j)
-        end do
-      end if
+      select rank(x)
+        rank(1)
+          cells(1,1)%s = header(1)
+        rank(2)
+          if ( size(header) == 1 ) then
+            do j = 1, ncols
+              cells(1,j)%s = header(1)//str(j)
+            end do
+          else
+            do j = 1, ncols
+              cells(1,j)%s = header(j)
+            end do
+          end if
+      end select
     end if
 
     numerical_data => cells
     if ( header_present ) numerical_data => cells(2:,:)
 
-    call cast(x, numerical_data, locale, fmt, decimals)
+    select rank(x)
+      rank(1); call cast(x, numerical_data(:,1), locale, fmt, decimals)
+      rank(2); call cast(x, numerical_data, locale, fmt, decimals)
+    end select
+
     call text_file%write_file(cells, file, NL, delim, .false. stat, errmsg)
-  end procedure to_text_2dr32
+  end procedure to_text_r32
 
-  module procedure to_text_1di64
-    type(String)                      :: text_file
-    type(String), allocatable         :: cells(:,:)
-    type(String), pointer, contiguous :: numerical_data(:,:)
-
-    integer :: nx, nrows, ncols, j
-    logical :: header_present
-
-    nx=size(x); nrows=0; ncols=0; j=0
-    header_present = .false.
-    if ( len(header) /= 0 ) header_present = .true.
-
-    nrows = nx; ncols = 1
-    if ( dim == COL_DIM ) then
-      nrows = 1; ncols = nx
-    end if
-    if ( header_present ) nrows = nrows + 1
-
-    allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
-
-    if ( stat /= 0 ) then
-      stat = ALLOC_ERR; return
-    end if
-
-    if ( header_present ) then
-      if ( dim == ROW_DIM ) then
-        cells(1,1)%s = header(1)
-      else if ( (dim == COL_DIM) .and. (size(header) == 1) ) then
-        do j = 1, nx
-          cells(1,j)%s = header(1)//str(j)
-        end do
-      else
-        do j = 1, nx
-          cells(1,j)%s = header(j)
-        end do
-      end if
-    end if
-
-    numerical_data => cells
-    if ( header_present ) numerical_data => cells(2:,:)
-
-    call cast(x, numerical_data, fmt)
-    call text_file%write_file(cells, file, NL, delim, .false. stat, errmsg)
-  end procedure to_text_1di64
-  module procedure to_text_1di32
-    type(String)                      :: text_file
-    type(String), allocatable         :: cells(:,:)
-    type(String), pointer, contiguous :: numerical_data(:,:)
-
-    integer :: nx, nrows, ncols, j
-    logical :: header_present
-
-    nx=size(x); nrows=0; ncols=0; j=0
-    header_present = .false.
-    if ( len(header) /= 0 ) header_present = .true.
-
-    nrows = nx; ncols = 1
-    if ( dim == COL_DIM ) then
-      nrows = 1; ncols = nx
-    end if
-    if ( header_present ) nrows = nrows + 1
-
-    allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
-
-    if ( stat /= 0 ) then
-      stat = ALLOC_ERR; return
-    end if
-
-    if ( header_present ) then
-      if ( dim == ROW_DIM ) then
-        cells(1,1)%s = header(1)
-      else if ( (dim == COL_DIM) .and. (size(header) == 1) ) then
-        do j = 1, nx
-          cells(1,j)%s = header(1)//str(j)
-        end do
-      else
-        do j = 1, nx
-          cells(1,j)%s = header(j)
-        end do
-      end if
-    end if
-
-    numerical_data => cells
-    if ( header_present ) numerical_data => cells(2:,:)
-
-    call cast(x, numerical_data, fmt)
-    call text_file%write_file(cells, file, NL, delim, .false. stat, errmsg)
-  end procedure to_text_1di32
-  module procedure to_text_1di16
-    type(String)                      :: text_file
-    type(String), allocatable         :: cells(:,:)
-    type(String), pointer, contiguous :: numerical_data(:,:)
-
-    integer :: nx, nrows, ncols, j
-    logical :: header_present
-
-    nx=size(x); nrows=0; ncols=0; j=0
-    header_present = .false.
-    if ( len(header) /= 0 ) header_present = .true.
-
-    nrows = nx; ncols = 1
-    if ( dim == COL_DIM ) then
-      nrows = 1; ncols = nx
-    end if
-    if ( header_present ) nrows = nrows + 1
-
-    allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
-
-    if ( stat /= 0 ) then
-      stat = ALLOC_ERR; return
-    end if
-
-    if ( header_present ) then
-      if ( dim == ROW_DIM ) then
-        cells(1,1)%s = header(1)
-      else if ( (dim == COL_DIM) .and. (size(header) == 1) ) then
-        do j = 1, nx
-          cells(1,j)%s = header(1)//str(j)
-        end do
-      else
-        do j = 1, nx
-          cells(1,j)%s = header(j)
-        end do
-      end if
-    end if
-
-    numerical_data => cells
-    if ( header_present ) numerical_data => cells(2:,:)
-
-    call cast(x, numerical_data, fmt)
-    call text_file%write_file(cells, file, NL, delim, .false. stat, errmsg)
-  end procedure to_text_1di16
-  module procedure to_text_1di8
-    type(String)                      :: text_file
-    type(String), allocatable         :: cells(:,:)
-    type(String), pointer, contiguous :: numerical_data(:,:)
-
-    integer :: nx, nrows, ncols, j
-    logical :: header_present
-
-    nx=size(x); nrows=0; ncols=0; j=0
-    header_present = .false.
-    if ( len(header) /= 0 ) header_present = .true.
-
-    nrows = nx; ncols = 1
-    if ( dim == COL_DIM ) then
-      nrows = 1; ncols = nx
-    end if
-    if ( header_present ) nrows = nrows + 1
-
-    allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
-
-    if ( stat /= 0 ) then
-      stat = ALLOC_ERR; return
-    end if
-
-    if ( header_present ) then
-      if ( dim == ROW_DIM ) then
-        cells(1,1)%s = header(1)
-      else if ( (dim == COL_DIM) .and. (size(header) == 1) ) then
-        do j = 1, nx
-          cells(1,j)%s = header(1)//str(j)
-        end do
-      else
-        do j = 1, nx
-          cells(1,j)%s = header(j)
-        end do
-      end if
-    end if
-
-    numerical_data => cells
-    if ( header_present ) numerical_data => cells(2:,:)
-
-    call cast(x, numerical_data, fmt)
-    call text_file%write_file(cells, file, NL, delim, .false. stat, errmsg)
-  end procedure to_text_1di8
-
-  module procedure to_text_2di64
+  module procedure to_text_i64
     type(String)                      :: text_file
     type(String), allocatable         :: cells(:,:)
     type(String), pointer, contiguous :: numerical_data(:,:)
@@ -799,8 +436,13 @@ submodule (io_fortran_lib) text_io
     integer :: nrows, ncols, j
     logical :: header_present
 
-    nrows=size(x, dim=1); ncols=size(x, dim=2); j=0
-    header_present = .false.
+    j=0; header_present=.false.
+
+    select rank(x)
+      rank(1); nrows = size(x); ncols = 1
+      rank(2); nrows = size(x, dim=1); ncols = size(x, dim=2)
+    end select
+
     if ( len(header) /= 0 ) header_present = .true.
     if ( header_present ) nrows = nrows + 1
 
@@ -811,24 +453,33 @@ submodule (io_fortran_lib) text_io
     end if
 
     if ( header_present ) then
-      if ( size(header) == 1 ) then
-        do j = 1, ncols
-          cells(1,j)%s = header(1)//str(j)
-        end do
-      else
-        do j = 1, ncols
-          cells(1,j)%s = header(j)
-        end do
-      end if
+      select rank(x)
+        rank(1)
+          cells(1,1)%s = header(1)
+        rank(2)
+          if ( size(header) == 1 ) then
+            do j = 1, ncols
+              cells(1,j)%s = header(1)//str(j)
+            end do
+          else
+            do j = 1, ncols
+              cells(1,j)%s = header(j)
+            end do
+          end if
+      end select
     end if
 
     numerical_data => cells
     if ( header_present ) numerical_data => cells(2:,:)
 
-    call cast(x, numerical_data, fmt)
+    select rank(x)
+      rank(1); call cast(x, numerical_data(:,1), fmt)
+      rank(2); call cast(x, numerical_data, fmt)
+    end select
+
     call text_file%write_file(cells, file, NL, delim, .false. stat, errmsg)
-  end procedure to_text_2di64
-  module procedure to_text_2di32
+  end procedure to_text_i64
+  module procedure to_text_i32
     type(String)                      :: text_file
     type(String), allocatable         :: cells(:,:)
     type(String), pointer, contiguous :: numerical_data(:,:)
@@ -836,8 +487,13 @@ submodule (io_fortran_lib) text_io
     integer :: nrows, ncols, j
     logical :: header_present
 
-    nrows=size(x, dim=1); ncols=size(x, dim=2); j=0
-    header_present = .false.
+    j=0; header_present=.false.
+
+    select rank(x)
+      rank(1); nrows = size(x); ncols = 1
+      rank(2); nrows = size(x, dim=1); ncols = size(x, dim=2)
+    end select
+
     if ( len(header) /= 0 ) header_present = .true.
     if ( header_present ) nrows = nrows + 1
 
@@ -848,24 +504,33 @@ submodule (io_fortran_lib) text_io
     end if
 
     if ( header_present ) then
-      if ( size(header) == 1 ) then
-        do j = 1, ncols
-          cells(1,j)%s = header(1)//str(j)
-        end do
-      else
-        do j = 1, ncols
-          cells(1,j)%s = header(j)
-        end do
-      end if
+      select rank(x)
+        rank(1)
+          cells(1,1)%s = header(1)
+        rank(2)
+          if ( size(header) == 1 ) then
+            do j = 1, ncols
+              cells(1,j)%s = header(1)//str(j)
+            end do
+          else
+            do j = 1, ncols
+              cells(1,j)%s = header(j)
+            end do
+          end if
+      end select
     end if
 
     numerical_data => cells
     if ( header_present ) numerical_data => cells(2:,:)
 
-    call cast(x, numerical_data, fmt)
+    select rank(x)
+      rank(1); call cast(x, numerical_data(:,1), fmt)
+      rank(2); call cast(x, numerical_data, fmt)
+    end select
+
     call text_file%write_file(cells, file, NL, delim, .false. stat, errmsg)
-  end procedure to_text_2di32
-  module procedure to_text_2di16
+  end procedure to_text_i32
+  module procedure to_text_i16
     type(String)                      :: text_file
     type(String), allocatable         :: cells(:,:)
     type(String), pointer, contiguous :: numerical_data(:,:)
@@ -873,8 +538,13 @@ submodule (io_fortran_lib) text_io
     integer :: nrows, ncols, j
     logical :: header_present
 
-    nrows=size(x, dim=1); ncols=size(x, dim=2); j=0
-    header_present = .false.
+    j=0; header_present=.false.
+
+    select rank(x)
+      rank(1); nrows = size(x); ncols = 1
+      rank(2); nrows = size(x, dim=1); ncols = size(x, dim=2)
+    end select
+
     if ( len(header) /= 0 ) header_present = .true.
     if ( header_present ) nrows = nrows + 1
 
@@ -885,24 +555,33 @@ submodule (io_fortran_lib) text_io
     end if
 
     if ( header_present ) then
-      if ( size(header) == 1 ) then
-        do j = 1, ncols
-          cells(1,j)%s = header(1)//str(j)
-        end do
-      else
-        do j = 1, ncols
-          cells(1,j)%s = header(j)
-        end do
-      end if
+      select rank(x)
+        rank(1)
+          cells(1,1)%s = header(1)
+        rank(2)
+          if ( size(header) == 1 ) then
+            do j = 1, ncols
+              cells(1,j)%s = header(1)//str(j)
+            end do
+          else
+            do j = 1, ncols
+              cells(1,j)%s = header(j)
+            end do
+          end if
+      end select
     end if
 
     numerical_data => cells
     if ( header_present ) numerical_data => cells(2:,:)
 
-    call cast(x, numerical_data, fmt)
+    select rank(x)
+      rank(1); call cast(x, numerical_data(:,1), fmt)
+      rank(2); call cast(x, numerical_data, fmt)
+    end select
+
     call text_file%write_file(cells, file, NL, delim, .false. stat, errmsg)
-  end procedure to_text_2di16
-  module procedure to_text_2di8
+  end procedure to_text_i16
+  module procedure to_text_i8
     type(String)                      :: text_file
     type(String), allocatable         :: cells(:,:)
     type(String), pointer, contiguous :: numerical_data(:,:)
@@ -910,8 +589,13 @@ submodule (io_fortran_lib) text_io
     integer :: nrows, ncols, j
     logical :: header_present
 
-    nrows=size(x, dim=1); ncols=size(x, dim=2); j=0
-    header_present = .false.
+    j=0; header_present=.false.
+
+    select rank(x)
+      rank(1); nrows = size(x); ncols = 1
+      rank(2); nrows = size(x, dim=1); ncols = size(x, dim=2)
+    end select
+
     if ( len(header) /= 0 ) header_present = .true.
     if ( header_present ) nrows = nrows + 1
 
@@ -922,23 +606,32 @@ submodule (io_fortran_lib) text_io
     end if
 
     if ( header_present ) then
-      if ( size(header) == 1 ) then
-        do j = 1, ncols
-          cells(1,j)%s = header(1)//str(j)
-        end do
-      else
-        do j = 1, ncols
-          cells(1,j)%s = header(j)
-        end do
-      end if
+      select rank(x)
+        rank(1)
+          cells(1,1)%s = header(1)
+        rank(2)
+          if ( size(header) == 1 ) then
+            do j = 1, ncols
+              cells(1,j)%s = header(1)//str(j)
+            end do
+          else
+            do j = 1, ncols
+              cells(1,j)%s = header(j)
+            end do
+          end if
+      end select
     end if
 
     numerical_data => cells
     if ( header_present ) numerical_data => cells(2:,:)
 
-    call cast(x, numerical_data, fmt)
+    select rank(x)
+      rank(1); call cast(x, numerical_data(:,1), fmt)
+      rank(2); call cast(x, numerical_data, fmt)
+    end select
+
     call text_file%write_file(cells, file, NL, delim, .false. stat, errmsg)
-  end procedure to_text_2di8
+  end procedure to_text_i8
 
   ! Reading Procedures ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   module procedure from_text_1dc128
