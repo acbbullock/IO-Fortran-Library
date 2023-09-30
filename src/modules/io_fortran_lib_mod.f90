@@ -213,7 +213,7 @@ module io_fortran_lib
       type(String),  intent(in)    :: substring
     end subroutine push_string
 
-    impure recursive module subroutine read_file(self, file, cell_array, row_separator, column_separator)
+    impure recursive module subroutine read_file(self, file, cell_array, row_separator, column_separator, stat, errmsg)
       !-----------------------------------------------------------------------------------------------------------------
       !! Reads raw text file contents into `self` and optionally populates a cell array using the designated
       !! `row_separator` and `column_separator` whose default values are `LF` and `COMMA` respectively.
@@ -222,8 +222,10 @@ module io_fortran_lib
       !-----------------------------------------------------------------------------------------------------------------
       class(String),    intent(inout)                      :: self
       character(len=*), intent(in)                         :: file
-      type(String),     intent(out), allocatable, optional :: cell_array(:,:)
-      character(len=*), intent(in),               optional :: row_separator, column_separator
+      type(String),     intent(out), optional, allocatable :: cell_array(:,:)
+      character(len=*), intent(in),  optional, target      :: row_separator, column_separator
+      integer,          intent(out), optional, target      :: stat
+      character(len=*), intent(out), optional, target      :: errmsg
     end subroutine read_file
 
     pure elemental recursive type(String) module function replace_ch_copy(self, match, substring, back) result(new)
@@ -995,7 +997,7 @@ module io_fortran_lib
       character(len=*), intent(in),  optional, target :: im
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_textfile_c128
+    end subroutine to_file_c128
     impure recursive module subroutine to_file_c64(x, file, header, locale, delim, fmt, decimals, im, stat, errmsg)
       complex(r64),     intent(in)                    :: x(..)
       character(len=*), intent(in)                    :: file
@@ -1007,7 +1009,7 @@ module io_fortran_lib
       character(len=*), intent(in),  optional, target :: im
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
-    end subroutine to_textfile_c64
+    end subroutine to_file_c64
     impure recursive module subroutine to_file_c32(x, file, header, locale, delim, fmt, decimals, im, stat, errmsg)
       complex(r32),     intent(in)                    :: x(..)
       character(len=*), intent(in)                    :: file

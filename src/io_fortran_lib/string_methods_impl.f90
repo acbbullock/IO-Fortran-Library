@@ -294,116 +294,152 @@ submodule (io_fortran_lib) string_methods
 
   module procedure read_file
     character(len=:), allocatable :: ext
-    integer(i64)                  :: file_length
-    integer                       :: file_unit, iostat
-    logical                       :: exists
 
-    file_length=0_i64; file_unit=0; iostat=0; exists=.false.
+    character(len=:), pointer :: errmsg_
+    integer,          pointer :: stat_
+
+    character(len=0), target :: dummy_msg
+    integer,          target :: dummy_stat
+
+    integer(i64) :: file_length
+    integer      :: file_unit
+    logical      :: exists
 
     ext = ext_of(file)
 
-    if ( .not. any(TEXT_EXT == ext) ) then
-      if ( any(BINARY_EXT == ext) ) then
-        error stop LF//'FATAL: Error reading file "'//file//'" in method READ_FILE. Binary data '// &
-                 'cannot be read into a String.'
-      else
-        error stop LF//'FATAL: Unsupported file extension "'//ext//'" for file "'//file//'" in '// &
-                 'method READ_FILE.'// &
-               LF//'Supported file extensions: '//join(TEXT_EXT)
-      end if
+    if ( .not. present(stat) ) then
+      stat_ => dummy_stat
+    else
+      stat_ => stat
     end if
 
-    inquire(file=file, exist=exists)
+    if ( .not. present(errmsg) ) then
+      errmsg_ => dummy_msg
+    else
+      errmsg_ => errmsg
+    end if
+
+    stat_=0; errmsg_=EMPTY_STR
+
+    if ( .not. any(TEXT_EXT == ext) ) then
+      stat_   = ARG_ERR
+      errmsg_ = 'Error reading file "'//file//'" with extension "'//ext//'". To use read_file, the data to '// &
+                "be read into a String must be formatted as text with one of the following file extensions: "// &
+                join(TEXT_EXT)
+      return
+    end if
+
+    inquire(file=file, exist=exists, iostat=stat_, iomsg=errmsg_)
+
+    if ( stat_ /= 0 ) then
+      stat_ = READ_ERR; return
+    end if
 
     file_unit = input_unit
 
     if ( exists ) then
       open( newunit=file_unit, file=file, status="old", form="unformatted", &
-          action="read", access="stream", position="rewind" )
+            action="read", access="stream", position="rewind", iostat=stat_, iomsg=errmsg_ )
     else
-      error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
+      stat_   = READ_ERR
+      errmsg_ = 'Error reading file "'//file//'". No such file exists.'
       return
     end if
 
-    inquire( file=file, size=file_length )
+    if ( stat_ /= 0 ) then
+      stat_ = READ_ERR; return
+    end if
+
+    inquire(file=file, size=file_length, iostat=stat_, iomsg=errmsg_)
+
+    if ( stat_ /= 0 ) then
+      stat_ = READ_ERR; return
+    end if
 
     if ( file_length == 0_i64 ) then
-      error stop LF//'FATAL: Error reading file "'//file//'". File is empty.'
+      stat_   = READ_ERR
+      errmsg_ = 'Error reading file "'//file//'". File is empty.'
       return
     end if
 
-    if ( allocated(self%s) ) deallocate(self%s)
+    if ( allocated(self%s) ) deallocate(self%s, stat=stat_, errmsg=errmsg_)
 
-    allocate( character(len=file_length) :: self%s )
-    read(unit=file_unit, iostat=iostat) self%s
-    close(file_unit)
+    if ( stat_ /= 0 ) then
+      stat_ = ALLOC_ERR; return
+    end if
 
-    if ( iostat > 0 ) then
-      error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
-      return
+    allocate( character(len=file_length) :: self%s, stat=stat_, errmsg=errmsg_ )
+
+    if ( stat_ /= 0 ) then
+      stat_ = ALLOC_ERR; return
+    end if
+
+    read(unit=file_unit, iostat=stat_, iomsg=errmsg_) self%s
+
+    if ( stat_ /= 0 ) then
+      stat_ = READ_ERR; return
+    end if
+
+    close(unit=file_unit, iostat=stat_, iomsg=errmsg_)
+
+    if ( stat_ /= 0 ) then
+      stat_ = READ_ERR; return
     end if
 
     if ( .not. present(cell_array) ) then
-      if ( present(row_separator) ) then
-        write(*,"(a)")  LF//'WARNING: Row separator was specified in method READ_FILE for file "'// &
-                  file//'" without a cell array output. To use this option, '// &
-                  'provide an actual argument to cell_array.'
-      end if
-
-      if ( present(column_separator) ) then
-        write(*,"(a)")  LF//'WARNING: Column separator was specified in method READ_FILE for file "'// &
-                  file//'" without a cell array output. To use this option, '// &
-                  'provide an actual argument to cell_array.'
-      end if
-
+      if ( present(row_separator)    ) write(*,"(a)") LF//'WARNING: Row separator was provided for read of file "'// &
+                                                      file//'" without a cell array output. Ingoring argument...'
+      if ( present(column_separator) ) write(*,"(a)") LF//'WARNING: Column separator was provided for read of file "'//&
+                                                      file//'" without a cell array output. Ingoring argument...'
       return
     end if
 
     if ( present(row_separator) ) then
-      if ( len(row_separator) == 0 ) then
-        write(*,"(a)")  LF//'WARNING: Cannot populate a cell array with the contents of file "'// &
-                  file//'" using an empty row separator. Returning without cell array...'
+      if ( row_separator == EMPTY_STR ) then
+        stat_   = ARG_ERR
+        errmsg_ = 'Error: Cannot populate a cell array with the contents of file "'//file//'" '// &
+                  "using an empty row separator."
         return
-      end if
     end if
 
     if ( present(column_separator) ) then
-      if ( len(column_separator) == 0 ) then
-        write(*,"(a)")  LF//'WARNING: Cannot populate a cell array with the contents of file "'// &
-                  file//'" using an empty column separator. Returning without cell array...'
+      if ( column_separator == EMPTY_STR ) then
+        stat_   = ARG_ERR
+        errmsg_ = 'Error: Cannot populate a cell array with the contents of file "'//file//'" '// &
+                  "using an empty column separator."
         return
-      end if
     end if
 
     cell_block: block
-      character(len=:), allocatable :: row_separator_, column_separator_
-      integer(i64)                  :: n_rows, n_cols, row, col, l, i
-      integer                       :: row_sep, row_sep_len, col_sep, col_sep_len, quote, current
-      logical                       :: in_quote
+      character(len=:), pointer :: row_separator_, column_separator_
 
-      n_rows   = 0_i64; n_cols      = 0_i64; row     = 0_i64; col         = 0_i64; l     = 0_i64; i       = 0_i64
-      row_sep  = 0;     row_sep_len = 0;     col_sep = 0;     col_sep_len = 0;     quote = 0;     current = 0
-      in_quote = .false.
+      integer(i64) :: l, i
+      integer      :: nrows, ncols, row, col, row_sep, row_sep_len, col_sep, col_sep_len, quote, current
+      logical      :: in_quote
+
+      l=0_i64; i=0_i64
+      nrows=0; ncols=0; row=0; col=0; row_sep=0; row_sep_len=0; col_sep=0; col_sep_len=0; quote=0; current=0
+      in_quote=.false.
 
       if ( .not. present(row_separator) ) then
-        row_separator_ = LF
+        row_separator_ => LINE_FEED
       else
-        row_separator_ = row_separator
+        row_separator_ => row_separator
       end if
 
       if ( .not. present(column_separator) ) then
-        column_separator_ = COMMA
+        column_separator_ => COMMA_DELIMITER
       else
-        column_separator_ = column_separator
+        column_separator_ => column_separator
       end if
 
       row_sep_len = len(row_separator_); col_sep_len = len(column_separator_)
       row_sep = iachar(row_separator_(1:1)); col_sep = iachar(column_separator_(1:1))
-      quote = iachar(QQUOTE); in_quote = .false.
+      quote = iachar(QQUOTE)
 
-      n_rows = self%count(match=row_separator_)
+      nrows = self%count(match=row_separator_)
 
-      n_cols = 1_i64; i = 1_i64; get_n_cols: do
+      ncols = 1; i = 1_i64; get_ncols: do
         current = iachar(self%s(i:i))
 
         if ( (current /= quote) .and. (current /= col_sep) .and. (current /= row_sep) ) then
@@ -420,10 +456,10 @@ submodule (io_fortran_lib) string_methods
           end if
 
           if ( col_sep_len == 1 ) then
-            n_cols = n_cols + 1_i64; i = i + 1_i64; cycle
+            ncols = ncols + 1_i64; i = i + 1_i64; cycle
           else
             if ( self%s(i:i+col_sep_len-1_i64) == column_separator_ ) then
-              n_cols = n_cols + 1_i64; i = i + col_sep_len; cycle
+              ncols = ncols + 1_i64; i = i + col_sep_len; cycle
             else
               i = i + 1_i64; cycle
             end if
@@ -432,20 +468,24 @@ submodule (io_fortran_lib) string_methods
 
         if ( current == row_sep ) then
           if ( row_sep_len == 1 ) then
-            exit get_n_cols
+            exit get_ncols
           else
             if ( self%s(i:i+row_sep_len-1_i64) == row_separator_ ) then
-              exit get_n_cols
+              exit get_ncols
             else
               i = i + 1_i64; cycle
             end if
           end if
         end if
-      end do get_n_cols
+      end do get_ncols
 
-      allocate( cell_array(n_rows,n_cols) )
+      allocate( cell_array(nrows,ncols), stat=stat_, errmsg=errmsg_ )
 
-      row = 1_i64; col = 1_i64; l = 1_i64; i = 1_i64; positional_transfers: do
+      if ( stat_ /= 0 ) then
+        stat_ = ALLOC_ERR; return
+      end if
+
+      row = 1; col = 1; l = 1_i64; i = 1_i64; positional_transfers: do
         current = iachar(self%s(i:i))
 
         if ( (current /= quote) .and. (current /= col_sep) .and. (current /= row_sep) ) then
@@ -462,10 +502,10 @@ submodule (io_fortran_lib) string_methods
           end if
 
           if ( col_sep_len == 1 ) then
-            cell_array(row,col)%s = self%s(l:i-1); i = i + 1_i64; l = i; col = col + 1_i64; cycle
+            cell_array(row,col)%s = self%s(l:i-1); i = i + 1_i64; l = i; col = col + 1; cycle
           else
             if ( self%s(i:i+col_sep_len-1_i64) == column_separator_ ) then
-              cell_array(row,col)%s = self%s(l:i-1); i = i + col_sep_len; l = i; col = col+1_i64; cycle
+              cell_array(row,col)%s = self%s(l:i-1); i = i + col_sep_len; l = i; col = col + 1; cycle
             else
               i = i + 1_i64; cycle
             end if
@@ -475,13 +515,13 @@ submodule (io_fortran_lib) string_methods
         if ( current == row_sep ) then
           if ( row_sep_len == 1 ) then
             cell_array(row,col)%s = self%s(l:i-1)
-            if ( row == n_rows ) return
-            i = i + 1_i64; l = i; col = 1_i64; row = row + 1_i64; cycle
+            if ( row == nrows ) return
+            i = i + 1_i64; l = i; col = 1; row = row + 1; cycle
           else
             if ( self%s(i:i+row_sep_len-1_i64) == row_separator_ ) then
               cell_array(row,col)%s = self%s(l:i-1)
-              if ( row == n_rows ) return
-              i = i + row_sep_len; l = i; col = 1_i64; row = row + 1_i64; cycle
+              if ( row == nrows ) return
+              i = i + row_sep_len; l = i; col = 1; row = row + 1; cycle
             else
               i = i + 1_i64; cycle
             end if
@@ -1129,7 +1169,7 @@ submodule (io_fortran_lib) string_methods
       else
         if ( row_sep_len > 0 ) self%s(pos:pos+row_sep_len-1_i64) = row_separator_
 
-        if ( row < n_rows ) then
+        if ( row < nrows ) then
           pos = pos + row_sep_len; row = row + 1; col = 1; cycle
         else
           exit
@@ -1137,7 +1177,7 @@ submodule (io_fortran_lib) string_methods
       end if
     end do positional_transfers
 
-    inquire(file, exist=exists, iostat=stat_, iomsg=errmsg_)
+    inquire(file=file, exist=exists, iostat=stat_, iomsg=errmsg_)
 
     if ( stat_ /= 0 ) then
       stat_ = WRITE_ERR; return
@@ -1168,7 +1208,7 @@ submodule (io_fortran_lib) string_methods
       stat_ = WRITE_ERR; return
     end if
 
-    close(file_unit, iostat=stat_, iomsg=errmsg_)
+    close(unit=file_unit, iostat=stat_, iomsg=errmsg_)
 
     if ( stat_ /= 0 ) then
       stat_ = WRITE_ERR; return

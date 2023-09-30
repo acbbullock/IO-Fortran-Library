@@ -15,7 +15,7 @@ submodule (io_fortran_lib) binary_io
     exists    = .false.
     file_unit = 0
 
-    inquire(file, exist=exists, iostat=stat, iomsg=errmsg)
+    inquire(file=file, exist=exists, iostat=stat, iomsg=errmsg)
 
     if ( stat /= 0 ) then
       stat = WRITE_ERR; return
@@ -57,7 +57,7 @@ submodule (io_fortran_lib) binary_io
       stat = WRITE_ERR; return
     end if
 
-    close(file_unit, iostat=stat, iomsg=errmsg)
+    close(unit=file_unit, iostat=stat, iomsg=errmsg)
 
     if ( stat /= 0 ) then
       stat = WRITE_ERR; return
@@ -72,7 +72,7 @@ submodule (io_fortran_lib) binary_io
     exists    = .false.
     file_unit = 0
 
-    inquire(file, exist=exists, iostat=stat, iomsg=errmsg)
+    inquire(file=file, exist=exists, iostat=stat, iomsg=errmsg)
 
     if ( stat /= 0 ) then
       stat = WRITE_ERR; return
@@ -114,7 +114,7 @@ submodule (io_fortran_lib) binary_io
       stat = WRITE_ERR; return
     end if
 
-    close(file_unit, iostat=stat, iomsg=errmsg)
+    close(unit=file_unit, iostat=stat, iomsg=errmsg)
 
     if ( stat /= 0 ) then
       stat = WRITE_ERR; return
@@ -129,7 +129,7 @@ submodule (io_fortran_lib) binary_io
     exists    = .false.
     file_unit = 0
 
-    inquire(file, exist=exists, iostat=stat, iomsg=errmsg)
+    inquire(file=file, exist=exists, iostat=stat, iomsg=errmsg)
 
     if ( stat /= 0 ) then
       stat = WRITE_ERR; return
@@ -171,7 +171,7 @@ submodule (io_fortran_lib) binary_io
       stat = WRITE_ERR; return
     end if
 
-    close(file_unit, iostat=stat, iomsg=errmsg)
+    close(unit=file_unit, iostat=stat, iomsg=errmsg)
 
     if ( stat /= 0 ) then
       stat = WRITE_ERR; return
@@ -187,7 +187,7 @@ submodule (io_fortran_lib) binary_io
     exists    = .false.
     file_unit = 0
 
-    inquire(file, exist=exists, iostat=stat, iomsg=errmsg)
+    inquire(file=file, exist=exists, iostat=stat, iomsg=errmsg)
 
     if ( stat /= 0 ) then
       stat = WRITE_ERR; return
@@ -229,7 +229,7 @@ submodule (io_fortran_lib) binary_io
       stat = WRITE_ERR; return
     end if
 
-    close(file_unit, iostat=stat, iomsg=errmsg)
+    close(unit=file_unit, iostat=stat, iomsg=errmsg)
 
     if ( stat /= 0 ) then
       stat = WRITE_ERR; return
@@ -244,7 +244,7 @@ submodule (io_fortran_lib) binary_io
     exists    = .false.
     file_unit = 0
 
-    inquire(file, exist=exists, iostat=stat, iomsg=errmsg)
+    inquire(file=file, exist=exists, iostat=stat, iomsg=errmsg)
 
     if ( stat /= 0 ) then
       stat = WRITE_ERR; return
@@ -286,7 +286,7 @@ submodule (io_fortran_lib) binary_io
       stat = WRITE_ERR; return
     end if
 
-    close(file_unit, iostat=stat, iomsg=errmsg)
+    close(unit=file_unit, iostat=stat, iomsg=errmsg)
 
     if ( stat /= 0 ) then
       stat = WRITE_ERR; return
@@ -301,7 +301,7 @@ submodule (io_fortran_lib) binary_io
     exists    = .false.
     file_unit = 0
 
-    inquire(file, exist=exists, iostat=stat, iomsg=errmsg)
+    inquire(file=file, exist=exists, iostat=stat, iomsg=errmsg)
 
     if ( stat /= 0 ) then
       stat = WRITE_ERR; return
@@ -343,7 +343,7 @@ submodule (io_fortran_lib) binary_io
       stat = WRITE_ERR; return
     end if
 
-    close(file_unit, iostat=stat, iomsg=errmsg)
+    close(unit=file_unit, iostat=stat, iomsg=errmsg)
 
     if ( stat /= 0 ) then
       stat = WRITE_ERR; return
@@ -359,7 +359,7 @@ submodule (io_fortran_lib) binary_io
     exists    = .false.
     file_unit = 0
 
-    inquire(file, exist=exists, iostat=stat, iomsg=errmsg)
+    inquire(file=file, exist=exists, iostat=stat, iomsg=errmsg)
 
     if ( stat /= 0 ) then
       stat = WRITE_ERR; return
@@ -401,7 +401,7 @@ submodule (io_fortran_lib) binary_io
       stat = WRITE_ERR; return
     end if
 
-    close(file_unit, iostat=stat, iomsg=errmsg)
+    close(unit=file_unit, iostat=stat, iomsg=errmsg)
 
     if ( stat /= 0 ) then
       stat = WRITE_ERR; return
@@ -416,7 +416,7 @@ submodule (io_fortran_lib) binary_io
     exists    = .false.
     file_unit = 0
 
-    inquire(file, exist=exists, iostat=stat, iomsg=errmsg)
+    inquire(file=file, exist=exists, iostat=stat, iomsg=errmsg)
 
     if ( stat /= 0 ) then
       stat = WRITE_ERR; return
@@ -458,7 +458,7 @@ submodule (io_fortran_lib) binary_io
       stat = WRITE_ERR; return
     end if
 
-    close(file_unit, iostat=stat, iomsg=errmsg)
+    close(unit=file_unit, iostat=stat, iomsg=errmsg)
 
     if ( stat /= 0 ) then
       stat = WRITE_ERR; return
@@ -473,7 +473,7 @@ submodule (io_fortran_lib) binary_io
     exists    = .false.
     file_unit = 0
 
-    inquire(file, exist=exists, iostat=stat, iomsg=errmsg)
+    inquire(file=file, exist=exists, iostat=stat, iomsg=errmsg)
 
     if ( stat /= 0 ) then
       stat = WRITE_ERR; return
@@ -515,7 +515,7 @@ submodule (io_fortran_lib) binary_io
       stat = WRITE_ERR; return
     end if
 
-    close(file_unit, iostat=stat, iomsg=errmsg)
+    close(unit=file_unit, iostat=stat, iomsg=errmsg)
 
     if ( stat /= 0 ) then
       stat = WRITE_ERR; return
@@ -530,7 +530,7 @@ submodule (io_fortran_lib) binary_io
     exists    = .false.
     file_unit = 0
 
-    inquire(file, exist=exists, iostat=stat, iomsg=errmsg)
+    inquire(file=file, exist=exists, iostat=stat, iomsg=errmsg)
 
     if ( stat /= 0 ) then
       stat = WRITE_ERR; return
@@ -572,7 +572,7 @@ submodule (io_fortran_lib) binary_io
       stat = WRITE_ERR; return
     end if
 
-    close(file_unit, iostat=stat, iomsg=errmsg)
+    close(unit=file_unit, iostat=stat, iomsg=errmsg)
 
     if ( stat /= 0 ) then
       stat = WRITE_ERR; return
@@ -589,7 +589,7 @@ submodule (io_fortran_lib) binary_io
     exists    = .false.
     file_unit = 0
 
-    inquire(file, exist=exists, iostat=stat, iomsg=errmsg)
+    inquire(file=file, exist=exists, iostat=stat, iomsg=errmsg)
 
     if ( stat /= 0 ) then
       stat = READ_ERR; return
@@ -662,13 +662,29 @@ submodule (io_fortran_lib) binary_io
       stat = ALLOC_ERR; return
     end if
 
-    read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+    select rank(into)
+      rank(1);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(2);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(3);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(4);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(5);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(6);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(7);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(8);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(9);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(10); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(11); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(12); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(13); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(14); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(15); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+    end select
 
     if ( stat /= 0 ) then
       stat = READ_ERR; return
     end if
 
-    close(file_unit, iostat=stat, iomsg=errmsg)
+    close(unit=file_unit, iostat=stat, iomsg=errmsg)
 
     if ( stat /= 0 ) then
       stat = READ_ERR; return
@@ -683,7 +699,7 @@ submodule (io_fortran_lib) binary_io
     exists    = .false.
     file_unit = 0
 
-    inquire(file, exist=exists, iostat=stat, iomsg=errmsg)
+    inquire(file=file, exist=exists, iostat=stat, iomsg=errmsg)
 
     if ( stat /= 0 ) then
       stat = READ_ERR; return
@@ -756,13 +772,29 @@ submodule (io_fortran_lib) binary_io
       stat = ALLOC_ERR; return
     end if
 
-    read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+    select rank(into)
+      rank(1);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(2);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(3);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(4);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(5);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(6);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(7);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(8);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(9);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(10); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(11); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(12); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(13); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(14); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(15); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+    end select
 
     if ( stat /= 0 ) then
       stat = READ_ERR; return
     end if
 
-    close(file_unit, iostat=stat, iomsg=errmsg)
+    close(unit=file_unit, iostat=stat, iomsg=errmsg)
 
     if ( stat /= 0 ) then
       stat = READ_ERR; return
@@ -777,7 +809,7 @@ submodule (io_fortran_lib) binary_io
     exists    = .false.
     file_unit = 0
 
-    inquire(file, exist=exists, iostat=stat, iomsg=errmsg)
+    inquire(file=file, exist=exists, iostat=stat, iomsg=errmsg)
 
     if ( stat /= 0 ) then
       stat = READ_ERR; return
@@ -850,13 +882,29 @@ submodule (io_fortran_lib) binary_io
       stat = ALLOC_ERR; return
     end if
 
-    read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+    select rank(into)
+      rank(1);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(2);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(3);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(4);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(5);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(6);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(7);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(8);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(9);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(10); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(11); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(12); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(13); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(14); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(15); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+    end select
 
     if ( stat /= 0 ) then
       stat = READ_ERR; return
     end if
 
-    close(file_unit, iostat=stat, iomsg=errmsg)
+    close(unit=file_unit, iostat=stat, iomsg=errmsg)
 
     if ( stat /= 0 ) then
       stat = READ_ERR; return
@@ -872,7 +920,7 @@ submodule (io_fortran_lib) binary_io
     exists    = .false.
     file_unit = 0
 
-    inquire(file, exist=exists, iostat=stat, iomsg=errmsg)
+    inquire(file=file, exist=exists, iostat=stat, iomsg=errmsg)
 
     if ( stat /= 0 ) then
       stat = READ_ERR; return
@@ -945,13 +993,29 @@ submodule (io_fortran_lib) binary_io
       stat = ALLOC_ERR; return
     end if
 
-    read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+    select rank(into)
+      rank(1);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(2);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(3);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(4);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(5);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(6);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(7);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(8);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(9);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(10); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(11); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(12); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(13); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(14); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(15); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+    end select
 
     if ( stat /= 0 ) then
       stat = READ_ERR; return
     end if
 
-    close(file_unit, iostat=stat, iomsg=errmsg)
+    close(unit=file_unit, iostat=stat, iomsg=errmsg)
 
     if ( stat /= 0 ) then
       stat = READ_ERR; return
@@ -966,7 +1030,7 @@ submodule (io_fortran_lib) binary_io
     exists    = .false.
     file_unit = 0
 
-    inquire(file, exist=exists, iostat=stat, iomsg=errmsg)
+    inquire(file=file, exist=exists, iostat=stat, iomsg=errmsg)
 
     if ( stat /= 0 ) then
       stat = READ_ERR; return
@@ -1039,13 +1103,29 @@ submodule (io_fortran_lib) binary_io
       stat = ALLOC_ERR; return
     end if
 
-    read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+    select rank(into)
+      rank(1);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(2);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(3);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(4);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(5);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(6);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(7);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(8);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(9);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(10); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(11); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(12); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(13); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(14); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(15); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+    end select
 
     if ( stat /= 0 ) then
       stat = READ_ERR; return
     end if
 
-    close(file_unit, iostat=stat, iomsg=errmsg)
+    close(unit=file_unit, iostat=stat, iomsg=errmsg)
 
     if ( stat /= 0 ) then
       stat = READ_ERR; return
@@ -1060,7 +1140,7 @@ submodule (io_fortran_lib) binary_io
     exists    = .false.
     file_unit = 0
 
-    inquire(file, exist=exists, iostat=stat, iomsg=errmsg)
+    inquire(file=file, exist=exists, iostat=stat, iomsg=errmsg)
 
     if ( stat /= 0 ) then
       stat = READ_ERR; return
@@ -1133,13 +1213,29 @@ submodule (io_fortran_lib) binary_io
       stat = ALLOC_ERR; return
     end if
 
-    read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+    select rank(into)
+      rank(1);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(2);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(3);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(4);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(5);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(6);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(7);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(8);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(9);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(10); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(11); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(12); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(13); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(14); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(15); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+    end select
 
     if ( stat /= 0 ) then
       stat = READ_ERR; return
     end if
 
-    close(file_unit, iostat=stat, iomsg=errmsg)
+    close(unit=file_unit, iostat=stat, iomsg=errmsg)
 
     if ( stat /= 0 ) then
       stat = READ_ERR; return
@@ -1155,7 +1251,7 @@ submodule (io_fortran_lib) binary_io
     exists    = .false.
     file_unit = 0
 
-    inquire(file, exist=exists, iostat=stat, iomsg=errmsg)
+    inquire(file=file, exist=exists, iostat=stat, iomsg=errmsg)
 
     if ( stat /= 0 ) then
       stat = READ_ERR; return
@@ -1228,13 +1324,29 @@ submodule (io_fortran_lib) binary_io
       stat = ALLOC_ERR; return
     end if
 
-    read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+    select rank(into)
+      rank(1);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(2);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(3);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(4);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(5);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(6);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(7);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(8);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(9);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(10); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(11); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(12); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(13); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(14); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(15); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+    end select
 
     if ( stat /= 0 ) then
       stat = READ_ERR; return
     end if
 
-    close(file_unit, iostat=stat, iomsg=errmsg)
+    close(unit=file_unit, iostat=stat, iomsg=errmsg)
 
     if ( stat /= 0 ) then
       stat = READ_ERR; return
@@ -1249,7 +1361,7 @@ submodule (io_fortran_lib) binary_io
     exists    = .false.
     file_unit = 0
 
-    inquire(file, exist=exists, iostat=stat, iomsg=errmsg)
+    inquire(file=file, exist=exists, iostat=stat, iomsg=errmsg)
 
     if ( stat /= 0 ) then
       stat = READ_ERR; return
@@ -1322,13 +1434,29 @@ submodule (io_fortran_lib) binary_io
       stat = ALLOC_ERR; return
     end if
 
-    read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+    select rank(into)
+      rank(1);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(2);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(3);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(4);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(5);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(6);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(7);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(8);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(9);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(10); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(11); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(12); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(13); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(14); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(15); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+    end select
 
     if ( stat /= 0 ) then
       stat = READ_ERR; return
     end if
 
-    close(file_unit, iostat=stat, iomsg=errmsg)
+    close(unit=file_unit, iostat=stat, iomsg=errmsg)
 
     if ( stat /= 0 ) then
       stat = READ_ERR; return
@@ -1343,7 +1471,7 @@ submodule (io_fortran_lib) binary_io
     exists    = .false.
     file_unit = 0
 
-    inquire(file, exist=exists, iostat=stat, iomsg=errmsg)
+    inquire(file=file, exist=exists, iostat=stat, iomsg=errmsg)
 
     if ( stat /= 0 ) then
       stat = READ_ERR; return
@@ -1416,13 +1544,29 @@ submodule (io_fortran_lib) binary_io
       stat = ALLOC_ERR; return
     end if
 
-    read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+    select rank(into)
+      rank(1);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(2);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(3);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(4);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(5);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(6);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(7);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(8);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(9);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(10); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(11); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(12); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(13); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(14); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(15); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+    end select
 
     if ( stat /= 0 ) then
       stat = READ_ERR; return
     end if
 
-    close(file_unit, iostat=stat, iomsg=errmsg)
+    close(unit=file_unit, iostat=stat, iomsg=errmsg)
 
     if ( stat /= 0 ) then
       stat = READ_ERR; return
@@ -1437,7 +1581,7 @@ submodule (io_fortran_lib) binary_io
     exists    = .false.
     file_unit = 0
 
-    inquire(file, exist=exists, iostat=stat, iomsg=errmsg)
+    inquire(file=file, exist=exists, iostat=stat, iomsg=errmsg)
 
     if ( stat /= 0 ) then
       stat = READ_ERR; return
@@ -1510,13 +1654,29 @@ submodule (io_fortran_lib) binary_io
       stat = ALLOC_ERR; return
     end if
 
-    read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+    select rank(into)
+      rank(1);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(2);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(3);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(4);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(5);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(6);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(7);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(8);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(9);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(10); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(11); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(12); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(13); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(14); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(15); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+    end select
 
     if ( stat /= 0 ) then
       stat = READ_ERR; return
     end if
 
-    close(file_unit, iostat=stat, iomsg=errmsg)
+    close(unit=file_unit, iostat=stat, iomsg=errmsg)
 
     if ( stat /= 0 ) then
       stat = READ_ERR; return
