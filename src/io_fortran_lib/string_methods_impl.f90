@@ -395,19 +395,21 @@ submodule (io_fortran_lib) string_methods
     end if
 
     if ( present(row_separator) ) then
-      if ( row_separator == EMPTY_STR ) then
+      if ( len(row_separator) == 0 ) then
         stat_   = ARG_ERR
         errmsg_ = 'Error: Cannot populate a cell array with the contents of file "'//file//'" '// &
                   "using an empty row separator."
         return
+      end if
     end if
 
     if ( present(column_separator) ) then
-      if ( column_separator == EMPTY_STR ) then
+      if ( len(column_separator) == 0 ) then
         stat_   = ARG_ERR
         errmsg_ = 'Error: Cannot populate a cell array with the contents of file "'//file//'" '// &
                   "using an empty column separator."
         return
+      end if
     end if
 
     cell_block: block

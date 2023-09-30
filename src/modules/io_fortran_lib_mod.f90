@@ -1415,169 +1415,107 @@ module io_fortran_lib
     !-------------------------------------------------------------------------------------------------------------------
     !! Private interface for reading an external text file into an array.
     !-------------------------------------------------------------------------------------------------------------------
-    impure recursive module subroutine from_text_1dc128(file, into, header, locale, delim, fmt, im)
+    impure recursive module subroutine from_text_c128(file, into, header, locale, delim, fmt, im, stat, errmsg)
       character(len=*), intent(in)               :: file
-      complex(r128),    intent(out), allocatable :: into(:)
+      complex(r128),    intent(out), allocatable :: into(..)
       logical,          intent(in)               :: header
       character(len=*), intent(in)               :: locale
       character(len=*), intent(in)               :: delim
       character(len=*), intent(in)               :: fmt
       character(len=*), intent(in)               :: im
-    end subroutine from_text_1dc128
-    impure recursive module subroutine from_text_1dc64(file, into, header, locale, delim, fmt, im)
+      integer,          intent(out)              :: stat
+      character(len=*), intent(out)              :: errmsg
+    end subroutine from_text_c128
+    impure recursive module subroutine from_text_c64(file, into, header, locale, delim, fmt, im, stat, errmsg)
       character(len=*), intent(in)               :: file
-      complex(r64),     intent(out), allocatable :: into(:)
+      complex(r64),     intent(out), allocatable :: into(..)
       logical,          intent(in)               :: header
       character(len=*), intent(in)               :: locale
       character(len=*), intent(in)               :: delim
       character(len=*), intent(in)               :: fmt
       character(len=*), intent(in)               :: im
-    end subroutine from_text_1dc64
-    impure recursive module subroutine from_text_1dc32(file, into, header, locale, delim, fmt, im)
+      integer,          intent(out)              :: stat
+      character(len=*), intent(out)              :: errmsg
+    end subroutine from_text_c64
+    impure recursive module subroutine from_text_c32(file, into, header, locale, delim, fmt, im, stat, errmsg)
       character(len=*), intent(in)               :: file
-      complex(r32),     intent(out), allocatable :: into(:)
+      complex(r32),     intent(out), allocatable :: into(..)
       logical,          intent(in)               :: header
       character(len=*), intent(in)               :: locale
       character(len=*), intent(in)               :: delim
       character(len=*), intent(in)               :: fmt
       character(len=*), intent(in)               :: im
-    end subroutine from_text_1dc32
+      integer,          intent(out)              :: stat
+      character(len=*), intent(out)              :: errmsg
+    end subroutine from_text_c32
 
-    impure recursive module subroutine from_text_2dc128(file, into, header, locale, delim, fmt, im)
+    impure recursive module subroutine from_text_r128(file, into, header, locale, delim, fmt, stat, errmsg)
       character(len=*), intent(in)               :: file
-      complex(r128),    intent(out), allocatable :: into(:,:)
+      real(r128),       intent(out), allocatable :: into(..)
       logical,          intent(in)               :: header
       character(len=*), intent(in)               :: locale
       character(len=*), intent(in)               :: delim
       character(len=*), intent(in)               :: fmt
-      character(len=*), intent(in)               :: im
-    end subroutine from_text_2dc128
-    impure recursive module subroutine from_text_2dc64(file, into, header, locale, delim, fmt, im)
+      integer,          intent(out)              :: stat
+      character(len=*), intent(out)              :: errmsg
+    end subroutine from_text_r128
+    impure recursive module subroutine from_text_r64(file, into, header, locale, delim, fmt, stat, errmsg)
       character(len=*), intent(in)               :: file
-      complex(r64),     intent(out), allocatable :: into(:,:)
+      real(r64),        intent(out), allocatable :: into(..)
       logical,          intent(in)               :: header
       character(len=*), intent(in)               :: locale
       character(len=*), intent(in)               :: delim
       character(len=*), intent(in)               :: fmt
-      character(len=*), intent(in)               :: im
-    end subroutine from_text_2dc64
-    impure recursive module subroutine from_text_2dc32(file, into, header, locale, delim, fmt, im)
+      integer,          intent(out)              :: stat
+      character(len=*), intent(out)              :: errmsg
+    end subroutine from_text_r64
+    impure recursive module subroutine from_text_r32(file, into, header, locale, delim, fmt, stat, errmsg)
       character(len=*), intent(in)               :: file
-      complex(r32),     intent(out), allocatable :: into(:,:)
+      real(r32),        intent(out), allocatable :: into(..)
       logical,          intent(in)               :: header
       character(len=*), intent(in)               :: locale
       character(len=*), intent(in)               :: delim
       character(len=*), intent(in)               :: fmt
-      character(len=*), intent(in)               :: im
-    end subroutine from_text_2dc32
+      integer,          intent(out)              :: stat
+      character(len=*), intent(out)              :: errmsg
+    end subroutine from_text_r32
 
-    impure recursive module subroutine from_text_1dr128(file, into, header, locale, delim, fmt)
+    impure recursive module subroutine from_text_i64(file, into, header, delim, fmt, stat, errmsg)
       character(len=*), intent(in)               :: file
-      real(r128),       intent(out), allocatable :: into(:)
-      logical,          intent(in)               :: header
-      character(len=*), intent(in)               :: locale
-      character(len=*), intent(in)               :: delim
-      character(len=*), intent(in)               :: fmt
-    end subroutine from_text_1dr128
-    impure recursive module subroutine from_text_1dr64(file, into, header, locale, delim, fmt)
-      character(len=*), intent(in)               :: file
-      real(r64),        intent(out), allocatable :: into(:)
-      logical,          intent(in)               :: header
-      character(len=*), intent(in)               :: locale
-      character(len=*), intent(in)               :: delim
-      character(len=*), intent(in)               :: fmt
-    end subroutine from_text_1dr64
-    impure recursive module subroutine from_text_1dr32(file, into, header, locale, delim, fmt)
-      character(len=*), intent(in)               :: file
-      real(r32),        intent(out), allocatable :: into(:)
-      logical,          intent(in)               :: header
-      character(len=*), intent(in)               :: locale
-      character(len=*), intent(in)               :: delim
-      character(len=*), intent(in)               :: fmt
-    end subroutine from_text_1dr32
-
-    impure recursive module subroutine from_text_2dr128(file, into, header, locale, delim, fmt)
-      character(len=*), intent(in)               :: file
-      real(r128),       intent(out), allocatable :: into(:,:)
-      logical,          intent(in)               :: header
-      character(len=*), intent(in)               :: locale
-      character(len=*), intent(in)               :: delim
-      character(len=*), intent(in)               :: fmt
-    end subroutine from_text_2dr128
-    impure recursive module subroutine from_text_2dr64(file, into, header, locale, delim, fmt)
-      character(len=*), intent(in)               :: file
-      real(r64),        intent(out), allocatable :: into(:,:)
-      logical,          intent(in)               :: header
-      character(len=*), intent(in)               :: locale
-      character(len=*), intent(in)               :: delim
-      character(len=*), intent(in)               :: fmt
-    end subroutine from_text_2dr64
-    impure recursive module subroutine from_text_2dr32(file, into, header, locale, delim, fmt)
-      character(len=*), intent(in)               :: file
-      real(r32),        intent(out), allocatable :: into(:,:)
-      logical,          intent(in)               :: header
-      character(len=*), intent(in)               :: locale
-      character(len=*), intent(in)               :: delim
-      character(len=*), intent(in)               :: fmt
-    end subroutine from_text_2dr32
-
-    impure recursive module subroutine from_text_1di64(file, into, header, delim, fmt)
-      character(len=*), intent(in)               :: file
-      integer(i64),     intent(out), allocatable :: into(:)
+      integer(i64),     intent(out), allocatable :: into(..)
       logical,          intent(in)               :: header
       character(len=*), intent(in)               :: delim
       character(len=*), intent(in)               :: fmt
-    end subroutine from_text_1di64
-    impure recursive module subroutine from_text_1di32(file, into, header, delim, fmt)
+      integer,          intent(out)              :: stat
+      character(len=*), intent(out)              :: errmsg
+    end subroutine from_text_i64
+    impure recursive module subroutine from_text_i32(file, into, header, delim, fmt, stat, errmsg)
       character(len=*), intent(in)               :: file
-      integer(i32),     intent(out), allocatable :: into(:)
+      integer(i32),     intent(out), allocatable :: into(..)
       logical,          intent(in)               :: header
       character(len=*), intent(in)               :: delim
       character(len=*), intent(in)               :: fmt
-    end subroutine from_text_1di32
-    impure recursive module subroutine from_text_1di16(file, into, header, delim, fmt)
+      integer,          intent(out)              :: stat
+      character(len=*), intent(out)              :: errmsg
+    end subroutine from_text_i32
+    impure recursive module subroutine from_text_i16(file, into, header, delim, fmt, stat, errmsg)
       character(len=*), intent(in)               :: file
-      integer(i16),     intent(out), allocatable :: into(:)
+      integer(i16),     intent(out), allocatable :: into(..)
       logical,          intent(in)               :: header
       character(len=*), intent(in)               :: delim
       character(len=*), intent(in)               :: fmt
-    end subroutine from_text_1di16
-    impure recursive module subroutine from_text_1di8(file, into, header, delim, fmt)
+      integer,          intent(out)              :: stat
+      character(len=*), intent(out)              :: errmsg
+    end subroutine from_text_i16
+    impure recursive module subroutine from_text_i8(file, into, header, delim, fmt, stat, errmsg)
       character(len=*), intent(in)               :: file
-      integer(i8),      intent(out), allocatable :: into(:)
+      integer(i8),      intent(out), allocatable :: into(..)
       logical,          intent(in)               :: header
       character(len=*), intent(in)               :: delim
       character(len=*), intent(in)               :: fmt
-    end subroutine from_text_1di8
-
-    impure recursive module subroutine from_text_2di64(file, into, header, delim, fmt)
-      character(len=*), intent(in)               :: file
-      integer(i64),     intent(out), allocatable :: into(:,:)
-      logical,          intent(in)               :: header
-      character(len=*), intent(in)               :: delim
-      character(len=*), intent(in)               :: fmt
-    end subroutine from_text_2di64
-    impure recursive module subroutine from_text_2di32(file, into, header, delim, fmt)
-      character(len=*), intent(in)               :: file
-      integer(i32),     intent(out), allocatable :: into(:,:)
-      logical,          intent(in)               :: header
-      character(len=*), intent(in)               :: delim
-      character(len=*), intent(in)               :: fmt
-    end subroutine from_text_2di32
-    impure recursive module subroutine from_text_2di16(file, into, header, delim, fmt)
-      character(len=*), intent(in)               :: file
-      integer(i16),     intent(out), allocatable :: into(:,:)
-      logical,          intent(in)               :: header
-      character(len=*), intent(in)               :: delim
-      character(len=*), intent(in)               :: fmt
-    end subroutine from_text_2di16
-    impure recursive module subroutine from_text_2di8(file, into, header, delim, fmt)
-      character(len=*), intent(in)               :: file
-      integer(i8),      intent(out), allocatable :: into(:,:)
-      logical,          intent(in)               :: header
-      character(len=*), intent(in)               :: delim
-      character(len=*), intent(in)               :: fmt
-    end subroutine from_text_2di8
+      integer,          intent(out)              :: stat
+      character(len=*), intent(out)              :: errmsg
+    end subroutine from_text_i8
   end interface from_text
 
   interface to_binary                                                                              ! Submodule binary_io
