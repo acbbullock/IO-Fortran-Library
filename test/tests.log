@@ -257,3 +257,371 @@ RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 192348.518 | real kin
 ------------------------------------------------------------------------------------
 All tests are "PASSING" with compiler "GCC version 12.2.0" using compiler options "-cpp -I build\gfortran_3C50D6ABEE48598A -iprefix c:\users\acbbu\appdata\local\quickstart_fortran\mingw64\bin\../lib/gcc/x86_64-w64-mingw32/12.2.0/ -D_REENTRANT -D R4 -D I1 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -std=f2018 -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build\gfortran_3C50D6ABEE48598A".
 
+RUNNING TESTS (String/cast) | date: 20230930 | time: 202650.590 | complex kind: 4
+---------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_3C50D6ABEE48598A -D R4 -D I1 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -std=f2018 -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_3C50D6ABEE48598A -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (String/cast) | date: 20230930 | time: 202650.796 | int kind: 1
+-----------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_3C50D6ABEE48598A -D R4 -D I1 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -std=f2018 -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_3C50D6ABEE48598A -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (String/cast) | date: 20230930 | time: 202650.847 | real kind: 4
+------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_3C50D6ABEE48598A -D R4 -D I1 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -std=f2018 -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_3C50D6ABEE48598A -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 202650.925 | complex kind: 4
+---------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_3C50D6ABEE48598A -D R4 -D I1 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -std=f2018 -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_3C50D6ABEE48598A -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 202653.724 | int kind: 1
+-----------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_3C50D6ABEE48598A -D R4 -D I1 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -std=f2018 -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_3C50D6ABEE48598A -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 202654.059 | real kind: 4
+------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_3C50D6ABEE48598A -D R4 -D I1 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -std=f2018 -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_3C50D6ABEE48598A -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (str/cast) | date: 20230930 | time: 202654.735 | complex kind: 4
+------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_3C50D6ABEE48598A -D R4 -D I1 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -std=f2018 -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_3C50D6ABEE48598A -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (str/cast) | date: 20230930 | time: 202654.788 | int kind: 1
+--------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_3C50D6ABEE48598A -D R4 -D I1 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -std=f2018 -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_3C50D6ABEE48598A -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (str/cast) | date: 20230930 | time: 202654.837 | real kind: 4
+---------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_3C50D6ABEE48598A -D R4 -D I1 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -std=f2018 -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_3C50D6ABEE48598A -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (String/cast) | date: 20230930 | time: 202716.695 | complex kind: 4
+---------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_A71508FB150D63DD -D R4 -D I2 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -std=f2018 -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_A71508FB150D63DD -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (String/cast) | date: 20230930 | time: 202716.906 | int kind: 2
+-----------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_A71508FB150D63DD -D R4 -D I2 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -std=f2018 -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_A71508FB150D63DD -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (String/cast) | date: 20230930 | time: 202716.957 | real kind: 4
+------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_A71508FB150D63DD -D R4 -D I2 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -std=f2018 -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_A71508FB150D63DD -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 202717.036 | complex kind: 4
+---------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_A71508FB150D63DD -D R4 -D I2 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -std=f2018 -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_A71508FB150D63DD -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 202719.767 | int kind: 2
+-----------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_A71508FB150D63DD -D R4 -D I2 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -std=f2018 -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_A71508FB150D63DD -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 202720.101 | real kind: 4
+------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_A71508FB150D63DD -D R4 -D I2 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -std=f2018 -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_A71508FB150D63DD -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (str/cast) | date: 20230930 | time: 202720.725 | complex kind: 4
+------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_A71508FB150D63DD -D R4 -D I2 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -std=f2018 -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_A71508FB150D63DD -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (str/cast) | date: 20230930 | time: 202720.778 | int kind: 2
+--------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_A71508FB150D63DD -D R4 -D I2 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -std=f2018 -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_A71508FB150D63DD -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (str/cast) | date: 20230930 | time: 202720.827 | real kind: 4
+---------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_A71508FB150D63DD -D R4 -D I2 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -std=f2018 -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_A71508FB150D63DD -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (String/cast) | date: 20230930 | time: 202743.043 | complex kind: 8
+---------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_EA6D197834E44DEB -D R8 -D I4 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -std=f2018 -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_EA6D197834E44DEB -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (String/cast) | date: 20230930 | time: 202743.268 | int kind: 4
+-----------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_EA6D197834E44DEB -D R8 -D I4 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -std=f2018 -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_EA6D197834E44DEB -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (String/cast) | date: 20230930 | time: 202743.320 | real kind: 8
+------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_EA6D197834E44DEB -D R8 -D I4 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -std=f2018 -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_EA6D197834E44DEB -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 202743.403 | complex kind: 8
+---------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_EA6D197834E44DEB -D R8 -D I4 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -std=f2018 -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_EA6D197834E44DEB -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 202746.410 | int kind: 4
+-----------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_EA6D197834E44DEB -D R8 -D I4 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -std=f2018 -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_EA6D197834E44DEB -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 202746.758 | real kind: 8
+------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_EA6D197834E44DEB -D R8 -D I4 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -std=f2018 -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_EA6D197834E44DEB -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (str/cast) | date: 20230930 | time: 202747.459 | complex kind: 8
+------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_EA6D197834E44DEB -D R8 -D I4 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -std=f2018 -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_EA6D197834E44DEB -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (str/cast) | date: 20230930 | time: 202747.512 | int kind: 4
+--------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_EA6D197834E44DEB -D R8 -D I4 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -std=f2018 -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_EA6D197834E44DEB -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (str/cast) | date: 20230930 | time: 202747.561 | real kind: 8
+---------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_EA6D197834E44DEB -D R8 -D I4 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -std=f2018 -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_EA6D197834E44DEB -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (String/cast) | date: 20230930 | time: 202809.795 | complex kind: 16
+----------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_6CEFE34B20F81BA6 -D R16 -D I8 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -std=f2018 -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_6CEFE34B20F81BA6 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (String/cast) | date: 20230930 | time: 202810.272 | int kind: 8
+-----------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_6CEFE34B20F81BA6 -D R16 -D I8 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -std=f2018 -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_6CEFE34B20F81BA6 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (String/cast) | date: 20230930 | time: 202810.325 | real kind: 16
+-------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_6CEFE34B20F81BA6 -D R16 -D I8 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -std=f2018 -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_6CEFE34B20F81BA6 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 202810.443 | complex kind: 16
+----------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_6CEFE34B20F81BA6 -D R16 -D I8 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -std=f2018 -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_6CEFE34B20F81BA6 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 202815.902 | int kind: 8
+-----------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_6CEFE34B20F81BA6 -D R16 -D I8 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -std=f2018 -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_6CEFE34B20F81BA6 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 202816.324 | real kind: 16
+-------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_6CEFE34B20F81BA6 -D R16 -D I8 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -std=f2018 -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_6CEFE34B20F81BA6 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (str/cast) | date: 20230930 | time: 202817.259 | complex kind: 16
+-------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_6CEFE34B20F81BA6 -D R16 -D I8 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -std=f2018 -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_6CEFE34B20F81BA6 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (str/cast) | date: 20230930 | time: 202817.311 | int kind: 8
+--------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_6CEFE34B20F81BA6 -D R16 -D I8 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -std=f2018 -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_6CEFE34B20F81BA6 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (str/cast) | date: 20230930 | time: 202817.360 | real kind: 16
+----------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_6CEFE34B20F81BA6 -D R16 -D I8 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -std=f2018 -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_6CEFE34B20F81BA6 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (String/cast) | date: 20230930 | time: 202857.649 | complex kind: 4
+---------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_7778AACDD1278F79 -D R4 -D I1 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -std=f2018 -fimplicit-none -ffree-form -J build/gfortran_7778AACDD1278F79 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (String/cast) | date: 20230930 | time: 202857.831 | int kind: 1
+-----------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_7778AACDD1278F79 -D R4 -D I1 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -std=f2018 -fimplicit-none -ffree-form -J build/gfortran_7778AACDD1278F79 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (String/cast) | date: 20230930 | time: 202857.866 | real kind: 4
+------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_7778AACDD1278F79 -D R4 -D I1 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -std=f2018 -fimplicit-none -ffree-form -J build/gfortran_7778AACDD1278F79 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 202857.922 | complex kind: 4
+---------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_7778AACDD1278F79 -D R4 -D I1 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -std=f2018 -fimplicit-none -ffree-form -J build/gfortran_7778AACDD1278F79 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 202900.496 | int kind: 1
+-----------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_7778AACDD1278F79 -D R4 -D I1 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -std=f2018 -fimplicit-none -ffree-form -J build/gfortran_7778AACDD1278F79 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 202900.781 | real kind: 4
+------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_7778AACDD1278F79 -D R4 -D I1 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -std=f2018 -fimplicit-none -ffree-form -J build/gfortran_7778AACDD1278F79 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (str/cast) | date: 20230930 | time: 202901.373 | complex kind: 4
+------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_7778AACDD1278F79 -D R4 -D I1 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -std=f2018 -fimplicit-none -ffree-form -J build/gfortran_7778AACDD1278F79 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (str/cast) | date: 20230930 | time: 202901.407 | int kind: 1
+--------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_7778AACDD1278F79 -D R4 -D I1 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -std=f2018 -fimplicit-none -ffree-form -J build/gfortran_7778AACDD1278F79 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (str/cast) | date: 20230930 | time: 202901.442 | real kind: 4
+---------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_7778AACDD1278F79 -D R4 -D I1 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -std=f2018 -fimplicit-none -ffree-form -J build/gfortran_7778AACDD1278F79 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (String/cast) | date: 20230930 | time: 202940.310 | complex kind: 4
+---------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_746E555578F022B6 -D R4 -D I2 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -std=f2018 -fimplicit-none -ffree-form -J build/gfortran_746E555578F022B6 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (String/cast) | date: 20230930 | time: 202940.494 | int kind: 2
+-----------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_746E555578F022B6 -D R4 -D I2 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -std=f2018 -fimplicit-none -ffree-form -J build/gfortran_746E555578F022B6 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (String/cast) | date: 20230930 | time: 202940.528 | real kind: 4
+------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_746E555578F022B6 -D R4 -D I2 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -std=f2018 -fimplicit-none -ffree-form -J build/gfortran_746E555578F022B6 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 202940.586 | complex kind: 4
+---------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_746E555578F022B6 -D R4 -D I2 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -std=f2018 -fimplicit-none -ffree-form -J build/gfortran_746E555578F022B6 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 202943.164 | int kind: 2
+-----------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_746E555578F022B6 -D R4 -D I2 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -std=f2018 -fimplicit-none -ffree-form -J build/gfortran_746E555578F022B6 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 202943.460 | real kind: 4
+------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_746E555578F022B6 -D R4 -D I2 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -std=f2018 -fimplicit-none -ffree-form -J build/gfortran_746E555578F022B6 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (str/cast) | date: 20230930 | time: 202944.046 | complex kind: 4
+------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_746E555578F022B6 -D R4 -D I2 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -std=f2018 -fimplicit-none -ffree-form -J build/gfortran_746E555578F022B6 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (str/cast) | date: 20230930 | time: 202944.081 | int kind: 2
+--------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_746E555578F022B6 -D R4 -D I2 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -std=f2018 -fimplicit-none -ffree-form -J build/gfortran_746E555578F022B6 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (str/cast) | date: 20230930 | time: 202944.115 | real kind: 4
+---------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_746E555578F022B6 -D R4 -D I2 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -std=f2018 -fimplicit-none -ffree-form -J build/gfortran_746E555578F022B6 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (String/cast) | date: 20230930 | time: 203023.906 | complex kind: 8
+---------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_169365971099E7D0 -D R8 -D I4 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -std=f2018 -fimplicit-none -ffree-form -J build/gfortran_169365971099E7D0 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (String/cast) | date: 20230930 | time: 203024.109 | int kind: 4
+-----------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_169365971099E7D0 -D R8 -D I4 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -std=f2018 -fimplicit-none -ffree-form -J build/gfortran_169365971099E7D0 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (String/cast) | date: 20230930 | time: 203024.141 | real kind: 8
+------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_169365971099E7D0 -D R8 -D I4 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -std=f2018 -fimplicit-none -ffree-form -J build/gfortran_169365971099E7D0 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 203024.200 | complex kind: 8
+---------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_169365971099E7D0 -D R8 -D I4 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -std=f2018 -fimplicit-none -ffree-form -J build/gfortran_169365971099E7D0 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 203026.927 | int kind: 4
+-----------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_169365971099E7D0 -D R8 -D I4 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -std=f2018 -fimplicit-none -ffree-form -J build/gfortran_169365971099E7D0 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 203027.221 | real kind: 8
+------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_169365971099E7D0 -D R8 -D I4 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -std=f2018 -fimplicit-none -ffree-form -J build/gfortran_169365971099E7D0 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (str/cast) | date: 20230930 | time: 203027.827 | complex kind: 8
+------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_169365971099E7D0 -D R8 -D I4 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -std=f2018 -fimplicit-none -ffree-form -J build/gfortran_169365971099E7D0 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (str/cast) | date: 20230930 | time: 203027.860 | int kind: 4
+--------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_169365971099E7D0 -D R8 -D I4 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -std=f2018 -fimplicit-none -ffree-form -J build/gfortran_169365971099E7D0 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (str/cast) | date: 20230930 | time: 203027.892 | real kind: 8
+---------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_169365971099E7D0 -D R8 -D I4 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -std=f2018 -fimplicit-none -ffree-form -J build/gfortran_169365971099E7D0 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (String/cast) | date: 20230930 | time: 203107.824 | complex kind: 16
+----------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_0CCFD63FD2D6D3E3 -D R16 -D I8 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -std=f2018 -fimplicit-none -ffree-form -J build/gfortran_0CCFD63FD2D6D3E3 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (String/cast) | date: 20230930 | time: 203108.268 | int kind: 8
+-----------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_0CCFD63FD2D6D3E3 -D R16 -D I8 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -std=f2018 -fimplicit-none -ffree-form -J build/gfortran_0CCFD63FD2D6D3E3 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (String/cast) | date: 20230930 | time: 203108.304 | real kind: 16
+-------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_0CCFD63FD2D6D3E3 -D R16 -D I8 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -std=f2018 -fimplicit-none -ffree-form -J build/gfortran_0CCFD63FD2D6D3E3 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 203108.398 | complex kind: 16
+----------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_0CCFD63FD2D6D3E3 -D R16 -D I8 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -std=f2018 -fimplicit-none -ffree-form -J build/gfortran_0CCFD63FD2D6D3E3 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 203113.535 | int kind: 8
+-----------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_0CCFD63FD2D6D3E3 -D R16 -D I8 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -std=f2018 -fimplicit-none -ffree-form -J build/gfortran_0CCFD63FD2D6D3E3 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 203113.898 | real kind: 16
+-------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_0CCFD63FD2D6D3E3 -D R16 -D I8 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -std=f2018 -fimplicit-none -ffree-form -J build/gfortran_0CCFD63FD2D6D3E3 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (str/cast) | date: 20230930 | time: 203114.786 | complex kind: 16
+-------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_0CCFD63FD2D6D3E3 -D R16 -D I8 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -std=f2018 -fimplicit-none -ffree-form -J build/gfortran_0CCFD63FD2D6D3E3 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (str/cast) | date: 20230930 | time: 203114.823 | int kind: 8
+--------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_0CCFD63FD2D6D3E3 -D R16 -D I8 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -std=f2018 -fimplicit-none -ffree-form -J build/gfortran_0CCFD63FD2D6D3E3 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (str/cast) | date: 20230930 | time: 203114.859 | real kind: 16
+----------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_0CCFD63FD2D6D3E3 -D R16 -D I8 -mtune=generic -march=x86-64 -O3 -Werror=implicit-interface -std=f2018 -fimplicit-none -ffree-form -J build/gfortran_0CCFD63FD2D6D3E3 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (String/cast) | date: 20230930 | time: 203147.930 | complex kind: 4
+---------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_8418B78A320C52C0 -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -fpp -D R4 -D I1 -free -module build/ifx_8418B78A320C52C0 -o build/ifx_8418B78A320C52C0/IO-Fortran-Library/test_units_array-test-c.f90.o ".
+
+RUNNING TESTS (String/cast) | date: 20230930 | time: 203148.137 | int kind: 1
+-----------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_8418B78A320C52C0 -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -fpp -D R4 -D I1 -free -module build/ifx_8418B78A320C52C0 -o build/ifx_8418B78A320C52C0/IO-Fortran-Library/test_units_array-test-i.f90.o ".
+
+RUNNING TESTS (String/cast) | date: 20230930 | time: 203148.216 | real kind: 4
+------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_8418B78A320C52C0 -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -fpp -D R4 -D I1 -free -module build/ifx_8418B78A320C52C0 -o build/ifx_8418B78A320C52C0/IO-Fortran-Library/test_units_array-test-r.f90.o ".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 203148.314 | complex kind: 4
+---------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_8418B78A320C52C0 -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -fpp -D R4 -D I1 -free -module build/ifx_8418B78A320C52C0 -o build/ifx_8418B78A320C52C0/IO-Fortran-Library/test_units_file-test-c.f90.o ".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 203150.723 | int kind: 1
+-----------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_8418B78A320C52C0 -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -fpp -D R4 -D I1 -free -module build/ifx_8418B78A320C52C0 -o build/ifx_8418B78A320C52C0/IO-Fortran-Library/test_units_file-test-i.f90.o ".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 203151.052 | real kind: 4
+------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_8418B78A320C52C0 -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -fpp -D R4 -D I1 -free -module build/ifx_8418B78A320C52C0 -o build/ifx_8418B78A320C52C0/IO-Fortran-Library/test_units_file-test-r.f90.o ".
+
+RUNNING TESTS (str/cast) | date: 20230930 | time: 203151.599 | complex kind: 4
+------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_8418B78A320C52C0 -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -fpp -D R4 -D I1 -free -module build/ifx_8418B78A320C52C0 -o build/ifx_8418B78A320C52C0/IO-Fortran-Library/test_units_scalar-test-c.f90.o ".
+
+RUNNING TESTS (str/cast) | date: 20230930 | time: 203151.689 | int kind: 1
+--------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_8418B78A320C52C0 -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -fpp -D R4 -D I1 -free -module build/ifx_8418B78A320C52C0 -o build/ifx_8418B78A320C52C0/IO-Fortran-Library/test_units_scalar-test-i.f90.o ".
+
+RUNNING TESTS (str/cast) | date: 20230930 | time: 203151.762 | real kind: 4
+---------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_8418B78A320C52C0 -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -fpp -D R4 -D I1 -free -module build/ifx_8418B78A320C52C0 -o build/ifx_8418B78A320C52C0/IO-Fortran-Library/test_units_scalar-test-r.f90.o ".
+
+RUNNING TESTS (String/cast) | date: 20230930 | time: 203224.202 | complex kind: 4
+---------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_3CE80C0893DFA3BD -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -fpp -D R4 -D I2 -free -module build/ifx_3CE80C0893DFA3BD -o build/ifx_3CE80C0893DFA3BD/IO-Fortran-Library/test_units_array-test-c.f90.o ".
+
+RUNNING TESTS (String/cast) | date: 20230930 | time: 203224.414 | int kind: 2
+-----------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_3CE80C0893DFA3BD -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -fpp -D R4 -D I2 -free -module build/ifx_3CE80C0893DFA3BD -o build/ifx_3CE80C0893DFA3BD/IO-Fortran-Library/test_units_array-test-i.f90.o ".
+
+RUNNING TESTS (String/cast) | date: 20230930 | time: 203224.494 | real kind: 4
+------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_3CE80C0893DFA3BD -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -fpp -D R4 -D I2 -free -module build/ifx_3CE80C0893DFA3BD -o build/ifx_3CE80C0893DFA3BD/IO-Fortran-Library/test_units_array-test-r.f90.o ".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 203224.591 | complex kind: 4
+---------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_3CE80C0893DFA3BD -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -fpp -D R4 -D I2 -free -module build/ifx_3CE80C0893DFA3BD -o build/ifx_3CE80C0893DFA3BD/IO-Fortran-Library/test_units_file-test-c.f90.o ".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 203227.053 | int kind: 2
+-----------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_3CE80C0893DFA3BD -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -fpp -D R4 -D I2 -free -module build/ifx_3CE80C0893DFA3BD -o build/ifx_3CE80C0893DFA3BD/IO-Fortran-Library/test_units_file-test-i.f90.o ".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 203227.383 | real kind: 4
+------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_3CE80C0893DFA3BD -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -fpp -D R4 -D I2 -free -module build/ifx_3CE80C0893DFA3BD -o build/ifx_3CE80C0893DFA3BD/IO-Fortran-Library/test_units_file-test-r.f90.o ".
+
+RUNNING TESTS (str/cast) | date: 20230930 | time: 203227.946 | complex kind: 4
+------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_3CE80C0893DFA3BD -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -fpp -D R4 -D I2 -free -module build/ifx_3CE80C0893DFA3BD -o build/ifx_3CE80C0893DFA3BD/IO-Fortran-Library/test_units_scalar-test-c.f90.o ".
+
+RUNNING TESTS (str/cast) | date: 20230930 | time: 203228.033 | int kind: 2
+--------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_3CE80C0893DFA3BD -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -fpp -D R4 -D I2 -free -module build/ifx_3CE80C0893DFA3BD -o build/ifx_3CE80C0893DFA3BD/IO-Fortran-Library/test_units_scalar-test-i.f90.o ".
+
+RUNNING TESTS (str/cast) | date: 20230930 | time: 203228.103 | real kind: 4
+---------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_3CE80C0893DFA3BD -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -fpp -D R4 -D I2 -free -module build/ifx_3CE80C0893DFA3BD -o build/ifx_3CE80C0893DFA3BD/IO-Fortran-Library/test_units_scalar-test-r.f90.o ".
+
+RUNNING TESTS (String/cast) | date: 20230930 | time: 203300.625 | complex kind: 8
+---------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_7115D4977476EDAB -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -fpp -D R8 -D I4 -free -module build/ifx_7115D4977476EDAB -o build/ifx_7115D4977476EDAB/IO-Fortran-Library/test_units_array-test-c.f90.o ".
+
+RUNNING TESTS (String/cast) | date: 20230930 | time: 203300.865 | int kind: 4
+-----------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_7115D4977476EDAB -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -fpp -D R8 -D I4 -free -module build/ifx_7115D4977476EDAB -o build/ifx_7115D4977476EDAB/IO-Fortran-Library/test_units_array-test-i.f90.o ".
+

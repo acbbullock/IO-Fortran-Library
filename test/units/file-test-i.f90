@@ -23,8 +23,8 @@ program main
   call date_and_time(date=date, time=time)
 
   testlog = String("RUNNING TESTS (to_file/from_file) | date: " + trim(adjustl(date)) + &
-                   " | time: "                     + time                             + &
-                   " | int kind: "                 + str(rk)                          )
+                   " | time: "                                  + time                + &
+                   " | int kind: "                              + str(ik)             )
   call testlog%push(LF + "-"**testlog%len() + LF)
 
   errlog = String("    ERROR LOG" + LF + "    ---------" + LF)
