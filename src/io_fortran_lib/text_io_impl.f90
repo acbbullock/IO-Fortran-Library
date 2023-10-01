@@ -5,119 +5,211 @@ submodule (io_fortran_lib) text_io
   !---------------------------------------------------------------------------------------------------------------------
   implicit none (type, external)
 
+  ! Definitions and interfaces ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  character(len=1), target :: LINE_FEED = LF
+  logical,          target :: APPEND_TO_FILE = .true.
+
   contains ! Procedure bodies for module subprograms <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><
 
   ! Writing Procedures ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   module procedure echo_chars
-    character(len=:), allocatable :: ext, terminator_
-    logical                       :: exists, append_
-    integer                       :: file_unit
+    character(len=:), allocatable :: ext
 
-    exists=.false.; append_=.false.; file_unit=0
+    character(len=:), pointer :: terminator_, errmsg_
+    integer,          pointer :: stat_
+    logical,          pointer :: append_
+
+    character(len=0), target :: dummy_msg
+    integer,          target :: dummy_stat
+
+    logical :: exists
+    integer :: file_unit
+
+    exists=.false.; file_unit=0
 
     ext = ext_of(file)
 
+    if ( .not. present(stat) ) then
+      stat_ => dummy_stat
+    else
+      stat_ => stat
+    end if
+
+    if ( .not. present(errmsg) ) then
+      errmsg_ => dummy_msg
+    else
+      errmsg_ => errmsg
+    end if
+
+    stat_=0; errmsg_=EMPTY_STR
+
     if ( .not. any(TEXT_EXT == ext) ) then
-      write(*,"(a)")  LF//'WARNING: Skipping write to "'//file//'" '// &
-                'due to unsupported file extension "'//ext//'".'// &
-              LF//'Supported file extensions: '//join(TEXT_EXT)
+      stat_   = ARG_ERR
+      errmsg_ = 'Error writing to file "'//file//'" due to unsupported file extension "'//ext//'". '// &
+                "Supported file extensions: "//join(TEXT_EXT)
       return
     end if
 
     if ( len(substring, kind=i64) == 0_i64 ) then
-      write(*,"(a)")  LF//'WARNING: Skipping write to "'//file//'". '// &
-                'String to write is empty.'
+      stat_   = ARG_ERR
+      errmsg_ = 'Error writing to file "'//file//'". String to write is empty.'
       return
     end if
 
     if ( .not. present(append) ) then
-      append_ = .true.
+      append_ => APPEND_TO_FILE
     else
-      append_ = append
+      append_ => append
     end if
 
     if ( .not. present(terminator) ) then
-      terminator_ = LF
+      terminator_ => LINE_FEED
     else
-      terminator_ = terminator
+      terminator_ => terminator
     end if
 
-    inquire(file=file, exist=exists)
+    inquire(file=file, exist=exists, iostat=stat_, iomsg=errmsg_)
+
+    if ( stat_ /= 0 ) then
+      stat_ = WRITE_ERR; return
+    end if
 
     file_unit = output_unit
 
     if ( .not. exists ) then
       open( newunit=file_unit, file=file, status="new", form="unformatted", &
-          action="write", access="stream" )
+            action="write", access="stream", iostat=stat_, iomsg=errmsg_ )
     else
       if ( .not. append_ ) then
         open( newunit=file_unit, file=file, status="replace", form="unformatted", &
-            action="write", access="stream" )
+              action="write", access="stream", iostat=stat_, iomsg=errmsg_ )
       else
         open( newunit=file_unit, file=file, status="old", form="unformatted", &
-            action="write", access="stream", position="append" )
+              action="write", access="stream", position="append", iostat=stat_, iomsg=errmsg_ )
       end if
     end if
 
-    write(unit=file_unit) substring//terminator_
+    if ( stat_ /= 0 ) then
+      stat_ = WRITE_ERR; return
+    end if
 
-    close(file_unit)
+    write(unit=file_unit, iostat=stat_, iomsg=errmsg_) substring
+
+    if ( stat_ /= 0 ) then
+      stat_ = WRITE_ERR; return
+    end if
+
+    write(unit=file_unit, iostat=stat_, iomsg=errmsg_) terminator_
+
+    if ( stat_ /= 0 ) then
+      stat_ = WRITE_ERR; return
+    end if
+
+    close(unit=file_unit, iostat=stat_, iomsg=errmsg_)
+
+    if ( stat_ /= 0 ) then
+      stat_ = WRITE_ERR; return
+    end if
   end procedure echo_chars
 
   module procedure echo_string
-    character(len=:), allocatable :: ext, terminator_
-    logical                       :: exists, append_
-    integer                       :: file_unit
+    character(len=:), allocatable :: ext
 
-    exists=.false.; append_=.false.; file_unit=0
+    character(len=:), pointer :: terminator_, errmsg_
+    integer,          pointer :: stat_
+    logical,          pointer :: append_
+
+    character(len=0), target :: dummy_msg
+    integer,          target :: dummy_stat
+
+    logical :: exists
+    integer :: file_unit
+
+    exists=.false.; file_unit=0
 
     ext = ext_of(file)
 
+    if ( .not. present(stat) ) then
+      stat_ => dummy_stat
+    else
+      stat_ => stat
+    end if
+
+    if ( .not. present(errmsg) ) then
+      errmsg_ => dummy_msg
+    else
+      errmsg_ => errmsg
+    end if
+
+    stat_=0; errmsg_=EMPTY_STR
+
     if ( .not. any(TEXT_EXT == ext) ) then
-      write(*,"(a)")  LF//'WARNING: Skipping write to "'//file//'" '// &
-                'due to unsupported file extension "'//ext//'".'// &
-              LF//'Supported file extensions: '//join(TEXT_EXT)
+      stat_   = ARG_ERR
+      errmsg_ = 'Error writing to file "'//file//'" due to unsupported file extension "'//ext//'". '// &
+                "Supported file extensions: "//join(TEXT_EXT)
       return
     end if
 
-    if ( substring%len64() < 1_i64 ) then
-      write(*,"(a)")  LF//'WARNING: Skipping write to "'//file//'". '// &
-                'String to write is empty.'
+    if ( substring%len64() == 0_i64 ) then
+      stat_   = ARG_ERR
+      errmsg_ = 'Error writing to file "'//file//'". String to write is empty.'
       return
     end if
 
     if ( .not. present(append) ) then
-      append_ = .true.
+      append_ => APPEND_TO_FILE
     else
-      append_ = append
+      append_ => append
     end if
 
     if ( .not. present(terminator) ) then
-      terminator_ = LF
+      terminator_ => LINE_FEED
     else
-      terminator_ = terminator
+      terminator_ => terminator
     end if
 
-    inquire(file=file, exist=exists)
+    inquire(file=file, exist=exists, iostat=stat_, iomsg=errmsg_)
+
+    if ( stat_ /= 0 ) then
+      stat_ = WRITE_ERR; return
+    end if
 
     file_unit = output_unit
 
     if ( .not. exists ) then
       open( newunit=file_unit, file=file, status="new", form="unformatted", &
-          action="write", access="stream" )
+            action="write", access="stream", iostat=stat_, iomsg=errmsg_ )
     else
       if ( .not. append_ ) then
         open( newunit=file_unit, file=file, status="replace", form="unformatted", &
-            action="write", access="stream" )
+              action="write", access="stream", iostat=stat_, iomsg=errmsg_ )
       else
         open( newunit=file_unit, file=file, status="old", form="unformatted", &
-            action="write", access="stream", position="append" )
+              action="write", access="stream", position="append", iostat=stat_, iomsg=errmsg_ )
       end if
     end if
 
-    write(unit=file_unit) substring%s//terminator_
+    if ( stat_ /= 0 ) then
+      stat_ = WRITE_ERR; return
+    end if
 
-    close(file_unit)
+    write(unit=file_unit, iostat=stat_, iomsg=errmsg_) substring%s
+
+    if ( stat_ /= 0 ) then
+      stat_ = WRITE_ERR; return
+    end if
+
+    write(unit=file_unit, iostat=stat_, iomsg=errmsg_) terminator_
+
+    if ( stat_ /= 0 ) then
+      stat_ = WRITE_ERR; return
+    end if
+
+    close(unit=file_unit, iostat=stat_, iomsg=errmsg_)
+
+    if ( stat_ /= 0 ) then
+      stat_ = WRITE_ERR; return
+    end if
   end procedure echo_string
 
   module procedure to_text_c128

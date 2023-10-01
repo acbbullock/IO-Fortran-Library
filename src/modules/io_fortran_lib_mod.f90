@@ -1283,18 +1283,22 @@ module io_fortran_lib
     !!
     !! For a user reference, see [echo](../page/Ref/echo.html).
     !-------------------------------------------------------------------------------------------------------------------
-    impure recursive module subroutine echo_chars(substring, file, append, terminator)
-      character(len=*), intent(in)           :: substring
-      character(len=*), intent(in)           :: file
-      logical,          intent(in), optional :: append
-      character(len=*), intent(in), optional :: terminator
+    impure recursive module subroutine echo_chars(substring, file, append, terminator, stat, errmsg)
+      character(len=*), intent(in)                    :: substring
+      character(len=*), intent(in)                    :: file
+      logical,          intent(in),  optional, target :: append
+      character(len=*), intent(in),  optional, target :: terminator
+      integer,          intent(out), optional, target :: stat
+      character(len=*), intent(out), optional, target :: errmsg
     end subroutine echo_chars
 
-    impure recursive module subroutine echo_string(substring, file, append, terminator)
-      class(String),    intent(in)           :: substring
-      character(len=*), intent(in)           :: file
-      logical,          intent(in), optional :: append
-      character(len=*), intent(in), optional :: terminator
+    impure recursive module subroutine echo_string(substring, file, append, terminator, stat, errmsg)
+      class(String),    intent(in)                    :: substring
+      character(len=*), intent(in)                    :: file
+      logical,          intent(in),  optional, target :: append
+      character(len=*), intent(in),  optional, target :: terminator
+      integer,          intent(out), optional, target :: stat
+      character(len=*), intent(out), optional, target :: errmsg
     end subroutine echo_string
   end interface echo
 
