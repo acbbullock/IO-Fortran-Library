@@ -1,2557 +1,1569 @@
 submodule (io_fortran_lib) text_io
-    !-------------------------------------------------------------------------------------------------------------------
-    !! This submodule provides module procedure implementations for the **public interface** `echo` and the **private
-    !! interfaces** `to_text` and `from_text`.
-    !-------------------------------------------------------------------------------------------------------------------
-    implicit none (type, external)
+  !---------------------------------------------------------------------------------------------------------------------
+  !! This submodule provides module procedure implementations for the **public interface** `echo` and the **private
+  !! interfaces** `to_text` and `from_text`.
+  !---------------------------------------------------------------------------------------------------------------------
+  implicit none (type, external)
 
-    contains ! Procedure bodies for module subprograms <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>!
+  ! Definitions and interfaces ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  character(len=1), target :: LINE_FEED = LF
+  logical,          target :: APPEND_TO_FILE = .true.
 
-    ! Writing Procedures ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    module procedure echo_chars
-        character(len=:), allocatable :: ext, terminator_
-        logical                       :: exists, append_
-        integer                       :: file_unit
+  contains ! Procedure bodies for module subprograms <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><
 
-        exists=.false.; append_=.false.; file_unit=0
+  ! Writing Procedures ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  module procedure echo_chars
+    character(len=:), allocatable :: ext
 
-        ext = ext_of(file)
+    character(len=:), pointer :: terminator_, errmsg_
+    integer,          pointer :: stat_
+    logical,          pointer :: append_
 
-        if ( .not. any(TEXT_EXT == ext) ) then
-            write(*,"(a)")  LF//'WARNING: Skipping write to "'//file//'" '// &
-                                'due to unsupported file extension "'//ext//'".'// &
-                            LF//'Supported file extensions: '//join(TEXT_EXT)
-            return
-        end if
+    character(len=0), target :: dummy_msg
+    integer,          target :: dummy_stat
 
-        if ( len(substring, kind=i64) == 0_i64 ) then
-            write(*,"(a)")  LF//'WARNING: Skipping write to "'//file//'". '// &
-                                'String to write is empty.'
-            return
-        end if
+    logical :: exists
+    integer :: file_unit
 
-        if ( .not. present(append) ) then
-            append_ = .true.
-        else
-            append_ = append
-        end if
+    exists=.false.; file_unit=0
 
-        if ( .not. present(terminator) ) then
-            terminator_ = LF
-        else
-            terminator_ = terminator
-        end if
+    ext = ext_of(file)
 
-        inquire(file=file, exist=exists)
+    if ( .not. present(stat) ) then
+      stat_ => dummy_stat
+    else
+      stat_ => stat
+    end if
 
-        file_unit = output_unit
+    if ( .not. present(errmsg) ) then
+      errmsg_ => dummy_msg
+    else
+      errmsg_ => errmsg
+    end if
 
-        if ( .not. exists ) then
-            open( newunit=file_unit, file=file, status="new", form="unformatted", &
-                  action="write", access="stream" )
-        else
-            if ( .not. append_ ) then
-                open( newunit=file_unit, file=file, status="replace", form="unformatted", &
-                      action="write", access="stream" )
-            else
-                open( newunit=file_unit, file=file, status="old", form="unformatted", &
-                      action="write", access="stream", position="append" )
-            end if
-        end if
+    stat_=0; errmsg_=EMPTY_STR
 
-        write(unit=file_unit) substring//terminator_
+    if ( .not. any(TEXT_EXT == ext) ) then
+      stat_   = ARG_ERR
+      errmsg_ = 'Error writing to file "'//file//'" due to unsupported file extension "'//ext//'". '// &
+                "Supported file extensions: "//join(TEXT_EXT)
+      return
+    end if
 
-        close(file_unit)
-    end procedure echo_chars
+    if ( len(substring, kind=i64) == 0_i64 ) then
+      stat_   = ARG_ERR
+      errmsg_ = 'Error writing to file "'//file//'". String to write is empty.'
+      return
+    end if
 
-    module procedure echo_string
-        character(len=:), allocatable :: ext, terminator_
-        logical                       :: exists, append_
-        integer                       :: file_unit
+    if ( .not. present(append) ) then
+      append_ => APPEND_TO_FILE
+    else
+      append_ => append
+    end if
 
-        exists=.false.; append_=.false.; file_unit=0
+    if ( .not. present(terminator) ) then
+      terminator_ => LINE_FEED
+    else
+      terminator_ => terminator
+    end if
 
-        ext = ext_of(file)
+    inquire(file=file, exist=exists, iostat=stat_, iomsg=errmsg_)
 
-        if ( .not. any(TEXT_EXT == ext) ) then
-            write(*,"(a)")  LF//'WARNING: Skipping write to "'//file//'" '// &
-                                'due to unsupported file extension "'//ext//'".'// &
-                            LF//'Supported file extensions: '//join(TEXT_EXT)
-            return
-        end if
+    if ( stat_ /= 0 ) then
+      stat_ = WRITE_ERR; return
+    end if
 
-        if ( substring%len64() < 1_i64 ) then
-            write(*,"(a)")  LF//'WARNING: Skipping write to "'//file//'". '// &
-                                'String to write is empty.'
-            return
-        end if
+    file_unit = output_unit
 
-        if ( .not. present(append) ) then
-            append_ = .true.
-        else
-            append_ = append
-        end if
+    if ( .not. exists ) then
+      open( newunit=file_unit, file=file, status="new", form="unformatted", &
+            action="write", access="stream", iostat=stat_, iomsg=errmsg_ )
+    else
+      if ( .not. append_ ) then
+        open( newunit=file_unit, file=file, status="replace", form="unformatted", &
+              action="write", access="stream", iostat=stat_, iomsg=errmsg_ )
+      else
+        open( newunit=file_unit, file=file, status="old", form="unformatted", &
+              action="write", access="stream", position="append", iostat=stat_, iomsg=errmsg_ )
+      end if
+    end if
 
-        if ( .not. present(terminator) ) then
-            terminator_ = LF
-        else
-            terminator_ = terminator
-        end if
+    if ( stat_ /= 0 ) then
+      stat_ = WRITE_ERR; return
+    end if
 
-        inquire(file=file, exist=exists)
+    write(unit=file_unit, iostat=stat_, iomsg=errmsg_) substring
 
-        file_unit = output_unit
+    if ( stat_ /= 0 ) then
+      stat_ = WRITE_ERR; return
+    end if
 
-        if ( .not. exists ) then
-            open( newunit=file_unit, file=file, status="new", form="unformatted", &
-                  action="write", access="stream" )
-        else
-            if ( .not. append_ ) then
-                open( newunit=file_unit, file=file, status="replace", form="unformatted", &
-                      action="write", access="stream" )
-            else
-                open( newunit=file_unit, file=file, status="old", form="unformatted", &
-                      action="write", access="stream", position="append" )
-            end if
-        end if
+    write(unit=file_unit, iostat=stat_, iomsg=errmsg_) terminator_
 
-        write(unit=file_unit) substring%s//terminator_
+    if ( stat_ /= 0 ) then
+      stat_ = WRITE_ERR; return
+    end if
 
-        close(file_unit)
-    end procedure echo_string
+    close(unit=file_unit, iostat=stat_, iomsg=errmsg_)
 
-    module procedure to_text_1dc128
-        type(String)                  :: text_file
-        type(String),     allocatable :: cells(:,:)
-        character(len=:), allocatable :: label
-        integer(i64)                  :: nx, j
-        logical                       :: header_present
+    if ( stat_ /= 0 ) then
+      stat_ = WRITE_ERR; return
+    end if
+  end procedure echo_chars
 
-        nx=size(x, kind=i64); j=0_i64; header_present=.false.
+  module procedure echo_string
+    character(len=:), allocatable :: ext
 
-        if ( size(header, kind=i64) == 1_i64 ) then
-            if ( all(header == EMPTY_STR) ) then
-                if ( dim == 1 ) then
-                    allocate( cells(nx,1_i64) )
-                else
-                    allocate( cells(1_i64,nx) )
-                end if
-            else
-                header_present = .true.
-                if ( dim == 1 ) then
-                    allocate( cells(nx+1_i64,1_i64) )
-                    cells(1_i64,1_i64)%s = trim(adjustl(header(1_i64)))
-                else
-                    allocate( cells(2_i64,nx) )
-                    label = trim(adjustl(header(1_i64)))
-                    do j = lbound(x, dim=1, kind=i64), ubound(x, dim=1, kind=i64)
-                        cells(1_i64,j)%s = label//str(j)
-                    end do
-                end if
-            end if
-        else
-            header_present = .true.
-            allocate( cells(2_i64,nx) )
-            do j = lbound(x, dim=1, kind=i64), ubound(x, dim=1, kind=i64)
-                cells(1_i64,j)%s = header(j)
+    character(len=:), pointer :: terminator_, errmsg_
+    integer,          pointer :: stat_
+    logical,          pointer :: append_
+
+    character(len=0), target :: dummy_msg
+    integer,          target :: dummy_stat
+
+    logical :: exists
+    integer :: file_unit
+
+    exists=.false.; file_unit=0
+
+    ext = ext_of(file)
+
+    if ( .not. present(stat) ) then
+      stat_ => dummy_stat
+    else
+      stat_ => stat
+    end if
+
+    if ( .not. present(errmsg) ) then
+      errmsg_ => dummy_msg
+    else
+      errmsg_ => errmsg
+    end if
+
+    stat_=0; errmsg_=EMPTY_STR
+
+    if ( .not. any(TEXT_EXT == ext) ) then
+      stat_   = ARG_ERR
+      errmsg_ = 'Error writing to file "'//file//'" due to unsupported file extension "'//ext//'". '// &
+                "Supported file extensions: "//join(TEXT_EXT)
+      return
+    end if
+
+    if ( substring%len64() == 0_i64 ) then
+      stat_   = ARG_ERR
+      errmsg_ = 'Error writing to file "'//file//'". String to write is empty.'
+      return
+    end if
+
+    if ( .not. present(append) ) then
+      append_ => APPEND_TO_FILE
+    else
+      append_ => append
+    end if
+
+    if ( .not. present(terminator) ) then
+      terminator_ => LINE_FEED
+    else
+      terminator_ => terminator
+    end if
+
+    inquire(file=file, exist=exists, iostat=stat_, iomsg=errmsg_)
+
+    if ( stat_ /= 0 ) then
+      stat_ = WRITE_ERR; return
+    end if
+
+    file_unit = output_unit
+
+    if ( .not. exists ) then
+      open( newunit=file_unit, file=file, status="new", form="unformatted", &
+            action="write", access="stream", iostat=stat_, iomsg=errmsg_ )
+    else
+      if ( .not. append_ ) then
+        open( newunit=file_unit, file=file, status="replace", form="unformatted", &
+              action="write", access="stream", iostat=stat_, iomsg=errmsg_ )
+      else
+        open( newunit=file_unit, file=file, status="old", form="unformatted", &
+              action="write", access="stream", position="append", iostat=stat_, iomsg=errmsg_ )
+      end if
+    end if
+
+    if ( stat_ /= 0 ) then
+      stat_ = WRITE_ERR; return
+    end if
+
+    write(unit=file_unit, iostat=stat_, iomsg=errmsg_) substring%s
+
+    if ( stat_ /= 0 ) then
+      stat_ = WRITE_ERR; return
+    end if
+
+    write(unit=file_unit, iostat=stat_, iomsg=errmsg_) terminator_
+
+    if ( stat_ /= 0 ) then
+      stat_ = WRITE_ERR; return
+    end if
+
+    close(unit=file_unit, iostat=stat_, iomsg=errmsg_)
+
+    if ( stat_ /= 0 ) then
+      stat_ = WRITE_ERR; return
+    end if
+  end procedure echo_string
+
+  module procedure to_text_c128
+    type(String)                      :: text_file
+    type(String), allocatable, target :: cells(:,:)
+    type(String), pointer             :: numerical_data(:,:)
+
+    integer :: nrows, ncols, j
+    logical :: header_present
+
+    j=0; header_present=.false.
+
+    select rank(x)
+      rank(1); nrows = size(x); ncols = 1
+      rank(2); nrows = size(x, dim=1); ncols = size(x, dim=2)
+    end select
+
+    if ( len(header) /= 0 ) header_present = .true.
+    if ( header_present ) nrows = nrows + 1
+
+    allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
+    end if
+
+    if ( header_present ) then
+      select rank(x)
+        rank(1)
+          cells(1,1)%s = header(1)
+        rank(2)
+          if ( size(header) == 1 ) then
+            do j = 1, ncols
+              cells(1,j)%s = header(1)//str(j)
             end do
-        end if
-
-        if ( header_present ) then
-            if ( dim == 1 ) then
-                call cast(x, into=cells(2_i64:,1_i64), locale=locale, fmt=fmt, decimals=decimals, im=im)
-            else
-                call cast(x, into=cells(2_i64,:), locale=locale, fmt=fmt, decimals=decimals, im=im)
-            end if
-        else
-            if ( dim == 1 ) then
-                call cast(x, into=cells(:,1_i64), locale=locale, fmt=fmt, decimals=decimals, im=im)
-            else
-                call cast(x, into=cells(1_i64,:), locale=locale, fmt=fmt, decimals=decimals, im=im)
-            end if
-        end if
-
-        call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
-    end procedure to_text_1dc128
-    module procedure to_text_1dc64
-        type(String)                  :: text_file
-        type(String),     allocatable :: cells(:,:)
-        character(len=:), allocatable :: label
-        integer(i64)                  :: nx, j
-        logical                       :: header_present
-
-        nx=size(x, kind=i64); j=0_i64; header_present=.false.
-
-        if ( size(header, kind=i64) == 1_i64 ) then
-            if ( all(header == EMPTY_STR) ) then
-                if ( dim == 1 ) then
-                    allocate( cells(nx,1_i64) )
-                else
-                    allocate( cells(1_i64,nx) )
-                end if
-            else
-                header_present = .true.
-                if ( dim == 1 ) then
-                    allocate( cells(nx+1_i64,1_i64) )
-                    cells(1_i64,1_i64)%s = trim(adjustl(header(1_i64)))
-                else
-                    allocate( cells(2_i64,nx) )
-                    label = trim(adjustl(header(1_i64)))
-                    do j = lbound(x, dim=1, kind=i64), ubound(x, dim=1, kind=i64)
-                        cells(1_i64,j)%s = label//str(j)
-                    end do
-                end if
-            end if
-        else
-            header_present = .true.
-            allocate( cells(2_i64,nx) )
-            do j = lbound(x, dim=1, kind=i64), ubound(x, dim=1, kind=i64)
-                cells(1_i64,j)%s = header(j)
+          else
+            do j = 1, ncols
+              cells(1,j)%s = header(j)
             end do
-        end if
+          end if
+      end select
+    end if
 
-        if ( header_present ) then
-            if ( dim == 1 ) then
-                call cast(x, into=cells(2_i64:,1_i64), locale=locale, fmt=fmt, decimals=decimals, im=im)
-            else
-                call cast(x, into=cells(2_i64,:), locale=locale, fmt=fmt, decimals=decimals, im=im)
-            end if
-        else
-            if ( dim == 1 ) then
-                call cast(x, into=cells(:,1_i64), locale=locale, fmt=fmt, decimals=decimals, im=im)
-            else
-                call cast(x, into=cells(1_i64,:), locale=locale, fmt=fmt, decimals=decimals, im=im)
-            end if
-        end if
+    numerical_data => cells
+    if ( header_present ) numerical_data => cells(2:,:)
 
-        call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
-    end procedure to_text_1dc64
-    module procedure to_text_1dc32
-        type(String)                  :: text_file
-        type(String),     allocatable :: cells(:,:)
-        character(len=:), allocatable :: label
-        integer(i64)                  :: nx, j
-        logical                       :: header_present
+    select rank(x)
+      rank(1); call cast(x, numerical_data(:,1), locale, fmt, decimals, im)
+      rank(2); call cast(x, numerical_data, locale, fmt, decimals, im)
+    end select
 
-        nx=size(x, kind=i64); j=0_i64; header_present=.false.
+    call text_file%write_file(cells, file, NL, delim, .false., stat, errmsg)
+  end procedure to_text_c128
+  module procedure to_text_c64
+    type(String)                      :: text_file
+    type(String), allocatable, target :: cells(:,:)
+    type(String), pointer             :: numerical_data(:,:)
 
-        if ( size(header, kind=i64) == 1_i64 ) then
-            if ( all(header == EMPTY_STR) ) then
-                if ( dim == 1 ) then
-                    allocate( cells(nx,1_i64) )
-                else
-                    allocate( cells(1_i64,nx) )
-                end if
-            else
-                header_present = .true.
-                if ( dim == 1 ) then
-                    allocate( cells(nx+1_i64,1_i64) )
-                    cells(1_i64,1_i64)%s = trim(adjustl(header(1_i64)))
-                else
-                    allocate( cells(2_i64,nx) )
-                    label = trim(adjustl(header(1_i64)))
-                    do j = lbound(x, dim=1, kind=i64), ubound(x, dim=1, kind=i64)
-                        cells(1_i64,j)%s = label//str(j)
-                    end do
-                end if
-            end if
-        else
-            header_present = .true.
-            allocate( cells(2_i64,nx) )
-            do j = lbound(x, dim=1, kind=i64), ubound(x, dim=1, kind=i64)
-                cells(1_i64,j)%s = header(j)
+    integer :: nrows, ncols, j
+    logical :: header_present
+
+    j=0; header_present=.false.
+
+    select rank(x)
+      rank(1); nrows = size(x); ncols = 1
+      rank(2); nrows = size(x, dim=1); ncols = size(x, dim=2)
+    end select
+
+    if ( len(header) /= 0 ) header_present = .true.
+    if ( header_present ) nrows = nrows + 1
+
+    allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
+    end if
+
+    if ( header_present ) then
+      select rank(x)
+        rank(1)
+          cells(1,1)%s = header(1)
+        rank(2)
+          if ( size(header) == 1 ) then
+            do j = 1, ncols
+              cells(1,j)%s = header(1)//str(j)
             end do
-        end if
-
-        if ( header_present ) then
-            if ( dim == 1 ) then
-                call cast(x, into=cells(2_i64:,1_i64), locale=locale, fmt=fmt, decimals=decimals, im=im)
-            else
-                call cast(x, into=cells(2_i64,:), locale=locale, fmt=fmt, decimals=decimals, im=im)
-            end if
-        else
-            if ( dim == 1 ) then
-                call cast(x, into=cells(:,1_i64), locale=locale, fmt=fmt, decimals=decimals, im=im)
-            else
-                call cast(x, into=cells(1_i64,:), locale=locale, fmt=fmt, decimals=decimals, im=im)
-            end if
-        end if
-
-        call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
-    end procedure to_text_1dc32
-
-    module procedure to_text_2dc128
-        type(String)                  :: text_file
-        type(String),     allocatable :: cells(:,:)
-        character(len=:), allocatable :: label
-        integer(i64)                  :: n_rows, n_cols, j
-        logical                       :: header_present
-
-        n_rows=size(x, dim=1, kind=i64); n_cols=size(x, dim=2, kind=i64); j=0_i64; header_present=.false.
-
-        if ( size(header, kind=i64) == 1_i64 ) then
-            if ( all(header == EMPTY_STR) ) then
-                allocate( cells(n_rows,n_cols) )
-            else
-                header_present = .true.
-                allocate( cells(n_rows+1_i64,n_cols) )
-                label = trim(adjustl(header(1_i64)))
-                do j = lbound(x, dim=2, kind=i64), ubound(x, dim=2, kind=i64)
-                    cells(1_i64,j)%s = label//str(j)
-                end do
-            end if
-        else
-            header_present = .true.
-            allocate( cells(n_rows+1_i64,n_cols) )
-            do j = lbound(x, dim=2, kind=i64), ubound(x, dim=2, kind=i64)
-                cells(1_i64,j)%s = header(j)
+          else
+            do j = 1, ncols
+              cells(1,j)%s = header(j)
             end do
-        end if
+          end if
+      end select
+    end if
 
-        if ( header_present ) then
-            call cast(x, into=cells(2_i64:,:), locale=locale, fmt=fmt, decimals=decimals, im=im)
-        else
-            call cast(x, into=cells, locale=locale, fmt=fmt, decimals=decimals, im=im)
-        end if
+    numerical_data => cells
+    if ( header_present ) numerical_data => cells(2:,:)
 
-        call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
-    end procedure to_text_2dc128
-    module procedure to_text_2dc64
-        type(String)                  :: text_file
-        type(String),     allocatable :: cells(:,:)
-        character(len=:), allocatable :: label
-        integer(i64)                  :: n_rows, n_cols, j
-        logical                       :: header_present
+    select rank(x)
+      rank(1); call cast(x, numerical_data(:,1), locale, fmt, decimals, im)
+      rank(2); call cast(x, numerical_data, locale, fmt, decimals, im)
+    end select
 
-        n_rows=size(x, dim=1, kind=i64); n_cols=size(x, dim=2, kind=i64); j=0_i64; header_present=.false.
+    call text_file%write_file(cells, file, NL, delim, .false., stat, errmsg)
+  end procedure to_text_c64
+  module procedure to_text_c32
+    type(String)                      :: text_file
+    type(String), allocatable, target :: cells(:,:)
+    type(String), pointer             :: numerical_data(:,:)
 
-        if ( size(header, kind=i64) == 1_i64 ) then
-            if ( all(header == EMPTY_STR) ) then
-                allocate( cells(n_rows,n_cols) )
-            else
-                header_present = .true.
-                allocate( cells(n_rows+1_i64,n_cols) )
-                label = trim(adjustl(header(1_i64)))
-                do j = lbound(x, dim=2, kind=i64), ubound(x, dim=2, kind=i64)
-                    cells(1_i64,j)%s = label//str(j)
-                end do
-            end if
-        else
-            header_present = .true.
-            allocate( cells(n_rows+1_i64,n_cols) )
-            do j = lbound(x, dim=2, kind=i64), ubound(x, dim=2, kind=i64)
-                cells(1_i64,j)%s = header(j)
+    integer :: nrows, ncols, j
+    logical :: header_present
+
+    j=0; header_present=.false.
+
+    select rank(x)
+      rank(1); nrows = size(x); ncols = 1
+      rank(2); nrows = size(x, dim=1); ncols = size(x, dim=2)
+    end select
+
+    if ( len(header) /= 0 ) header_present = .true.
+    if ( header_present ) nrows = nrows + 1
+
+    allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
+    end if
+
+    if ( header_present ) then
+      select rank(x)
+        rank(1)
+          cells(1,1)%s = header(1)
+        rank(2)
+          if ( size(header) == 1 ) then
+            do j = 1, ncols
+              cells(1,j)%s = header(1)//str(j)
             end do
-        end if
-
-        if ( header_present ) then
-            call cast(x, into=cells(2_i64:,:), locale=locale, fmt=fmt, decimals=decimals, im=im)
-        else
-            call cast(x, into=cells, locale=locale, fmt=fmt, decimals=decimals, im=im)
-        end if
-
-        call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
-    end procedure to_text_2dc64
-    module procedure to_text_2dc32
-        type(String)                  :: text_file
-        type(String),     allocatable :: cells(:,:)
-        character(len=:), allocatable :: label
-        integer(i64)                  :: n_rows, n_cols, j
-        logical                       :: header_present
-
-        n_rows=size(x, dim=1, kind=i64); n_cols=size(x, dim=2, kind=i64); j=0_i64; header_present=.false.
-
-        if ( size(header, kind=i64) == 1_i64 ) then
-            if ( all(header == EMPTY_STR) ) then
-                allocate( cells(n_rows,n_cols) )
-            else
-                header_present = .true.
-                allocate( cells(n_rows+1_i64,n_cols) )
-                label = trim(adjustl(header(1_i64)))
-                do j = lbound(x, dim=2, kind=i64), ubound(x, dim=2, kind=i64)
-                    cells(1_i64,j)%s = label//str(j)
-                end do
-            end if
-        else
-            header_present = .true.
-            allocate( cells(n_rows+1_i64,n_cols) )
-            do j = lbound(x, dim=2, kind=i64), ubound(x, dim=2, kind=i64)
-                cells(1_i64,j)%s = header(j)
+          else
+            do j = 1, ncols
+              cells(1,j)%s = header(j)
             end do
-        end if
+          end if
+      end select
+    end if
 
-        if ( header_present ) then
-            call cast(x, into=cells(2_i64:,:), locale=locale, fmt=fmt, decimals=decimals, im=im)
-        else
-            call cast(x, into=cells, locale=locale, fmt=fmt, decimals=decimals, im=im)
-        end if
+    numerical_data => cells
+    if ( header_present ) numerical_data => cells(2:,:)
 
-        call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
-    end procedure to_text_2dc32
+    select rank(x)
+      rank(1); call cast(x, numerical_data(:,1), locale, fmt, decimals, im)
+      rank(2); call cast(x, numerical_data, locale, fmt, decimals, im)
+    end select
 
-    module procedure to_text_1dr128
-        type(String)                  :: text_file
-        type(String),     allocatable :: cells(:,:)
-        character(len=:), allocatable :: label
-        integer(i64)                  :: nx, j
-        logical                       :: header_present
+    call text_file%write_file(cells, file, NL, delim, .false., stat, errmsg)
+  end procedure to_text_c32
 
-        nx=size(x, kind=i64); j=0_i64; header_present=.false.
+  module procedure to_text_r128
+    type(String)                      :: text_file
+    type(String), allocatable, target :: cells(:,:)
+    type(String), pointer             :: numerical_data(:,:)
 
-        if ( size(header, kind=i64) == 1_i64 ) then
-            if ( all(header == EMPTY_STR) ) then
-                if ( dim == 1 ) then
-                    allocate( cells(nx,1_i64) )
-                else
-                    allocate( cells(1_i64,nx) )
-                end if
-            else
-                header_present = .true.
-                if ( dim == 1 ) then
-                    allocate( cells(nx+1_i64,1_i64) )
-                    cells(1_i64,1_i64)%s = trim(adjustl(header(1_i64)))
-                else
-                    allocate( cells(2_i64,nx) )
-                    label = trim(adjustl(header(1_i64)))
-                    do j = lbound(x, dim=1, kind=i64), ubound(x, dim=1, kind=i64)
-                        cells(1_i64,j)%s = label//str(j)
-                    end do
-                end if
-            end if
-        else
-            header_present = .true.
-            allocate( cells(2_i64,nx) )
-            do j = lbound(x, dim=1, kind=i64), ubound(x, dim=1, kind=i64)
-                cells(1_i64,j)%s = header(j)
+    integer :: nrows, ncols, j
+    logical :: header_present
+
+    j=0; header_present=.false.
+
+    select rank(x)
+      rank(1); nrows = size(x); ncols = 1
+      rank(2); nrows = size(x, dim=1); ncols = size(x, dim=2)
+    end select
+
+    if ( len(header) /= 0 ) header_present = .true.
+    if ( header_present ) nrows = nrows + 1
+
+    allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
+    end if
+
+    if ( header_present ) then
+      select rank(x)
+        rank(1)
+          cells(1,1)%s = header(1)
+        rank(2)
+          if ( size(header) == 1 ) then
+            do j = 1, ncols
+              cells(1,j)%s = header(1)//str(j)
             end do
-        end if
-
-        if ( header_present ) then
-            if ( dim == 1 ) then
-                call cast(x, into=cells(2_i64:,1_i64), locale=locale, fmt=fmt, decimals=decimals)
-            else
-                call cast(x, into=cells(2_i64,:), locale=locale, fmt=fmt, decimals=decimals)
-            end if
-        else
-            if ( dim == 1 ) then
-                call cast(x, into=cells(:,1_i64), locale=locale, fmt=fmt, decimals=decimals)
-            else
-                call cast(x, into=cells(1_i64,:), locale=locale, fmt=fmt, decimals=decimals)
-            end if
-        end if
-
-        call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
-    end procedure to_text_1dr128
-    module procedure to_text_1dr64
-        type(String)                  :: text_file
-        type(String),     allocatable :: cells(:,:)
-        character(len=:), allocatable :: label
-        integer(i64)                  :: nx, j
-        logical                       :: header_present
-
-        nx=size(x, kind=i64); j=0_i64; header_present=.false.
-
-        if ( size(header, kind=i64) == 1_i64 ) then
-            if ( all(header == EMPTY_STR) ) then
-                if ( dim == 1 ) then
-                    allocate( cells(nx,1_i64) )
-                else
-                    allocate( cells(1_i64,nx) )
-                end if
-            else
-                header_present = .true.
-                if ( dim == 1 ) then
-                    allocate( cells(nx+1_i64,1_i64) )
-                    cells(1_i64,1_i64)%s = trim(adjustl(header(1_i64)))
-                else
-                    allocate( cells(2_i64,nx) )
-                    label = trim(adjustl(header(1_i64)))
-                    do j = lbound(x, dim=1, kind=i64), ubound(x, dim=1, kind=i64)
-                        cells(1_i64,j)%s = label//str(j)
-                    end do
-                end if
-            end if
-        else
-            header_present = .true.
-            allocate( cells(2_i64,nx) )
-            do j = lbound(x, dim=1, kind=i64), ubound(x, dim=1, kind=i64)
-                cells(1_i64,j)%s = header(j)
+          else
+            do j = 1, ncols
+              cells(1,j)%s = header(j)
             end do
-        end if
+          end if
+      end select
+    end if
 
-        if ( header_present ) then
-            if ( dim == 1 ) then
-                call cast(x, into=cells(2_i64:,1_i64), locale=locale, fmt=fmt, decimals=decimals)
-            else
-                call cast(x, into=cells(2_i64,:), locale=locale, fmt=fmt, decimals=decimals)
-            end if
-        else
-            if ( dim == 1 ) then
-                call cast(x, into=cells(:,1_i64), locale=locale, fmt=fmt, decimals=decimals)
-            else
-                call cast(x, into=cells(1_i64,:), locale=locale, fmt=fmt, decimals=decimals)
-            end if
-        end if
+    numerical_data => cells
+    if ( header_present ) numerical_data => cells(2:,:)
 
-        call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
-    end procedure to_text_1dr64
-    module procedure to_text_1dr32
-        type(String)                  :: text_file
-        type(String),     allocatable :: cells(:,:)
-        character(len=:), allocatable :: label
-        integer(i64)                  :: nx, j
-        logical                       :: header_present
+    select rank(x)
+      rank(1); call cast(x, numerical_data(:,1), locale, fmt, decimals)
+      rank(2); call cast(x, numerical_data, locale, fmt, decimals)
+    end select
 
-        nx=size(x, kind=i64); j=0_i64; header_present=.false.
+    call text_file%write_file(cells, file, NL, delim, .false., stat, errmsg)
+  end procedure to_text_r128
+  module procedure to_text_r64
+    type(String)                      :: text_file
+    type(String), allocatable, target :: cells(:,:)
+    type(String), pointer             :: numerical_data(:,:)
 
-        if ( size(header, kind=i64) == 1_i64 ) then
-            if ( all(header == EMPTY_STR) ) then
-                if ( dim == 1 ) then
-                    allocate( cells(nx,1_i64) )
-                else
-                    allocate( cells(1_i64,nx) )
-                end if
-            else
-                header_present = .true.
-                if ( dim == 1 ) then
-                    allocate( cells(nx+1_i64,1_i64) )
-                    cells(1_i64,1_i64)%s = trim(adjustl(header(1_i64)))
-                else
-                    allocate( cells(2_i64,nx) )
-                    label = trim(adjustl(header(1_i64)))
-                    do j = lbound(x, dim=1, kind=i64), ubound(x, dim=1, kind=i64)
-                        cells(1_i64,j)%s = label//str(j)
-                    end do
-                end if
-            end if
-        else
-            header_present = .true.
-            allocate( cells(2_i64,nx) )
-            do j = lbound(x, dim=1, kind=i64), ubound(x, dim=1, kind=i64)
-                cells(1_i64,j)%s = header(j)
+    integer :: nrows, ncols, j
+    logical :: header_present
+
+    j=0; header_present=.false.
+
+    select rank(x)
+      rank(1); nrows = size(x); ncols = 1
+      rank(2); nrows = size(x, dim=1); ncols = size(x, dim=2)
+    end select
+
+    if ( len(header) /= 0 ) header_present = .true.
+    if ( header_present ) nrows = nrows + 1
+
+    allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
+    end if
+
+    if ( header_present ) then
+      select rank(x)
+        rank(1)
+          cells(1,1)%s = header(1)
+        rank(2)
+          if ( size(header) == 1 ) then
+            do j = 1, ncols
+              cells(1,j)%s = header(1)//str(j)
             end do
-        end if
-
-        if ( header_present ) then
-            if ( dim == 1 ) then
-                call cast(x, into=cells(2_i64:,1_i64), locale=locale, fmt=fmt, decimals=decimals)
-            else
-                call cast(x, into=cells(2_i64,:), locale=locale, fmt=fmt, decimals=decimals)
-            end if
-        else
-            if ( dim == 1 ) then
-                call cast(x, into=cells(:,1_i64), locale=locale, fmt=fmt, decimals=decimals)
-            else
-                call cast(x, into=cells(1_i64,:), locale=locale, fmt=fmt, decimals=decimals)
-            end if
-        end if
-
-        call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
-    end procedure to_text_1dr32
-
-    module procedure to_text_2dr128
-        type(String)                  :: text_file
-        type(String),     allocatable :: cells(:,:)
-        character(len=:), allocatable :: label
-        integer(i64)                  :: n_rows, n_cols, j
-        logical                       :: header_present
-
-        n_rows=size(x, dim=1, kind=i64); n_cols=size(x, dim=2, kind=i64); j=0_i64; header_present=.false.
-
-        if ( size(header, kind=i64) == 1_i64 ) then
-            if ( all(header == EMPTY_STR) ) then
-                allocate( cells(n_rows,n_cols) )
-            else
-                header_present = .true.
-                allocate( cells(n_rows+1_i64,n_cols) )
-                label = trim(adjustl(header(1_i64)))
-                do j = lbound(x, dim=2, kind=i64), ubound(x, dim=2, kind=i64)
-                    cells(1_i64,j)%s = label//str(j)
-                end do
-            end if
-        else
-            header_present = .true.
-            allocate( cells(n_rows+1_i64,n_cols) )
-            do j = lbound(x, dim=2, kind=i64), ubound(x, dim=2, kind=i64)
-                cells(1_i64,j)%s = header(j)
+          else
+            do j = 1, ncols
+              cells(1,j)%s = header(j)
             end do
-        end if
+          end if
+      end select
+    end if
 
-        if ( header_present ) then
-            call cast(x, into=cells(2_i64:,:), locale=locale, fmt=fmt, decimals=decimals)
-        else
-            call cast(x, into=cells, locale=locale, fmt=fmt, decimals=decimals)
-        end if
+    numerical_data => cells
+    if ( header_present ) numerical_data => cells(2:,:)
 
-        call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
-    end procedure to_text_2dr128
-    module procedure to_text_2dr64
-        type(String)                  :: text_file
-        type(String),     allocatable :: cells(:,:)
-        character(len=:), allocatable :: label
-        integer(i64)                  :: n_rows, n_cols, j
-        logical                       :: header_present
+    select rank(x)
+      rank(1); call cast(x, numerical_data(:,1), locale, fmt, decimals)
+      rank(2); call cast(x, numerical_data, locale, fmt, decimals)
+    end select
 
-        n_rows=size(x, dim=1, kind=i64); n_cols=size(x, dim=2, kind=i64); j=0_i64; header_present=.false.
+    call text_file%write_file(cells, file, NL, delim, .false., stat, errmsg)
+  end procedure to_text_r64
+  module procedure to_text_r32
+    type(String)                      :: text_file
+    type(String), allocatable, target :: cells(:,:)
+    type(String), pointer             :: numerical_data(:,:)
 
-        if ( size(header, kind=i64) == 1_i64 ) then
-            if ( all(header == EMPTY_STR) ) then
-                allocate( cells(n_rows,n_cols) )
-            else
-                header_present = .true.
-                allocate( cells(n_rows+1_i64,n_cols) )
-                label = trim(adjustl(header(1_i64)))
-                do j = lbound(x, dim=2, kind=i64), ubound(x, dim=2, kind=i64)
-                    cells(1_i64,j)%s = label//str(j)
-                end do
-            end if
-        else
-            header_present = .true.
-            allocate( cells(n_rows+1_i64,n_cols) )
-            do j = lbound(x, dim=2, kind=i64), ubound(x, dim=2, kind=i64)
-                cells(1_i64,j)%s = header(j)
+    integer :: nrows, ncols, j
+    logical :: header_present
+
+    j=0; header_present=.false.
+
+    select rank(x)
+      rank(1); nrows = size(x); ncols = 1
+      rank(2); nrows = size(x, dim=1); ncols = size(x, dim=2)
+    end select
+
+    if ( len(header) /= 0 ) header_present = .true.
+    if ( header_present ) nrows = nrows + 1
+
+    allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
+    end if
+
+    if ( header_present ) then
+      select rank(x)
+        rank(1)
+          cells(1,1)%s = header(1)
+        rank(2)
+          if ( size(header) == 1 ) then
+            do j = 1, ncols
+              cells(1,j)%s = header(1)//str(j)
             end do
-        end if
-
-        if ( header_present ) then
-            call cast(x, into=cells(2_i64:,:), locale=locale, fmt=fmt, decimals=decimals)
-        else
-            call cast(x, into=cells, locale=locale, fmt=fmt, decimals=decimals)
-        end if
-
-        call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
-    end procedure to_text_2dr64
-    module procedure to_text_2dr32
-        type(String)                  :: text_file
-        type(String),     allocatable :: cells(:,:)
-        character(len=:), allocatable :: label
-        integer(i64)                  :: n_rows, n_cols, j
-        logical                       :: header_present
-
-        n_rows=size(x, dim=1, kind=i64); n_cols=size(x, dim=2, kind=i64); j=0_i64; header_present=.false.
-
-        if ( size(header, kind=i64) == 1_i64 ) then
-            if ( all(header == EMPTY_STR) ) then
-                allocate( cells(n_rows,n_cols) )
-            else
-                header_present = .true.
-                allocate( cells(n_rows+1_i64,n_cols) )
-                label = trim(adjustl(header(1_i64)))
-                do j = lbound(x, dim=2, kind=i64), ubound(x, dim=2, kind=i64)
-                    cells(1_i64,j)%s = label//str(j)
-                end do
-            end if
-        else
-            header_present = .true.
-            allocate( cells(n_rows+1_i64,n_cols) )
-            do j = lbound(x, dim=2, kind=i64), ubound(x, dim=2, kind=i64)
-                cells(1_i64,j)%s = header(j)
+          else
+            do j = 1, ncols
+              cells(1,j)%s = header(j)
             end do
-        end if
+          end if
+      end select
+    end if
 
-        if ( header_present ) then
-            call cast(x, into=cells(2_i64:,:), locale=locale, fmt=fmt, decimals=decimals)
-        else
-            call cast(x, into=cells, locale=locale, fmt=fmt, decimals=decimals)
-        end if
+    numerical_data => cells
+    if ( header_present ) numerical_data => cells(2:,:)
 
-        call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
-    end procedure to_text_2dr32
+    select rank(x)
+      rank(1); call cast(x, numerical_data(:,1), locale, fmt, decimals)
+      rank(2); call cast(x, numerical_data, locale, fmt, decimals)
+    end select
 
-    module procedure to_text_1di64
-        type(String)                  :: text_file
-        type(String),     allocatable :: cells(:,:)
-        character(len=:), allocatable :: label
-        integer(i64)                  :: nx, j
-        logical                       :: header_present
+    call text_file%write_file(cells, file, NL, delim, .false., stat, errmsg)
+  end procedure to_text_r32
 
-        nx=size(x, kind=i64); j=0_i64; header_present=.false.
+  module procedure to_text_i64
+    type(String)                      :: text_file
+    type(String), allocatable, target :: cells(:,:)
+    type(String), pointer             :: numerical_data(:,:)
 
-        if ( size(header, kind=i64) == 1_i64 ) then
-            if ( all(header == EMPTY_STR) ) then
-                if ( dim == 1 ) then
-                    allocate( cells(nx,1_i64) )
-                else
-                    allocate( cells(1_i64,nx) )
-                end if
-            else
-                header_present = .true.
-                if ( dim == 1 ) then
-                    allocate( cells(nx+1_i64,1_i64) )
-                    cells(1_i64,1_i64)%s = trim(adjustl(header(1_i64)))
-                else
-                    allocate( cells(2_i64,nx) )
-                    label = trim(adjustl(header(1_i64)))
-                    do j = lbound(x, dim=1, kind=i64), ubound(x, dim=1, kind=i64)
-                        cells(1_i64,j)%s = label//str(j)
-                    end do
-                end if
-            end if
-        else
-            header_present = .true.
-            allocate( cells(2_i64,nx) )
-            do j = lbound(x, dim=1, kind=i64), ubound(x, dim=1, kind=i64)
-                cells(1_i64,j)%s = header(j)
+    integer :: nrows, ncols, j
+    logical :: header_present
+
+    j=0; header_present=.false.
+
+    select rank(x)
+      rank(1); nrows = size(x); ncols = 1
+      rank(2); nrows = size(x, dim=1); ncols = size(x, dim=2)
+    end select
+
+    if ( len(header) /= 0 ) header_present = .true.
+    if ( header_present ) nrows = nrows + 1
+
+    allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
+    end if
+
+    if ( header_present ) then
+      select rank(x)
+        rank(1)
+          cells(1,1)%s = header(1)
+        rank(2)
+          if ( size(header) == 1 ) then
+            do j = 1, ncols
+              cells(1,j)%s = header(1)//str(j)
             end do
-        end if
-
-        if ( header_present ) then
-            if ( dim == 1 ) then
-                call cast(x, into=cells(2_i64:,1_i64), fmt=fmt)
-            else
-                call cast(x, into=cells(2_i64,:), fmt=fmt)
-            end if
-        else
-            if ( dim == 1 ) then
-                call cast(x, into=cells(:,1_i64), fmt=fmt)
-            else
-                call cast(x, into=cells(1_i64,:), fmt=fmt)
-            end if
-        end if
-
-        call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
-    end procedure to_text_1di64
-    module procedure to_text_1di32
-        type(String)                  :: text_file
-        type(String),     allocatable :: cells(:,:)
-        character(len=:), allocatable :: label
-        integer(i64)                  :: nx, j
-        logical                       :: header_present
-
-        nx=size(x, kind=i64); j=0_i64; header_present=.false.
-
-        if ( size(header, kind=i64) == 1_i64 ) then
-            if ( all(header == EMPTY_STR) ) then
-                if ( dim == 1 ) then
-                    allocate( cells(nx,1_i64) )
-                else
-                    allocate( cells(1_i64,nx) )
-                end if
-            else
-                header_present = .true.
-                if ( dim == 1 ) then
-                    allocate( cells(nx+1_i64,1_i64) )
-                    cells(1_i64,1_i64)%s = trim(adjustl(header(1_i64)))
-                else
-                    allocate( cells(2_i64,nx) )
-                    label = trim(adjustl(header(1_i64)))
-                    do j = lbound(x, dim=1, kind=i64), ubound(x, dim=1, kind=i64)
-                        cells(1_i64,j)%s = label//str(j)
-                    end do
-                end if
-            end if
-        else
-            header_present = .true.
-            allocate( cells(2_i64,nx) )
-            do j = lbound(x, dim=1, kind=i64), ubound(x, dim=1, kind=i64)
-                cells(1_i64,j)%s = header(j)
+          else
+            do j = 1, ncols
+              cells(1,j)%s = header(j)
             end do
-        end if
+          end if
+      end select
+    end if
 
-        if ( header_present ) then
-            if ( dim == 1 ) then
-                call cast(x, into=cells(2_i64:,1_i64), fmt=fmt)
-            else
-                call cast(x, into=cells(2_i64,:), fmt=fmt)
-            end if
-        else
-            if ( dim == 1 ) then
-                call cast(x, into=cells(:,1_i64), fmt=fmt)
-            else
-                call cast(x, into=cells(1_i64,:), fmt=fmt)
-            end if
-        end if
+    numerical_data => cells
+    if ( header_present ) numerical_data => cells(2:,:)
 
-        call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
-    end procedure to_text_1di32
-    module procedure to_text_1di16
-        type(String)                  :: text_file
-        type(String),     allocatable :: cells(:,:)
-        character(len=:), allocatable :: label
-        integer(i64)                  :: nx, j
-        logical                       :: header_present
+    select rank(x)
+      rank(1); call cast(x, numerical_data(:,1), fmt)
+      rank(2); call cast(x, numerical_data, fmt)
+    end select
 
-        nx=size(x, kind=i64); j=0_i64; header_present=.false.
+    call text_file%write_file(cells, file, NL, delim, .false., stat, errmsg)
+  end procedure to_text_i64
+  module procedure to_text_i32
+    type(String)                      :: text_file
+    type(String), allocatable, target :: cells(:,:)
+    type(String), pointer             :: numerical_data(:,:)
 
-        if ( size(header, kind=i64) == 1_i64 ) then
-            if ( all(header == EMPTY_STR) ) then
-                if ( dim == 1 ) then
-                    allocate( cells(nx,1_i64) )
-                else
-                    allocate( cells(1_i64,nx) )
-                end if
-            else
-                header_present = .true.
-                if ( dim == 1 ) then
-                    allocate( cells(nx+1_i64,1_i64) )
-                    cells(1_i64,1_i64)%s = trim(adjustl(header(1_i64)))
-                else
-                    allocate( cells(2_i64,nx) )
-                    label = trim(adjustl(header(1_i64)))
-                    do j = lbound(x, dim=1, kind=i64), ubound(x, dim=1, kind=i64)
-                        cells(1_i64,j)%s = label//str(j)
-                    end do
-                end if
-            end if
-        else
-            header_present = .true.
-            allocate( cells(2_i64,nx) )
-            do j = lbound(x, dim=1, kind=i64), ubound(x, dim=1, kind=i64)
-                cells(1_i64,j)%s = header(j)
+    integer :: nrows, ncols, j
+    logical :: header_present
+
+    j=0; header_present=.false.
+
+    select rank(x)
+      rank(1); nrows = size(x); ncols = 1
+      rank(2); nrows = size(x, dim=1); ncols = size(x, dim=2)
+    end select
+
+    if ( len(header) /= 0 ) header_present = .true.
+    if ( header_present ) nrows = nrows + 1
+
+    allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
+    end if
+
+    if ( header_present ) then
+      select rank(x)
+        rank(1)
+          cells(1,1)%s = header(1)
+        rank(2)
+          if ( size(header) == 1 ) then
+            do j = 1, ncols
+              cells(1,j)%s = header(1)//str(j)
             end do
-        end if
-
-        if ( header_present ) then
-            if ( dim == 1 ) then
-                call cast(x, into=cells(2_i64:,1_i64), fmt=fmt)
-            else
-                call cast(x, into=cells(2_i64,:), fmt=fmt)
-            end if
-        else
-            if ( dim == 1 ) then
-                call cast(x, into=cells(:,1_i64), fmt=fmt)
-            else
-                call cast(x, into=cells(1_i64,:), fmt=fmt)
-            end if
-        end if
-
-        call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
-    end procedure to_text_1di16
-    module procedure to_text_1di8
-        type(String)                  :: text_file
-        type(String),     allocatable :: cells(:,:)
-        character(len=:), allocatable :: label
-        integer(i64)                  :: nx, j
-        logical                       :: header_present
-
-        nx=size(x, kind=i64); j=0_i64; header_present=.false.
-
-        if ( size(header, kind=i64) == 1_i64 ) then
-            if ( all(header == EMPTY_STR) ) then
-                if ( dim == 1 ) then
-                    allocate( cells(nx,1_i64) )
-                else
-                    allocate( cells(1_i64,nx) )
-                end if
-            else
-                header_present = .true.
-                if ( dim == 1 ) then
-                    allocate( cells(nx+1_i64,1_i64) )
-                    cells(1_i64,1_i64)%s = trim(adjustl(header(1_i64)))
-                else
-                    allocate( cells(2_i64,nx) )
-                    label = trim(adjustl(header(1_i64)))
-                    do j = lbound(x, dim=1, kind=i64), ubound(x, dim=1, kind=i64)
-                        cells(1_i64,j)%s = label//str(j)
-                    end do
-                end if
-            end if
-        else
-            header_present = .true.
-            allocate( cells(2_i64,nx) )
-            do j = lbound(x, dim=1, kind=i64), ubound(x, dim=1, kind=i64)
-                cells(1_i64,j)%s = header(j)
+          else
+            do j = 1, ncols
+              cells(1,j)%s = header(j)
             end do
-        end if
+          end if
+      end select
+    end if
 
-        if ( header_present ) then
-            if ( dim == 1 ) then
-                call cast(x, into=cells(2_i64:,1_i64), fmt=fmt)
-            else
-                call cast(x, into=cells(2_i64,:), fmt=fmt)
-            end if
-        else
-            if ( dim == 1 ) then
-                call cast(x, into=cells(:,1_i64), fmt=fmt)
-            else
-                call cast(x, into=cells(1_i64,:), fmt=fmt)
-            end if
-        end if
+    numerical_data => cells
+    if ( header_present ) numerical_data => cells(2:,:)
 
-        call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
-    end procedure to_text_1di8
+    select rank(x)
+      rank(1); call cast(x, numerical_data(:,1), fmt)
+      rank(2); call cast(x, numerical_data, fmt)
+    end select
 
-    module procedure to_text_2di64
-        type(String)                  :: text_file
-        type(String),     allocatable :: cells(:,:)
-        character(len=:), allocatable :: label
-        integer(i64)                  :: n_rows, n_cols, j
-        logical                       :: header_present
+    call text_file%write_file(cells, file, NL, delim, .false., stat, errmsg)
+  end procedure to_text_i32
+  module procedure to_text_i16
+    type(String)                      :: text_file
+    type(String), allocatable, target :: cells(:,:)
+    type(String), pointer             :: numerical_data(:,:)
 
-        n_rows=size(x, dim=1, kind=i64); n_cols=size(x, dim=2, kind=i64); j=0_i64; header_present=.false.
+    integer :: nrows, ncols, j
+    logical :: header_present
 
-        if ( size(header, kind=i64) == 1_i64 ) then
-            if ( all(header == EMPTY_STR) ) then
-                allocate( cells(n_rows,n_cols) )
-            else
-                header_present = .true.
-                allocate( cells(n_rows+1_i64,n_cols) )
-                label = trim(adjustl(header(1_i64)))
-                do j = lbound(x, dim=2, kind=i64), ubound(x, dim=2, kind=i64)
-                    cells(1_i64,j)%s = label//str(j)
-                end do
-            end if
-        else
-            header_present = .true.
-            allocate( cells(n_rows+1_i64,n_cols) )
-            do j = lbound(x, dim=2, kind=i64), ubound(x, dim=2, kind=i64)
-                cells(1_i64,j)%s = header(j)
+    j=0; header_present=.false.
+
+    select rank(x)
+      rank(1); nrows = size(x); ncols = 1
+      rank(2); nrows = size(x, dim=1); ncols = size(x, dim=2)
+    end select
+
+    if ( len(header) /= 0 ) header_present = .true.
+    if ( header_present ) nrows = nrows + 1
+
+    allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
+    end if
+
+    if ( header_present ) then
+      select rank(x)
+        rank(1)
+          cells(1,1)%s = header(1)
+        rank(2)
+          if ( size(header) == 1 ) then
+            do j = 1, ncols
+              cells(1,j)%s = header(1)//str(j)
             end do
-        end if
-
-        if ( header_present ) then
-            call cast(x, into=cells(2_i64:,:), fmt=fmt)
-        else
-            call cast(x, into=cells, fmt=fmt)
-        end if
-
-        call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
-    end procedure to_text_2di64
-    module procedure to_text_2di32
-        type(String)                  :: text_file
-        type(String),     allocatable :: cells(:,:)
-        character(len=:), allocatable :: label
-        integer(i64)                  :: n_rows, n_cols, j
-        logical                       :: header_present
-
-        n_rows=size(x, dim=1, kind=i64); n_cols=size(x, dim=2, kind=i64); j=0_i64; header_present=.false.
-
-        if ( size(header, kind=i64) == 1_i64 ) then
-            if ( all(header == EMPTY_STR) ) then
-                allocate( cells(n_rows,n_cols) )
-            else
-                header_present = .true.
-                allocate( cells(n_rows+1_i64,n_cols) )
-                label = trim(adjustl(header(1_i64)))
-                do j = lbound(x, dim=2, kind=i64), ubound(x, dim=2, kind=i64)
-                    cells(1_i64,j)%s = label//str(j)
-                end do
-            end if
-        else
-            header_present = .true.
-            allocate( cells(n_rows+1_i64,n_cols) )
-            do j = lbound(x, dim=2, kind=i64), ubound(x, dim=2, kind=i64)
-                cells(1_i64,j)%s = header(j)
+          else
+            do j = 1, ncols
+              cells(1,j)%s = header(j)
             end do
-        end if
+          end if
+      end select
+    end if
 
-        if ( header_present ) then
-            call cast(x, into=cells(2_i64:,:), fmt=fmt)
-        else
-            call cast(x, into=cells, fmt=fmt)
-        end if
+    numerical_data => cells
+    if ( header_present ) numerical_data => cells(2:,:)
 
-        call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
-    end procedure to_text_2di32
-    module procedure to_text_2di16
-        type(String)                  :: text_file
-        type(String),     allocatable :: cells(:,:)
-        character(len=:), allocatable :: label
-        integer(i64)                  :: n_rows, n_cols, j
-        logical                       :: header_present
+    select rank(x)
+      rank(1); call cast(x, numerical_data(:,1), fmt)
+      rank(2); call cast(x, numerical_data, fmt)
+    end select
 
-        n_rows=size(x, dim=1, kind=i64); n_cols=size(x, dim=2, kind=i64); j=0_i64; header_present=.false.
+    call text_file%write_file(cells, file, NL, delim, .false., stat, errmsg)
+  end procedure to_text_i16
+  module procedure to_text_i8
+    type(String)                      :: text_file
+    type(String), allocatable, target :: cells(:,:)
+    type(String), pointer             :: numerical_data(:,:)
 
-        if ( size(header, kind=i64) == 1_i64 ) then
-            if ( all(header == EMPTY_STR) ) then
-                allocate( cells(n_rows,n_cols) )
-            else
-                header_present = .true.
-                allocate( cells(n_rows+1_i64,n_cols) )
-                label = trim(adjustl(header(1_i64)))
-                do j = lbound(x, dim=2, kind=i64), ubound(x, dim=2, kind=i64)
-                    cells(1_i64,j)%s = label//str(j)
-                end do
-            end if
-        else
-            header_present = .true.
-            allocate( cells(n_rows+1_i64,n_cols) )
-            do j = lbound(x, dim=2, kind=i64), ubound(x, dim=2, kind=i64)
-                cells(1_i64,j)%s = header(j)
+    integer :: nrows, ncols, j
+    logical :: header_present
+
+    j=0; header_present=.false.
+
+    select rank(x)
+      rank(1); nrows = size(x); ncols = 1
+      rank(2); nrows = size(x, dim=1); ncols = size(x, dim=2)
+    end select
+
+    if ( len(header) /= 0 ) header_present = .true.
+    if ( header_present ) nrows = nrows + 1
+
+    allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
+    end if
+
+    if ( header_present ) then
+      select rank(x)
+        rank(1)
+          cells(1,1)%s = header(1)
+        rank(2)
+          if ( size(header) == 1 ) then
+            do j = 1, ncols
+              cells(1,j)%s = header(1)//str(j)
             end do
-        end if
-
-        if ( header_present ) then
-            call cast(x, into=cells(2_i64:,:), fmt=fmt)
-        else
-            call cast(x, into=cells, fmt=fmt)
-        end if
-
-        call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
-    end procedure to_text_2di16
-    module procedure to_text_2di8
-        type(String)                  :: text_file
-        type(String),     allocatable :: cells(:,:)
-        character(len=:), allocatable :: label
-        integer(i64)                  :: n_rows, n_cols, j
-        logical                       :: header_present
-
-        n_rows=size(x, dim=1, kind=i64); n_cols=size(x, dim=2, kind=i64); j=0_i64; header_present=.false.
-
-        if ( size(header, kind=i64) == 1_i64 ) then
-            if ( all(header == EMPTY_STR) ) then
-                allocate( cells(n_rows,n_cols) )
-            else
-                header_present = .true.
-                allocate( cells(n_rows+1_i64,n_cols) )
-                label = trim(adjustl(header(1_i64)))
-                do j = lbound(x, dim=2, kind=i64), ubound(x, dim=2, kind=i64)
-                    cells(1_i64,j)%s = label//str(j)
-                end do
-            end if
-        else
-            header_present = .true.
-            allocate( cells(n_rows+1_i64,n_cols) )
-            do j = lbound(x, dim=2, kind=i64), ubound(x, dim=2, kind=i64)
-                cells(1_i64,j)%s = header(j)
+          else
+            do j = 1, ncols
+              cells(1,j)%s = header(j)
             end do
+          end if
+      end select
+    end if
+
+    numerical_data => cells
+    if ( header_present ) numerical_data => cells(2:,:)
+
+    select rank(x)
+      rank(1); call cast(x, numerical_data(:,1), fmt)
+      rank(2); call cast(x, numerical_data, fmt)
+    end select
+
+    call text_file%write_file(cells, file, NL, delim, .false., stat, errmsg)
+  end procedure to_text_i8
+
+  ! Reading Procedures ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  module procedure from_text_c128
+    type(String)              :: text_file
+    type(String), allocatable :: cells(:,:)
+    integer                   :: nrows, ncols
+
+    nrows=0; ncols=0
+
+    if ( len(im) > 0 ) then
+      call text_file%read_file(file, cells, NL, delim, stat, errmsg)
+    else
+      call custom_read(text_file, file, cells, NL, delim, stat, errmsg)
+    end if
+
+    if ( stat /= 0 ) return
+
+    call text_file%empty()
+
+    nrows = size(cells, dim=1); ncols = size(cells, dim=2)
+
+    if ( (nrows == 1) .and. header ) then
+      stat   = ARG_ERR
+      errmsg = 'Error reading file "'//file//'". File read with one line, but header was specified as present.'
+      return
+    end if
+
+    select rank(into)
+      rank(1)
+        if ( ncols > 1 ) then
+          stat   = ARG_ERR
+          errmsg = 'Error reading file "'//file//'". Data has more than one column but actual argument is a '//&
+                   "one-dimensional array. Try reading into a two-dimensional array instead."
+          return
         end if
+      rank(2)
+        continue
+    end select
 
-        if ( header_present ) then
-            call cast(x, into=cells(2_i64:,:), fmt=fmt)
-        else
-            call cast(x, into=cells, fmt=fmt)
-        end if
-
-        call text_file%write_file(cells, file=file, row_separator=NL, column_separator=delim)
-    end procedure to_text_2di8
-
-    ! Reading Procedures ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    module procedure from_text_1dc128
-        type(String)              :: text_file
-        type(String), allocatable :: cells(:,:)
-        integer(i64)              :: n_rows, n_cols
-
-        integer(i64) :: file_length, row, col, l, i
-        integer      :: row_sep, col_sep, col_sep_len, open_paren, close_paren, current
-        integer      :: file_unit, iostat
-        logical      :: exists, in_paren
-
-        n_rows      = 0_i64;   n_cols   = 0_i64
-        file_length = 0_i64;   row      = 0_i64; col         = 0_i64; l          = 0_i64; i           = 0_i64
-        row_sep     = 0;       col_sep  = 0;     col_sep_len = 0;     open_paren = 0;     close_paren = 0; current = 0
-        file_unit   = 0;       iostat   = 0
-        exists      = .false.; in_paren = .false.
-
-        if ( len(im) == 0 ) then
-            inquire(file=file, exist=exists)
-
-            file_unit = input_unit
-
-            if ( exists ) then
-                open( newunit=file_unit, file=file, status="old", form="unformatted", &
-                      action="read", access="stream", position="rewind" )
-            else
-                error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
-                return
-            end if
-
-            inquire(file=file, size=file_length)
-
-            if ( file_length == 0_i64 ) then
-                error stop LF//'FATAL: Error reading file "'//file//'". File is empty.'
-                return
-            end if
-
-            allocate( character(len=file_length) :: text_file%s )
-            read(unit=file_unit, iostat=iostat) text_file%s
-            close(file_unit)
-
-            if ( iostat > 0 ) then
-                error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
-                return
-            end if
-
-            col_sep_len = len(delim)
-            row_sep = iachar(NL); col_sep = iachar(delim(1:1))
-            open_paren = iachar('('); close_paren = iachar(')'); in_paren = .false.
-
-            n_rows = text_file%count(match=NL)
-
-            n_cols = 1_i64; i = 1_i64; get_n_cols: do
-                current = iachar(text_file%s(i:i))
-
-                if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. &
-                     (current/=row_sep) ) then
-                    i = i + 1_i64; cycle
-                end if
-
-                if ( current == open_paren ) then
-                    in_paren = .true.; i = i + 1_i64; cycle
-                end if
-
-                if ( current == close_paren ) then
-                    in_paren = .false.; i = i + 1_i64; cycle
-                end if
-
-                if ( current == col_sep ) then
-                    if ( in_paren ) then
-                        i = i + 1_i64; cycle
-                    end if
-
-                    if ( col_sep_len == 1 ) then
-                        n_cols = n_cols + 1_i64; i = i + 1_i64; cycle
-                    else
-                        if ( text_file%s(i:i+col_sep_len-1_i64) == delim ) then
-                            n_cols = n_cols + 1_i64; i = i + col_sep_len; cycle
-                        else
-                            i = i + 1_i64; cycle
-                        end if
-                    end if
-                end if
-
-                if ( current == row_sep ) exit get_n_cols
-            end do get_n_cols
-
-            allocate( cells(n_rows,n_cols) )
-
-            row = 1_i64; col = 1_i64; l = 1_i64; i = 1_i64; positional_transfers: do
-                current = iachar(text_file%s(i:i))
-
-                if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. &
-                     (current/=row_sep) ) then
-                    i = i + 1_i64; cycle
-                end if
-
-                if ( current == open_paren ) then
-                    in_paren = .true.; i = i + 1_i64; cycle
-                end if
-
-                if ( current == close_paren ) then
-                    in_paren = .false.; i = i + 1_i64; cycle
-                end if
-
-                if ( current == col_sep ) then
-                    if ( in_paren ) then
-                        i = i + 1_i64; cycle
-                    end if
-
-                    if ( col_sep_len == 1 ) then
-                        cells(row,col)%s = text_file%s(l:i-1); i = i + 1_i64; l = i
-                        col = col + 1_i64; cycle
-                    else
-                        if ( text_file%s(i:i+col_sep_len-1_i64) == delim ) then
-                            cells(row,col)%s = text_file%s(l:i-1); i = i + col_sep_len; l = i
-                            col = col + 1_i64; cycle
-                        else
-                            i = i + 1_i64; cycle
-                        end if
-                    end if
-                end if
-
-                if ( current == row_sep ) then
-                    cells(row,col)%s = text_file%s(l:i-1)
-                    if ( row == n_rows ) exit positional_transfers
-                    i = i + 1_i64; l = i; col = 1_i64; row = row + 1_i64; cycle
-                end if
-            end do positional_transfers
-        else
-            call text_file%read_file(file, cell_array=cells, row_separator=NL, column_separator=delim)
-
-            n_rows = size(cells, dim=1, kind=i64)
-            n_cols = size(cells, dim=2, kind=i64)
-        end if
-
-        if ( (n_rows > 1_i64) .and. (n_cols > 1_i64) ) then
-            if ( header ) then
-                if ( n_rows /= 2_i64 ) then
-                    error stop LF//'Error reading file "'//file//'". Data cannot fit into one-dimensional array.'
-                    return
-                end if
-            else
-                error stop LF//'Error reading file "'//file//'". Data cannot fit into one-dimensional array.'// &
-                               ' If there are two rows including a header row, specify "header=.true." .'
-                return
-            end if
-        end if
-
-        if ( n_cols == 1_i64 ) then
-            if ( header ) then
-                if ( .not. (n_rows > 1_i64) ) then
-                    error stop LF//'Error reading file "'//file//'". File is empty after header.'
-                    return
-                end if
-
-                allocate( into(n_rows-1_i64) )
-                call cells(2_i64:,1_i64)%cast(into=into, locale=locale, fmt=fmt, im=im); return
-            else
-                allocate( into(n_rows) )
-                call cells(:,1_i64)%cast(into=into, locale=locale, fmt=fmt, im=im); return
-            end if
-        end if
-
+    select rank(into)
+      rank(1)
         if ( header ) then
-            if ( .not. (n_rows > 1_i64) ) then
-                error stop LF//'Error reading file "'//file//'". File is empty after header.'
-                return
-            end if
-
-            allocate( into(n_cols) )
-            call cells(2_i64,:)%cast(into=into, locale=locale, fmt=fmt, im=im); return
+          allocate( into(nrows-1), stat=stat, errmsg=errmsg )
         else
-            allocate( into(n_cols) )
-            call cells(1_i64,:)%cast(into=into, locale=locale, fmt=fmt, im=im); return
+          allocate( into(nrows), stat=stat, errmsg=errmsg )
         end if
-    end procedure from_text_1dc128
-    module procedure from_text_1dc64
-        type(String)              :: text_file
-        type(String), allocatable :: cells(:,:)
-        integer(i64)              :: n_rows, n_cols
-
-        integer(i64) :: file_length, row, col, l, i
-        integer      :: row_sep, col_sep, col_sep_len, open_paren, close_paren, current
-        integer      :: file_unit, iostat
-        logical      :: exists, in_paren
-
-        n_rows      = 0_i64;   n_cols   = 0_i64
-        file_length = 0_i64;   row      = 0_i64; col         = 0_i64; l          = 0_i64; i           = 0_i64
-        row_sep     = 0;       col_sep  = 0;     col_sep_len = 0;     open_paren = 0;     close_paren = 0; current = 0
-        file_unit   = 0;       iostat   = 0
-        exists      = .false.; in_paren = .false.
-
-        if ( len(im) == 0 ) then
-            inquire(file=file, exist=exists)
-
-            file_unit = input_unit
-
-            if ( exists ) then
-                open( newunit=file_unit, file=file, status="old", form="unformatted", &
-                      action="read", access="stream", position="rewind" )
-            else
-                error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
-                return
-            end if
-
-            inquire(file=file, size=file_length)
-
-            if ( file_length == 0_i64 ) then
-                error stop LF//'FATAL: Error reading file "'//file//'". File is empty.'
-                return
-            end if
-
-            allocate( character(len=file_length) :: text_file%s )
-            read(unit=file_unit, iostat=iostat) text_file%s
-            close(file_unit)
-
-            if ( iostat > 0 ) then
-                error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
-                return
-            end if
-
-            col_sep_len = len(delim)
-            row_sep = iachar(NL); col_sep = iachar(delim(1:1))
-            open_paren = iachar('('); close_paren = iachar(')'); in_paren = .false.
-
-            n_rows = text_file%count(match=NL)
-
-            n_cols = 1_i64; i = 1_i64; get_n_cols: do
-                current = iachar(text_file%s(i:i))
-
-                if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. &
-                     (current/=row_sep) ) then
-                    i = i + 1_i64; cycle
-                end if
-
-                if ( current == open_paren ) then
-                    in_paren = .true.; i = i + 1_i64; cycle
-                end if
-
-                if ( current == close_paren ) then
-                    in_paren = .false.; i = i + 1_i64; cycle
-                end if
-
-                if ( current == col_sep ) then
-                    if ( in_paren ) then
-                        i = i + 1_i64; cycle
-                    end if
-
-                    if ( col_sep_len == 1 ) then
-                        n_cols = n_cols + 1_i64; i = i + 1_i64; cycle
-                    else
-                        if ( text_file%s(i:i+col_sep_len-1_i64) == delim ) then
-                            n_cols = n_cols + 1_i64; i = i + col_sep_len; cycle
-                        else
-                            i = i + 1_i64; cycle
-                        end if
-                    end if
-                end if
-
-                if ( current == row_sep ) exit get_n_cols
-            end do get_n_cols
-
-            allocate( cells(n_rows,n_cols) )
-
-            row = 1_i64; col = 1_i64; l = 1_i64; i = 1_i64; positional_transfers: do
-                current = iachar(text_file%s(i:i))
-
-                if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. &
-                     (current/=row_sep) ) then
-                    i = i + 1_i64; cycle
-                end if
-
-                if ( current == open_paren ) then
-                    in_paren = .true.; i = i + 1_i64; cycle
-                end if
-
-                if ( current == close_paren ) then
-                    in_paren = .false.; i = i + 1_i64; cycle
-                end if
-
-                if ( current == col_sep ) then
-                    if ( in_paren ) then
-                        i = i + 1_i64; cycle
-                    end if
-
-                    if ( col_sep_len == 1 ) then
-                        cells(row,col)%s = text_file%s(l:i-1); i = i + 1_i64; l = i
-                        col = col + 1_i64; cycle
-                    else
-                        if ( text_file%s(i:i+col_sep_len-1_i64) == delim ) then
-                            cells(row,col)%s = text_file%s(l:i-1); i = i + col_sep_len; l = i
-                            col = col + 1_i64; cycle
-                        else
-                            i = i + 1_i64; cycle
-                        end if
-                    end if
-                end if
-
-                if ( current == row_sep ) then
-                    cells(row,col)%s = text_file%s(l:i-1)
-                    if ( row == n_rows ) exit positional_transfers
-                    i = i + 1_i64; l = i; col = 1_i64; row = row + 1_i64; cycle
-                end if
-            end do positional_transfers
-        else
-            call text_file%read_file(file, cell_array=cells, row_separator=NL, column_separator=delim)
-
-            n_rows = size(cells, dim=1, kind=i64)
-            n_cols = size(cells, dim=2, kind=i64)
-        end if
-
-        if ( (n_rows > 1_i64) .and. (n_cols > 1_i64) ) then
-            if ( header ) then
-                if ( n_rows /= 2_i64 ) then
-                    error stop LF//'Error reading file "'//file//'". Data cannot fit into one-dimensional array.'
-                    return
-                end if
-            else
-                error stop LF//'Error reading file "'//file//'". Data cannot fit into one-dimensional array.'// &
-                               ' If there are two rows including a header row, specify "header=.true." .'
-                return
-            end if
-        end if
-
-        if ( n_cols == 1_i64 ) then
-            if ( header ) then
-                if ( .not. (n_rows > 1_i64) ) then
-                    error stop LF//'Error reading file "'//file//'". File is empty after header.'
-                    return
-                end if
-
-                allocate( into(n_rows-1_i64) )
-                call cells(2_i64:,1_i64)%cast(into=into, locale=locale, fmt=fmt, im=im); return
-            else
-                allocate( into(n_rows) )
-                call cells(:,1_i64)%cast(into=into, locale=locale, fmt=fmt, im=im); return
-            end if
-        end if
-
+      rank(2)
         if ( header ) then
-            if ( .not. (n_rows > 1_i64) ) then
-                error stop LF//'Error reading file "'//file//'". File is empty after header.'
-                return
-            end if
-
-            allocate( into(n_cols) )
-            call cells(2_i64,:)%cast(into=into, locale=locale, fmt=fmt, im=im); return
+          allocate( into(nrows-1,ncols), stat=stat, errmsg=errmsg )
         else
-            allocate( into(n_cols) )
-            call cells(1_i64,:)%cast(into=into, locale=locale, fmt=fmt, im=im); return
+          allocate( into(nrows,ncols), stat=stat, errmsg=errmsg )
         end if
-    end procedure from_text_1dc64
-    module procedure from_text_1dc32
-        type(String)              :: text_file
-        type(String), allocatable :: cells(:,:)
-        integer(i64)              :: n_rows, n_cols
+    end select
 
-        integer(i64) :: file_length, row, col, l, i
-        integer      :: row_sep, col_sep, col_sep_len, open_paren, close_paren, current
-        integer      :: file_unit, iostat
-        logical      :: exists, in_paren
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
+    end if
 
-        n_rows      = 0_i64;   n_cols   = 0_i64
-        file_length = 0_i64;   row      = 0_i64; col         = 0_i64; l          = 0_i64; i           = 0_i64
-        row_sep     = 0;       col_sep  = 0;     col_sep_len = 0;     open_paren = 0;     close_paren = 0; current = 0
-        file_unit   = 0;       iostat   = 0
-        exists      = .false.; in_paren = .false.
-
-        if ( len(im) == 0 ) then
-            inquire(file=file, exist=exists)
-
-            file_unit = input_unit
-
-            if ( exists ) then
-                open( newunit=file_unit, file=file, status="old", form="unformatted", &
-                      action="read", access="stream", position="rewind" )
-            else
-                error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
-                return
-            end if
-
-            inquire(file=file, size=file_length)
-
-            if ( file_length == 0_i64 ) then
-                error stop LF//'FATAL: Error reading file "'//file//'". File is empty.'
-                return
-            end if
-
-            allocate( character(len=file_length) :: text_file%s )
-            read(unit=file_unit, iostat=iostat) text_file%s
-            close(file_unit)
-
-            if ( iostat > 0 ) then
-                error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
-                return
-            end if
-
-            col_sep_len = len(delim)
-            row_sep = iachar(NL); col_sep = iachar(delim(1:1))
-            open_paren = iachar('('); close_paren = iachar(')'); in_paren = .false.
-
-            n_rows = text_file%count(match=NL)
-
-            n_cols = 1_i64; i = 1_i64; get_n_cols: do
-                current = iachar(text_file%s(i:i))
-
-                if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. &
-                     (current/=row_sep) ) then
-                    i = i + 1_i64; cycle
-                end if
-
-                if ( current == open_paren ) then
-                    in_paren = .true.; i = i + 1_i64; cycle
-                end if
-
-                if ( current == close_paren ) then
-                    in_paren = .false.; i = i + 1_i64; cycle
-                end if
-
-                if ( current == col_sep ) then
-                    if ( in_paren ) then
-                        i = i + 1_i64; cycle
-                    end if
-
-                    if ( col_sep_len == 1 ) then
-                        n_cols = n_cols + 1_i64; i = i + 1_i64; cycle
-                    else
-                        if ( text_file%s(i:i+col_sep_len-1_i64) == delim ) then
-                            n_cols = n_cols + 1_i64; i = i + col_sep_len; cycle
-                        else
-                            i = i + 1_i64; cycle
-                        end if
-                    end if
-                end if
-
-                if ( current == row_sep ) exit get_n_cols
-            end do get_n_cols
-
-            allocate( cells(n_rows,n_cols) )
-
-            row = 1_i64; col = 1_i64; l = 1_i64; i = 1_i64; positional_transfers: do
-                current = iachar(text_file%s(i:i))
-
-                if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. &
-                     (current/=row_sep) ) then
-                    i = i + 1_i64; cycle
-                end if
-
-                if ( current == open_paren ) then
-                    in_paren = .true.; i = i + 1_i64; cycle
-                end if
-
-                if ( current == close_paren ) then
-                    in_paren = .false.; i = i + 1_i64; cycle
-                end if
-
-                if ( current == col_sep ) then
-                    if ( in_paren ) then
-                        i = i + 1_i64; cycle
-                    end if
-
-                    if ( col_sep_len == 1 ) then
-                        cells(row,col)%s = text_file%s(l:i-1); i = i + 1_i64; l = i
-                        col = col + 1_i64; cycle
-                    else
-                        if ( text_file%s(i:i+col_sep_len-1_i64) == delim ) then
-                            cells(row,col)%s = text_file%s(l:i-1); i = i + col_sep_len; l = i
-                            col = col + 1_i64; cycle
-                        else
-                            i = i + 1_i64; cycle
-                        end if
-                    end if
-                end if
-
-                if ( current == row_sep ) then
-                    cells(row,col)%s = text_file%s(l:i-1)
-                    if ( row == n_rows ) exit positional_transfers
-                    i = i + 1_i64; l = i; col = 1_i64; row = row + 1_i64; cycle
-                end if
-            end do positional_transfers
-        else
-            call text_file%read_file(file, cell_array=cells, row_separator=NL, column_separator=delim)
-
-            n_rows = size(cells, dim=1, kind=i64)
-            n_cols = size(cells, dim=2, kind=i64)
-        end if
-
-        if ( (n_rows > 1_i64) .and. (n_cols > 1_i64) ) then
-            if ( header ) then
-                if ( n_rows /= 2_i64 ) then
-                    error stop LF//'Error reading file "'//file//'". Data cannot fit into one-dimensional array.'
-                    return
-                end if
-            else
-                error stop LF//'Error reading file "'//file//'". Data cannot fit into one-dimensional array.'// &
-                               ' If there are two rows including a header row, specify "header=.true." .'
-                return
-            end if
-        end if
-
-        if ( n_cols == 1_i64 ) then
-            if ( header ) then
-                if ( .not. (n_rows > 1_i64) ) then
-                    error stop LF//'Error reading file "'//file//'". File is empty after header.'
-                    return
-                end if
-
-                allocate( into(n_rows-1_i64) )
-                call cells(2_i64:,1_i64)%cast(into=into, locale=locale, fmt=fmt, im=im); return
-            else
-                allocate( into(n_rows) )
-                call cells(:,1_i64)%cast(into=into, locale=locale, fmt=fmt, im=im); return
-            end if
-        end if
-
+    select rank(into)
+      rank(1)
         if ( header ) then
-            if ( .not. (n_rows > 1_i64) ) then
-                error stop LF//'Error reading file "'//file//'". File is empty after header.'
-                return
-            end if
-
-            allocate( into(n_cols) )
-            call cells(2_i64,:)%cast(into=into, locale=locale, fmt=fmt, im=im); return
+          call cast(cells(2:,1), into, locale=locale, fmt=fmt, im=im)
         else
-            allocate( into(n_cols) )
-            call cells(1_i64,:)%cast(into=into, locale=locale, fmt=fmt, im=im); return
+          call cast(cells(:,1), into, locale=locale, fmt=fmt, im=im)
         end if
-    end procedure from_text_1dc32
-
-    module procedure from_text_2dc128
-        type(String)              :: text_file
-        type(String), allocatable :: cells(:,:)
-        integer(i64)              :: n_rows, n_cols
-
-        integer(i64) :: file_length, row, col, l, i
-        integer      :: row_sep, col_sep, col_sep_len, open_paren, close_paren, current
-        integer      :: file_unit, iostat
-        logical      :: exists, in_paren
-
-        n_rows      = 0_i64;   n_cols   = 0_i64
-        file_length = 0_i64;   row      = 0_i64; col         = 0_i64; l          = 0_i64; i           = 0_i64
-        row_sep     = 0;       col_sep  = 0;     col_sep_len = 0;     open_paren = 0;     close_paren = 0; current = 0
-        file_unit   = 0;       iostat   = 0
-        exists      = .false.; in_paren = .false.
-
-        if ( len(im) == 0 ) then
-            inquire(file=file, exist=exists)
-
-            file_unit = input_unit
-
-            if ( exists ) then
-                open( newunit=file_unit, file=file, status="old", form="unformatted", &
-                      action="read", access="stream", position="rewind" )
-            else
-                error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
-                return
-            end if
-
-            inquire(file=file, size=file_length)
-
-            if ( file_length == 0_i64 ) then
-                error stop LF//'FATAL: Error reading file "'//file//'". File is empty.'
-                return
-            end if
-
-            allocate( character(len=file_length) :: text_file%s )
-            read(unit=file_unit, iostat=iostat) text_file%s
-            close(file_unit)
-
-            if ( iostat > 0 ) then
-                error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
-                return
-            end if
-
-            col_sep_len = len(delim)
-            row_sep = iachar(NL); col_sep = iachar(delim(1:1))
-            open_paren = iachar('('); close_paren = iachar(')'); in_paren = .false.
-
-            n_rows = text_file%count(match=NL)
-
-            n_cols = 1_i64; i = 1_i64; get_n_cols: do
-                current = iachar(text_file%s(i:i))
-
-                if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. &
-                     (current/=row_sep) ) then
-                    i = i + 1_i64; cycle
-                end if
-
-                if ( current == open_paren ) then
-                    in_paren = .true.; i = i + 1_i64; cycle
-                end if
-
-                if ( current == close_paren ) then
-                    in_paren = .false.; i = i + 1_i64; cycle
-                end if
-
-                if ( current == col_sep ) then
-                    if ( in_paren ) then
-                        i = i + 1_i64; cycle
-                    end if
-
-                    if ( col_sep_len == 1 ) then
-                        n_cols = n_cols + 1_i64; i = i + 1_i64; cycle
-                    else
-                        if ( text_file%s(i:i+col_sep_len-1_i64) == delim ) then
-                            n_cols = n_cols + 1_i64; i = i + col_sep_len; cycle
-                        else
-                            i = i + 1_i64; cycle
-                        end if
-                    end if
-                end if
-
-                if ( current == row_sep ) exit get_n_cols
-            end do get_n_cols
-
-            allocate( cells(n_rows,n_cols) )
-
-            row = 1_i64; col = 1_i64; l = 1_i64; i = 1_i64; positional_transfers: do
-                current = iachar(text_file%s(i:i))
-
-                if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. &
-                     (current/=row_sep) ) then
-                    i = i + 1_i64; cycle
-                end if
-
-                if ( current == open_paren ) then
-                    in_paren = .true.; i = i + 1_i64; cycle
-                end if
-
-                if ( current == close_paren ) then
-                    in_paren = .false.; i = i + 1_i64; cycle
-                end if
-
-                if ( current == col_sep ) then
-                    if ( in_paren ) then
-                        i = i + 1_i64; cycle
-                    end if
-
-                    if ( col_sep_len == 1 ) then
-                        cells(row,col)%s = text_file%s(l:i-1); i = i + 1_i64; l = i
-                        col = col + 1_i64; cycle
-                    else
-                        if ( text_file%s(i:i+col_sep_len-1_i64) == delim ) then
-                            cells(row,col)%s = text_file%s(l:i-1); i = i + col_sep_len; l = i
-                            col = col + 1_i64; cycle
-                        else
-                            i = i + 1_i64; cycle
-                        end if
-                    end if
-                end if
-
-                if ( current == row_sep ) then
-                    cells(row,col)%s = text_file%s(l:i-1)
-                    if ( row == n_rows ) exit positional_transfers
-                    i = i + 1_i64; l = i; col = 1_i64; row = row + 1_i64; cycle
-                end if
-            end do positional_transfers
-        else
-            call text_file%read_file(file, cell_array=cells, row_separator=NL, column_separator=delim)
-
-            n_rows = size(cells, dim=1, kind=i64)
-            n_cols = size(cells, dim=2, kind=i64)
-        end if
-
+      rank(2)
         if ( header ) then
-            if ( .not. (n_rows > 1_i64) ) then
-                error stop LF//'Error reading file "'//file//'". File is empty after header.'
-                return
-            end if
-
-            allocate( into(n_rows-1_i64,n_cols) )
-            call cells(2_i64:,:)%cast(into=into, locale=locale, fmt=fmt, im=im); return
+          call cast(cells(2:,:), into, locale=locale, fmt=fmt, im=im)
         else
-            allocate( into(n_rows,n_cols) )
-            call cells%cast(into=into, locale=locale, fmt=fmt, im=im); return
+          call cast(cells, into, locale=locale, fmt=fmt, im=im)
         end if
-    end procedure from_text_2dc128
-    module procedure from_text_2dc64
-        type(String)              :: text_file
-        type(String), allocatable :: cells(:,:)
-        integer(i64)              :: n_rows, n_cols
+    end select
+  end procedure from_text_c128
+  module procedure from_text_c64
+    type(String)              :: text_file
+    type(String), allocatable :: cells(:,:)
+    integer                   :: nrows, ncols
 
-        integer(i64) :: file_length, row, col, l, i
-        integer      :: row_sep, col_sep, col_sep_len, open_paren, close_paren, current
-        integer      :: file_unit, iostat
-        logical      :: exists, in_paren
+    nrows=0; ncols=0
 
-        n_rows      = 0_i64;   n_cols   = 0_i64
-        file_length = 0_i64;   row      = 0_i64; col         = 0_i64; l          = 0_i64; i           = 0_i64
-        row_sep     = 0;       col_sep  = 0;     col_sep_len = 0;     open_paren = 0;     close_paren = 0; current = 0
-        file_unit   = 0;       iostat   = 0
-        exists      = .false.; in_paren = .false.
+    if ( len(im) > 0 ) then
+      call text_file%read_file(file, cells, NL, delim, stat, errmsg)
+    else
+      call custom_read(text_file, file, cells, NL, delim, stat, errmsg)
+    end if
 
-        if ( len(im) == 0 ) then
-            inquire(file=file, exist=exists)
+    if ( stat /= 0 ) return
 
-            file_unit = input_unit
+    call text_file%empty()
 
-            if ( exists ) then
-                open( newunit=file_unit, file=file, status="old", form="unformatted", &
-                      action="read", access="stream", position="rewind" )
-            else
-                error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
-                return
-            end if
+    nrows = size(cells, dim=1); ncols = size(cells, dim=2)
 
-            inquire(file=file, size=file_length)
+    if ( (nrows == 1) .and. header ) then
+      stat   = ARG_ERR
+      errmsg = 'Error reading file "'//file//'". File read with one line, but header was specified as present.'
+      return
+    end if
 
-            if ( file_length == 0_i64 ) then
-                error stop LF//'FATAL: Error reading file "'//file//'". File is empty.'
-                return
-            end if
-
-            allocate( character(len=file_length) :: text_file%s )
-            read(unit=file_unit, iostat=iostat) text_file%s
-            close(file_unit)
-
-            if ( iostat > 0 ) then
-                error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
-                return
-            end if
-
-            col_sep_len = len(delim)
-            row_sep = iachar(NL); col_sep = iachar(delim(1:1))
-            open_paren = iachar('('); close_paren = iachar(')'); in_paren = .false.
-
-            n_rows = text_file%count(match=NL)
-
-            n_cols = 1_i64; i = 1_i64; get_n_cols: do
-                current = iachar(text_file%s(i:i))
-
-                if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. &
-                     (current/=row_sep) ) then
-                    i = i + 1_i64; cycle
-                end if
-
-                if ( current == open_paren ) then
-                    in_paren = .true.; i = i + 1_i64; cycle
-                end if
-
-                if ( current == close_paren ) then
-                    in_paren = .false.; i = i + 1_i64; cycle
-                end if
-
-                if ( current == col_sep ) then
-                    if ( in_paren ) then
-                        i = i + 1_i64; cycle
-                    end if
-
-                    if ( col_sep_len == 1 ) then
-                        n_cols = n_cols + 1_i64; i = i + 1_i64; cycle
-                    else
-                        if ( text_file%s(i:i+col_sep_len-1_i64) == delim ) then
-                            n_cols = n_cols + 1_i64; i = i + col_sep_len; cycle
-                        else
-                            i = i + 1_i64; cycle
-                        end if
-                    end if
-                end if
-
-                if ( current == row_sep ) exit get_n_cols
-            end do get_n_cols
-
-            allocate( cells(n_rows,n_cols) )
-
-            row = 1_i64; col = 1_i64; l = 1_i64; i = 1_i64; positional_transfers: do
-                current = iachar(text_file%s(i:i))
-
-                if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. &
-                     (current/=row_sep) ) then
-                    i = i + 1_i64; cycle
-                end if
-
-                if ( current == open_paren ) then
-                    in_paren = .true.; i = i + 1_i64; cycle
-                end if
-
-                if ( current == close_paren ) then
-                    in_paren = .false.; i = i + 1_i64; cycle
-                end if
-
-                if ( current == col_sep ) then
-                    if ( in_paren ) then
-                        i = i + 1_i64; cycle
-                    end if
-
-                    if ( col_sep_len == 1 ) then
-                        cells(row,col)%s = text_file%s(l:i-1); i = i + 1_i64; l = i
-                        col = col + 1_i64; cycle
-                    else
-                        if ( text_file%s(i:i+col_sep_len-1_i64) == delim ) then
-                            cells(row,col)%s = text_file%s(l:i-1); i = i + col_sep_len; l = i
-                            col = col + 1_i64; cycle
-                        else
-                            i = i + 1_i64; cycle
-                        end if
-                    end if
-                end if
-
-                if ( current == row_sep ) then
-                    cells(row,col)%s = text_file%s(l:i-1)
-                    if ( row == n_rows ) exit positional_transfers
-                    i = i + 1_i64; l = i; col = 1_i64; row = row + 1_i64; cycle
-                end if
-            end do positional_transfers
-        else
-            call text_file%read_file(file, cell_array=cells, row_separator=NL, column_separator=delim)
-
-            n_rows = size(cells, dim=1, kind=i64)
-            n_cols = size(cells, dim=2, kind=i64)
+    select rank(into)
+      rank(1)
+        if ( ncols > 1 ) then
+          stat   = ARG_ERR
+          errmsg = 'Error reading file "'//file//'". Data has more than one column but actual argument is a '//&
+                   "one-dimensional array. Try reading into a two-dimensional array instead."
+          return
         end if
+      rank(2)
+        continue
+    end select
 
+    select rank(into)
+      rank(1)
         if ( header ) then
-            if ( .not. (n_rows > 1_i64) ) then
-                error stop LF//'Error reading file "'//file//'". File is empty after header.'
-                return
-            end if
-
-            allocate( into(n_rows-1_i64,n_cols) )
-            call cells(2_i64:,:)%cast(into=into, locale=locale, fmt=fmt, im=im); return
+          allocate( into(nrows-1), stat=stat, errmsg=errmsg )
         else
-            allocate( into(n_rows,n_cols) )
-            call cells%cast(into=into, locale=locale, fmt=fmt, im=im); return
+          allocate( into(nrows), stat=stat, errmsg=errmsg )
         end if
-    end procedure from_text_2dc64
-    module procedure from_text_2dc32
-        type(String)              :: text_file
-        type(String), allocatable :: cells(:,:)
-        integer(i64)              :: n_rows, n_cols
-
-        integer(i64) :: file_length, row, col, l, i
-        integer      :: row_sep, col_sep, col_sep_len, open_paren, close_paren, current
-        integer      :: file_unit, iostat
-        logical      :: exists, in_paren
-
-        n_rows      = 0_i64;   n_cols   = 0_i64
-        file_length = 0_i64;   row      = 0_i64; col         = 0_i64; l          = 0_i64; i           = 0_i64
-        row_sep     = 0;       col_sep  = 0;     col_sep_len = 0;     open_paren = 0;     close_paren = 0; current = 0
-        file_unit   = 0;       iostat   = 0
-        exists      = .false.; in_paren = .false.
-
-        if ( len(im) == 0 ) then
-            inquire(file=file, exist=exists)
-
-            file_unit = input_unit
-
-            if ( exists ) then
-                open( newunit=file_unit, file=file, status="old", form="unformatted", &
-                      action="read", access="stream", position="rewind" )
-            else
-                error stop LF//'FATAL: Error reading file "'//file//'". No such file exists.'
-                return
-            end if
-
-            inquire(file=file, size=file_length)
-
-            if ( file_length == 0_i64 ) then
-                error stop LF//'FATAL: Error reading file "'//file//'". File is empty.'
-                return
-            end if
-
-            allocate( character(len=file_length) :: text_file%s )
-            read(unit=file_unit, iostat=iostat) text_file%s
-            close(file_unit)
-
-            if ( iostat > 0 ) then
-                error stop LF//'FATAL: Error reading file "'//file//'". iostat is '//str(iostat)
-                return
-            end if
-
-            col_sep_len = len(delim)
-            row_sep = iachar(NL); col_sep = iachar(delim(1:1))
-            open_paren = iachar('('); close_paren = iachar(')'); in_paren = .false.
-
-            n_rows = text_file%count(match=NL)
-
-            n_cols = 1_i64; i = 1_i64; get_n_cols: do
-                current = iachar(text_file%s(i:i))
-
-                if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. &
-                     (current/=row_sep) ) then
-                    i = i + 1_i64; cycle
-                end if
-
-                if ( current == open_paren ) then
-                    in_paren = .true.; i = i + 1_i64; cycle
-                end if
-
-                if ( current == close_paren ) then
-                    in_paren = .false.; i = i + 1_i64; cycle
-                end if
-
-                if ( current == col_sep ) then
-                    if ( in_paren ) then
-                        i = i + 1_i64; cycle
-                    end if
-
-                    if ( col_sep_len == 1 ) then
-                        n_cols = n_cols + 1_i64; i = i + 1_i64; cycle
-                    else
-                        if ( text_file%s(i:i+col_sep_len-1_i64) == delim ) then
-                            n_cols = n_cols + 1_i64; i = i + col_sep_len; cycle
-                        else
-                            i = i + 1_i64; cycle
-                        end if
-                    end if
-                end if
-
-                if ( current == row_sep ) exit get_n_cols
-            end do get_n_cols
-
-            allocate( cells(n_rows,n_cols) )
-
-            row = 1_i64; col = 1_i64; l = 1_i64; i = 1_i64; positional_transfers: do
-                current = iachar(text_file%s(i:i))
-
-                if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. &
-                     (current/=row_sep) ) then
-                    i = i + 1_i64; cycle
-                end if
-
-                if ( current == open_paren ) then
-                    in_paren = .true.; i = i + 1_i64; cycle
-                end if
-
-                if ( current == close_paren ) then
-                    in_paren = .false.; i = i + 1_i64; cycle
-                end if
-
-                if ( current == col_sep ) then
-                    if ( in_paren ) then
-                        i = i + 1_i64; cycle
-                    end if
-
-                    if ( col_sep_len == 1 ) then
-                        cells(row,col)%s = text_file%s(l:i-1); i = i + 1_i64; l = i
-                        col = col + 1_i64; cycle
-                    else
-                        if ( text_file%s(i:i+col_sep_len-1_i64) == delim ) then
-                            cells(row,col)%s = text_file%s(l:i-1); i = i + col_sep_len; l = i
-                            col = col + 1_i64; cycle
-                        else
-                            i = i + 1_i64; cycle
-                        end if
-                    end if
-                end if
-
-                if ( current == row_sep ) then
-                    cells(row,col)%s = text_file%s(l:i-1)
-                    if ( row == n_rows ) exit positional_transfers
-                    i = i + 1_i64; l = i; col = 1_i64; row = row + 1_i64; cycle
-                end if
-            end do positional_transfers
-        else
-            call text_file%read_file(file, cell_array=cells, row_separator=NL, column_separator=delim)
-
-            n_rows = size(cells, dim=1, kind=i64)
-            n_cols = size(cells, dim=2, kind=i64)
-        end if
-
+      rank(2)
         if ( header ) then
-            if ( .not. (n_rows > 1_i64) ) then
-                error stop LF//'Error reading file "'//file//'". File is empty after header.'
-                return
-            end if
-
-            allocate( into(n_rows-1_i64,n_cols) )
-            call cells(2_i64:,:)%cast(into=into, locale=locale, fmt=fmt, im=im); return
+          allocate( into(nrows-1,ncols), stat=stat, errmsg=errmsg )
         else
-            allocate( into(n_rows,n_cols) )
-            call cells%cast(into=into, locale=locale, fmt=fmt, im=im); return
+          allocate( into(nrows,ncols), stat=stat, errmsg=errmsg )
         end if
-    end procedure from_text_2dc32
+    end select
 
-    module procedure from_text_1dr128
-        type(String)              :: text_file
-        type(String), allocatable :: cells(:,:)
-        integer(i64)              :: n_rows, n_cols
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
+    end if
 
-        n_rows=0_i64; n_cols=0_i64
-
-        call text_file%read_file(file, cell_array=cells, row_separator=NL, column_separator=delim)
-        call text_file%empty()
-
-        n_rows = size(cells, dim=1, kind=i64)
-        n_cols = size(cells, dim=2, kind=i64)
-
-        if ( (n_rows > 1_i64) .and. (n_cols > 1_i64) ) then
-            if ( header ) then
-                if ( n_rows /= 2_i64 ) then
-                    error stop LF//'Error reading file "'//file//'". Data cannot fit into one-dimensional array.'
-                    return
-                end if
-            else
-                error stop LF//'Error reading file "'//file//'". Data cannot fit into one-dimensional array.'// &
-                               ' If there are two rows including a header row, specify "header=.true." .'
-                return
-            end if
-        end if
-
-        if ( n_cols == 1_i64 ) then
-            if ( header ) then
-                if ( .not. (n_rows > 1_i64) ) then
-                    error stop LF//'Error reading file "'//file//'". File is empty after header.'
-                    return
-                end if
-
-                allocate( into(n_rows-1_i64) )
-                call cells(2_i64:,1_i64)%cast(into=into, locale=locale, fmt=fmt); return
-            else
-                allocate( into(n_rows) )
-                call cells(:,1_i64)%cast(into=into, locale=locale, fmt=fmt); return
-            end if
-        end if
-
+    select rank(into)
+      rank(1)
         if ( header ) then
-            if ( .not. (n_rows > 1_i64) ) then
-                error stop LF//'Error reading file "'//file//'". File is empty after header.'
-                return
-            end if
-
-            allocate( into(n_cols) )
-            call cells(2_i64,:)%cast(into=into, locale=locale, fmt=fmt); return
+          call cast(cells(2:,1), into, locale=locale, fmt=fmt, im=im)
         else
-            allocate( into(n_cols) )
-            call cells(1_i64,:)%cast(into=into, locale=locale, fmt=fmt); return
+          call cast(cells(:,1), into, locale=locale, fmt=fmt, im=im)
         end if
-    end procedure from_text_1dr128
-    module procedure from_text_1dr64
-        type(String)              :: text_file
-        type(String), allocatable :: cells(:,:)
-        integer(i64)              :: n_rows, n_cols
-
-        n_rows=0_i64; n_cols=0_i64
-
-        call text_file%read_file(file, cell_array=cells, row_separator=NL, column_separator=delim)
-        call text_file%empty()
-
-        n_rows = size(cells, dim=1, kind=i64)
-        n_cols = size(cells, dim=2, kind=i64)
-
-        if ( (n_rows > 1_i64) .and. (n_cols > 1_i64) ) then
-            if ( header ) then
-                if ( n_rows /= 2_i64 ) then
-                    error stop LF//'Error reading file "'//file//'". Data cannot fit into one-dimensional array.'
-                    return
-                end if
-            else
-                error stop LF//'Error reading file "'//file//'". Data cannot fit into one-dimensional array.'// &
-                               ' If there are two rows including a header row, specify "header=.true." .'
-                return
-            end if
-        end if
-
-        if ( n_cols == 1_i64 ) then
-            if ( header ) then
-                if ( .not. (n_rows > 1_i64) ) then
-                    error stop LF//'Error reading file "'//file//'". File is empty after header.'
-                    return
-                end if
-
-                allocate( into(n_rows-1_i64) )
-                call cells(2_i64:,1_i64)%cast(into=into, locale=locale, fmt=fmt); return
-            else
-                allocate( into(n_rows) )
-                call cells(:,1_i64)%cast(into=into, locale=locale, fmt=fmt); return
-            end if
-        end if
-
+      rank(2)
         if ( header ) then
-            if ( .not. (n_rows > 1_i64) ) then
-                error stop LF//'Error reading file "'//file//'". File is empty after header.'
-                return
-            end if
-
-            allocate( into(n_cols) )
-            call cells(2_i64,:)%cast(into=into, locale=locale, fmt=fmt); return
+          call cast(cells(2:,:), into, locale=locale, fmt=fmt, im=im)
         else
-            allocate( into(n_cols) )
-            call cells(1_i64,:)%cast(into=into, locale=locale, fmt=fmt); return
+          call cast(cells, into, locale=locale, fmt=fmt, im=im)
         end if
-    end procedure from_text_1dr64
-    module procedure from_text_1dr32
-        type(String)              :: text_file
-        type(String), allocatable :: cells(:,:)
-        integer(i64)              :: n_rows, n_cols
+    end select
+  end procedure from_text_c64
+  module procedure from_text_c32
+    type(String)              :: text_file
+    type(String), allocatable :: cells(:,:)
+    integer                   :: nrows, ncols
 
-        n_rows=0_i64; n_cols=0_i64
+    nrows=0; ncols=0
 
-        call text_file%read_file(file, cell_array=cells, row_separator=NL, column_separator=delim)
-        call text_file%empty()
+    if ( len(im) > 0 ) then
+      call text_file%read_file(file, cells, NL, delim, stat, errmsg)
+    else
+      call custom_read(text_file, file, cells, NL, delim, stat, errmsg)
+    end if
 
-        n_rows = size(cells, dim=1, kind=i64)
-        n_cols = size(cells, dim=2, kind=i64)
+    if ( stat /= 0 ) return
 
-        if ( (n_rows > 1_i64) .and. (n_cols > 1_i64) ) then
-            if ( header ) then
-                if ( n_rows /= 2_i64 ) then
-                    error stop LF//'Error reading file "'//file//'". Data cannot fit into one-dimensional array.'
-                    return
-                end if
-            else
-                error stop LF//'Error reading file "'//file//'". Data cannot fit into one-dimensional array.'// &
-                               ' If there are two rows including a header row, specify "header=.true." .'
-                return
-            end if
+    call text_file%empty()
+
+    nrows = size(cells, dim=1); ncols = size(cells, dim=2)
+
+    if ( (nrows == 1) .and. header ) then
+      stat   = ARG_ERR
+      errmsg = 'Error reading file "'//file//'". File read with one line, but header was specified as present.'
+      return
+    end if
+
+    select rank(into)
+      rank(1)
+        if ( ncols > 1 ) then
+          stat   = ARG_ERR
+          errmsg = 'Error reading file "'//file//'". Data has more than one column but actual argument is a '//&
+                   "one-dimensional array. Try reading into a two-dimensional array instead."
+          return
         end if
+      rank(2)
+        continue
+    end select
 
-        if ( n_cols == 1_i64 ) then
-            if ( header ) then
-                if ( .not. (n_rows > 1_i64) ) then
-                    error stop LF//'Error reading file "'//file//'". File is empty after header.'
-                    return
-                end if
-
-                allocate( into(n_rows-1_i64) )
-                call cells(2_i64:,1_i64)%cast(into=into, locale=locale, fmt=fmt); return
-            else
-                allocate( into(n_rows) )
-                call cells(:,1_i64)%cast(into=into, locale=locale, fmt=fmt); return
-            end if
-        end if
-
+    select rank(into)
+      rank(1)
         if ( header ) then
-            if ( .not. (n_rows > 1_i64) ) then
-                error stop LF//'Error reading file "'//file//'". File is empty after header.'
-                return
-            end if
-
-            allocate( into(n_cols) )
-            call cells(2_i64,:)%cast(into=into, locale=locale, fmt=fmt); return
+          allocate( into(nrows-1), stat=stat, errmsg=errmsg )
         else
-            allocate( into(n_cols) )
-            call cells(1_i64,:)%cast(into=into, locale=locale, fmt=fmt); return
+          allocate( into(nrows), stat=stat, errmsg=errmsg )
         end if
-    end procedure from_text_1dr32
-
-    module procedure from_text_2dr128
-        type(String)              :: text_file
-        type(String), allocatable :: cells(:,:)
-        integer(i64)              :: n_rows, n_cols
-
-        n_rows=0_i64; n_cols=0_i64
-
-        call text_file%read_file(file, cell_array=cells, row_separator=NL, column_separator=delim)
-        call text_file%empty()
-
-        n_rows = size(cells, dim=1, kind=i64)
-        n_cols = size(cells, dim=2, kind=i64)
-
+      rank(2)
         if ( header ) then
-            if ( .not. (n_rows > 1_i64) ) then
-                error stop LF//'Error reading file "'//file//'". File is empty after header.'
-                return
-            end if
-
-            allocate( into(n_rows-1_i64,n_cols) )
-            call cells(2_i64:,:)%cast(into=into, locale=locale, fmt=fmt); return
+          allocate( into(nrows-1,ncols), stat=stat, errmsg=errmsg )
         else
-            allocate( into(n_rows,n_cols) )
-            call cells%cast(into=into, locale=locale, fmt=fmt); return
+          allocate( into(nrows,ncols), stat=stat, errmsg=errmsg )
         end if
-    end procedure from_text_2dr128
-    module procedure from_text_2dr64
-        type(String)              :: text_file
-        type(String), allocatable :: cells(:,:)
-        integer(i64)              :: n_rows, n_cols
+    end select
 
-        n_rows=0_i64; n_cols=0_i64
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
+    end if
 
-        call text_file%read_file(file, cell_array=cells, row_separator=NL, column_separator=delim)
-        call text_file%empty()
-
-        n_rows = size(cells, dim=1, kind=i64)
-        n_cols = size(cells, dim=2, kind=i64)
-
+    select rank(into)
+      rank(1)
         if ( header ) then
-            if ( .not. (n_rows > 1_i64) ) then
-                error stop LF//'Error reading file "'//file//'". File is empty after header.'
-                return
-            end if
-
-            allocate( into(n_rows-1_i64,n_cols) )
-            call cells(2_i64:,:)%cast(into=into, locale=locale, fmt=fmt); return
+          call cast(cells(2:,1), into, locale=locale, fmt=fmt, im=im)
         else
-            allocate( into(n_rows,n_cols) )
-            call cells%cast(into=into, locale=locale, fmt=fmt); return
+          call cast(cells(:,1), into, locale=locale, fmt=fmt, im=im)
         end if
-    end procedure from_text_2dr64
-    module procedure from_text_2dr32
-        type(String)              :: text_file
-        type(String), allocatable :: cells(:,:)
-        integer(i64)              :: n_rows, n_cols
-
-        n_rows=0_i64; n_cols=0_i64
-
-        call text_file%read_file(file, cell_array=cells, row_separator=NL, column_separator=delim)
-        call text_file%empty()
-
-        n_rows = size(cells, dim=1, kind=i64)
-        n_cols = size(cells, dim=2, kind=i64)
-
+      rank(2)
         if ( header ) then
-            if ( .not. (n_rows > 1_i64) ) then
-                error stop LF//'Error reading file "'//file//'". File is empty after header.'
-                return
-            end if
-
-            allocate( into(n_rows-1_i64,n_cols) )
-            call cells(2_i64:,:)%cast(into=into, locale=locale, fmt=fmt); return
+          call cast(cells(2:,:), into, locale=locale, fmt=fmt, im=im)
         else
-            allocate( into(n_rows,n_cols) )
-            call cells%cast(into=into, locale=locale, fmt=fmt); return
+          call cast(cells, into, locale=locale, fmt=fmt, im=im)
         end if
-    end procedure from_text_2dr32
+    end select
+  end procedure from_text_c32
 
-    module procedure from_text_1di64
-        type(String)              :: text_file
-        type(String), allocatable :: cells(:,:)
-        integer(i64)              :: n_rows, n_cols
+  impure recursive subroutine custom_read(text_file, file, cells, row_separator, column_separator, stat, errmsg)
+    type(String),     intent(inout)            :: text_file
+    character(len=*), intent(in)               :: file
+    type(String),     intent(out), allocatable :: cells(:,:)
+    character(len=*), intent(in)               :: row_separator, column_separator
+    integer,          intent(out)              :: stat
+    character(len=*), intent(out)              :: errmsg
 
-        n_rows=0_i64; n_cols=0_i64
+    integer(i64) :: file_length, l, i
+    integer      :: nrows, ncols, row, col, row_sep, col_sep, col_sep_len, open_paren, close_paren, current, file_unit
+    logical      :: exists, in_paren
 
-        call text_file%read_file(file, cell_array=cells, row_separator=NL, column_separator=delim)
-        call text_file%empty()
+    stat=0; errmsg=EMPTY_STR
 
-        n_rows = size(cells, dim=1, kind=i64)
-        n_cols = size(cells, dim=2, kind=i64)
+    file_length=0_i64; l=0_i64; i=0_i64
+    nrows=0;ncols=0;row=0;col=0;row_sep=0;col_sep=0;col_sep_len=0;open_paren=0;close_paren=0;current=0;file_unit=0
+    exists=.false.; in_paren=.false.
 
-        if ( (n_rows > 1_i64) .and. (n_cols > 1_i64) ) then
-            if ( header ) then
-                if ( n_rows /= 2_i64 ) then
-                    error stop LF//'Error reading file "'//file//'". Data cannot fit into one-dimensional array.'
-                    return
-                end if
-            else
-                error stop LF//'Error reading file "'//file//'". Data cannot fit into one-dimensional array.'// &
-                               ' If there are two rows including a header row, specify "header=.true." .'
-                return
-            end if
+    inquire(file=file, exist=exists, iostat=stat, iomsg=errmsg)
+
+    if ( stat /= 0 ) then
+      stat = READ_ERR; return
+    end if
+
+    file_unit = input_unit
+
+    if ( exists ) then
+      open( newunit=file_unit, file=file, status="old", form="unformatted", &
+            action="read", access="stream", position="rewind", iostat=stat, iomsg=errmsg )
+    else
+      stat   = READ_ERR
+      errmsg = 'Error reading file "'//file//'". No such file exists.'
+      return
+    end if
+
+    if ( stat /= 0 ) then
+      stat = READ_ERR; return
+    end if
+
+    inquire(file=file, size=file_length, iostat=stat, iomsg=errmsg)
+
+    if ( stat /= 0 ) then
+      stat = READ_ERR; return
+    end if
+
+    if ( file_length == 0_i64 ) then
+      stat   = READ_ERR
+      errmsg = 'Error reading file "'//file//'". File is empty.'
+      return
+    end if
+
+    allocate( character(len=file_length) :: text_file%s, stat=stat, errmsg=errmsg )
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
+    end if
+
+    read(unit=file_unit, iostat=stat, iomsg=errmsg) text_file%s
+
+    if ( stat /= 0 ) then
+      stat = READ_ERR; return
+    end if
+
+    close(unit=file_unit, iostat=stat, iomsg=errmsg)
+
+    if ( stat /= 0 ) then
+      stat = READ_ERR; return
+    end if
+
+    col_sep_len = len(column_separator)
+    row_sep = iachar(NL); col_sep = iachar(column_separator(1:1))
+    open_paren = iachar("("); close_paren = iachar(")")
+
+    nrows = text_file%count(match=NL)
+
+    ncols = 1; i = 1_i64; get_ncols: do
+      current = iachar(text_file%s(i:i))
+
+      if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. (current/=row_sep) ) then
+        i = i + 1_i64; cycle
+      end if
+
+      if ( current == open_paren ) then
+        in_paren = .true.; i = i + 1_i64; cycle
+      end if
+
+      if ( current == close_paren ) then
+        in_paren = .false.; i = i + 1_i64; cycle
+      end if
+
+      if ( current == col_sep ) then
+        if ( in_paren ) then
+          i = i + 1_i64; cycle
         end if
 
-        if ( n_cols == 1_i64 ) then
-            if ( header ) then
-                if ( .not. (n_rows > 1_i64) ) then
-                    error stop LF//'Error reading file "'//file//'". File is empty after header.'
-                    return
-                end if
+        if ( col_sep_len == 1 ) then
+          ncols = ncols + 1; i = i + 1_i64; cycle
+        else
+          if ( text_file%s(i:i+col_sep_len-1_i64) == column_separator ) then
+            ncols = ncols + 1; i = i + col_sep_len; cycle
+          else
+            i = i + 1_i64; cycle
+          end if
+        end if
+      end if
 
-                allocate( into(n_rows-1_i64) )
-                call cells(2_i64:,1_i64)%cast(into=into, fmt=fmt); return
-            else
-                allocate( into(n_rows) )
-                call cells(:,1_i64)%cast(into=into, fmt=fmt); return
-            end if
+      if ( current == row_sep ) exit get_ncols
+    end do get_ncols
+
+    allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
+    end if
+
+    row = 1; col = 1; l = 1_i64; i = 1_i64; positional_transfers: do
+      current = iachar(text_file%s(i:i))
+
+      if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. (current/=row_sep) ) then
+        i = i + 1_i64; cycle
+      end if
+
+      if ( current == open_paren ) then
+        in_paren = .true.; i = i + 1_i64; cycle
+      end if
+
+      if ( current == close_paren ) then
+        in_paren = .false.; i = i + 1_i64; cycle
+      end if
+
+      if ( current == col_sep ) then
+        if ( in_paren ) then
+          i = i + 1_i64; cycle
         end if
 
+        if ( col_sep_len == 1 ) then
+          cells(row,col)%s = text_file%s(l:i-1); i = i + 1_i64; l = i
+          col = col + 1; cycle
+        else
+          if ( text_file%s(i:i+col_sep_len-1_i64) == column_separator ) then
+            cells(row,col)%s = text_file%s(l:i-1); i = i + col_sep_len; l = i
+            col = col + 1; cycle
+          else
+            i = i + 1_i64; cycle
+          end if
+        end if
+      end if
+
+      if ( current == row_sep ) then
+        cells(row,col)%s = text_file%s(l:i-1)
+        if ( row == nrows ) exit positional_transfers
+        i = i + 1_i64; l = i; col = 1; row = row + 1; cycle
+      end if
+    end do positional_transfers
+  end subroutine custom_read
+
+  module procedure from_text_r128
+    type(String)              :: text_file
+    type(String), allocatable :: cells(:,:)
+    integer                   :: nrows, ncols
+
+    nrows=0; ncols=0
+
+    call text_file%read_file(file, cells, NL, delim, stat, errmsg)
+
+    if ( stat /= 0 ) return
+
+    call text_file%empty()
+
+    nrows = size(cells, dim=1); ncols = size(cells, dim=2)
+
+    if ( (nrows == 1) .and. header ) then
+      stat   = ARG_ERR
+      errmsg = 'Error reading file "'//file//'". File read with one line, but header was specified as present.'
+      return
+    end if
+
+    select rank(into)
+      rank(1)
+        if ( ncols > 1 ) then
+          stat   = ARG_ERR
+          errmsg = 'Error reading file "'//file//'". Data has more than one column but actual argument is a '//&
+                   "one-dimensional array. Try reading into a two-dimensional array instead."
+          return
+        end if
+      rank(2)
+        continue
+    end select
+
+    select rank(into)
+      rank(1)
         if ( header ) then
-            if ( .not. (n_rows > 1_i64) ) then
-                error stop LF//'Error reading file "'//file//'". File is empty after header.'
-                return
-            end if
-
-            allocate( into(n_cols) )
-            call cells(2_i64,:)%cast(into=into, fmt=fmt); return
+          allocate( into(nrows-1), stat=stat, errmsg=errmsg )
         else
-            allocate( into(n_cols) )
-            call cells(1_i64,:)%cast(into=into, fmt=fmt); return
+          allocate( into(nrows), stat=stat, errmsg=errmsg )
         end if
-    end procedure from_text_1di64
-    module procedure from_text_1di32
-        type(String)              :: text_file
-        type(String), allocatable :: cells(:,:)
-        integer(i64)              :: n_rows, n_cols
-
-        n_rows=0_i64; n_cols=0_i64
-
-        call text_file%read_file(file, cell_array=cells, row_separator=NL, column_separator=delim)
-        call text_file%empty()
-
-        n_rows = size(cells, dim=1, kind=i64)
-        n_cols = size(cells, dim=2, kind=i64)
-
-        if ( (n_rows > 1_i64) .and. (n_cols > 1_i64) ) then
-            if ( header ) then
-                if ( n_rows /= 2_i64 ) then
-                    error stop LF//'Error reading file "'//file//'". Data cannot fit into one-dimensional array.'
-                    return
-                end if
-            else
-                error stop LF//'Error reading file "'//file//'". Data cannot fit into one-dimensional array.'// &
-                               ' If there are two rows including a header row, specify "header=.true." .'
-                return
-            end if
-        end if
-
-        if ( n_cols == 1_i64 ) then
-            if ( header ) then
-                if ( .not. (n_rows > 1_i64) ) then
-                    error stop LF//'Error reading file "'//file//'". File is empty after header.'
-                    return
-                end if
-
-                allocate( into(n_rows-1_i64) )
-                call cells(2_i64:,1_i64)%cast(into=into, fmt=fmt); return
-            else
-                allocate( into(n_rows) )
-                call cells(:,1_i64)%cast(into=into, fmt=fmt); return
-            end if
-        end if
-
+      rank(2)
         if ( header ) then
-            if ( .not. (n_rows > 1_i64) ) then
-                error stop LF//'Error reading file "'//file//'". File is empty after header.'
-                return
-            end if
-
-            allocate( into(n_cols) )
-            call cells(2_i64,:)%cast(into=into, fmt=fmt); return
+          allocate( into(nrows-1,ncols), stat=stat, errmsg=errmsg )
         else
-            allocate( into(n_cols) )
-            call cells(1_i64,:)%cast(into=into, fmt=fmt); return
+          allocate( into(nrows,ncols), stat=stat, errmsg=errmsg )
         end if
-    end procedure from_text_1di32
-    module procedure from_text_1di16
-        type(String)              :: text_file
-        type(String), allocatable :: cells(:,:)
-        integer(i64)              :: n_rows, n_cols
+    end select
 
-        n_rows=0_i64; n_cols=0_i64
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
+    end if
 
-        call text_file%read_file(file, cell_array=cells, row_separator=NL, column_separator=delim)
-        call text_file%empty()
-
-        n_rows = size(cells, dim=1, kind=i64)
-        n_cols = size(cells, dim=2, kind=i64)
-
-        if ( (n_rows > 1_i64) .and. (n_cols > 1_i64) ) then
-            if ( header ) then
-                if ( n_rows /= 2_i64 ) then
-                    error stop LF//'Error reading file "'//file//'". Data cannot fit into one-dimensional array.'
-                    return
-                end if
-            else
-                error stop LF//'Error reading file "'//file//'". Data cannot fit into one-dimensional array.'// &
-                               ' If there are two rows including a header row, specify "header=.true." .'
-                return
-            end if
-        end if
-
-        if ( n_cols == 1_i64 ) then
-            if ( header ) then
-                if ( .not. (n_rows > 1_i64) ) then
-                    error stop LF//'Error reading file "'//file//'". File is empty after header.'
-                    return
-                end if
-
-                allocate( into(n_rows-1_i64) )
-                call cells(2_i64:,1_i64)%cast(into=into, fmt=fmt); return
-            else
-                allocate( into(n_rows) )
-                call cells(:,1_i64)%cast(into=into, fmt=fmt); return
-            end if
-        end if
-
+    select rank(into)
+      rank(1)
         if ( header ) then
-            if ( .not. (n_rows > 1_i64) ) then
-                error stop LF//'Error reading file "'//file//'". File is empty after header.'
-                return
-            end if
-
-            allocate( into(n_cols) )
-            call cells(2_i64,:)%cast(into=into, fmt=fmt); return
+          call cast(cells(2:,1), into, locale=locale, fmt=fmt)
         else
-            allocate( into(n_cols) )
-            call cells(1_i64,:)%cast(into=into, fmt=fmt); return
+          call cast(cells(:,1), into, locale=locale, fmt=fmt)
         end if
-    end procedure from_text_1di16
-    module procedure from_text_1di8
-        type(String)              :: text_file
-        type(String), allocatable :: cells(:,:)
-        integer(i64)              :: n_rows, n_cols
-
-        n_rows=0_i64; n_cols=0_i64
-
-        call text_file%read_file(file, cell_array=cells, row_separator=NL, column_separator=delim)
-        call text_file%empty()
-
-        n_rows = size(cells, dim=1, kind=i64)
-        n_cols = size(cells, dim=2, kind=i64)
-
-        if ( (n_rows > 1_i64) .and. (n_cols > 1_i64) ) then
-            if ( header ) then
-                if ( n_rows /= 2_i64 ) then
-                    error stop LF//'Error reading file "'//file//'". Data cannot fit into one-dimensional array.'
-                    return
-                end if
-            else
-                error stop LF//'Error reading file "'//file//'". Data cannot fit into one-dimensional array.'// &
-                               ' If there are two rows including a header row, specify "header=.true." .'
-                return
-            end if
-        end if
-
-        if ( n_cols == 1_i64 ) then
-            if ( header ) then
-                if ( .not. (n_rows > 1_i64) ) then
-                    error stop LF//'Error reading file "'//file//'". File is empty after header.'
-                    return
-                end if
-
-                allocate( into(n_rows-1_i64) )
-                call cells(2_i64:,1_i64)%cast(into=into, fmt=fmt); return
-            else
-                allocate( into(n_rows) )
-                call cells(:,1_i64)%cast(into=into, fmt=fmt); return
-            end if
-        end if
-
+      rank(2)
         if ( header ) then
-            if ( .not. (n_rows > 1_i64) ) then
-                error stop LF//'Error reading file "'//file//'". File is empty after header.'
-                return
-            end if
-
-            allocate( into(n_cols) )
-            call cells(2_i64,:)%cast(into=into, fmt=fmt); return
+          call cast(cells(2:,:), into, locale=locale, fmt=fmt)
         else
-            allocate( into(n_cols) )
-            call cells(1_i64,:)%cast(into=into, fmt=fmt); return
+          call cast(cells, into, locale=locale, fmt=fmt)
         end if
-    end procedure from_text_1di8
+    end select
+  end procedure from_text_r128
+  module procedure from_text_r64
+    type(String)              :: text_file
+    type(String), allocatable :: cells(:,:)
+    integer                   :: nrows, ncols
 
-    module procedure from_text_2di64
-        type(String)              :: text_file
-        type(String), allocatable :: cells(:,:)
-        integer(i64)              :: n_rows, n_cols
+    nrows=0; ncols=0
 
-        n_rows=0_i64; n_cols=0_i64
+    call text_file%read_file(file, cells, NL, delim, stat, errmsg)
 
-        call text_file%read_file(file, cell_array=cells, row_separator=NL, column_separator=delim)
-        call text_file%empty()
+    if ( stat /= 0 ) return
 
-        n_rows = size(cells, dim=1, kind=i64)
-        n_cols = size(cells, dim=2, kind=i64)
+    call text_file%empty()
 
+    nrows = size(cells, dim=1); ncols = size(cells, dim=2)
+
+    if ( (nrows == 1) .and. header ) then
+      stat   = ARG_ERR
+      errmsg = 'Error reading file "'//file//'". File read with one line, but header was specified as present.'
+      return
+    end if
+
+    select rank(into)
+      rank(1)
+        if ( ncols > 1 ) then
+          stat   = ARG_ERR
+          errmsg = 'Error reading file "'//file//'". Data has more than one column but actual argument is a '//&
+                   "one-dimensional array. Try reading into a two-dimensional array instead."
+          return
+        end if
+      rank(2)
+        continue
+    end select
+
+    select rank(into)
+      rank(1)
         if ( header ) then
-            if ( .not. (n_rows > 1_i64) ) then
-                error stop LF//'Error reading file "'//file//'". File is empty after header.'
-                return
-            end if
-
-            allocate( into(n_rows-1_i64,n_cols) )
-            call cells(2_i64:,:)%cast(into=into, fmt=fmt); return
+          allocate( into(nrows-1), stat=stat, errmsg=errmsg )
         else
-            allocate( into(n_rows,n_cols) )
-            call cells%cast(into=into, fmt=fmt); return
+          allocate( into(nrows), stat=stat, errmsg=errmsg )
         end if
-    end procedure from_text_2di64
-    module procedure from_text_2di32
-        type(String)              :: text_file
-        type(String), allocatable :: cells(:,:)
-        integer(i64)              :: n_rows, n_cols
-
-        n_rows=0_i64; n_cols=0_i64
-
-        call text_file%read_file(file, cell_array=cells, row_separator=NL, column_separator=delim)
-        call text_file%empty()
-
-        n_rows = size(cells, dim=1, kind=i64)
-        n_cols = size(cells, dim=2, kind=i64)
-
+      rank(2)
         if ( header ) then
-            if ( .not. (n_rows > 1_i64) ) then
-                error stop LF//'Error reading file "'//file//'". File is empty after header.'
-                return
-            end if
-
-            allocate( into(n_rows-1_i64,n_cols) )
-            call cells(2_i64:,:)%cast(into=into, fmt=fmt); return
+          allocate( into(nrows-1,ncols), stat=stat, errmsg=errmsg )
         else
-            allocate( into(n_rows,n_cols) )
-            call cells%cast(into=into, fmt=fmt); return
+          allocate( into(nrows,ncols), stat=stat, errmsg=errmsg )
         end if
-    end procedure from_text_2di32
-    module procedure from_text_2di16
-        type(String)              :: text_file
-        type(String), allocatable :: cells(:,:)
-        integer(i64)              :: n_rows, n_cols
+    end select
 
-        n_rows=0_i64; n_cols=0_i64
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
+    end if
 
-        call text_file%read_file(file, cell_array=cells, row_separator=NL, column_separator=delim)
-        call text_file%empty()
-
-        n_rows = size(cells, dim=1, kind=i64)
-        n_cols = size(cells, dim=2, kind=i64)
-
+    select rank(into)
+      rank(1)
         if ( header ) then
-            if ( .not. (n_rows > 1_i64) ) then
-                error stop LF//'Error reading file "'//file//'". File is empty after header.'
-                return
-            end if
-
-            allocate( into(n_rows-1_i64,n_cols) )
-            call cells(2_i64:,:)%cast(into=into, fmt=fmt); return
+          call cast(cells(2:,1), into, locale=locale, fmt=fmt)
         else
-            allocate( into(n_rows,n_cols) )
-            call cells%cast(into=into, fmt=fmt); return
+          call cast(cells(:,1), into, locale=locale, fmt=fmt)
         end if
-    end procedure from_text_2di16
-    module procedure from_text_2di8
-        type(String)              :: text_file
-        type(String), allocatable :: cells(:,:)
-        integer(i64)              :: n_rows, n_cols
-
-        n_rows=0_i64; n_cols=0_i64
-
-        call text_file%read_file(file, cell_array=cells, row_separator=NL, column_separator=delim)
-        call text_file%empty()
-
-        n_rows = size(cells, dim=1, kind=i64)
-        n_cols = size(cells, dim=2, kind=i64)
-
+      rank(2)
         if ( header ) then
-            if ( .not. (n_rows > 1_i64) ) then
-                error stop LF//'Error reading file "'//file//'". File is empty after header.'
-                return
-            end if
-
-            allocate( into(n_rows-1_i64,n_cols) )
-            call cells(2_i64:,:)%cast(into=into, fmt=fmt); return
+          call cast(cells(2:,:), into, locale=locale, fmt=fmt)
         else
-            allocate( into(n_rows,n_cols) )
-            call cells%cast(into=into, fmt=fmt); return
+          call cast(cells, into, locale=locale, fmt=fmt)
         end if
-    end procedure from_text_2di8
+    end select
+  end procedure from_text_r64
+  module procedure from_text_r32
+    type(String)              :: text_file
+    type(String), allocatable :: cells(:,:)
+    integer                   :: nrows, ncols
+
+    nrows=0; ncols=0
+
+    call text_file%read_file(file, cells, NL, delim, stat, errmsg)
+
+    if ( stat /= 0 ) return
+
+    call text_file%empty()
+
+    nrows = size(cells, dim=1); ncols = size(cells, dim=2)
+
+    if ( (nrows == 1) .and. header ) then
+      stat   = ARG_ERR
+      errmsg = 'Error reading file "'//file//'". File read with one line, but header was specified as present.'
+      return
+    end if
+
+    select rank(into)
+      rank(1)
+        if ( ncols > 1 ) then
+          stat   = ARG_ERR
+          errmsg = 'Error reading file "'//file//'". Data has more than one column but actual argument is a '//&
+                   "one-dimensional array. Try reading into a two-dimensional array instead."
+          return
+        end if
+      rank(2)
+        continue
+    end select
+
+    select rank(into)
+      rank(1)
+        if ( header ) then
+          allocate( into(nrows-1), stat=stat, errmsg=errmsg )
+        else
+          allocate( into(nrows), stat=stat, errmsg=errmsg )
+        end if
+      rank(2)
+        if ( header ) then
+          allocate( into(nrows-1,ncols), stat=stat, errmsg=errmsg )
+        else
+          allocate( into(nrows,ncols), stat=stat, errmsg=errmsg )
+        end if
+    end select
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
+    end if
+
+    select rank(into)
+      rank(1)
+        if ( header ) then
+          call cast(cells(2:,1), into, locale=locale, fmt=fmt)
+        else
+          call cast(cells(:,1), into, locale=locale, fmt=fmt)
+        end if
+      rank(2)
+        if ( header ) then
+          call cast(cells(2:,:), into, locale=locale, fmt=fmt)
+        else
+          call cast(cells, into, locale=locale, fmt=fmt)
+        end if
+    end select
+  end procedure from_text_r32
+
+  module procedure from_text_i64
+    type(String)              :: text_file
+    type(String), allocatable :: cells(:,:)
+    integer                   :: nrows, ncols
+
+    nrows=0; ncols=0
+
+    call text_file%read_file(file, cells, NL, delim, stat, errmsg)
+
+    if ( stat /= 0 ) return
+
+    call text_file%empty()
+
+    nrows = size(cells, dim=1); ncols = size(cells, dim=2)
+
+    if ( (nrows == 1) .and. header ) then
+      stat   = ARG_ERR
+      errmsg = 'Error reading file "'//file//'". File read with one line, but header was specified as present.'
+      return
+    end if
+
+    select rank(into)
+      rank(1)
+        if ( ncols > 1 ) then
+          stat   = ARG_ERR
+          errmsg = 'Error reading file "'//file//'". Data has more than one column but actual argument is a '//&
+                   "one-dimensional array. Try reading into a two-dimensional array instead."
+          return
+        end if
+      rank(2)
+        continue
+    end select
+
+    select rank(into)
+      rank(1)
+        if ( header ) then
+          allocate( into(nrows-1), stat=stat, errmsg=errmsg )
+        else
+          allocate( into(nrows), stat=stat, errmsg=errmsg )
+        end if
+      rank(2)
+        if ( header ) then
+          allocate( into(nrows-1,ncols), stat=stat, errmsg=errmsg )
+        else
+          allocate( into(nrows,ncols), stat=stat, errmsg=errmsg )
+        end if
+    end select
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
+    end if
+
+    select rank(into)
+      rank(1)
+        if ( header ) then
+          call cast(cells(2:,1), into, fmt)
+        else
+          call cast(cells(:,1), into, fmt)
+        end if
+      rank(2)
+        if ( header ) then
+          call cast(cells(2:,:), into, fmt)
+        else
+          call cast(cells, into, fmt)
+        end if
+    end select
+  end procedure from_text_i64
+  module procedure from_text_i32
+    type(String)              :: text_file
+    type(String), allocatable :: cells(:,:)
+    integer                   :: nrows, ncols
+
+    nrows=0; ncols=0
+
+    call text_file%read_file(file, cells, NL, delim, stat, errmsg)
+
+    if ( stat /= 0 ) return
+
+    call text_file%empty()
+
+    nrows = size(cells, dim=1); ncols = size(cells, dim=2)
+
+    if ( (nrows == 1) .and. header ) then
+      stat   = ARG_ERR
+      errmsg = 'Error reading file "'//file//'". File read with one line, but header was specified as present.'
+      return
+    end if
+
+    select rank(into)
+      rank(1)
+        if ( ncols > 1 ) then
+          stat   = ARG_ERR
+          errmsg = 'Error reading file "'//file//'". Data has more than one column but actual argument is a '//&
+                   "one-dimensional array. Try reading into a two-dimensional array instead."
+          return
+        end if
+      rank(2)
+        continue
+    end select
+
+    select rank(into)
+      rank(1)
+        if ( header ) then
+          allocate( into(nrows-1), stat=stat, errmsg=errmsg )
+        else
+          allocate( into(nrows), stat=stat, errmsg=errmsg )
+        end if
+      rank(2)
+        if ( header ) then
+          allocate( into(nrows-1,ncols), stat=stat, errmsg=errmsg )
+        else
+          allocate( into(nrows,ncols), stat=stat, errmsg=errmsg )
+        end if
+    end select
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
+    end if
+
+    select rank(into)
+      rank(1)
+        if ( header ) then
+          call cast(cells(2:,1), into, fmt)
+        else
+          call cast(cells(:,1), into, fmt)
+        end if
+      rank(2)
+        if ( header ) then
+          call cast(cells(2:,:), into, fmt)
+        else
+          call cast(cells, into, fmt)
+        end if
+    end select
+  end procedure from_text_i32
+  module procedure from_text_i16
+    type(String)              :: text_file
+    type(String), allocatable :: cells(:,:)
+    integer                   :: nrows, ncols
+
+    nrows=0; ncols=0
+
+    call text_file%read_file(file, cells, NL, delim, stat, errmsg)
+
+    if ( stat /= 0 ) return
+
+    call text_file%empty()
+
+    nrows = size(cells, dim=1); ncols = size(cells, dim=2)
+
+    if ( (nrows == 1) .and. header ) then
+      stat   = ARG_ERR
+      errmsg = 'Error reading file "'//file//'". File read with one line, but header was specified as present.'
+      return
+    end if
+
+    select rank(into)
+      rank(1)
+        if ( ncols > 1 ) then
+          stat   = ARG_ERR
+          errmsg = 'Error reading file "'//file//'". Data has more than one column but actual argument is a '//&
+                   "one-dimensional array. Try reading into a two-dimensional array instead."
+          return
+        end if
+      rank(2)
+        continue
+    end select
+
+    select rank(into)
+      rank(1)
+        if ( header ) then
+          allocate( into(nrows-1), stat=stat, errmsg=errmsg )
+        else
+          allocate( into(nrows), stat=stat, errmsg=errmsg )
+        end if
+      rank(2)
+        if ( header ) then
+          allocate( into(nrows-1,ncols), stat=stat, errmsg=errmsg )
+        else
+          allocate( into(nrows,ncols), stat=stat, errmsg=errmsg )
+        end if
+    end select
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
+    end if
+
+    select rank(into)
+      rank(1)
+        if ( header ) then
+          call cast(cells(2:,1), into, fmt)
+        else
+          call cast(cells(:,1), into, fmt)
+        end if
+      rank(2)
+        if ( header ) then
+          call cast(cells(2:,:), into, fmt)
+        else
+          call cast(cells, into, fmt)
+        end if
+    end select
+  end procedure from_text_i16
+  module procedure from_text_i8
+    type(String)              :: text_file
+    type(String), allocatable :: cells(:,:)
+    integer                   :: nrows, ncols
+
+    nrows=0; ncols=0
+
+    call text_file%read_file(file, cells, NL, delim, stat, errmsg)
+
+    if ( stat /= 0 ) return
+
+    call text_file%empty()
+
+    nrows = size(cells, dim=1); ncols = size(cells, dim=2)
+
+    if ( (nrows == 1) .and. header ) then
+      stat   = ARG_ERR
+      errmsg = 'Error reading file "'//file//'". File read with one line, but header was specified as present.'
+      return
+    end if
+
+    select rank(into)
+      rank(1)
+        if ( ncols > 1 ) then
+          stat   = ARG_ERR
+          errmsg = 'Error reading file "'//file//'". Data has more than one column but actual argument is a '//&
+                   "one-dimensional array. Try reading into a two-dimensional array instead."
+          return
+        end if
+      rank(2)
+        continue
+    end select
+
+    select rank(into)
+      rank(1)
+        if ( header ) then
+          allocate( into(nrows-1), stat=stat, errmsg=errmsg )
+        else
+          allocate( into(nrows), stat=stat, errmsg=errmsg )
+        end if
+      rank(2)
+        if ( header ) then
+          allocate( into(nrows-1,ncols), stat=stat, errmsg=errmsg )
+        else
+          allocate( into(nrows,ncols), stat=stat, errmsg=errmsg )
+        end if
+    end select
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
+    end if
+
+    select rank(into)
+      rank(1)
+        if ( header ) then
+          call cast(cells(2:,1), into, fmt)
+        else
+          call cast(cells(:,1), into, fmt)
+        end if
+      rank(2)
+        if ( header ) then
+          call cast(cells(2:,:), into, fmt)
+        else
+          call cast(cells, into, fmt)
+        end if
+    end select
+  end procedure from_text_i8
 end submodule text_io

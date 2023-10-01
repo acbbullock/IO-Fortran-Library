@@ -10,22 +10,26 @@ author: Austin C Bullock
 For `substring` a scalar of type `character` or `String`:
 
 ```fortran
-call echo(substring, file [, append, terminator])
+call echo(substring, file [, append, terminator, stat, errmsg])
 ```
 
 * `file` is of type `character(len=*)`
 * `append` is `optional` and of type `logical`
 * `terminator` is `optional` and of type `character(len=*)`
+* `stat` is `optional` and of type `integer`
+* `errmsg` is `optional` and of type `character(len=*)`
 
 For `substring` a scalar variable of type `String`:
 
 ```fortran
-call substring%echo(file [, append, terminator])
+call substring%echo(file [, append, terminator, stat, errmsg])
 ```
 
 * `file` is of type `character(len=*)`
 * `append` is `optional` and of type `logical`
 * `terminator` is `optional` and of type `character(len=*)`
+* `stat` is `optional` and of type `integer`
+* `errmsg` is `optional` and of type `character(len=*)`
 
 @note The type-bound procedure access of the form `call substring%echo()` is valid when `substring` is a `String` variable. To echo a `String`-valued expression, the expression must be passed to `echo` by the form `call echo()`.
 

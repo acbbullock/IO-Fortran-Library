@@ -97,13 +97,15 @@ For `self` a scalar or array variable of any rank and of type `String`:
 For `self` a scalar variable of type `String`:
 
 ```fortran
-    call self%read_file(file [, cell_array, row_separator, column_separator])
+    call self%read_file(file [, cell_array, row_separator, column_separator, stat, errmsg])
 ```
 
 * `file` is of type `character(len=*)`
 * `cell_array` is `optional` and of type `type(String), allocatable, dimension(:,:)`
 * `row_separator` is `optional` and of type `character(len=*)` (default is `LF`)
 * `column_separator` is `optional` and of type `character(len=*)` (default is `","`)
+* `stat` is `optional` and of type `integer`
+* `errmsg` is `optional` and of type `character(len=*)`
 
 *Description*: Reads raw text file contents into `self` and optionally populates a cell array using the designated `row_separator` and `column_separator` whose default values are `LF` and `","` respectively.
 
@@ -172,7 +174,7 @@ For `self` a scalar or array variable of any rank and of type `String`:
 For `self` a scalar variable of type `String`:
 
 ```fortran
-    call self%write_file(cell_array, file [, row_separator, column_separator, append])
+    call self%write_file(cell_array, file [, row_separator, column_separator, append, stat, errmsg])
 ```
 
 * `cell_array` is of type `type(String), dimension(:,:)`
@@ -180,6 +182,8 @@ For `self` a scalar variable of type `String`:
 * `row_separator` is `optional` and of type `character(len=*)` (default is `LF`)
 * `column_separator` is `optional` and of type `character(len=*)` (default is `","`)
 * `append` is `optional` and of type `logical` (default is `.false.`)
+* `stat` is `optional` and of type `integer`
+* `errmsg` is `optional` and of type `character(len=*)`
 
 *Description*: Writes the content of a cell array to a text file. The cell array's entire contents are populated into `self` using the designated `row_separator` and `column_separator` whose default values are `LF` and `","` respectively, and then streamed to an external text file. The file will be created if it does not exist, and will be appended to if `append` is `.true.`.
 

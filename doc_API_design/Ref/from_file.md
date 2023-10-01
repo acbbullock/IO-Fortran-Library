@@ -10,18 +10,20 @@ author: Austin C Bullock
 For reading textual data into an array `into` of rank `1` or `2` and of type `integer`:
 
 ```fortran
-call from_file(file, into [, header, delim, fmt])
+call from_file(file, into [, header, delim, fmt, stat, errmsg])
 ```
 
 * `file` is of type `character(len=*)`
 * `header` is `optional` and of type `logical`
 * `delim` is `optional` and of type `character(len=*)`
 * `fmt` is `optional`, may be one of `INT_FMTS`
+* `stat` is `optional` and of type `integer`
+* `errmsg` is `optional` and of type `character(len=*)`
 
 For reading textual data into an array `into` of rank `1` or `2` and of type `real`:
 
 ```fortran
-call from_file(file, into [, header, locale, delim, fmt])
+call from_file(file, into [, header, locale, delim, fmt, stat, errmsg])
 ```
 
 * `file` is of type `character(len=*)`
@@ -29,11 +31,13 @@ call from_file(file, into [, header, locale, delim, fmt])
 * `locale` is `optional`, may be one of `LOCALES`
 * `delim` is `optional` and of type `character(len=*)`
 * `fmt` is `optional`, may be one of `REAL_FMTS`
+* `stat` is `optional` and of type `integer`
+* `errmsg` is `optional` and of type `character(len=*)`
 
 For reading textual data into an array `into` of rank `1` or `2` and of type `complex`:
 
 ```fortran
-call from_file(file, into [, header, locale, delim, fmt, im])
+call from_file(file, into [, header, locale, delim, fmt, im, stat, errmsg])
 ```
 
 * `file` is of type `character(len=*)`
@@ -42,15 +46,19 @@ call from_file(file, into [, header, locale, delim, fmt, im])
 * `delim` is `optional` and of type `character(len=*)`
 * `fmt` is `optional`, may be one of `REAL_FMTS`
 * `im` is `optional` and of type `character(len=*)`
+* `stat` is `optional` and of type `integer`
+* `errmsg` is `optional` and of type `character(len=*)`
 
 For reading binary data into an array `into` of any rank `1`-`15` and of type `integer`, `real`, `complex`:
 
 ```fortran
-call from_file(file, into, data_shape)
+call from_file(file, into, data_shape [, stat, errmsg])
 ```
 
 * `file` is of type `character(len=*)`
 * `data_shape` is of type `integer, dimension(:)`
+* `stat` is `optional` and of type `integer`
+* `errmsg` is `optional` and of type `character(len=*)`
 
 @note `file` may be a relative path, but absolute paths are not guaranteed to work on every platform.
 

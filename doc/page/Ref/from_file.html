@@ -109,7 +109,7 @@
       <h2 id="interface-from_file"><a href="../../interface/from_file.html">interface from_file</a></h2>
 <p><em>Description</em>: Subroutine for reading an external file of uniform numeric data type and format into an array.</p>
 <p>For reading textual data into an array <code>into</code> of rank <code>1</code> or <code>2</code> and of type <code>integer</code>:</p>
-<div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">from_file</span><span class="p">(</span><span class="k">file</span><span class="p">,</span><span class="w"> </span><span class="n">into</span><span class="w"> </span><span class="p">[,</span><span class="w"> </span><span class="n">header</span><span class="p">,</span><span class="w"> </span><span class="n">delim</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">])</span><span class="w"></span>
+<div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">from_file</span><span class="p">(</span><span class="k">file</span><span class="p">,</span><span class="w"> </span><span class="n">into</span><span class="w"> </span><span class="p">[,</span><span class="w"> </span><span class="n">header</span><span class="p">,</span><span class="w"> </span><span class="n">delim</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">,</span><span class="w"> </span><span class="nb">stat</span><span class="p">,</span><span class="w"> </span><span class="n">errmsg</span><span class="p">])</span><span class="w"></span>
 </code></pre></div>
 
 <ul>
@@ -117,9 +117,11 @@
 <li><code>header</code> is <code>optional</code> and of type <code>logical</code></li>
 <li><code>delim</code> is <code>optional</code> and of type <code>character(len=*)</code></li>
 <li><code>fmt</code> is <code>optional</code>, may be one of <code>INT_FMTS</code></li>
+<li><code>stat</code> is <code>optional</code> and of type <code>integer</code></li>
+<li><code>errmsg</code> is <code>optional</code> and of type <code>character(len=*)</code></li>
 </ul>
 <p>For reading textual data into an array <code>into</code> of rank <code>1</code> or <code>2</code> and of type <code>real</code>:</p>
-<div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">from_file</span><span class="p">(</span><span class="k">file</span><span class="p">,</span><span class="w"> </span><span class="n">into</span><span class="w"> </span><span class="p">[,</span><span class="w"> </span><span class="n">header</span><span class="p">,</span><span class="w"> </span><span class="n">locale</span><span class="p">,</span><span class="w"> </span><span class="n">delim</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">])</span><span class="w"></span>
+<div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">from_file</span><span class="p">(</span><span class="k">file</span><span class="p">,</span><span class="w"> </span><span class="n">into</span><span class="w"> </span><span class="p">[,</span><span class="w"> </span><span class="n">header</span><span class="p">,</span><span class="w"> </span><span class="n">locale</span><span class="p">,</span><span class="w"> </span><span class="n">delim</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">,</span><span class="w"> </span><span class="nb">stat</span><span class="p">,</span><span class="w"> </span><span class="n">errmsg</span><span class="p">])</span><span class="w"></span>
 </code></pre></div>
 
 <ul>
@@ -128,9 +130,11 @@
 <li><code>locale</code> is <code>optional</code>, may be one of <code>LOCALES</code></li>
 <li><code>delim</code> is <code>optional</code> and of type <code>character(len=*)</code></li>
 <li><code>fmt</code> is <code>optional</code>, may be one of <code>REAL_FMTS</code></li>
+<li><code>stat</code> is <code>optional</code> and of type <code>integer</code></li>
+<li><code>errmsg</code> is <code>optional</code> and of type <code>character(len=*)</code></li>
 </ul>
 <p>For reading textual data into an array <code>into</code> of rank <code>1</code> or <code>2</code> and of type <code>complex</code>:</p>
-<div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">from_file</span><span class="p">(</span><span class="k">file</span><span class="p">,</span><span class="w"> </span><span class="n">into</span><span class="w"> </span><span class="p">[,</span><span class="w"> </span><span class="n">header</span><span class="p">,</span><span class="w"> </span><span class="n">locale</span><span class="p">,</span><span class="w"> </span><span class="n">delim</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">,</span><span class="w"> </span><span class="n">im</span><span class="p">])</span><span class="w"></span>
+<div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">from_file</span><span class="p">(</span><span class="k">file</span><span class="p">,</span><span class="w"> </span><span class="n">into</span><span class="w"> </span><span class="p">[,</span><span class="w"> </span><span class="n">header</span><span class="p">,</span><span class="w"> </span><span class="n">locale</span><span class="p">,</span><span class="w"> </span><span class="n">delim</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="p">,</span><span class="w"> </span><span class="n">im</span><span class="p">,</span><span class="w"> </span><span class="nb">stat</span><span class="p">,</span><span class="w"> </span><span class="n">errmsg</span><span class="p">])</span><span class="w"></span>
 </code></pre></div>
 
 <ul>
@@ -140,14 +144,18 @@
 <li><code>delim</code> is <code>optional</code> and of type <code>character(len=*)</code></li>
 <li><code>fmt</code> is <code>optional</code>, may be one of <code>REAL_FMTS</code></li>
 <li><code>im</code> is <code>optional</code> and of type <code>character(len=*)</code></li>
+<li><code>stat</code> is <code>optional</code> and of type <code>integer</code></li>
+<li><code>errmsg</code> is <code>optional</code> and of type <code>character(len=*)</code></li>
 </ul>
 <p>For reading binary data into an array <code>into</code> of any rank <code>1</code>-<code>15</code> and of type <code>integer</code>, <code>real</code>, <code>complex</code>:</p>
-<div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">from_file</span><span class="p">(</span><span class="k">file</span><span class="p">,</span><span class="w"> </span><span class="n">into</span><span class="p">,</span><span class="w"> </span><span class="n">data_shape</span><span class="p">)</span><span class="w"></span>
+<div class="codehilite"><pre><span></span><code><span class="k">call </span><span class="n">from_file</span><span class="p">(</span><span class="k">file</span><span class="p">,</span><span class="w"> </span><span class="n">into</span><span class="p">,</span><span class="w"> </span><span class="n">data_shape</span><span class="w"> </span><span class="p">[,</span><span class="w"> </span><span class="nb">stat</span><span class="p">,</span><span class="w"> </span><span class="n">errmsg</span><span class="p">])</span><span class="w"></span>
 </code></pre></div>
 
 <ul>
 <li><code>file</code> is of type <code>character(len=*)</code></li>
 <li><code>data_shape</code> is of type <code>integer, dimension(:)</code></li>
+<li><code>stat</code> is <code>optional</code> and of type <code>integer</code></li>
+<li><code>errmsg</code> is <code>optional</code> and of type <code>character(len=*)</code></li>
 </ul>
 <p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p><code>file</code> may be a relative path, but absolute paths are not guaranteed to work on every platform.</p></div>
 <p></p><div class="alert alert-warning" role="alert"><h4>Warning</h4><p>In all cases, <code>into</code> must be <code>allocatable</code>, and will lose its allocation status upon passing into <code>from_file</code> if already allocated. As a result, <code>from_file</code> does not allow reading into sections of already allocated arrays.</p></div>
@@ -188,6 +196,9 @@
             </li>
             <li role="presentation">
             <a href='../../page/UserInfo/file-ext.html'>File extensions</a>
+            </li>
+            <li role="presentation">
+            <a href='../../page/UserInfo/error-codes.html'>Error Codes</a>
             </li>
             <li role="presentation">
             <a href='../../page/UserInfo/compilers.html'>Compiler-dependent behavior</a>
@@ -283,7 +294,7 @@
             <p class="text-right">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-08-31 23:12              </p>
+ on 2023-09-30 21:39              </p>
           </div>
         </div>
         <br>
