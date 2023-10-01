@@ -123,7 +123,7 @@ submodule (io_fortran_lib) text_io
   module procedure to_text_c128
     type(String)                      :: text_file
     type(String), allocatable, target :: cells(:,:)
-    type(String), pointer, contiguous :: numerical_data(:,:)
+    type(String), pointer             :: numerical_data(:,:)
 
     integer :: nrows, ncols, j
     logical :: header_present
@@ -174,7 +174,7 @@ submodule (io_fortran_lib) text_io
   module procedure to_text_c64
     type(String)                      :: text_file
     type(String), allocatable, target :: cells(:,:)
-    type(String), pointer, contiguous :: numerical_data(:,:)
+    type(String), pointer             :: numerical_data(:,:)
 
     integer :: nrows, ncols, j
     logical :: header_present
@@ -225,7 +225,7 @@ submodule (io_fortran_lib) text_io
   module procedure to_text_c32
     type(String)                      :: text_file
     type(String), allocatable, target :: cells(:,:)
-    type(String), pointer, contiguous :: numerical_data(:,:)
+    type(String), pointer             :: numerical_data(:,:)
 
     integer :: nrows, ncols, j
     logical :: header_present
@@ -277,7 +277,7 @@ submodule (io_fortran_lib) text_io
   module procedure to_text_r128
     type(String)                      :: text_file
     type(String), allocatable, target :: cells(:,:)
-    type(String), pointer, contiguous :: numerical_data(:,:)
+    type(String), pointer             :: numerical_data(:,:)
 
     integer :: nrows, ncols, j
     logical :: header_present
@@ -328,7 +328,7 @@ submodule (io_fortran_lib) text_io
   module procedure to_text_r64
     type(String)                      :: text_file
     type(String), allocatable, target :: cells(:,:)
-    type(String), pointer, contiguous :: numerical_data(:,:)
+    type(String), pointer             :: numerical_data(:,:)
 
     integer :: nrows, ncols, j
     logical :: header_present
@@ -379,7 +379,7 @@ submodule (io_fortran_lib) text_io
   module procedure to_text_r32
     type(String)                      :: text_file
     type(String), allocatable, target :: cells(:,:)
-    type(String), pointer, contiguous :: numerical_data(:,:)
+    type(String), pointer             :: numerical_data(:,:)
 
     integer :: nrows, ncols, j
     logical :: header_present
@@ -431,7 +431,7 @@ submodule (io_fortran_lib) text_io
   module procedure to_text_i64
     type(String)                      :: text_file
     type(String), allocatable, target :: cells(:,:)
-    type(String), pointer, contiguous :: numerical_data(:,:)
+    type(String), pointer             :: numerical_data(:,:)
 
     integer :: nrows, ncols, j
     logical :: header_present
@@ -482,7 +482,7 @@ submodule (io_fortran_lib) text_io
   module procedure to_text_i32
     type(String)                      :: text_file
     type(String), allocatable, target :: cells(:,:)
-    type(String), pointer, contiguous :: numerical_data(:,:)
+    type(String), pointer             :: numerical_data(:,:)
 
     integer :: nrows, ncols, j
     logical :: header_present
@@ -533,7 +533,7 @@ submodule (io_fortran_lib) text_io
   module procedure to_text_i16
     type(String)                      :: text_file
     type(String), allocatable, target :: cells(:,:)
-    type(String), pointer, contiguous :: numerical_data(:,:)
+    type(String), pointer             :: numerical_data(:,:)
 
     integer :: nrows, ncols, j
     logical :: header_present
@@ -584,7 +584,7 @@ submodule (io_fortran_lib) text_io
   module procedure to_text_i8
     type(String)                      :: text_file
     type(String), allocatable, target :: cells(:,:)
-    type(String), pointer, contiguous :: numerical_data(:,:)
+    type(String), pointer             :: numerical_data(:,:)
 
     integer :: nrows, ncols, j
     logical :: header_present
@@ -659,12 +659,17 @@ submodule (io_fortran_lib) text_io
       return
     end if
 
-    if ( (rank(into) == 1) .and. (ncols > 1) ) then
-      stat   = ARG_ERR
-      errmsg = 'Error reading file "'//file//'". Data has more than one column but actual argument is a '//&
-               "one-dimensional array. Try reading into a two-dimensional array instead."
-      return
-    end if
+    select rank(into)
+      rank(1)
+        if ( ncols > 1 ) then
+          stat   = ARG_ERR
+          errmsg = 'Error reading file "'//file//'". Data has more than one column but actual argument is a '//&
+                   "one-dimensional array. Try reading into a two-dimensional array instead."
+          return
+        end if
+      rank(2)
+        continue
+    end select
 
     select rank(into)
       rank(1)
@@ -725,12 +730,17 @@ submodule (io_fortran_lib) text_io
       return
     end if
 
-    if ( (rank(into) == 1) .and. (ncols > 1) ) then
-      stat   = ARG_ERR
-      errmsg = 'Error reading file "'//file//'". Data has more than one column but actual argument is a '//&
-               "one-dimensional array. Try reading into a two-dimensional array instead."
-      return
-    end if
+    select rank(into)
+      rank(1)
+        if ( ncols > 1 ) then
+          stat   = ARG_ERR
+          errmsg = 'Error reading file "'//file//'". Data has more than one column but actual argument is a '//&
+                   "one-dimensional array. Try reading into a two-dimensional array instead."
+          return
+        end if
+      rank(2)
+        continue
+    end select
 
     select rank(into)
       rank(1)
@@ -791,12 +801,17 @@ submodule (io_fortran_lib) text_io
       return
     end if
 
-    if ( (rank(into) == 1) .and. (ncols > 1) ) then
-      stat   = ARG_ERR
-      errmsg = 'Error reading file "'//file//'". Data has more than one column but actual argument is a '//&
-               "one-dimensional array. Try reading into a two-dimensional array instead."
-      return
-    end if
+    select rank(into)
+      rank(1)
+        if ( ncols > 1 ) then
+          stat   = ARG_ERR
+          errmsg = 'Error reading file "'//file//'". Data has more than one column but actual argument is a '//&
+                   "one-dimensional array. Try reading into a two-dimensional array instead."
+          return
+        end if
+      rank(2)
+        continue
+    end select
 
     select rank(into)
       rank(1)
@@ -1010,12 +1025,17 @@ submodule (io_fortran_lib) text_io
       return
     end if
 
-    if ( (rank(into) == 1) .and. (ncols > 1) ) then
-      stat   = ARG_ERR
-      errmsg = 'Error reading file "'//file//'". Data has more than one column but actual argument is a '//&
-               "one-dimensional array. Try reading into a two-dimensional array instead."
-      return
-    end if
+    select rank(into)
+      rank(1)
+        if ( ncols > 1 ) then
+          stat   = ARG_ERR
+          errmsg = 'Error reading file "'//file//'". Data has more than one column but actual argument is a '//&
+                   "one-dimensional array. Try reading into a two-dimensional array instead."
+          return
+        end if
+      rank(2)
+        continue
+    end select
 
     select rank(into)
       rank(1)
@@ -1072,12 +1092,17 @@ submodule (io_fortran_lib) text_io
       return
     end if
 
-    if ( (rank(into) == 1) .and. (ncols > 1) ) then
-      stat   = ARG_ERR
-      errmsg = 'Error reading file "'//file//'". Data has more than one column but actual argument is a '//&
-               "one-dimensional array. Try reading into a two-dimensional array instead."
-      return
-    end if
+    select rank(into)
+      rank(1)
+        if ( ncols > 1 ) then
+          stat   = ARG_ERR
+          errmsg = 'Error reading file "'//file//'". Data has more than one column but actual argument is a '//&
+                   "one-dimensional array. Try reading into a two-dimensional array instead."
+          return
+        end if
+      rank(2)
+        continue
+    end select
 
     select rank(into)
       rank(1)
@@ -1134,12 +1159,17 @@ submodule (io_fortran_lib) text_io
       return
     end if
 
-    if ( (rank(into) == 1) .and. (ncols > 1) ) then
-      stat   = ARG_ERR
-      errmsg = 'Error reading file "'//file//'". Data has more than one column but actual argument is a '//&
-               "one-dimensional array. Try reading into a two-dimensional array instead."
-      return
-    end if
+    select rank(into)
+      rank(1)
+        if ( ncols > 1 ) then
+          stat   = ARG_ERR
+          errmsg = 'Error reading file "'//file//'". Data has more than one column but actual argument is a '//&
+                   "one-dimensional array. Try reading into a two-dimensional array instead."
+          return
+        end if
+      rank(2)
+        continue
+    end select
 
     select rank(into)
       rank(1)
@@ -1197,12 +1227,17 @@ submodule (io_fortran_lib) text_io
       return
     end if
 
-    if ( (rank(into) == 1) .and. (ncols > 1) ) then
-      stat   = ARG_ERR
-      errmsg = 'Error reading file "'//file//'". Data has more than one column but actual argument is a '//&
-               "one-dimensional array. Try reading into a two-dimensional array instead."
-      return
-    end if
+    select rank(into)
+      rank(1)
+        if ( ncols > 1 ) then
+          stat   = ARG_ERR
+          errmsg = 'Error reading file "'//file//'". Data has more than one column but actual argument is a '//&
+                   "one-dimensional array. Try reading into a two-dimensional array instead."
+          return
+        end if
+      rank(2)
+        continue
+    end select
 
     select rank(into)
       rank(1)
@@ -1259,12 +1294,17 @@ submodule (io_fortran_lib) text_io
       return
     end if
 
-    if ( (rank(into) == 1) .and. (ncols > 1) ) then
-      stat   = ARG_ERR
-      errmsg = 'Error reading file "'//file//'". Data has more than one column but actual argument is a '//&
-               "one-dimensional array. Try reading into a two-dimensional array instead."
-      return
-    end if
+    select rank(into)
+      rank(1)
+        if ( ncols > 1 ) then
+          stat   = ARG_ERR
+          errmsg = 'Error reading file "'//file//'". Data has more than one column but actual argument is a '//&
+                   "one-dimensional array. Try reading into a two-dimensional array instead."
+          return
+        end if
+      rank(2)
+        continue
+    end select
 
     select rank(into)
       rank(1)
@@ -1321,12 +1361,17 @@ submodule (io_fortran_lib) text_io
       return
     end if
 
-    if ( (rank(into) == 1) .and. (ncols > 1) ) then
-      stat   = ARG_ERR
-      errmsg = 'Error reading file "'//file//'". Data has more than one column but actual argument is a '//&
-               "one-dimensional array. Try reading into a two-dimensional array instead."
-      return
-    end if
+    select rank(into)
+      rank(1)
+        if ( ncols > 1 ) then
+          stat   = ARG_ERR
+          errmsg = 'Error reading file "'//file//'". Data has more than one column but actual argument is a '//&
+                   "one-dimensional array. Try reading into a two-dimensional array instead."
+          return
+        end if
+      rank(2)
+        continue
+    end select
 
     select rank(into)
       rank(1)
@@ -1383,12 +1428,17 @@ submodule (io_fortran_lib) text_io
       return
     end if
 
-    if ( (rank(into) == 1) .and. (ncols > 1) ) then
-      stat   = ARG_ERR
-      errmsg = 'Error reading file "'//file//'". Data has more than one column but actual argument is a '//&
-               "one-dimensional array. Try reading into a two-dimensional array instead."
-      return
-    end if
+    select rank(into)
+      rank(1)
+        if ( ncols > 1 ) then
+          stat   = ARG_ERR
+          errmsg = 'Error reading file "'//file//'". Data has more than one column but actual argument is a '//&
+                   "one-dimensional array. Try reading into a two-dimensional array instead."
+          return
+        end if
+      rank(2)
+        continue
+    end select
 
     select rank(into)
       rank(1)

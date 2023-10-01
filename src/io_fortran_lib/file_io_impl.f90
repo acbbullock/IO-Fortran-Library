@@ -40,9 +40,9 @@ submodule (io_fortran_lib) file_io
   module procedure to_file_c128
     character(len=:), allocatable :: ext
 
-    character(len=:), pointer, contiguous :: header_(:)
-    character(len=:), pointer             :: locale_, delim_, fmt_, im_, errmsg_
-    integer,          pointer             :: decimals_, stat_
+    character(len=:), pointer :: header_(:)
+    character(len=:), pointer :: locale_, delim_, fmt_, im_, errmsg_
+    integer,          pointer :: decimals_, stat_
 
     character(len=0), target :: dummy_msg
     integer,          target :: dummy_stat
@@ -182,9 +182,9 @@ submodule (io_fortran_lib) file_io
   module procedure to_file_c64
     character(len=:), allocatable :: ext
 
-    character(len=:), pointer, contiguous :: header_(:)
-    character(len=:), pointer             :: locale_, delim_, fmt_, im_, errmsg_
-    integer,          pointer             :: decimals_, stat_
+    character(len=:), pointer :: header_(:)
+    character(len=:), pointer :: locale_, delim_, fmt_, im_, errmsg_
+    integer,          pointer :: decimals_, stat_
 
     character(len=0), target :: dummy_msg
     integer,          target :: dummy_stat
@@ -324,9 +324,9 @@ submodule (io_fortran_lib) file_io
   module procedure to_file_c32
     character(len=:), allocatable :: ext
 
-    character(len=:), pointer, contiguous :: header_(:)
-    character(len=:), pointer             :: locale_, delim_, fmt_, im_, errmsg_
-    integer,          pointer             :: decimals_, stat_
+    character(len=:), pointer :: header_(:)
+    character(len=:), pointer :: locale_, delim_, fmt_, im_, errmsg_
+    integer,          pointer :: decimals_, stat_
 
     character(len=0), target :: dummy_msg
     integer,          target :: dummy_stat
@@ -467,9 +467,9 @@ submodule (io_fortran_lib) file_io
   module procedure to_file_r128
     character(len=:), allocatable :: ext
 
-    character(len=:), pointer, contiguous :: header_(:)
-    character(len=:), pointer             :: locale_, delim_, fmt_, errmsg_
-    integer,          pointer             :: decimals_, stat_
+    character(len=:), pointer :: header_(:)
+    character(len=:), pointer :: locale_, delim_, fmt_, errmsg_
+    integer,          pointer :: decimals_, stat_
 
     character(len=0), target :: dummy_msg
     integer,          target :: dummy_stat
@@ -602,9 +602,9 @@ submodule (io_fortran_lib) file_io
   module procedure to_file_r64
     character(len=:), allocatable :: ext
 
-    character(len=:), pointer, contiguous :: header_(:)
-    character(len=:), pointer             :: locale_, delim_, fmt_, errmsg_
-    integer,          pointer             :: decimals_, stat_
+    character(len=:), pointer :: header_(:)
+    character(len=:), pointer :: locale_, delim_, fmt_, errmsg_
+    integer,          pointer :: decimals_, stat_
 
     character(len=0), target :: dummy_msg
     integer,          target :: dummy_stat
@@ -737,9 +737,9 @@ submodule (io_fortran_lib) file_io
   module procedure to_file_r32
     character(len=:), allocatable :: ext
 
-    character(len=:), pointer, contiguous :: header_(:)
-    character(len=:), pointer             :: locale_, delim_, fmt_, errmsg_
-    integer,          pointer             :: decimals_, stat_
+    character(len=:), pointer :: header_(:)
+    character(len=:), pointer :: locale_, delim_, fmt_, errmsg_
+    integer,          pointer :: decimals_, stat_
 
     character(len=0), target :: dummy_msg
     integer,          target :: dummy_stat
@@ -873,9 +873,9 @@ submodule (io_fortran_lib) file_io
   module procedure to_file_i64
     character(len=:), allocatable :: ext
 
-    character(len=:), pointer, contiguous :: header_(:)
-    character(len=:), pointer             :: delim_, fmt_, errmsg_
-    integer,          pointer             :: stat_
+    character(len=:), pointer :: header_(:)
+    character(len=:), pointer :: delim_, fmt_, errmsg_
+    integer,          pointer :: stat_
 
     character(len=0), target :: dummy_msg
     integer,          target :: dummy_stat
@@ -984,9 +984,9 @@ submodule (io_fortran_lib) file_io
   module procedure to_file_i32
     character(len=:), allocatable :: ext
 
-    character(len=:), pointer, contiguous :: header_(:)
-    character(len=:), pointer             :: delim_, fmt_, errmsg_
-    integer,          pointer             :: stat_
+    character(len=:), pointer :: header_(:)
+    character(len=:), pointer :: delim_, fmt_, errmsg_
+    integer,          pointer :: stat_
 
     character(len=0), target :: dummy_msg
     integer,          target :: dummy_stat
@@ -1095,9 +1095,9 @@ submodule (io_fortran_lib) file_io
   module procedure to_file_i16
     character(len=:), allocatable :: ext
 
-    character(len=:), pointer, contiguous :: header_(:)
-    character(len=:), pointer             :: delim_, fmt_, errmsg_
-    integer,          pointer             :: stat_
+    character(len=:), pointer :: header_(:)
+    character(len=:), pointer :: delim_, fmt_, errmsg_
+    integer,          pointer :: stat_
 
     character(len=0), target :: dummy_msg
     integer,          target :: dummy_stat
@@ -1206,9 +1206,9 @@ submodule (io_fortran_lib) file_io
   module procedure to_file_i8
     character(len=:), allocatable :: ext
 
-    character(len=:), pointer, contiguous :: header_(:)
-    character(len=:), pointer             :: delim_, fmt_, errmsg_
-    integer,          pointer             :: stat_
+    character(len=:), pointer :: header_(:)
+    character(len=:), pointer :: delim_, fmt_, errmsg_
+    integer,          pointer :: stat_
 
     character(len=0), target :: dummy_msg
     integer,          target :: dummy_stat

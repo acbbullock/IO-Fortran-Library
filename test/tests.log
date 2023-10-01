@@ -1,0 +1,259 @@
+RUNNING TESTS (file) | date: 20230930 | time: 134038.417 | real kind: 4
+-----------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_9B97B8775D62FEFF -c -fpp -free -module build/ifx_9B97B8775D62FEFF -o build/ifx_9B97B8775D62FEFF/IO-Fortran-Library/test_units_file-test-r32.f90.o ".
+
+RUNNING TESTS (file) | date: 20230930 | time: 134323.223 | real kind: 4
+-----------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_4ED069F48408788D -c -std=f2018 -fpp -free -module build/ifx_4ED069F48408788D -o build/ifx_4ED069F48408788D/IO-Fortran-Library/test_units_file-test-r32.f90.o ".
+
+RUNNING TESTS (file) | date: 20230930 | time: 135022.105 | real kind: 4
+-----------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_4ED069F48408788D -c -std=f2018 -fpp -free -module build/ifx_4ED069F48408788D -o build/ifx_4ED069F48408788D/IO-Fortran-Library/test_units_file-test-r32.f90.o ".
+
+RUNNING TESTS (file) | date: 20230930 | time: 142655.858 | real kind: 4
+-----------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_9B97B8775D62FEFF -c -fpp -free -module build/ifx_9B97B8775D62FEFF -o build/ifx_9B97B8775D62FEFF/IO-Fortran-Library/test_units_file-test-r32.f90.o ".
+
+RUNNING TESTS (file) | date:  | time:            | real kind: 4
+---------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_9B97B8775D62FEFF -c -fpp -free -module build/ifx_9B97B8775D62FEFF -o build/ifx_9B97B8775D62FEFF/IO-Fortran-Library/test_units_file-test-r32.f90.o ".
+
+RUNNING TESTS (file) | date:  | time:            | real kind: 4
+---------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_9B97B8775D62FEFF -c -fpp -free -module build/ifx_9B97B8775D62FEFF -o build/ifx_9B97B8775D62FEFF/IO-Fortran-Library/test_units_file-test-r32.f90.o ".
+
+RUNNING TESTS (file) | date: 20230930 | time: 144251.820 | real kind: 4
+-----------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_9B97B8775D62FEFF -c -fpp -free -module build/ifx_9B97B8775D62FEFF -o build/ifx_9B97B8775D62FEFF/IO-Fortran-Library/test_units_file-test-r32.f90.o ".
+
+RUNNING TESTS (file) | date: 20230930 | time: 144308.693 | real kind: 4
+-----------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_9B97B8775D62FEFF -c -fpp -free -module build/ifx_9B97B8775D62FEFF -o build/ifx_9B97B8775D62FEFF/IO-Fortran-Library/test_units_file-test-r32.f90.o ".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 144456.073 | real kind: 4
+------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_9B97B8775D62FEFF -c -fpp -free -module build/ifx_9B97B8775D62FEFF -o build/ifx_9B97B8775D62FEFF/IO-Fortran-Library/test_units_file-test-r32.f90.o ".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 144526.035 | real kind: 4
+------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_9B97B8775D62FEFF -c -fpp -free -module build/ifx_9B97B8775D62FEFF -o build/ifx_9B97B8775D62FEFF/IO-Fortran-Library/test_units_file-test-r32.f90.o ".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 144839.980 | real kind: 4
+------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_9B97B8775D62FEFF -c -fpp -free -module build/ifx_9B97B8775D62FEFF -o build/ifx_9B97B8775D62FEFF/IO-Fortran-Library/test_units_file-test-r32.f90.o ".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 144943.614 | real kind: 4
+------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_9B97B8775D62FEFF -c -fpp -free -module build/ifx_9B97B8775D62FEFF -o build/ifx_9B97B8775D62FEFF/IO-Fortran-Library/test_units_file-test-r32.f90.o ".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 150025.693 | real kind: 4
+------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_9B97B8775D62FEFF -c -fpp -free -module build/ifx_9B97B8775D62FEFF -o build/ifx_9B97B8775D62FEFF/IO-Fortran-Library/test_units_file-test-r32.f90.o ".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 151225.517 | real kind: 4
+------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_9B97B8775D62FEFF -c -fpp -free -module build/ifx_9B97B8775D62FEFF -o build/ifx_9B97B8775D62FEFF/IO-Fortran-Library/test_units_file-test-r32.f90.o ".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 151246.280 | real kind: 4
+------------------------------------------------------------------------------------
+Some tests are "FAILING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_9B97B8775D62FEFF -c -fpp -free -module build/ifx_9B97B8775D62FEFF -o build/ifx_9B97B8775D62FEFF/IO-Fortran-Library/test_units_file-test-r32.f90.o ".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 151422.554 | real kind: 4
+------------------------------------------------------------------------------------
+Some tests are "FAILING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_9B97B8775D62FEFF -c -fpp -free -module build/ifx_9B97B8775D62FEFF -o build/ifx_9B97B8775D62FEFF/IO-Fortran-Library/test_units_file-test-r32.f90.o ".
+
+
+    ERROR LOG:
+    Test bounds failed at line 38 of file "file-test-r32.f90".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 151558.516 | real kind: 4
+------------------------------------------------------------------------------------
+Some tests are "FAILING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_9B97B8775D62FEFF -c -fpp -free -module build/ifx_9B97B8775D62FEFF -o build/ifx_9B97B8775D62FEFF/IO-Fortran-Library/test_units_file-test-r32.f90.o ".
+
+    ERROR LOG:
+    Test bounds failed at line 38 of file "file-test-r32.f90".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 151656.714 | real kind: 4
+------------------------------------------------------------------------------------
+Some tests are "FAILING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_9B97B8775D62FEFF -c -fpp -free -module build/ifx_9B97B8775D62FEFF -o build/ifx_9B97B8775D62FEFF/IO-Fortran-Library/test_units_file-test-r32.f90.o ".
+
+    ERROR LOG:
+--------------
+    Test bounds failed at line 38 of file "file-test-r32.f90".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 151740.753 | real kind: 4
+------------------------------------------------------------------------------------
+Some tests are "FAILING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_9B97B8775D62FEFF -c -fpp -free -module build/ifx_9B97B8775D62FEFF -o build/ifx_9B97B8775D62FEFF/IO-Fortran-Library/test_units_file-test-r32.f90.o ".
+
+    ERROR LOG
+    ---------
+    Test bounds failed at line 38 of file "file-test-r32.f90".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 155201.298 | real kind: 4
+------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_9B97B8775D62FEFF -c -fpp -free -module build/ifx_9B97B8775D62FEFF -o build/ifx_9B97B8775D62FEFF/IO-Fortran-Library/test_units_file-test-r32.f90.o ".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 155428.364 | real kind: 4
+------------------------------------------------------------------------------------
+Some tests are "FAILING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_9B97B8775D62FEFF -c -fpp -free -module build/ifx_9B97B8775D62FEFF -o build/ifx_9B97B8775D62FEFF/IO-Fortran-Library/test_units_file-test-r32.f90.o ".
+
+    ERROR LOG
+    ---------
+    Test failed at line 38 of file "file-test-r32.f90" with stat 4 and errmsg "Invalid format "a" for file "./data/u_e.csv". Format must be one of: e f z".
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 155654.013 | real kind: 4
+------------------------------------------------------------------------------------
+Some tests are "FAILING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_9B97B8775D62FEFF -c -fpp -free -module build/ifx_9B97B8775D62FEFF -o build/ifx_9B97B8775D62FEFF/IO-Fortran-Library/test_units_file-test-r32.f90.o ".
+
+    ERROR LOG
+    ---------
+    Test failed at line 38 of file "file-test-r32.f90" with stat 4 and errmsg 'Invalid format "a" for file "./data/u_e.csv". Format must be one of: e f z'.
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 160207.819 | real kind: 4
+------------------------------------------------------------------------------------
+Some tests are "FAILING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_FD2C48F51D82BEA2 -mtune=generic -march=x86-64 -Werror=implicit-interface -fimplicit-none -ffree-form -J build/gfortran_FD2C48F51D82BEA2 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+    ERROR LOG
+    ---------
+    Test failed at line 38 of file "test/units/file-test-r32.f90" with stat 4 and errmsg 'Invalid format "a" for file "./data/u_e.csv". Format must be one of: e f z'.
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 160330.180 | real kind: 4
+------------------------------------------------------------------------------------
+Some tests are "FAILING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_FD2C48F51D82BEA2 -mtune=generic -march=x86-64 -Werror=implicit-interface -fimplicit-none -ffree-form -J build/gfortran_FD2C48F51D82BEA2 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+    ERROR LOG
+    ---------
+    Test failed at line 38 of file "test/units/file-test-r32.f90" with stat 4 and errmsg 'Invalid format "a" for file "./data/u_e.csv". Format must be one of: e f z'.
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 160443.500 | real kind: 4
+------------------------------------------------------------------------------------
+Some tests are "FAILING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_FD2C48F51D82BEA2 -mtune=generic -march=x86-64 -Werror=implicit-interface -fimplicit-none -ffree-form -J build/gfortran_FD2C48F51D82BEA2 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+    ERROR LOG
+    ---------
+    Test failed at line 39 of file "test/units/file-test-r32.f90" with stat 4 and errmsg 'Invalid format "a" for file "./data/u_e.csv". Format must be one of: e f z'.
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 163356.727 | real kind: 4
+------------------------------------------------------------------------------------
+Some tests are "FAILING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_FD2C48F51D82BEA2 -mtune=generic -march=x86-64 -Werror=implicit-interface -fimplicit-none -ffree-form -J build/gfortran_FD2C48F51D82BEA2 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+    ERROR LOG
+    ---------
+    Test failed at line 39 of file "test/units/file-test-r32.f90" with stat 4 and errmsg 'Invalid format "a" for file "./data/u_e.csv". Format must be one of: e f z'.
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 163404.818 | real kind: 4
+------------------------------------------------------------------------------------
+Some tests are "FAILING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_FD2C48F51D82BEA2 -mtune=generic -march=x86-64 -Werror=implicit-interface -fimplicit-none -ffree-form -J build/gfortran_FD2C48F51D82BEA2 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+    ERROR LOG
+    ---------
+    Test failed at line 39 of file "test/units/file-test-r32.f90" with stat 4 and errmsg 'Invalid format "a" for file "./data/u_e.csv". Format must be one of: e f z'.
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 163606.866 | real kind: 4
+------------------------------------------------------------------------------------
+Some tests are "FAILING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_FD2C48F51D82BEA2 -mtune=generic -march=x86-64 -Werror=implicit-interface -fimplicit-none -ffree-form -J build/gfortran_FD2C48F51D82BEA2 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+    ERROR LOG
+    ---------
+    Test failed at line 38 of file "test/units/file-test-r32.f90" with stat 4 and errmsg 'Invalid format "a" for file "./data/u_e.csv". Format must be one of: e f z'.
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 164100.350 | real kind: 4
+------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_FD2C48F51D82BEA2 -mtune=generic -march=x86-64 -Werror=implicit-interface -fimplicit-none -ffree-form -J build/gfortran_FD2C48F51D82BEA2 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 164136.105 | real kind: 4
+------------------------------------------------------------------------------------
+Some tests are "FAILING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_FD2C48F51D82BEA2 -mtune=generic -march=x86-64 -Werror=implicit-interface -fimplicit-none -ffree-form -J build/gfortran_FD2C48F51D82BEA2 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+    ERROR LOG
+    ---------
+    Test failed at line 38 of file "test/units/file-test-r32.f90" with stat 4 and errmsg 'Invalid locale "EI" for file "./data/u_e.csv". Locale must be one of: US EU'.
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 165020.191 | real kind: 4
+------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_FD2C48F51D82BEA2 -mtune=generic -march=x86-64 -Werror=implicit-interface -fimplicit-none -ffree-form -J build/gfortran_FD2C48F51D82BEA2 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 165150.763 | real kind: 4
+------------------------------------------------------------------------------------
+Some tests are "FAILING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_FD2C48F51D82BEA2 -mtune=generic -march=x86-64 -Werror=implicit-interface -fimplicit-none -ffree-form -J build/gfortran_FD2C48F51D82BEA2 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+    ERROR LOG
+    ---------
+    Test bounds failed at line 404 of file "test/units/file-test-r32.f90".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 165304.567 | real kind: 4
+------------------------------------------------------------------------------------
+Some tests are "FAILING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_FD2C48F51D82BEA2 -mtune=generic -march=x86-64 -Werror=implicit-interface -fimplicit-none -ffree-form -J build/gfortran_FD2C48F51D82BEA2 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+    ERROR LOG
+    ---------
+    Test bounds failed at line 360 of file "test/units/file-test-r32.f90".
+    Test bounds failed at line 404 of file "test/units/file-test-r32.f90".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 165341.231 | real kind: 4
+------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_FD2C48F51D82BEA2 -mtune=generic -march=x86-64 -Werror=implicit-interface -fimplicit-none -ffree-form -J build/gfortran_FD2C48F51D82BEA2 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 170318.947 | real kind: 4
+------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_FD2C48F51D82BEA2 -mtune=generic -march=x86-64 -Werror=implicit-interface -fimplicit-none -ffree-form -J build/gfortran_FD2C48F51D82BEA2 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 170401.355 | real kind: 4
+------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_FD2C48F51D82BEA2 -mtune=generic -march=x86-64 -Werror=implicit-interface -fimplicit-none -ffree-form -J build/gfortran_FD2C48F51D82BEA2 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 170509.935 | real kind: 8
+------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_FB02C4B3825E1CE1 -D R8 -mtune=generic -march=x86-64 -Werror=implicit-interface -fimplicit-none -ffree-form -J build/gfortran_FB02C4B3825E1CE1 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 171007.207 | real kind: 4
+------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_089521413E021C11 -D R4 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -std=f2018 -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_089521413E021C11 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 171147.549 | real kind: 4
+------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_089521413E021C11 -D R4 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -std=f2018 -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_089521413E021C11 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 171229.659 | real kind: 8
+------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_23A6CCA3FC9FFC1D -D R8 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -std=f2018 -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_23A6CCA3FC9FFC1D -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 171311.928 | real kind: 16
+-------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_457407FE3AF56638 -D R16 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -std=f2018 -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_457407FE3AF56638 -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 172849.727 | real kind: 4
+------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_8B833E534D967241 -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -fpp -D R4 -free -module build/ifx_8B833E534D967241 -o build/ifx_8B833E534D967241/IO-Fortran-Library/test_units_file-test.f90.o ".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 184518.943 | real kind: 4
+------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_8418B78A320C52C0 -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -fpp -D R4 -D I1 -free -module build/ifx_8418B78A320C52C0 -o build/ifx_8418B78A320C52C0/IO-Fortran-Library/test_units_file-test-r.f90.o ".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 184541.870 | complex kind: 4
+---------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_8418B78A320C52C0 -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -fpp -D R4 -D I1 -free -module build/ifx_8418B78A320C52C0 -o build/ifx_8418B78A320C52C0/IO-Fortran-Library/test_units_file-test-c.f90.o ".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 184637.372 | real kind: 4
+------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_3C50D6ABEE48598A -D R4 -D I1 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -std=f2018 -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_3C50D6ABEE48598A -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 184645.926 | complex kind: 4
+---------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 13.2.1 20230918 (Red Hat 13.2.1-3)" using compiler options "-cpp -I build/gfortran_3C50D6ABEE48598A -D R4 -D I1 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -std=f2018 -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build/gfortran_3C50D6ABEE48598A -fpre-include=/usr/include/finclude/math-vector-fortran.h".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 185043.963 | real kind: 4
+------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_8418B78A320C52C0 -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -fpp -D R4 -D I1 -free -module build/ifx_8418B78A320C52C0 -o build/ifx_8418B78A320C52C0/IO-Fortran-Library/test_units_file-test-r.f90.o ".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 191525.510 | int kind: 4
+-----------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230721" using compiler options "-Ibuild/ifx_8418B78A320C52C0 -c -stand f18 -warn all -check all -check nouninit -error-limit 1 -O0 -g -traceback -assume byterecl -fpp -D R4 -D I1 -free -module build/ifx_8418B78A320C52C0 -o build/ifx_8418B78A320C52C0/IO-Fortran-Library/test_units_file-test-i.f90.o ".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 192216.803 | real kind: 4
+------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.2.0 Build 20230627" using compiler options "/Ibuild\ifx_774D71E589491D0D /c /stand:f18 /warn:all /check:all /error-limit:1 /Od /Z7 /traceback /assume:byterecl /fpp /define:R4 /free /module:build\ifx_774D71E589491D0D /o:build\ifx_774D71E589491D0D\IO-Fortran-Library\test_units_file-test-r.f90.o ".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 192335.069 | real kind: 4
+------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 12.2.0" using compiler options "-cpp -I build\gfortran_3C50D6ABEE48598A -iprefix c:\users\acbbu\appdata\local\quickstart_fortran\mingw64\bin\../lib/gcc/x86_64-w64-mingw32/12.2.0/ -D_REENTRANT -D R4 -D I1 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -std=f2018 -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build\gfortran_3C50D6ABEE48598A".
+
+RUNNING TESTS (to_file/from_file) | date: 20230930 | time: 192348.518 | real kind: 4
+------------------------------------------------------------------------------------
+All tests are "PASSING" with compiler "GCC version 12.2.0" using compiler options "-cpp -I build\gfortran_3C50D6ABEE48598A -iprefix c:\users\acbbu\appdata\local\quickstart_fortran\mingw64\bin\../lib/gcc/x86_64-w64-mingw32/12.2.0/ -D_REENTRANT -D R4 -D I1 -mtune=generic -march=x86-64 -g -Wall -Wextra -Werror=implicit-interface -Werror=implicit-interface -std=f2018 -fPIC -fmax-errors=1 -fbounds-check -fcheck=array-temps -fbacktrace -fcoarray=single -ffree-form -fimplicit-none -ffree-form -J build\gfortran_3C50D6ABEE48598A".
+
