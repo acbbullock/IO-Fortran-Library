@@ -7,66 +7,59 @@ author: Austin C Bullock
 
 *Description*: Subroutine for writing an array of uniform numeric data type to an external file.
 
-For `x` an array of rank `1`, `2` and of type `integer`:
+For writing textual data from an array `x` of rank `1`, `2` and of type `integer`:
 
 ```fortran
-call to_file(x, file [, header, dim, delim, fmt])
-```
-
-```fortran
-call to_file(x, file [, header, delim, fmt])
+call to_file(x, file [, header, delim, fmt, stat, errmsg])
 ```
 
 * `file` is of type `character(len=*)`
 * `header` is `optional` and of type `character(len=*), dimension(:)`
-* `dim` is `optional` and of type `integer` (available only if `x` has rank `1`)
 * `delim` is `optional` and of type `character(len=*)`
 * `fmt` is `optional`, may be one of `INT_FMTS`
+* `stat` is `optional` and of type `integer`
+* `errmsg` is `optional` and of type `character(len=*)`
 
-For `x` an array of rank `1`, `2` and of type `real`:
-
-```fortran
-call to_file(x, file [, header, dim, locale, delim, fmt, decimals])
-```
+For writing textual data from an array `x` of rank `1`, `2` and of type `real`:
 
 ```fortran
-call to_file(x, file [, header, locale, delim, fmt, decimals])
+call to_file(x, file [, header, locale, delim, fmt, decimals, stat, errmsg])
 ```
 
 * `file` is of type `character(len=*)`
 * `header` is `optional` and of type `character(len=*), dimension(:)`
-* `dim` is `optional` and of type `integer` (available only if `x` has rank `1`)
 * `locale` is `optional`, may be one of `LOCALES`
 * `delim` is `optional` and of type `character(len=*)`
 * `fmt` is `optional`, may be one of `REAL_FMTS`
 * `decimals` is `optional` and of type `integer`
+* `stat` is `optional` and of type `integer`
+* `errmsg` is `optional` and of type `character(len=*)`
 
-For `x` an array of rank `1`, `2` and of type of type `complex`:
-
-```fortran
-call to_file(x, file [, header, dim, locale, delim, fmt, decimals, im])
-```
+For writing textual data from an array `x` of rank `1`, `2` and of type `complex`:
 
 ```fortran
-call to_file(x, file [, header, locale, delim, fmt, decimals, im])
+call to_file(x, file [, header, locale, delim, fmt, decimals, im, stat, errmsg])
 ```
 
 * `file` is of type `character(len=*)`
 * `header` is `optional` and of type `character(len=*), dimension(:)`
-* `dim` is `optional` and of type `integer` (available only if `x` has rank `1`)
 * `locale` is `optional`, may be one of `LOCALES`
 * `delim` is `optional` and of type `character(len=*)`
 * `fmt` is `optional`, may be one of `REAL_FMTS`
 * `decimals` is `optional` and of type `integer`
 * `im` is `optional` and of type `character(len=*)`
+* `stat` is `optional` and of type `integer`
+* `errmsg` is `optional` and of type `character(len=*)`
 
-For `x` an array of any rank `3`-`15` and of type `integer`, `real`, `complex`:
+For writing binary data from an array `x` of any rank `1`-`15` and of type `integer`, `real`, `complex`:
 
 ```fortran
-call to_file(x, file)
+call to_file(x, file [, stat, errmsg])
 ```
 
 * `file` is of type `character(len=*)`
+* `stat` is `optional` and of type `integer`
+* `errmsg` is `optional` and of type `character(len=*)`
 
 @note `file` may be a relative path, but absolute paths are not guaranteed to work on every platform.
 
@@ -75,8 +68,6 @@ call to_file(x, file)
 ### Optional Arguments
 
 Header (default is none): `header` is a [character array literal](../UserInfo/compilers.html). For `x` of rank `1`, `header` may be of size `1` or `size(x)`. For `x` of rank `2`, `header` may be of size `1` or `size(x, dim=2)`.
-
-Dimension: `dim` specifies whether to write along the rows (`dim=1`) or along the columns (`dim=2`), choosing the former by default unless `size(header)` is `size(x)`. This option is available only if `x` has rank `1`.
 
 Locales (default is `"US"`):
 

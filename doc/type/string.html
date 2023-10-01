@@ -98,7 +98,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title="<p>100.0% of total for derived types.</p>Including implementation: 287 statements, 100.0% of total for derived types.">32 statements</a>
+               title="<p>100.0% of total for derived types.</p>Including implementation: 295 statements, 100.0% of total for derived types.">32 statements</a>
           </li>
 
             <li id="source-file">
@@ -1293,7 +1293,7 @@ treated as the <a href="../module/io_fortran_lib.html#variable-empty_str">empty 
               <span class="anchor" ></span>
               complex(kind=r128),
             </td>
-<td>intent(inout)</td>
+<td>intent(out)</td>
               <td></td>            <td>
               
             </td>
@@ -1390,7 +1390,7 @@ treated as the <a href="../module/io_fortran_lib.html#variable-empty_str">empty 
               <span class="anchor" ></span>
               complex(kind=r64),
             </td>
-<td>intent(inout)</td>
+<td>intent(out)</td>
               <td></td>            <td>
               
             </td>
@@ -1487,7 +1487,7 @@ treated as the <a href="../module/io_fortran_lib.html#variable-empty_str">empty 
               <span class="anchor" ></span>
               complex(kind=r32),
             </td>
-<td>intent(inout)</td>
+<td>intent(out)</td>
               <td></td>            <td>
               
             </td>
@@ -1584,7 +1584,7 @@ treated as the <a href="../module/io_fortran_lib.html#variable-empty_str">empty 
               <span class="anchor" ></span>
               real(kind=r128),
             </td>
-<td>intent(inout)</td>
+<td>intent(out)</td>
               <td></td>            <td>
               
             </td>
@@ -1666,7 +1666,7 @@ treated as the <a href="../module/io_fortran_lib.html#variable-empty_str">empty 
               <span class="anchor" ></span>
               real(kind=r64),
             </td>
-<td>intent(inout)</td>
+<td>intent(out)</td>
               <td></td>            <td>
               
             </td>
@@ -1748,7 +1748,7 @@ treated as the <a href="../module/io_fortran_lib.html#variable-empty_str">empty 
               <span class="anchor" ></span>
               real(kind=r32),
             </td>
-<td>intent(inout)</td>
+<td>intent(out)</td>
               <td></td>            <td>
               
             </td>
@@ -1830,7 +1830,7 @@ treated as the <a href="../module/io_fortran_lib.html#variable-empty_str">empty 
               <span class="anchor" ></span>
               integer(kind=i64),
             </td>
-<td>intent(inout)</td>
+<td>intent(out)</td>
               <td></td>            <td>
               
             </td>
@@ -1897,7 +1897,7 @@ treated as the <a href="../module/io_fortran_lib.html#variable-empty_str">empty 
               <span class="anchor" ></span>
               integer(kind=i32),
             </td>
-<td>intent(inout)</td>
+<td>intent(out)</td>
               <td></td>            <td>
               
             </td>
@@ -1964,7 +1964,7 @@ treated as the <a href="../module/io_fortran_lib.html#variable-empty_str">empty 
               <span class="anchor" ></span>
               integer(kind=i16),
             </td>
-<td>intent(inout)</td>
+<td>intent(out)</td>
               <td></td>            <td>
               
             </td>
@@ -2031,7 +2031,7 @@ treated as the <a href="../module/io_fortran_lib.html#variable-empty_str">empty 
               <span class="anchor" ></span>
               integer(kind=i8),
             </td>
-<td>intent(inout)</td>
+<td>intent(out)</td>
               <td></td>            <td>
               
             </td>
@@ -2097,7 +2097,7 @@ treated as the <a href="../module/io_fortran_lib.html#variable-empty_str">empty 
     <ul class="list-group">
         <li class="list-group-item">
                   <h3>
-    private impure recursive module subroutine echo_string(substring, file, append, terminator)  
+    private impure recursive module subroutine echo_string(substring, file, append, terminator, stat, errmsg)  
 </h3>
   
 
@@ -2148,8 +2148,8 @@ treated as the <a href="../module/io_fortran_lib.html#variable-empty_str">empty 
               logical,
             </td>
 <td>intent(in),</td>
-              <td>optional</td>            <td>
-              
+              <td>optional,</td>            <td>
+              target
             </td>
             <td>::</td>
             <td><strong>append</strong></td>
@@ -2163,11 +2163,41 @@ treated as the <a href="../module/io_fortran_lib.html#variable-empty_str">empty 
               character(len=*),
             </td>
 <td>intent(in),</td>
-              <td>optional</td>            <td>
-              
+              <td>optional,</td>            <td>
+              target
             </td>
             <td>::</td>
             <td><strong>terminator</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(out),</td>
+              <td>optional,</td>            <td>
+              target
+            </td>
+            <td>::</td>
+            <td><strong>stat</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(out),</td>
+              <td>optional,</td>            <td>
+              target
+            </td>
+            <td>::</td>
+            <td><strong>errmsg</strong></td>
             <td>
                 
             </td>
@@ -2679,7 +2709,7 @@ function is identical to <code>len</code> for strings of 2,147,483,647 bytes or 
                   
                 <p>Methods for the <code>String</code> type.</p>
                   <h3>
-    private impure recursive module subroutine read_file(self, file, cell_array, row_separator, column_separator)  
+    private impure recursive module subroutine read_file(self, file, cell_array, row_separator, column_separator, stat, errmsg)  
 </h3>
   <p>Reads raw text file contents into <code>self</code> and optionally populates a cell array using the designated
 <code>row_separator</code> and <code>column_separator</code> whose default values are <code>LF</code> and <code>COMMA</code> respectively.</p>
@@ -2747,8 +2777,8 @@ function is identical to <code>len</code> for strings of 2,147,483,647 bytes or 
               character(len=*),
             </td>
 <td>intent(in),</td>
-              <td>optional</td>            <td>
-              
+              <td>optional,</td>            <td>
+              target
             </td>
             <td>::</td>
             <td><strong>row_separator</strong></td>
@@ -2762,11 +2792,41 @@ function is identical to <code>len</code> for strings of 2,147,483,647 bytes or 
               character(len=*),
             </td>
 <td>intent(in),</td>
-              <td>optional</td>            <td>
-              
+              <td>optional,</td>            <td>
+              target
             </td>
             <td>::</td>
             <td><strong>column_separator</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(out),</td>
+              <td>optional,</td>            <td>
+              target
+            </td>
+            <td>::</td>
+            <td><strong>stat</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(out),</td>
+              <td>optional,</td>            <td>
+              target
+            </td>
+            <td>::</td>
+            <td><strong>errmsg</strong></td>
             <td>
                 
             </td>
@@ -2891,7 +2951,7 @@ in place.</p>
                   
                 <p>Methods for the <code>String</code> type.</p>
                   <h3>
-    private impure recursive module subroutine write_file(self, cell_array, file, row_separator, column_separator, append)  
+    private impure recursive module subroutine write_file(self, cell_array, file, row_separator, column_separator, append, stat, errmsg)  
 </h3>
   <p>Writes the content of a cell array to a text file. The cell array's entire contents are populated into
 <code>self</code> and then streamed to an external text file using the designated <code>row_separator</code> and
@@ -2960,8 +3020,8 @@ in place.</p>
               character(len=*),
             </td>
 <td>intent(in),</td>
-              <td>optional</td>            <td>
-              
+              <td>optional,</td>            <td>
+              target
             </td>
             <td>::</td>
             <td><strong>row_separator</strong></td>
@@ -2975,8 +3035,8 @@ in place.</p>
               character(len=*),
             </td>
 <td>intent(in),</td>
-              <td>optional</td>            <td>
-              
+              <td>optional,</td>            <td>
+              target
             </td>
             <td>::</td>
             <td><strong>column_separator</strong></td>
@@ -2990,11 +3050,41 @@ in place.</p>
               logical,
             </td>
 <td>intent(in),</td>
-              <td>optional</td>            <td>
-              
+              <td>optional,</td>            <td>
+              target
             </td>
             <td>::</td>
             <td><strong>append</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(out),</td>
+              <td>optional,</td>            <td>
+              target
+            </td>
+            <td>::</td>
+            <td><strong>stat</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(out),</td>
+              <td>optional,</td>            <td>
+              target
+            </td>
+            <td>::</td>
+            <td><strong>errmsg</strong></td>
             <td>
                 
             </td>
@@ -3025,7 +3115,7 @@ in place.</p>
             <p class="text-right">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-08-31 23:12              </p>
+ on 2023-09-30 21:39              </p>
           </div>
         </div>
         <br>

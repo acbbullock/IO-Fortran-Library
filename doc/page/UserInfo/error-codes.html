@@ -8,7 +8,7 @@
     <meta name="author" content="Austin C Bullock" >
     <link rel="icon" href="../../favicon.png">
 
-    <title>Operators &ndash; IO-Fortran-Library</title>
+    <title>Error Codes &ndash; IO-Fortran-Library</title>
 
     <link href="../../css/bootstrap.min.css" rel="stylesheet">
     <link href="../../css/pygments.css" rel="stylesheet">
@@ -85,7 +85,7 @@
 
     <div class="container">
   <div class="row">
-    <h1>Operators</h1>
+    <h1>Error Codes</h1>
     <div class="row">
     <div class="col-lg-12">
     <div class="well well-sm" style="min-height: 40px;">
@@ -96,8 +96,8 @@
       </ul>
         <ol class="breadcrumb in-well">
          <li><a href='../../page/index.html'>API Design</a></li>
-         <li><a href='../../page/Ref/index.html'>Reference Guide</a></li>
-         <li class="active">Operators</li>
+         <li><a href='../../page/UserInfo/index.html'>Important User Information</a></li>
+         <li class="active">Error Codes</li>
       </ol>
     </div>
     </div>
@@ -106,55 +106,15 @@
   
   <div class="row">
     <div class="col-md-9 col-md-push-3" id='text'>
-      <h2 id="operator-interfaces"><a href="../../lists/procedures.html">Operator interfaces</a></h2>
-<p><em>Description</em>: Extended operators for convenient string manipulations.</p>
-<h3 id="concatenation-and">Concatenation (<a href="../../interface/operator%28SLASHSLASH%29.html">//</a> and <a href="../../interface/operator%28%2B%29.html">+</a>)</h3>
-<p>For <code>x</code> and <code>y</code> scalars or arrays of any compatible rank, and of any combination of type <code>character</code> and <code>String</code>:</p>
-<div class="codehilite"><pre><span></span><code><span class="k">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">//</span><span class="w"> </span><span class="n">y</span><span class="w"></span>
+      <p>When writing to file or reading from file, the <code>optional</code> arguments <code>stat</code> and <code>errmsg</code> may be present, which will detail any errors that may occur during execution of the procedure. The error codes have the following explanation:</p>
+<div class="codehilite"><pre><span></span><code><span class="kt">integer</span><span class="p">,</span><span class="w"> </span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">READ_ERR</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="c">! Read error code</span>
+<span class="kt">integer</span><span class="p">,</span><span class="w"> </span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">WRITE_ERR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="c">! Write error code</span>
+<span class="kt">integer</span><span class="p">,</span><span class="w"> </span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ALLOC_ERR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="c">! Allocation error code</span>
+<span class="kt">integer</span><span class="p">,</span><span class="w"> </span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ARG_ERR</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="c">! Argument error code</span>
 </code></pre></div>
 
-<div class="codehilite"><pre><span></span><code><span class="k">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">y</span><span class="w"></span>
-</code></pre></div>
-
-<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>Concatenation of mixed type will return a <code>String</code>.</p></div>
-<h3 id="excision-">Excision (<a href="../../interface/operator%28-%29.html">-</a>)</h3>
-<p>For <code>x</code> and <code>y</code> scalars or arrays of any compatible rank, and of any combination of type <code>character</code> and <code>String</code>:</p>
-<div class="codehilite"><pre><span></span><code><span class="k">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">y</span><span class="w"></span>
-</code></pre></div>
-
-<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>Excision always returns a <code>String</code> value even when both arguments are of type <code>character</code>. This ensures that excision can be performed elementally even for <code>character</code> values, which would not be well-defined with a return type of <code>character</code>. For two scalar <code>character</code> values, one may simply perform the conversion <code>result = str(x - y)</code> to return a scalar <code>character</code>.</p></div>
-<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>String arithmetic is not associative, commutative, or distributive in general:</p>
-<ul>
-<li>(Associative) <code>(x + y) + z == x + (y + z)</code> and <code>x + (y - z) /= (x + y) - z</code> are both <code>.true.</code> in general.</li>
-<li>(Commutative) <code>x + y /= y + x</code> and <code>x + y - z /= x - z + y</code> are both <code>.true.</code> in general.</li>
-<li>(Distributive) <code>x - (y + z) /= x - y - z</code> is <code>.true.</code> in general.
-</p></div>
-<p></li>
-</ul>
-<h3 id="repetition">Repetition (<a href="../../interface/operator%28ASTERISKASTERISK%29.html">**</a>)</h3>
-<p>For <code>x</code> a scalar or array of any rank, and of type <code>character</code> or <code>String</code>:</p>
-<div class="codehilite"><pre><span></span><code><span class="k">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="o">**</span><span class="n">ncopies</span><span class="w"></span>
-</code></pre></div>
-
-<ul>
-<li><code>ncopies</code> is of type <code>integer</code></li>
-</ul>
-<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>The <code>**</code> operator is a wrapper for the <a href="https://gcc.gnu.org/onlinedocs/gfortran/REPEAT.html">repeat</a> intrinsic, and extended for type <code>String</code>.</p></div>
-<h3 id="equivalence">Equivalence (<a href="../../interface/operator%28%3D%3D%29.html">==</a>)</h3>
-<p>For <code>x</code> and <code>y</code> scalars or arrays of any compatible rank, and of any combination of type <code>character</code> and <code>String</code>:</p>
-<div class="codehilite"><pre><span></span><code><span class="k">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"></span>
-</code></pre></div>
-
-<div class="codehilite"><pre><span></span><code><span class="k">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="p">.</span><span class="n">eq</span><span class="p">.</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"></span>
-</code></pre></div>
-
-<h3 id="non-equivalence">Non-equivalence (<a href="../../interface/operator%28SLASH%3D%29.html">/=</a>)</h3>
-<p>For <code>x</code> and <code>y</code> scalars or arrays of any compatible rank, and of any combination of type <code>character</code> and <code>String</code>:</p>
-<div class="codehilite"><pre><span></span><code><span class="k">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"></span>
-</code></pre></div>
-
-<div class="codehilite"><pre><span></span><code><span class="k">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="p">.</span><span class="n">ne</span><span class="p">.</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"></span>
-</code></pre></div>
+<p>A <code>READ_ERR</code> code indicates that an error has occured during a <code>read</code> statement, <code>inquire</code> statement, or a <code>close</code> statement in the execution of <a href="../Ref/from_file.html">from_file</a> or <a href="../Ref/String-methods.html#read_file">read_file</a>. A <code>WRITE_ERR</code> code indicates that an error has occured during a <code>write</code> statement or a <code>close</code> statement in the execution of <a href="../Ref/to_file.html">to_file</a>, <a href="../Ref/echo.html">echo</a>, or <a href="../Ref/String-methods.html#write_file">write_file</a>. An <code>ALLOC_ERR</code> code indicates that an <code>allocate</code> or <code>deallocate</code> statement has failed. An <code>ARG_ERR</code> code indicates that the user has provided an incorrect argument to the procedure.</p>
+<p>In all cases, the <code>errmsg</code> will contain more detailed information about the error that occured. If no error condition occurs, the <code>stat</code> will return <code>0</code> and the <code>errmsg</code> will be empty.</p>
     </div>
     <div class="col-md-3 col-md-pull-9">
       <hr class="visible-xs visible-sm">
@@ -176,7 +136,7 @@
             <li role="presentation">
             <a href='../../page/UserInfo/file-ext.html'>File extensions</a>
             </li>
-            <li role="presentation">
+            <li role="presentation" class="disabled">
             <a href='../../page/UserInfo/error-codes.html'>Error Codes</a>
             </li>
             <li role="presentation">
@@ -224,7 +184,7 @@
             <li role="presentation">
             <a href='../../page/Ref/String-methods.html'>String methods</a>
             </li>
-            <li role="presentation" class="disabled">
+            <li role="presentation">
             <a href='../../page/Ref/operators.html'>Operators</a>
             </li>
 
