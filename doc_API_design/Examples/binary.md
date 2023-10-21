@@ -5,9 +5,14 @@ author: Austin C Bullock
 
 ## Binary file I/O
 
-The routines [to_file](../Ref/to_file.html) and [from_file](../Ref/from_file.html) are used for writing numeric arrays to binary files with the extension `.dat` or `.bin`.
+The routines [to_file](../Ref/to_file.html) and
+[from_file](../Ref/from_file.html) are used for writing numeric arrays
+to binary files with the extension `.dat` or `.bin`.
 
-The following program demonstrates the use of `to_file` and `from_file` for writing `real` data of rank `5` to a `.dat` file, reading the file back into the program, and testing for exact equality to ensure that there has been no loss in precision:
+The following program demonstrates the use of `to_file` and `from_file`
+for writing `real` data of rank `5` to a `.dat` file, reading the file
+back into the program, and testing for exact equality to ensure that
+there has been no loss in precision:
 
 ```fortran
 program main
@@ -27,9 +32,14 @@ program main
 end program main
 ```
 
-@warning Reading into arrays of a different `kind` than the array that was written will invalidate the data. Always make sure the `kind` is matching for binary I/O.
+@warning Reading into arrays of a different `kind` than the array that
+was written will invalidate the data. Always make sure the `kind` is
+matching for binary I/O.
 
-TIP: The shape of an array may be written to a csv file so that the value of `data_shape` can be read into the program before reading in the main array with the corresponding value. The following program demonstrates the above tip:
+TIP: The shape of an array may be written to a csv file so that the
+value of `data_shape` can be read into the program before reading in
+the main array with the corresponding value. The following program
+demonstrates the above tip:
 
 ```fortran
 program main

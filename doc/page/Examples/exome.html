@@ -10,131 +10,170 @@
 
     <title>NGS Human Core Exome Panel &ndash; IO-Fortran-Library</title>
 
-    <link href="../../css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <link href="../../css/pygments.css" rel="stylesheet">
     <link href="../../css/font-awesome.min.css" rel="stylesheet">
     <link href="../../css/local.css" rel="stylesheet">
       <link  href="../../tipuesearch/tipuesearch.css" rel="stylesheet">
 
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-        <![endif]-->
-
-         <script src="../../js/jquery-2.1.3.min.js"></script>
-         <script src="../../js/svg-pan-zoom.min.js"></script>
-
+    <script src="https://code.jquery.com/jquery-3.7.0.slim.min.js" integrity="sha256-tG5mcZUtJsZvyKAxYLVXrmjKBVLd6VpVccqz/r4ypFE=" crossorigin="anonymous"></script>
   </head>
 
   <body>
 
     <!-- Fixed navbar -->
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
+    <div class="container-fluid mb-sm-4 mb-xl-2">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
           <a class="navbar-brand" href="../../index.html">IO-Fortran-Library <small>1.2.1</small></a>
-        </div>
-        <div id="navbar" class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
-              <li><a href='../../page/index.html'>API Design</a></li>
-            <li class="dropdown hidden-xs visible-sm visible-md hidden-lg">
-              <a href="#" class="dropdown-toggle"
-                 data-toggle="dropdown" role="button"
-                 aria-haspopup="true"
-                 aria-expanded="false">
-                 Contents <span class="caret"></span>
-              </a>
-              <ul class="dropdown-menu">
-                    <li><a href="../../lists/files.html">Source Files</a></li>
-                  <li><a href="../../lists/modules.html">Modules</a></li>
-                  <li><a href="../../lists/procedures.html">Procedures</a></li>
-                  <li><a href="../../lists/types.html">Derived Types</a></li>
-              </ul>
-            </li>
-                <li class="visible-xs hidden-sm visible-lg">
-                  <a href="../../lists/files.html">Source Files</a>
+          <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar"
+                  aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon">
+          </button>
+
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" href="../../page/index.html">API Design</a></li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="../../lists/files.html">Source Files</a>
+                  </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../../lists/modules.html">Modules</a>
                 </li>
-              <li class="visible-xs hidden-sm visible-lg">
-                <a href="../../lists/modules.html">Modules</a>
-              </li>
-              <li class="visible-xs hidden-sm visible-lg">
-                <a href="../../lists/procedures.html">Procedures</a>
-              </li>
-              <li class="visible-xs hidden-sm visible-lg">
-                <a href="../../lists/types.html">Derived Types</a>
-              </li>
-          </ul>
-            <form action="../../search.html" class="navbar-form navbar-right" role="search">
-              <div class="form-group">
-                <input type="text" class="form-control" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+                <li class="nav-item">
+                  <a class="nav-link" href="../../lists/procedures.html">Procedures</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../../lists/types.html">Derived Types</a>
+                </li>
+            </ul>
+              <div class="d-flex align-items-end flex-grow-1">
+                <form action="../../search.html" role="search" class="ms-auto">
+                  <input type="text" class="form-control" aria-label="Search" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+                </form>
               </div>
-              <!--
-                  <button type="submit" class="btn btn-default">Submit</button>
-                  -->
-            </form>
-        </div><!--/.nav-collapse -->
-      </div>
-    </nav>
+          </div><!--/.nav-collapse -->
+        </div>
+      </nav>
+    </div>
 
     <div class="container">
   <div class="row">
     <h1>NGS Human Core Exome Panel</h1>
-    <div class="row">
-    <div class="col-lg-12">
-    <div class="well well-sm" style="min-height: 40px;">
-      <ul class="list-inline" style="margin-bottom:0px; display:inline">
-        <li><i class="fa fa-pencil"></i> Austin C Bullock</li>
-<!--
--->
-      </ul>
-        <ol class="breadcrumb in-well">
-         <li><a href='../../page/index.html'>API Design</a></li>
-         <li><a href='../../page/Examples/index.html'>Tutorials</a></li>
-         <li class="active">NGS Human Core Exome Panel</li>
-      </ol>
-    </div>
-    </div>
+    <div class="container p-2 mb-4 bg-light border rounded-3">
+      <div class="row align-items-center justify-content-between">
+        <div class="col">
+          <ul class="list-inline" style="margin-bottom:0px; display:inline">
+              <li class="list-inline-item" id="author"><i class="fa fa-pencil"></i> Austin C Bullock</li>
+          </ul>
+        </div>
+        <div class="col">
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb justify-content-end mb-0">
+                <li class="breadcrumb-item"><a href='../../page/index.html'>API Design</a></li>
+                <li class="breadcrumb-item"><a href='../../page/Examples/index.html'>Tutorials</a></li>
+              <li class="breadcrumb-item active" aria-current="page">NGS Human Core Exome Panel</li>
+            </ol>
+          </nav>
+        </div>
+      </div>
     </div>
   </div>
-  
+
   <div class="row">
-    <div class="col-md-9 col-md-push-3" id='text'>
+      <div class="col-3">
+        <div class="card card-body bg-light" id="sidebar-toc">
+          <ul class="nav flex-column align-items">
+            <li class="nav-item">
+              <a class="nav-link" href="../../page/index.html">API Design</a>
+            </li>
+          </ul>
+          <hr>
+          <nav class="nav nav-pills flex-column">
+              <a class="nav-link" href="../../page/UserInfo/index.html">Important User Information</a>
+                <nav class="nav nav-pills flex-column">
+                                <a class="nav-link" href="../../page/UserInfo/text-fmts.html">Numeric text formats</a>
+              <a class="nav-link" href="../../page/UserInfo/locale-fmts.html">Locales</a>
+              <a class="nav-link" href="../../page/UserInfo/file-ext.html">File extensions</a>
+              <a class="nav-link" href="../../page/UserInfo/error-codes.html">Error Codes</a>
+              <a class="nav-link" href="../../page/UserInfo/compilers.html">Compiler-dependent behavior</a>
+              <a class="nav-link" href="../../page/UserInfo/characters.html">Character sets and kinds</a>
+              <a class="nav-link" href="../../page/UserInfo/thread-safety.html">Thread safety</a>
+
+                </nav>
+              <a class="nav-link" href="../../page/Ref/index.html">Reference Guide</a>
+                <nav class="nav nav-pills flex-column">
+                                <a class="nav-link" href="../../page/Ref/constants.html">CONSTANTS</a>
+              <a class="nav-link" href="../../page/Ref/String.html">String</a>
+              <a class="nav-link" href="../../page/Ref/str.html">str</a>
+              <a class="nav-link" href="../../page/Ref/cast.html">cast</a>
+              <a class="nav-link" href="../../page/Ref/join-split.html">join and split</a>
+              <a class="nav-link" href="../../page/Ref/to_file.html">to_file</a>
+              <a class="nav-link" href="../../page/Ref/from_file.html">from_file</a>
+              <a class="nav-link" href="../../page/Ref/echo.html">echo</a>
+              <a class="nav-link" href="../../page/Ref/aprint.html">aprint</a>
+              <a class="nav-link" href="../../page/Ref/String-methods.html">String methods</a>
+              <a class="nav-link" href="../../page/Ref/operators.html">Operators</a>
+
+                </nav>
+              <a class="nav-link" href="../../page/Examples/index.html">Tutorials</a>
+                <nav class="nav nav-pills flex-column">
+                                <a class="nav-link" href="../../page/Examples/csv.html">Handling csv files</a>
+              <a class="nav-link" href="../../page/Examples/binary.html">Handling dat files</a>
+              <a class="nav-link" href="../../page/Examples/logging.html">Handling log files</a>
+              <a class="nav-link" href="../../page/Examples/manipulations.html">String manipulations</a>
+              <a class="nav-link" href="../../page/Examples/fizzbuzz.html">FizzBuzz</a>
+              <a class="nav-link active disabled" href="../../page/Examples/exome.html">NGS Human Core Exome Panel</a>
+              <a class="nav-link" href="../../page/Examples/benchmark.html">Benchmarking</a>
+
+                </nav>
+          </nav>
+        </div>
+      </div>
+
+    <div class="col" id='text'>
       <h2 id="handling-genomic-data">Handling genomic data</h2>
-<p>Fortran can serve as a valuable tool for heavy numerical calculations in Next Generation Sequencing (NGS) analysis, which may often involve reading and writing many large <code>.bed</code> files in succession. The IO-Fortran-Library is optimized for both performance and memory consumption when reading and writing large text files, streamlining performance for Fortran bioinformatics applications.</p>
-<p>To demonstrate the speed of file I/O, the following program reads the Twist Human Core Exome target <code>.bed</code> file for hg38 obtained from <a href="https://www.twistbioscience.com/resources/data-files/ngs-human-core-exome-panel-bed-file">Twist Bioscience</a> into a cell array and then writes the cell array to a new file in a round-trip, comparing the two files for an exact match and providing the total time elapsed:</p>
-<div class="codehilite"><pre><span></span><code><span class="k">program </span><span class="n">main</span><span class="w"></span>
-<span class="w">    </span><span class="k">use</span><span class="p">,</span><span class="w"> </span><span class="k">intrinsic</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">iso_fortran_env</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="p">:</span><span class="w"> </span><span class="n">int64</span><span class="p">,</span><span class="w"> </span><span class="n">real64</span><span class="p">,</span><span class="w"> </span><span class="n">compiler_version</span><span class="w"></span>
-<span class="w">    </span><span class="k">use </span><span class="n">io_fortran_lib</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="p">:</span><span class="w"> </span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">TAB</span><span class="p">,</span><span class="w"> </span><span class="n">operator</span><span class="p">(</span><span class="o">+</span><span class="p">),</span><span class="w"> </span><span class="n">operator</span><span class="p">(</span><span class="o">==</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">implicit none</span><span class="w"> </span><span class="p">(</span><span class="k">type</span><span class="p">,</span><span class="k">external</span><span class="p">)</span><span class="w"></span>
+<p>Fortran can serve as a valuable tool for heavy numerical calculations
+in Next Generation Sequencing (NGS) analysis, which may often involve
+reading and writing many large <code>.bed</code> files in succession. The
+IO-Fortran-Library is optimized for both performance and memory
+consumption when reading and writing large text files, streamlining
+performance for Fortran bioinformatics applications.</p>
+<p>To demonstrate the speed of file I/O, the following program reads the
+Twist Human Core Exome target <code>.bed</code> file for hg38 obtained from
+<a href="https://www.twistbioscience.com/resources/data-files/ngs-human-core-exome-panel-bed-file">Twist Bioscience</a>
+into a cell array and then writes the cell array to a new file in a
+round-trip, comparing the two files for an exact match and providing
+the total time elapsed:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">program </span><span class="n">main</span>
+<span class="w">    </span><span class="k">use</span><span class="p">,</span><span class="w"> </span><span class="k">intrinsic</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">iso_fortran_env</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="p">:</span><span class="w"> </span><span class="n">int64</span><span class="p">,</span><span class="w"> </span><span class="n">real64</span><span class="p">,</span><span class="w"> </span><span class="n">compiler_version</span>
+<span class="w">    </span><span class="k">use </span><span class="n">io_fortran_lib</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="p">:</span><span class="w"> </span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">TAB</span><span class="p">,</span><span class="w"> </span><span class="n">operator</span><span class="p">(</span><span class="o">+</span><span class="p">),</span><span class="w"> </span><span class="n">operator</span><span class="p">(</span><span class="o">==</span><span class="p">)</span>
+<span class="w">    </span><span class="k">implicit none</span><span class="w"> </span><span class="p">(</span><span class="k">type</span><span class="p">,</span><span class="k">external</span><span class="p">)</span>
 
-<span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="n">String</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">hg38</span><span class="p">,</span><span class="w"> </span><span class="n">hg38_new</span><span class="w"></span>
-<span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="n">String</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="p">,</span><span class="w"> </span><span class="k">dimension</span><span class="p">(:,:)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">cells</span><span class="w"></span>
+<span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="n">String</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">hg38</span><span class="p">,</span><span class="w"> </span><span class="n">hg38_new</span>
+<span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="n">String</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="p">,</span><span class="w"> </span><span class="k">dimension</span><span class="p">(:,:)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">cells</span>
 
-<span class="w">    </span><span class="kt">integer</span><span class="p">(</span><span class="n">int64</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">t1</span><span class="p">,</span><span class="w"> </span><span class="n">t2</span><span class="w"></span>
-<span class="w">    </span><span class="kt">real</span><span class="p">(</span><span class="n">real64</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">wall_time</span><span class="p">,</span><span class="w"> </span><span class="n">rate</span><span class="w"></span>
+<span class="w">    </span><span class="kt">integer</span><span class="p">(</span><span class="n">int64</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">t1</span><span class="p">,</span><span class="w"> </span><span class="n">t2</span>
+<span class="w">    </span><span class="kt">real</span><span class="p">(</span><span class="n">real64</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">wall_time</span><span class="p">,</span><span class="w"> </span><span class="n">rate</span>
 
-<span class="w">    </span><span class="k">call </span><span class="nb">system_clock</span><span class="p">(</span><span class="n">t1</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">call </span><span class="nb">system_clock</span><span class="p">(</span><span class="n">t1</span><span class="p">)</span>
 
-<span class="w">    </span><span class="k">call </span><span class="n">hg38</span><span class="p">%</span><span class="n">read_file</span><span class="p">(</span><span class="s2">&quot;./data/hg38.bed&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">cell_array</span><span class="o">=</span><span class="n">cells</span><span class="p">,</span><span class="w"> </span><span class="n">column_separator</span><span class="o">=</span><span class="n">TAB</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">call </span><span class="n">hg38_new</span><span class="p">%</span><span class="n">write_file</span><span class="p">(</span><span class="n">cells</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;./data/hg38_new.bed&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">column_separator</span><span class="o">=</span><span class="n">TAB</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">call </span><span class="n">hg38</span><span class="p">%</span><span class="n">read_file</span><span class="p">(</span><span class="s2">&quot;./data/hg38.bed&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">cell_array</span><span class="o">=</span><span class="n">cells</span><span class="p">,</span><span class="w"> </span><span class="n">column_separator</span><span class="o">=</span><span class="n">TAB</span><span class="p">)</span>
+<span class="w">    </span><span class="k">call </span><span class="n">hg38_new</span><span class="p">%</span><span class="n">write_file</span><span class="p">(</span><span class="n">cells</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;./data/hg38_new.bed&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">column_separator</span><span class="o">=</span><span class="n">TAB</span><span class="p">)</span>
 
-<span class="w">    </span><span class="k">call </span><span class="nb">system_clock</span><span class="p">(</span><span class="n">t2</span><span class="p">,</span><span class="w"> </span><span class="n">count_rate</span><span class="o">=</span><span class="n">rate</span><span class="p">);</span><span class="w"> </span><span class="n">wall_time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">real</span><span class="p">(</span><span class="n">t2</span><span class="o">-</span><span class="n">t1</span><span class="p">,</span><span class="n">real64</span><span class="p">)</span><span class="o">/</span><span class="n">rate</span><span class="w"></span>
+<span class="w">    </span><span class="k">call </span><span class="nb">system_clock</span><span class="p">(</span><span class="n">t2</span><span class="p">,</span><span class="w"> </span><span class="n">count_rate</span><span class="o">=</span><span class="n">rate</span><span class="p">);</span><span class="w"> </span><span class="n">wall_time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">real</span><span class="p">(</span><span class="n">t2</span><span class="o">-</span><span class="n">t1</span><span class="p">,</span><span class="n">real64</span><span class="p">)</span><span class="o">/</span><span class="n">rate</span>
 
-<span class="w">    </span><span class="k">write</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="s2">&quot;(a,l)&quot;</span><span class="p">)</span><span class="w">    </span><span class="s2">&quot;New file and original are exact match: &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">hg38_new</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">hg38</span><span class="w"></span>
-<span class="w">    </span><span class="k">write</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="s2">&quot;(a)&quot;</span><span class="p">)</span><span class="w">      </span><span class="s2">&quot;Wall time: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">str</span><span class="p">(</span><span class="n">wall_time</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;f&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">decimals</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot; s &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
-<span class="w">                        </span><span class="s2">&quot;using compiler: &quot;&quot; + compiler_version() + &quot;&quot;.&quot;</span><span class="w"></span>
-<span class="k">end program </span><span class="n">main</span><span class="w"></span>
+<span class="w">    </span><span class="k">write</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="s2">&quot;(a,l)&quot;</span><span class="p">)</span><span class="w">    </span><span class="s2">&quot;New file and original are exact match: &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">hg38_new</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">hg38</span>
+<span class="w">    </span><span class="k">write</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="s2">&quot;(a)&quot;</span><span class="p">)</span><span class="w">      </span><span class="s2">&quot;Wall time: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">str</span><span class="p">(</span><span class="n">wall_time</span><span class="p">,</span><span class="w"> </span><span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;f&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">decimals</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s2">&quot; s &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">                        </span><span class="s2">&quot;using compiler: &quot;&quot; + compiler_version() + &quot;&quot;.&quot;</span>
+<span class="k">end program </span><span class="n">main</span>
 </code></pre></div>
 
-<p>The file <code>hg38.bed</code> is provided locally in <code>/data</code> and contains <code>192262</code> lines of <code>TAB</code>-delimited data.</p>
-<p>The following sample output is observed on Linux with highest optimizations enabled (<code>-O3</code>):</p>
+<p>The file <code>hg38.bed</code> is provided locally in <code>/data</code> and contains
+<code>192262</code> lines of <code>TAB</code>-delimited data.</p>
+<p>The following sample output is observed on Linux with highest
+optimizations enabled (<code>-O3</code>):</p>
 <div class="codehilite"><pre><span></span><code>---
 New file and original are exact match: T
 Wall time: 0.048 s using compiler: &quot;GCC version 11.3.0&quot;.
@@ -147,143 +186,40 @@ Wall time: 0.070 s using compiler: &quot;Intel(R) Fortran Intel(R) 64 Compiler C
 ---
 </code></pre></div>
 
-<p></p><div class="alert alert-info" role="alert"><h4>Note</h4><p>With the Intel Fortran compiler <code>ifx</code>/<code>ifort</code>, we may need to specify <code>-heap-arrays 0</code> to avoid a segmentation fault when reading a file of this size, as noted in <a href="../UserInfo/compilers.html">compiler-dependent behavior</a>.</p></div>
-    </div>
-    <div class="col-md-3 col-md-pull-9">
-      <hr class="visible-xs visible-sm">
-        <div class="well toc">
-          <ul class="nav nav-stacked nav-pills">
-            <li role="presentation" class="title"><a href='../../page/index.html'>API Design</a></li>
-          </ul>
-          <hr>
-          <ul class="nav nav-stacked nav-pills">
-            <li role="presentation">
-            <a href='../../page/UserInfo/index.html'>Important User Information</a>
-            <ul class="nav nav-stacked nav-pills">
-                          <li role="presentation">
-            <a href='../../page/UserInfo/text-fmts.html'>Numeric text formats</a>
-            </li>
-            <li role="presentation">
-            <a href='../../page/UserInfo/locale-fmts.html'>Locales</a>
-            </li>
-            <li role="presentation">
-            <a href='../../page/UserInfo/file-ext.html'>File extensions</a>
-            </li>
-            <li role="presentation">
-            <a href='../../page/UserInfo/error-codes.html'>Error Codes</a>
-            </li>
-            <li role="presentation">
-            <a href='../../page/UserInfo/compilers.html'>Compiler-dependent behavior</a>
-            </li>
-            <li role="presentation">
-            <a href='../../page/UserInfo/characters.html'>Character sets and kinds</a>
-            </li>
-            <li role="presentation">
-            <a href='../../page/UserInfo/thread-safety.html'>Thread safety</a>
-            </li>
-
-            </ul>
-            </li>
-            <li role="presentation">
-            <a href='../../page/Ref/index.html'>Reference Guide</a>
-            <ul class="nav nav-stacked nav-pills">
-                          <li role="presentation">
-            <a href='../../page/Ref/constants.html'>CONSTANTS</a>
-            </li>
-            <li role="presentation">
-            <a href='../../page/Ref/String.html'>String</a>
-            </li>
-            <li role="presentation">
-            <a href='../../page/Ref/str.html'>str</a>
-            </li>
-            <li role="presentation">
-            <a href='../../page/Ref/cast.html'>cast</a>
-            </li>
-            <li role="presentation">
-            <a href='../../page/Ref/join-split.html'>join and split</a>
-            </li>
-            <li role="presentation">
-            <a href='../../page/Ref/to_file.html'>to_file</a>
-            </li>
-            <li role="presentation">
-            <a href='../../page/Ref/from_file.html'>from_file</a>
-            </li>
-            <li role="presentation">
-            <a href='../../page/Ref/echo.html'>echo</a>
-            </li>
-            <li role="presentation">
-            <a href='../../page/Ref/aprint.html'>aprint</a>
-            </li>
-            <li role="presentation">
-            <a href='../../page/Ref/String-methods.html'>String methods</a>
-            </li>
-            <li role="presentation">
-            <a href='../../page/Ref/operators.html'>Operators</a>
-            </li>
-
-            </ul>
-            </li>
-            <li role="presentation">
-            <a href='../../page/Examples/index.html'>Tutorials</a>
-            <ul class="nav nav-stacked nav-pills">
-                          <li role="presentation">
-            <a href='../../page/Examples/csv.html'>Handling csv files</a>
-            </li>
-            <li role="presentation">
-            <a href='../../page/Examples/binary.html'>Handling dat files</a>
-            </li>
-            <li role="presentation">
-            <a href='../../page/Examples/logging.html'>Handling log files</a>
-            </li>
-            <li role="presentation">
-            <a href='../../page/Examples/manipulations.html'>String manipulations</a>
-            </li>
-            <li role="presentation">
-            <a href='../../page/Examples/fizzbuzz.html'>FizzBuzz</a>
-            </li>
-            <li role="presentation" class="disabled">
-            <a href='../../page/Examples/exome.html'>NGS Human Core Exome Panel</a>
-            </li>
-            <li role="presentation">
-            <a href='../../page/Examples/benchmark.html'>Benchmarking</a>
-            </li>
-
-            </ul>
-            </li>
-          </ul>
-        </div>
+<div class="alert alert-info">
+<p class="alert-title h4">Note</p>
+<p>With the Intel Fortran compiler <code>ifx</code>/<code>ifort</code>, we may need to
+specify <code>-heap-arrays 0</code> to avoid a segmentation fault when reading a
+file of this size, as noted in
+<a href="../UserInfo/compilers.html">compiler-dependent behavior</a>.</p>
+</div>
     </div>
   </div>
       <hr>
     </div> <!-- /container -->
     <footer>
       <div class="container">
-        <div class="row">
-          <div class="col-xs-6 col-md-6"><p>IO-Fortran-Library was developed by Austin C Bullock<br>&copy; 2023 <a rel="license" href="https://opensource.org/licenses/MIT">MIT</a>
+        <div class="row justify-content-between">
+          <div class="col"><p>IO-Fortran-Library was developed by Austin C Bullock<br>&copy; 2023 <a rel="license" href="https://opensource.org/licenses/MIT">MIT</a>
 </p>
           </div>
-          <div class="col-xs-6 col-md-6">
-            <p class="text-right">
+          <div class="col">
+            <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-09-30 21:39              </p>
+ on 2023-10-21 00:50              </p>
           </div>
         </div>
         <br>
       </div> <!-- /container -->
     </footer>
 
-    <!-- Bootstrap core JavaScript
-         ================================================== -->
-         <!-- Placed at the end of the document so the pages load faster -->
-    <!--
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-        -->
-        <script src="../../js/bootstrap.min.js"></script>
-        <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-        <script src="../../js/ie10-viewport-bug-workaround.js"></script>
+    <!-- Bootstrap core JavaScript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>    
 
-        <!-- MathJax JavaScript
+    <!-- MathJax JavaScript
              ================================================== -->
              <!-- Placed at the end of the document so the pages load faster -->
         <script type="text/x-mathjax-config">

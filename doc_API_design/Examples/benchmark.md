@@ -5,7 +5,11 @@ author: Austin C Bullock
 
 ## Big data I/O
 
-The IO-Fortran-Library is capable of reading and writing very large text files with efficiency, even those whose data size exceeds the 2,147,483,647 byte upper limit of the 32-bit signed integer. A program is provided in `/test/benchmark.f90` for benchmarking the major internal and external text I/O routines of the IO-Fortran-Library:
+The IO-Fortran-Library is capable of reading and writing very large
+text files with efficiency, even those whose data size exceeds the
+2,147,483,647 byte upper limit of the 32-bit signed integer. A program
+is provided in `/test/benchmark.f90` for benchmarking the major
+internal and external text I/O routines of the IO-Fortran-Library:
 
 ```fortran
 program main
@@ -61,9 +65,17 @@ program main
 end program main
 ```
 
-Here, we populate an `n`-by-`n` single-precision array `x` with samples from the standard Gaussian distribution and convert each to a hexadecimal string to populate a cell array, write the cell array to a text file `"bigx.csv"`, read the file back into the program to re-populate the cell array, then finally cast the cell data into `y` and compare with `x` to observe an exact match. For `n = 15000`, the total data size is `225e6` and the resulting csv file size is `2.47 GB`.
+Here, we populate an `n`-by-`n` single-precision array `x` with samples
+from the standard Gaussian distribution and convert each to a
+hexadecimal string to populate a cell array, write the cell array to a
+text file `"bigx.csv"`, read the file back into the program to
+re-populate the cell array, then finally cast the cell data into `y`
+and compare with `x` to observe an exact match. For `n = 15000`, the
+total data size is `225e6` and the resulting csv file size is
+`2.47 GB`.
 
-With highest optimizations enabled for each compiler on Linux (`-O3`), we observe the following sample output:
+With highest optimizations enabled for each compiler on Linux (`-O3`),
+we observe the following sample output:
 
 ```text
 ---
@@ -114,15 +126,20 @@ Data is exact match:  T
 ---
 ```
 
-@note With the Intel Fortran compiler `ifx`/`ifort`, we must specify `-heap-arrays 0` to avoid a segmentation fault when reading a file of this size, as noted in [compiler-dependent behavior](../UserInfo/compilers.html).
+@note With the Intel Fortran compiler `ifx`/`ifort`, we must specify
+`-heap-arrays 0` to avoid a segmentation fault when reading a file of
+this size, as noted in
+[compiler-dependent behavior](../UserInfo/compilers.html).
 
-For a more extreme example, consider the following program to write every 32-bit integer as a hexadecimal string to a text file `int32.txt`:
+For a more extreme example, consider the following program to write
+every 32-bit integer as a hexadecimal string to a text file
+`int32.txt`:
 
 ```fortran
 program main
-    use, intrinsic :: iso_fortran_env, only : int64, rk=>real32, dp=>real64, compiler_version, compiler_options
-    use randoms,                       only : random_gauss
-    use io_fortran_lib,                only : String, cast, str, LF, operator(+)
+    use, intrinsic :: iso_fortran_env, only: int64, rk=>real32, dp=>real64, compiler_version, compiler_options
+    use randoms,                       only: random_gauss
+    use io_fortran_lib,                only: String, cast, str, LF, operator(+)
     implicit none (type,external)
 
     type(String)              :: csv
@@ -170,4 +187,6 @@ program main
 end program main
 ```
 
-On Linux, this should take around five minutes with `gfortran`, and four minutes with `ifx`/`ifort` using highest optimizations, and the resulting file size is `46.96 GB`.
+On Linux, this should take around five minutes with `gfortran`, and
+four minutes with `ifx`/`ifort` using highest optimizations, and the
+resulting file size is `46.96 GB`.

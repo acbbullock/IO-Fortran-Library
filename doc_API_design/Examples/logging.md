@@ -5,9 +5,11 @@ author: Austin C Bullock
 
 ## Log file I/O
 
-The routine [echo](../Ref/echo.html) is the preferred method for writing general text data to a log file.
+The routine [echo](../Ref/echo.html) is the preferred method for
+writing general text data to a log file.
 
-The following program demonstrates a simple use of `echo` for writing messages to a log file:
+The following program demonstrates a simple use of `echo` for writing
+messages to a log file:
 
 ```fortran
 program main
@@ -42,7 +44,9 @@ program main
 end program main
 ```
 
-Depending on style, one may wish to accumulate log messages into a `String` and then call the type-bound procedure [echo](../Ref/String-methods.html#echo) conditionally:
+Depending on style, one may wish to accumulate log messages into a
+`String` and then call the type-bound procedure
+[echo](../Ref/String-methods.html#echo) conditionally:
 
 ```fortran
 program main
@@ -77,4 +81,7 @@ program main
 end program main
 ```
 
-Here, the `error stop` will dump the entire contents of `logmsg` to stdout. We also take advantage of the [operators](../Ref/operators.html) `+` and `**` for concatenation and repetition.
+Here, the `error stop` will dump the entire contents of `logmsg` to
+stdout. We also take advantage of the
+[operators](../Ref/operators.html) `+` and `**` for concatenation and
+repetition.

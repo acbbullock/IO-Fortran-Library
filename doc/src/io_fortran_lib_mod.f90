@@ -57,7 +57,6 @@ module io_fortran_lib
   integer, parameter :: ALLOC_ERR = 3 ! Allocation error code
   integer, parameter :: ARG_ERR   = 4 ! Argument error code
 
-
   type String
     !-------------------------------------------------------------------------------------------------------------------
     !! A growable string type for advanced character handling and text I/O.

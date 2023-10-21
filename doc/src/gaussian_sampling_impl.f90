@@ -9,34 +9,32 @@ submodule (randoms) gaussian_sampling
 
   ! Gaussian sampling procedures ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   module procedure gauss_r128
-    real(r128) :: kC1, kC2, kC3, kD1, kD2, kD3, kHm, kZm, kHp, kZp, kPhln, kHm1
-    real(r128) :: kHp1, kHzm, kHzmp, kAs, kBs, kCs, kB, kX0, kYm, kS, kT
     real(r128) :: rn, x, y, z, res
 
-    kC1   = 1.448242853_r128
-    kC2   = 3.307147487_r128
-    kC3   = 1.46754004_r128
-    kD1   = 1.036467755_r128
-    kD2   = 5.295844968_r128
-    kD3   = 3.631288474_r128
-    kHm   = 0.483941449_r128
-    kZm   = 0.107981933_r128
-    kHp   = 4.132731354_r128
-    kZp   = 18.52161694_r128
-    kPhln = 0.4515827053_r128
-    kHm1  = 0.516058551_r128
-    kHp1  = 3.132731354_r128
-    kHzm  = 0.375959516_r128
-    kHzmp = 0.591923442_r128
+    real(r128), parameter :: kC1   = 1.448242853_r128
+    real(r128), parameter :: kC2   = 3.307147487_r128
+    real(r128), parameter :: kC3   = 1.46754004_r128
+    real(r128), parameter :: kD1   = 1.036467755_r128
+    real(r128), parameter :: kD2   = 5.295844968_r128
+    real(r128), parameter :: kD3   = 3.631288474_r128
+    real(r128), parameter :: kHm   = 0.483941449_r128
+    real(r128), parameter :: kZm   = 0.107981933_r128
+    real(r128), parameter :: kHp   = 4.132731354_r128
+    real(r128), parameter :: kZp   = 18.52161694_r128
+    real(r128), parameter :: kPhln = 0.4515827053_r128
+    real(r128), parameter :: kHm1  = 0.516058551_r128
+    real(r128), parameter :: kHp1  = 3.132731354_r128
+    real(r128), parameter :: kHzm  = 0.375959516_r128
+    real(r128), parameter :: kHzmp = 0.591923442_r128
 
-    kAs = 0.8853395638_r128
-    kBs = 0.2452635696_r128
-    kCs = 0.2770276848_r128
-    kB  = 0.5029324303_r128
-    kX0 = 0.4571828819_r128
-    kYm = 0.187308492_r128
-    kS  = 0.7270572718_r128
-    kT  = 0.03895759111_r128
+    real(r128), parameter :: kAs = 0.8853395638_r128
+    real(r128), parameter :: kBs = 0.2452635696_r128
+    real(r128), parameter :: kCs = 0.2770276848_r128
+    real(r128), parameter :: kB  = 0.5029324303_r128
+    real(r128), parameter :: kX0 = 0.4571828819_r128
+    real(r128), parameter :: kYm = 0.187308492_r128
+    real(r128), parameter :: kS  = 0.7270572718_r128
+    real(r128), parameter :: kT  = 0.03895759111_r128
 
     rn=0e0_r128; x=0e0_r128; y=0e0_r128; z=0e0_r128; res=0e0_r128; gauss_res=0e0_r128
 
@@ -105,34 +103,32 @@ submodule (randoms) gaussian_sampling
     gauss_res = res*sig + mu
   end procedure gauss_r128
   module procedure gauss_r64
-    real(r64) :: kC1, kC2, kC3, kD1, kD2, kD3, kHm, kZm, kHp, kZp, kPhln, kHm1
-    real(r64) :: kHp1, kHzm, kHzmp, kAs, kBs, kCs, kB, kX0, kYm, kS, kT
     real(r64) :: rn, x, y, z, res
 
-    kC1   = 1.448242853_r64
-    kC2   = 3.307147487_r64
-    kC3   = 1.46754004_r64
-    kD1   = 1.036467755_r64
-    kD2   = 5.295844968_r64
-    kD3   = 3.631288474_r64
-    kHm   = 0.483941449_r64
-    kZm   = 0.107981933_r64
-    kHp   = 4.132731354_r64
-    kZp   = 18.52161694_r64
-    kPhln = 0.4515827053_r64
-    kHm1  = 0.516058551_r64
-    kHp1  = 3.132731354_r64
-    kHzm  = 0.375959516_r64
-    kHzmp = 0.591923442_r64
+    real(r64), parameter :: kC1   = 1.448242853_r64
+    real(r64), parameter :: kC2   = 3.307147487_r64
+    real(r64), parameter :: kC3   = 1.46754004_r64
+    real(r64), parameter :: kD1   = 1.036467755_r64
+    real(r64), parameter :: kD2   = 5.295844968_r64
+    real(r64), parameter :: kD3   = 3.631288474_r64
+    real(r64), parameter :: kHm   = 0.483941449_r64
+    real(r64), parameter :: kZm   = 0.107981933_r64
+    real(r64), parameter :: kHp   = 4.132731354_r64
+    real(r64), parameter :: kZp   = 18.52161694_r64
+    real(r64), parameter :: kPhln = 0.4515827053_r64
+    real(r64), parameter :: kHm1  = 0.516058551_r64
+    real(r64), parameter :: kHp1  = 3.132731354_r64
+    real(r64), parameter :: kHzm  = 0.375959516_r64
+    real(r64), parameter :: kHzmp = 0.591923442_r64
 
-    kAs = 0.8853395638_r64
-    kBs = 0.2452635696_r64
-    kCs = 0.2770276848_r64
-    kB  = 0.5029324303_r64
-    kX0 = 0.4571828819_r64
-    kYm = 0.187308492_r64
-    kS  = 0.7270572718_r64
-    kT  = 0.03895759111_r64
+    real(r64), parameter :: kAs = 0.8853395638_r64
+    real(r64), parameter :: kBs = 0.2452635696_r64
+    real(r64), parameter :: kCs = 0.2770276848_r64
+    real(r64), parameter :: kB  = 0.5029324303_r64
+    real(r64), parameter :: kX0 = 0.4571828819_r64
+    real(r64), parameter :: kYm = 0.187308492_r64
+    real(r64), parameter :: kS  = 0.7270572718_r64
+    real(r64), parameter :: kT  = 0.03895759111_r64
 
     rn=0e0_r64; x=0e0_r64; y=0e0_r64; z=0e0_r64; res=0e0_r64; gauss_res=0e0_r64
 
@@ -201,34 +197,32 @@ submodule (randoms) gaussian_sampling
     gauss_res = res*sig + mu
   end procedure gauss_r64
   module procedure gauss_r32
-    real(r32) :: kC1, kC2, kC3, kD1, kD2, kD3, kHm, kZm, kHp, kZp, kPhln, kHm1
-    real(r32) :: kHp1, kHzm, kHzmp, kAs, kBs, kCs, kB, kX0, kYm, kS, kT
     real(r32) :: rn, x, y, z, res
 
-    kC1   = 1.448242853_r32
-    kC2   = 3.307147487_r32
-    kC3   = 1.46754004_r32
-    kD1   = 1.036467755_r32
-    kD2   = 5.295844968_r32
-    kD3   = 3.631288474_r32
-    kHm   = 0.483941449_r32
-    kZm   = 0.107981933_r32
-    kHp   = 4.132731354_r32
-    kZp   = 18.52161694_r32
-    kPhln = 0.4515827053_r32
-    kHm1  = 0.516058551_r32
-    kHp1  = 3.132731354_r32
-    kHzm  = 0.375959516_r32
-    kHzmp = 0.591923442_r32
+    real(r32), parameter :: kC1   = 1.448242853_r32
+    real(r32), parameter :: kC2   = 3.307147487_r32
+    real(r32), parameter :: kC3   = 1.46754004_r32
+    real(r32), parameter :: kD1   = 1.036467755_r32
+    real(r32), parameter :: kD2   = 5.295844968_r32
+    real(r32), parameter :: kD3   = 3.631288474_r32
+    real(r32), parameter :: kHm   = 0.483941449_r32
+    real(r32), parameter :: kZm   = 0.107981933_r32
+    real(r32), parameter :: kHp   = 4.132731354_r32
+    real(r32), parameter :: kZp   = 18.52161694_r32
+    real(r32), parameter :: kPhln = 0.4515827053_r32
+    real(r32), parameter :: kHm1  = 0.516058551_r32
+    real(r32), parameter :: kHp1  = 3.132731354_r32
+    real(r32), parameter :: kHzm  = 0.375959516_r32
+    real(r32), parameter :: kHzmp = 0.591923442_r32
 
-    kAs = 0.8853395638_r32
-    kBs = 0.2452635696_r32
-    kCs = 0.2770276848_r32
-    kB  = 0.5029324303_r32
-    kX0 = 0.4571828819_r32
-    kYm = 0.187308492_r32
-    kS  = 0.7270572718_r32
-    kT  = 0.03895759111_r32
+    real(r32), parameter :: kAs = 0.8853395638_r32
+    real(r32), parameter :: kBs = 0.2452635696_r32
+    real(r32), parameter :: kCs = 0.2770276848_r32
+    real(r32), parameter :: kB  = 0.5029324303_r32
+    real(r32), parameter :: kX0 = 0.4571828819_r32
+    real(r32), parameter :: kYm = 0.187308492_r32
+    real(r32), parameter :: kS  = 0.7270572718_r32
+    real(r32), parameter :: kT  = 0.03895759111_r32
 
     rn=0e0_r32; x=0e0_r32; y=0e0_r32; z=0e0_r32; res=0e0_r32; gauss_res=0e0_r32
 

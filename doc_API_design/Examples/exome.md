@@ -5,9 +5,19 @@ author: Austin C Bullock
 
 ## Handling genomic data
 
-Fortran can serve as a valuable tool for heavy numerical calculations in Next Generation Sequencing (NGS) analysis, which may often involve reading and writing many large `.bed` files in succession. The IO-Fortran-Library is optimized for both performance and memory consumption when reading and writing large text files, streamlining performance for Fortran bioinformatics applications.
+Fortran can serve as a valuable tool for heavy numerical calculations
+in Next Generation Sequencing (NGS) analysis, which may often involve
+reading and writing many large `.bed` files in succession. The
+IO-Fortran-Library is optimized for both performance and memory
+consumption when reading and writing large text files, streamlining
+performance for Fortran bioinformatics applications.
 
-To demonstrate the speed of file I/O, the following program reads the Twist Human Core Exome target `.bed` file for hg38 obtained from [Twist Bioscience](https://www.twistbioscience.com/resources/data-files/ngs-human-core-exome-panel-bed-file) into a cell array and then writes the cell array to a new file in a round-trip, comparing the two files for an exact match and providing the total time elapsed:
+To demonstrate the speed of file I/O, the following program reads the
+Twist Human Core Exome target `.bed` file for hg38 obtained from
+[Twist Bioscience](https://www.twistbioscience.com/resources/data-files/ngs-human-core-exome-panel-bed-file)
+into a cell array and then writes the cell array to a new file in a
+round-trip, comparing the two files for an exact match and providing
+the total time elapsed:
 
 ```fortran
 program main
@@ -34,9 +44,11 @@ program main
 end program main
 ```
 
-The file `hg38.bed` is provided locally in `/data` and contains `192262` lines of `TAB`-delimited data.
+The file `hg38.bed` is provided locally in `/data` and contains
+`192262` lines of `TAB`-delimited data.
 
-The following sample output is observed on Linux with highest optimizations enabled (`-O3`):
+The following sample output is observed on Linux with highest
+optimizations enabled (`-O3`):
 
 ```text
 ---
@@ -51,4 +63,7 @@ Wall time: 0.070 s using compiler: "Intel(R) Fortran Intel(R) 64 Compiler Classi
 ---
 ```
 
-@note With the Intel Fortran compiler `ifx`/`ifort`, we may need to specify `-heap-arrays 0` to avoid a segmentation fault when reading a file of this size, as noted in [compiler-dependent behavior](../UserInfo/compilers.html).
+@note With the Intel Fortran compiler `ifx`/`ifort`, we may need to
+specify `-heap-arrays 0` to avoid a segmentation fault when reading a
+file of this size, as noted in
+[compiler-dependent behavior](../UserInfo/compilers.html).

@@ -5,7 +5,8 @@ author: Austin C Bullock
 
 ## [interface aprint](../../interface/aprint.html)
 
-*Description*: Subroutine for printing arrays and array sections to stdout.
+*Description*: Subroutine for printing arrays and array sections to
+stdout.
 
 For `x` an array of rank `1` or `2` and of type `character` or `String`:
 
@@ -54,8 +55,11 @@ Real formats (default is `"f"`):
 REAL_FMTS = [ "e", "f", "z" ]
 ```
 
-Decimals (default is `2`): `decimals` specifies the number of digits on the rhs of the radix point.
+Decimals (default is `2`): `decimals` specifies the number of digits on
+the rhs of the radix point.
 
-Imaginary unit (default is `"j"`): `im` specifies the form of a complex number.
+Imaginary unit (default is `"j"`): `im` specifies the form of a complex
+number.
 
-@note The optional arguments for `aprint` are different than elsewhere, and better suited for easy viewing of array sections.
+@note The optional arguments for `aprint` are different than elsewhere,
+and better suited for easy viewing of array sections.

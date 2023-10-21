@@ -5,7 +5,8 @@ author: Austin C Bullock
 
 ## [interface String](../../interface/string.html)
 
-*Description*: Function for returning a [String](../../type/string.html) representation of numbers.
+*Description*: Function for returning a
+[String](../../type/string.html) representation of numbers.
 
 To return the empty `String`, use no arguments:
 
@@ -50,7 +51,9 @@ result = String(x [, locale, fmt, decimals, im])
 * `decimals` is `optional` and of type `integer`
 * `im` is `optional` and of type `character(len=*)`
 
-@note Unlike [str](str.html), which takes scalar arguments only and returns a `character`, `String` operates elementally and returns a [String](../../type/string.html).
+@note Unlike [str](str.html), which takes scalar arguments only and
+returns a `character`, `String` operates elementally and returns a
+[String](../../type/string.html).
 
 ### Optional Arguments
 
@@ -72,6 +75,12 @@ Locales (default is `"US"`):
 LOCALES = [ "US", "EU" ]
 ```
 
-Decimals: `decimals` specifies the number of digits on the rhs of the radix point, with a default determined internally based on the [text format](../UserInfo/text-fmts.html) and precision.
+Decimals: `decimals` specifies the number of digits on the rhs of the
+radix point, with a default determined internally based on the
+[text format](../UserInfo/text-fmts.html) and precision.
 
-Imaginary unit: `im` specifies the form of a complex number. By default, `complex` numbers will be written as ordered pairs, e.g. `(2.45,3.45)`. If `im` is specified, then the number will be written as a sum with the specified imaginary unit, e.g. `2.45+3.45j` for `im="j"` or `2.45+3.45*1i` for `im="*1i"`.
+Imaginary unit: `im` specifies the form of a complex number. By
+default, `complex` numbers will be written as ordered pairs, e.g.
+`(2.45,3.45)`. If `im` is specified, then the number will be written as
+a sum with the specified imaginary unit, e.g. `2.45+3.45j` for `im="j"`
+or `2.45+3.45*1i` for `im="*1i"`.

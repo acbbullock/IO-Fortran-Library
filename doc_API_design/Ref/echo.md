@@ -5,7 +5,8 @@ author: Austin C Bullock
 
 ## [interface echo](../../interface/echo.html)
 
-*Description*: Subroutine for writing a scalar `character` or `String` to an external text file.
+*Description*: Subroutine for writing a scalar `character` or `String`
+to an external text file.
 
 For `substring` a scalar of type `character` or `String`:
 
@@ -31,12 +32,19 @@ call substring%echo(file [, append, terminator, stat, errmsg])
 * `stat` is `optional` and of type `integer`
 * `errmsg` is `optional` and of type `character(len=*)`
 
-@note The type-bound procedure access of the form `call substring%echo()` is valid when `substring` is a `String` variable. To echo a `String`-valued expression, the expression must be passed to `echo` by the form `call echo()`.
+@note The type-bound procedure access of the form
+`call substring%echo()` is valid when `substring` is a `String`
+variable. To echo a `String`-valued expression, the expression must be
+passed to `echo` by the form `call echo()`.
 
-@note `file` may be a relative path, but absolute paths are not guaranteed to work on every platform.
+@note `file` may be a relative path, but absolute paths are not
+guaranteed to work on every platform.
 
 ### Optional Arguments
 
-Append (default is `.true.`): `append` specifies whether to append or to replace the file `file`. Either way, the file will be created if it does not exist.
+Append (default is `.true.`): `append` specifies whether to append or
+to replace the file `file`. Either way, the file will be created if it
+does not exist.
 
-Terminator (default is `LF`): `terminator` is a string terminator inserted at the end of the input string.
+Terminator (default is `LF`): `terminator` is a string terminator
+inserted at the end of the input string.
