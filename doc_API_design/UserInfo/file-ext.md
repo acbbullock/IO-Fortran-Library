@@ -9,17 +9,20 @@ be present.
 The following are valid text file extensions:
 
 ```fortran
-TEXT_EXT = [ "csv", "txt", "log", &
-             "rtf", "odm", "odt", &
-             "ods", "odf", "xls", &
-             "doc", "org", "dbf", &
-             "bed", "gff", "gtf"  ]
+character(len=3), parameter :: TEXT_EXT(*) = [ "csv", "txt", & ! Allowed text extensions
+                                               "log", "rtf", &
+                                               "odm", "odt", &
+                                               "ods", "odf", &
+                                               "xls", "doc", &
+                                               "org", "dbf", &
+                                               "bed", "gff", &
+                                               "gtf"         ]
 ```
 
 The following are valid binary file extensions:
 
 ```fortran
-BINARY_EXT = [ "dat", "bin" ]
+character(len=3), parameter :: BINARY_EXT(*) = [ "dat", "bin" ] ! Allowed binary extensions
 ```
 
 The routines [to_file](../Ref/to_file.html) and

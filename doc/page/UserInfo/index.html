@@ -1,3 +1,5 @@
+<!-- -*- mode: jinja2 -*- -->
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -17,7 +19,8 @@
     <link href="../../css/local.css" rel="stylesheet">
       <link  href="../../tipuesearch/tipuesearch.css" rel="stylesheet">
 
-    <script src="https://code.jquery.com/jquery-3.7.0.slim.min.js" integrity="sha256-tG5mcZUtJsZvyKAxYLVXrmjKBVLd6VpVccqz/r4ypFE=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="../../js/svg-pan-zoom.min.js"></script>
   </head>
 
   <body>
@@ -26,7 +29,7 @@
     <div class="container-fluid mb-sm-4 mb-xl-2">
       <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div class="container">
-          <a class="navbar-brand" href="../../index.html">IO-Fortran-Library <small>1.2.1</small></a>
+          <a class="navbar-brand" href="../../index.html">IO-Fortran-Library <small>1.3.1</small></a>
           <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar"
                   aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">
                   <span class="navbar-toggler-icon">
@@ -34,7 +37,7 @@
 
           <div id="navbar" class="navbar-collapse collapse">
             <ul class="navbar-nav">
-                <li class="nav-item"><a class="nav-link" href="../../page/index.html">API Design</a></li>
+                <li class="nav-item"><a class="nav-link" href="../index.html">API Design</a></li>
                   <li class="nav-item">
                     <a class="nav-link" href="../../lists/files.html">Source Files</a>
                   </li>
@@ -71,7 +74,7 @@
         <div class="col">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb justify-content-end mb-0">
-                <li class="breadcrumb-item"><a href='../../page/index.html'>API Design</a></li>
+                <li class="breadcrumb-item"><a href='../index.html'>API Design</a></li>
               <li class="breadcrumb-item active" aria-current="page">Important User Information</li>
             </ol>
           </nav>
@@ -85,53 +88,53 @@
         <div class="card card-body bg-light" id="sidebar-toc">
           <ul class="nav flex-column align-items">
             <li class="nav-item">
-              <a class="nav-link" href="../../page/index.html">API Design</a>
+              <a class="nav-link" href="../index.html">API Design</a>
             </li>
           </ul>
           <hr>
           <nav class="nav nav-pills flex-column">
-              <a class="nav-link active disabled" href="../../page/UserInfo/index.html">Important User Information</a>
+              <a class="nav-link active disabled" href="index.html">Important User Information</a>
                 <nav class="nav nav-pills flex-column">
-                                <a class="nav-link" href="../../page/UserInfo/text-fmts.html">Numeric text formats</a>
-              <a class="nav-link" href="../../page/UserInfo/locale-fmts.html">Locales</a>
-              <a class="nav-link" href="../../page/UserInfo/file-ext.html">File extensions</a>
-              <a class="nav-link" href="../../page/UserInfo/error-codes.html">Error Codes</a>
-              <a class="nav-link" href="../../page/UserInfo/compilers.html">Compiler-dependent behavior</a>
-              <a class="nav-link" href="../../page/UserInfo/characters.html">Character sets and kinds</a>
-              <a class="nav-link" href="../../page/UserInfo/thread-safety.html">Thread safety</a>
+                                <a class="nav-link" href="text-fmts.html">Numeric text formats</a>
+              <a class="nav-link" href="locale-fmts.html">Locales</a>
+              <a class="nav-link" href="file-ext.html">File extensions</a>
+              <a class="nav-link" href="error-codes.html">Error Codes</a>
+              <a class="nav-link" href="compilers.html">Compiler-dependent behavior</a>
+              <a class="nav-link" href="characters.html">Character sets and kinds</a>
+              <a class="nav-link" href="thread-safety.html">Thread safety</a>
 
                 </nav>
-              <a class="nav-link" href="../../page/Ref/index.html">Reference Guide</a>
+              <a class="nav-link" href="../Ref/index.html">Reference Guide</a>
                 <nav class="nav nav-pills flex-column">
-                                <a class="nav-link" href="../../page/Ref/constants.html">CONSTANTS</a>
-              <a class="nav-link" href="../../page/Ref/String.html">String</a>
-              <a class="nav-link" href="../../page/Ref/str.html">str</a>
-              <a class="nav-link" href="../../page/Ref/cast.html">cast</a>
-              <a class="nav-link" href="../../page/Ref/join-split.html">join and split</a>
-              <a class="nav-link" href="../../page/Ref/to_file.html">to_file</a>
-              <a class="nav-link" href="../../page/Ref/from_file.html">from_file</a>
-              <a class="nav-link" href="../../page/Ref/echo.html">echo</a>
-              <a class="nav-link" href="../../page/Ref/aprint.html">aprint</a>
-              <a class="nav-link" href="../../page/Ref/String-methods.html">String methods</a>
-              <a class="nav-link" href="../../page/Ref/operators.html">Operators</a>
+                                <a class="nav-link" href="../Ref/constants.html">CONSTANTS</a>
+              <a class="nav-link" href="../Ref/String.html">String</a>
+              <a class="nav-link" href="../Ref/str.html">str</a>
+              <a class="nav-link" href="../Ref/cast.html">cast</a>
+              <a class="nav-link" href="../Ref/join-split.html">join and split</a>
+              <a class="nav-link" href="../Ref/to_file.html">to_file</a>
+              <a class="nav-link" href="../Ref/from_file.html">from_file</a>
+              <a class="nav-link" href="../Ref/echo.html">echo</a>
+              <a class="nav-link" href="../Ref/aprint.html">aprint</a>
+              <a class="nav-link" href="../Ref/String-methods.html">String methods</a>
+              <a class="nav-link" href="../Ref/operators.html">Operators</a>
 
                 </nav>
-              <a class="nav-link" href="../../page/Examples/index.html">Tutorials</a>
+              <a class="nav-link" href="../Examples/index.html">Tutorials</a>
                 <nav class="nav nav-pills flex-column">
-                                <a class="nav-link" href="../../page/Examples/csv.html">Handling csv files</a>
-              <a class="nav-link" href="../../page/Examples/binary.html">Handling dat files</a>
-              <a class="nav-link" href="../../page/Examples/logging.html">Handling log files</a>
-              <a class="nav-link" href="../../page/Examples/manipulations.html">String manipulations</a>
-              <a class="nav-link" href="../../page/Examples/fizzbuzz.html">FizzBuzz</a>
-              <a class="nav-link" href="../../page/Examples/exome.html">NGS Human Core Exome Panel</a>
-              <a class="nav-link" href="../../page/Examples/benchmark.html">Benchmarking</a>
+                                <a class="nav-link" href="../Examples/csv.html">Handling csv files</a>
+              <a class="nav-link" href="../Examples/binary.html">Handling dat files</a>
+              <a class="nav-link" href="../Examples/logging.html">Handling log files</a>
+              <a class="nav-link" href="../Examples/manipulations.html">String manipulations</a>
+              <a class="nav-link" href="../Examples/fizzbuzz.html">FizzBuzz</a>
+              <a class="nav-link" href="../Examples/exome.html">NGS Human Core Exome Panel</a>
+              <a class="nav-link" href="../Examples/benchmark.html">Benchmarking</a>
 
                 </nav>
           </nav>
         </div>
       </div>
 
-    <div class="col" id='text'>
+    <div class="col-9" id='text'>
       <p>The following subsections detail important information for users:</p>
 <ul>
 <li><a href="text-fmts.html">Numeric text formats</a></li>
@@ -149,14 +152,14 @@
     <footer>
       <div class="container">
         <div class="row justify-content-between">
-          <div class="col"><p>IO-Fortran-Library was developed by Austin C Bullock<br>&copy; 2023 <a rel="license" href="https://opensource.org/licenses/MIT">MIT</a>
+          <div class="col"><p>IO-Fortran-Library was developed by Austin C Bullock<br>&copy; 2024 <a rel="license" href="https://opensource.org/licenses/MIT">MIT</a>
 </p>
           </div>
           <div class="col">
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-10-21 00:50              </p>
+ on 2024-03-16 19:16              </p>
           </div>
         </div>
         <br>

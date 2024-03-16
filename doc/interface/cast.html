@@ -1,3 +1,5 @@
+<!-- -*- mode: jinja2 -*- -->
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -17,7 +19,8 @@
     <link href="../css/local.css" rel="stylesheet">
       <link  href="../tipuesearch/tipuesearch.css" rel="stylesheet">
 
-    <script src="https://code.jquery.com/jquery-3.7.0.slim.min.js" integrity="sha256-tG5mcZUtJsZvyKAxYLVXrmjKBVLd6VpVccqz/r4ypFE=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="../js/svg-pan-zoom.min.js"></script>
   </head>
 
   <body>
@@ -26,7 +29,7 @@
     <div class="container-fluid mb-sm-4 mb-xl-2">
       <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div class="container">
-          <a class="navbar-brand" href="../index.html">IO-Fortran-Library <small>1.2.1</small></a>
+          <a class="navbar-brand" href="../index.html">IO-Fortran-Library <small>1.3.1</small></a>
           <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar"
                   aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">
                   <span class="navbar-toggler-icon">
@@ -189,7 +192,7 @@
 
         <h2>Subroutines</h2>
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-cast_c128_to_string"></span><h3>private pure elemental recursive module subroutine cast_c128_to_string(x, into, locale, fmt, decimals, im)  
+    <div class="card-header codesum"><span class="anchor" id="proc-cast_c128_to_string"></span> <h3>private pure elemental recursive module subroutine cast_c128_to_string(x, into, locale, fmt, decimals, im)  
 </h3></div>
     <div class="card-body">
         
@@ -222,12 +225,927 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-into~11"></span>
+              <span class="anchor" id="variable-into"></span>
               type(<a href='../type/string.html'>String</a>),
             </td>
 <td>intent(inout)</td>
               <td></td>            <td>
               
+            </td>
+            <td>::</td>
+            <td><strong>into</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-locale~13"></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>locale</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-fmt~21"></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>fmt</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-decimals~13"></span>
+              integer,
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>decimals</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-im~7"></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>im</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    </div>
+  </div>
+
+            <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-cast_c64_to_string"></span> <h3>private pure elemental recursive module subroutine cast_c64_to_string(x, into, locale, fmt, decimals, im)  
+</h3></div>
+    <div class="card-body">
+        
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-x~26"></span>
+              complex(kind=r64),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>x</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-into~2"></span>
+              type(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>into</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-locale~14"></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>locale</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-fmt~22"></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>fmt</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-decimals~14"></span>
+              integer,
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>decimals</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-im~8"></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>im</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    </div>
+  </div>
+
+            <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-cast_c32_to_string"></span> <h3>private pure elemental recursive module subroutine cast_c32_to_string(x, into, locale, fmt, decimals, im)  
+</h3></div>
+    <div class="card-body">
+        
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-x~27"></span>
+              complex(kind=r32),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>x</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-into~3"></span>
+              type(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>into</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-locale~15"></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>locale</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-fmt~23"></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>fmt</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-decimals~15"></span>
+              integer,
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>decimals</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-im~9"></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>im</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    </div>
+  </div>
+
+            <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-cast_r128_to_string"></span> <h3>private pure elemental recursive module subroutine cast_r128_to_string(x, into, locale, fmt, decimals)  
+</h3></div>
+    <div class="card-body">
+        
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-x~28"></span>
+              real(kind=r128),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>x</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-into~4"></span>
+              type(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>into</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-locale~16"></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>locale</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-fmt~24"></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>fmt</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-decimals~16"></span>
+              integer,
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>decimals</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    </div>
+  </div>
+
+            <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-cast_r64_to_string"></span> <h3>private pure elemental recursive module subroutine cast_r64_to_string(x, into, locale, fmt, decimals)  
+</h3></div>
+    <div class="card-body">
+        
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-x~29"></span>
+              real(kind=r64),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>x</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-into~5"></span>
+              type(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>into</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-locale~17"></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>locale</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-fmt~25"></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>fmt</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-decimals~17"></span>
+              integer,
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>decimals</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    </div>
+  </div>
+
+            <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-cast_r32_to_string"></span> <h3>private pure elemental recursive module subroutine cast_r32_to_string(x, into, locale, fmt, decimals)  
+</h3></div>
+    <div class="card-body">
+        
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-x~30"></span>
+              real(kind=r32),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>x</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-into~6"></span>
+              type(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>into</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-locale~18"></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>locale</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-fmt~26"></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>fmt</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-decimals~18"></span>
+              integer,
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>decimals</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    </div>
+  </div>
+
+            <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-cast_i64_to_string"></span> <h3>private pure elemental recursive module subroutine cast_i64_to_string(x, into, fmt)  
+</h3></div>
+    <div class="card-body">
+        
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-x~31"></span>
+              integer(kind=i64),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>x</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-into~7"></span>
+              type(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>into</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-fmt~27"></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>fmt</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    </div>
+  </div>
+
+            <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-cast_i32_to_string"></span> <h3>private pure elemental recursive module subroutine cast_i32_to_string(x, into, fmt)  
+</h3></div>
+    <div class="card-body">
+        
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-x~32"></span>
+              integer(kind=i32),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>x</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-into~8"></span>
+              type(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>into</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-fmt~28"></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>fmt</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    </div>
+  </div>
+
+            <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-cast_i16_to_string"></span> <h3>private pure elemental recursive module subroutine cast_i16_to_string(x, into, fmt)  
+</h3></div>
+    <div class="card-body">
+        
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-x~33"></span>
+              integer(kind=i16),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>x</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-into~9"></span>
+              type(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>into</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-fmt~29"></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>fmt</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    </div>
+  </div>
+
+            <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-cast_i8_to_string"></span> <h3>private pure elemental recursive module subroutine cast_i8_to_string(x, into, fmt)  
+</h3></div>
+    <div class="card-body">
+        
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-x~34"></span>
+              integer(kind=i8),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>x</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-into~10"></span>
+              type(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>into</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-fmt~30"></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>fmt</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    </div>
+  </div>
+
+            <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-cast_c128_to_char"></span> <h3>private pure recursive module subroutine cast_c128_to_char(x, into, locale, fmt, decimals, im)  
+</h3></div>
+    <div class="card-body">
+        
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-x~35"></span>
+              complex(kind=r128),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>x</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-into~11"></span>
+              character(len=:),
+            </td>
+<td>intent(inout),</td>
+              <td></td>            <td>
+              allocatable
             </td>
             <td>::</td>
             <td><strong>into</strong></td>
@@ -267,7 +1185,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-decimals~13"></span>
+              <span class="anchor" id="variable-decimals~19"></span>
               integer,
             </td>
 <td>intent(in),</td>
@@ -303,7 +1221,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-cast_c64_to_string"></span><h3>private pure elemental recursive module subroutine cast_c64_to_string(x, into, locale, fmt, decimals, im)  
+    <div class="card-header codesum"><span class="anchor" id="proc-cast_c64_to_char"></span> <h3>private pure recursive module subroutine cast_c64_to_char(x, into, locale, fmt, decimals, im)  
 </h3></div>
     <div class="card-body">
         
@@ -321,7 +1239,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-x~26"></span>
+              <span class="anchor" id="variable-x~36"></span>
               complex(kind=r64),
             </td>
 <td>intent(in)</td>
@@ -337,11 +1255,11 @@
         <tr>
             <td>
               <span class="anchor" id="variable-into~12"></span>
-              type(<a href='../type/string.html'>String</a>),
+              character(len=:),
             </td>
-<td>intent(inout)</td>
+<td>intent(inout),</td>
               <td></td>            <td>
-              
+              allocatable
             </td>
             <td>::</td>
             <td><strong>into</strong></td>
@@ -381,7 +1299,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-decimals~14"></span>
+              <span class="anchor" id="variable-decimals~20"></span>
               integer,
             </td>
 <td>intent(in),</td>
@@ -417,7 +1335,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-cast_c32_to_string"></span><h3>private pure elemental recursive module subroutine cast_c32_to_string(x, into, locale, fmt, decimals, im)  
+    <div class="card-header codesum"><span class="anchor" id="proc-cast_c32_to_char"></span> <h3>private pure recursive module subroutine cast_c32_to_char(x, into, locale, fmt, decimals, im)  
 </h3></div>
     <div class="card-body">
         
@@ -435,7 +1353,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-x~27"></span>
+              <span class="anchor" id="variable-x~37"></span>
               complex(kind=r32),
             </td>
 <td>intent(in)</td>
@@ -451,11 +1369,11 @@
         <tr>
             <td>
               <span class="anchor" id="variable-into~13"></span>
-              type(<a href='../type/string.html'>String</a>),
+              character(len=:),
             </td>
-<td>intent(inout)</td>
+<td>intent(inout),</td>
               <td></td>            <td>
-              
+              allocatable
             </td>
             <td>::</td>
             <td><strong>into</strong></td>
@@ -495,7 +1413,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-decimals~15"></span>
+              <span class="anchor" id="variable-decimals~21"></span>
               integer,
             </td>
 <td>intent(in),</td>
@@ -531,7 +1449,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-cast_r128_to_string"></span><h3>private pure elemental recursive module subroutine cast_r128_to_string(x, into, locale, fmt, decimals)  
+    <div class="card-header codesum"><span class="anchor" id="proc-cast_r128_to_char"></span> <h3>private pure recursive module subroutine cast_r128_to_char(x, into, locale, fmt, decimals)  
 </h3></div>
     <div class="card-body">
         
@@ -549,7 +1467,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-x~28"></span>
+              <span class="anchor" id="variable-x~38"></span>
               real(kind=r128),
             </td>
 <td>intent(in)</td>
@@ -565,11 +1483,11 @@
         <tr>
             <td>
               <span class="anchor" id="variable-into~14"></span>
-              type(<a href='../type/string.html'>String</a>),
+              character(len=:),
             </td>
-<td>intent(inout)</td>
+<td>intent(inout),</td>
               <td></td>            <td>
-              
+              allocatable
             </td>
             <td>::</td>
             <td><strong>into</strong></td>
@@ -609,7 +1527,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-decimals~16"></span>
+              <span class="anchor" id="variable-decimals~22"></span>
               integer,
             </td>
 <td>intent(in),</td>
@@ -630,7 +1548,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-cast_r64_to_string"></span><h3>private pure elemental recursive module subroutine cast_r64_to_string(x, into, locale, fmt, decimals)  
+    <div class="card-header codesum"><span class="anchor" id="proc-cast_r64_to_char"></span> <h3>private pure recursive module subroutine cast_r64_to_char(x, into, locale, fmt, decimals)  
 </h3></div>
     <div class="card-body">
         
@@ -648,7 +1566,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-x~29"></span>
+              <span class="anchor" id="variable-x~39"></span>
               real(kind=r64),
             </td>
 <td>intent(in)</td>
@@ -664,11 +1582,11 @@
         <tr>
             <td>
               <span class="anchor" id="variable-into~15"></span>
-              type(<a href='../type/string.html'>String</a>),
+              character(len=:),
             </td>
-<td>intent(inout)</td>
+<td>intent(inout),</td>
               <td></td>            <td>
-              
+              allocatable
             </td>
             <td>::</td>
             <td><strong>into</strong></td>
@@ -708,7 +1626,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-decimals~17"></span>
+              <span class="anchor" id="variable-decimals~23"></span>
               integer,
             </td>
 <td>intent(in),</td>
@@ -729,7 +1647,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-cast_r32_to_string"></span><h3>private pure elemental recursive module subroutine cast_r32_to_string(x, into, locale, fmt, decimals)  
+    <div class="card-header codesum"><span class="anchor" id="proc-cast_r32_to_char"></span> <h3>private pure recursive module subroutine cast_r32_to_char(x, into, locale, fmt, decimals)  
 </h3></div>
     <div class="card-body">
         
@@ -747,7 +1665,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-x~30"></span>
+              <span class="anchor" id="variable-x~40"></span>
               real(kind=r32),
             </td>
 <td>intent(in)</td>
@@ -763,11 +1681,11 @@
         <tr>
             <td>
               <span class="anchor" id="variable-into~16"></span>
-              type(<a href='../type/string.html'>String</a>),
+              character(len=:),
             </td>
-<td>intent(inout)</td>
+<td>intent(inout),</td>
               <td></td>            <td>
-              
+              allocatable
             </td>
             <td>::</td>
             <td><strong>into</strong></td>
@@ -807,7 +1725,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-decimals~18"></span>
+              <span class="anchor" id="variable-decimals~24"></span>
               integer,
             </td>
 <td>intent(in),</td>
@@ -828,7 +1746,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-cast_i64_to_string"></span><h3>private pure elemental recursive module subroutine cast_i64_to_string(x, into, fmt)  
+    <div class="card-header codesum"><span class="anchor" id="proc-cast_i64_to_char"></span> <h3>private pure recursive module subroutine cast_i64_to_char(x, into, fmt)  
 </h3></div>
     <div class="card-body">
         
@@ -846,7 +1764,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-x~31"></span>
+              <span class="anchor" id="variable-x~41"></span>
               integer(kind=i64),
             </td>
 <td>intent(in)</td>
@@ -862,11 +1780,11 @@
         <tr>
             <td>
               <span class="anchor" id="variable-into~17"></span>
-              type(<a href='../type/string.html'>String</a>),
+              character(len=:),
             </td>
-<td>intent(inout)</td>
+<td>intent(inout),</td>
               <td></td>            <td>
-              
+              allocatable
             </td>
             <td>::</td>
             <td><strong>into</strong></td>
@@ -897,7 +1815,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-cast_i32_to_string"></span><h3>private pure elemental recursive module subroutine cast_i32_to_string(x, into, fmt)  
+    <div class="card-header codesum"><span class="anchor" id="proc-cast_i32_to_char"></span> <h3>private pure recursive module subroutine cast_i32_to_char(x, into, fmt)  
 </h3></div>
     <div class="card-body">
         
@@ -915,7 +1833,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-x~32"></span>
+              <span class="anchor" id="variable-x~42"></span>
               integer(kind=i32),
             </td>
 <td>intent(in)</td>
@@ -931,11 +1849,11 @@
         <tr>
             <td>
               <span class="anchor" id="variable-into~18"></span>
-              type(<a href='../type/string.html'>String</a>),
+              character(len=:),
             </td>
-<td>intent(inout)</td>
+<td>intent(inout),</td>
               <td></td>            <td>
-              
+              allocatable
             </td>
             <td>::</td>
             <td><strong>into</strong></td>
@@ -966,7 +1884,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-cast_i16_to_string"></span><h3>private pure elemental recursive module subroutine cast_i16_to_string(x, into, fmt)  
+    <div class="card-header codesum"><span class="anchor" id="proc-cast_i16_to_char"></span> <h3>private pure recursive module subroutine cast_i16_to_char(x, into, fmt)  
 </h3></div>
     <div class="card-body">
         
@@ -984,7 +1902,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-x~33"></span>
+              <span class="anchor" id="variable-x~43"></span>
               integer(kind=i16),
             </td>
 <td>intent(in)</td>
@@ -1000,11 +1918,11 @@
         <tr>
             <td>
               <span class="anchor" id="variable-into~19"></span>
-              type(<a href='../type/string.html'>String</a>),
+              character(len=:),
             </td>
-<td>intent(inout)</td>
+<td>intent(inout),</td>
               <td></td>            <td>
-              
+              allocatable
             </td>
             <td>::</td>
             <td><strong>into</strong></td>
@@ -1035,7 +1953,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-cast_i8_to_string"></span><h3>private pure elemental recursive module subroutine cast_i8_to_string(x, into, fmt)  
+    <div class="card-header codesum"><span class="anchor" id="proc-cast_i8_to_char"></span> <h3>private pure recursive module subroutine cast_i8_to_char(x, into, fmt)  
 </h3></div>
     <div class="card-body">
         
@@ -1053,7 +1971,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-x~34"></span>
+              <span class="anchor" id="variable-x~44"></span>
               integer(kind=i8),
             </td>
 <td>intent(in)</td>
@@ -1069,11 +1987,11 @@
         <tr>
             <td>
               <span class="anchor" id="variable-into~20"></span>
-              type(<a href='../type/string.html'>String</a>),
+              character(len=:),
             </td>
-<td>intent(inout)</td>
+<td>intent(inout),</td>
               <td></td>            <td>
-              
+              allocatable
             </td>
             <td>::</td>
             <td><strong>into</strong></td>
@@ -1104,7 +2022,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-cast_c128_to_char"></span><h3>private pure recursive module subroutine cast_c128_to_char(x, into, locale, fmt, decimals, im)  
+    <div class="card-header codesum"><span class="anchor" id="proc-cast_string_to_c128~2"></span> <h3>private pure elemental recursive module subroutine cast_string_to_c128(substring, into, locale, fmt, im)  
 </h3></div>
     <div class="card-body">
         
@@ -1122,15 +2040,15 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-x~35"></span>
-              complex(kind=r128),
+              <span class="anchor" id="variable-substring~12"></span>
+              class(<a href='../type/string.html'>String</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
-            <td><strong>x</strong></td>
+            <td><strong>substring</strong></td>
             <td>
                 
             </td>
@@ -1138,11 +2056,11 @@
         <tr>
             <td>
               <span class="anchor" id="variable-into~21"></span>
-              character(len=:),
+              complex(kind=r128),
             </td>
-<td>intent(inout),</td>
+<td>intent(out)</td>
               <td></td>            <td>
-              allocatable
+              
             </td>
             <td>::</td>
             <td><strong>into</strong></td>
@@ -1182,21 +2100,6 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-decimals~19"></span>
-              integer,
-            </td>
-<td>intent(in),</td>
-              <td>optional</td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>decimals</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
               <span class="anchor" id="variable-im~13"></span>
               character(len=*),
             </td>
@@ -1218,7 +2121,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-cast_c64_to_char"></span><h3>private pure recursive module subroutine cast_c64_to_char(x, into, locale, fmt, decimals, im)  
+    <div class="card-header codesum"><span class="anchor" id="proc-cast_string_to_c64~2"></span> <h3>private pure elemental recursive module subroutine cast_string_to_c64(substring, into, locale, fmt, im)  
 </h3></div>
     <div class="card-body">
         
@@ -1236,15 +2139,15 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-x~36"></span>
-              complex(kind=r64),
+              <span class="anchor" id="variable-substring~13"></span>
+              class(<a href='../type/string.html'>String</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
-            <td><strong>x</strong></td>
+            <td><strong>substring</strong></td>
             <td>
                 
             </td>
@@ -1252,11 +2155,11 @@
         <tr>
             <td>
               <span class="anchor" id="variable-into~22"></span>
-              character(len=:),
+              complex(kind=r64),
             </td>
-<td>intent(inout),</td>
+<td>intent(out)</td>
               <td></td>            <td>
-              allocatable
+              
             </td>
             <td>::</td>
             <td><strong>into</strong></td>
@@ -1296,21 +2199,6 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-decimals~20"></span>
-              integer,
-            </td>
-<td>intent(in),</td>
-              <td>optional</td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>decimals</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
               <span class="anchor" id="variable-im~14"></span>
               character(len=*),
             </td>
@@ -1332,7 +2220,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-cast_c32_to_char"></span><h3>private pure recursive module subroutine cast_c32_to_char(x, into, locale, fmt, decimals, im)  
+    <div class="card-header codesum"><span class="anchor" id="proc-cast_string_to_c32~2"></span> <h3>private pure elemental recursive module subroutine cast_string_to_c32(substring, into, locale, fmt, im)  
 </h3></div>
     <div class="card-body">
         
@@ -1350,15 +2238,15 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-x~37"></span>
-              complex(kind=r32),
+              <span class="anchor" id="variable-substring~14"></span>
+              class(<a href='../type/string.html'>String</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
-            <td><strong>x</strong></td>
+            <td><strong>substring</strong></td>
             <td>
                 
             </td>
@@ -1366,11 +2254,11 @@
         <tr>
             <td>
               <span class="anchor" id="variable-into~23"></span>
-              character(len=:),
+              complex(kind=r32),
             </td>
-<td>intent(inout),</td>
+<td>intent(out)</td>
               <td></td>            <td>
-              allocatable
+              
             </td>
             <td>::</td>
             <td><strong>into</strong></td>
@@ -1410,21 +2298,6 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-decimals~21"></span>
-              integer,
-            </td>
-<td>intent(in),</td>
-              <td>optional</td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>decimals</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
               <span class="anchor" id="variable-im~15"></span>
               character(len=*),
             </td>
@@ -1446,7 +2319,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-cast_r128_to_char"></span><h3>private pure recursive module subroutine cast_r128_to_char(x, into, locale, fmt, decimals)  
+    <div class="card-header codesum"><span class="anchor" id="proc-cast_string_to_r128~2"></span> <h3>private pure elemental recursive module subroutine cast_string_to_r128(substring, into, locale, fmt)  
 </h3></div>
     <div class="card-body">
         
@@ -1464,15 +2337,15 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-x~38"></span>
-              real(kind=r128),
+              <span class="anchor" id="variable-substring~15"></span>
+              class(<a href='../type/string.html'>String</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
-            <td><strong>x</strong></td>
+            <td><strong>substring</strong></td>
             <td>
                 
             </td>
@@ -1480,11 +2353,11 @@
         <tr>
             <td>
               <span class="anchor" id="variable-into~24"></span>
-              character(len=:),
+              real(kind=r128),
             </td>
-<td>intent(inout),</td>
+<td>intent(out)</td>
               <td></td>            <td>
-              allocatable
+              
             </td>
             <td>::</td>
             <td><strong>into</strong></td>
@@ -1522,21 +2395,6 @@
                 
             </td>
         </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-decimals~22"></span>
-              integer,
-            </td>
-<td>intent(in),</td>
-              <td>optional</td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>decimals</strong></td>
-            <td>
-                
-            </td>
-        </tr>
     </tbody>
   </table>
 
@@ -1545,7 +2403,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-cast_r64_to_char"></span><h3>private pure recursive module subroutine cast_r64_to_char(x, into, locale, fmt, decimals)  
+    <div class="card-header codesum"><span class="anchor" id="proc-cast_string_to_r64~2"></span> <h3>private pure elemental recursive module subroutine cast_string_to_r64(substring, into, locale, fmt)  
 </h3></div>
     <div class="card-body">
         
@@ -1563,15 +2421,15 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-x~39"></span>
-              real(kind=r64),
+              <span class="anchor" id="variable-substring~16"></span>
+              class(<a href='../type/string.html'>String</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
-            <td><strong>x</strong></td>
+            <td><strong>substring</strong></td>
             <td>
                 
             </td>
@@ -1579,11 +2437,11 @@
         <tr>
             <td>
               <span class="anchor" id="variable-into~25"></span>
-              character(len=:),
+              real(kind=r64),
             </td>
-<td>intent(inout),</td>
+<td>intent(out)</td>
               <td></td>            <td>
-              allocatable
+              
             </td>
             <td>::</td>
             <td><strong>into</strong></td>
@@ -1621,21 +2479,6 @@
                 
             </td>
         </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-decimals~23"></span>
-              integer,
-            </td>
-<td>intent(in),</td>
-              <td>optional</td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>decimals</strong></td>
-            <td>
-                
-            </td>
-        </tr>
     </tbody>
   </table>
 
@@ -1644,7 +2487,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-cast_r32_to_char"></span><h3>private pure recursive module subroutine cast_r32_to_char(x, into, locale, fmt, decimals)  
+    <div class="card-header codesum"><span class="anchor" id="proc-cast_string_to_r32~2"></span> <h3>private pure elemental recursive module subroutine cast_string_to_r32(substring, into, locale, fmt)  
 </h3></div>
     <div class="card-body">
         
@@ -1662,15 +2505,15 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-x~40"></span>
-              real(kind=r32),
+              <span class="anchor" id="variable-substring~17"></span>
+              class(<a href='../type/string.html'>String</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
-            <td><strong>x</strong></td>
+            <td><strong>substring</strong></td>
             <td>
                 
             </td>
@@ -1678,11 +2521,11 @@
         <tr>
             <td>
               <span class="anchor" id="variable-into~26"></span>
-              character(len=:),
+              real(kind=r32),
             </td>
-<td>intent(inout),</td>
+<td>intent(out)</td>
               <td></td>            <td>
-              allocatable
+              
             </td>
             <td>::</td>
             <td><strong>into</strong></td>
@@ -1720,21 +2563,6 @@
                 
             </td>
         </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-decimals~24"></span>
-              integer,
-            </td>
-<td>intent(in),</td>
-              <td>optional</td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>decimals</strong></td>
-            <td>
-                
-            </td>
-        </tr>
     </tbody>
   </table>
 
@@ -1743,7 +2571,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-cast_i64_to_char"></span><h3>private pure recursive module subroutine cast_i64_to_char(x, into, fmt)  
+    <div class="card-header codesum"><span class="anchor" id="proc-cast_string_to_i64~2"></span> <h3>private pure elemental recursive module subroutine cast_string_to_i64(substring, into, fmt)  
 </h3></div>
     <div class="card-body">
         
@@ -1761,15 +2589,15 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-x~41"></span>
-              integer(kind=i64),
+              <span class="anchor" id="variable-substring~18"></span>
+              class(<a href='../type/string.html'>String</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
-            <td><strong>x</strong></td>
+            <td><strong>substring</strong></td>
             <td>
                 
             </td>
@@ -1777,11 +2605,11 @@
         <tr>
             <td>
               <span class="anchor" id="variable-into~27"></span>
-              character(len=:),
+              integer(kind=i64),
             </td>
-<td>intent(inout),</td>
+<td>intent(out)</td>
               <td></td>            <td>
-              allocatable
+              
             </td>
             <td>::</td>
             <td><strong>into</strong></td>
@@ -1812,7 +2640,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-cast_i32_to_char"></span><h3>private pure recursive module subroutine cast_i32_to_char(x, into, fmt)  
+    <div class="card-header codesum"><span class="anchor" id="proc-cast_string_to_i32~2"></span> <h3>private pure elemental recursive module subroutine cast_string_to_i32(substring, into, fmt)  
 </h3></div>
     <div class="card-body">
         
@@ -1830,15 +2658,15 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-x~42"></span>
-              integer(kind=i32),
+              <span class="anchor" id="variable-substring~19"></span>
+              class(<a href='../type/string.html'>String</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
-            <td><strong>x</strong></td>
+            <td><strong>substring</strong></td>
             <td>
                 
             </td>
@@ -1846,11 +2674,11 @@
         <tr>
             <td>
               <span class="anchor" id="variable-into~28"></span>
-              character(len=:),
+              integer(kind=i32),
             </td>
-<td>intent(inout),</td>
+<td>intent(out)</td>
               <td></td>            <td>
-              allocatable
+              
             </td>
             <td>::</td>
             <td><strong>into</strong></td>
@@ -1881,7 +2709,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-cast_i16_to_char"></span><h3>private pure recursive module subroutine cast_i16_to_char(x, into, fmt)  
+    <div class="card-header codesum"><span class="anchor" id="proc-cast_string_to_i16~2"></span> <h3>private pure elemental recursive module subroutine cast_string_to_i16(substring, into, fmt)  
 </h3></div>
     <div class="card-body">
         
@@ -1899,15 +2727,15 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-x~43"></span>
-              integer(kind=i16),
+              <span class="anchor" id="variable-substring~20"></span>
+              class(<a href='../type/string.html'>String</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
-            <td><strong>x</strong></td>
+            <td><strong>substring</strong></td>
             <td>
                 
             </td>
@@ -1915,11 +2743,11 @@
         <tr>
             <td>
               <span class="anchor" id="variable-into~29"></span>
-              character(len=:),
+              integer(kind=i16),
             </td>
-<td>intent(inout),</td>
+<td>intent(out)</td>
               <td></td>            <td>
-              allocatable
+              
             </td>
             <td>::</td>
             <td><strong>into</strong></td>
@@ -1950,7 +2778,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-cast_i8_to_char"></span><h3>private pure recursive module subroutine cast_i8_to_char(x, into, fmt)  
+    <div class="card-header codesum"><span class="anchor" id="proc-cast_string_to_i8~2"></span> <h3>private pure elemental recursive module subroutine cast_string_to_i8(substring, into, fmt)  
 </h3></div>
     <div class="card-body">
         
@@ -1968,15 +2796,15 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-x~44"></span>
-              integer(kind=i8),
+              <span class="anchor" id="variable-substring~21"></span>
+              class(<a href='../type/string.html'>String</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
-            <td><strong>x</strong></td>
+            <td><strong>substring</strong></td>
             <td>
                 
             </td>
@@ -1984,11 +2812,11 @@
         <tr>
             <td>
               <span class="anchor" id="variable-into~30"></span>
-              character(len=:),
+              integer(kind=i8),
             </td>
-<td>intent(inout),</td>
+<td>intent(out)</td>
               <td></td>            <td>
-              allocatable
+              
             </td>
             <td>::</td>
             <td><strong>into</strong></td>
@@ -2019,7 +2847,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-cast_string_to_c128~2"></span><h3>private pure elemental recursive module subroutine cast_string_to_c128(substring, into, locale, fmt, im)  
+    <div class="card-header codesum"><span class="anchor" id="proc-cast_char_to_c128"></span> <h3>private pure recursive module subroutine cast_char_to_c128(substring, into, locale, fmt, im)  
 </h3></div>
     <div class="card-body">
         
@@ -2037,832 +2865,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-substring"></span>
-              class(<a href='../type/string.html'>String</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>substring</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-into"></span>
-              complex(kind=r128),
-            </td>
-<td>intent(out)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>into</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-locale~7"></span>
-              character(len=*),
-            </td>
-<td>intent(in),</td>
-              <td>optional</td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>locale</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-fmt~11"></span>
-              character(len=*),
-            </td>
-<td>intent(in),</td>
-              <td>optional</td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>fmt</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-im~4"></span>
-              character(len=*),
-            </td>
-<td>intent(in),</td>
-              <td>optional</td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>im</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-
-    </div>
-  </div>
-
-            <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-cast_string_to_c64~2"></span><h3>private pure elemental recursive module subroutine cast_string_to_c64(substring, into, locale, fmt, im)  
-</h3></div>
-    <div class="card-body">
-        
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-substring~2"></span>
-              class(<a href='../type/string.html'>String</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>substring</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-into~2"></span>
-              complex(kind=r64),
-            </td>
-<td>intent(out)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>into</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-locale~8"></span>
-              character(len=*),
-            </td>
-<td>intent(in),</td>
-              <td>optional</td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>locale</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-fmt~12"></span>
-              character(len=*),
-            </td>
-<td>intent(in),</td>
-              <td>optional</td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>fmt</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-im~5"></span>
-              character(len=*),
-            </td>
-<td>intent(in),</td>
-              <td>optional</td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>im</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-
-    </div>
-  </div>
-
-            <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-cast_string_to_c32~2"></span><h3>private pure elemental recursive module subroutine cast_string_to_c32(substring, into, locale, fmt, im)  
-</h3></div>
-    <div class="card-body">
-        
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-substring~3"></span>
-              class(<a href='../type/string.html'>String</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>substring</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-into~3"></span>
-              complex(kind=r32),
-            </td>
-<td>intent(out)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>into</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-locale~9"></span>
-              character(len=*),
-            </td>
-<td>intent(in),</td>
-              <td>optional</td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>locale</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-fmt~13"></span>
-              character(len=*),
-            </td>
-<td>intent(in),</td>
-              <td>optional</td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>fmt</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-im~6"></span>
-              character(len=*),
-            </td>
-<td>intent(in),</td>
-              <td>optional</td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>im</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-
-    </div>
-  </div>
-
-            <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-cast_string_to_r128~2"></span><h3>private pure elemental recursive module subroutine cast_string_to_r128(substring, into, locale, fmt)  
-</h3></div>
-    <div class="card-body">
-        
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-substring~4"></span>
-              class(<a href='../type/string.html'>String</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>substring</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-into~4"></span>
-              real(kind=r128),
-            </td>
-<td>intent(out)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>into</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-locale~10"></span>
-              character(len=*),
-            </td>
-<td>intent(in),</td>
-              <td>optional</td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>locale</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-fmt~14"></span>
-              character(len=*),
-            </td>
-<td>intent(in),</td>
-              <td>optional</td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>fmt</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-
-    </div>
-  </div>
-
-            <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-cast_string_to_r64~2"></span><h3>private pure elemental recursive module subroutine cast_string_to_r64(substring, into, locale, fmt)  
-</h3></div>
-    <div class="card-body">
-        
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-substring~5"></span>
-              class(<a href='../type/string.html'>String</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>substring</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-into~5"></span>
-              real(kind=r64),
-            </td>
-<td>intent(out)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>into</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-locale~11"></span>
-              character(len=*),
-            </td>
-<td>intent(in),</td>
-              <td>optional</td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>locale</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-fmt~15"></span>
-              character(len=*),
-            </td>
-<td>intent(in),</td>
-              <td>optional</td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>fmt</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-
-    </div>
-  </div>
-
-            <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-cast_string_to_r32~2"></span><h3>private pure elemental recursive module subroutine cast_string_to_r32(substring, into, locale, fmt)  
-</h3></div>
-    <div class="card-body">
-        
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-substring~6"></span>
-              class(<a href='../type/string.html'>String</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>substring</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-into~6"></span>
-              real(kind=r32),
-            </td>
-<td>intent(out)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>into</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-locale~12"></span>
-              character(len=*),
-            </td>
-<td>intent(in),</td>
-              <td>optional</td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>locale</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-fmt~16"></span>
-              character(len=*),
-            </td>
-<td>intent(in),</td>
-              <td>optional</td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>fmt</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-
-    </div>
-  </div>
-
-            <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-cast_string_to_i64~2"></span><h3>private pure elemental recursive module subroutine cast_string_to_i64(substring, into, fmt)  
-</h3></div>
-    <div class="card-body">
-        
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-substring~7"></span>
-              class(<a href='../type/string.html'>String</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>substring</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-into~7"></span>
-              integer(kind=i64),
-            </td>
-<td>intent(out)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>into</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-fmt~17"></span>
-              character(len=*),
-            </td>
-<td>intent(in),</td>
-              <td>optional</td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>fmt</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-
-    </div>
-  </div>
-
-            <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-cast_string_to_i32~2"></span><h3>private pure elemental recursive module subroutine cast_string_to_i32(substring, into, fmt)  
-</h3></div>
-    <div class="card-body">
-        
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-substring~8"></span>
-              class(<a href='../type/string.html'>String</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>substring</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-into~8"></span>
-              integer(kind=i32),
-            </td>
-<td>intent(out)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>into</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-fmt~18"></span>
-              character(len=*),
-            </td>
-<td>intent(in),</td>
-              <td>optional</td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>fmt</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-
-    </div>
-  </div>
-
-            <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-cast_string_to_i16~2"></span><h3>private pure elemental recursive module subroutine cast_string_to_i16(substring, into, fmt)  
-</h3></div>
-    <div class="card-body">
-        
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-substring~9"></span>
-              class(<a href='../type/string.html'>String</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>substring</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-into~9"></span>
-              integer(kind=i16),
-            </td>
-<td>intent(out)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>into</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-fmt~19"></span>
-              character(len=*),
-            </td>
-<td>intent(in),</td>
-              <td>optional</td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>fmt</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-
-    </div>
-  </div>
-
-            <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-cast_string_to_i8~2"></span><h3>private pure elemental recursive module subroutine cast_string_to_i8(substring, into, fmt)  
-</h3></div>
-    <div class="card-body">
-        
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-substring~10"></span>
-              class(<a href='../type/string.html'>String</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>substring</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-into~10"></span>
-              integer(kind=i8),
-            </td>
-<td>intent(out)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>into</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-fmt~20"></span>
-              character(len=*),
-            </td>
-<td>intent(in),</td>
-              <td>optional</td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>fmt</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-
-    </div>
-  </div>
-
-            <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-cast_char_to_c128"></span><h3>private pure recursive module subroutine cast_char_to_c128(substring, into, locale, fmt, im)  
-</h3></div>
-    <div class="card-body">
-        
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-substring~13"></span>
+              <span class="anchor" id="variable-substring~22"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -2943,7 +2946,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-cast_char_to_c64"></span><h3>private pure recursive module subroutine cast_char_to_c64(substring, into, locale, fmt, im)  
+    <div class="card-header codesum"><span class="anchor" id="proc-cast_char_to_c64"></span> <h3>private pure recursive module subroutine cast_char_to_c64(substring, into, locale, fmt, im)  
 </h3></div>
     <div class="card-body">
         
@@ -2961,7 +2964,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-substring~14"></span>
+              <span class="anchor" id="variable-substring~23"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -3042,7 +3045,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-cast_char_to_c32"></span><h3>private pure recursive module subroutine cast_char_to_c32(substring, into, locale, fmt, im)  
+    <div class="card-header codesum"><span class="anchor" id="proc-cast_char_to_c32"></span> <h3>private pure recursive module subroutine cast_char_to_c32(substring, into, locale, fmt, im)  
 </h3></div>
     <div class="card-body">
         
@@ -3060,7 +3063,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-substring~15"></span>
+              <span class="anchor" id="variable-substring~24"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -3141,7 +3144,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-cast_char_to_r128"></span><h3>private pure recursive module subroutine cast_char_to_r128(substring, into, locale, fmt)  
+    <div class="card-header codesum"><span class="anchor" id="proc-cast_char_to_r128"></span> <h3>private pure recursive module subroutine cast_char_to_r128(substring, into, locale, fmt)  
 </h3></div>
     <div class="card-body">
         
@@ -3159,7 +3162,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-substring~16"></span>
+              <span class="anchor" id="variable-substring~25"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -3225,7 +3228,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-cast_char_to_r64"></span><h3>private pure recursive module subroutine cast_char_to_r64(substring, into, locale, fmt)  
+    <div class="card-header codesum"><span class="anchor" id="proc-cast_char_to_r64"></span> <h3>private pure recursive module subroutine cast_char_to_r64(substring, into, locale, fmt)  
 </h3></div>
     <div class="card-body">
         
@@ -3243,7 +3246,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-substring~17"></span>
+              <span class="anchor" id="variable-substring~26"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -3309,7 +3312,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-cast_char_to_r32"></span><h3>private pure recursive module subroutine cast_char_to_r32(substring, into, locale, fmt)  
+    <div class="card-header codesum"><span class="anchor" id="proc-cast_char_to_r32"></span> <h3>private pure recursive module subroutine cast_char_to_r32(substring, into, locale, fmt)  
 </h3></div>
     <div class="card-body">
         
@@ -3327,7 +3330,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-substring~18"></span>
+              <span class="anchor" id="variable-substring~27"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -3393,7 +3396,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-cast_char_to_i64"></span><h3>private pure recursive module subroutine cast_char_to_i64(substring, into, fmt)  
+    <div class="card-header codesum"><span class="anchor" id="proc-cast_char_to_i64"></span> <h3>private pure recursive module subroutine cast_char_to_i64(substring, into, fmt)  
 </h3></div>
     <div class="card-body">
         
@@ -3411,7 +3414,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-substring~19"></span>
+              <span class="anchor" id="variable-substring~28"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -3462,7 +3465,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-cast_char_to_i32"></span><h3>private pure recursive module subroutine cast_char_to_i32(substring, into, fmt)  
+    <div class="card-header codesum"><span class="anchor" id="proc-cast_char_to_i32"></span> <h3>private pure recursive module subroutine cast_char_to_i32(substring, into, fmt)  
 </h3></div>
     <div class="card-body">
         
@@ -3480,7 +3483,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-substring~20"></span>
+              <span class="anchor" id="variable-substring~29"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -3531,7 +3534,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-cast_char_to_i16"></span><h3>private pure recursive module subroutine cast_char_to_i16(substring, into, fmt)  
+    <div class="card-header codesum"><span class="anchor" id="proc-cast_char_to_i16"></span> <h3>private pure recursive module subroutine cast_char_to_i16(substring, into, fmt)  
 </h3></div>
     <div class="card-body">
         
@@ -3549,7 +3552,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-substring~21"></span>
+              <span class="anchor" id="variable-substring~30"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -3600,7 +3603,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-cast_char_to_i8"></span><h3>private pure recursive module subroutine cast_char_to_i8(substring, into, fmt)  
+    <div class="card-header codesum"><span class="anchor" id="proc-cast_char_to_i8"></span> <h3>private pure recursive module subroutine cast_char_to_i8(substring, into, fmt)  
 </h3></div>
     <div class="card-body">
         
@@ -3618,7 +3621,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-substring~22"></span>
+              <span class="anchor" id="variable-substring~31"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -3676,14 +3679,14 @@
     <footer>
       <div class="container">
         <div class="row justify-content-between">
-          <div class="col"><p>IO-Fortran-Library was developed by Austin C Bullock<br>&copy; 2023 <a rel="license" href="https://opensource.org/licenses/MIT">MIT</a>
+          <div class="col"><p>IO-Fortran-Library was developed by Austin C Bullock<br>&copy; 2024 <a rel="license" href="https://opensource.org/licenses/MIT">MIT</a>
 </p>
           </div>
           <div class="col">
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-10-21 00:50              </p>
+ on 2024-03-16 19:16              </p>
           </div>
         </div>
         <br>

@@ -1,3 +1,5 @@
+<!-- -*- mode: jinja2 -*- -->
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -17,7 +19,8 @@
     <link href="../css/local.css" rel="stylesheet">
       <link  href="../tipuesearch/tipuesearch.css" rel="stylesheet">
 
-    <script src="https://code.jquery.com/jquery-3.7.0.slim.min.js" integrity="sha256-tG5mcZUtJsZvyKAxYLVXrmjKBVLd6VpVccqz/r4ypFE=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="../js/svg-pan-zoom.min.js"></script>
   </head>
 
   <body>
@@ -26,7 +29,7 @@
     <div class="container-fluid mb-sm-4 mb-xl-2">
       <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div class="container">
-          <a class="navbar-brand" href="../index.html">IO-Fortran-Library <small>1.2.1</small></a>
+          <a class="navbar-brand" href="../index.html">IO-Fortran-Library <small>1.3.1</small></a>
           <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar"
                   aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">
                   <span class="navbar-toggler-icon">
@@ -73,7 +76,7 @@
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip"
                  data-bs-placement="bottom" data-html="true"
-                 title=" 8.0% of total for modules and submodules.">1442 statements</a>
+                 title=" 8.1% of total for modules and submodules.">1442 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -197,8 +200,8 @@ no external dependencies, and has a max line length of 120.</p>
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='http://fortranwiki.org/fortran/show/iso_fortran_env'>iso_fortran_env</a></li>
                   <li class="list-inline-item"><a href='http://fortranwiki.org/fortran/show/iso_c_binding'>iso_c_binding</a></li>
+                  <li class="list-inline-item"><a href='http://fortranwiki.org/fortran/show/iso_fortran_env'>iso_fortran_env</a></li>
               </ul>
             </li>
         </ul>
@@ -212,14 +215,14 @@ no external dependencies, and has a max line length of 120.</p>
             <li class="list-group-item">
               <ul class="list-inline">
                 <li class="list-inline-item"><h5>Descendants:</h5></li>
-                  <li class="list-inline-item"><a href='../module/array_printing.html'>array_printing</a></li>
-                  <li class="list-inline-item"><a href='../module/binary_io.html'>binary_io</a></li>
-                  <li class="list-inline-item"><a href='../module/file_io.html'>file_io</a></li>
-                  <li class="list-inline-item"><a href='../module/internal_io.html'>internal_io</a></li>
-                  <li class="list-inline-item"><a href='../module/join_split.html'>join_split</a></li>
-                  <li class="list-inline-item"><a href='../module/operators.html'>operators</a></li>
-                  <li class="list-inline-item"><a href='../module/string_methods.html'>string_methods</a></li>
-                  <li class="list-inline-item"><a href='../module/text_io.html'>text_io</a></li>
+                  <li class="list-inline-item"><a href='array_printing.html'>array_printing</a></li>
+                  <li class="list-inline-item"><a href='binary_io.html'>binary_io</a></li>
+                  <li class="list-inline-item"><a href='file_io.html'>file_io</a></li>
+                  <li class="list-inline-item"><a href='internal_io.html'>internal_io</a></li>
+                  <li class="list-inline-item"><a href='join_split.html'>join_split</a></li>
+                  <li class="list-inline-item"><a href='operators.html'>operators</a></li>
+                  <li class="list-inline-item"><a href='string_methods.html'>string_methods</a></li>
+                  <li class="list-inline-item"><a href='text_io.html'>text_io</a></li>
               </ul>
             </li>
         </ul>
@@ -2604,7 +2607,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-locale~13"></span>
+              <span class="anchor" id="variable-locale~7"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -2619,7 +2622,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~21"></span>
+              <span class="anchor" id="variable-fmt~11"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -2649,7 +2652,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-im~7"></span>
+              <span class="anchor" id="variable-im~4"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -2707,7 +2710,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-locale~14"></span>
+              <span class="anchor" id="variable-locale~8"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -2722,7 +2725,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~22"></span>
+              <span class="anchor" id="variable-fmt~12"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -2752,7 +2755,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-im~8"></span>
+              <span class="anchor" id="variable-im~5"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -2810,7 +2813,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-locale~15"></span>
+              <span class="anchor" id="variable-locale~9"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -2825,7 +2828,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~23"></span>
+              <span class="anchor" id="variable-fmt~13"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -2855,7 +2858,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-im~9"></span>
+              <span class="anchor" id="variable-im~6"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -2913,7 +2916,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-locale~16"></span>
+              <span class="anchor" id="variable-locale~10"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -2928,7 +2931,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~24"></span>
+              <span class="anchor" id="variable-fmt~14"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -3001,7 +3004,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-locale~17"></span>
+              <span class="anchor" id="variable-locale~11"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -3016,7 +3019,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~25"></span>
+              <span class="anchor" id="variable-fmt~15"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -3089,7 +3092,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-locale~18"></span>
+              <span class="anchor" id="variable-locale~12"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -3104,7 +3107,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~26"></span>
+              <span class="anchor" id="variable-fmt~16"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -3177,7 +3180,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~27"></span>
+              <span class="anchor" id="variable-fmt~17"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -3235,7 +3238,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~28"></span>
+              <span class="anchor" id="variable-fmt~18"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -3293,7 +3296,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~29"></span>
+              <span class="anchor" id="variable-fmt~19"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -3351,7 +3354,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~30"></span>
+              <span class="anchor" id="variable-fmt~20"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -3525,7 +3528,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-into~11"></span>
+              <span class="anchor" id="variable-into"></span>
               type(<a href='../type/string.html'>String</a>),
             </td>
 <td>intent(inout)</td>
@@ -3540,7 +3543,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-locale~19"></span>
+              <span class="anchor" id="variable-locale~13"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -3555,7 +3558,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~31"></span>
+              <span class="anchor" id="variable-fmt~21"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -3585,7 +3588,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-im~10"></span>
+              <span class="anchor" id="variable-im~7"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -3638,7 +3641,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-into~12"></span>
+              <span class="anchor" id="variable-into~2"></span>
               type(<a href='../type/string.html'>String</a>),
             </td>
 <td>intent(inout)</td>
@@ -3653,7 +3656,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-locale~20"></span>
+              <span class="anchor" id="variable-locale~14"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -3668,7 +3671,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~32"></span>
+              <span class="anchor" id="variable-fmt~22"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -3698,7 +3701,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-im~11"></span>
+              <span class="anchor" id="variable-im~8"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -3751,7 +3754,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-into~13"></span>
+              <span class="anchor" id="variable-into~3"></span>
               type(<a href='../type/string.html'>String</a>),
             </td>
 <td>intent(inout)</td>
@@ -3766,7 +3769,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-locale~21"></span>
+              <span class="anchor" id="variable-locale~15"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -3781,7 +3784,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~33"></span>
+              <span class="anchor" id="variable-fmt~23"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -3811,7 +3814,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-im~12"></span>
+              <span class="anchor" id="variable-im~9"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -3864,7 +3867,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-into~14"></span>
+              <span class="anchor" id="variable-into~4"></span>
               type(<a href='../type/string.html'>String</a>),
             </td>
 <td>intent(inout)</td>
@@ -3879,7 +3882,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-locale~22"></span>
+              <span class="anchor" id="variable-locale~16"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -3894,7 +3897,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~34"></span>
+              <span class="anchor" id="variable-fmt~24"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -3962,7 +3965,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-into~15"></span>
+              <span class="anchor" id="variable-into~5"></span>
               type(<a href='../type/string.html'>String</a>),
             </td>
 <td>intent(inout)</td>
@@ -3977,7 +3980,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-locale~23"></span>
+              <span class="anchor" id="variable-locale~17"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -3992,7 +3995,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~35"></span>
+              <span class="anchor" id="variable-fmt~25"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -4060,7 +4063,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-into~16"></span>
+              <span class="anchor" id="variable-into~6"></span>
               type(<a href='../type/string.html'>String</a>),
             </td>
 <td>intent(inout)</td>
@@ -4075,7 +4078,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-locale~24"></span>
+              <span class="anchor" id="variable-locale~18"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -4090,7 +4093,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~36"></span>
+              <span class="anchor" id="variable-fmt~26"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -4158,7 +4161,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-into~17"></span>
+              <span class="anchor" id="variable-into~7"></span>
               type(<a href='../type/string.html'>String</a>),
             </td>
 <td>intent(inout)</td>
@@ -4173,7 +4176,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~37"></span>
+              <span class="anchor" id="variable-fmt~27"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -4226,7 +4229,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-into~18"></span>
+              <span class="anchor" id="variable-into~8"></span>
               type(<a href='../type/string.html'>String</a>),
             </td>
 <td>intent(inout)</td>
@@ -4241,7 +4244,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~38"></span>
+              <span class="anchor" id="variable-fmt~28"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -4294,7 +4297,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-into~19"></span>
+              <span class="anchor" id="variable-into~9"></span>
               type(<a href='../type/string.html'>String</a>),
             </td>
 <td>intent(inout)</td>
@@ -4309,7 +4312,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~39"></span>
+              <span class="anchor" id="variable-fmt~29"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -4362,7 +4365,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-into~20"></span>
+              <span class="anchor" id="variable-into~10"></span>
               type(<a href='../type/string.html'>String</a>),
             </td>
 <td>intent(inout)</td>
@@ -4377,7 +4380,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~40"></span>
+              <span class="anchor" id="variable-fmt~30"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -4430,7 +4433,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-into~21"></span>
+              <span class="anchor" id="variable-into~11"></span>
               character(len=:),
             </td>
 <td>intent(inout),</td>
@@ -4445,7 +4448,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-locale~25"></span>
+              <span class="anchor" id="variable-locale~19"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -4460,7 +4463,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~41"></span>
+              <span class="anchor" id="variable-fmt~31"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -4490,7 +4493,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-im~13"></span>
+              <span class="anchor" id="variable-im~10"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -4543,7 +4546,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-into~22"></span>
+              <span class="anchor" id="variable-into~12"></span>
               character(len=:),
             </td>
 <td>intent(inout),</td>
@@ -4558,7 +4561,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-locale~26"></span>
+              <span class="anchor" id="variable-locale~20"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -4573,7 +4576,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~42"></span>
+              <span class="anchor" id="variable-fmt~32"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -4603,7 +4606,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-im~14"></span>
+              <span class="anchor" id="variable-im~11"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -4656,7 +4659,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-into~23"></span>
+              <span class="anchor" id="variable-into~13"></span>
               character(len=:),
             </td>
 <td>intent(inout),</td>
@@ -4671,7 +4674,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-locale~27"></span>
+              <span class="anchor" id="variable-locale~21"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -4686,7 +4689,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~43"></span>
+              <span class="anchor" id="variable-fmt~33"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -4716,7 +4719,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-im~15"></span>
+              <span class="anchor" id="variable-im~12"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -4769,7 +4772,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-into~24"></span>
+              <span class="anchor" id="variable-into~14"></span>
               character(len=:),
             </td>
 <td>intent(inout),</td>
@@ -4784,7 +4787,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-locale~28"></span>
+              <span class="anchor" id="variable-locale~22"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -4799,7 +4802,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~44"></span>
+              <span class="anchor" id="variable-fmt~34"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -4867,7 +4870,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-into~25"></span>
+              <span class="anchor" id="variable-into~15"></span>
               character(len=:),
             </td>
 <td>intent(inout),</td>
@@ -4882,7 +4885,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-locale~29"></span>
+              <span class="anchor" id="variable-locale~23"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -4897,7 +4900,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~45"></span>
+              <span class="anchor" id="variable-fmt~35"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -4965,7 +4968,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-into~26"></span>
+              <span class="anchor" id="variable-into~16"></span>
               character(len=:),
             </td>
 <td>intent(inout),</td>
@@ -4980,7 +4983,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-locale~30"></span>
+              <span class="anchor" id="variable-locale~24"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -4995,7 +4998,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~46"></span>
+              <span class="anchor" id="variable-fmt~36"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -5063,7 +5066,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-into~27"></span>
+              <span class="anchor" id="variable-into~17"></span>
               character(len=:),
             </td>
 <td>intent(inout),</td>
@@ -5078,7 +5081,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~47"></span>
+              <span class="anchor" id="variable-fmt~37"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -5131,7 +5134,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-into~28"></span>
+              <span class="anchor" id="variable-into~18"></span>
               character(len=:),
             </td>
 <td>intent(inout),</td>
@@ -5146,7 +5149,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~48"></span>
+              <span class="anchor" id="variable-fmt~38"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -5199,7 +5202,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-into~29"></span>
+              <span class="anchor" id="variable-into~19"></span>
               character(len=:),
             </td>
 <td>intent(inout),</td>
@@ -5214,7 +5217,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~49"></span>
+              <span class="anchor" id="variable-fmt~39"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -5267,7 +5270,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-into~30"></span>
+              <span class="anchor" id="variable-into~20"></span>
               character(len=:),
             </td>
 <td>intent(inout),</td>
@@ -5282,7 +5285,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~50"></span>
+              <span class="anchor" id="variable-fmt~40"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -5320,7 +5323,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-substring"></span>
+              <span class="anchor" id="variable-substring~12"></span>
               class(<a href='../type/string.html'>String</a>),
             </td>
 <td>intent(in)</td>
@@ -5335,7 +5338,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-into"></span>
+              <span class="anchor" id="variable-into~21"></span>
               complex(kind=r128),
             </td>
 <td>intent(out)</td>
@@ -5350,7 +5353,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-locale~7"></span>
+              <span class="anchor" id="variable-locale~25"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -5365,7 +5368,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~11"></span>
+              <span class="anchor" id="variable-fmt~41"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -5380,7 +5383,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-im~4"></span>
+              <span class="anchor" id="variable-im~13"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -5418,7 +5421,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-substring~2"></span>
+              <span class="anchor" id="variable-substring~13"></span>
               class(<a href='../type/string.html'>String</a>),
             </td>
 <td>intent(in)</td>
@@ -5433,7 +5436,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-into~2"></span>
+              <span class="anchor" id="variable-into~22"></span>
               complex(kind=r64),
             </td>
 <td>intent(out)</td>
@@ -5448,7 +5451,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-locale~8"></span>
+              <span class="anchor" id="variable-locale~26"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -5463,7 +5466,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~12"></span>
+              <span class="anchor" id="variable-fmt~42"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -5478,7 +5481,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-im~5"></span>
+              <span class="anchor" id="variable-im~14"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -5516,7 +5519,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-substring~3"></span>
+              <span class="anchor" id="variable-substring~14"></span>
               class(<a href='../type/string.html'>String</a>),
             </td>
 <td>intent(in)</td>
@@ -5531,7 +5534,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-into~3"></span>
+              <span class="anchor" id="variable-into~23"></span>
               complex(kind=r32),
             </td>
 <td>intent(out)</td>
@@ -5546,7 +5549,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-locale~9"></span>
+              <span class="anchor" id="variable-locale~27"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -5561,7 +5564,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~13"></span>
+              <span class="anchor" id="variable-fmt~43"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -5576,7 +5579,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-im~6"></span>
+              <span class="anchor" id="variable-im~15"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -5614,7 +5617,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-substring~4"></span>
+              <span class="anchor" id="variable-substring~15"></span>
               class(<a href='../type/string.html'>String</a>),
             </td>
 <td>intent(in)</td>
@@ -5629,7 +5632,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-into~4"></span>
+              <span class="anchor" id="variable-into~24"></span>
               real(kind=r128),
             </td>
 <td>intent(out)</td>
@@ -5644,7 +5647,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-locale~10"></span>
+              <span class="anchor" id="variable-locale~28"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -5659,7 +5662,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~14"></span>
+              <span class="anchor" id="variable-fmt~44"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -5697,7 +5700,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-substring~5"></span>
+              <span class="anchor" id="variable-substring~16"></span>
               class(<a href='../type/string.html'>String</a>),
             </td>
 <td>intent(in)</td>
@@ -5712,7 +5715,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-into~5"></span>
+              <span class="anchor" id="variable-into~25"></span>
               real(kind=r64),
             </td>
 <td>intent(out)</td>
@@ -5727,7 +5730,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-locale~11"></span>
+              <span class="anchor" id="variable-locale~29"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -5742,7 +5745,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~15"></span>
+              <span class="anchor" id="variable-fmt~45"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -5780,7 +5783,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-substring~6"></span>
+              <span class="anchor" id="variable-substring~17"></span>
               class(<a href='../type/string.html'>String</a>),
             </td>
 <td>intent(in)</td>
@@ -5795,7 +5798,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-into~6"></span>
+              <span class="anchor" id="variable-into~26"></span>
               real(kind=r32),
             </td>
 <td>intent(out)</td>
@@ -5810,7 +5813,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-locale~12"></span>
+              <span class="anchor" id="variable-locale~30"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -5825,7 +5828,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~16"></span>
+              <span class="anchor" id="variable-fmt~46"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -5863,7 +5866,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-substring~7"></span>
+              <span class="anchor" id="variable-substring~18"></span>
               class(<a href='../type/string.html'>String</a>),
             </td>
 <td>intent(in)</td>
@@ -5878,7 +5881,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-into~7"></span>
+              <span class="anchor" id="variable-into~27"></span>
               integer(kind=i64),
             </td>
 <td>intent(out)</td>
@@ -5893,7 +5896,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~17"></span>
+              <span class="anchor" id="variable-fmt~47"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -5931,7 +5934,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-substring~8"></span>
+              <span class="anchor" id="variable-substring~19"></span>
               class(<a href='../type/string.html'>String</a>),
             </td>
 <td>intent(in)</td>
@@ -5946,7 +5949,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-into~8"></span>
+              <span class="anchor" id="variable-into~28"></span>
               integer(kind=i32),
             </td>
 <td>intent(out)</td>
@@ -5961,7 +5964,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~18"></span>
+              <span class="anchor" id="variable-fmt~48"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -5999,7 +6002,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-substring~9"></span>
+              <span class="anchor" id="variable-substring~20"></span>
               class(<a href='../type/string.html'>String</a>),
             </td>
 <td>intent(in)</td>
@@ -6014,7 +6017,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-into~9"></span>
+              <span class="anchor" id="variable-into~29"></span>
               integer(kind=i16),
             </td>
 <td>intent(out)</td>
@@ -6029,7 +6032,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~19"></span>
+              <span class="anchor" id="variable-fmt~49"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -6067,7 +6070,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-substring~10"></span>
+              <span class="anchor" id="variable-substring~21"></span>
               class(<a href='../type/string.html'>String</a>),
             </td>
 <td>intent(in)</td>
@@ -6082,7 +6085,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-into~10"></span>
+              <span class="anchor" id="variable-into~30"></span>
               integer(kind=i8),
             </td>
 <td>intent(out)</td>
@@ -6097,7 +6100,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~20"></span>
+              <span class="anchor" id="variable-fmt~50"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -6135,7 +6138,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-substring~13"></span>
+              <span class="anchor" id="variable-substring~22"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -6233,7 +6236,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-substring~14"></span>
+              <span class="anchor" id="variable-substring~23"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -6331,7 +6334,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-substring~15"></span>
+              <span class="anchor" id="variable-substring~24"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -6429,7 +6432,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-substring~16"></span>
+              <span class="anchor" id="variable-substring~25"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -6512,7 +6515,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-substring~17"></span>
+              <span class="anchor" id="variable-substring~26"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -6595,7 +6598,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-substring~18"></span>
+              <span class="anchor" id="variable-substring~27"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -6678,7 +6681,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-substring~19"></span>
+              <span class="anchor" id="variable-substring~28"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -6746,7 +6749,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-substring~20"></span>
+              <span class="anchor" id="variable-substring~29"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -6814,7 +6817,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-substring~21"></span>
+              <span class="anchor" id="variable-substring~30"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -6882,7 +6885,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-substring~22"></span>
+              <span class="anchor" id="variable-substring~31"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -6964,7 +6967,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-tokens~2"></span>
+              <span class="anchor" id="variable-tokens~3"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -7022,7 +7025,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-tokens~3"></span>
+              <span class="anchor" id="variable-tokens~4"></span>
               type(<a href='../type/string.html'>String</a>),
             </td>
 <td>intent(in)</td>
@@ -7094,7 +7097,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-substring~23"></span>
+              <span class="anchor" id="variable-substring~32"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -7152,7 +7155,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-substring~12"></span>
+              <span class="anchor" id="variable-substring~33"></span>
               class(<a href='../type/string.html'>String</a>),
             </td>
 <td>intent(in)</td>
@@ -7167,7 +7170,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-separator"></span>
+              <span class="anchor" id="variable-separator~6"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -7344,7 +7347,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~4"></span>
+              <span class="anchor" id="variable-stat~3"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -7359,7 +7362,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~4"></span>
+              <span class="anchor" id="variable-errmsg~3"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -7517,7 +7520,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~5"></span>
+              <span class="anchor" id="variable-stat~4"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -7532,7 +7535,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~5"></span>
+              <span class="anchor" id="variable-errmsg~4"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -7690,7 +7693,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~6"></span>
+              <span class="anchor" id="variable-stat~5"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -7705,7 +7708,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~6"></span>
+              <span class="anchor" id="variable-errmsg~5"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -7848,7 +7851,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~7"></span>
+              <span class="anchor" id="variable-stat~6"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -7863,7 +7866,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~7"></span>
+              <span class="anchor" id="variable-errmsg~6"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -8006,7 +8009,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~8"></span>
+              <span class="anchor" id="variable-stat~7"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -8021,7 +8024,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~8"></span>
+              <span class="anchor" id="variable-errmsg~7"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -8164,7 +8167,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~9"></span>
+              <span class="anchor" id="variable-stat~8"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -8179,7 +8182,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~9"></span>
+              <span class="anchor" id="variable-errmsg~8"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -8292,7 +8295,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~10"></span>
+              <span class="anchor" id="variable-stat~9"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -8307,7 +8310,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~10"></span>
+              <span class="anchor" id="variable-errmsg~9"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -8420,7 +8423,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~11"></span>
+              <span class="anchor" id="variable-stat~10"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -8435,7 +8438,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~11"></span>
+              <span class="anchor" id="variable-errmsg~10"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -8548,7 +8551,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~12"></span>
+              <span class="anchor" id="variable-stat~11"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -8563,7 +8566,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~12"></span>
+              <span class="anchor" id="variable-errmsg~11"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -8676,7 +8679,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~13"></span>
+              <span class="anchor" id="variable-stat~12"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -8691,7 +8694,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~13"></span>
+              <span class="anchor" id="variable-errmsg~12"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -8848,7 +8851,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~14"></span>
+              <span class="anchor" id="variable-stat~13"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -8863,7 +8866,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~14"></span>
+              <span class="anchor" id="variable-errmsg~13"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -9006,7 +9009,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~15"></span>
+              <span class="anchor" id="variable-stat~14"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -9021,7 +9024,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~15"></span>
+              <span class="anchor" id="variable-errmsg~14"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -9164,7 +9167,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~16"></span>
+              <span class="anchor" id="variable-stat~15"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -9179,7 +9182,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~16"></span>
+              <span class="anchor" id="variable-errmsg~15"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -9262,7 +9265,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~17"></span>
+              <span class="anchor" id="variable-stat~16"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -9277,7 +9280,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~17"></span>
+              <span class="anchor" id="variable-errmsg~16"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -9360,7 +9363,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~18"></span>
+              <span class="anchor" id="variable-stat~17"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -9375,7 +9378,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~18"></span>
+              <span class="anchor" id="variable-errmsg~17"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -9458,7 +9461,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~19"></span>
+              <span class="anchor" id="variable-stat~18"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -9473,7 +9476,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~19"></span>
+              <span class="anchor" id="variable-errmsg~18"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -9601,7 +9604,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~20"></span>
+              <span class="anchor" id="variable-stat~19"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -9616,7 +9619,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~20"></span>
+              <span class="anchor" id="variable-errmsg~19"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -9744,7 +9747,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~21"></span>
+              <span class="anchor" id="variable-stat~20"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -9759,7 +9762,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~21"></span>
+              <span class="anchor" id="variable-errmsg~20"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -9887,7 +9890,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~22"></span>
+              <span class="anchor" id="variable-stat~21"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -9902,7 +9905,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~22"></span>
+              <span class="anchor" id="variable-errmsg~21"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -9985,7 +9988,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~23"></span>
+              <span class="anchor" id="variable-stat~22"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -10000,7 +10003,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~23"></span>
+              <span class="anchor" id="variable-errmsg~22"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -10083,7 +10086,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~24"></span>
+              <span class="anchor" id="variable-stat~23"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -10098,7 +10101,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~24"></span>
+              <span class="anchor" id="variable-errmsg~23"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -10181,7 +10184,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~25"></span>
+              <span class="anchor" id="variable-stat~24"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -10196,7 +10199,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~25"></span>
+              <span class="anchor" id="variable-errmsg~24"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -10309,7 +10312,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~26"></span>
+              <span class="anchor" id="variable-stat~25"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -10324,7 +10327,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~26"></span>
+              <span class="anchor" id="variable-errmsg~25"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -10437,7 +10440,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~27"></span>
+              <span class="anchor" id="variable-stat~26"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -10452,7 +10455,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~27"></span>
+              <span class="anchor" id="variable-errmsg~26"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -10565,7 +10568,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~28"></span>
+              <span class="anchor" id="variable-stat~27"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -10580,7 +10583,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~28"></span>
+              <span class="anchor" id="variable-errmsg~27"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -10693,7 +10696,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~29"></span>
+              <span class="anchor" id="variable-stat~28"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -10708,7 +10711,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~29"></span>
+              <span class="anchor" id="variable-errmsg~28"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -10791,7 +10794,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~30"></span>
+              <span class="anchor" id="variable-stat~29"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -10806,7 +10809,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~30"></span>
+              <span class="anchor" id="variable-errmsg~29"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -10889,7 +10892,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~31"></span>
+              <span class="anchor" id="variable-stat~30"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -10904,7 +10907,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~31"></span>
+              <span class="anchor" id="variable-errmsg~30"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -10987,7 +10990,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~32"></span>
+              <span class="anchor" id="variable-stat~31"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -11002,7 +11005,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~32"></span>
+              <span class="anchor" id="variable-errmsg~31"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -11085,7 +11088,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~33"></span>
+              <span class="anchor" id="variable-stat~32"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -11100,7 +11103,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~33"></span>
+              <span class="anchor" id="variable-errmsg~32"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -11152,7 +11155,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-substring~24"></span>
+              <span class="anchor" id="variable-substring~34"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -11168,6 +11171,119 @@ explicitly defined.</p>
         <tr>
             <td>
               <span class="anchor" id="variable-file~34"></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>file</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-append~2"></span>
+              logical,
+            </td>
+<td>intent(in),</td>
+              <td>optional,</td>            <td>
+              target
+            </td>
+            <td>::</td>
+            <td><strong>append</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-terminator"></span>
+              character(len=*),
+            </td>
+<td>intent(in),</td>
+              <td>optional,</td>            <td>
+              target
+            </td>
+            <td>::</td>
+            <td><strong>terminator</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-stat~33"></span>
+              integer,
+            </td>
+<td>intent(out),</td>
+              <td>optional,</td>            <td>
+              target
+            </td>
+            <td>::</td>
+            <td><strong>stat</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-errmsg~33"></span>
+              character(len=*),
+            </td>
+<td>intent(out),</td>
+              <td>optional,</td>            <td>
+              target
+            </td>
+            <td>::</td>
+            <td><strong>errmsg</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private impure recursive module subroutine echo_string(substring, file, append, terminator, stat, errmsg)  
+
+    </h3>
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-substring~35"></span>
+              class(<a href='../type/string.html'>String</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>substring</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-file~35"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -11245,119 +11361,6 @@ explicitly defined.</p>
 
 
           </li>
-          <li class="list-group-item">
-                <h3>
-    private impure recursive module subroutine echo_string(substring, file, append, terminator, stat, errmsg)  
-
-    </h3>
-  
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-substring~11"></span>
-              class(<a href='../type/string.html'>String</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>substring</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-file"></span>
-              character(len=*),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>file</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-append"></span>
-              logical,
-            </td>
-<td>intent(in),</td>
-              <td>optional,</td>            <td>
-              target
-            </td>
-            <td>::</td>
-            <td><strong>append</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-terminator"></span>
-              character(len=*),
-            </td>
-<td>intent(in),</td>
-              <td>optional,</td>            <td>
-              target
-            </td>
-            <td>::</td>
-            <td><strong>terminator</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-stat"></span>
-              integer,
-            </td>
-<td>intent(out),</td>
-              <td>optional,</td>            <td>
-              target
-            </td>
-            <td>::</td>
-            <td><strong>stat</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-errmsg"></span>
-              character(len=*),
-            </td>
-<td>intent(out),</td>
-              <td>optional,</td>            <td>
-              target
-            </td>
-            <td>::</td>
-            <td><strong>errmsg</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-
-          </li>
     </ul>
   </div>
 
@@ -11392,7 +11395,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-x~55"></span>
+              <span class="anchor" id="variable-x~75"></span>
               complex(kind=r128),
             </td>
 <td>intent(in)</td>
@@ -11407,7 +11410,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~81"></span>
+              <span class="anchor" id="variable-fmt~101"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -11422,7 +11425,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-decimals~31"></span>
+              <span class="anchor" id="variable-decimals~37"></span>
               integer,
             </td>
 <td>intent(in),</td>
@@ -11437,7 +11440,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-im~25"></span>
+              <span class="anchor" id="variable-im~31"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -11475,7 +11478,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-x~56"></span>
+              <span class="anchor" id="variable-x~76"></span>
               complex(kind=r64),
             </td>
 <td>intent(in)</td>
@@ -11490,7 +11493,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~82"></span>
+              <span class="anchor" id="variable-fmt~102"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -11505,7 +11508,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-decimals~32"></span>
+              <span class="anchor" id="variable-decimals~38"></span>
               integer,
             </td>
 <td>intent(in),</td>
@@ -11520,7 +11523,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-im~26"></span>
+              <span class="anchor" id="variable-im~32"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -11558,7 +11561,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-x~57"></span>
+              <span class="anchor" id="variable-x~77"></span>
               complex(kind=r32),
             </td>
 <td>intent(in)</td>
@@ -11573,7 +11576,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~83"></span>
+              <span class="anchor" id="variable-fmt~103"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -11588,7 +11591,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-decimals~33"></span>
+              <span class="anchor" id="variable-decimals~39"></span>
               integer,
             </td>
 <td>intent(in),</td>
@@ -11603,7 +11606,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-im~27"></span>
+              <span class="anchor" id="variable-im~33"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -11641,7 +11644,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-x~58"></span>
+              <span class="anchor" id="variable-x~78"></span>
               complex(kind=r128),
             </td>
 <td>intent(in)</td>
@@ -11656,7 +11659,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~84"></span>
+              <span class="anchor" id="variable-fmt~104"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -11671,7 +11674,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-decimals~34"></span>
+              <span class="anchor" id="variable-decimals~40"></span>
               integer,
             </td>
 <td>intent(in),</td>
@@ -11686,7 +11689,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-im~28"></span>
+              <span class="anchor" id="variable-im~34"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -11724,7 +11727,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-x~59"></span>
+              <span class="anchor" id="variable-x~79"></span>
               complex(kind=r64),
             </td>
 <td>intent(in)</td>
@@ -11739,7 +11742,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~85"></span>
+              <span class="anchor" id="variable-fmt~105"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -11754,7 +11757,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-decimals~35"></span>
+              <span class="anchor" id="variable-decimals~41"></span>
               integer,
             </td>
 <td>intent(in),</td>
@@ -11769,7 +11772,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-im~29"></span>
+              <span class="anchor" id="variable-im~35"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -11807,7 +11810,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-x~60"></span>
+              <span class="anchor" id="variable-x~80"></span>
               complex(kind=r32),
             </td>
 <td>intent(in)</td>
@@ -11822,7 +11825,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~86"></span>
+              <span class="anchor" id="variable-fmt~106"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -11837,7 +11840,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-decimals~36"></span>
+              <span class="anchor" id="variable-decimals~42"></span>
               integer,
             </td>
 <td>intent(in),</td>
@@ -11852,7 +11855,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-im~30"></span>
+              <span class="anchor" id="variable-im~36"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -11890,7 +11893,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-x~61"></span>
+              <span class="anchor" id="variable-x~81"></span>
               real(kind=r128),
             </td>
 <td>intent(in)</td>
@@ -11905,7 +11908,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~87"></span>
+              <span class="anchor" id="variable-fmt~107"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -11920,7 +11923,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-decimals~37"></span>
+              <span class="anchor" id="variable-decimals~43"></span>
               integer,
             </td>
 <td>intent(in),</td>
@@ -11958,7 +11961,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-x~62"></span>
+              <span class="anchor" id="variable-x~82"></span>
               real(kind=r64),
             </td>
 <td>intent(in)</td>
@@ -11973,7 +11976,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~88"></span>
+              <span class="anchor" id="variable-fmt~108"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -11988,7 +11991,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-decimals~38"></span>
+              <span class="anchor" id="variable-decimals~44"></span>
               integer,
             </td>
 <td>intent(in),</td>
@@ -12026,7 +12029,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-x~63"></span>
+              <span class="anchor" id="variable-x~83"></span>
               real(kind=r32),
             </td>
 <td>intent(in)</td>
@@ -12041,7 +12044,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~89"></span>
+              <span class="anchor" id="variable-fmt~109"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -12056,7 +12059,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-decimals~39"></span>
+              <span class="anchor" id="variable-decimals~45"></span>
               integer,
             </td>
 <td>intent(in),</td>
@@ -12094,7 +12097,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-x~64"></span>
+              <span class="anchor" id="variable-x~84"></span>
               real(kind=r128),
             </td>
 <td>intent(in)</td>
@@ -12109,7 +12112,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~90"></span>
+              <span class="anchor" id="variable-fmt~110"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -12124,7 +12127,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-decimals~40"></span>
+              <span class="anchor" id="variable-decimals~46"></span>
               integer,
             </td>
 <td>intent(in),</td>
@@ -12162,7 +12165,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-x~65"></span>
+              <span class="anchor" id="variable-x~85"></span>
               real(kind=r64),
             </td>
 <td>intent(in)</td>
@@ -12177,7 +12180,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~91"></span>
+              <span class="anchor" id="variable-fmt~111"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -12192,7 +12195,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-decimals~41"></span>
+              <span class="anchor" id="variable-decimals~47"></span>
               integer,
             </td>
 <td>intent(in),</td>
@@ -12230,7 +12233,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-x~66"></span>
+              <span class="anchor" id="variable-x~86"></span>
               real(kind=r32),
             </td>
 <td>intent(in)</td>
@@ -12245,7 +12248,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~92"></span>
+              <span class="anchor" id="variable-fmt~112"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -12260,7 +12263,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-decimals~42"></span>
+              <span class="anchor" id="variable-decimals~48"></span>
               integer,
             </td>
 <td>intent(in),</td>
@@ -12298,7 +12301,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-x~67"></span>
+              <span class="anchor" id="variable-x~87"></span>
               integer(kind=i64),
             </td>
 <td>intent(in)</td>
@@ -12313,7 +12316,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~93"></span>
+              <span class="anchor" id="variable-fmt~113"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -12351,7 +12354,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-x~68"></span>
+              <span class="anchor" id="variable-x~88"></span>
               integer(kind=i32),
             </td>
 <td>intent(in)</td>
@@ -12366,7 +12369,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~94"></span>
+              <span class="anchor" id="variable-fmt~114"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -12404,7 +12407,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-x~69"></span>
+              <span class="anchor" id="variable-x~89"></span>
               integer(kind=i16),
             </td>
 <td>intent(in)</td>
@@ -12419,7 +12422,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~95"></span>
+              <span class="anchor" id="variable-fmt~115"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -12457,7 +12460,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-x~70"></span>
+              <span class="anchor" id="variable-x~90"></span>
               integer(kind=i8),
             </td>
 <td>intent(in)</td>
@@ -12472,7 +12475,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~96"></span>
+              <span class="anchor" id="variable-fmt~116"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -12510,7 +12513,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-x~71"></span>
+              <span class="anchor" id="variable-x~91"></span>
               integer(kind=i64),
             </td>
 <td>intent(in)</td>
@@ -12525,7 +12528,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~97"></span>
+              <span class="anchor" id="variable-fmt~117"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -12563,7 +12566,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-x~72"></span>
+              <span class="anchor" id="variable-x~92"></span>
               integer(kind=i32),
             </td>
 <td>intent(in)</td>
@@ -12578,7 +12581,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~98"></span>
+              <span class="anchor" id="variable-fmt~118"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -12616,7 +12619,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-x~73"></span>
+              <span class="anchor" id="variable-x~93"></span>
               integer(kind=i16),
             </td>
 <td>intent(in)</td>
@@ -12631,7 +12634,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~99"></span>
+              <span class="anchor" id="variable-fmt~119"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -12669,7 +12672,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-x~74"></span>
+              <span class="anchor" id="variable-x~94"></span>
               integer(kind=i8),
             </td>
 <td>intent(in)</td>
@@ -12684,7 +12687,7 @@ explicitly defined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-fmt~100"></span>
+              <span class="anchor" id="variable-fmt~120"></span>
               character(len=*),
             </td>
 <td>intent(in),</td>
@@ -12722,7 +12725,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-x~75"></span>
+              <span class="anchor" id="variable-x~95"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -12760,7 +12763,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-x~76"></span>
+              <span class="anchor" id="variable-x~96"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -12798,7 +12801,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-x~77"></span>
+              <span class="anchor" id="variable-x~97"></span>
               class(<a href='../type/string.html'>String</a>),
             </td>
 <td>intent(in)</td>
@@ -12836,7 +12839,7 @@ explicitly defined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-x~78"></span>
+              <span class="anchor" id="variable-x~98"></span>
               class(<a href='../type/string.html'>String</a>),
             </td>
 <td>intent(in)</td>
@@ -13144,14 +13147,14 @@ explicitly defined.</p>
     <footer>
       <div class="container">
         <div class="row justify-content-between">
-          <div class="col"><p>IO-Fortran-Library was developed by Austin C Bullock<br>&copy; 2023 <a rel="license" href="https://opensource.org/licenses/MIT">MIT</a>
+          <div class="col"><p>IO-Fortran-Library was developed by Austin C Bullock<br>&copy; 2024 <a rel="license" href="https://opensource.org/licenses/MIT">MIT</a>
 </p>
           </div>
           <div class="col">
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-10-21 00:50              </p>
+ on 2024-03-16 19:16              </p>
           </div>
         </div>
         <br>

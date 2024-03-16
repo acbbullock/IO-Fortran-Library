@@ -12,7 +12,7 @@ following program with multiple coarray images:
 ```fortran
 program main
     use io_fortran_lib
-    implicit none (type,external)
+    implicit none (type, external)
 
     call echo("Hello from image "//str(this_image()), file="hello.txt")
 end program main
@@ -26,7 +26,7 @@ strict thread-safety in the region:
 ```fortran
 program main
     use io_fortran_lib
-    implicit none (type,external)
+    implicit none (type, external)
 
     critical
         call echo("Hello from image "//str(this_image()), file="hello.txt")
@@ -40,7 +40,7 @@ which is thread-safe:
 ```fortran
 program main
     use io_fortran_lib
-    implicit none (type,external)
+    implicit none (type, external)
 
     if ( this_image() == 1 ) then
         call echo("Hello from image "//str(this_image()), file="hello.txt")

@@ -23,10 +23,10 @@ the total time elapsed:
 program main
     use, intrinsic :: iso_fortran_env, only: int64, real64, compiler_version
     use io_fortran_lib, only: String, str, TAB, operator(+), operator(==)
-    implicit none (type,external)
+    implicit none (type, external)
 
     type(String) :: hg38, hg38_new
-    type(String), allocatable, dimension(:,:) :: cells
+    type(String), allocatable :: cells(:,:)
 
     integer(int64) :: t1, t2
     real(real64) :: wall_time, rate
@@ -38,32 +38,16 @@ program main
 
     call system_clock(t2, count_rate=rate); wall_time = real(t2-t1,real64)/rate
 
-    write(*,"(a,l)")    "New file and original are exact match: ", hg38_new == hg38
-    write(*,"(a)")      "Wall time: " + str(wall_time, fmt="f", decimals=3) + " s " + &
-                        "using compiler: "" + compiler_version() + ""."
+    write(*,"(a,l)") "New file and original are exact match: ", hg38_new == hg38
+    write(*,"(a)")   "Wall time: " + str(wall_time, fmt="f", decimals=3) + " s " + &
+                     'using compiler: "' + compiler_version() + '".'
 end program main
 ```
 
 The file `hg38.bed` is provided locally in `/data` and contains
 `192262` lines of `TAB`-delimited data.
 
-The following sample output is observed on Linux with highest
-optimizations enabled (`-O3`):
-
-```text
----
-New file and original are exact match: T
-Wall time: 0.048 s using compiler: "GCC version 11.3.0".
----
-New file and original are exact match:  T
-Wall time: 0.062 s using compiler: "Intel(R) Fortran Compiler for applications running on Intel(R) 64, Version 2023.0.0 Build 20221201".
----
-New file and original are exact match:  T
-Wall time: 0.070 s using compiler: "Intel(R) Fortran Intel(R) 64 Compiler Classic for applications running on Intel(R) 64, Version 2021.8.0 Build 20221119_000000".
----
-```
-
-@note With the Intel Fortran compiler `ifx`/`ifort`, we may need to
-specify `-heap-arrays 0` to avoid a segmentation fault when reading a
-file of this size, as noted in
-[compiler-dependent behavior](../UserInfo/compilers.html).
+@note With the Intel Fortran compiler `ifx`, we may need to specify
+`-heap-arrays 0` to avoid a segmentation fault when reading a file of
+this size, as noted in [compiler-dependent
+behavior](../UserInfo/compilers.html).

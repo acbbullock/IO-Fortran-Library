@@ -9,7 +9,7 @@ When writing `integer` data as strings with
 be used:
 
 ```fortran
-INT_FMTS = [ "i", "z" ]
+character(len=1), parameter :: INT_FMTS(*) = [ "i", "z" ] ! Allowed formats for integers
 ```
 
 * `"i"`: integer format (default), e.g. `123456`
@@ -21,7 +21,7 @@ strings with [String](../Ref/String.html), [str](../Ref/str.html), or
 be used:
 
 ```fortran
-REAL_FMTS = [ "e", "f", "z" ]
+character(len=1), parameter :: REAL_FMTS(*) = [ "e", "f", "z" ] ! Allowed formats for floats
 ```
 
 * `"e"`: normalized exponential format (default), e.g.

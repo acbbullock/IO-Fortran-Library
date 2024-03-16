@@ -1,3 +1,5 @@
+<!-- -*- mode: jinja2 -*- -->
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -17,7 +19,8 @@
     <link href="../css/local.css" rel="stylesheet">
       <link  href="../tipuesearch/tipuesearch.css" rel="stylesheet">
 
-    <script src="https://code.jquery.com/jquery-3.7.0.slim.min.js" integrity="sha256-tG5mcZUtJsZvyKAxYLVXrmjKBVLd6VpVccqz/r4ypFE=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="../js/svg-pan-zoom.min.js"></script>
   </head>
 
   <body>
@@ -26,7 +29,7 @@
     <div class="container-fluid mb-sm-4 mb-xl-2">
       <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div class="container">
-          <a class="navbar-brand" href="../index.html">IO-Fortran-Library <small>1.2.1</small></a>
+          <a class="navbar-brand" href="../index.html">IO-Fortran-Library <small>1.3.1</small></a>
           <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar"
                   aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">
                   <span class="navbar-toggler-icon">
@@ -73,7 +76,7 @@
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip"
                  data-bs-placement="bottom" data-html="true"
-                 title=" 8.0% of total for source files.">1442 statements</a>
+                 title=" 8.1% of total for source files.">1442 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -150,7 +153,7 @@
 
       <section>
         <h2><span class="anchor" id="src"></span>Source Code</h2>
-        <div class="hl"><pre><span></span><a id="ln-1" name="ln-1" href="#ln-1"></a><span class="k">module </span><span class="n">io_fortran_lib</span>
+        <div class="hl codehilite"><pre><span></span><a id="ln-1" name="ln-1" href="#ln-1"></a><span class="k">module </span><span class="n">io_fortran_lib</span>
 <a id="ln-2" name="ln-2" href="#ln-2"></a><span class="w">  </span><span class="c">!---------------------------------------------------------------------------------------------------------------------</span>
 <a id="ln-3" name="ln-3" href="#ln-3"></a><span class="w">  </span><span class="c">!! This module provides common I/O routines for data of `integer`, `real`, `complex`, and `character` type, and</span>
 <a id="ln-4" name="ln-4" href="#ln-4"></a><span class="w">  </span><span class="c">!! a derived type `String` for advanced character handling and text file I/O. This module is F2018 compliant, has</span>
@@ -1947,17 +1950,6 @@
 <a id="ln-1795" name="ln-1795" href="#ln-1795"></a><span class="w">  </span><span class="k">end interface </span><span class="n">aprint</span>
 <a id="ln-1796" name="ln-1796" href="#ln-1796"></a>
 <a id="ln-1797" name="ln-1797" href="#ln-1797"></a><span class="k">end module </span><span class="n">io_fortran_lib</span>
-<a id="ln-1798" name="ln-1798" href="#ln-1798"></a>
-<a id="ln-1799" name="ln-1799" href="#ln-1799"></a><span class="c">!=======================================================================================================================</span>
-<a id="ln-1800" name="ln-1800" href="#ln-1800"></a><span class="c">!  List of workarounds for compiler bugs in ifx 2023.0.0 :</span>
-<a id="ln-1801" name="ln-1801" href="#ln-1801"></a><span class="c">!  -------------------------------------------------------</span>
-<a id="ln-1802" name="ln-1802" href="#ln-1802"></a><span class="c">!  1.  In join_into_self (line 4808), the recursive call to join_into_self at line 4836 induces a run-time</span>
-<a id="ln-1803" name="ln-1803" href="#ln-1803"></a><span class="c">!      segmentation fault in the program contained in benchmark.f90 not seen with the following compilers: ifort</span>
-<a id="ln-1804" name="ln-1804" href="#ln-1804"></a><span class="c">!      2021.8.0, gfortran 11.3.0, gfortran 11.2.0. From investigation, the segmentation fault seems due to the passing</span>
-<a id="ln-1805" name="ln-1805" href="#ln-1805"></a><span class="c">!      of the array of derived type. The fault occurs in a majority of runs, but not in every run. To avoid the fault,</span>
-<a id="ln-1806" name="ln-1806" href="#ln-1806"></a><span class="c">!      the array to be passed must be constructed element by element and passed as in the &quot;else&quot; section of the &quot;if&quot;</span>
-<a id="ln-1807" name="ln-1807" href="#ln-1807"></a><span class="c">!      block. The fault again seems to be induced only when &quot;-heap-arrays 0&quot; is specified and only with ifx 2023.0.0.</span>
-<a id="ln-1808" name="ln-1808" href="#ln-1808"></a><span class="c">!=======================================================================================================================</span>
 </pre></div>
 
       </section>
@@ -1969,14 +1961,14 @@
     <footer>
       <div class="container">
         <div class="row justify-content-between">
-          <div class="col"><p>IO-Fortran-Library was developed by Austin C Bullock<br>&copy; 2023 <a rel="license" href="https://opensource.org/licenses/MIT">MIT</a>
+          <div class="col"><p>IO-Fortran-Library was developed by Austin C Bullock<br>&copy; 2024 <a rel="license" href="https://opensource.org/licenses/MIT">MIT</a>
 </p>
           </div>
           <div class="col">
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-10-21 00:50              </p>
+ on 2024-03-16 19:16              </p>
           </div>
         </div>
         <br>

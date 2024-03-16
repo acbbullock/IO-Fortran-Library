@@ -1,3 +1,5 @@
+<!-- -*- mode: jinja2 -*- -->
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -18,7 +20,8 @@
     <link href="../css/local.css" rel="stylesheet">
       <link  href="../tipuesearch/tipuesearch.css" rel="stylesheet">
 
-    <script src="https://code.jquery.com/jquery-3.7.0.slim.min.js" integrity="sha256-tG5mcZUtJsZvyKAxYLVXrmjKBVLd6VpVccqz/r4ypFE=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="../js/svg-pan-zoom.min.js"></script>
   </head>
 
   <body>
@@ -27,7 +30,7 @@
     <div class="container-fluid mb-sm-4 mb-xl-2">
       <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div class="container">
-          <a class="navbar-brand" href="../index.html">IO-Fortran-Library <small>1.2.1</small></a>
+          <a class="navbar-brand" href="../index.html">IO-Fortran-Library <small>1.3.1</small></a>
           <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar"
                   aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">
                   <span class="navbar-toggler-icon">
@@ -66,27 +69,107 @@
 			 <table class="table table-striped">
 			 <thead><tr><th>Procedure</th><th>Location</th><th>Procedure Type</th><th>Description</th></tr></thead>
 			 <tbody>
-			   <tr><td><a href='../interface/aprint.html'>aprint</a></td><td><a href='../module/io_fortran_lib.html'>io_fortran_lib</a></td><td>Interface</td><td><p>Subroutine for printing arrays and array sections to stdout.</p><a href="../interface/aprint.html" class="pull-right"><emph>Read more&hellip;</emph></a></td></tr>
-			   <tr><td><a href='../interface/cast.html'>cast</a></td><td><a href='../module/io_fortran_lib.html'>io_fortran_lib</a></td><td>Interface</td><td><p>Subroutine for casting between numeric and string data.</p><a href="../interface/cast.html" class="pull-right"><emph>Read more&hellip;</emph></a></td></tr>
-			   <tr><td><a href='../interface/echo.html'>echo</a></td><td><a href='../module/io_fortran_lib.html'>io_fortran_lib</a></td><td>Interface</td><td><p>Subroutine for writing a scalar <code>character</code> or <code>String</code> to an external text file.</p><a href="../interface/echo.html" class="pull-right"><emph>Read more&hellip;</emph></a></td></tr>
-			   <tr><td><a href='../interface/from_file.html'>from_file</a></td><td><a href='../module/io_fortran_lib.html'>io_fortran_lib</a></td><td>Interface</td><td><p>Subroutine for reading an external file of uniform numeric data type and format into an array.</p><a href="../interface/from_file.html" class="pull-right"><emph>Read more&hellip;</emph></a></td></tr>
-			   <tr><td><a href='../interface/join.html'>join</a></td><td><a href='../module/io_fortran_lib.html'>io_fortran_lib</a></td><td>Interface</td><td><p>Function for joining a vector of <code>tokens</code> into a scalar <code>character</code> or <code>String</code>.</p><a href="../interface/join.html" class="pull-right"><emph>Read more&hellip;</emph></a></td></tr>
-			   <tr><td><a href='../interface/operator(ASTERISKASTERISK).html'>operator(**)</a></td><td><a href='../module/io_fortran_lib.html'>io_fortran_lib</a></td><td>Interface</td><td><p>Repetition operator for <code>character</code> and <code>String</code> (as exponentiation).</p><a href="../interface/operator(ASTERISKASTERISK).html" class="pull-right"><emph>Read more&hellip;</emph></a></td></tr>
-			   <tr><td><a href='../interface/operator(+).html'>operator(+)</a></td><td><a href='../module/io_fortran_lib.html'>io_fortran_lib</a></td><td>Interface</td><td><p>Concatenation operator for <code>character</code> and <code>String</code> (as addition). Mixed type concatenation of
-<code>character</code> and <code>String</code> is explicitly defined.</p><a href="../interface/operator(+).html" class="pull-right"><emph>Read more&hellip;</emph></a></td></tr>
-			   <tr><td><a href='../interface/operator(-).html'>operator(-)</a></td><td><a href='../module/io_fortran_lib.html'>io_fortran_lib</a></td><td>Interface</td><td><p>Excision operator for <code>character</code> and <code>String</code> (as subtraction). Mixed type excision of <code>character</code> and
-<code>String</code> is explicitly defined.</p><a href="../interface/operator(-).html" class="pull-right"><emph>Read more&hellip;</emph></a></td></tr>
-			   <tr><td><a href='../interface/operator(SLASHSLASH).html'>operator(//)</a></td><td><a href='../module/io_fortran_lib.html'>io_fortran_lib</a></td><td>Interface</td><td><p>Concatenation operator for <code>character</code> and <code>String</code>, lifted from <code>character</code>. Mixed type concatenation of
-<code>character</code> and <code>String</code> is explicitly defined.</p><a href="../interface/operator(SLASHSLASH).html" class="pull-right"><emph>Read more&hellip;</emph></a></td></tr>
-			   <tr><td><a href='../interface/operator(SLASH=).html'>operator(/=)</a></td><td><a href='../module/io_fortran_lib.html'>io_fortran_lib</a></td><td>Interface</td><td><p>Non-equivalence operator for <code>character</code> and <code>String</code>. Mixed type non-equivalence of <code>character</code> and
-<code>String</code> is explicitly defined.</p><a href="../interface/operator(SLASH=).html" class="pull-right"><emph>Read more&hellip;</emph></a></td></tr>
-			   <tr><td><a href='../interface/operator(==).html'>operator(==)</a></td><td><a href='../module/io_fortran_lib.html'>io_fortran_lib</a></td><td>Interface</td><td><p>Equivalence operator for <code>character</code> and <code>String</code>. Mixed type equivalence of <code>character</code> and <code>String</code> is
-explicitly defined.</p><a href="../interface/operator(==).html" class="pull-right"><emph>Read more&hellip;</emph></a></td></tr>
-			   <tr><td><a href='../interface/random_gauss.html'>random_gauss</a></td><td><a href='../module/randoms.html'>randoms</a></td><td>Interface</td><td><p>Applies <code>gauss</code> to whole arrays and scalars.</p></td></tr>
-			   <tr><td><a href='../interface/split.html'>split</a></td><td><a href='../module/io_fortran_lib.html'>io_fortran_lib</a></td><td>Interface</td><td><p>Function for splitting a scalar <code>character</code> or <code>String</code> into a vector of <code>tokens</code>.</p><a href="../interface/split.html" class="pull-right"><emph>Read more&hellip;</emph></a></td></tr>
-			   <tr><td><a href='../interface/str.html'>str</a></td><td><a href='../module/io_fortran_lib.html'>io_fortran_lib</a></td><td>Interface</td><td><p>Function for returning a <code>character</code> representation of a number.</p><a href="../interface/str.html" class="pull-right"><emph>Read more&hellip;</emph></a></td></tr>
-			   <tr><td><a href='../interface/string.html'>String</a></td><td><a href='../module/io_fortran_lib.html'>io_fortran_lib</a></td><td>Interface</td><td><p>Function for returning a <a href="../type/string.html">String</a> representation of numbers.</p><a href="../interface/string.html" class="pull-right"><emph>Read more&hellip;</emph></a></td></tr>
-			   <tr><td><a href='../interface/to_file.html'>to_file</a></td><td><a href='../module/io_fortran_lib.html'>io_fortran_lib</a></td><td>Interface</td><td><p>Subroutine for writing an array of uniform numeric data type to an external file.</p><a href="../interface/to_file.html" class="pull-right"><emph>Read more&hellip;</emph></a></td></tr>
+			   <tr>
+                 <td><a href='../interface/aprint.html'>aprint</a></td>
+                 <td><a href='../module/io_fortran_lib.html'>io_fortran_lib</a></td>
+                 <td>Interface</td>
+                 <td><p>Subroutine for printing arrays and array sections to stdout.</p><a href="../interface/aprint.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/cast.html'>cast</a></td>
+                 <td><a href='../module/io_fortran_lib.html'>io_fortran_lib</a></td>
+                 <td>Interface</td>
+                 <td><p>Subroutine for casting between numeric and string data.</p><a href="../interface/cast.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/echo.html'>echo</a></td>
+                 <td><a href='../module/io_fortran_lib.html'>io_fortran_lib</a></td>
+                 <td>Interface</td>
+                 <td><p>Subroutine for writing a scalar <code>character</code> or <code>String</code> to an external text file.</p><a href="../interface/echo.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/from_file.html'>from_file</a></td>
+                 <td><a href='../module/io_fortran_lib.html'>io_fortran_lib</a></td>
+                 <td>Interface</td>
+                 <td><p>Subroutine for reading an external file of uniform numeric data type and format into an array.</p><a href="../interface/from_file.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/join.html'>join</a></td>
+                 <td><a href='../module/io_fortran_lib.html'>io_fortran_lib</a></td>
+                 <td>Interface</td>
+                 <td><p>Function for joining a vector of <code>tokens</code> into a scalar <code>character</code> or <code>String</code>.</p><a href="../interface/join.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/operator(ASTERISKASTERISK).html'>operator(**)</a></td>
+                 <td><a href='../module/io_fortran_lib.html'>io_fortran_lib</a></td>
+                 <td>Interface</td>
+                 <td><p>Repetition operator for <code>character</code> and <code>String</code> (as exponentiation).</p><a href="../interface/operator(ASTERISKASTERISK).html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/operator(+).html'>operator(+)</a></td>
+                 <td><a href='../module/io_fortran_lib.html'>io_fortran_lib</a></td>
+                 <td>Interface</td>
+                 <td><p>Concatenation operator for <code>character</code> and <code>String</code> (as addition). Mixed type concatenation of
+<code>character</code> and <code>String</code> is explicitly defined.</p><a href="../interface/operator(+).html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/operator(-).html'>operator(-)</a></td>
+                 <td><a href='../module/io_fortran_lib.html'>io_fortran_lib</a></td>
+                 <td>Interface</td>
+                 <td><p>Excision operator for <code>character</code> and <code>String</code> (as subtraction). Mixed type excision of <code>character</code> and
+<code>String</code> is explicitly defined.</p><a href="../interface/operator(-).html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/operator(SLASHSLASH).html'>operator(//)</a></td>
+                 <td><a href='../module/io_fortran_lib.html'>io_fortran_lib</a></td>
+                 <td>Interface</td>
+                 <td><p>Concatenation operator for <code>character</code> and <code>String</code>, lifted from <code>character</code>. Mixed type concatenation of
+<code>character</code> and <code>String</code> is explicitly defined.</p><a href="../interface/operator(SLASHSLASH).html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/operator(SLASH=).html'>operator(/=)</a></td>
+                 <td><a href='../module/io_fortran_lib.html'>io_fortran_lib</a></td>
+                 <td>Interface</td>
+                 <td><p>Non-equivalence operator for <code>character</code> and <code>String</code>. Mixed type non-equivalence of <code>character</code> and
+<code>String</code> is explicitly defined.</p><a href="../interface/operator(SLASH=).html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/operator(==).html'>operator(==)</a></td>
+                 <td><a href='../module/io_fortran_lib.html'>io_fortran_lib</a></td>
+                 <td>Interface</td>
+                 <td><p>Equivalence operator for <code>character</code> and <code>String</code>. Mixed type equivalence of <code>character</code> and <code>String</code> is
+explicitly defined.</p><a href="../interface/operator(==).html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/random_gauss.html'>random_gauss</a></td>
+                 <td><a href='../module/randoms.html'>randoms</a></td>
+                 <td>Interface</td>
+                 <td><p>Applies <code>gauss</code> to whole arrays and scalars.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/split.html'>split</a></td>
+                 <td><a href='../module/io_fortran_lib.html'>io_fortran_lib</a></td>
+                 <td>Interface</td>
+                 <td><p>Function for splitting a scalar <code>character</code> or <code>String</code> into a vector of <code>tokens</code>.</p><a href="../interface/split.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/str.html'>str</a></td>
+                 <td><a href='../module/io_fortran_lib.html'>io_fortran_lib</a></td>
+                 <td>Interface</td>
+                 <td><p>Function for returning a <code>character</code> representation of a number.</p><a href="../interface/str.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/string.html'>String</a></td>
+                 <td><a href='../module/io_fortran_lib.html'>io_fortran_lib</a></td>
+                 <td>Interface</td>
+                 <td><p>Function for returning a <a href="../type/string.html">String</a> representation of numbers.</p><a href="../interface/string.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/to_file.html'>to_file</a></td>
+                 <td><a href='../module/io_fortran_lib.html'>io_fortran_lib</a></td>
+                 <td>Interface</td>
+                 <td><p>Subroutine for writing an array of uniform numeric data type to an external file.</p><a href="../interface/to_file.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
 			 </tbody></table>
              
         </div>
@@ -96,14 +179,14 @@ explicitly defined.</p><a href="../interface/operator(==).html" class="pull-righ
     <footer>
       <div class="container">
         <div class="row justify-content-between">
-          <div class="col"><p>IO-Fortran-Library was developed by Austin C Bullock<br>&copy; 2023 <a rel="license" href="https://opensource.org/licenses/MIT">MIT</a>
+          <div class="col"><p>IO-Fortran-Library was developed by Austin C Bullock<br>&copy; 2024 <a rel="license" href="https://opensource.org/licenses/MIT">MIT</a>
 </p>
           </div>
           <div class="col">
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-10-21 00:50              </p>
+ on 2024-03-16 19:16              </p>
           </div>
         </div>
         <br>

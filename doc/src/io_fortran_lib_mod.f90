@@ -1795,14 +1795,3 @@ module io_fortran_lib
   end interface aprint
 
 end module io_fortran_lib
-
-!=======================================================================================================================
-!  List of workarounds for compiler bugs in ifx 2023.0.0 :
-!  -------------------------------------------------------
-!  1.  In join_into_self (line 4808), the recursive call to join_into_self at line 4836 induces a run-time
-!      segmentation fault in the program contained in benchmark.f90 not seen with the following compilers: ifort
-!      2021.8.0, gfortran 11.3.0, gfortran 11.2.0. From investigation, the segmentation fault seems due to the passing
-!      of the array of derived type. The fault occurs in a majority of runs, but not in every run. To avoid the fault,
-!      the array to be passed must be constructed element by element and passed as in the "else" section of the "if"
-!      block. The fault again seems to be induced only when "-heap-arrays 0" is specified and only with ifx 2023.0.0.
-!=======================================================================================================================

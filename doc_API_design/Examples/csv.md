@@ -20,10 +20,10 @@ been no loss in precision:
 ```fortran
 program main
     use io_fortran_lib, only: to_file, from_file
-    implicit none (type,external)
+    implicit none (type, external)
 
-    real, dimension(1000,20) :: x
-    real, allocatable, dimension(:,:) :: x_e, x_f, x_z
+    real :: x(1000,20)
+    real, allocatable :: x_e(:,:), x_f(:,:), x_z(:,:)
 
     call random_number(x)
 
@@ -76,13 +76,13 @@ that is generalizable for processing data of mixed type:
 ```fortran
 program main
     use io_fortran_lib, only: String, str, cast
-    implicit none (type,external)
+    implicit none (type, external)
 
     type(String) :: csv
-    type(String), allocatable, dimension(:,:) :: cells
+    type(String), allocatable :: cells(:,:)
 
-    real, dimension(1000,20) :: x
-    real, allocatable, dimension(:,:) :: x_e, x_f, x_z
+    real :: x(1000,20)
+    real, allocatable :: x_e(:,:), x_f(:,:), x_z(:,:)
     integer :: i
 
     call random_number(x); allocate( cells(1001,20) ); cells(1,:) = [(String("x"//str(i)), i = 1, 20)]
@@ -135,13 +135,13 @@ data `/data/ancestry_comp.csv`:
 program main
     use, intrinsic :: iso_fortran_env, only: int8, int64
     use io_fortran_lib, only: String, cast, CR, LF, operator(+), operator(-)
-    implicit none (type,external)
+    implicit none (type, external)
 
     type(String) :: csv
-    type(String), allocatable, dimension(:,:) :: cells
+    type(String), allocatable :: cells(:,:)
 
-    integer(int8), allocatable, dimension(:) :: copy, chromosome
-    integer(int64), allocatable, dimension(:) :: start_point, end_point
+    integer(int8), allocatable :: copy(:), chromosome(:)
+    integer(int64), allocatable :: start_point(:), end_point(:)
     integer :: nrows
 
     call csv%read_file("./data/ancestry_comp.csv", cell_array=cells, row_separator=CR+LF)

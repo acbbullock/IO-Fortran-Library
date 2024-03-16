@@ -14,7 +14,7 @@ messages to a log file:
 ```fortran
 program main
     use io_fortran_lib, only: echo, str, LF
-    implicit none (type,external)
+    implicit none (type, external)
 
     character(len=:), allocatable :: logfile, logmsg
     character(len=10) :: date, time
@@ -51,7 +51,7 @@ Depending on style, one may wish to accumulate log messages into a
 ```fortran
 program main
     use io_fortran_lib, only: String, str, LF, operator(+), operator(**)
-    implicit none (type,external)
+    implicit none (type, external)
 
     type(String) :: logmsg
     character(len=:), allocatable :: logfile
