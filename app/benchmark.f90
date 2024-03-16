@@ -1,7 +1,7 @@
 program main
   use, intrinsic :: iso_fortran_env, only: int64, rk=>real32, dp=>real64, compiler_version, compiler_options
-  use randoms,                       only: random_gauss
-  use io_fortran_lib,                only: String, cast, str, LF, operator(+)
+  use randoms, only: random_gauss
+  use io_fortran_lib, only: String, cast, str, LF, operator(+)
   implicit none (type, external)
 
   type(String)              :: csv
@@ -10,7 +10,7 @@ program main
   integer(int64) :: t1, t2
   real(dp)       :: wall_time, rate
 
-  integer,  parameter   :: n = 1500
+  integer,  parameter   :: n = 15000
   real(rk), allocatable :: x(:,:), y(:,:)
 
   allocate( x(n,n), cells(n,n) ); call random_gauss(x, 0e0_rk, 1.0_rk)
