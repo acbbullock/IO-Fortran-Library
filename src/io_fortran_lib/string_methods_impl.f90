@@ -388,9 +388,9 @@ submodule (io_fortran_lib) string_methods
 
     if ( .not. present(cell_array) ) then
       if ( present(row_separator)    ) write(*,"(a)") LF//'WARNING: Row separator was provided for read of file "'// &
-                                                      file//'" without a cell array output. Ingoring argument...'
+                                                      file//'" without a cell array output. Ignoring argument...'
       if ( present(column_separator) ) write(*,"(a)") LF//'WARNING: Column separator was provided for read of file "'//&
-                                                      file//'" without a cell array output. Ingoring argument...'
+                                                      file//'" without a cell array output. Ignoring argument...'
       return
     end if
 
