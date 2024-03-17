@@ -169,14 +169,10 @@ submodule (io_fortran_lib) string_methods
   end procedure empty
 
   module procedure join_into_self
-    type(String)                  :: token_pair(2)
     character(len=:), allocatable :: separator_
     integer(i64)                  :: num_tokens
 
-    type(String) :: comp
-    logical      :: GCC
-
-    num_tokens = size(tokens, kind=i64); GCC = .false.
+    num_tokens = size(tokens, kind=i64)
 
     if ( num_tokens == 1_i64 ) then
       if ( tokens(1_i64)%len64() < 1_i64 ) then
@@ -192,17 +188,9 @@ submodule (io_fortran_lib) string_methods
       separator_ = separator
     end if
 
-    comp%s = COMPILER; GCC = ( comp%count(match="GCC") > 0 ); deallocate(comp%s)
-
     if ( num_tokens > 500_i64 ) then
-      if ( GCC ) then
-        call self%join(tokens=[ join(tokens(:num_tokens/2_i64), separator_), &
-                    join(tokens(1_i64+num_tokens/2_i64:), separator_) ], separator=separator_)
-      else
-        call token_pair(1)%join(tokens(:num_tokens/2_i64), separator_)
-        call token_pair(2)%join(tokens(1_i64+num_tokens/2_i64:), separator_)
-        call self%join(tokens=token_pair, separator=separator_)
-      end if
+      call self%join( tokens=[ join(tokens(:num_tokens/2_i64), separator_), &
+        join(tokens(1_i64+num_tokens/2_i64:), separator_) ], separator=separator_ )
     else
       call self%join_base(tokens=tokens, separator=separator_)
     end if
@@ -388,9 +376,9 @@ submodule (io_fortran_lib) string_methods
 
     if ( .not. present(cell_array) ) then
       if ( present(row_separator)    ) write(*,"(a)") LF//'WARNING: Row separator was provided for read of file "'// &
-                                                      file//'" without a cell array output. Ingoring argument...'
+                                                      file//'" without a cell array output. Ignoring argument...'
       if ( present(column_separator) ) write(*,"(a)") LF//'WARNING: Column separator was provided for read of file "'//&
-                                                      file//'" without a cell array output. Ingoring argument...'
+                                                      file//'" without a cell array output. Ignoring argument...'
       return
     end if
 

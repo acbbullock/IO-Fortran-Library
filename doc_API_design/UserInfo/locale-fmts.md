@@ -9,7 +9,7 @@ strings with [String](../Ref/String.html), [str](../Ref/str.html), or
 used:
 
 ```fortran
-LOCALES = [ "US", "EU" ]
+character(len=2), parameter :: LOCALES(*) = [ "US", "EU" ] ! Allowed locale specifiers
 ```
 
 * `"US"`: US decimal (default), e.g. `1.23456789`

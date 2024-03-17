@@ -1,3 +1,5 @@
+<!-- -*- mode: jinja2 -*- -->
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -17,7 +19,8 @@
     <link href="../css/local.css" rel="stylesheet">
       <link  href="../tipuesearch/tipuesearch.css" rel="stylesheet">
 
-    <script src="https://code.jquery.com/jquery-3.7.0.slim.min.js" integrity="sha256-tG5mcZUtJsZvyKAxYLVXrmjKBVLd6VpVccqz/r4ypFE=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="../js/svg-pan-zoom.min.js"></script>
   </head>
 
   <body>
@@ -26,7 +29,7 @@
     <div class="container-fluid mb-sm-4 mb-xl-2">
       <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div class="container">
-          <a class="navbar-brand" href="../index.html">IO-Fortran-Library <small>1.2.1</small></a>
+          <a class="navbar-brand" href="../index.html">IO-Fortran-Library <small>1.3.1</small></a>
           <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar"
                   aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">
                   <span class="navbar-toggler-icon">
@@ -162,7 +165,7 @@
 <br>
         <h2>Functions</h2>
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-new_string_from_c128"></span><h3>private pure elemental recursive module function new_string_from_c128(x, locale, fmt, decimals, im) result(new)  
+    <div class="card-header codesum"><span class="anchor" id="proc-new_string_from_c128"></span> <h3>private pure elemental recursive module function new_string_from_c128(x, locale, fmt, decimals, im) result(new)  
 </h3></div>
     <div class="card-body">
         
@@ -266,7 +269,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-new_string_from_c64"></span><h3>private pure elemental recursive module function new_string_from_c64(x, locale, fmt, decimals, im) result(new)  
+    <div class="card-header codesum"><span class="anchor" id="proc-new_string_from_c64"></span> <h3>private pure elemental recursive module function new_string_from_c64(x, locale, fmt, decimals, im) result(new)  
 </h3></div>
     <div class="card-body">
         
@@ -370,7 +373,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-new_string_from_c32"></span><h3>private pure elemental recursive module function new_string_from_c32(x, locale, fmt, decimals, im) result(new)  
+    <div class="card-header codesum"><span class="anchor" id="proc-new_string_from_c32"></span> <h3>private pure elemental recursive module function new_string_from_c32(x, locale, fmt, decimals, im) result(new)  
 </h3></div>
     <div class="card-body">
         
@@ -474,7 +477,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-new_string_from_r128"></span><h3>private pure elemental recursive module function new_string_from_r128(x, locale, fmt, decimals) result(new)  
+    <div class="card-header codesum"><span class="anchor" id="proc-new_string_from_r128"></span> <h3>private pure elemental recursive module function new_string_from_r128(x, locale, fmt, decimals) result(new)  
 </h3></div>
     <div class="card-body">
         
@@ -563,7 +566,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-new_string_from_r64"></span><h3>private pure elemental recursive module function new_string_from_r64(x, locale, fmt, decimals) result(new)  
+    <div class="card-header codesum"><span class="anchor" id="proc-new_string_from_r64"></span> <h3>private pure elemental recursive module function new_string_from_r64(x, locale, fmt, decimals) result(new)  
 </h3></div>
     <div class="card-body">
         
@@ -652,7 +655,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-new_string_from_r32"></span><h3>private pure elemental recursive module function new_string_from_r32(x, locale, fmt, decimals) result(new)  
+    <div class="card-header codesum"><span class="anchor" id="proc-new_string_from_r32"></span> <h3>private pure elemental recursive module function new_string_from_r32(x, locale, fmt, decimals) result(new)  
 </h3></div>
     <div class="card-body">
         
@@ -741,7 +744,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-new_string_from_i64"></span><h3>private pure elemental recursive module function new_string_from_i64(x, fmt) result(new)  
+    <div class="card-header codesum"><span class="anchor" id="proc-new_string_from_i64"></span> <h3>private pure elemental recursive module function new_string_from_i64(x, fmt) result(new)  
 </h3></div>
     <div class="card-body">
         
@@ -800,7 +803,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-new_string_from_i32"></span><h3>private pure elemental recursive module function new_string_from_i32(x, fmt) result(new)  
+    <div class="card-header codesum"><span class="anchor" id="proc-new_string_from_i32"></span> <h3>private pure elemental recursive module function new_string_from_i32(x, fmt) result(new)  
 </h3></div>
     <div class="card-body">
         
@@ -859,7 +862,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-new_string_from_i16"></span><h3>private pure elemental recursive module function new_string_from_i16(x, fmt) result(new)  
+    <div class="card-header codesum"><span class="anchor" id="proc-new_string_from_i16"></span> <h3>private pure elemental recursive module function new_string_from_i16(x, fmt) result(new)  
 </h3></div>
     <div class="card-body">
         
@@ -918,7 +921,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-new_string_from_i8"></span><h3>private pure elemental recursive module function new_string_from_i8(x, fmt) result(new)  
+    <div class="card-header codesum"><span class="anchor" id="proc-new_string_from_i8"></span> <h3>private pure elemental recursive module function new_string_from_i8(x, fmt) result(new)  
 </h3></div>
     <div class="card-body">
         
@@ -977,7 +980,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-new_string_from_string"></span><h3>private pure elemental recursive module function new_string_from_string(x) result(new)  
+    <div class="card-header codesum"><span class="anchor" id="proc-new_string_from_string"></span> <h3>private pure elemental recursive module function new_string_from_string(x) result(new)  
 </h3></div>
     <div class="card-body">
         
@@ -1021,7 +1024,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-new_string_from_char"></span><h3>private pure elemental recursive module function new_string_from_char(x) result(new)  
+    <div class="card-header codesum"><span class="anchor" id="proc-new_string_from_char"></span> <h3>private pure elemental recursive module function new_string_from_char(x) result(new)  
 </h3></div>
     <div class="card-body">
         
@@ -1065,7 +1068,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-new_string_from_empty"></span><h3>private pure elemental recursive module function new_string_from_empty() result(new)  
+    <div class="card-header codesum"><span class="anchor" id="proc-new_string_from_empty"></span> <h3>private pure elemental recursive module function new_string_from_empty() result(new)  
 </h3></div>
     <div class="card-body">
         
@@ -1090,14 +1093,14 @@
     <footer>
       <div class="container">
         <div class="row justify-content-between">
-          <div class="col"><p>IO-Fortran-Library was developed by Austin C Bullock<br>&copy; 2023 <a rel="license" href="https://opensource.org/licenses/MIT">MIT</a>
+          <div class="col"><p>IO-Fortran-Library was developed by Austin C Bullock<br>&copy; 2024 <a rel="license" href="https://opensource.org/licenses/MIT">MIT</a>
 </p>
           </div>
           <div class="col">
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-10-21 00:50              </p>
+ on 2024-03-16 19:16              </p>
           </div>
         </div>
         <br>

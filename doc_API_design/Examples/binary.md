@@ -17,10 +17,10 @@ there has been no loss in precision:
 ```fortran
 program main
     use io_fortran_lib, only: to_file, from_file
-    implicit none (type,external)
+    implicit none (type, external)
 
-    real, dimension(20,20,20,20,20) :: x
-    real, allocatable, dimension(:,:,:,:,:) :: x_dat
+    real :: x(20,20,20,20,20)
+    real, allocatable :: x_dat(:,:,:,:,:)
 
     call random_number(x)
 
@@ -44,11 +44,11 @@ demonstrates the above tip:
 ```fortran
 program main
     use io_fortran_lib, only: to_file, from_file
-    implicit none (type,external)
+    implicit none (type, external)
 
-    real, dimension(20,20,20,20,20) :: x
-    real, allocatable, dimension(:,:,:,:,:) :: x_dat
-    integer, allocatable, dimension(:) :: x_shape
+    real :: x(20,20,20,20,20)
+    real, allocatable :: x_dat(:,:,:,:,:)
+    integer, allocatable :: x_shape(:)
 
     call random_number(x)
 

@@ -13,9 +13,9 @@ The following program demonstrates the use of
 ```fortran
 program main
     use io_fortran_lib, only: String, aprint
-    implicit none (type,external)
+    implicit none (type, external)
 
-    integer, allocatable, dimension(:) :: nums
+    integer, allocatable :: nums(:)
     integer :: i
 
     nums = [(i, i = 1, 100)]

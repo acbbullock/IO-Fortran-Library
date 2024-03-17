@@ -47,6 +47,14 @@ and the
 [tutorials](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Examples/index.html)
 for complete example programs.
 
+## Release Notes v1.3.1
+
+### Improved
+
+* Fixed a "z" format string conversion bug.
+* Updated documentation.
+* Modified benchmark programs.
+
 ## Release Notes v1.2.1
 
 ### Added

@@ -70,7 +70,7 @@ submodule (io_fortran_lib) internal_io
       if ( x%re /= 0e0_r128 ) then
         xre_str = "0x00000000000000000000000000000000"
       else
-        xre_str = "0.0"; exit if_z_re
+        xre_str = "0x0"; exit if_z_re
       end if
 
       write(unit=xre_str(3:), fmt="(z32)") x%re
@@ -83,7 +83,7 @@ submodule (io_fortran_lib) internal_io
       if ( x%im /= 0e0_r128 ) then
         xim_str = "0x00000000000000000000000000000000"
       else
-        xim_str = "0.0"; exit if_z_im
+        xim_str = "0x0"; exit if_z_im
       end if
 
       write(unit=xim_str(3:), fmt="(z32)") x%im
@@ -308,14 +308,14 @@ submodule (io_fortran_lib) internal_io
 
     if_z_re: if ( fmt_ == "z" ) then
       if ( x%re == 0e0_r64 ) then
-        xre_str = "0.0"; exit if_z_re
+        xre_str = "0x0"; exit if_z_re
       end if
 
       call cast(transfer(source=x%re, mold=1_i64), into=xre_str, fmt="z"); exit if_z_re
     end if if_z_re
     if_z_im: if ( fmt_ == "z" ) then
       if ( x%im == 0e0_r64 ) then
-        xim_str = "0.0"; exit if_z_im
+        xim_str = "0x0"; exit if_z_im
       end if
 
       call cast(transfer(source=x%im, mold=1_i64), into=xim_str, fmt="z"); exit if_z_im
@@ -536,14 +536,14 @@ submodule (io_fortran_lib) internal_io
 
     if_z_re: if ( fmt_ == "z" ) then
       if ( x%re == 0e0_r32 ) then
-        xre_str = "0.0"; exit if_z_re
+        xre_str = "0x0"; exit if_z_re
       end if
 
       call cast(transfer(source=x%re, mold=1_i32), into=xre_str, fmt="z"); exit if_z_re
     end if if_z_re
     if_z_im: if ( fmt_ == "z" ) then
       if ( x%im == 0e0_r32 ) then
-        xim_str = "0.0"; exit if_z_im
+        xim_str = "0x0"; exit if_z_im
       end if
 
       call cast(transfer(source=x%im, mold=1_i32), into=xim_str, fmt="z"); exit if_z_im
@@ -766,7 +766,7 @@ submodule (io_fortran_lib) internal_io
       if ( x /= 0e0_r128 ) then
         new%s = "0x00000000000000000000000000000000"
       else
-        new%s = "0.0"; return
+        new%s = "0x0"; return
       end if
 
       write(unit=new%s(3:), fmt="(z32)") x
@@ -889,7 +889,7 @@ submodule (io_fortran_lib) internal_io
 
     if ( fmt_ == "z" ) then
       if ( x == 0e0_r64 ) then
-        new%s = "0.0"; return
+        new%s = "0x0"; return
       end if
 
       inline_cast: block
@@ -1034,7 +1034,7 @@ submodule (io_fortran_lib) internal_io
 
     if ( fmt_ == "z" ) then
       if ( x == 0e0_r32 ) then
-        new%s = "0.0"; return
+        new%s = "0x0"; return
       end if
 
       inline_cast: block
@@ -1447,7 +1447,7 @@ submodule (io_fortran_lib) internal_io
       if ( x%re /= 0e0_r128 ) then
         xre_str = "0x00000000000000000000000000000000"
       else
-        xre_str = "0.0"; exit if_z_re
+        xre_str = "0x0"; exit if_z_re
       end if
 
       write(unit=xre_str(3:), fmt="(z32)") x%re
@@ -1460,7 +1460,7 @@ submodule (io_fortran_lib) internal_io
       if ( x%im /= 0e0_r128 ) then
         xim_str = "0x00000000000000000000000000000000"
       else
-        xim_str = "0.0"; exit if_z_im
+        xim_str = "0x0"; exit if_z_im
       end if
 
       write(unit=xim_str(3:), fmt="(z32)") x%im
@@ -1685,14 +1685,14 @@ submodule (io_fortran_lib) internal_io
 
     if_z_re: if ( fmt_ == "z" ) then
       if ( x%re == 0e0_r64 ) then
-        xre_str = "0.0"; exit if_z_re
+        xre_str = "0x0"; exit if_z_re
       end if
 
       call cast(transfer(source=x%re, mold=1_i64), into=xre_str, fmt="z"); exit if_z_re
     end if if_z_re
     if_z_im: if ( fmt_ == "z" ) then
       if ( x%im == 0e0_r64 ) then
-        xim_str = "0.0"; exit if_z_im
+        xim_str = "0x0"; exit if_z_im
       end if
 
       call cast(transfer(source=x%im, mold=1_i64), into=xim_str, fmt="z"); exit if_z_im
@@ -1913,14 +1913,14 @@ submodule (io_fortran_lib) internal_io
 
     if_z_re: if ( fmt_ == "z" ) then
       if ( x%re == 0e0_r32 ) then
-        xre_str = "0.0"; exit if_z_re
+        xre_str = "0x0"; exit if_z_re
       end if
 
       call cast(transfer(source=x%re, mold=1_i32), into=xre_str, fmt="z"); exit if_z_re
     end if if_z_re
     if_z_im: if ( fmt_ == "z" ) then
       if ( x%im == 0e0_r32 ) then
-        xim_str = "0.0"; exit if_z_im
+        xim_str = "0x0"; exit if_z_im
       end if
 
       call cast(transfer(source=x%im, mold=1_i32), into=xim_str, fmt="z"); exit if_z_im
@@ -2143,7 +2143,7 @@ submodule (io_fortran_lib) internal_io
       if ( x /= 0e0_r128 ) then
         x_str = "0x00000000000000000000000000000000"
       else
-        x_str = "0.0"; return
+        x_str = "0x0"; return
       end if
 
       write(unit=x_str(3:), fmt="(z32)") x
@@ -2266,7 +2266,7 @@ submodule (io_fortran_lib) internal_io
 
     if ( fmt_ == "z" ) then
       if ( x == 0e0_r64 ) then
-        x_str = "0.0"; return
+        x_str = "0x0"; return
       end if
 
       call cast(transfer(source=x, mold=1_i64), into=x_str, fmt="z"); return
@@ -2383,7 +2383,7 @@ submodule (io_fortran_lib) internal_io
 
     if ( fmt_ == "z" ) then
       if ( x == 0e0_r32 ) then
-        x_str = "0.0"; return
+        x_str = "0x0"; return
       end if
 
       call cast(transfer(source=x, mold=1_i32), into=x_str, fmt="z"); return
@@ -2769,7 +2769,7 @@ submodule (io_fortran_lib) internal_io
       if ( x%re /= 0e0_r128 ) then
         xre_str = "0x00000000000000000000000000000000"
       else
-        xre_str = "0.0"; exit if_z_re
+        xre_str = "0x0"; exit if_z_re
       end if
 
       write(unit=xre_str(3:), fmt="(z32)") x%re
@@ -2782,7 +2782,7 @@ submodule (io_fortran_lib) internal_io
       if ( x%im /= 0e0_r128 ) then
         xim_str = "0x00000000000000000000000000000000"
       else
-        xim_str = "0.0"; exit if_z_im
+        xim_str = "0x0"; exit if_z_im
       end if
 
       write(unit=xim_str(3:), fmt="(z32)") x%im
@@ -3007,14 +3007,14 @@ submodule (io_fortran_lib) internal_io
 
     if_z_re: if ( fmt_ == "z" ) then
       if ( x%re == 0e0_r64 ) then
-        xre_str = "0.0"; exit if_z_re
+        xre_str = "0x0"; exit if_z_re
       end if
 
       call cast(transfer(source=x%re, mold=1_i64), into=xre_str, fmt="z"); exit if_z_re
     end if if_z_re
     if_z_im: if ( fmt_ == "z" ) then
       if ( x%im == 0e0_r64 ) then
-        xim_str = "0.0"; exit if_z_im
+        xim_str = "0x0"; exit if_z_im
       end if
 
       call cast(transfer(source=x%im, mold=1_i64), into=xim_str, fmt="z"); exit if_z_im
@@ -3235,14 +3235,14 @@ submodule (io_fortran_lib) internal_io
 
     if_z_re: if ( fmt_ == "z" ) then
       if ( x%re == 0e0_r32 ) then
-        xre_str = "0.0"; exit if_z_re
+        xre_str = "0x0"; exit if_z_re
       end if
 
       call cast(transfer(source=x%re, mold=1_i32), into=xre_str, fmt="z"); exit if_z_re
     end if if_z_re
     if_z_im: if ( fmt_ == "z" ) then
       if ( x%im == 0e0_r32 ) then
-        xim_str = "0.0"; exit if_z_im
+        xim_str = "0x0"; exit if_z_im
       end if
 
       call cast(transfer(source=x%im, mold=1_i32), into=xim_str, fmt="z"); exit if_z_im
@@ -3465,7 +3465,7 @@ submodule (io_fortran_lib) internal_io
       if ( x /= 0e0_r128 ) then
         into%s = "0x00000000000000000000000000000000"
       else
-        into%s = "0.0"; return
+        into%s = "0x0"; return
       end if
 
       write(unit=into%s(3:), fmt="(z32)") x
@@ -3589,7 +3589,7 @@ submodule (io_fortran_lib) internal_io
 
     if ( fmt_ == "z" ) then
       if ( x == 0e0_r64 ) then
-        into%s = "0.0"; return
+        into%s = "0x0"; return
       end if
 
       inline_cast: block
@@ -3735,7 +3735,7 @@ submodule (io_fortran_lib) internal_io
 
     if ( fmt_ == "z" ) then
       if ( x == 0e0_r32 ) then
-        into%s = "0.0"; return
+        into%s = "0x0"; return
       end if
 
       inline_cast: block
@@ -4134,7 +4134,7 @@ submodule (io_fortran_lib) internal_io
       if ( x%re /= 0e0_r128 ) then
         xre_str = "0x00000000000000000000000000000000"
       else
-        xre_str = "0.0"; exit if_z_re
+        xre_str = "0x0"; exit if_z_re
       end if
 
       write(unit=xre_str(3:), fmt="(z32)") x%re
@@ -4147,7 +4147,7 @@ submodule (io_fortran_lib) internal_io
       if ( x%im /= 0e0_r128 ) then
         xim_str = "0x00000000000000000000000000000000"
       else
-        xim_str = "0.0"; exit if_z_im
+        xim_str = "0x0"; exit if_z_im
       end if
 
       write(unit=xim_str(3:), fmt="(z32)") x%im
@@ -4372,14 +4372,14 @@ submodule (io_fortran_lib) internal_io
 
     if_z_re: if ( fmt_ == "z" ) then
       if ( x%re == 0e0_r64 ) then
-        xre_str = "0.0"; exit if_z_re
+        xre_str = "0x0"; exit if_z_re
       end if
 
       call cast(transfer(source=x%re, mold=1_i64), into=xre_str, fmt="z"); exit if_z_re
     end if if_z_re
     if_z_im: if ( fmt_ == "z" ) then
       if ( x%im == 0e0_r64 ) then
-        xim_str = "0.0"; exit if_z_im
+        xim_str = "0x0"; exit if_z_im
       end if
 
       call cast(transfer(source=x%im, mold=1_i64), into=xim_str, fmt="z"); exit if_z_im
@@ -4600,14 +4600,14 @@ submodule (io_fortran_lib) internal_io
 
     if_z_re: if ( fmt_ == "z" ) then
       if ( x%re == 0e0_r32 ) then
-        xre_str = "0.0"; exit if_z_re
+        xre_str = "0x0"; exit if_z_re
       end if
 
       call cast(transfer(source=x%re, mold=1_i32), into=xre_str, fmt="z"); exit if_z_re
     end if if_z_re
     if_z_im: if ( fmt_ == "z" ) then
       if ( x%im == 0e0_r32 ) then
-        xim_str = "0.0"; exit if_z_im
+        xim_str = "0x0"; exit if_z_im
       end if
 
       call cast(transfer(source=x%im, mold=1_i32), into=xim_str, fmt="z"); exit if_z_im

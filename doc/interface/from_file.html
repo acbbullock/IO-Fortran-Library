@@ -1,3 +1,5 @@
+<!-- -*- mode: jinja2 -*- -->
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -17,7 +19,8 @@
     <link href="../css/local.css" rel="stylesheet">
       <link  href="../tipuesearch/tipuesearch.css" rel="stylesheet">
 
-    <script src="https://code.jquery.com/jquery-3.7.0.slim.min.js" integrity="sha256-tG5mcZUtJsZvyKAxYLVXrmjKBVLd6VpVccqz/r4ypFE=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="../js/svg-pan-zoom.min.js"></script>
   </head>
 
   <body>
@@ -26,7 +29,7 @@
     <div class="container-fluid mb-sm-4 mb-xl-2">
       <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div class="container">
-          <a class="navbar-brand" href="../index.html">IO-Fortran-Library <small>1.2.1</small></a>
+          <a class="navbar-brand" href="../index.html">IO-Fortran-Library <small>1.3.1</small></a>
           <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar"
                   aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">
                   <span class="navbar-toggler-icon">
@@ -169,7 +172,7 @@
 
         <h2>Subroutines</h2>
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-from_textfile_c128"></span><h3>private impure recursive module subroutine from_textfile_c128(file, into, header, locale, delim, fmt, im, stat, errmsg)  
+    <div class="card-header codesum"><span class="anchor" id="proc-from_textfile_c128"></span> <h3>private impure recursive module subroutine from_textfile_c128(file, into, header, locale, delim, fmt, im, stat, errmsg)  
 </h3></div>
     <div class="card-body">
         
@@ -292,7 +295,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~14"></span>
+              <span class="anchor" id="variable-stat~13"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -307,7 +310,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~14"></span>
+              <span class="anchor" id="variable-errmsg~13"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -328,7 +331,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-from_textfile_c64"></span><h3>private impure recursive module subroutine from_textfile_c64(file, into, header, locale, delim, fmt, im, stat, errmsg)  
+    <div class="card-header codesum"><span class="anchor" id="proc-from_textfile_c64"></span> <h3>private impure recursive module subroutine from_textfile_c64(file, into, header, locale, delim, fmt, im, stat, errmsg)  
 </h3></div>
     <div class="card-body">
         
@@ -451,7 +454,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~15"></span>
+              <span class="anchor" id="variable-stat~14"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -466,7 +469,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~15"></span>
+              <span class="anchor" id="variable-errmsg~14"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -487,7 +490,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-from_textfile_c32"></span><h3>private impure recursive module subroutine from_textfile_c32(file, into, header, locale, delim, fmt, im, stat, errmsg)  
+    <div class="card-header codesum"><span class="anchor" id="proc-from_textfile_c32"></span> <h3>private impure recursive module subroutine from_textfile_c32(file, into, header, locale, delim, fmt, im, stat, errmsg)  
 </h3></div>
     <div class="card-body">
         
@@ -610,7 +613,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~16"></span>
+              <span class="anchor" id="variable-stat~15"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -625,7 +628,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~16"></span>
+              <span class="anchor" id="variable-errmsg~15"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -646,7 +649,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-from_binaryfile_c128"></span><h3>private impure recursive module subroutine from_binaryfile_c128(file, into, data_shape, stat, errmsg)  
+    <div class="card-header codesum"><span class="anchor" id="proc-from_binaryfile_c128"></span> <h3>private impure recursive module subroutine from_binaryfile_c128(file, into, data_shape, stat, errmsg)  
 </h3></div>
     <div class="card-body">
         
@@ -709,7 +712,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~17"></span>
+              <span class="anchor" id="variable-stat~16"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -724,7 +727,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~17"></span>
+              <span class="anchor" id="variable-errmsg~16"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -745,7 +748,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-from_binaryfile_c64"></span><h3>private impure recursive module subroutine from_binaryfile_c64(file, into, data_shape, stat, errmsg)  
+    <div class="card-header codesum"><span class="anchor" id="proc-from_binaryfile_c64"></span> <h3>private impure recursive module subroutine from_binaryfile_c64(file, into, data_shape, stat, errmsg)  
 </h3></div>
     <div class="card-body">
         
@@ -808,7 +811,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~18"></span>
+              <span class="anchor" id="variable-stat~17"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -823,7 +826,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~18"></span>
+              <span class="anchor" id="variable-errmsg~17"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -844,7 +847,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-from_binaryfile_c32"></span><h3>private impure recursive module subroutine from_binaryfile_c32(file, into, data_shape, stat, errmsg)  
+    <div class="card-header codesum"><span class="anchor" id="proc-from_binaryfile_c32"></span> <h3>private impure recursive module subroutine from_binaryfile_c32(file, into, data_shape, stat, errmsg)  
 </h3></div>
     <div class="card-body">
         
@@ -907,7 +910,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~19"></span>
+              <span class="anchor" id="variable-stat~18"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -922,7 +925,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~19"></span>
+              <span class="anchor" id="variable-errmsg~18"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -943,7 +946,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-from_textfile_r128"></span><h3>private impure recursive module subroutine from_textfile_r128(file, into, header, locale, delim, fmt, stat, errmsg)  
+    <div class="card-header codesum"><span class="anchor" id="proc-from_textfile_r128"></span> <h3>private impure recursive module subroutine from_textfile_r128(file, into, header, locale, delim, fmt, stat, errmsg)  
 </h3></div>
     <div class="card-body">
         
@@ -1051,7 +1054,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~20"></span>
+              <span class="anchor" id="variable-stat~19"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -1066,7 +1069,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~20"></span>
+              <span class="anchor" id="variable-errmsg~19"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -1087,7 +1090,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-from_textfile_r64"></span><h3>private impure recursive module subroutine from_textfile_r64(file, into, header, locale, delim, fmt, stat, errmsg)  
+    <div class="card-header codesum"><span class="anchor" id="proc-from_textfile_r64"></span> <h3>private impure recursive module subroutine from_textfile_r64(file, into, header, locale, delim, fmt, stat, errmsg)  
 </h3></div>
     <div class="card-body">
         
@@ -1195,7 +1198,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~21"></span>
+              <span class="anchor" id="variable-stat~20"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -1210,7 +1213,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~21"></span>
+              <span class="anchor" id="variable-errmsg~20"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -1231,7 +1234,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-from_textfile_r32"></span><h3>private impure recursive module subroutine from_textfile_r32(file, into, header, locale, delim, fmt, stat, errmsg)  
+    <div class="card-header codesum"><span class="anchor" id="proc-from_textfile_r32"></span> <h3>private impure recursive module subroutine from_textfile_r32(file, into, header, locale, delim, fmt, stat, errmsg)  
 </h3></div>
     <div class="card-body">
         
@@ -1339,7 +1342,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~22"></span>
+              <span class="anchor" id="variable-stat~21"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -1354,7 +1357,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~22"></span>
+              <span class="anchor" id="variable-errmsg~21"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -1375,7 +1378,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-from_binaryfile_r128"></span><h3>private impure recursive module subroutine from_binaryfile_r128(file, into, data_shape, stat, errmsg)  
+    <div class="card-header codesum"><span class="anchor" id="proc-from_binaryfile_r128"></span> <h3>private impure recursive module subroutine from_binaryfile_r128(file, into, data_shape, stat, errmsg)  
 </h3></div>
     <div class="card-body">
         
@@ -1438,7 +1441,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~23"></span>
+              <span class="anchor" id="variable-stat~22"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -1453,7 +1456,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~23"></span>
+              <span class="anchor" id="variable-errmsg~22"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -1474,7 +1477,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-from_binaryfile_r64"></span><h3>private impure recursive module subroutine from_binaryfile_r64(file, into, data_shape, stat, errmsg)  
+    <div class="card-header codesum"><span class="anchor" id="proc-from_binaryfile_r64"></span> <h3>private impure recursive module subroutine from_binaryfile_r64(file, into, data_shape, stat, errmsg)  
 </h3></div>
     <div class="card-body">
         
@@ -1537,7 +1540,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~24"></span>
+              <span class="anchor" id="variable-stat~23"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -1552,7 +1555,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~24"></span>
+              <span class="anchor" id="variable-errmsg~23"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -1573,7 +1576,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-from_binaryfile_r32"></span><h3>private impure recursive module subroutine from_binaryfile_r32(file, into, data_shape, stat, errmsg)  
+    <div class="card-header codesum"><span class="anchor" id="proc-from_binaryfile_r32"></span> <h3>private impure recursive module subroutine from_binaryfile_r32(file, into, data_shape, stat, errmsg)  
 </h3></div>
     <div class="card-body">
         
@@ -1636,7 +1639,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~25"></span>
+              <span class="anchor" id="variable-stat~24"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -1651,7 +1654,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~25"></span>
+              <span class="anchor" id="variable-errmsg~24"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -1672,7 +1675,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-from_textfile_i64"></span><h3>private impure recursive module subroutine from_textfile_i64(file, into, header, delim, fmt, stat, errmsg)  
+    <div class="card-header codesum"><span class="anchor" id="proc-from_textfile_i64"></span> <h3>private impure recursive module subroutine from_textfile_i64(file, into, header, delim, fmt, stat, errmsg)  
 </h3></div>
     <div class="card-body">
         
@@ -1765,7 +1768,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~26"></span>
+              <span class="anchor" id="variable-stat~25"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -1780,7 +1783,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~26"></span>
+              <span class="anchor" id="variable-errmsg~25"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -1801,7 +1804,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-from_textfile_i32"></span><h3>private impure recursive module subroutine from_textfile_i32(file, into, header, delim, fmt, stat, errmsg)  
+    <div class="card-header codesum"><span class="anchor" id="proc-from_textfile_i32"></span> <h3>private impure recursive module subroutine from_textfile_i32(file, into, header, delim, fmt, stat, errmsg)  
 </h3></div>
     <div class="card-body">
         
@@ -1894,7 +1897,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~27"></span>
+              <span class="anchor" id="variable-stat~26"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -1909,7 +1912,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~27"></span>
+              <span class="anchor" id="variable-errmsg~26"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -1930,7 +1933,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-from_textfile_i16"></span><h3>private impure recursive module subroutine from_textfile_i16(file, into, header, delim, fmt, stat, errmsg)  
+    <div class="card-header codesum"><span class="anchor" id="proc-from_textfile_i16"></span> <h3>private impure recursive module subroutine from_textfile_i16(file, into, header, delim, fmt, stat, errmsg)  
 </h3></div>
     <div class="card-body">
         
@@ -2023,7 +2026,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~28"></span>
+              <span class="anchor" id="variable-stat~27"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -2038,7 +2041,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~28"></span>
+              <span class="anchor" id="variable-errmsg~27"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -2059,7 +2062,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-from_textfile_i8"></span><h3>private impure recursive module subroutine from_textfile_i8(file, into, header, delim, fmt, stat, errmsg)  
+    <div class="card-header codesum"><span class="anchor" id="proc-from_textfile_i8"></span> <h3>private impure recursive module subroutine from_textfile_i8(file, into, header, delim, fmt, stat, errmsg)  
 </h3></div>
     <div class="card-body">
         
@@ -2152,7 +2155,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~29"></span>
+              <span class="anchor" id="variable-stat~28"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -2167,7 +2170,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~29"></span>
+              <span class="anchor" id="variable-errmsg~28"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -2188,7 +2191,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-from_binaryfile_i64"></span><h3>private impure recursive module subroutine from_binaryfile_i64(file, into, data_shape, stat, errmsg)  
+    <div class="card-header codesum"><span class="anchor" id="proc-from_binaryfile_i64"></span> <h3>private impure recursive module subroutine from_binaryfile_i64(file, into, data_shape, stat, errmsg)  
 </h3></div>
     <div class="card-body">
         
@@ -2251,7 +2254,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~30"></span>
+              <span class="anchor" id="variable-stat~29"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -2266,7 +2269,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~30"></span>
+              <span class="anchor" id="variable-errmsg~29"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -2287,7 +2290,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-from_binaryfile_i32"></span><h3>private impure recursive module subroutine from_binaryfile_i32(file, into, data_shape, stat, errmsg)  
+    <div class="card-header codesum"><span class="anchor" id="proc-from_binaryfile_i32"></span> <h3>private impure recursive module subroutine from_binaryfile_i32(file, into, data_shape, stat, errmsg)  
 </h3></div>
     <div class="card-body">
         
@@ -2350,7 +2353,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~31"></span>
+              <span class="anchor" id="variable-stat~30"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -2365,7 +2368,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~31"></span>
+              <span class="anchor" id="variable-errmsg~30"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -2386,7 +2389,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-from_binaryfile_i16"></span><h3>private impure recursive module subroutine from_binaryfile_i16(file, into, data_shape, stat, errmsg)  
+    <div class="card-header codesum"><span class="anchor" id="proc-from_binaryfile_i16"></span> <h3>private impure recursive module subroutine from_binaryfile_i16(file, into, data_shape, stat, errmsg)  
 </h3></div>
     <div class="card-body">
         
@@ -2449,7 +2452,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~32"></span>
+              <span class="anchor" id="variable-stat~31"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -2464,7 +2467,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~32"></span>
+              <span class="anchor" id="variable-errmsg~31"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -2485,7 +2488,7 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-from_binaryfile_i8"></span><h3>private impure recursive module subroutine from_binaryfile_i8(file, into, data_shape, stat, errmsg)  
+    <div class="card-header codesum"><span class="anchor" id="proc-from_binaryfile_i8"></span> <h3>private impure recursive module subroutine from_binaryfile_i8(file, into, data_shape, stat, errmsg)  
 </h3></div>
     <div class="card-body">
         
@@ -2548,7 +2551,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat~33"></span>
+              <span class="anchor" id="variable-stat~32"></span>
               integer,
             </td>
 <td>intent(out),</td>
@@ -2563,7 +2566,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-errmsg~33"></span>
+              <span class="anchor" id="variable-errmsg~32"></span>
               character(len=*),
             </td>
 <td>intent(out),</td>
@@ -2591,14 +2594,14 @@
     <footer>
       <div class="container">
         <div class="row justify-content-between">
-          <div class="col"><p>IO-Fortran-Library was developed by Austin C Bullock<br>&copy; 2023 <a rel="license" href="https://opensource.org/licenses/MIT">MIT</a>
+          <div class="col"><p>IO-Fortran-Library was developed by Austin C Bullock<br>&copy; 2024 <a rel="license" href="https://opensource.org/licenses/MIT">MIT</a>
 </p>
           </div>
           <div class="col">
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2023-10-21 00:50              </p>
+ on 2024-03-16 19:16              </p>
           </div>
         </div>
         <br>
