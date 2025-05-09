@@ -239,15 +239,15 @@ submodule (io_fortran_lib) text_io
     if ( header_present ) then
       select rank(x)
         rank(1)
-          cells(1,1)%s = header(1)
+          cells(1,1)%s = trim(header(1))
         rank(2)
           if ( size(header) == 1 ) then
             do j = 1, ncols
-              cells(1,j)%s = header(1)//str(j)
+              cells(1,j)%s = trim(header(1))//str(j)
             end do
           else
             do j = 1, ncols
-              cells(1,j)%s = header(j)
+              cells(1,j)%s = trim(header(j))
             end do
           end if
       end select
@@ -290,15 +290,15 @@ submodule (io_fortran_lib) text_io
     if ( header_present ) then
       select rank(x)
         rank(1)
-          cells(1,1)%s = header(1)
+          cells(1,1)%s = trim(header(1))
         rank(2)
           if ( size(header) == 1 ) then
             do j = 1, ncols
-              cells(1,j)%s = header(1)//str(j)
+              cells(1,j)%s = trim(header(1))//str(j)
             end do
           else
             do j = 1, ncols
-              cells(1,j)%s = header(j)
+              cells(1,j)%s = trim(header(j))
             end do
           end if
       end select
@@ -341,15 +341,15 @@ submodule (io_fortran_lib) text_io
     if ( header_present ) then
       select rank(x)
         rank(1)
-          cells(1,1)%s = header(1)
+          cells(1,1)%s = trim(header(1))
         rank(2)
           if ( size(header) == 1 ) then
             do j = 1, ncols
-              cells(1,j)%s = header(1)//str(j)
+              cells(1,j)%s = trim(header(1))//str(j)
             end do
           else
             do j = 1, ncols
-              cells(1,j)%s = header(j)
+              cells(1,j)%s = trim(header(j))
             end do
           end if
       end select
@@ -393,15 +393,15 @@ submodule (io_fortran_lib) text_io
     if ( header_present ) then
       select rank(x)
         rank(1)
-          cells(1,1)%s = header(1)
+          cells(1,1)%s = trim(header(1))
         rank(2)
           if ( size(header) == 1 ) then
             do j = 1, ncols
-              cells(1,j)%s = header(1)//str(j)
+              cells(1,j)%s = trim(header(1))//str(j)
             end do
           else
             do j = 1, ncols
-              cells(1,j)%s = header(j)
+              cells(1,j)%s = trim(header(j))
             end do
           end if
       end select
@@ -444,15 +444,15 @@ submodule (io_fortran_lib) text_io
     if ( header_present ) then
       select rank(x)
         rank(1)
-          cells(1,1)%s = header(1)
+          cells(1,1)%s = trim(header(1))
         rank(2)
           if ( size(header) == 1 ) then
             do j = 1, ncols
-              cells(1,j)%s = header(1)//str(j)
+              cells(1,j)%s = trim(header(1))//str(j)
             end do
           else
             do j = 1, ncols
-              cells(1,j)%s = header(j)
+              cells(1,j)%s = trim(header(j))
             end do
           end if
       end select
@@ -495,15 +495,15 @@ submodule (io_fortran_lib) text_io
     if ( header_present ) then
       select rank(x)
         rank(1)
-          cells(1,1)%s = header(1)
+          cells(1,1)%s = trim(header(1))
         rank(2)
           if ( size(header) == 1 ) then
             do j = 1, ncols
-              cells(1,j)%s = header(1)//str(j)
+              cells(1,j)%s = trim(header(1))//str(j)
             end do
           else
             do j = 1, ncols
-              cells(1,j)%s = header(j)
+              cells(1,j)%s = trim(header(j))
             end do
           end if
       end select
@@ -547,15 +547,15 @@ submodule (io_fortran_lib) text_io
     if ( header_present ) then
       select rank(x)
         rank(1)
-          cells(1,1)%s = header(1)
+          cells(1,1)%s = trim(header(1))
         rank(2)
           if ( size(header) == 1 ) then
             do j = 1, ncols
-              cells(1,j)%s = header(1)//str(j)
+              cells(1,j)%s = trim(header(1))//str(j)
             end do
           else
             do j = 1, ncols
-              cells(1,j)%s = header(j)
+              cells(1,j)%s = trim(header(j))
             end do
           end if
       end select
@@ -598,15 +598,15 @@ submodule (io_fortran_lib) text_io
     if ( header_present ) then
       select rank(x)
         rank(1)
-          cells(1,1)%s = header(1)
+          cells(1,1)%s = trim(header(1))
         rank(2)
           if ( size(header) == 1 ) then
             do j = 1, ncols
-              cells(1,j)%s = header(1)//str(j)
+              cells(1,j)%s = trim(header(1))//str(j)
             end do
           else
             do j = 1, ncols
-              cells(1,j)%s = header(j)
+              cells(1,j)%s = trim(header(j))
             end do
           end if
       end select
@@ -649,15 +649,15 @@ submodule (io_fortran_lib) text_io
     if ( header_present ) then
       select rank(x)
         rank(1)
-          cells(1,1)%s = header(1)
+          cells(1,1)%s = trim(header(1))
         rank(2)
           if ( size(header) == 1 ) then
             do j = 1, ncols
-              cells(1,j)%s = header(1)//str(j)
+              cells(1,j)%s = trim(header(1))//str(j)
             end do
           else
             do j = 1, ncols
-              cells(1,j)%s = header(j)
+              cells(1,j)%s = trim(header(j))
             end do
           end if
       end select
@@ -700,15 +700,15 @@ submodule (io_fortran_lib) text_io
     if ( header_present ) then
       select rank(x)
         rank(1)
-          cells(1,1)%s = header(1)
+          cells(1,1)%s = trim(header(1))
         rank(2)
           if ( size(header) == 1 ) then
             do j = 1, ncols
-              cells(1,j)%s = header(1)//str(j)
+              cells(1,j)%s = trim(header(1))//str(j)
             end do
           else
             do j = 1, ncols
-              cells(1,j)%s = header(j)
+              cells(1,j)%s = trim(header(j))
             end do
           end if
       end select
