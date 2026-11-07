@@ -114,6 +114,12 @@ and the
 [tutorials](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Examples/index.html)
 for complete example programs.
 
+## Release Notes v2.1.0 (in development)
+
+### Fixed
+
+* `fmt="e"` and `fmt="f"` dropped the sign of negative zero, writing `0.0e+000` for `-0.0`, so it read back as positive zero. Complex values with a negative zero imaginary part were also written as `1.0e+000+-0.0e+000j`. `fmt="z"` was already correct.
+
 ## Release Notes v2.0.0
 
 Version 2.0.0 is a rewrite for correctness, portability and speed. Code written for 1.x should still compile, except as noted under breaking changes, but errors that 1.x let pass silently now stop the program unless `stat` is present.

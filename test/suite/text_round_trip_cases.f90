@@ -4,13 +4,13 @@ module text_round_trip_cases
   !---------------------------------------------------------------------------------------------------------------------
   !! Round trips through text for every kind: `str` then `cast`, `cast` into a character variable, and `String` arrays,
   !! for every locale, format and imaginary unit, on edge values and seeded random values. Values must come back
-  !! identical; NaN matches NaN. The sign of zero is checked with `fmt="z"` only, until #60 is fixed.
+  !! identical, the sign of zero included; NaN matches NaN.
   !---------------------------------------------------------------------------------------------------------------------
   use, intrinsic :: iso_fortran_env, only: r128=>real128, r64=>real64, r32=>real32, &
                                            i64=>int64, i32=>int32, i16=>int16, i8=>int8
   use, intrinsic :: ieee_arithmetic, only: ieee_copy_sign
   use io_fortran_lib, only: String, str, cast, operator(==)
-  use test_support,   only: test_suite, KNOWN_BUG, fail, failure_count, expect_equal, expect_identical
+  use test_support,   only: test_suite, fail, failure_count, expect_equal, expect_identical
   use test_values,    only: reset_random, test_values_of
   implicit none (type, external)
   private
@@ -42,25 +42,25 @@ contains
 #ifdef IOFL_HAS_R128
     call suite%add("str_cast_r128", str_cast_r128)
     call suite%add("string_array_r128", string_array_r128)
-    call suite%add("negative_zero_r128", negative_zero_r128, status=KNOWN_BUG)
+    call suite%add("negative_zero_r128", negative_zero_r128)
 #endif
     call suite%add("str_cast_r64", str_cast_r64)
     call suite%add("string_array_r64", string_array_r64)
-    call suite%add("negative_zero_r64", negative_zero_r64, status=KNOWN_BUG)
+    call suite%add("negative_zero_r64", negative_zero_r64)
     call suite%add("str_cast_r32", str_cast_r32)
     call suite%add("string_array_r32", string_array_r32)
-    call suite%add("negative_zero_r32", negative_zero_r32, status=KNOWN_BUG)
+    call suite%add("negative_zero_r32", negative_zero_r32)
 #ifdef IOFL_HAS_R128
     call suite%add("str_cast_c128", str_cast_c128)
     call suite%add("string_array_c128", string_array_c128)
-    call suite%add("negative_zero_c128", negative_zero_c128, status=KNOWN_BUG)
+    call suite%add("negative_zero_c128", negative_zero_c128)
 #endif
     call suite%add("str_cast_c64", str_cast_c64)
     call suite%add("string_array_c64", string_array_c64)
-    call suite%add("negative_zero_c64", negative_zero_c64, status=KNOWN_BUG)
+    call suite%add("negative_zero_c64", negative_zero_c64)
     call suite%add("str_cast_c32", str_cast_c32)
     call suite%add("string_array_c32", string_array_c32)
-    call suite%add("negative_zero_c32", negative_zero_c32, status=KNOWN_BUG)
+    call suite%add("negative_zero_c32", negative_zero_c32)
   end subroutine register_text_round_trip
 
   function context(i, fmt, locale, im) result(text)
@@ -293,8 +293,7 @@ contains
           text = str(x(i), locale=LOCALES(l), fmt=REAL_FMTS(f))
           call cast(text, into=y, locale=LOCALES(l), fmt=REAL_FMTS(f), stat=st)
           if ( st /= 0 ) call fail("cast should read back "//text//context(i, REAL_FMTS(f), LOCALES(l)))
-          call expect_identical(y, x(i), "str then cast"//context(i, REAL_FMTS(f), LOCALES(l)), &
-                                ignore_zero_sign=(REAL_FMTS(f) /= "z"))
+          call expect_identical(y, x(i), "str then cast"//context(i, REAL_FMTS(f), LOCALES(l)))
           call cast(x(i), into=other, locale=LOCALES(l), fmt=REAL_FMTS(f))
           call expect_equal(other, text, "cast into character should agree with str"// &
                             context(i, REAL_FMTS(f), LOCALES(l)))
@@ -319,8 +318,7 @@ contains
       do f = 1, size(REAL_FMTS)
         strings = String(x, locale=LOCALES(l), fmt=REAL_FMTS(f))
         call cast(strings, into=y, locale=LOCALES(l), fmt=REAL_FMTS(f))
-        call expect_identical(y, x, "String then cast"//context(0, REAL_FMTS(f), LOCALES(l)), &
-                              ignore_zero_sign=(REAL_FMTS(f) /= "z"))
+        call expect_identical(y, x, "String then cast"//context(0, REAL_FMTS(f), LOCALES(l)))
         call cast(x, into=other, locale=LOCALES(l), fmt=REAL_FMTS(f))
         call expect_equal(other, strings, "cast into String should agree with String"// &
                           context(0, REAL_FMTS(f), LOCALES(l)))
@@ -336,7 +334,7 @@ contains
   end subroutine string_array_r128
 
   subroutine negative_zero_r128()
-    !! Negative zero keeps its sign through text in every format and locale. `e` and `f` drop it (#60).
+    !! Negative zero keeps its sign through text in every format and locale (#60).
     real(r128) :: x, y
     integer   :: l, f
 
@@ -368,8 +366,7 @@ contains
           text = str(x(i), locale=LOCALES(l), fmt=REAL_FMTS(f))
           call cast(text, into=y, locale=LOCALES(l), fmt=REAL_FMTS(f), stat=st)
           if ( st /= 0 ) call fail("cast should read back "//text//context(i, REAL_FMTS(f), LOCALES(l)))
-          call expect_identical(y, x(i), "str then cast"//context(i, REAL_FMTS(f), LOCALES(l)), &
-                                ignore_zero_sign=(REAL_FMTS(f) /= "z"))
+          call expect_identical(y, x(i), "str then cast"//context(i, REAL_FMTS(f), LOCALES(l)))
           call cast(x(i), into=other, locale=LOCALES(l), fmt=REAL_FMTS(f))
           call expect_equal(other, text, "cast into character should agree with str"// &
                             context(i, REAL_FMTS(f), LOCALES(l)))
@@ -394,8 +391,7 @@ contains
       do f = 1, size(REAL_FMTS)
         strings = String(x, locale=LOCALES(l), fmt=REAL_FMTS(f))
         call cast(strings, into=y, locale=LOCALES(l), fmt=REAL_FMTS(f))
-        call expect_identical(y, x, "String then cast"//context(0, REAL_FMTS(f), LOCALES(l)), &
-                              ignore_zero_sign=(REAL_FMTS(f) /= "z"))
+        call expect_identical(y, x, "String then cast"//context(0, REAL_FMTS(f), LOCALES(l)))
         call cast(x, into=other, locale=LOCALES(l), fmt=REAL_FMTS(f))
         call expect_equal(other, strings, "cast into String should agree with String"// &
                           context(0, REAL_FMTS(f), LOCALES(l)))
@@ -411,7 +407,7 @@ contains
   end subroutine string_array_r64
 
   subroutine negative_zero_r64()
-    !! Negative zero keeps its sign through text in every format and locale. `e` and `f` drop it (#60).
+    !! Negative zero keeps its sign through text in every format and locale (#60).
     real(r64) :: x, y
     integer   :: l, f
 
@@ -442,8 +438,7 @@ contains
           text = str(x(i), locale=LOCALES(l), fmt=REAL_FMTS(f))
           call cast(text, into=y, locale=LOCALES(l), fmt=REAL_FMTS(f), stat=st)
           if ( st /= 0 ) call fail("cast should read back "//text//context(i, REAL_FMTS(f), LOCALES(l)))
-          call expect_identical(y, x(i), "str then cast"//context(i, REAL_FMTS(f), LOCALES(l)), &
-                                ignore_zero_sign=(REAL_FMTS(f) /= "z"))
+          call expect_identical(y, x(i), "str then cast"//context(i, REAL_FMTS(f), LOCALES(l)))
           call cast(x(i), into=other, locale=LOCALES(l), fmt=REAL_FMTS(f))
           call expect_equal(other, text, "cast into character should agree with str"// &
                             context(i, REAL_FMTS(f), LOCALES(l)))
@@ -468,8 +463,7 @@ contains
       do f = 1, size(REAL_FMTS)
         strings = String(x, locale=LOCALES(l), fmt=REAL_FMTS(f))
         call cast(strings, into=y, locale=LOCALES(l), fmt=REAL_FMTS(f))
-        call expect_identical(y, x, "String then cast"//context(0, REAL_FMTS(f), LOCALES(l)), &
-                              ignore_zero_sign=(REAL_FMTS(f) /= "z"))
+        call expect_identical(y, x, "String then cast"//context(0, REAL_FMTS(f), LOCALES(l)))
         call cast(x, into=other, locale=LOCALES(l), fmt=REAL_FMTS(f))
         call expect_equal(other, strings, "cast into String should agree with String"// &
                           context(0, REAL_FMTS(f), LOCALES(l)))
@@ -485,7 +479,7 @@ contains
   end subroutine string_array_r32
 
   subroutine negative_zero_r32()
-    !! Negative zero keeps its sign through text in every format and locale. `e` and `f` drop it (#60).
+    !! Negative zero keeps its sign through text in every format and locale (#60).
     real(r32) :: x, y
     integer   :: l, f
 
@@ -518,8 +512,7 @@ contains
             text = str(x(i), locale=LOCALES(l), fmt=REAL_FMTS(f), im=trim(IMS(m)))
             call cast(text, into=y, locale=LOCALES(l), fmt=REAL_FMTS(f), im=trim(IMS(m)), stat=st)
             if ( st /= 0 ) call fail("cast should read back "//text//context(i, REAL_FMTS(f), LOCALES(l), IMS(m)))
-            call expect_identical(y, x(i), "str then cast"//context(i, REAL_FMTS(f), LOCALES(l), IMS(m)), &
-                                  ignore_zero_sign=(REAL_FMTS(f) /= "z"))
+            call expect_identical(y, x(i), "str then cast"//context(i, REAL_FMTS(f), LOCALES(l), IMS(m)))
             call cast(x(i), into=other, locale=LOCALES(l), fmt=REAL_FMTS(f), im=trim(IMS(m)))
             call expect_equal(other, text, "cast into character should agree with str"// &
                               context(i, REAL_FMTS(f), LOCALES(l), IMS(m)))
@@ -546,8 +539,7 @@ contains
         do f = 1, size(REAL_FMTS)
           strings = String(x, locale=LOCALES(l), fmt=REAL_FMTS(f), im=trim(IMS(m)))
           call cast(strings, into=y, locale=LOCALES(l), fmt=REAL_FMTS(f), im=trim(IMS(m)))
-          call expect_identical(y, x, "String then cast"//context(0, REAL_FMTS(f), LOCALES(l), IMS(m)), &
-                                ignore_zero_sign=(REAL_FMTS(f) /= "z"))
+          call expect_identical(y, x, "String then cast"//context(0, REAL_FMTS(f), LOCALES(l), IMS(m)))
           call cast(x, into=other, locale=LOCALES(l), fmt=REAL_FMTS(f), im=trim(IMS(m)))
           call expect_equal(other, strings, "cast into String should agree with String"// &
                             context(0, REAL_FMTS(f), LOCALES(l), IMS(m)))
@@ -564,7 +556,7 @@ contains
   end subroutine string_array_c128
 
   subroutine negative_zero_c128()
-    !! Negative zero parts keep their sign through text in every format and locale. `e` and `f` drop it (#60).
+    !! Negative zero parts keep their sign through text in every format and locale (#60).
     complex(r128) :: x, y
     real(r128)    :: nz
     integer      :: l, f
@@ -599,8 +591,7 @@ contains
             text = str(x(i), locale=LOCALES(l), fmt=REAL_FMTS(f), im=trim(IMS(m)))
             call cast(text, into=y, locale=LOCALES(l), fmt=REAL_FMTS(f), im=trim(IMS(m)), stat=st)
             if ( st /= 0 ) call fail("cast should read back "//text//context(i, REAL_FMTS(f), LOCALES(l), IMS(m)))
-            call expect_identical(y, x(i), "str then cast"//context(i, REAL_FMTS(f), LOCALES(l), IMS(m)), &
-                                  ignore_zero_sign=(REAL_FMTS(f) /= "z"))
+            call expect_identical(y, x(i), "str then cast"//context(i, REAL_FMTS(f), LOCALES(l), IMS(m)))
             call cast(x(i), into=other, locale=LOCALES(l), fmt=REAL_FMTS(f), im=trim(IMS(m)))
             call expect_equal(other, text, "cast into character should agree with str"// &
                               context(i, REAL_FMTS(f), LOCALES(l), IMS(m)))
@@ -627,8 +618,7 @@ contains
         do f = 1, size(REAL_FMTS)
           strings = String(x, locale=LOCALES(l), fmt=REAL_FMTS(f), im=trim(IMS(m)))
           call cast(strings, into=y, locale=LOCALES(l), fmt=REAL_FMTS(f), im=trim(IMS(m)))
-          call expect_identical(y, x, "String then cast"//context(0, REAL_FMTS(f), LOCALES(l), IMS(m)), &
-                                ignore_zero_sign=(REAL_FMTS(f) /= "z"))
+          call expect_identical(y, x, "String then cast"//context(0, REAL_FMTS(f), LOCALES(l), IMS(m)))
           call cast(x, into=other, locale=LOCALES(l), fmt=REAL_FMTS(f), im=trim(IMS(m)))
           call expect_equal(other, strings, "cast into String should agree with String"// &
                             context(0, REAL_FMTS(f), LOCALES(l), IMS(m)))
@@ -645,7 +635,7 @@ contains
   end subroutine string_array_c64
 
   subroutine negative_zero_c64()
-    !! Negative zero parts keep their sign through text in every format and locale. `e` and `f` drop it (#60).
+    !! Negative zero parts keep their sign through text in every format and locale (#60).
     complex(r64) :: x, y
     real(r64)    :: nz
     integer      :: l, f
@@ -679,8 +669,7 @@ contains
             text = str(x(i), locale=LOCALES(l), fmt=REAL_FMTS(f), im=trim(IMS(m)))
             call cast(text, into=y, locale=LOCALES(l), fmt=REAL_FMTS(f), im=trim(IMS(m)), stat=st)
             if ( st /= 0 ) call fail("cast should read back "//text//context(i, REAL_FMTS(f), LOCALES(l), IMS(m)))
-            call expect_identical(y, x(i), "str then cast"//context(i, REAL_FMTS(f), LOCALES(l), IMS(m)), &
-                                  ignore_zero_sign=(REAL_FMTS(f) /= "z"))
+            call expect_identical(y, x(i), "str then cast"//context(i, REAL_FMTS(f), LOCALES(l), IMS(m)))
             call cast(x(i), into=other, locale=LOCALES(l), fmt=REAL_FMTS(f), im=trim(IMS(m)))
             call expect_equal(other, text, "cast into character should agree with str"// &
                               context(i, REAL_FMTS(f), LOCALES(l), IMS(m)))
@@ -707,8 +696,7 @@ contains
         do f = 1, size(REAL_FMTS)
           strings = String(x, locale=LOCALES(l), fmt=REAL_FMTS(f), im=trim(IMS(m)))
           call cast(strings, into=y, locale=LOCALES(l), fmt=REAL_FMTS(f), im=trim(IMS(m)))
-          call expect_identical(y, x, "String then cast"//context(0, REAL_FMTS(f), LOCALES(l), IMS(m)), &
-                                ignore_zero_sign=(REAL_FMTS(f) /= "z"))
+          call expect_identical(y, x, "String then cast"//context(0, REAL_FMTS(f), LOCALES(l), IMS(m)))
           call cast(x, into=other, locale=LOCALES(l), fmt=REAL_FMTS(f), im=trim(IMS(m)))
           call expect_equal(other, strings, "cast into String should agree with String"// &
                             context(0, REAL_FMTS(f), LOCALES(l), IMS(m)))
@@ -725,7 +713,7 @@ contains
   end subroutine string_array_c32
 
   subroutine negative_zero_c32()
-    !! Negative zero parts keep their sign through text in every format and locale. `e` and `f` drop it (#60).
+    !! Negative zero parts keep their sign through text in every format and locale (#60).
     complex(r32) :: x, y
     real(r32)    :: nz
     integer      :: l, f

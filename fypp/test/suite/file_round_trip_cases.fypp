@@ -14,7 +14,7 @@ module file_round_trip_cases
   !---------------------------------------------------------------------------------------------------------------------
   !! Round trips through files for every kind: `to_file` then `from_file` on text files of rank 1 and 2 with each form
   !! of header, for every locale, format, delimiter and imaginary unit, and on binary files of every rank. Values must
-  !! come back identical; NaN matches NaN. In text, the sign of zero is checked with `fmt="z"` only, until #60 is fixed.
+  !! come back identical, the sign of zero included; NaN matches NaN.
   !---------------------------------------------------------------------------------------------------------------------
   use, intrinsic :: iso_fortran_env, only: r128=>real128, r64=>real64, r32=>real32, &
                                            i64=>int64, i32=>int32, i16=>int16, i8=>int8
@@ -133,7 +133,7 @@ contains
     text = " (rank "//str(rank)//", header "//trim(HEADER_NAMES(header))//combo//")"
   end function context
 
-#:def text_file_case(name, decl, mold, loops, args, ends, ctx, ignore, counters, compare, fmt_expr)
+#:def text_file_case(name, decl, mold, loops, args, ends, ctx, counters, compare, fmt_expr)
   subroutine text_file_${name}$()
     !! `to_file` then `from_file` on text files of rank 1 and 2, with each form of header.
     ${decl}$, allocatable :: values(:), data(:), x1(:), y1(:), x2(:,:), y2(:,:)
@@ -168,7 +168,7 @@ ${loops}$
             call from_file(file, into=y1, header=(h == ONE_NAME), &
                            ${args}$, stat=st, errmsg=msg)
             if ( .not. succeeded(st, msg, "from_file"//context(1, h, combo)) ) cycle
-            call ${compare}$(y1, x1, "Values"//context(1, h, combo)${ignore}$)
+            call ${compare}$(y1, x1, "Values"//context(1, h, combo))
           end do
 
           do h = ONE_NAME, NO_HEADER
@@ -193,7 +193,7 @@ ${loops}$
             call expect_equal(shape(y2), shape(x2), "Shape"//context(2, h, combo))
             if ( all(shape(y2) == shape(x2)) ) then
               call ${compare}$(pack(y2, .true.), pack(x2, .true.), &
-                               "Values"//context(2, h, combo)${ignore}$)
+                               "Values"//context(2, h, combo))
             end if
           end do
 ${ends}$
@@ -234,7 +234,7 @@ $:text_file_case(k, "integer(" + k + ")", "0_" + k, &
     "    do l = 1, size(DELIMS)\n      do f = 1, size(INT_FMTS)", &
     "delim=DELIMS(l), fmt=INT_FMTS(f)", &
     "      end do\n    end do", &
-    "INT_FMTS(f), delim=DELIMS(l)", "", "l, f", "expect_equal", "INT_FMTS(f)")
+    "INT_FMTS(f), delim=DELIMS(l)", "l, f", "expect_equal", "INT_FMTS(f)")
 
 $:binary_file_case(k, "integer(" + k + ")", "0_" + k, "expect_equal")
 
@@ -252,8 +252,7 @@ $:text_file_case(k, "real(" + k + ")", "0.0_" + k, &
     "    do l = 1, size(LOCALES)\n      do f = 1, size(REAL_FMTS)", &
     "locale=LOCALES(l), fmt=REAL_FMTS(f)", &
     "      end do\n    end do", &
-    "REAL_FMTS(f), locale=LOCALES(l)", &
-    ", ignore_zero_sign=(REAL_FMTS(f) /= \"z\")", "l, f", "expect_identical", "REAL_FMTS(f)")
+    "REAL_FMTS(f), locale=LOCALES(l)", "l, f", "expect_identical", "REAL_FMTS(f)")
 
 $:binary_file_case(k, "real(" + k + ")", "0.0_" + k, "expect_identical")
 
@@ -291,8 +290,7 @@ $:text_file_case(c, "complex(" + r + ")", "(0.0_" + r + ",0.0_" + r + ")", &
     "    do m = 1, size(IMS)\n      do l = 1, size(LOCALES)\n        do f = 1, size(REAL_FMTS)", &
     "locale=LOCALES(l), fmt=REAL_FMTS(f), im=trim(IMS(m))", &
     "        end do\n      end do\n    end do", &
-    "REAL_FMTS(f), locale=LOCALES(l), im=IMS(m)", &
-    ", ignore_zero_sign=(REAL_FMTS(f) /= \"z\")", "m, l, f", "expect_identical", "REAL_FMTS(f)")
+    "REAL_FMTS(f), locale=LOCALES(l), im=IMS(m)", "m, l, f", "expect_identical", "REAL_FMTS(f)")
 
 $:binary_file_case(c, "complex(" + r + ")", "(0.0_" + r + ",0.0_" + r + ")", "expect_identical")
 

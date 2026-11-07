@@ -4,7 +4,7 @@ module file_round_trip_cases
   !---------------------------------------------------------------------------------------------------------------------
   !! Round trips through files for every kind: `to_file` then `from_file` on text files of rank 1 and 2 with each form
   !! of header, for every locale, format, delimiter and imaginary unit, and on binary files of every rank. Values must
-  !! come back identical; NaN matches NaN. In text, the sign of zero is checked with `fmt="z"` only, until #60 is fixed.
+  !! come back identical, the sign of zero included; NaN matches NaN.
   !---------------------------------------------------------------------------------------------------------------------
   use, intrinsic :: iso_fortran_env, only: r128=>real128, r64=>real64, r32=>real32, &
                                            i64=>int64, i32=>int32, i16=>int16, i8=>int8
@@ -1210,7 +1210,7 @@ contains
             call from_file(file, into=y1, header=(h == ONE_NAME), &
                            locale=LOCALES(l), fmt=REAL_FMTS(f), stat=st, errmsg=msg)
             if ( .not. succeeded(st, msg, "from_file"//context(1, h, combo)) ) cycle
-            call expect_identical(y1, x1, "Values"//context(1, h, combo), ignore_zero_sign=(REAL_FMTS(f) /= "z"))
+            call expect_identical(y1, x1, "Values"//context(1, h, combo))
           end do
 
           do h = ONE_NAME, NO_HEADER
@@ -1235,7 +1235,7 @@ contains
             call expect_equal(shape(y2), shape(x2), "Shape"//context(2, h, combo))
             if ( all(shape(y2) == shape(x2)) ) then
               call expect_identical(pack(y2, .true.), pack(x2, .true.), &
-                               "Values"//context(2, h, combo), ignore_zero_sign=(REAL_FMTS(f) /= "z"))
+                               "Values"//context(2, h, combo))
             end if
           end do
       end do
@@ -1491,7 +1491,7 @@ contains
             call from_file(file, into=y1, header=(h == ONE_NAME), &
                            locale=LOCALES(l), fmt=REAL_FMTS(f), stat=st, errmsg=msg)
             if ( .not. succeeded(st, msg, "from_file"//context(1, h, combo)) ) cycle
-            call expect_identical(y1, x1, "Values"//context(1, h, combo), ignore_zero_sign=(REAL_FMTS(f) /= "z"))
+            call expect_identical(y1, x1, "Values"//context(1, h, combo))
           end do
 
           do h = ONE_NAME, NO_HEADER
@@ -1516,7 +1516,7 @@ contains
             call expect_equal(shape(y2), shape(x2), "Shape"//context(2, h, combo))
             if ( all(shape(y2) == shape(x2)) ) then
               call expect_identical(pack(y2, .true.), pack(x2, .true.), &
-                               "Values"//context(2, h, combo), ignore_zero_sign=(REAL_FMTS(f) /= "z"))
+                               "Values"//context(2, h, combo))
             end if
           end do
       end do
@@ -1771,7 +1771,7 @@ contains
             call from_file(file, into=y1, header=(h == ONE_NAME), &
                            locale=LOCALES(l), fmt=REAL_FMTS(f), stat=st, errmsg=msg)
             if ( .not. succeeded(st, msg, "from_file"//context(1, h, combo)) ) cycle
-            call expect_identical(y1, x1, "Values"//context(1, h, combo), ignore_zero_sign=(REAL_FMTS(f) /= "z"))
+            call expect_identical(y1, x1, "Values"//context(1, h, combo))
           end do
 
           do h = ONE_NAME, NO_HEADER
@@ -1796,7 +1796,7 @@ contains
             call expect_equal(shape(y2), shape(x2), "Shape"//context(2, h, combo))
             if ( all(shape(y2) == shape(x2)) ) then
               call expect_identical(pack(y2, .true.), pack(x2, .true.), &
-                               "Values"//context(2, h, combo), ignore_zero_sign=(REAL_FMTS(f) /= "z"))
+                               "Values"//context(2, h, combo))
             end if
           end do
       end do
@@ -2038,7 +2038,7 @@ contains
             call from_file(file, into=y1, header=(h == ONE_NAME), &
                            locale=LOCALES(l), fmt=REAL_FMTS(f), im=trim(IMS(m)), stat=st, errmsg=msg)
             if ( .not. succeeded(st, msg, "from_file"//context(1, h, combo)) ) cycle
-            call expect_identical(y1, x1, "Values"//context(1, h, combo), ignore_zero_sign=(REAL_FMTS(f) /= "z"))
+            call expect_identical(y1, x1, "Values"//context(1, h, combo))
           end do
 
           do h = ONE_NAME, NO_HEADER
@@ -2063,7 +2063,7 @@ contains
             call expect_equal(shape(y2), shape(x2), "Shape"//context(2, h, combo))
             if ( all(shape(y2) == shape(x2)) ) then
               call expect_identical(pack(y2, .true.), pack(x2, .true.), &
-                               "Values"//context(2, h, combo), ignore_zero_sign=(REAL_FMTS(f) /= "z"))
+                               "Values"//context(2, h, combo))
             end if
           end do
         end do
@@ -2321,7 +2321,7 @@ contains
             call from_file(file, into=y1, header=(h == ONE_NAME), &
                            locale=LOCALES(l), fmt=REAL_FMTS(f), im=trim(IMS(m)), stat=st, errmsg=msg)
             if ( .not. succeeded(st, msg, "from_file"//context(1, h, combo)) ) cycle
-            call expect_identical(y1, x1, "Values"//context(1, h, combo), ignore_zero_sign=(REAL_FMTS(f) /= "z"))
+            call expect_identical(y1, x1, "Values"//context(1, h, combo))
           end do
 
           do h = ONE_NAME, NO_HEADER
@@ -2346,7 +2346,7 @@ contains
             call expect_equal(shape(y2), shape(x2), "Shape"//context(2, h, combo))
             if ( all(shape(y2) == shape(x2)) ) then
               call expect_identical(pack(y2, .true.), pack(x2, .true.), &
-                               "Values"//context(2, h, combo), ignore_zero_sign=(REAL_FMTS(f) /= "z"))
+                               "Values"//context(2, h, combo))
             end if
           end do
         end do
@@ -2603,7 +2603,7 @@ contains
             call from_file(file, into=y1, header=(h == ONE_NAME), &
                            locale=LOCALES(l), fmt=REAL_FMTS(f), im=trim(IMS(m)), stat=st, errmsg=msg)
             if ( .not. succeeded(st, msg, "from_file"//context(1, h, combo)) ) cycle
-            call expect_identical(y1, x1, "Values"//context(1, h, combo), ignore_zero_sign=(REAL_FMTS(f) /= "z"))
+            call expect_identical(y1, x1, "Values"//context(1, h, combo))
           end do
 
           do h = ONE_NAME, NO_HEADER
@@ -2628,7 +2628,7 @@ contains
             call expect_equal(shape(y2), shape(x2), "Shape"//context(2, h, combo))
             if ( all(shape(y2) == shape(x2)) ) then
               call expect_identical(pack(y2, .true.), pack(x2, .true.), &
-                               "Values"//context(2, h, combo), ignore_zero_sign=(REAL_FMTS(f) /= "z"))
+                               "Values"//context(2, h, combo))
             end if
           end do
         end do
