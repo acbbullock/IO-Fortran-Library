@@ -14,6 +14,8 @@ program tests
   use order_cases, only: register_order
   use aprint_cases, only: register_aprint
   use read_line_cases, only: register_read_line
+  use text_round_trip_cases, only: register_text_round_trip
+  use file_round_trip_cases, only: register_file_round_trip
   implicit none (type, external)
 
   type(test_suite) :: suite
@@ -29,6 +31,8 @@ program tests
   call register_order(suite)
   call register_aprint(suite)
   call register_read_line(suite)
+  call register_text_round_trip(suite)
+  call register_file_round_trip(suite)
 
   call suite%run("tests")
 end program tests

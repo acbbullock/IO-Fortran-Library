@@ -46,8 +46,9 @@ add `include` to the include path.
 
 ## Tests
 
-Run `fpm test`. With `flang-new`, add `--flag -cpp`, since fpm 0.12 does
-not enable the preprocessor for that compiler. A failing test ends with a
+Run `fpm test`. One build tests every kind. With `flang-new`, add
+`--flag -cpp`, since fpm 0.12 does not enable the preprocessor for that
+compiler. A failing test ends with a
 nonzero exit status. Test output goes to `test/output`.
 
 The main suite is `test/tests.f90`, with its cases in `test/suite/`. Each
@@ -78,14 +79,19 @@ run. A case for a bug that isn't fixed yet takes `status=KNOWN_BUG`, and
 the suite fails once it passes, so the marker is removed with the fix. See
 `test/suite/test_support.f90` for the details.
 
-The older programs in `test/units` test one `real` and one `integer` kind
-per build, selected with for instance `--flag "-D R8 -D I4"`. They are being
-replaced by the main suite (#59).
+The `text_round_trip` and `file_round_trip` groups check that values of
+every kind and rank survive `str` and `cast`, `String` arrays, text files
+and binary files exactly. They use edge values (zeros, `huge`, `tiny`,
+subnormals, NaN and infinities) and seeded random values from
+`test/suite/test_values.f90`, which gives the same values on every
+compiler. These groups, `test_support` and `test_values` are generated from
+the fypp templates in `fypp/test/suite`, like the library sources.
 
 ## Generated sources
 
-Most sources in `src` are generated from the templates in `fypp`, one per
-kind or rank, and are committed so that using the library does not need
+Most sources in `src`, and part of the test suite in `test/suite`, are
+generated from the templates in `fypp`, one per kind or rank, and are
+committed so that using the library does not need
 [fypp](https://github.com/aradi/fypp). A generated file says so on its first
 line. To change one, edit its template, run `fypp/generate.sh`, and commit
 both. CI fails if they do not match.

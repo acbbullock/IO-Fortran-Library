@@ -1,4 +1,4 @@
-#! Definitions shared by the templates. Run fypp/generate.sh after changing any template, and commit the result in src.
+#! Definitions shared by the templates. Run fypp/generate.sh after changing any template, and commit the result in src and test.
 #:set COMPLEX_KINDS = [("c128", "r128"), ("c64", "r64"), ("c32", "r32")]
 #:set REAL_KINDS = ["r128", "r64", "r32"]
 #:set INT_KINDS = ["i64", "i32", "i16", "i8"]

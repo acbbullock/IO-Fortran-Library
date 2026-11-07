@@ -1,3 +1,5 @@
+! Generated from fypp/test/suite/test_support.fypp by fypp/generate.sh. Edit that file, not this one.
+#include "iofl_config.inc"
 module test_support
   !---------------------------------------------------------------------------------------------------------------------
   !! A small test harness for IO-Fortran-Library.
@@ -24,17 +26,21 @@ module test_support
   !! - `--in-process [pattern]`: run the cases in this process, for a debugger. `STOPS` cases are skipped unless
   !!   exactly one case matches, since they end the program.
   !!
+  !! `expect_equal` compares values of any kind, and prints both when they differ. `expect_identical` compares reals
+  !! and complex values as identical: NaN matches NaN, and the sign of zero counts unless `ignore_zero_sign` is true.
+  !!
   !! Files a case writes belong under `scratch()`, which is unique to the case. Child output goes to
   !! `test/output/tests/logs/<name>.log`. Both directories are emptied at the start of each run.
   !---------------------------------------------------------------------------------------------------------------------
-  use, intrinsic :: iso_fortran_env, only: int8, int16, int32, int64, real32, real64, output_unit
-  use, intrinsic :: ieee_arithmetic, only: ieee_is_nan
+  use, intrinsic :: iso_fortran_env, only: r128=>real128, r64=>real64, r32=>real32, &
+                                           i64=>int64, i32=>int32, i16=>int16, i8=>int8, output_unit
+  use, intrinsic :: ieee_arithmetic, only: ieee_is_nan, ieee_is_negative
   use io_fortran_lib,                only: String, str, operator(==)
   implicit none (type, external)
   private
 
   public :: test_suite, RETURNS, STOPS, FIXED, KNOWN_BUG, UNDEFINED
-  public :: check, expect_equal, scratch, write_raw, read_raw
+  public :: check, fail, failure_count, expect_equal, expect_identical, scratch, write_raw, read_raw
 
   integer, parameter :: RETURNS = 0                                           !! Should return normally
   integer, parameter :: STOPS   = 1                                           !! Should end with `error stop`
@@ -77,16 +83,60 @@ module test_support
 
   interface expect_equal
     !! Checks that `actual` equals `expected`, and prints both if not. Reals and complex values compare exactly unless
-    !! `rel_tol` is given; two NaNs count as equal.
-    module procedure :: equal_i8, equal_i16, equal_i32, equal_i64, equal_logical, equal_char, equal_string_char, &
-                        equal_string, equal_r32, equal_r64, equal_c32, equal_c64, equal_i32_1, equal_i64_1, &
-                        equal_r32_1, equal_r64_1, equal_string_1, equal_string_char_1, equal_char_1
+    !! `rel_tol` is given; two NaNs count as equal, and so do the two zeros.
+    module procedure :: equal_logical, equal_char, equal_string_char, equal_string, equal_string_1, &
+                        equal_string_char_1, equal_char_1
+    module procedure :: equal_i64, equal_i64_1
+    module procedure :: equal_i32, equal_i32_1
+    module procedure :: equal_i16, equal_i16_1
+    module procedure :: equal_i8, equal_i8_1
+#ifdef IOFL_HAS_R128
+    module procedure :: equal_r128, equal_r128_1
+#endif
+    module procedure :: equal_r64, equal_r64_1
+    module procedure :: equal_r32, equal_r32_1
+#ifdef IOFL_HAS_R128
+    module procedure :: equal_c128
+#endif
+    module procedure :: equal_c64
+    module procedure :: equal_c32
   end interface expect_equal
+
+  interface expect_identical
+    !! Checks that `actual` and `expected` are the same value: NaN matches NaN, and the sign of zero counts unless
+    !! `ignore_zero_sign` is true.
+#ifdef IOFL_HAS_R128
+    module procedure :: identical_r128, identical_r128_1
+#endif
+    module procedure :: identical_r64, identical_r64_1
+    module procedure :: identical_r32, identical_r32_1
+#ifdef IOFL_HAS_R128
+    module procedure :: identical_c128, identical_c128_1
+#endif
+    module procedure :: identical_c64, identical_c64_1
+    module procedure :: identical_c32, identical_c32_1
+  end interface expect_identical
+
+  interface shown_real
+#ifdef IOFL_HAS_R128
+    module procedure :: shown_real_r128
+#endif
+    module procedure :: shown_real_r64
+    module procedure :: shown_real_r32
+  end interface shown_real
+
+  interface shown_complex
+#ifdef IOFL_HAS_R128
+    module procedure :: shown_complex_c128
+#endif
+    module procedure :: shown_complex_c64
+    module procedure :: shown_complex_c32
+  end interface shown_complex
 
   ! State of the case running in this process.
   character(len=name_len) :: current_name = ""
-  integer           :: current_expected = RETURNS
-  integer           :: failures         = 0
+  integer                 :: current_expected = RETURNS
+  integer                 :: failures         = 0
 
 contains
 
@@ -365,7 +415,13 @@ contains
     call fail(message)
   end subroutine check
 
+  integer function failure_count()
+    !! Returns the number of failed checks so far in the running case, so that a loop can stop at its first failure.
+    failure_count = failures
+  end function failure_count
+
   subroutine fail(message, actual, expected)
+    !! Records a failure, showing `actual` and `expected` if present.
     character(len=*),           intent(in) :: message
     character(len=*), optional, intent(in) :: actual, expected
 
@@ -378,29 +434,81 @@ contains
     if ( current_expected == STOPS ) stop CHECK_FAILED
   end subroutine fail
 
-  subroutine equal_i8(actual, expected, message)
-    integer(int8),    intent(in) :: actual, expected
+  subroutine equal_i64(actual, expected, message)
+    integer(i64),     intent(in) :: actual, expected
     character(len=*), intent(in) :: message
     if ( actual /= expected ) call fail(message, str(actual), str(expected))
-  end subroutine equal_i8
+  end subroutine equal_i64
 
-  subroutine equal_i16(actual, expected, message)
-    integer(int16),   intent(in) :: actual, expected
+  subroutine equal_i64_1(actual, expected, message)
+    integer(i64),     intent(in) :: actual(:), expected(:)
     character(len=*), intent(in) :: message
-    if ( actual /= expected ) call fail(message, str(actual), str(expected))
-  end subroutine equal_i16
+    integer :: i
+    if ( .not. same_size(size(actual), size(expected), message) ) return
+    do i = 1, size(actual)
+      if ( actual(i) /= expected(i) ) then
+        call fail(message//at(i), str(actual(i)), str(expected(i)))
+        return
+      end if
+    end do
+  end subroutine equal_i64_1
 
   subroutine equal_i32(actual, expected, message)
-    integer(int32),   intent(in) :: actual, expected
+    integer(i32),     intent(in) :: actual, expected
     character(len=*), intent(in) :: message
     if ( actual /= expected ) call fail(message, str(actual), str(expected))
   end subroutine equal_i32
 
-  subroutine equal_i64(actual, expected, message)
-    integer(int64),   intent(in) :: actual, expected
+  subroutine equal_i32_1(actual, expected, message)
+    integer(i32),     intent(in) :: actual(:), expected(:)
+    character(len=*), intent(in) :: message
+    integer :: i
+    if ( .not. same_size(size(actual), size(expected), message) ) return
+    do i = 1, size(actual)
+      if ( actual(i) /= expected(i) ) then
+        call fail(message//at(i), str(actual(i)), str(expected(i)))
+        return
+      end if
+    end do
+  end subroutine equal_i32_1
+
+  subroutine equal_i16(actual, expected, message)
+    integer(i16),     intent(in) :: actual, expected
     character(len=*), intent(in) :: message
     if ( actual /= expected ) call fail(message, str(actual), str(expected))
-  end subroutine equal_i64
+  end subroutine equal_i16
+
+  subroutine equal_i16_1(actual, expected, message)
+    integer(i16),     intent(in) :: actual(:), expected(:)
+    character(len=*), intent(in) :: message
+    integer :: i
+    if ( .not. same_size(size(actual), size(expected), message) ) return
+    do i = 1, size(actual)
+      if ( actual(i) /= expected(i) ) then
+        call fail(message//at(i), str(actual(i)), str(expected(i)))
+        return
+      end if
+    end do
+  end subroutine equal_i16_1
+
+  subroutine equal_i8(actual, expected, message)
+    integer(i8),     intent(in) :: actual, expected
+    character(len=*), intent(in) :: message
+    if ( actual /= expected ) call fail(message, str(actual), str(expected))
+  end subroutine equal_i8
+
+  subroutine equal_i8_1(actual, expected, message)
+    integer(i8),     intent(in) :: actual(:), expected(:)
+    character(len=*), intent(in) :: message
+    integer :: i
+    if ( .not. same_size(size(actual), size(expected), message) ) return
+    do i = 1, size(actual)
+      if ( actual(i) /= expected(i) ) then
+        call fail(message//at(i), str(actual(i)), str(expected(i)))
+        return
+      end if
+    end do
+  end subroutine equal_i8_1
 
   subroutine equal_logical(actual, expected, message)
     logical,          intent(in) :: actual, expected
@@ -428,96 +536,6 @@ contains
     if ( .not. (actual == expected) ) call fail(message, shown(actual%as_str()), shown(expected%as_str()))
   end subroutine equal_string
 
-  subroutine equal_r32(actual, expected, message, rel_tol)
-    real(real32),           intent(in) :: actual, expected
-    character(len=*),       intent(in) :: message
-    real(real32), optional, intent(in) :: rel_tol
-    if ( .not. close_r32(actual, expected, rel_tol) ) call fail(message, str(actual, fmt="e"), str(expected, fmt="e"))
-  end subroutine equal_r32
-
-  subroutine equal_r64(actual, expected, message, rel_tol)
-    real(real64),           intent(in) :: actual, expected
-    character(len=*),       intent(in) :: message
-    real(real64), optional, intent(in) :: rel_tol
-    if ( .not. close_r64(actual, expected, rel_tol) ) call fail(message, str(actual, fmt="e"), str(expected, fmt="e"))
-  end subroutine equal_r64
-
-  subroutine equal_c32(actual, expected, message, rel_tol)
-    complex(real32),        intent(in) :: actual, expected
-    character(len=*),       intent(in) :: message
-    real(real32), optional, intent(in) :: rel_tol
-    if ( .not. (close_r32(real(actual), real(expected), rel_tol) .and. &
-                  close_r32(aimag(actual), aimag(expected), rel_tol)) ) then
-      call fail(message, str(actual, fmt="e"), str(expected, fmt="e"))
-    end if
-  end subroutine equal_c32
-
-  subroutine equal_c64(actual, expected, message, rel_tol)
-    complex(real64),        intent(in) :: actual, expected
-    character(len=*),       intent(in) :: message
-    real(real64), optional, intent(in) :: rel_tol
-    if ( .not. (close_r64(real(actual), real(expected), rel_tol) .and. &
-                  close_r64(aimag(actual), aimag(expected), rel_tol)) ) then
-      call fail(message, str(actual, fmt="e"), str(expected, fmt="e"))
-    end if
-  end subroutine equal_c64
-
-  subroutine equal_i32_1(actual, expected, message)
-    integer(int32),   intent(in) :: actual(:), expected(:)
-    character(len=*), intent(in) :: message
-    integer :: i
-    if ( .not. same_size(size(actual), size(expected), message) ) return
-    do i = 1, size(actual)
-      if ( actual(i) /= expected(i) ) then
-        call fail(message//" (first difference at element "//str(i)//")", str(actual(i)), str(expected(i)))
-        return
-      end if
-    end do
-  end subroutine equal_i32_1
-
-  subroutine equal_i64_1(actual, expected, message)
-    integer(int64),   intent(in) :: actual(:), expected(:)
-    character(len=*), intent(in) :: message
-    integer :: i
-    if ( .not. same_size(size(actual), size(expected), message) ) return
-    do i = 1, size(actual)
-      if ( actual(i) /= expected(i) ) then
-        call fail(message//" (first difference at element "//str(i)//")", str(actual(i)), str(expected(i)))
-        return
-      end if
-    end do
-  end subroutine equal_i64_1
-
-  subroutine equal_r32_1(actual, expected, message, rel_tol)
-    real(real32),           intent(in) :: actual(:), expected(:)
-    character(len=*),       intent(in) :: message
-    real(real32), optional, intent(in) :: rel_tol
-    integer :: i
-    if ( .not. same_size(size(actual), size(expected), message) ) return
-    do i = 1, size(actual)
-      if ( .not. close_r32(actual(i), expected(i), rel_tol) ) then
-        call fail(message//" (first difference at element "//str(i)//")", str(actual(i), fmt="e"), &
-                  str(expected(i), fmt="e"))
-        return
-      end if
-    end do
-  end subroutine equal_r32_1
-
-  subroutine equal_r64_1(actual, expected, message, rel_tol)
-    real(real64),           intent(in) :: actual(:), expected(:)
-    character(len=*),       intent(in) :: message
-    real(real64), optional, intent(in) :: rel_tol
-    integer :: i
-    if ( .not. same_size(size(actual), size(expected), message) ) return
-    do i = 1, size(actual)
-      if ( .not. close_r64(actual(i), expected(i), rel_tol) ) then
-        call fail(message//" (first difference at element "//str(i)//")", str(actual(i), fmt="e"), &
-                  str(expected(i), fmt="e"))
-        return
-      end if
-    end do
-  end subroutine equal_r64_1
-
   subroutine equal_string_1(actual, expected, message)
     type(String),     intent(in) :: actual(:), expected(:)
     character(len=*), intent(in) :: message
@@ -525,8 +543,7 @@ contains
     if ( .not. same_size(size(actual), size(expected), message) ) return
     do i = 1, size(actual)
       if ( .not. (actual(i) == expected(i)) ) then
-        call fail(message//" (first difference at element "//str(i)//")", shown(actual(i)%as_str()), &
-                  shown(expected(i)%as_str()))
+        call fail(message//at(i), shown(actual(i)%as_str()), shown(expected(i)%as_str()))
         return
       end if
     end do
@@ -540,8 +557,7 @@ contains
     if ( .not. same_size(size(actual), size(expected), message) ) return
     do i = 1, size(actual)
       if ( .not. (actual(i) == expected(i)) ) then
-        call fail(message//" (first difference at element "//str(i)//")", shown(actual(i)%as_str()), &
-                  shown(expected(i)))
+        call fail(message//at(i), shown(actual(i)%as_str()), shown(expected(i)))
         return
       end if
     end do
@@ -558,23 +574,219 @@ contains
     end if
     do i = 1, size(actual)
       if ( actual(i) /= expected(i) ) then
-        call fail(message//" (first difference at element "//str(i)//")", shown(actual(i)), shown(expected(i)))
+        call fail(message//at(i), shown(actual(i)), shown(expected(i)))
         return
       end if
     end do
   end subroutine equal_char_1
 
-  logical function same_size(n_actual, n_expected, message)
-    integer,          intent(in) :: n_actual, n_expected
-    character(len=*), intent(in) :: message
+#ifdef IOFL_HAS_R128
+  subroutine equal_r128(actual, expected, message, rel_tol)
+    real(r128),           intent(in) :: actual, expected
+    character(len=*),    intent(in) :: message
+    real(r128), optional, intent(in) :: rel_tol
+    if ( .not. close_r128(actual, expected, rel_tol) ) call fail(message, shown_real(actual), shown_real(expected))
+  end subroutine equal_r128
 
-    same_size = (n_actual == n_expected)
-    if ( .not. same_size ) call fail(message//" (sizes differ)", str(n_actual), str(n_expected))
-  end function same_size
+  subroutine equal_r128_1(actual, expected, message, rel_tol)
+    real(r128),           intent(in) :: actual(:), expected(:)
+    character(len=*),    intent(in) :: message
+    real(r128), optional, intent(in) :: rel_tol
+    integer :: i
+    if ( .not. same_size(size(actual), size(expected), message) ) return
+    do i = 1, size(actual)
+      if ( .not. close_r128(actual(i), expected(i), rel_tol) ) then
+        call fail(message//at(i), shown_real(actual(i)), shown_real(expected(i)))
+        return
+      end if
+    end do
+  end subroutine equal_r128_1
+
+  subroutine identical_r128(actual, expected, message, ignore_zero_sign)
+    real(r128),        intent(in) :: actual, expected
+    character(len=*), intent(in) :: message
+    logical,          intent(in), optional :: ignore_zero_sign
+    if ( .not. same_r128(actual, expected, ignore_zero_sign) ) then
+      call fail(message, shown_real(actual), shown_real(expected))
+    end if
+  end subroutine identical_r128
+
+  subroutine identical_r128_1(actual, expected, message, ignore_zero_sign)
+    real(r128),        intent(in) :: actual(:), expected(:)
+    character(len=*), intent(in) :: message
+    logical,          intent(in), optional :: ignore_zero_sign
+    integer :: i
+    if ( .not. same_size(size(actual), size(expected), message) ) return
+    do i = 1, size(actual)
+      if ( .not. same_r128(actual(i), expected(i), ignore_zero_sign) ) then
+        call fail(message//at(i), shown_real(actual(i)), shown_real(expected(i)))
+        return
+      end if
+    end do
+  end subroutine identical_r128_1
+
+  logical function close_r128(actual, expected, rel_tol)
+    real(r128),           intent(in) :: actual, expected
+    real(r128), optional, intent(in) :: rel_tol
+
+    if ( ieee_is_nan(actual) .or. ieee_is_nan(expected) ) then
+      close_r128 = ieee_is_nan(actual) .and. ieee_is_nan(expected)
+    else if ( present(rel_tol) ) then
+      close_r128 = (actual == expected) .or. (abs(actual - expected) <= rel_tol*abs(expected))
+    else
+      close_r128 = (actual == expected)
+    end if
+  end function close_r128
+
+  logical function same_r128(actual, expected, ignore_zero_sign)
+    !! Whether two values are the same: NaN matches NaN, and the sign of zero counts unless `ignore_zero_sign`.
+    real(r128),        intent(in) :: actual, expected
+    logical,          intent(in), optional :: ignore_zero_sign
+
+    if ( ieee_is_nan(actual) .or. ieee_is_nan(expected) ) then
+      same_r128 = ieee_is_nan(actual) .and. ieee_is_nan(expected)
+    else
+      same_r128 = (actual == expected)
+      if ( same_r128 .and. (actual == 0.0_r128) .and. (.not. optval(ignore_zero_sign)) ) then
+        same_r128 = (ieee_is_negative(actual) .eqv. ieee_is_negative(expected))
+      end if
+    end if
+  end function same_r128
+
+  function shown_real_r128(x) result(text)
+    real(r128), intent(in)          :: x
+    character(len=:), allocatable :: text
+
+    text = str(x, fmt="e")//" ("//str(x, fmt="z")//")"
+  end function shown_real_r128
+#endif
+
+  subroutine equal_r64(actual, expected, message, rel_tol)
+    real(r64),           intent(in) :: actual, expected
+    character(len=*),    intent(in) :: message
+    real(r64), optional, intent(in) :: rel_tol
+    if ( .not. close_r64(actual, expected, rel_tol) ) call fail(message, shown_real(actual), shown_real(expected))
+  end subroutine equal_r64
+
+  subroutine equal_r64_1(actual, expected, message, rel_tol)
+    real(r64),           intent(in) :: actual(:), expected(:)
+    character(len=*),    intent(in) :: message
+    real(r64), optional, intent(in) :: rel_tol
+    integer :: i
+    if ( .not. same_size(size(actual), size(expected), message) ) return
+    do i = 1, size(actual)
+      if ( .not. close_r64(actual(i), expected(i), rel_tol) ) then
+        call fail(message//at(i), shown_real(actual(i)), shown_real(expected(i)))
+        return
+      end if
+    end do
+  end subroutine equal_r64_1
+
+  subroutine identical_r64(actual, expected, message, ignore_zero_sign)
+    real(r64),        intent(in) :: actual, expected
+    character(len=*), intent(in) :: message
+    logical,          intent(in), optional :: ignore_zero_sign
+    if ( .not. same_r64(actual, expected, ignore_zero_sign) ) then
+      call fail(message, shown_real(actual), shown_real(expected))
+    end if
+  end subroutine identical_r64
+
+  subroutine identical_r64_1(actual, expected, message, ignore_zero_sign)
+    real(r64),        intent(in) :: actual(:), expected(:)
+    character(len=*), intent(in) :: message
+    logical,          intent(in), optional :: ignore_zero_sign
+    integer :: i
+    if ( .not. same_size(size(actual), size(expected), message) ) return
+    do i = 1, size(actual)
+      if ( .not. same_r64(actual(i), expected(i), ignore_zero_sign) ) then
+        call fail(message//at(i), shown_real(actual(i)), shown_real(expected(i)))
+        return
+      end if
+    end do
+  end subroutine identical_r64_1
+
+  logical function close_r64(actual, expected, rel_tol)
+    real(r64),           intent(in) :: actual, expected
+    real(r64), optional, intent(in) :: rel_tol
+
+    if ( ieee_is_nan(actual) .or. ieee_is_nan(expected) ) then
+      close_r64 = ieee_is_nan(actual) .and. ieee_is_nan(expected)
+    else if ( present(rel_tol) ) then
+      close_r64 = (actual == expected) .or. (abs(actual - expected) <= rel_tol*abs(expected))
+    else
+      close_r64 = (actual == expected)
+    end if
+  end function close_r64
+
+  logical function same_r64(actual, expected, ignore_zero_sign)
+    !! Whether two values are the same: NaN matches NaN, and the sign of zero counts unless `ignore_zero_sign`.
+    real(r64),        intent(in) :: actual, expected
+    logical,          intent(in), optional :: ignore_zero_sign
+
+    if ( ieee_is_nan(actual) .or. ieee_is_nan(expected) ) then
+      same_r64 = ieee_is_nan(actual) .and. ieee_is_nan(expected)
+    else
+      same_r64 = (actual == expected)
+      if ( same_r64 .and. (actual == 0.0_r64) .and. (.not. optval(ignore_zero_sign)) ) then
+        same_r64 = (ieee_is_negative(actual) .eqv. ieee_is_negative(expected))
+      end if
+    end if
+  end function same_r64
+
+  function shown_real_r64(x) result(text)
+    real(r64), intent(in)          :: x
+    character(len=:), allocatable :: text
+
+    text = str(x, fmt="e")//" ("//str(x, fmt="z")//")"
+  end function shown_real_r64
+
+  subroutine equal_r32(actual, expected, message, rel_tol)
+    real(r32),           intent(in) :: actual, expected
+    character(len=*),    intent(in) :: message
+    real(r32), optional, intent(in) :: rel_tol
+    if ( .not. close_r32(actual, expected, rel_tol) ) call fail(message, shown_real(actual), shown_real(expected))
+  end subroutine equal_r32
+
+  subroutine equal_r32_1(actual, expected, message, rel_tol)
+    real(r32),           intent(in) :: actual(:), expected(:)
+    character(len=*),    intent(in) :: message
+    real(r32), optional, intent(in) :: rel_tol
+    integer :: i
+    if ( .not. same_size(size(actual), size(expected), message) ) return
+    do i = 1, size(actual)
+      if ( .not. close_r32(actual(i), expected(i), rel_tol) ) then
+        call fail(message//at(i), shown_real(actual(i)), shown_real(expected(i)))
+        return
+      end if
+    end do
+  end subroutine equal_r32_1
+
+  subroutine identical_r32(actual, expected, message, ignore_zero_sign)
+    real(r32),        intent(in) :: actual, expected
+    character(len=*), intent(in) :: message
+    logical,          intent(in), optional :: ignore_zero_sign
+    if ( .not. same_r32(actual, expected, ignore_zero_sign) ) then
+      call fail(message, shown_real(actual), shown_real(expected))
+    end if
+  end subroutine identical_r32
+
+  subroutine identical_r32_1(actual, expected, message, ignore_zero_sign)
+    real(r32),        intent(in) :: actual(:), expected(:)
+    character(len=*), intent(in) :: message
+    logical,          intent(in), optional :: ignore_zero_sign
+    integer :: i
+    if ( .not. same_size(size(actual), size(expected), message) ) return
+    do i = 1, size(actual)
+      if ( .not. same_r32(actual(i), expected(i), ignore_zero_sign) ) then
+        call fail(message//at(i), shown_real(actual(i)), shown_real(expected(i)))
+        return
+      end if
+    end do
+  end subroutine identical_r32_1
 
   logical function close_r32(actual, expected, rel_tol)
-    real(real32),           intent(in) :: actual, expected
-    real(real32), optional, intent(in) :: rel_tol
+    real(r32),           intent(in) :: actual, expected
+    real(r32), optional, intent(in) :: rel_tol
 
     if ( ieee_is_nan(actual) .or. ieee_is_nan(expected) ) then
       close_r32 = ieee_is_nan(actual) .and. ieee_is_nan(expected)
@@ -585,18 +797,177 @@ contains
     end if
   end function close_r32
 
-  logical function close_r64(actual, expected, rel_tol)
-    real(real64),           intent(in) :: actual, expected
-    real(real64), optional, intent(in) :: rel_tol
+  logical function same_r32(actual, expected, ignore_zero_sign)
+    !! Whether two values are the same: NaN matches NaN, and the sign of zero counts unless `ignore_zero_sign`.
+    real(r32),        intent(in) :: actual, expected
+    logical,          intent(in), optional :: ignore_zero_sign
 
     if ( ieee_is_nan(actual) .or. ieee_is_nan(expected) ) then
-      close_r64 = ieee_is_nan(actual) .and. ieee_is_nan(expected)
-    else if ( present(rel_tol) ) then
-      close_r64 = (actual == expected) .or. (abs(actual - expected) <= rel_tol*abs(expected))
+      same_r32 = ieee_is_nan(actual) .and. ieee_is_nan(expected)
     else
-      close_r64 = (actual == expected)
+      same_r32 = (actual == expected)
+      if ( same_r32 .and. (actual == 0.0_r32) .and. (.not. optval(ignore_zero_sign)) ) then
+        same_r32 = (ieee_is_negative(actual) .eqv. ieee_is_negative(expected))
+      end if
     end if
-  end function close_r64
+  end function same_r32
+
+  function shown_real_r32(x) result(text)
+    real(r32), intent(in)          :: x
+    character(len=:), allocatable :: text
+
+    text = str(x, fmt="e")//" ("//str(x, fmt="z")//")"
+  end function shown_real_r32
+
+#ifdef IOFL_HAS_R128
+  subroutine equal_c128(actual, expected, message, rel_tol)
+    complex(r128),        intent(in) :: actual, expected
+    character(len=*),    intent(in) :: message
+    real(r128), optional, intent(in) :: rel_tol
+    if ( .not. (close_r128(real(actual), real(expected), rel_tol) .and. &
+                close_r128(aimag(actual), aimag(expected), rel_tol)) ) then
+      call fail(message, shown_complex(actual), shown_complex(expected))
+    end if
+  end subroutine equal_c128
+
+  subroutine identical_c128(actual, expected, message, ignore_zero_sign)
+    complex(r128),     intent(in) :: actual, expected
+    character(len=*), intent(in) :: message
+    logical,          intent(in), optional :: ignore_zero_sign
+    if ( .not. (same_r128(real(actual), real(expected), ignore_zero_sign) .and. &
+                same_r128(aimag(actual), aimag(expected), ignore_zero_sign)) ) then
+      call fail(message, shown_complex(actual), shown_complex(expected))
+    end if
+  end subroutine identical_c128
+
+  subroutine identical_c128_1(actual, expected, message, ignore_zero_sign)
+    complex(r128),     intent(in) :: actual(:), expected(:)
+    character(len=*), intent(in) :: message
+    logical,          intent(in), optional :: ignore_zero_sign
+    integer :: i
+    if ( .not. same_size(size(actual), size(expected), message) ) return
+    do i = 1, size(actual)
+      if ( .not. (same_r128(real(actual(i)), real(expected(i)), ignore_zero_sign) .and. &
+                  same_r128(aimag(actual(i)), aimag(expected(i)), ignore_zero_sign)) ) then
+        call fail(message//at(i), shown_complex(actual(i)), shown_complex(expected(i)))
+        return
+      end if
+    end do
+  end subroutine identical_c128_1
+
+  function shown_complex_c128(z) result(text)
+    complex(r128), intent(in)       :: z
+    character(len=:), allocatable :: text
+
+    text = "("//shown_real(real(z))//", "//shown_real(aimag(z))//")"
+  end function shown_complex_c128
+#endif
+
+  subroutine equal_c64(actual, expected, message, rel_tol)
+    complex(r64),        intent(in) :: actual, expected
+    character(len=*),    intent(in) :: message
+    real(r64), optional, intent(in) :: rel_tol
+    if ( .not. (close_r64(real(actual), real(expected), rel_tol) .and. &
+                close_r64(aimag(actual), aimag(expected), rel_tol)) ) then
+      call fail(message, shown_complex(actual), shown_complex(expected))
+    end if
+  end subroutine equal_c64
+
+  subroutine identical_c64(actual, expected, message, ignore_zero_sign)
+    complex(r64),     intent(in) :: actual, expected
+    character(len=*), intent(in) :: message
+    logical,          intent(in), optional :: ignore_zero_sign
+    if ( .not. (same_r64(real(actual), real(expected), ignore_zero_sign) .and. &
+                same_r64(aimag(actual), aimag(expected), ignore_zero_sign)) ) then
+      call fail(message, shown_complex(actual), shown_complex(expected))
+    end if
+  end subroutine identical_c64
+
+  subroutine identical_c64_1(actual, expected, message, ignore_zero_sign)
+    complex(r64),     intent(in) :: actual(:), expected(:)
+    character(len=*), intent(in) :: message
+    logical,          intent(in), optional :: ignore_zero_sign
+    integer :: i
+    if ( .not. same_size(size(actual), size(expected), message) ) return
+    do i = 1, size(actual)
+      if ( .not. (same_r64(real(actual(i)), real(expected(i)), ignore_zero_sign) .and. &
+                  same_r64(aimag(actual(i)), aimag(expected(i)), ignore_zero_sign)) ) then
+        call fail(message//at(i), shown_complex(actual(i)), shown_complex(expected(i)))
+        return
+      end if
+    end do
+  end subroutine identical_c64_1
+
+  function shown_complex_c64(z) result(text)
+    complex(r64), intent(in)       :: z
+    character(len=:), allocatable :: text
+
+    text = "("//shown_real(real(z))//", "//shown_real(aimag(z))//")"
+  end function shown_complex_c64
+
+  subroutine equal_c32(actual, expected, message, rel_tol)
+    complex(r32),        intent(in) :: actual, expected
+    character(len=*),    intent(in) :: message
+    real(r32), optional, intent(in) :: rel_tol
+    if ( .not. (close_r32(real(actual), real(expected), rel_tol) .and. &
+                close_r32(aimag(actual), aimag(expected), rel_tol)) ) then
+      call fail(message, shown_complex(actual), shown_complex(expected))
+    end if
+  end subroutine equal_c32
+
+  subroutine identical_c32(actual, expected, message, ignore_zero_sign)
+    complex(r32),     intent(in) :: actual, expected
+    character(len=*), intent(in) :: message
+    logical,          intent(in), optional :: ignore_zero_sign
+    if ( .not. (same_r32(real(actual), real(expected), ignore_zero_sign) .and. &
+                same_r32(aimag(actual), aimag(expected), ignore_zero_sign)) ) then
+      call fail(message, shown_complex(actual), shown_complex(expected))
+    end if
+  end subroutine identical_c32
+
+  subroutine identical_c32_1(actual, expected, message, ignore_zero_sign)
+    complex(r32),     intent(in) :: actual(:), expected(:)
+    character(len=*), intent(in) :: message
+    logical,          intent(in), optional :: ignore_zero_sign
+    integer :: i
+    if ( .not. same_size(size(actual), size(expected), message) ) return
+    do i = 1, size(actual)
+      if ( .not. (same_r32(real(actual(i)), real(expected(i)), ignore_zero_sign) .and. &
+                  same_r32(aimag(actual(i)), aimag(expected(i)), ignore_zero_sign)) ) then
+        call fail(message//at(i), shown_complex(actual(i)), shown_complex(expected(i)))
+        return
+      end if
+    end do
+  end subroutine identical_c32_1
+
+  function shown_complex_c32(z) result(text)
+    complex(r32), intent(in)       :: z
+    character(len=:), allocatable :: text
+
+    text = "("//shown_real(real(z))//", "//shown_real(aimag(z))//")"
+  end function shown_complex_c32
+
+  logical function same_size(n_actual, n_expected, message)
+    integer,          intent(in) :: n_actual, n_expected
+    character(len=*), intent(in) :: message
+
+    same_size = (n_actual == n_expected)
+    if ( .not. same_size ) call fail(message//" (sizes differ)", str(n_actual), str(n_expected))
+  end function same_size
+
+  function at(i) result(text)
+    integer, intent(in)           :: i
+    character(len=:), allocatable :: text
+
+    text = " (first difference at element "//str(i)//")"
+  end function at
+
+  logical function optval(x)
+    logical, intent(in), optional :: x
+
+    optval = .false.
+    if ( present(x) ) optval = x
+  end function optval
 
   function shown(text) result(quoted)
     !! Returns `text` in quotes with control characters escaped, cut short if long, for a failure message.

@@ -1,0 +1,325 @@
+#:include "common.fypp"
+#:def rank_suffix(r)
+${"(" + ",".join([":"] * r) + ")"}$
+#:enddef
+#:def binary_size(r)
+${3 * 2**(min(r, 4) - 1)}$
+#:enddef
+#:def binary_shape(r)
+${"[" + ", ".join(str(d) for d in ([3, 2, 2, 2][:r] + [1] * max(r - 4, 0))) + "]"}$
+#:enddef
+! Generated from fypp/test/suite/file_round_trip_cases.fypp by fypp/generate.sh. Edit that file, not this one.
+#include "iofl_config.inc"
+module file_round_trip_cases
+  !---------------------------------------------------------------------------------------------------------------------
+  !! Round trips through files for every kind: `to_file` then `from_file` on text files of rank 1 and 2 with each form
+  !! of header, for every locale, format, delimiter and imaginary unit, and on binary files of every rank. Values must
+  !! come back identical; NaN matches NaN. In text, the sign of zero is checked with `fmt="z"` only, until #60 is fixed.
+  !---------------------------------------------------------------------------------------------------------------------
+  use, intrinsic :: iso_fortran_env, only: r128=>real128, r64=>real64, r32=>real32, &
+                                           i64=>int64, i32=>int32, i16=>int16, i8=>int8
+  use, intrinsic :: ieee_arithmetic, only: ieee_is_finite
+  use io_fortran_lib, only: str, to_file, from_file
+  use test_support,   only: test_suite, KNOWN_BUG, fail, failure_count, expect_equal, expect_identical, scratch
+  use test_values,    only: reset_random, test_values_of
+  implicit none (type, external)
+  private
+
+  public :: register_file_round_trip
+
+  character(len=2), parameter :: LOCALES(*)   = [ "US", "EU" ]
+  character(len=1), parameter :: REAL_FMTS(*) = [ "e", "f", "z" ]
+  character(len=1), parameter :: INT_FMTS(*)  = [ "i", "z" ]
+  character(len=1), parameter :: DELIMS(*)    = [ ",", ";" ]
+  character(len=3), parameter :: IMS(*)       = [ "   ", "*1i", "j  " ]
+
+  integer,          parameter :: COLS = 6
+  character(len=4), parameter :: COLUMN_NAMES(COLS) = [ character(len=4) :: "a", "b c", "d", "e,f", "g", "h" ]
+
+  integer, parameter :: N_FILE = 280                                          ! Random values for the text cases
+
+  interface f_safe
+    !! Whether `fmt="f"` writes a value exactly. Values below about 1e-133 lose digits until #61 is fixed.
+#:for k in INT_KINDS
+    module procedure :: f_safe_${k}$
+#:endfor
+#:for k in REAL_KINDS
+#:if k in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+    module procedure :: f_safe_${k}$
+#:if k in QUAD_KINDS
+#endif
+#:endif
+#:endfor
+#:for c, r in COMPLEX_KINDS
+#:if c in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+    module procedure :: f_safe_${c}$
+#:if c in QUAD_KINDS
+#endif
+#:endif
+#:endfor
+  end interface f_safe
+
+  ! Header forms: one name, a name per column, one empty name, and none. Rank 1 uses the first and last.
+  integer,           parameter :: ONE_NAME = 1, PER_COLUMN = 2, EMPTY_NAME = 3, NO_HEADER = 4
+  character(len=10), parameter :: HEADER_NAMES(4) = [ "one name  ", "per column", "empty name", "none      " ]
+
+contains
+
+  subroutine register_file_round_trip(suite)
+    type(test_suite), intent(inout) :: suite
+
+    call suite%group("file_round_trip")
+#:for k in INT_KINDS
+    call suite%add("text_file_${k}$", text_file_${k}$)
+    call suite%add("binary_file_${k}$", binary_file_${k}$)
+#:endfor
+#:for k in REAL_KINDS
+#:if k in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+    call suite%add("text_file_${k}$", text_file_${k}$)
+    call suite%add("binary_file_${k}$", binary_file_${k}$)
+#:if k != "r32"
+    call suite%add("small_values_fmt_f_${k}$", small_values_fmt_f_${k}$, status=KNOWN_BUG)
+#:endif
+#:if k in QUAD_KINDS
+#endif
+#:endif
+#:endfor
+#:for c, r in COMPLEX_KINDS
+#:if c in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+    call suite%add("text_file_${c}$", text_file_${c}$)
+    call suite%add("binary_file_${c}$", binary_file_${c}$)
+#:if c != "c32"
+    call suite%add("small_values_fmt_f_${c}$", small_values_fmt_f_${c}$, status=KNOWN_BUG)
+#:endif
+#:if c in QUAD_KINDS
+#endif
+#:endif
+#:endfor
+  end subroutine register_file_round_trip
+
+  logical function succeeded(stat, errmsg, what)
+    !! Records a failure if `stat` is nonzero.
+    integer,          intent(in) :: stat
+    character(len=*), intent(in) :: errmsg, what
+
+    succeeded = (stat == 0)
+    if ( .not. succeeded ) call fail(what//" failed with stat "//str(stat)//": "//trim(errmsg))
+  end function succeeded
+
+  function settings(fmt, locale, delim, im) result(text)
+    character(len=*), intent(in)           :: fmt
+    character(len=*), intent(in), optional :: locale, delim, im
+    character(len=:), allocatable          :: text
+
+    text = ', fmt="'//fmt//'"'
+    if ( present(locale) ) text = text//', locale="'//locale//'"'
+    if ( present(delim) )  text = text//', delim="'//delim//'"'
+    if ( present(im) )     text = text//', im="'//trim(im)//'"'
+  end function settings
+
+  function context(rank, header, combo) result(text)
+    integer,          intent(in)  :: rank, header
+    character(len=*), intent(in)  :: combo
+    character(len=:), allocatable :: text
+
+    text = " (rank "//str(rank)//", header "//trim(HEADER_NAMES(header))//combo//")"
+  end function context
+
+#:def text_file_case(name, decl, mold, loops, args, ends, ctx, ignore, counters, compare, fmt_expr)
+  subroutine text_file_${name}$()
+    !! `to_file` then `from_file` on text files of rank 1 and 2, with each form of header.
+    ${decl}$, allocatable :: values(:), data(:), x1(:), y1(:), x2(:,:), y2(:,:)
+    character(len=:), allocatable :: file, combo
+    character(len=512)            :: msg
+    integer                       :: ${counters}$, h, st, rows
+
+    call reset_random()
+    values = test_values_of(${mold}$, N_FILE)
+    file = scratch()//".csv"
+    msg = ""
+
+${loops}$
+          combo = settings(${ctx}$)
+
+          data = values
+          if ( ${fmt_expr}$ == "f" ) data = pack(values, f_safe(values))        ! Until #61 is fixed
+          rows = size(data)/COLS
+          x1 = data
+          x2 = reshape(data(1:rows*COLS), [rows, COLS])
+
+          do h = ONE_NAME, NO_HEADER, NO_HEADER - ONE_NAME
+            select case (h)
+              case (ONE_NAME)
+                call to_file(x1, file=file, header=["x"], &
+                             ${args}$, stat=st, errmsg=msg)
+              case default
+                call to_file(x1, file=file, &
+                             ${args}$, stat=st, errmsg=msg)
+            end select
+            if ( .not. succeeded(st, msg, "to_file"//context(1, h, combo)) ) cycle
+            call from_file(file, into=y1, header=(h == ONE_NAME), &
+                           ${args}$, stat=st, errmsg=msg)
+            if ( .not. succeeded(st, msg, "from_file"//context(1, h, combo)) ) cycle
+            call ${compare}$(y1, x1, "Values"//context(1, h, combo)${ignore}$)
+          end do
+
+          do h = ONE_NAME, NO_HEADER
+            select case (h)
+              case (ONE_NAME)
+                call to_file(x2, file=file, header=["x"], &
+                             ${args}$, stat=st, errmsg=msg)
+              case (PER_COLUMN)
+                call to_file(x2, file=file, header=COLUMN_NAMES, &
+                             ${args}$, stat=st, errmsg=msg)
+              case (EMPTY_NAME)
+                call to_file(x2, file=file, header=[""], &
+                             ${args}$, stat=st, errmsg=msg)
+              case default
+                call to_file(x2, file=file, &
+                             ${args}$, stat=st, errmsg=msg)
+            end select
+            if ( .not. succeeded(st, msg, "to_file"//context(2, h, combo)) ) cycle
+            call from_file(file, into=y2, header=(h <= PER_COLUMN), &
+                           ${args}$, stat=st, errmsg=msg)
+            if ( .not. succeeded(st, msg, "from_file"//context(2, h, combo)) ) cycle
+            call expect_equal(shape(y2), shape(x2), "Shape"//context(2, h, combo))
+            if ( all(shape(y2) == shape(x2)) ) then
+              call ${compare}$(pack(y2, .true.), pack(x2, .true.), &
+                               "Values"//context(2, h, combo)${ignore}$)
+            end if
+          end do
+${ends}$
+  end subroutine text_file_${name}$
+#:enddef
+#:def binary_file_case(name, decl, mold, expect)
+  subroutine binary_file_${name}$()
+    !! `to_file` then `from_file` on binary files of every rank.
+    ${decl}$, allocatable :: values(:), sample(:)
+#:for r in RANKS
+    ${decl}$, allocatable :: a${r}$${rank_suffix(r)}$, b${r}$${rank_suffix(r)}$
+#:endfor
+    character(len=512) :: msg
+    integer            :: st
+
+    call reset_random()
+    values = test_values_of(${mold}$, 12)
+    sample = [ values(1:12), values(size(values)-11:) ]                       ! Twelve edge and twelve random values
+    msg = ""
+
+#:for r in RANKS
+    a${r}$ = reshape(sample(1:${binary_size(r)}$), ${binary_shape(r)}$)
+    call to_file(a${r}$, file=scratch()//"_rank${r}$.dat", stat=st, errmsg=msg)
+    if ( succeeded(st, msg, "to_file (rank ${r}$)") ) then
+      call from_file(scratch()//"_rank${r}$.dat", into=b${r}$, data_shape=shape(a${r}$), &
+                     stat=st, errmsg=msg)
+      if ( succeeded(st, msg, "from_file (rank ${r}$)") ) then
+        call expect_equal(shape(b${r}$), shape(a${r}$), "Shape (rank ${r}$)")
+        call ${expect}$(pack(b${r}$, .true.), pack(a${r}$, .true.), "Values (rank ${r}$)")
+      end if
+    end if
+
+#:endfor
+  end subroutine binary_file_${name}$
+#:enddef
+#:for k in INT_KINDS
+$:text_file_case(k, "integer(" + k + ")", "0_" + k, &
+    "    do l = 1, size(DELIMS)\n      do f = 1, size(INT_FMTS)", &
+    "delim=DELIMS(l), fmt=INT_FMTS(f)", &
+    "      end do\n    end do", &
+    "INT_FMTS(f), delim=DELIMS(l)", "", "l, f", "expect_equal", "INT_FMTS(f)")
+
+$:binary_file_case(k, "integer(" + k + ")", "0_" + k, "expect_equal")
+
+  elemental logical function f_safe_${k}$(x)
+    integer(${k}$), intent(in) :: x
+    f_safe_${k}$ = .true.
+  end function f_safe_${k}$
+
+#:endfor
+#:for k in REAL_KINDS
+#:if k in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+$:text_file_case(k, "real(" + k + ")", "0.0_" + k, &
+    "    do l = 1, size(LOCALES)\n      do f = 1, size(REAL_FMTS)", &
+    "locale=LOCALES(l), fmt=REAL_FMTS(f)", &
+    "      end do\n    end do", &
+    "REAL_FMTS(f), locale=LOCALES(l)", &
+    ", ignore_zero_sign=(REAL_FMTS(f) /= \"z\")", "l, f", "expect_identical", "REAL_FMTS(f)")
+
+$:binary_file_case(k, "real(" + k + ")", "0.0_" + k, "expect_identical")
+
+  elemental logical function f_safe_${k}$(x)
+    real(${k}$), intent(in) :: x
+    f_safe_${k}$ = (abs(x) >= 1.0e-100_${k}$) .or. (x == 0.0_${k}$) .or. (.not. ieee_is_finite(x))
+  end function f_safe_${k}$
+#:if k != "r32"
+
+  subroutine small_values_fmt_f_${k}$()
+    !! Small values survive a text file with `fmt="f"`. They are written as zero, or with too few digits (#61).
+    real(${k}$), allocatable :: x(:), y(:)
+    character(len=512)     :: msg
+    integer                :: st
+
+    x = [ tiny(1.0_${k}$), 1.0e-200_${k}$, -3.0e-140_${k}$ ]
+    msg = ""
+    call to_file(x, file=scratch()//".csv", fmt="f", stat=st, errmsg=msg)
+    if ( .not. succeeded(st, msg, "to_file") ) return
+    call from_file(scratch()//".csv", into=y, fmt="f", stat=st, errmsg=msg)
+    if ( .not. succeeded(st, msg, "from_file") ) return
+    call expect_identical(y, x, "Small values")
+  end subroutine small_values_fmt_f_${k}$
+#:endif
+#:if k in QUAD_KINDS
+#endif
+#:endif
+
+#:endfor
+#:for c, r in COMPLEX_KINDS
+#:if c in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+$:text_file_case(c, "complex(" + r + ")", "(0.0_" + r + ",0.0_" + r + ")", &
+    "    do m = 1, size(IMS)\n      do l = 1, size(LOCALES)\n        do f = 1, size(REAL_FMTS)", &
+    "locale=LOCALES(l), fmt=REAL_FMTS(f), im=trim(IMS(m))", &
+    "        end do\n      end do\n    end do", &
+    "REAL_FMTS(f), locale=LOCALES(l), im=IMS(m)", &
+    ", ignore_zero_sign=(REAL_FMTS(f) /= \"z\")", "m, l, f", "expect_identical", "REAL_FMTS(f)")
+
+$:binary_file_case(c, "complex(" + r + ")", "(0.0_" + r + ",0.0_" + r + ")", "expect_identical")
+
+  elemental logical function f_safe_${c}$(z)
+    complex(${r}$), intent(in) :: z
+    f_safe_${c}$ = f_safe(real(z)) .and. f_safe(aimag(z))
+  end function f_safe_${c}$
+#:if c != "c32"
+
+  subroutine small_values_fmt_f_${c}$()
+    !! Small parts survive a text file with `fmt="f"`. They are written as zero, or with too few digits (#61).
+    complex(${r}$), allocatable :: x(:), y(:)
+    character(len=512)        :: msg
+    integer                   :: st
+
+    x = [ cmplx(tiny(1.0_${r}$), 1.0e-200_${r}$, kind=${r}$), cmplx(1.0_${r}$, -3.0e-140_${r}$, kind=${r}$) ]
+    msg = ""
+    call to_file(x, file=scratch()//".csv", fmt="f", stat=st, errmsg=msg)
+    if ( .not. succeeded(st, msg, "to_file") ) return
+    call from_file(scratch()//".csv", into=y, fmt="f", stat=st, errmsg=msg)
+    if ( .not. succeeded(st, msg, "from_file") ) return
+    call expect_identical(y, x, "Small parts")
+  end subroutine small_values_fmt_f_${c}$
+#:endif
+#:if c in QUAD_KINDS
+#endif
+#:endif
+
+#:endfor
+end module file_round_trip_cases
