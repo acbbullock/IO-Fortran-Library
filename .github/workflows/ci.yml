@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+    branches: [main, "2.0"]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: ${{ matrix.toolchain.compiler }} ${{ matrix.toolchain.version }} ${{ matrix.kinds }}
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        kinds: ["-D R4 -D I1", "-D R8 -D I4", "-D R16 -D I8"]
+        toolchain:
+          - { compiler: gcc, version: "13", fpm: gfortran, flags: "-std=f2018 -O2" }
+          - { compiler: gcc, version: "14", fpm: gfortran, flags: "-std=f2018 -O2" }
+          - { compiler: gcc, version: "15", fpm: gfortran, flags: "-std=f2018 -O2" }
+          - { compiler: gcc, version: "16", fpm: gfortran, flags: "-std=f2018 -O2" }
+          - { compiler: intel, version: "2025.3", fpm: ifx, flags: "-stand f18 -O2" }
+          - { compiler: intel, version: "2026.1", fpm: ifx, flags: "-stand f18 -O2" }
+          - { compiler: flang, version: "23", fpm: flang-new, flags: "-O2 -cpp" }
+        exclude:
+          # flang has no real128 kind in the builds tested so far, so the library compiles without those procedures.
+          - kinds: "-D R16 -D I8"
+            toolchain: { compiler: flang, version: "23", fpm: flang-new, flags: "-O2 -cpp" }
+    steps:
+      - uses: actions/checkout@v7
+      - uses: fortran-lang/setup-fortran@v1
+        with:
+          compiler: ${{ matrix.toolchain.compiler }}
+          version: ${{ matrix.toolchain.version }}
+      - uses: fortran-lang/setup-fpm@v10
+        with:
+          fpm-version: v0.12.0
+      - name: Run tests
+        run: fpm test --compiler ${{ matrix.toolchain.fpm }} --flag "${{ matrix.toolchain.flags }} ${{ matrix.kinds }}"
+
+  checks:
+    name: gfortran 16 runtime checks and sanitizers
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: fortran-lang/setup-fortran@v1
+        with:
+          compiler: gcc
+          version: "16"
+      - uses: fortran-lang/setup-fpm@v10
+        with:
+          fpm-version: v0.12.0
+      - name: Runtime checks
+        run: fpm test --compiler gfortran --flag "-std=f2018 -g -fcheck=all -fbacktrace -D R8 -D I4"
+      - name: Address and undefined behavior sanitizers
+        # Leak checks are off because allocatables still allocated at the end of a main program are reported as leaks.
+        env:
+          ASAN_OPTIONS: detect_leaks=0:exitcode=99
+        run: >-
+          fpm test --compiler gfortran
+          --flag "-std=f2018 -g -O1 -fsanitize=address,undefined -fno-omit-frame-pointer -D R8 -D I4"
+          --link-flag "-fsanitize=address,undefined"

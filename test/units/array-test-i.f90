@@ -6,7 +6,7 @@ program main
   implicit none (type, external)
 
   integer,          parameter :: n = 2000
-  character(len=*), parameter :: logfile = "./test/tests.log"
+  character(len=*), parameter :: logfile = "./test/output/tests.log"
 
   character(len=10) :: date="", time=""
   type(String)      :: testlog, errlog
@@ -19,7 +19,7 @@ program main
   real(rk),     allocatable :: x(:)
   integer(ik),  allocatable :: i(:), j(:)
 
-  call random_init(repeatable=.false., image_distinct=.true.)
+  call random_init(repeatable=.true., image_distinct=.true.)
   call date_and_time(date=date, time=time)
 
   testlog = String("RUNNING TESTS (String/cast) | date: " + trim(adjustl(date)) + &
@@ -92,4 +92,6 @@ program main
     call errlog%echo(logfile)
     write(*,"(DT)") errlog
   end if
+
+  if ( .not. all_passing ) error stop "Some tests are failing."
 end program main

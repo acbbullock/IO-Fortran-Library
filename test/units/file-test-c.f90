@@ -7,7 +7,7 @@ program main
 
   real(rk),         parameter :: tol = 3.0_rk*epsilon(1e0_rk)
   integer,          parameter :: rows = 700, cols = 25
-  character(len=*), parameter :: logfile = "./test/tests.log"
+  character(len=*), parameter :: logfile = "./test/output/tests.log"
 
   character(len=10) :: date="", time=""
   type(String)      :: testlog, errlog
@@ -19,7 +19,7 @@ program main
   real(rk),    allocatable :: u(:), v(:), x(:,:), y(:,:)
   complex(rk), allocatable :: a(:), b(:), c(:,:), d(:,:)
 
-  call random_init(repeatable=.false., image_distinct=.true.)
+  call random_init(repeatable=.true., image_distinct=.true.)
   call date_and_time(date=date, time=time)
 
   testlog = String("RUNNING TESTS (to_file/from_file) | date: " + trim(adjustl(date)) + &
@@ -36,14 +36,14 @@ program main
   1 continue
 
   call random_gauss(u,0e0_rk,1e0_rk); call random_gauss(v,0e0_rk,1e0_rk); a = cmplx(u,v,rk)
-  call to_file(a, file="./data/a_e.csv", header=[""], locale="EU", fmt="e", im="", stat=stat, errmsg=errmsg)
+  call to_file(a, file="./test/output/a_e.csv", header=[""], locale="EU", fmt="e", im="", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 2
   end if
-  call from_file("./data/a_e.csv", into=b, header=.false., locale="EU", fmt="e", im="", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/a_e.csv", into=b, header=.false., locale="EU", fmt="e", im="", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -58,14 +58,14 @@ program main
   2 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(u,0e0_rk,1e0_rk); call random_gauss(v,0e0_rk,1e0_rk); a = cmplx(u,v,rk)
-  call to_file(a, file="./data/a_f.csv", header=[""], locale="EU", fmt="f", im="", stat=stat, errmsg=errmsg)
+  call to_file(a, file="./test/output/a_f.csv", header=[""], locale="EU", fmt="f", im="", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 3
   end if
-  call from_file("./data/a_f.csv", into=b, header=.false., locale="EU", fmt="f", im="", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/a_f.csv", into=b, header=.false., locale="EU", fmt="f", im="", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -80,14 +80,14 @@ program main
   3 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(u,0e0_rk,1e0_rk); call random_gauss(v,0e0_rk,1e0_rk); a = cmplx(u,v,rk)
-  call to_file(a, file="./data/a_z.csv", header=[""], locale="EU", fmt="z", im="", stat=stat, errmsg=errmsg)
+  call to_file(a, file="./test/output/a_z.csv", header=[""], locale="EU", fmt="z", im="", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 4
   end if
-  call from_file("./data/a_z.csv", into=b, header=.false., locale="EU", fmt="z", im="", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/a_z.csv", into=b, header=.false., locale="EU", fmt="z", im="", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -102,14 +102,14 @@ program main
   4 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(u,0e0_rk,1e0_rk); call random_gauss(v,0e0_rk,1e0_rk); a = cmplx(u,v,rk)
-  call to_file(a, file="./data/a_e.csv", header=[""], locale="US", fmt="e", im="", stat=stat, errmsg=errmsg)
+  call to_file(a, file="./test/output/a_e.csv", header=[""], locale="US", fmt="e", im="", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 5
   end if
-  call from_file("./data/a_e.csv", into=b, header=.false., locale="US", fmt="e", im="", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/a_e.csv", into=b, header=.false., locale="US", fmt="e", im="", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -124,14 +124,14 @@ program main
   5 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(u,0e0_rk,1e0_rk); call random_gauss(v,0e0_rk,1e0_rk); a = cmplx(u,v,rk)
-  call to_file(a, file="./data/a_f.csv", header=[""], locale="US", fmt="f", im="", stat=stat, errmsg=errmsg)
+  call to_file(a, file="./test/output/a_f.csv", header=[""], locale="US", fmt="f", im="", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 6
   end if
-  call from_file("./data/a_f.csv", into=b, header=.false., locale="US", fmt="f", im="", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/a_f.csv", into=b, header=.false., locale="US", fmt="f", im="", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -146,14 +146,14 @@ program main
   6 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(u,0e0_rk,1e0_rk); call random_gauss(v,0e0_rk,1e0_rk); a = cmplx(u,v,rk)
-  call to_file(a, file="./data/a_z.csv", header=[""], locale="US", fmt="z", im="", stat=stat, errmsg=errmsg)
+  call to_file(a, file="./test/output/a_z.csv", header=[""], locale="US", fmt="z", im="", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 7
   end if
-  call from_file("./data/a_z.csv", into=b, header=.false., locale="US", fmt="z", im="", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/a_z.csv", into=b, header=.false., locale="US", fmt="z", im="", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -168,14 +168,14 @@ program main
   7 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(u,0e0_rk,1e0_rk); call random_gauss(v,0e0_rk,1e0_rk); a = cmplx(u,v,rk)
-  call to_file(a, file="./data/a_e.csv", header=[""], locale="EU", fmt="e", im="*1i", stat=stat, errmsg=errmsg)
+  call to_file(a, file="./test/output/a_e.csv", header=[""], locale="EU", fmt="e", im="*1i", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 8
   end if
-  call from_file("./data/a_e.csv", into=b, header=.false., locale="EU", fmt="e", im="*1i", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/a_e.csv", into=b, header=.false., locale="EU", fmt="e", im="*1i", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -190,14 +190,14 @@ program main
   8 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(u,0e0_rk,1e0_rk); call random_gauss(v,0e0_rk,1e0_rk); a = cmplx(u,v,rk)
-  call to_file(a, file="./data/a_f.csv", header=[""], locale="EU", fmt="f", im="*1i", stat=stat, errmsg=errmsg)
+  call to_file(a, file="./test/output/a_f.csv", header=[""], locale="EU", fmt="f", im="*1i", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 9
   end if
-  call from_file("./data/a_f.csv", into=b, header=.false., locale="EU", fmt="f", im="*1i", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/a_f.csv", into=b, header=.false., locale="EU", fmt="f", im="*1i", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -212,14 +212,14 @@ program main
   9 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(u,0e0_rk,1e0_rk); call random_gauss(v,0e0_rk,1e0_rk); a = cmplx(u,v,rk)
-  call to_file(a, file="./data/a_z.csv", header=[""], locale="EU", fmt="z", im="*1i", stat=stat, errmsg=errmsg)
+  call to_file(a, file="./test/output/a_z.csv", header=[""], locale="EU", fmt="z", im="*1i", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 10
   end if
-  call from_file("./data/a_z.csv", into=b, header=.false., locale="EU", fmt="z", im="*1i", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/a_z.csv", into=b, header=.false., locale="EU", fmt="z", im="*1i", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -234,14 +234,14 @@ program main
   10 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(u,0e0_rk,1e0_rk); call random_gauss(v,0e0_rk,1e0_rk); a = cmplx(u,v,rk)
-  call to_file(a, file="./data/a_e.csv", header=[""], locale="US", fmt="e", im="*1i", stat=stat, errmsg=errmsg)
+  call to_file(a, file="./test/output/a_e.csv", header=[""], locale="US", fmt="e", im="*1i", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 11
   end if
-  call from_file("./data/a_e.csv", into=b, header=.false., locale="US", fmt="e", im="*1i", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/a_e.csv", into=b, header=.false., locale="US", fmt="e", im="*1i", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -256,14 +256,14 @@ program main
   11 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(u,0e0_rk,1e0_rk); call random_gauss(v,0e0_rk,1e0_rk); a = cmplx(u,v,rk)
-  call to_file(a, file="./data/a_f.csv", header=[""], locale="US", fmt="f", im="*1i", stat=stat, errmsg=errmsg)
+  call to_file(a, file="./test/output/a_f.csv", header=[""], locale="US", fmt="f", im="*1i", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 12
   end if
-  call from_file("./data/a_f.csv", into=b, header=.false., locale="US", fmt="f", im="*1i", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/a_f.csv", into=b, header=.false., locale="US", fmt="f", im="*1i", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -278,14 +278,14 @@ program main
   12 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(u,0e0_rk,1e0_rk); call random_gauss(v,0e0_rk,1e0_rk); a = cmplx(u,v,rk)
-  call to_file(a, file="./data/a_z.csv", header=[""], locale="US", fmt="z", im="*1i", stat=stat, errmsg=errmsg)
+  call to_file(a, file="./test/output/a_z.csv", header=[""], locale="US", fmt="z", im="*1i", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 13
   end if
-  call from_file("./data/a_z.csv", into=b, header=.false., locale="US", fmt="z", im="*1i", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/a_z.csv", into=b, header=.false., locale="US", fmt="z", im="*1i", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -300,14 +300,14 @@ program main
   13 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(u,0e0_rk,1e0_rk); call random_gauss(v,0e0_rk,1e0_rk); a = cmplx(u,v,rk)
-  call to_file(a, file="./data/a_e.csv", header=[""], locale="EU", fmt="e", im="j", stat=stat, errmsg=errmsg)
+  call to_file(a, file="./test/output/a_e.csv", header=[""], locale="EU", fmt="e", im="j", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 14
   end if
-  call from_file("./data/a_e.csv", into=b, header=.false., locale="EU", fmt="e", im="j", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/a_e.csv", into=b, header=.false., locale="EU", fmt="e", im="j", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -322,14 +322,14 @@ program main
   14 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(u,0e0_rk,1e0_rk); call random_gauss(v,0e0_rk,1e0_rk); a = cmplx(u,v,rk)
-  call to_file(a, file="./data/a_f.csv", header=[""], locale="EU", fmt="f", im="j", stat=stat, errmsg=errmsg)
+  call to_file(a, file="./test/output/a_f.csv", header=[""], locale="EU", fmt="f", im="j", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 15
   end if
-  call from_file("./data/a_f.csv", into=b, header=.false., locale="EU", fmt="f", im="j", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/a_f.csv", into=b, header=.false., locale="EU", fmt="f", im="j", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -344,14 +344,14 @@ program main
   15 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(u,0e0_rk,1e0_rk); call random_gauss(v,0e0_rk,1e0_rk); a = cmplx(u,v,rk)
-  call to_file(a, file="./data/a_z.csv", header=[""], locale="EU", fmt="z", im="j", stat=stat, errmsg=errmsg)
+  call to_file(a, file="./test/output/a_z.csv", header=[""], locale="EU", fmt="z", im="j", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 16
   end if
-  call from_file("./data/a_z.csv", into=b, header=.false., locale="EU", fmt="z", im="j", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/a_z.csv", into=b, header=.false., locale="EU", fmt="z", im="j", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -366,14 +366,14 @@ program main
   16 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(u,0e0_rk,1e0_rk); call random_gauss(v,0e0_rk,1e0_rk); a = cmplx(u,v,rk)
-  call to_file(a, file="./data/a_e.csv", header=[""], locale="US", fmt="e", im="j", stat=stat, errmsg=errmsg)
+  call to_file(a, file="./test/output/a_e.csv", header=[""], locale="US", fmt="e", im="j", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 17
   end if
-  call from_file("./data/a_e.csv", into=b, header=.false., locale="US", fmt="e", im="j", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/a_e.csv", into=b, header=.false., locale="US", fmt="e", im="j", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -388,14 +388,14 @@ program main
   17 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(u,0e0_rk,1e0_rk); call random_gauss(v,0e0_rk,1e0_rk); a = cmplx(u,v,rk)
-  call to_file(a, file="./data/a_f.csv", header=[""], locale="US", fmt="f", im="j", stat=stat, errmsg=errmsg)
+  call to_file(a, file="./test/output/a_f.csv", header=[""], locale="US", fmt="f", im="j", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 18
   end if
-  call from_file("./data/a_f.csv", into=b, header=.false., locale="US", fmt="f", im="j", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/a_f.csv", into=b, header=.false., locale="US", fmt="f", im="j", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -410,14 +410,14 @@ program main
   18 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(u,0e0_rk,1e0_rk); call random_gauss(v,0e0_rk,1e0_rk); a = cmplx(u,v,rk)
-  call to_file(a, file="./data/a_z.csv", header=[""], locale="US", fmt="z", im="j", stat=stat, errmsg=errmsg)
+  call to_file(a, file="./test/output/a_z.csv", header=[""], locale="US", fmt="z", im="j", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 19
   end if
-  call from_file("./data/a_z.csv", into=b, header=.false., locale="US", fmt="z", im="j", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/a_z.csv", into=b, header=.false., locale="US", fmt="z", im="j", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -432,14 +432,14 @@ program main
   19 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(u,0e0_rk,1e0_rk); call random_gauss(v,0e0_rk,1e0_rk); a = cmplx(u,v,rk)
-  call to_file(a, file="./data/a_e.csv", header=["a"], locale="EU", fmt="e", im="", stat=stat, errmsg=errmsg)
+  call to_file(a, file="./test/output/a_e.csv", header=["a"], locale="EU", fmt="e", im="", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 20
   end if
-  call from_file("./data/a_e.csv", into=b, header=.true., locale="EU", fmt="e", im="", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/a_e.csv", into=b, header=.true., locale="EU", fmt="e", im="", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -454,14 +454,14 @@ program main
   20 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(u,0e0_rk,1e0_rk); call random_gauss(v,0e0_rk,1e0_rk); a = cmplx(u,v,rk)
-  call to_file(a, file="./data/a_f.csv", header=["a"], locale="EU", fmt="f", im="", stat=stat, errmsg=errmsg)
+  call to_file(a, file="./test/output/a_f.csv", header=["a"], locale="EU", fmt="f", im="", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 21
   end if
-  call from_file("./data/a_f.csv", into=b, header=.true., locale="EU", fmt="f", im="", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/a_f.csv", into=b, header=.true., locale="EU", fmt="f", im="", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -476,14 +476,14 @@ program main
   21 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(u,0e0_rk,1e0_rk); call random_gauss(v,0e0_rk,1e0_rk); a = cmplx(u,v,rk)
-  call to_file(a, file="./data/a_z.csv", header=["a"], locale="EU", fmt="z", im="", stat=stat, errmsg=errmsg)
+  call to_file(a, file="./test/output/a_z.csv", header=["a"], locale="EU", fmt="z", im="", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 22
   end if
-  call from_file("./data/a_z.csv", into=b, header=.true., locale="EU", fmt="z", im="", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/a_z.csv", into=b, header=.true., locale="EU", fmt="z", im="", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -498,14 +498,14 @@ program main
   22 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(u,0e0_rk,1e0_rk); call random_gauss(v,0e0_rk,1e0_rk); a = cmplx(u,v,rk)
-  call to_file(a, file="./data/a_e.csv", header=["a"], locale="US", fmt="e", im="", stat=stat, errmsg=errmsg)
+  call to_file(a, file="./test/output/a_e.csv", header=["a"], locale="US", fmt="e", im="", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 23
   end if
-  call from_file("./data/a_e.csv", into=b, header=.true., locale="US", fmt="e", im="", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/a_e.csv", into=b, header=.true., locale="US", fmt="e", im="", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -520,14 +520,14 @@ program main
   23 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(u,0e0_rk,1e0_rk); call random_gauss(v,0e0_rk,1e0_rk); a = cmplx(u,v,rk)
-  call to_file(a, file="./data/a_f.csv", header=["a"], locale="US", fmt="f", im="", stat=stat, errmsg=errmsg)
+  call to_file(a, file="./test/output/a_f.csv", header=["a"], locale="US", fmt="f", im="", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 24
   end if
-  call from_file("./data/a_f.csv", into=b, header=.true., locale="US", fmt="f", im="", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/a_f.csv", into=b, header=.true., locale="US", fmt="f", im="", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -542,14 +542,14 @@ program main
   24 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(u,0e0_rk,1e0_rk); call random_gauss(v,0e0_rk,1e0_rk); a = cmplx(u,v,rk)
-  call to_file(a, file="./data/a_z.csv", header=["a"], locale="US", fmt="z", im="", stat=stat, errmsg=errmsg)
+  call to_file(a, file="./test/output/a_z.csv", header=["a"], locale="US", fmt="z", im="", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 25
   end if
-  call from_file("./data/a_z.csv", into=b, header=.true., locale="US", fmt="z", im="", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/a_z.csv", into=b, header=.true., locale="US", fmt="z", im="", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -564,14 +564,14 @@ program main
   25 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(u,0e0_rk,1e0_rk); call random_gauss(v,0e0_rk,1e0_rk); a = cmplx(u,v,rk)
-  call to_file(a, file="./data/a_e.csv", header=["a"], locale="EU", fmt="e", im="*1i", stat=stat, errmsg=errmsg)
+  call to_file(a, file="./test/output/a_e.csv", header=["a"], locale="EU", fmt="e", im="*1i", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 26
   end if
-  call from_file("./data/a_e.csv", into=b, header=.true., locale="EU", fmt="e", im="*1i", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/a_e.csv", into=b, header=.true., locale="EU", fmt="e", im="*1i", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -586,14 +586,14 @@ program main
   26 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(u,0e0_rk,1e0_rk); call random_gauss(v,0e0_rk,1e0_rk); a = cmplx(u,v,rk)
-  call to_file(a, file="./data/a_f.csv", header=["a"], locale="EU", fmt="f", im="*1i", stat=stat, errmsg=errmsg)
+  call to_file(a, file="./test/output/a_f.csv", header=["a"], locale="EU", fmt="f", im="*1i", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 27
   end if
-  call from_file("./data/a_f.csv", into=b, header=.true., locale="EU", fmt="f", im="*1i", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/a_f.csv", into=b, header=.true., locale="EU", fmt="f", im="*1i", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -608,14 +608,14 @@ program main
   27 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(u,0e0_rk,1e0_rk); call random_gauss(v,0e0_rk,1e0_rk); a = cmplx(u,v,rk)
-  call to_file(a, file="./data/a_z.csv", header=["a"], locale="EU", fmt="z", im="*1i", stat=stat, errmsg=errmsg)
+  call to_file(a, file="./test/output/a_z.csv", header=["a"], locale="EU", fmt="z", im="*1i", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 28
   end if
-  call from_file("./data/a_z.csv", into=b, header=.true., locale="EU", fmt="z", im="*1i", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/a_z.csv", into=b, header=.true., locale="EU", fmt="z", im="*1i", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -630,14 +630,14 @@ program main
   28 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(u,0e0_rk,1e0_rk); call random_gauss(v,0e0_rk,1e0_rk); a = cmplx(u,v,rk)
-  call to_file(a, file="./data/a_e.csv", header=["a"], locale="US", fmt="e", im="*1i", stat=stat, errmsg=errmsg)
+  call to_file(a, file="./test/output/a_e.csv", header=["a"], locale="US", fmt="e", im="*1i", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 29
   end if
-  call from_file("./data/a_e.csv", into=b, header=.true., locale="US", fmt="e", im="*1i", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/a_e.csv", into=b, header=.true., locale="US", fmt="e", im="*1i", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -652,14 +652,14 @@ program main
   29 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(u,0e0_rk,1e0_rk); call random_gauss(v,0e0_rk,1e0_rk); a = cmplx(u,v,rk)
-  call to_file(a, file="./data/a_f.csv", header=["a"], locale="US", fmt="f", im="*1i", stat=stat, errmsg=errmsg)
+  call to_file(a, file="./test/output/a_f.csv", header=["a"], locale="US", fmt="f", im="*1i", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 30
   end if
-  call from_file("./data/a_f.csv", into=b, header=.true., locale="US", fmt="f", im="*1i", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/a_f.csv", into=b, header=.true., locale="US", fmt="f", im="*1i", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -674,14 +674,14 @@ program main
   30 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(u,0e0_rk,1e0_rk); call random_gauss(v,0e0_rk,1e0_rk); a = cmplx(u,v,rk)
-  call to_file(a, file="./data/a_z.csv", header=["a"], locale="US", fmt="z", im="*1i", stat=stat, errmsg=errmsg)
+  call to_file(a, file="./test/output/a_z.csv", header=["a"], locale="US", fmt="z", im="*1i", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 31
   end if
-  call from_file("./data/a_z.csv", into=b, header=.true., locale="US", fmt="z", im="*1i", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/a_z.csv", into=b, header=.true., locale="US", fmt="z", im="*1i", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -696,14 +696,14 @@ program main
   31 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(u,0e0_rk,1e0_rk); call random_gauss(v,0e0_rk,1e0_rk); a = cmplx(u,v,rk)
-  call to_file(a, file="./data/a_e.csv", header=["a"], locale="EU", fmt="e", im="j", stat=stat, errmsg=errmsg)
+  call to_file(a, file="./test/output/a_e.csv", header=["a"], locale="EU", fmt="e", im="j", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 32
   end if
-  call from_file("./data/a_e.csv", into=b, header=.true., locale="EU", fmt="e", im="j", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/a_e.csv", into=b, header=.true., locale="EU", fmt="e", im="j", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -718,14 +718,14 @@ program main
   32 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(u,0e0_rk,1e0_rk); call random_gauss(v,0e0_rk,1e0_rk); a = cmplx(u,v,rk)
-  call to_file(a, file="./data/a_f.csv", header=["a"], locale="EU", fmt="f", im="j", stat=stat, errmsg=errmsg)
+  call to_file(a, file="./test/output/a_f.csv", header=["a"], locale="EU", fmt="f", im="j", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 33
   end if
-  call from_file("./data/a_f.csv", into=b, header=.true., locale="EU", fmt="f", im="j", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/a_f.csv", into=b, header=.true., locale="EU", fmt="f", im="j", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -740,14 +740,14 @@ program main
   33 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(u,0e0_rk,1e0_rk); call random_gauss(v,0e0_rk,1e0_rk); a = cmplx(u,v,rk)
-  call to_file(a, file="./data/a_z.csv", header=["a"], locale="EU", fmt="z", im="j", stat=stat, errmsg=errmsg)
+  call to_file(a, file="./test/output/a_z.csv", header=["a"], locale="EU", fmt="z", im="j", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 34
   end if
-  call from_file("./data/a_z.csv", into=b, header=.true., locale="EU", fmt="z", im="j", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/a_z.csv", into=b, header=.true., locale="EU", fmt="z", im="j", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -762,14 +762,14 @@ program main
   34 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(u,0e0_rk,1e0_rk); call random_gauss(v,0e0_rk,1e0_rk); a = cmplx(u,v,rk)
-  call to_file(a, file="./data/a_e.csv", header=["a"], locale="US", fmt="e", im="j", stat=stat, errmsg=errmsg)
+  call to_file(a, file="./test/output/a_e.csv", header=["a"], locale="US", fmt="e", im="j", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 35
   end if
-  call from_file("./data/a_e.csv", into=b, header=.true., locale="US", fmt="e", im="j", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/a_e.csv", into=b, header=.true., locale="US", fmt="e", im="j", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -784,14 +784,14 @@ program main
   35 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(u,0e0_rk,1e0_rk); call random_gauss(v,0e0_rk,1e0_rk); a = cmplx(u,v,rk)
-  call to_file(a, file="./data/a_f.csv", header=["a"], locale="US", fmt="f", im="j", stat=stat, errmsg=errmsg)
+  call to_file(a, file="./test/output/a_f.csv", header=["a"], locale="US", fmt="f", im="j", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 36
   end if
-  call from_file("./data/a_f.csv", into=b, header=.true., locale="US", fmt="f", im="j", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/a_f.csv", into=b, header=.true., locale="US", fmt="f", im="j", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -806,14 +806,14 @@ program main
   36 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(u,0e0_rk,1e0_rk); call random_gauss(v,0e0_rk,1e0_rk); a = cmplx(u,v,rk)
-  call to_file(a, file="./data/a_z.csv", header=["a"], locale="US", fmt="z", im="j", stat=stat, errmsg=errmsg)
+  call to_file(a, file="./test/output/a_z.csv", header=["a"], locale="US", fmt="z", im="j", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 37
   end if
-  call from_file("./data/a_z.csv", into=b, header=.true., locale="US", fmt="z", im="j", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/a_z.csv", into=b, header=.true., locale="US", fmt="z", im="j", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -828,14 +828,14 @@ program main
   37 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); c = cmplx(x,y,rk)
-  call to_file(c, file="./data/c_e.csv", header=[""], locale="EU", fmt="e", im="", stat=stat, errmsg=errmsg)
+  call to_file(c, file="./test/output/c_e.csv", header=[""], locale="EU", fmt="e", im="", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 38
   end if
-  call from_file("./data/c_e.csv", into=d, header=.false., locale="EU", fmt="e", im="", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/c_e.csv", into=d, header=.false., locale="EU", fmt="e", im="", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -850,14 +850,14 @@ program main
   38 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); c = cmplx(x,y,rk)
-  call to_file(c, file="./data/c_f.csv", header=[""], locale="EU", fmt="f", im="", stat=stat, errmsg=errmsg)
+  call to_file(c, file="./test/output/c_f.csv", header=[""], locale="EU", fmt="f", im="", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 39
   end if
-  call from_file("./data/c_f.csv", into=d, header=.false., locale="EU", fmt="f", im="", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/c_f.csv", into=d, header=.false., locale="EU", fmt="f", im="", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -872,14 +872,14 @@ program main
   39 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); c = cmplx(x,y,rk)
-  call to_file(c, file="./data/c_z.csv", header=[""], locale="EU", fmt="z", im="", stat=stat, errmsg=errmsg)
+  call to_file(c, file="./test/output/c_z.csv", header=[""], locale="EU", fmt="z", im="", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 40
   end if
-  call from_file("./data/c_z.csv", into=d, header=.false., locale="EU", fmt="z", im="", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/c_z.csv", into=d, header=.false., locale="EU", fmt="z", im="", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -894,14 +894,14 @@ program main
   40 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); c = cmplx(x,y,rk)
-  call to_file(c, file="./data/c_e.csv", header=[""], locale="US", fmt="e", im="", stat=stat, errmsg=errmsg)
+  call to_file(c, file="./test/output/c_e.csv", header=[""], locale="US", fmt="e", im="", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 41
   end if
-  call from_file("./data/c_e.csv", into=d, header=.false., locale="US", fmt="e", im="", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/c_e.csv", into=d, header=.false., locale="US", fmt="e", im="", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -916,14 +916,14 @@ program main
   41 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); c = cmplx(x,y,rk)
-  call to_file(c, file="./data/c_f.csv", header=[""], locale="US", fmt="f", im="", stat=stat, errmsg=errmsg)
+  call to_file(c, file="./test/output/c_f.csv", header=[""], locale="US", fmt="f", im="", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 42
   end if
-  call from_file("./data/c_f.csv", into=d, header=.false., locale="US", fmt="f", im="", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/c_f.csv", into=d, header=.false., locale="US", fmt="f", im="", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -938,14 +938,14 @@ program main
   42 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); c = cmplx(x,y,rk)
-  call to_file(c, file="./data/c_z.csv", header=[""], locale="US", fmt="z", im="", stat=stat, errmsg=errmsg)
+  call to_file(c, file="./test/output/c_z.csv", header=[""], locale="US", fmt="z", im="", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 43
   end if
-  call from_file("./data/c_z.csv", into=d, header=.false., locale="US", fmt="z", im="", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/c_z.csv", into=d, header=.false., locale="US", fmt="z", im="", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -960,14 +960,14 @@ program main
   43 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); c = cmplx(x,y,rk)
-  call to_file(c, file="./data/c_e.csv", header=[""], locale="EU", fmt="e", im="*1i", stat=stat, errmsg=errmsg)
+  call to_file(c, file="./test/output/c_e.csv", header=[""], locale="EU", fmt="e", im="*1i", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 44
   end if
-  call from_file("./data/c_e.csv", into=d, header=.false., locale="EU", fmt="e", im="*1i", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/c_e.csv", into=d, header=.false., locale="EU", fmt="e", im="*1i", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -982,14 +982,14 @@ program main
   44 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); c = cmplx(x,y,rk)
-  call to_file(c, file="./data/c_f.csv", header=[""], locale="EU", fmt="f", im="*1i", stat=stat, errmsg=errmsg)
+  call to_file(c, file="./test/output/c_f.csv", header=[""], locale="EU", fmt="f", im="*1i", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 45
   end if
-  call from_file("./data/c_f.csv", into=d, header=.false., locale="EU", fmt="f", im="*1i", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/c_f.csv", into=d, header=.false., locale="EU", fmt="f", im="*1i", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -1004,14 +1004,14 @@ program main
   45 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); c = cmplx(x,y,rk)
-  call to_file(c, file="./data/c_z.csv", header=[""], locale="EU", fmt="z", im="*1i", stat=stat, errmsg=errmsg)
+  call to_file(c, file="./test/output/c_z.csv", header=[""], locale="EU", fmt="z", im="*1i", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 46
   end if
-  call from_file("./data/c_z.csv", into=d, header=.false., locale="EU", fmt="z", im="*1i", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/c_z.csv", into=d, header=.false., locale="EU", fmt="z", im="*1i", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -1026,14 +1026,14 @@ program main
   46 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); c = cmplx(x,y,rk)
-  call to_file(c, file="./data/c_e.csv", header=[""], locale="US", fmt="e", im="*1i", stat=stat, errmsg=errmsg)
+  call to_file(c, file="./test/output/c_e.csv", header=[""], locale="US", fmt="e", im="*1i", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 47
   end if
-  call from_file("./data/c_e.csv", into=d, header=.false., locale="US", fmt="e", im="*1i", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/c_e.csv", into=d, header=.false., locale="US", fmt="e", im="*1i", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -1048,14 +1048,14 @@ program main
   47 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); c = cmplx(x,y,rk)
-  call to_file(c, file="./data/c_f.csv", header=[""], locale="US", fmt="f", im="*1i", stat=stat, errmsg=errmsg)
+  call to_file(c, file="./test/output/c_f.csv", header=[""], locale="US", fmt="f", im="*1i", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 48
   end if
-  call from_file("./data/c_f.csv", into=d, header=.false., locale="US", fmt="f", im="*1i", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/c_f.csv", into=d, header=.false., locale="US", fmt="f", im="*1i", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -1070,14 +1070,14 @@ program main
   48 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); c = cmplx(x,y,rk)
-  call to_file(c, file="./data/c_z.csv", header=[""], locale="US", fmt="z", im="*1i", stat=stat, errmsg=errmsg)
+  call to_file(c, file="./test/output/c_z.csv", header=[""], locale="US", fmt="z", im="*1i", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 49
   end if
-  call from_file("./data/c_z.csv", into=d, header=.false., locale="US", fmt="z", im="*1i", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/c_z.csv", into=d, header=.false., locale="US", fmt="z", im="*1i", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -1092,14 +1092,14 @@ program main
   49 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); c = cmplx(x,y,rk)
-  call to_file(c, file="./data/c_e.csv", header=[""], locale="EU", fmt="e", im="j", stat=stat, errmsg=errmsg)
+  call to_file(c, file="./test/output/c_e.csv", header=[""], locale="EU", fmt="e", im="j", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 50
   end if
-  call from_file("./data/c_e.csv", into=d, header=.false., locale="EU", fmt="e", im="j", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/c_e.csv", into=d, header=.false., locale="EU", fmt="e", im="j", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -1114,14 +1114,14 @@ program main
   50 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); c = cmplx(x,y,rk)
-  call to_file(c, file="./data/c_f.csv", header=[""], locale="EU", fmt="f", im="j", stat=stat, errmsg=errmsg)
+  call to_file(c, file="./test/output/c_f.csv", header=[""], locale="EU", fmt="f", im="j", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 51
   end if
-  call from_file("./data/c_f.csv", into=d, header=.false., locale="EU", fmt="f", im="j", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/c_f.csv", into=d, header=.false., locale="EU", fmt="f", im="j", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -1136,14 +1136,14 @@ program main
   51 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); c = cmplx(x,y,rk)
-  call to_file(c, file="./data/c_z.csv", header=[""], locale="EU", fmt="z", im="j", stat=stat, errmsg=errmsg)
+  call to_file(c, file="./test/output/c_z.csv", header=[""], locale="EU", fmt="z", im="j", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 52
   end if
-  call from_file("./data/c_z.csv", into=d, header=.false., locale="EU", fmt="z", im="j", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/c_z.csv", into=d, header=.false., locale="EU", fmt="z", im="j", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -1158,14 +1158,14 @@ program main
   52 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); c = cmplx(x,y,rk)
-  call to_file(c, file="./data/c_e.csv", header=[""], locale="US", fmt="e", im="j", stat=stat, errmsg=errmsg)
+  call to_file(c, file="./test/output/c_e.csv", header=[""], locale="US", fmt="e", im="j", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 53
   end if
-  call from_file("./data/c_e.csv", into=d, header=.false., locale="US", fmt="e", im="j", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/c_e.csv", into=d, header=.false., locale="US", fmt="e", im="j", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -1180,14 +1180,14 @@ program main
   53 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); c = cmplx(x,y,rk)
-  call to_file(c, file="./data/c_f.csv", header=[""], locale="US", fmt="f", im="j", stat=stat, errmsg=errmsg)
+  call to_file(c, file="./test/output/c_f.csv", header=[""], locale="US", fmt="f", im="j", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 54
   end if
-  call from_file("./data/c_f.csv", into=d, header=.false., locale="US", fmt="f", im="j", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/c_f.csv", into=d, header=.false., locale="US", fmt="f", im="j", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -1202,14 +1202,14 @@ program main
   54 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); c = cmplx(x,y,rk)
-  call to_file(c, file="./data/c_z.csv", header=[""], locale="US", fmt="z", im="j", stat=stat, errmsg=errmsg)
+  call to_file(c, file="./test/output/c_z.csv", header=[""], locale="US", fmt="z", im="j", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 55
   end if
-  call from_file("./data/c_z.csv", into=d, header=.false., locale="US", fmt="z", im="j", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/c_z.csv", into=d, header=.false., locale="US", fmt="z", im="j", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -1224,14 +1224,14 @@ program main
   55 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); c = cmplx(x,y,rk)
-  call to_file(c, file="./data/c_e.csv", header=["c"], locale="EU", fmt="e", im="", stat=stat, errmsg=errmsg)
+  call to_file(c, file="./test/output/c_e.csv", header=["c"], locale="EU", fmt="e", im="", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 56
   end if
-  call from_file("./data/c_e.csv", into=d, header=.true., locale="EU", fmt="e", im="", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/c_e.csv", into=d, header=.true., locale="EU", fmt="e", im="", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -1246,14 +1246,14 @@ program main
   56 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); c = cmplx(x,y,rk)
-  call to_file(c, file="./data/c_f.csv", header=["c"], locale="EU", fmt="f", im="", stat=stat, errmsg=errmsg)
+  call to_file(c, file="./test/output/c_f.csv", header=["c"], locale="EU", fmt="f", im="", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 57
   end if
-  call from_file("./data/c_f.csv", into=d, header=.true., locale="EU", fmt="f", im="", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/c_f.csv", into=d, header=.true., locale="EU", fmt="f", im="", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -1268,14 +1268,14 @@ program main
   57 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); c = cmplx(x,y,rk)
-  call to_file(c, file="./data/c_z.csv", header=["c"], locale="EU", fmt="z", im="", stat=stat, errmsg=errmsg)
+  call to_file(c, file="./test/output/c_z.csv", header=["c"], locale="EU", fmt="z", im="", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 58
   end if
-  call from_file("./data/c_z.csv", into=d, header=.true., locale="EU", fmt="z", im="", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/c_z.csv", into=d, header=.true., locale="EU", fmt="z", im="", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -1290,14 +1290,14 @@ program main
   58 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); c = cmplx(x,y,rk)
-  call to_file(c, file="./data/c_e.csv", header=["c"], locale="US", fmt="e", im="", stat=stat, errmsg=errmsg)
+  call to_file(c, file="./test/output/c_e.csv", header=["c"], locale="US", fmt="e", im="", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 59
   end if
-  call from_file("./data/c_e.csv", into=d, header=.true., locale="US", fmt="e", im="", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/c_e.csv", into=d, header=.true., locale="US", fmt="e", im="", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -1312,14 +1312,14 @@ program main
   59 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); c = cmplx(x,y,rk)
-  call to_file(c, file="./data/c_f.csv", header=["c"], locale="US", fmt="f", im="", stat=stat, errmsg=errmsg)
+  call to_file(c, file="./test/output/c_f.csv", header=["c"], locale="US", fmt="f", im="", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 60
   end if
-  call from_file("./data/c_f.csv", into=d, header=.true., locale="US", fmt="f", im="", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/c_f.csv", into=d, header=.true., locale="US", fmt="f", im="", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -1334,14 +1334,14 @@ program main
   60 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); c = cmplx(x,y,rk)
-  call to_file(c, file="./data/c_z.csv", header=["c"], locale="US", fmt="z", im="", stat=stat, errmsg=errmsg)
+  call to_file(c, file="./test/output/c_z.csv", header=["c"], locale="US", fmt="z", im="", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 61
   end if
-  call from_file("./data/c_z.csv", into=d, header=.true., locale="US", fmt="z", im="", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/c_z.csv", into=d, header=.true., locale="US", fmt="z", im="", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -1356,14 +1356,14 @@ program main
   61 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); c = cmplx(x,y,rk)
-  call to_file(c, file="./data/c_e.csv", header=["c"], locale="EU", fmt="e", im="*1i", stat=stat, errmsg=errmsg)
+  call to_file(c, file="./test/output/c_e.csv", header=["c"], locale="EU", fmt="e", im="*1i", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 62
   end if
-  call from_file("./data/c_e.csv", into=d, header=.true., locale="EU", fmt="e", im="*1i", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/c_e.csv", into=d, header=.true., locale="EU", fmt="e", im="*1i", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -1378,14 +1378,14 @@ program main
   62 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); c = cmplx(x,y,rk)
-  call to_file(c, file="./data/c_f.csv", header=["c"], locale="EU", fmt="f", im="*1i", stat=stat, errmsg=errmsg)
+  call to_file(c, file="./test/output/c_f.csv", header=["c"], locale="EU", fmt="f", im="*1i", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 63
   end if
-  call from_file("./data/c_f.csv", into=d, header=.true., locale="EU", fmt="f", im="*1i", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/c_f.csv", into=d, header=.true., locale="EU", fmt="f", im="*1i", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -1400,14 +1400,14 @@ program main
   63 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); c = cmplx(x,y,rk)
-  call to_file(c, file="./data/c_z.csv", header=["c"], locale="EU", fmt="z", im="*1i", stat=stat, errmsg=errmsg)
+  call to_file(c, file="./test/output/c_z.csv", header=["c"], locale="EU", fmt="z", im="*1i", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 64
   end if
-  call from_file("./data/c_z.csv", into=d, header=.true., locale="EU", fmt="z", im="*1i", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/c_z.csv", into=d, header=.true., locale="EU", fmt="z", im="*1i", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -1422,14 +1422,14 @@ program main
   64 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); c = cmplx(x,y,rk)
-  call to_file(c, file="./data/c_e.csv", header=["c"], locale="US", fmt="e", im="*1i", stat=stat, errmsg=errmsg)
+  call to_file(c, file="./test/output/c_e.csv", header=["c"], locale="US", fmt="e", im="*1i", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 65
   end if
-  call from_file("./data/c_e.csv", into=d, header=.true., locale="US", fmt="e", im="*1i", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/c_e.csv", into=d, header=.true., locale="US", fmt="e", im="*1i", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -1444,14 +1444,14 @@ program main
   65 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); c = cmplx(x,y,rk)
-  call to_file(c, file="./data/c_f.csv", header=["c"], locale="US", fmt="f", im="*1i", stat=stat, errmsg=errmsg)
+  call to_file(c, file="./test/output/c_f.csv", header=["c"], locale="US", fmt="f", im="*1i", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 66
   end if
-  call from_file("./data/c_f.csv", into=d, header=.true., locale="US", fmt="f", im="*1i", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/c_f.csv", into=d, header=.true., locale="US", fmt="f", im="*1i", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -1466,14 +1466,14 @@ program main
   66 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); c = cmplx(x,y,rk)
-  call to_file(c, file="./data/c_z.csv", header=["c"], locale="US", fmt="z", im="*1i", stat=stat, errmsg=errmsg)
+  call to_file(c, file="./test/output/c_z.csv", header=["c"], locale="US", fmt="z", im="*1i", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 67
   end if
-  call from_file("./data/c_z.csv", into=d, header=.true., locale="US", fmt="z", im="*1i", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/c_z.csv", into=d, header=.true., locale="US", fmt="z", im="*1i", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -1488,14 +1488,14 @@ program main
   67 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); c = cmplx(x,y,rk)
-  call to_file(c, file="./data/c_e.csv", header=["c"], locale="EU", fmt="e", im="j", stat=stat, errmsg=errmsg)
+  call to_file(c, file="./test/output/c_e.csv", header=["c"], locale="EU", fmt="e", im="j", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 68
   end if
-  call from_file("./data/c_e.csv", into=d, header=.true., locale="EU", fmt="e", im="j", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/c_e.csv", into=d, header=.true., locale="EU", fmt="e", im="j", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -1510,14 +1510,14 @@ program main
   68 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); c = cmplx(x,y,rk)
-  call to_file(c, file="./data/c_f.csv", header=["c"], locale="EU", fmt="f", im="j", stat=stat, errmsg=errmsg)
+  call to_file(c, file="./test/output/c_f.csv", header=["c"], locale="EU", fmt="f", im="j", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 69
   end if
-  call from_file("./data/c_f.csv", into=d, header=.true., locale="EU", fmt="f", im="j", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/c_f.csv", into=d, header=.true., locale="EU", fmt="f", im="j", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -1532,14 +1532,14 @@ program main
   69 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); c = cmplx(x,y,rk)
-  call to_file(c, file="./data/c_z.csv", header=["c"], locale="EU", fmt="z", im="j", stat=stat, errmsg=errmsg)
+  call to_file(c, file="./test/output/c_z.csv", header=["c"], locale="EU", fmt="z", im="j", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 70
   end if
-  call from_file("./data/c_z.csv", into=d, header=.true., locale="EU", fmt="z", im="j", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/c_z.csv", into=d, header=.true., locale="EU", fmt="z", im="j", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -1554,14 +1554,14 @@ program main
   70 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); c = cmplx(x,y,rk)
-  call to_file(c, file="./data/c_e.csv", header=["c"], locale="US", fmt="e", im="j", stat=stat, errmsg=errmsg)
+  call to_file(c, file="./test/output/c_e.csv", header=["c"], locale="US", fmt="e", im="j", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 71
   end if
-  call from_file("./data/c_e.csv", into=d, header=.true., locale="US", fmt="e", im="j", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/c_e.csv", into=d, header=.true., locale="US", fmt="e", im="j", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -1576,14 +1576,14 @@ program main
   71 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); c = cmplx(x,y,rk)
-  call to_file(c, file="./data/c_f.csv", header=["c"], locale="US", fmt="f", im="j", stat=stat, errmsg=errmsg)
+  call to_file(c, file="./test/output/c_f.csv", header=["c"], locale="US", fmt="f", im="j", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 72
   end if
-  call from_file("./data/c_f.csv", into=d, header=.true., locale="US", fmt="f", im="j", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/c_f.csv", into=d, header=.true., locale="US", fmt="f", im="j", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -1598,14 +1598,14 @@ program main
   72 if ( .not. test_succeeded ) all_passing = .false.
 
   call random_gauss(x,0e0_rk,1e0_rk); call random_gauss(y,0e0_rk,1e0_rk); c = cmplx(x,y,rk)
-  call to_file(c, file="./data/c_z.csv", header=["c"], locale="US", fmt="z", im="j", stat=stat, errmsg=errmsg)
+  call to_file(c, file="./test/output/c_z.csv", header=["c"], locale="US", fmt="z", im="j", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
                      '" with stat ' + str(stat) + " and errmsg '" + trim(adjustl(errmsg)) + "'." + LF)
     go to 73
   end if
-  call from_file("./data/c_z.csv", into=d, header=.true., locale="US", fmt="z", im="j", stat=stat, errmsg=errmsg)
+  call from_file("./test/output/c_z.csv", into=d, header=.true., locale="US", fmt="z", im="j", stat=stat, errmsg=errmsg)
   if ( stat /= 0 ) then
     test_succeeded = .false.
     call errlog%push("    Test failed at line " + str(__LINE__ - 3) + ' of file "' + __FILE__ + &
@@ -1634,4 +1634,6 @@ program main
     call errlog%echo(logfile)
     write(*,"(DT)") errlog
   end if
+
+  if ( .not. all_passing ) error stop "Some tests are failing."
 end program main

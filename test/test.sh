@@ -35,3 +35,8 @@ fpm test --compiler ifort --flag "-stand f18 -O3 -fpp -D R8 -D I4"
 fpm test --compiler ifort --flag "-stand f18 -O3 -fpp -D R16 -D I8"
 
 fpm clean --all
+
+fpm clean --all
+fpm test --compiler flang-new --flag "-O2 -cpp -D R4 -D I1"
+fpm test --compiler flang-new --flag "-O2 -cpp -D R4 -D I2"
+fpm test --compiler flang-new --flag "-O2 -cpp -D R8 -D I4"

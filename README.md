@@ -23,12 +23,35 @@ IO-Fortran-Library = { git="https://github.com/acbbullock/IO-Fortran-Library", b
 
 The module is fully self-contained, with no external dependencies, and
 is written to be portable and compliant to the Fortran 2018 standard
-such that no special extensions or compiler options should be required.
-The public interfaces accept all intrinsic numeric types (`integer`,
-`real`, and `complex`) and all standard kinds provided by the intrinsic
-`iso_fortran_env` module (`int8`, `int16`, `int32`, `int64`, `real32`,
-`real64`, and `real128`). All array-based routines additionally support
-up to rank 15.
+such that no special extensions should be required. The public interfaces
+accept all intrinsic numeric types (`integer`, `real`, and `complex`) and
+all standard kinds provided by the intrinsic `iso_fortran_env` module
+(`int8`, `int16`, `int32`, `int64`, `real32`, `real64`, and `real128`).
+All array-based routines additionally support up to rank 15.
+
+## Compilers
+
+The library is tested with `gfortran`, `ifx` and `flang`. See the
+[CI workflow](.github/workflows/ci.yml) for the versions.
+
+The `real128` routines are enabled on `ifx`, and on `gfortran` targets with
+`REAL(16)`. They are left out on other compilers, including `flang`. To
+override this detection, compile with `-DIOFL_HAS_R128` or `-DIOFL_NO_R128`.
+
+`fpm` handles the preprocessor and include path for you. To compile the
+sources by other means, add `-cpp` (`gfortran`, `flang`) or `-fpp` (`ifx`), and
+add `include` to the include path.
+
+## Tests
+
+Run `fpm test`, adding for instance `--flag "-D R8 -D I4"` to select the
+`real` and `integer` kinds under test. With `flang-new`, also add `-cpp`,
+since the test programs use `__LINE__` and `__FILE__`, and `fpm` does not
+enable the preprocessor for that compiler. A failing test ends with a nonzero
+exit status. Test output goes to `test/output`.
+
+`test/units/regression-test.f90` records known bugs as expected failures. If
+you fix one, the test fails until you update its marker to `FIXED`.
 
 ## Documentation
 
