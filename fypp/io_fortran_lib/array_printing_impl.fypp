@@ -43,7 +43,7 @@ submodule (io_fortran_lib) array_printing
     end if
 
     if ( len(im_) > 0 ) then
-      l = len(im_)
+      l = len(im_) + 1
     else
       l = 3
     end if
@@ -71,7 +71,7 @@ submodule (io_fortran_lib) array_printing
       x_str(i) = str(x(i), fmt=fmt_, decimals=decimals_, im=im_)
     end do
 
-    call aprint(x_str)
+    call aprint(x_str, unit=unit)
   end procedure aprint_1d${k}$
 #:if k in QUAD_KINDS
 #endif
@@ -113,7 +113,7 @@ submodule (io_fortran_lib) array_printing
     end if
 
     if ( len(im_) > 0 ) then
-      l = len(im_)
+      l = len(im_) + 1
     else
       l = 3
     end if
@@ -143,7 +143,7 @@ submodule (io_fortran_lib) array_printing
       end do
     end do
 
-    call aprint(x_str)
+    call aprint(x_str, unit=unit)
   end procedure aprint_2d${k}$
 #:if k in QUAD_KINDS
 #endif
@@ -196,7 +196,7 @@ submodule (io_fortran_lib) array_printing
       x_str(i) = str(x(i), fmt=fmt_, decimals=decimals_)
     end do
 
-    call aprint(x_str)
+    call aprint(x_str, unit=unit)
   end procedure aprint_1d${k}$
 #:if k in QUAD_KINDS
 #endif
@@ -251,7 +251,7 @@ submodule (io_fortran_lib) array_printing
       end do
     end do
 
-    call aprint(x_str)
+    call aprint(x_str, unit=unit)
   end procedure aprint_2d${k}$
 #:if k in QUAD_KINDS
 #endif
@@ -292,7 +292,7 @@ submodule (io_fortran_lib) array_printing
       x_str(i) = str(x(i), fmt=fmt_)
     end do
 
-    call aprint(x_str)
+    call aprint(x_str, unit=unit)
   end procedure aprint_1d${k}$
 
 #:endfor
@@ -332,7 +332,7 @@ submodule (io_fortran_lib) array_printing
       end do
     end do
 
-    call aprint(x_str)
+    call aprint(x_str, unit=unit)
   end procedure aprint_2d${k}$
 
 #:endfor
@@ -360,7 +360,7 @@ submodule (io_fortran_lib) array_printing
     end do
 
     do i = lbound(x, dim=1), ubound(x, dim=1)
-      write(*,"(a)") rows(i)%buf(:rows(i)%n)
+      write(optval(unit, output_unit),"(a)") rows(i)%buf(:rows(i)%n)
     end do
   end procedure aprint_1dchar
 
@@ -387,7 +387,7 @@ submodule (io_fortran_lib) array_printing
     end do
 
     do i = lbound(x, dim=1), ubound(x, dim=1)
-      write(*,"(a)") rows(i)%buf(:rows(i)%n)
+      write(optval(unit, output_unit),"(a)") rows(i)%buf(:rows(i)%n)
     end do
 
     contains
@@ -440,7 +440,7 @@ submodule (io_fortran_lib) array_printing
       end if
     end do
 
-    call aprint(char_arr)
+    call aprint(char_arr, unit=unit)
   end procedure aprint_1dString
 
   module procedure aprint_2dString
@@ -466,6 +466,6 @@ submodule (io_fortran_lib) array_printing
       end do
     end do
 
-    call aprint(char_arr)
+    call aprint(char_arr, unit=unit)
   end procedure aprint_2dString
 end submodule array_printing

@@ -8,3 +8,5 @@
 #:set E_DIGITS = {"r128": 4, "r64": 3, "r32": 2}
 #:set F_DIGITS = {"r128": 36, "r64": 18, "r32": 9}
 #:set SAME_SIZE_INT = {"r64": "i64", "r32": "i32"}
+#:set ORDER_OPERATORS = [("<", "lt", "Less than"), ("<=", "le", "Less than or equal"), (">", "gt", "Greater than"), (">=", "ge", "Greater than or equal")]
+#:set ORDER_TESTS = {"lt": "< 0", "le": "<= 0", "gt": "> 0", "ge": ">= 0"}

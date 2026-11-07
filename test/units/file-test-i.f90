@@ -2,7 +2,7 @@ program main
   use, intrinsic :: iso_fortran_env, only: compiler_version, compiler_options
   use kinds,                         only: rk, ik
   use io_fortran_lib,                only: String, to_file, from_file, LF, SPACE, str, operator(+), operator(**)
-  use randoms,                       only: random_gauss
+  use random_data,                    only: random_gauss
   implicit none (type, external)
 
   integer,          parameter :: rows = 700, cols = 25

@@ -48,6 +48,10 @@ substring elementally.
 
 @note `match` may be a scalar or the same rank and shape as `self`.
 
+The result is a default `integer`. If a string may hold more than
+2,147,483,647 occurrences, use `self%count64(match)`, which returns an
+`integer` of kind `int64`.
+
 ### [echo](../../type/string.html#boundprocedure-echo)
 
 *Description*: A generic binding for the interface [echo](echo.html).
@@ -116,7 +120,7 @@ assignment: `self = self // substring` and `self = self + substring`.
 For `self` a scalar variable of type `String`:
 
 ```fortran
-    call self%read_file(file [, cell_array, row_separator, column_separator, stat, errmsg])
+    call self%read_file(file [, cell_array, row_separator, column_separator, stat, errmsg, format])
 ```
 
 * `file` is of type `character(len=*)`
@@ -149,6 +153,34 @@ is filled with empty cells, and a row with more is an error. Trailing
 blank lines and a missing final newline do not change the number of
 rows. With the default `row_separator`, `CRLF` line endings are
 accepted.
+
+### [read_line](../../type/string.html#boundprocedure-read_line)
+
+For `self` a scalar variable of type `String`:
+
+```fortran
+    call self%read_line(unit [, stat, errmsg])
+```
+
+* `unit` is of type `integer`, connected for formatted sequential input
+* `stat` is `optional` and of type `integer`
+* `errmsg` is `optional` and of type `character(len=*)`
+
+*Description*: Reads the next record from `unit` into `self`, keeping any
+leading and trailing blanks. A line may be of any length, and the last
+line of a file need not end in a newline.
+
+At the end of the file, `stat` satisfies the intrinsic `is_iostat_end`.
+If `stat` is not present, the end of the file or any other error ends the
+program with `error stop`:
+
+```fortran
+    do
+      call line%read_line(unit, stat=stat)
+      if ( is_iostat_end(stat) ) exit
+      ! ... use line ...
+    end do
+```
 
 ### [replace](../../type/string.html#boundprocedure-replace)
 
@@ -228,7 +260,7 @@ slice component of a `String` elementally and in place.
 For `self` a scalar variable of type `String`:
 
 ```fortran
-    call self%write_file(cell_array, file [, row_separator, column_separator, append, stat, errmsg])
+    call self%write_file(cell_array, file [, row_separator, column_separator, append, stat, errmsg, format])
 ```
 
 * `cell_array` is of type `type(String), dimension(:,:)`

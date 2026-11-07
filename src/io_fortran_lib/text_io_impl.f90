@@ -47,7 +47,7 @@ submodule (io_fortran_lib) text_io
 
     stat_=0; errmsg_=EMPTY_STR
 
-    if ( .not. any(TEXT_EXT == ext) ) then
+    if ( format_of(file, format) /= "text" ) then
       stat_   = ARG_ERR
       errmsg_ = 'Error writing to file "'//file//'" due to unsupported file extension "'//ext//'". '// &
                 "Supported file extensions: "//join(TEXT_EXT)
@@ -149,7 +149,7 @@ submodule (io_fortran_lib) text_io
 
     stat_=0; errmsg_=EMPTY_STR
 
-    if ( .not. any(TEXT_EXT == ext) ) then
+    if ( format_of(file, format) /= "text" ) then
       stat_   = ARG_ERR
       errmsg_ = 'Error writing to file "'//file//'" due to unsupported file extension "'//ext//'". '// &
                 "Supported file extensions: "//join(TEXT_EXT)
@@ -269,7 +269,7 @@ submodule (io_fortran_lib) text_io
       rank(2); call cast(x, numerical_data, locale, fmt, decimals, im)
     end select
 
-    call write_cells(text_file, .true., cells, file, NL, delim, .false., stat, errmsg)
+    call write_cells(text_file, .true., cells, file, NL, delim, .false., stat, errmsg, "text")
   end procedure to_text_c128
 #endif
 
@@ -322,7 +322,7 @@ submodule (io_fortran_lib) text_io
       rank(2); call cast(x, numerical_data, locale, fmt, decimals, im)
     end select
 
-    call write_cells(text_file, .true., cells, file, NL, delim, .false., stat, errmsg)
+    call write_cells(text_file, .true., cells, file, NL, delim, .false., stat, errmsg, "text")
   end procedure to_text_c64
 
   module procedure to_text_c32
@@ -374,7 +374,7 @@ submodule (io_fortran_lib) text_io
       rank(2); call cast(x, numerical_data, locale, fmt, decimals, im)
     end select
 
-    call write_cells(text_file, .true., cells, file, NL, delim, .false., stat, errmsg)
+    call write_cells(text_file, .true., cells, file, NL, delim, .false., stat, errmsg, "text")
   end procedure to_text_c32
 
 
@@ -428,7 +428,7 @@ submodule (io_fortran_lib) text_io
       rank(2); call cast(x, numerical_data, locale, fmt, decimals)
     end select
 
-    call text_file%write_file(cells, file, NL, delim, .false., stat, errmsg)
+    call text_file%write_file(cells, file, NL, delim, .false., stat, errmsg, "text")
   end procedure to_text_r128
 #endif
 
@@ -481,7 +481,7 @@ submodule (io_fortran_lib) text_io
       rank(2); call cast(x, numerical_data, locale, fmt, decimals)
     end select
 
-    call text_file%write_file(cells, file, NL, delim, .false., stat, errmsg)
+    call text_file%write_file(cells, file, NL, delim, .false., stat, errmsg, "text")
   end procedure to_text_r64
 
   module procedure to_text_r32
@@ -533,7 +533,7 @@ submodule (io_fortran_lib) text_io
       rank(2); call cast(x, numerical_data, locale, fmt, decimals)
     end select
 
-    call text_file%write_file(cells, file, NL, delim, .false., stat, errmsg)
+    call text_file%write_file(cells, file, NL, delim, .false., stat, errmsg, "text")
   end procedure to_text_r32
 
 
@@ -586,7 +586,7 @@ submodule (io_fortran_lib) text_io
       rank(2); call cast(x, numerical_data, fmt)
     end select
 
-    call text_file%write_file(cells, file, NL, delim, .false., stat, errmsg)
+    call text_file%write_file(cells, file, NL, delim, .false., stat, errmsg, "text")
   end procedure to_text_i64
 
   module procedure to_text_i32
@@ -638,7 +638,7 @@ submodule (io_fortran_lib) text_io
       rank(2); call cast(x, numerical_data, fmt)
     end select
 
-    call text_file%write_file(cells, file, NL, delim, .false., stat, errmsg)
+    call text_file%write_file(cells, file, NL, delim, .false., stat, errmsg, "text")
   end procedure to_text_i32
 
   module procedure to_text_i16
@@ -690,7 +690,7 @@ submodule (io_fortran_lib) text_io
       rank(2); call cast(x, numerical_data, fmt)
     end select
 
-    call text_file%write_file(cells, file, NL, delim, .false., stat, errmsg)
+    call text_file%write_file(cells, file, NL, delim, .false., stat, errmsg, "text")
   end procedure to_text_i16
 
   module procedure to_text_i8
@@ -742,7 +742,7 @@ submodule (io_fortran_lib) text_io
       rank(2); call cast(x, numerical_data, fmt)
     end select
 
-    call text_file%write_file(cells, file, NL, delim, .false., stat, errmsg)
+    call text_file%write_file(cells, file, NL, delim, .false., stat, errmsg, "text")
   end procedure to_text_i8
 
 
@@ -759,7 +759,7 @@ submodule (io_fortran_lib) text_io
 
     nrows=0; ncols=0
 
-    call read_cells(text_file, file, len(im) == 0, cells, NL, delim, stat, errmsg)
+    call read_cells(text_file, file, len(im) == 0, cells, NL, delim, stat, errmsg, "text")
 
     if ( stat /= 0 ) return
 
@@ -856,7 +856,7 @@ submodule (io_fortran_lib) text_io
 
     nrows=0; ncols=0
 
-    call read_cells(text_file, file, len(im) == 0, cells, NL, delim, stat, errmsg)
+    call read_cells(text_file, file, len(im) == 0, cells, NL, delim, stat, errmsg, "text")
 
     if ( stat /= 0 ) return
 
@@ -952,7 +952,7 @@ submodule (io_fortran_lib) text_io
 
     nrows=0; ncols=0
 
-    call read_cells(text_file, file, len(im) == 0, cells, NL, delim, stat, errmsg)
+    call read_cells(text_file, file, len(im) == 0, cells, NL, delim, stat, errmsg, "text")
 
     if ( stat /= 0 ) return
 
@@ -1049,7 +1049,7 @@ submodule (io_fortran_lib) text_io
 
     nrows=0; ncols=0
 
-    call text_file%read_file(file, cells, NL, delim, stat, errmsg)
+    call text_file%read_file(file, cells, NL, delim, stat, errmsg, "text")
 
     if ( stat /= 0 ) return
 
@@ -1144,7 +1144,7 @@ submodule (io_fortran_lib) text_io
 
     nrows=0; ncols=0
 
-    call text_file%read_file(file, cells, NL, delim, stat, errmsg)
+    call text_file%read_file(file, cells, NL, delim, stat, errmsg, "text")
 
     if ( stat /= 0 ) return
 
@@ -1238,7 +1238,7 @@ submodule (io_fortran_lib) text_io
 
     nrows=0; ncols=0
 
-    call text_file%read_file(file, cells, NL, delim, stat, errmsg)
+    call text_file%read_file(file, cells, NL, delim, stat, errmsg, "text")
 
     if ( stat /= 0 ) return
 
@@ -1331,7 +1331,7 @@ submodule (io_fortran_lib) text_io
 
     nrows=0; ncols=0
 
-    call text_file%read_file(file, cells, NL, delim, stat, errmsg)
+    call text_file%read_file(file, cells, NL, delim, stat, errmsg, "text")
 
     if ( stat /= 0 ) return
 
@@ -1408,7 +1408,7 @@ submodule (io_fortran_lib) text_io
 
     nrows=0; ncols=0
 
-    call text_file%read_file(file, cells, NL, delim, stat, errmsg)
+    call text_file%read_file(file, cells, NL, delim, stat, errmsg, "text")
 
     if ( stat /= 0 ) return
 
@@ -1485,7 +1485,7 @@ submodule (io_fortran_lib) text_io
 
     nrows=0; ncols=0
 
-    call text_file%read_file(file, cells, NL, delim, stat, errmsg)
+    call text_file%read_file(file, cells, NL, delim, stat, errmsg, "text")
 
     if ( stat /= 0 ) return
 
@@ -1562,7 +1562,7 @@ submodule (io_fortran_lib) text_io
 
     nrows=0; ncols=0
 
-    call text_file%read_file(file, cells, NL, delim, stat, errmsg)
+    call text_file%read_file(file, cells, NL, delim, stat, errmsg, "text")
 
     if ( stat /= 0 ) return
 

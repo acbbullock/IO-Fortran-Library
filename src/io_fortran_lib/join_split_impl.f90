@@ -62,8 +62,8 @@ submodule (io_fortran_lib) join_split
 
   module procedure split_string
     character(len=:), allocatable :: separator_
-    integer(i64)                  :: substring_len, l, i
-    integer                       :: sep_len, num_seps, sep, token, current
+    integer(i64)                  :: substring_len, l, i, num_seps, token
+    integer                       :: sep_len, sep, current
 
     substring_len=0_i64; l=0_i64; i=0_i64; sep_len=0; num_seps=0; sep=0; token=0; current=0
 
@@ -92,7 +92,7 @@ submodule (io_fortran_lib) join_split
       return
     end if
 
-    num_seps = substring%count(match=separator_)
+    num_seps = substring%count64(match=separator_)
 
     if ( num_seps == 0 ) then
       allocate( tokens(1) )

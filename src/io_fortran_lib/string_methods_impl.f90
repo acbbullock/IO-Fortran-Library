@@ -27,150 +27,36 @@ submodule (io_fortran_lib) string_methods
   end procedure as_str
 
   module procedure count_substring_chars
-    integer(i64) :: self_len, match_len, max_pos, upper_ind, i, j
-    integer      :: first_char, last_char
-
-    self_len=0_i64; match_len=0_i64; max_pos=0_i64; upper_ind=0_i64; i=0_i64; j=0_i64; first_char=0; last_char=0
-
-    self_len  = max(self%len64(), 0_i64)
-    match_len = len(match, kind=i64)
-
-    if ( self_len < 1_i64 ) then
-      if ( self_len == match_len ) then
-        occurrences = 1; return
-      else
-        occurrences = 0; return
-      end if
+    if ( allocated(self%buf) ) then
+      occurrences = int(count_of(self%buf(:self%n), match))
+    else
+      occurrences = int(count_of(EMPTY_STR, match))
     end if
-
-    if ( (match_len == 0_i64) .or. (match_len > self_len) ) then
-      occurrences = 0; return
-    end if
-
-    occurrences = 0; max_pos = self_len-match_len+1_i64
-    first_char = iachar(match(1:1)); last_char = iachar(match(match_len:match_len))
-
-    if ( match_len == 1_i64 ) then
-      i = 1_i64; do
-        if ( i > max_pos ) return
-
-        if ( iachar(self%buf(i:i)) /= first_char ) then
-          i = i + 1_i64; cycle
-        else
-          occurrences = occurrences + 1; i = i + 1_i64; cycle
-        end if
-      end do
-    end if
-
-    if ( match_len == 2_i64 ) then
-      i = 1_i64; do
-        if ( i > max_pos ) return
-
-        if ( iachar(self%buf(i:i)) /= first_char ) then
-          i = i + 1_i64; cycle
-        end if
-
-        if ( iachar(self%buf(i+1_i64:i+1_i64)) /= last_char ) then
-          i = i + 1_i64; cycle
-        else
-          occurrences = occurrences + 1; i = i + 2_i64; cycle
-        end if
-      end do
-    end if
-
-    i = 1_i64; do
-      if ( i > max_pos ) return
-
-      if ( iachar(self%buf(i:i)) /= first_char ) then
-        i = i + 1_i64; cycle
-      end if
-
-      upper_ind = i+match_len-1_i64
-
-      if ( iachar(self%buf(upper_ind:upper_ind)) /= last_char ) then
-        i = i + 1_i64; cycle
-      end if
-
-      if ( self%buf(i:upper_ind) == match ) then
-        occurrences = occurrences + 1; i = i + match_len; cycle
-      else
-        i = i + 1_i64; cycle
-      end if
-    end do
   end procedure count_substring_chars
 
+  module procedure count64_chars
+    if ( allocated(self%buf) ) then
+      occurrences = count_of(self%buf(:self%n), match)
+    else
+      occurrences = count_of(EMPTY_STR, match)
+    end if
+  end procedure count64_chars
+
   module procedure count_substring_string
-    integer(i64) :: self_len, match_len, max_pos, upper_ind, i, j
-    integer      :: first_char, last_char
-
-    self_len=0_i64; match_len=0_i64; max_pos=0_i64; upper_ind=0_i64; i=0_i64; j=0_i64; first_char=0; last_char=0
-
-    self_len  = max(self%len64(), 0_i64)
-    match_len = max(match%len64(), 0_i64)
-
-    if ( self_len < 1_i64 ) then
-      if ( self_len == match_len ) then
-        occurrences = 1; return
-      else
-        occurrences = 0; return
-      end if
+    if ( allocated(self%buf) ) then
+      occurrences = int(count_of(self%buf(:self%n), match%as_str()))
+    else
+      occurrences = int(count_of(EMPTY_STR, match%as_str()))
     end if
-
-    if ( (match_len == 0_i64) .or. (match_len > self_len) ) then
-      occurrences = 0; return
-    end if
-
-    occurrences = 0; max_pos = self_len-match_len+1_i64
-    first_char = iachar(match%buf(1:1)); last_char = iachar(match%buf(match_len:match_len))
-
-    if ( match_len == 1_i64 ) then
-      i = 1_i64; do
-        if ( i > max_pos ) return
-
-        if ( iachar(self%buf(i:i)) /= first_char ) then
-          i = i + 1_i64; cycle
-        else
-          occurrences = occurrences + 1; i = i + 1_i64; cycle
-        end if
-      end do
-    end if
-
-    if ( match_len == 2_i64 ) then
-      i = 1_i64; do
-        if ( i > max_pos ) return
-
-        if ( iachar(self%buf(i:i)) /= first_char ) then
-          i = i + 1_i64; cycle
-        end if
-
-        if ( iachar(self%buf(i+1_i64:i+1_i64)) /= last_char ) then
-          i = i + 1_i64; cycle
-        else
-          occurrences = occurrences + 1; i = i + 2_i64; cycle
-        end if
-      end do
-    end if
-
-    i = 1_i64; do
-      if ( i > max_pos ) return
-
-      if ( iachar(self%buf(i:i)) /= first_char ) then
-        i = i + 1_i64; cycle
-      end if
-
-      upper_ind = i+match_len-1_i64
-
-      if ( iachar(self%buf(upper_ind:upper_ind)) /= last_char ) then
-        i = i + 1_i64; cycle
-      end if
-
-      if ( self%buf(i:upper_ind) == match%buf(:match%n) ) then
-        occurrences = occurrences + 1; i = i + match_len; cycle
-      else
-        i = i + 1_i64; cycle
-      end if
-    end do
   end procedure count_substring_string
+
+  module procedure count64_string
+    if ( allocated(self%buf) ) then
+      occurrences = count_of(self%buf(:self%n), match%as_str())
+    else
+      occurrences = count_of(EMPTY_STR, match%as_str())
+    end if
+  end procedure count64_string
 
   module procedure empty
     self%buf = EMPTY_STR; self%n = len(self%buf, kind=i64)
@@ -267,7 +153,7 @@ submodule (io_fortran_lib) string_methods
   end procedure push_string
 
   module procedure read_file
-    call read_cells(self, file, .false., cell_array, row_separator, column_separator, stat, errmsg)
+    call read_cells(self, file, .false., cell_array, row_separator, column_separator, stat, errmsg, format)
   end procedure read_file
 
   module procedure read_cells
@@ -299,7 +185,7 @@ submodule (io_fortran_lib) string_methods
 
     stat_=0; errmsg_=EMPTY_STR
 
-    if ( .not. any(TEXT_EXT == ext) ) then
+    if ( format_of(file, format) /= "text" ) then
       stat_   = ARG_ERR
       errmsg_ = 'Error reading file "'//file//'" with extension "'//ext//'". To use read_file, the data to '// &
                 "be read into a String must be formatted as text with one of the following file extensions: "// &
@@ -627,7 +513,7 @@ submodule (io_fortran_lib) string_methods
   end procedure close_quietly
 
   module procedure write_file
-    call write_cells(self, .false., cell_array, file, row_separator, column_separator, append, stat, errmsg)
+    call write_cells(self, .false., cell_array, file, row_separator, column_separator, append, stat, errmsg, format)
   end procedure write_file
 
   module procedure write_cells
@@ -671,7 +557,7 @@ submodule (io_fortran_lib) string_methods
 
     stat_=0; errmsg_=EMPTY_STR
 
-    if ( .not. any(TEXT_EXT == ext) ) then
+    if ( format_of(file, format) /= "text" ) then
       stat_ = ARG_ERR
       errmsg_ = 'Cannot write to file "'//file//'" due to unsupported file extension "'//ext//'". '// &
                 'Supported file extensions: '//join(TEXT_EXT)
@@ -826,6 +712,34 @@ submodule (io_fortran_lib) string_methods
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure write_cells
+
+  module procedure read_line
+    character(len=256)  :: chunk
+    character(len=1024) :: message
+    integer             :: count, status
+
+    call self%empty()
+
+    message = EMPTY_STR
+    if ( present(stat) ) stat = 0
+    if ( present(errmsg) ) errmsg = EMPTY_STR
+
+    do
+      read(unit=unit, fmt="(a)", advance="no", size=count, iostat=status, iomsg=message) chunk
+
+      if ( (status == 0) .or. is_iostat_eor(status) ) call append(self, chunk(:count))
+
+      if ( status == 0 ) cycle
+      if ( is_iostat_eor(status) ) return
+
+      exit
+    end do
+
+    if ( present(errmsg) ) errmsg = message
+    if ( present(stat) ) stat = status
+
+    call stop_if_unhandled(status, message, present(stat))
+  end procedure read_line
 
   module procedure write_string
     if ( substring%len64() < 1_i64 ) then
@@ -1140,4 +1054,39 @@ submodule (io_fortran_lib) string_methods
     call move_alloc(grown, self%buf)
     self%n = new_len
   end subroutine append
+
+  pure function count_of(text, match) result(occurrences)
+    !-------------------------------------------------------------------------------------------------------------------
+    !! Returns the number of non-overlapping occurrences of `match` in `text`. The empty string occurs once in itself.
+    !-------------------------------------------------------------------------------------------------------------------
+    character(len=*), intent(in) :: text, match
+    integer(i64)                 :: occurrences
+
+    integer(i64) :: i, last, match_len
+
+    occurrences = 0_i64
+    match_len   = len(match, kind=i64)
+
+    if ( len(text, kind=i64) < 1_i64 ) then
+      if ( match_len == 0_i64 ) occurrences = 1_i64
+      return
+    end if
+
+    if ( match_len == 0_i64 ) return
+
+    last = len(text, kind=i64) - match_len + 1_i64
+    i    = 1_i64
+
+    do while ( i <= last )
+      if ( text(i:i) == match(1:1) ) then
+        if ( text(i:i+match_len-1_i64) == match ) then
+          occurrences = occurrences + 1_i64
+          i = i + match_len
+          cycle
+        end if
+      end if
+
+      i = i + 1_i64
+    end do
+  end function count_of
 end submodule string_methods

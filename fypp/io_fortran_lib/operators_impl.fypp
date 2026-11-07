@@ -190,6 +190,36 @@ submodule (io_fortran_lib) operators
     new%n = len(new%buf, kind=i64)
   end procedure repeat_String
 
+#:for op, name, word in ORDER_OPERATORS
+  module procedure string_${name}$
+    if ( allocated(Stringl%buf) .and. allocated(Stringr%buf) ) then
+      res = text_order(Stringl%buf(:Stringl%n), Stringr%buf(:Stringr%n)) ${ORDER_TESTS[name]}$
+    else if ( allocated(Stringl%buf) ) then
+      res = text_order(Stringl%buf(:Stringl%n), EMPTY_STR) ${ORDER_TESTS[name]}$
+    else if ( allocated(Stringr%buf) ) then
+      res = text_order(EMPTY_STR, Stringr%buf(:Stringr%n)) ${ORDER_TESTS[name]}$
+    else
+      res = text_order(EMPTY_STR, EMPTY_STR) ${ORDER_TESTS[name]}$
+    end if
+  end procedure string_${name}$
+
+  module procedure string_char_${name}$
+    if ( allocated(Stringl%buf) ) then
+      res = text_order(Stringl%buf(:Stringl%n), charsr) ${ORDER_TESTS[name]}$
+    else
+      res = text_order(EMPTY_STR, charsr) ${ORDER_TESTS[name]}$
+    end if
+  end procedure string_char_${name}$
+
+  module procedure char_string_${name}$
+    if ( allocated(Stringr%buf) ) then
+      res = text_order(charsl, Stringr%buf(:Stringr%n)) ${ORDER_TESTS[name]}$
+    else
+      res = text_order(charsl, EMPTY_STR) ${ORDER_TESTS[name]}$
+    end if
+  end procedure char_string_${name}$
+
+#:endfor
   module procedure string_equivalence
     integer(i64) :: Stringl_len, Stringr_len
 
@@ -291,4 +321,24 @@ submodule (io_fortran_lib) operators
 
     unequal = ( charsl /= Stringr%buf(:Stringr%n) )
   end procedure char_string_nonequivalence
+
+  pure function text_order(a, b) result(order)
+    !-------------------------------------------------------------------------------------------------------------------
+    !! Returns a negative, zero or positive number as `a` comes before, matches or comes after `b`, comparing bytes.
+    !! The intrinsic comparisons are not used since they pad with blanks, which would disagree with `==` on length.
+    !-------------------------------------------------------------------------------------------------------------------
+    character(len=*), intent(in) :: a, b
+    integer                      :: order
+
+    integer(i64) :: i
+
+    do i = 1_i64, min(len(a, kind=i64), len(b, kind=i64))
+      order = iand(ichar(a(i:i)), 255) - iand(ichar(b(i:i)), 255)
+      if ( order /= 0 ) return
+    end do
+
+    order = 0
+    if ( len(a, kind=i64) < len(b, kind=i64) ) order = -1
+    if ( len(a, kind=i64) > len(b, kind=i64) ) order = 1
+  end function text_order
 end submodule operators

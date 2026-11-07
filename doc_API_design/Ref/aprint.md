@@ -6,26 +6,27 @@ author: Austin C Bullock
 ## [interface aprint](../../interface/aprint.html)
 
 *Description*: Subroutine for printing arrays and array sections to
-stdout.
+stdout, or to a connected formatted `unit`.
 
 For `x` an array of rank `1` or `2` and of type `character` or `String`:
 
 ```fortran
-call aprint(x)
+call aprint(x [, unit])
 ```
 
 For `x` an array of rank `1` or `2` and of type `integer`:
 
 ```fortran
-call aprint(x [, fmt])
+call aprint(x [, fmt, unit])
 ```
 
 * `fmt` is `optional`, may be one of `INT_FMTS`
+* `unit` is `optional` and of type `integer` (default is stdout)
 
 For `x` an array of rank `1` or `2` and of type `real`:
 
 ```fortran
-call aprint(x [, fmt, decimals])
+call aprint(x [, fmt, decimals, unit])
 ```
 
 * `fmt` is `optional`, may be one of `REAL_FMTS`
@@ -34,7 +35,7 @@ call aprint(x [, fmt, decimals])
 For `x` an array of rank `1` or `2` and of type `complex`:
 
 ```fortran
-call aprint(x [, fmt, decimals, im])
+call aprint(x [, fmt, decimals, im, unit])
 ```
 
 * `fmt` is `optional`, may be one of `REAL_FMTS`

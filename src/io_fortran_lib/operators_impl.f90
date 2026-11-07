@@ -243,6 +243,118 @@ submodule (io_fortran_lib) operators
     new%n = len(new%buf, kind=i64)
   end procedure repeat_String
 
+  module procedure string_lt
+    if ( allocated(Stringl%buf) .and. allocated(Stringr%buf) ) then
+      res = text_order(Stringl%buf(:Stringl%n), Stringr%buf(:Stringr%n)) < 0
+    else if ( allocated(Stringl%buf) ) then
+      res = text_order(Stringl%buf(:Stringl%n), EMPTY_STR) < 0
+    else if ( allocated(Stringr%buf) ) then
+      res = text_order(EMPTY_STR, Stringr%buf(:Stringr%n)) < 0
+    else
+      res = text_order(EMPTY_STR, EMPTY_STR) < 0
+    end if
+  end procedure string_lt
+
+  module procedure string_char_lt
+    if ( allocated(Stringl%buf) ) then
+      res = text_order(Stringl%buf(:Stringl%n), charsr) < 0
+    else
+      res = text_order(EMPTY_STR, charsr) < 0
+    end if
+  end procedure string_char_lt
+
+  module procedure char_string_lt
+    if ( allocated(Stringr%buf) ) then
+      res = text_order(charsl, Stringr%buf(:Stringr%n)) < 0
+    else
+      res = text_order(charsl, EMPTY_STR) < 0
+    end if
+  end procedure char_string_lt
+
+  module procedure string_le
+    if ( allocated(Stringl%buf) .and. allocated(Stringr%buf) ) then
+      res = text_order(Stringl%buf(:Stringl%n), Stringr%buf(:Stringr%n)) <= 0
+    else if ( allocated(Stringl%buf) ) then
+      res = text_order(Stringl%buf(:Stringl%n), EMPTY_STR) <= 0
+    else if ( allocated(Stringr%buf) ) then
+      res = text_order(EMPTY_STR, Stringr%buf(:Stringr%n)) <= 0
+    else
+      res = text_order(EMPTY_STR, EMPTY_STR) <= 0
+    end if
+  end procedure string_le
+
+  module procedure string_char_le
+    if ( allocated(Stringl%buf) ) then
+      res = text_order(Stringl%buf(:Stringl%n), charsr) <= 0
+    else
+      res = text_order(EMPTY_STR, charsr) <= 0
+    end if
+  end procedure string_char_le
+
+  module procedure char_string_le
+    if ( allocated(Stringr%buf) ) then
+      res = text_order(charsl, Stringr%buf(:Stringr%n)) <= 0
+    else
+      res = text_order(charsl, EMPTY_STR) <= 0
+    end if
+  end procedure char_string_le
+
+  module procedure string_gt
+    if ( allocated(Stringl%buf) .and. allocated(Stringr%buf) ) then
+      res = text_order(Stringl%buf(:Stringl%n), Stringr%buf(:Stringr%n)) > 0
+    else if ( allocated(Stringl%buf) ) then
+      res = text_order(Stringl%buf(:Stringl%n), EMPTY_STR) > 0
+    else if ( allocated(Stringr%buf) ) then
+      res = text_order(EMPTY_STR, Stringr%buf(:Stringr%n)) > 0
+    else
+      res = text_order(EMPTY_STR, EMPTY_STR) > 0
+    end if
+  end procedure string_gt
+
+  module procedure string_char_gt
+    if ( allocated(Stringl%buf) ) then
+      res = text_order(Stringl%buf(:Stringl%n), charsr) > 0
+    else
+      res = text_order(EMPTY_STR, charsr) > 0
+    end if
+  end procedure string_char_gt
+
+  module procedure char_string_gt
+    if ( allocated(Stringr%buf) ) then
+      res = text_order(charsl, Stringr%buf(:Stringr%n)) > 0
+    else
+      res = text_order(charsl, EMPTY_STR) > 0
+    end if
+  end procedure char_string_gt
+
+  module procedure string_ge
+    if ( allocated(Stringl%buf) .and. allocated(Stringr%buf) ) then
+      res = text_order(Stringl%buf(:Stringl%n), Stringr%buf(:Stringr%n)) >= 0
+    else if ( allocated(Stringl%buf) ) then
+      res = text_order(Stringl%buf(:Stringl%n), EMPTY_STR) >= 0
+    else if ( allocated(Stringr%buf) ) then
+      res = text_order(EMPTY_STR, Stringr%buf(:Stringr%n)) >= 0
+    else
+      res = text_order(EMPTY_STR, EMPTY_STR) >= 0
+    end if
+  end procedure string_ge
+
+  module procedure string_char_ge
+    if ( allocated(Stringl%buf) ) then
+      res = text_order(Stringl%buf(:Stringl%n), charsr) >= 0
+    else
+      res = text_order(EMPTY_STR, charsr) >= 0
+    end if
+  end procedure string_char_ge
+
+  module procedure char_string_ge
+    if ( allocated(Stringr%buf) ) then
+      res = text_order(charsl, Stringr%buf(:Stringr%n)) >= 0
+    else
+      res = text_order(charsl, EMPTY_STR) >= 0
+    end if
+  end procedure char_string_ge
+
   module procedure string_equivalence
     integer(i64) :: Stringl_len, Stringr_len
 
@@ -344,4 +456,24 @@ submodule (io_fortran_lib) operators
 
     unequal = ( charsl /= Stringr%buf(:Stringr%n) )
   end procedure char_string_nonequivalence
+
+  pure function text_order(a, b) result(order)
+    !-------------------------------------------------------------------------------------------------------------------
+    !! Returns a negative, zero or positive number as `a` comes before, matches or comes after `b`, comparing bytes.
+    !! The intrinsic comparisons are not used since they pad with blanks, which would disagree with `==` on length.
+    !-------------------------------------------------------------------------------------------------------------------
+    character(len=*), intent(in) :: a, b
+    integer                      :: order
+
+    integer(i64) :: i
+
+    do i = 1_i64, min(len(a, kind=i64), len(b, kind=i64))
+      order = iand(ichar(a(i:i)), 255) - iand(ichar(b(i:i)), 255)
+      if ( order /= 0 ) return
+    end do
+
+    order = 0
+    if ( len(a, kind=i64) < len(b, kind=i64) ) order = -1
+    if ( len(a, kind=i64) > len(b, kind=i64) ) order = 1
+  end function text_order
 end submodule operators

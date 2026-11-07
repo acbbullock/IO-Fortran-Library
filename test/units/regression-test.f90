@@ -18,7 +18,8 @@ program regression_test
   use, intrinsic :: ieee_arithmetic, only: ieee_value, ieee_quiet_nan, ieee_positive_inf, ieee_is_nan, &
                                              ieee_is_negative
   use io_fortran_lib, only: String, cast, str, join, split, echo, aprint, to_file, from_file, operator(==), &
-                            operator(/=), operator(**), operator(+), LF, CR, TAB
+                            operator(/=), operator(**), operator(+), operator(<), operator(<=), &
+                            operator(>), operator(>=), LF, CR, TAB
   implicit none (type, external)
 
   character(len=*), parameter :: dir = "./test/output/"
@@ -169,6 +170,29 @@ program regression_test
     test_case("push_then_everything",        RETURNS, FIXED),     &
     test_case("push_cast_number",            RETURNS, FIXED),     &
     test_case("push_edge_cases",             RETURNS, FIXED),     &
+    test_case("count64_agrees_with_count",  RETURNS, FIXED),     &
+    test_case("order_strings",              RETURNS, FIXED),     &
+    test_case("order_mixed",                RETURNS, FIXED),     &
+    test_case("order_agrees_with_equality", RETURNS, FIXED),     &
+    test_case("order_unallocated",          RETURNS, FIXED),     &
+    test_case("order_array",                RETURNS, FIXED),     &
+    test_case("order_after_push",           RETURNS, FIXED),     &
+    test_case("order_high_bytes",           RETURNS, FIXED),     &
+    test_case("aprint_to_unit",             RETURNS, FIXED),     &
+    test_case("read_line_lines",            RETURNS, FIXED),     &
+    test_case("read_line_exact_chunk",      RETURNS, FIXED),     &
+    test_case("read_line_then_use",         RETURNS, FIXED),     &
+    test_case("read_line_bad_unit_stat",    RETURNS, FIXED),     &
+    test_case("write_then_read_line",       RETURNS, FIXED),     &
+    test_case("aprint_complex_keeps_unit",  RETURNS, FIXED),     &
+    test_case("read_line_end_stops",         STOPS,   FIXED),     &
+    test_case("format_text_any_extension",  RETURNS, FIXED),     &
+    test_case("format_binary_any_extension",RETURNS, FIXED),     &
+    test_case("format_overrides_extension", RETURNS, FIXED),     &
+    test_case("format_invalid_stat",        RETURNS, FIXED),     &
+    test_case("format_string_methods",      RETURNS, FIXED),     &
+    test_case("extension_any_case",         RETURNS, FIXED),     &
+    test_case("format_invalid_stops",        STOPS,   FIXED),     &
     test_case("repeat_scalar",               RETURNS, FIXED),     &
     test_case("repeat_array",                RETURNS, FIXED),     &
     test_case("concat_plus_array",           RETURNS, FIXED),     &
@@ -932,6 +956,167 @@ contains
         call check(s%len() == 0, "Empty should clear the text.")
         call s%push("c")
         call check(s%as_str() == "c", "Pushing after empty.")
+      case ("count64_agrees_with_count")
+        s = String("ab,ab,,ab")
+        call check(s%count64(",") == int(s%count(","), int64), "With a character match.")
+        r = String("ab")
+        call check(s%count64(r) == 3_int64, "With a String match.")
+        call check(s%count64("zz") == 0_int64, "No match.")
+        call check(s%count64("") == 0_int64, "An empty match in text.")
+        r = String("")
+        call check(r%count64("") == 1_int64, "The empty string occurs once in itself.")
+        three(1) = String("a,a"); three(2) = String("a"); three(3) = String("")
+        call check(all(three%count64("a") == [2_int64,1_int64,0_int64]), "Elementally.")
+        s = String("aaaa")
+        call check(s%count("aa") == 2, "Occurrences do not overlap.")
+      case ("order_strings")
+        s = String("apple"); r = String("banana")
+        call check(s < r, "Less than.")
+        call check(s <= r, "Less than or equal.")
+        call check(r > s, "Greater than.")
+        call check(r >= s, "Greater than or equal.")
+        call check(.not. (r < s), "Not less than.")
+        call check(.not. (s > r), "Not greater than.")
+        call check((s <= s) .and. (s >= s) .and. (.not. (s < s)) .and. (.not. (s > s)), "Equal strings.")
+      case ("order_mixed")
+        s = String("b")
+        call check(("a" < s) .and. (s < "c"), "Less than, both ways.")
+        call check(("c" > s) .and. (s > "a"), "Greater than, both ways.")
+        call check((s <= "b") .and. ("b" <= s) .and. (s >= "b") .and. ("b" >= s), "Equal to a character.")
+      case ("order_agrees_with_equality")
+        s = String("a"); r = String("a ")
+        call check(s /= r, "Trailing blanks are significant.")
+        call check((s < r) .and. (r > s), "So exactly one of the orderings holds.")
+        call check("a" < r, "The same with a character.")
+        s = String("ab"); r = String("abc")
+        call check(s < r, "A prefix comes first.")
+        call check(.not. (r <= s), "And not the other way.")
+      case ("order_unallocated")
+        r = String("")
+        call check((s <= r) .and. (s >= r) .and. (.not. (s < r)), "An unallocated String acts as empty.")
+        call check(s < "a", "It comes before any text.")
+        call check("a" > s, "In either order.")
+        call check((s <= "") .and. ("" >= s), "It equals an empty character.")
+      case ("order_array")
+        three(1) = String("a"); three(2) = String("b"); three(3) = String("c")
+        call check(all((three < "b") .eqv. [.true.,.false.,.false.]), "Elementally with a scalar.")
+        call check(all(("b" < three) .eqv. [.false.,.false.,.true.]), "In either order.")
+      case ("order_after_push")
+        call s%push("ab"); call s%push("c")
+        call check((s == "abc") .and. (s >= "abc") .and. (s <= "abc"), "Spare room should not affect ordering.")
+      case ("order_high_bytes")
+        s = String(achar(200)); r = String("a")
+        call check(r < s, "Bytes compare as unsigned.")
+      case ("aprint_to_unit")
+        open(newunit=i, file=file//".log", status="replace", action="write")
+        call aprint([1.5_real64,2.5_real64], fmt="f", decimals=1, unit=i)
+        call aprint(reshape([1,2,3,4], [2,2]), unit=i)
+        call aprint([(1.0,2.0)], fmt="e", decimals=1, im="j", unit=i)
+        call aprint(["ab","cd"], unit=i)
+        call aprint([String("xy"),String("z")], unit=i)
+        close(i)
+        call s%read_file(file//".log")
+        call check(s%count("1.5") == 1, "The real array should be in the file.")
+        call check(s%count("4") >= 1, "The integer array should be in the file.")
+        call check(s%count("2.0e+00j") == 1, "The complex array should be in the file.")
+        call check((s%count("ab") == 1) .and. (s%count("cd") == 1), "The character array should be in the file.")
+        call check(s%count("xy") == 1, "The String array should be in the file.")
+      case ("read_line_lines")
+        call write_raw(file//".txt", "  first line "//LF//LF//"third"//LF//repeat("x", 700)//LF//"no newline")
+        open(newunit=i, file=file//".txt", status="old", action="read")
+        call s%read_line(i, stat=st)
+        call check((st == 0) .and. (s == "  first line "), "Blanks should be kept.")
+        call s%read_line(i, stat=st)
+        call check((st == 0) .and. (s%len() == 0), "A blank line gives an empty String.")
+        call s%read_line(i, stat=st)
+        call check((st == 0) .and. (s == "third"), "The next line.")
+        call s%read_line(i, stat=st)
+        call check((st == 0) .and. (s == repeat("x", 700)), "A long line should be read in full.")
+        call s%read_line(i, stat=st)
+        call check((st == 0) .and. (s == "no newline"), "The last line needs no newline.")
+        call s%read_line(i, stat=st)
+        call check(is_iostat_end(st), "The end of the file should be reported through stat.")
+        close(i)
+      case ("read_line_exact_chunk")
+        call write_raw(file//".txt", repeat("y", 256)//LF//repeat("z", 512)//LF//"end"//LF)
+        open(newunit=i, file=file//".txt", status="old", action="read")
+        call s%read_line(i)
+        call check(s == repeat("y", 256), "A line exactly as long as the internal buffer.")
+        call s%read_line(i)
+        call check(s == repeat("z", 512), "A line exactly twice as long.")
+        call s%read_line(i)
+        call check(s == "end", "The next line should be intact.")
+        close(i)
+      case ("read_line_then_use")
+        call write_raw(file//".txt", "abc"//LF)
+        open(newunit=i, file=file//".txt", status="old", action="read")
+        call s%read_line(i)
+        close(i)
+        call s%push("d")
+        call check(s == "abcd", "A String that was read should work as usual.")
+      case ("read_line_end_stops")
+        call write_raw(file//".txt", "")
+        open(newunit=i, file=file//".txt", status="old", action="read")
+        call s%read_line(i)
+      case ("read_line_bad_unit_stat")
+        call s%read_line(98765, stat=st, errmsg=msg)
+        call check(st /= 0, "An unconnected unit should be reported through stat.")
+      case ("write_then_read_line")
+        s = String("hello, world")
+        open(newunit=i, file=file//".txt", status="replace", action="write")
+        write(i, "(DT)") s
+        close(i)
+        open(newunit=i, file=file//".txt", status="old", action="read")
+        call r%read_line(i, stat=st, errmsg=msg)
+        close(i)
+        call check((st == 0) .and. (r == s), "Text should survive a round trip.")
+      case ("aprint_complex_keeps_unit")
+        open(newunit=i, file=file//".log", status="replace", action="write")
+        call aprint([(1.0,2.0),(3.5,4.5)], fmt="e", decimals=1, im="j", unit=i)
+        close(i)
+        call s%read_file(file//".log")
+        call check(s%count("2.0e+00j") == 1, "The imaginary unit should not be cut off.")
+        call check(s%count("4.5e+00j") == 1, "On every element.")
+      case ("format_text_any_extension")
+        call to_file([1.5_real64,2.5_real64], file=file//".tsv", format="text", stat=st, errmsg=msg)
+        call check(st == 0, "The write should succeed.")
+        call from_file(file//".tsv", into=v, format="text", stat=st, errmsg=msg)
+        call check((st == 0) .and. all(v == [1.5_real64,2.5_real64]), "The data should survive a round trip.")
+        call to_file([1.5_real64], file=file//"_no_extension", format="text", stat=st, errmsg=msg)
+        call check(st == 0, "No extension is needed with format.")
+      case ("format_binary_any_extension")
+        call to_file([1.5_real64,2.5_real64], file=file//".xyz", format="binary", stat=st, errmsg=msg)
+        call check(st == 0, "The write should succeed.")
+        call from_file(file//".xyz", into=v, data_shape=[2], format="binary", stat=st, errmsg=msg)
+        call check((st == 0) .and. all(v == [1.5_real64,2.5_real64]), "The data should survive a round trip.")
+      case ("format_overrides_extension")
+        call to_file([1.5_real64,2.5_real64], file=file//".csv", format="binary", stat=st, errmsg=msg)
+        inquire(file=file//".csv", size=i)
+        call check((st == 0) .and. (i == 16), "A binary format should write binary data whatever the extension.")
+      case ("format_invalid_stat")
+        call to_file([1.5_real64], file=file//".csv", format="xml", stat=st, errmsg=msg)
+        call check(st /= 0, "An invalid format should be reported through stat.")
+        call from_file(file//".csv", into=v, format="xml", stat=st, errmsg=msg)
+        call check(st /= 0, "An invalid format should be reported through stat.")
+      case ("format_invalid_stops")
+        call to_file([1.5_real64], file=file//".csv", format="xml")
+      case ("format_string_methods")
+        one_row(1,1) = String("a"); one_row(1,2) = String("b")
+        call s%write_file(one_row, file=file//".tsv", column_separator=TAB, format="text")
+        call s%read_file(file//".tsv", cell_array=cells, column_separator=TAB, format="text")
+        call check(cells(1,2) == "b", "read_file and write_file should accept format.")
+        call echo("line", file=file//".json", format="text", stat=st, errmsg=msg)
+        call check(st == 0, "echo should accept format.")
+        call s%read_file(file//".csv", format="binary", stat=st, errmsg=msg)
+        call check(st /= 0, "A binary format is not valid for read_file.")
+      case ("extension_any_case")
+        call to_file([1.5_real64], file=file//".CSV", stat=st, errmsg=msg)
+        call check(st == 0, "An uppercase extension should work.")
+        call from_file(file//".CSV", into=v, stat=st, errmsg=msg)
+        call check((st == 0) .and. (v(1) == 1.5_real64), "In both directions.")
+        call to_file([1.5_real64,2.5_real64], file=file//".Dat", stat=st, errmsg=msg)
+        inquire(file=file//".Dat", size=i)
+        call check((st == 0) .and. (i == 16), "A mixed case binary extension should write binary.")
       case ("repeat_scalar")
         call check("ab"**2 == "abab", "Scalar repetition.")
         call check(len("ab"**0) == 0, "Zero copies.")

@@ -36,7 +36,30 @@ submodule (io_fortran_lib) file_io
     else
       ext = EMPTY_STR
     end if
+
+    do i = 1, len(ext)
+      if ( (ext(i:i) >= "A") .and. (ext(i:i) <= "Z") ) ext(i:i) = achar(iachar(ext(i:i)) + 32)
+    end do
   end procedure ext_of
+
+  module procedure format_of
+    character(len=:), allocatable :: ext
+
+    file_format = EMPTY_STR
+
+    if ( present(format) ) then
+      if ( (format == "text") .or. (format == "binary") ) file_format = format
+      return
+    end if
+
+    ext = ext_of(file)
+
+    if ( any(TEXT_EXT == ext) ) then
+      file_format = "text"
+    else if ( any(BINARY_EXT == ext) ) then
+      file_format = "binary"
+    end if
+  end procedure format_of
 
   ! Writing Procedures ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #ifdef IOFL_HAS_R128
@@ -67,7 +90,7 @@ submodule (io_fortran_lib) file_io
 
     stat_=0; errmsg_=EMPTY_STR
 
-    if ( any(TEXT_EXT == ext) ) then
+    if ( format_of(file, format) == "text" ) then
       select rank(x)
         rank(1); continue
         rank(2); continue
@@ -142,7 +165,7 @@ submodule (io_fortran_lib) file_io
         rank(1); call to_text(x, file, header, locale_, delim_, fmt_, decimals_, im_, stat_, errmsg_)
         rank(2); call to_text(x, file, header, locale_, delim_, fmt_, decimals_, im_, stat_, errmsg_)
       end select
-    else if ( any(BINARY_EXT == ext) ) then
+    else if ( format_of(file, format) == "binary" ) then
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
       if ( present(locale  ) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
       if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
@@ -175,7 +198,7 @@ submodule (io_fortran_lib) file_io
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//SPACE//join(BINARY_EXT)
+                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//'. Or pass format="text" or format="binary".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -209,7 +232,7 @@ submodule (io_fortran_lib) file_io
 
     stat_=0; errmsg_=EMPTY_STR
 
-    if ( any(TEXT_EXT == ext) ) then
+    if ( format_of(file, format) == "text" ) then
       select rank(x)
         rank(1); continue
         rank(2); continue
@@ -284,7 +307,7 @@ submodule (io_fortran_lib) file_io
         rank(1); call to_text(x, file, header, locale_, delim_, fmt_, decimals_, im_, stat_, errmsg_)
         rank(2); call to_text(x, file, header, locale_, delim_, fmt_, decimals_, im_, stat_, errmsg_)
       end select
-    else if ( any(BINARY_EXT == ext) ) then
+    else if ( format_of(file, format) == "binary" ) then
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
       if ( present(locale  ) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
       if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
@@ -317,7 +340,7 @@ submodule (io_fortran_lib) file_io
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//SPACE//join(BINARY_EXT)
+                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//'. Or pass format="text" or format="binary".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -350,7 +373,7 @@ submodule (io_fortran_lib) file_io
 
     stat_=0; errmsg_=EMPTY_STR
 
-    if ( any(TEXT_EXT == ext) ) then
+    if ( format_of(file, format) == "text" ) then
       select rank(x)
         rank(1); continue
         rank(2); continue
@@ -425,7 +448,7 @@ submodule (io_fortran_lib) file_io
         rank(1); call to_text(x, file, header, locale_, delim_, fmt_, decimals_, im_, stat_, errmsg_)
         rank(2); call to_text(x, file, header, locale_, delim_, fmt_, decimals_, im_, stat_, errmsg_)
       end select
-    else if ( any(BINARY_EXT == ext) ) then
+    else if ( format_of(file, format) == "binary" ) then
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
       if ( present(locale  ) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
       if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
@@ -458,7 +481,7 @@ submodule (io_fortran_lib) file_io
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//SPACE//join(BINARY_EXT)
+                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//'. Or pass format="text" or format="binary".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -493,7 +516,7 @@ submodule (io_fortran_lib) file_io
 
     stat_=0; errmsg_=EMPTY_STR
 
-    if ( any(TEXT_EXT == ext) ) then
+    if ( format_of(file, format) == "text" ) then
       select rank(x)
         rank(1); continue
         rank(2); continue
@@ -566,7 +589,7 @@ submodule (io_fortran_lib) file_io
         rank(1); call to_text(x, file, header, locale_, delim_, fmt_, decimals_, stat_, errmsg_)
         rank(2); call to_text(x, file, header, locale_, delim_, fmt_, decimals_, stat_, errmsg_)
       end select
-    else if ( any(BINARY_EXT == ext) ) then
+    else if ( format_of(file, format) == "binary" ) then
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
       if ( present(locale  ) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
       if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
@@ -598,7 +621,7 @@ submodule (io_fortran_lib) file_io
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//SPACE//join(BINARY_EXT)
+                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//'. Or pass format="text" or format="binary".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -632,7 +655,7 @@ submodule (io_fortran_lib) file_io
 
     stat_=0; errmsg_=EMPTY_STR
 
-    if ( any(TEXT_EXT == ext) ) then
+    if ( format_of(file, format) == "text" ) then
       select rank(x)
         rank(1); continue
         rank(2); continue
@@ -705,7 +728,7 @@ submodule (io_fortran_lib) file_io
         rank(1); call to_text(x, file, header, locale_, delim_, fmt_, decimals_, stat_, errmsg_)
         rank(2); call to_text(x, file, header, locale_, delim_, fmt_, decimals_, stat_, errmsg_)
       end select
-    else if ( any(BINARY_EXT == ext) ) then
+    else if ( format_of(file, format) == "binary" ) then
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
       if ( present(locale  ) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
       if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
@@ -737,7 +760,7 @@ submodule (io_fortran_lib) file_io
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//SPACE//join(BINARY_EXT)
+                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//'. Or pass format="text" or format="binary".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -770,7 +793,7 @@ submodule (io_fortran_lib) file_io
 
     stat_=0; errmsg_=EMPTY_STR
 
-    if ( any(TEXT_EXT == ext) ) then
+    if ( format_of(file, format) == "text" ) then
       select rank(x)
         rank(1); continue
         rank(2); continue
@@ -843,7 +866,7 @@ submodule (io_fortran_lib) file_io
         rank(1); call to_text(x, file, header, locale_, delim_, fmt_, decimals_, stat_, errmsg_)
         rank(2); call to_text(x, file, header, locale_, delim_, fmt_, decimals_, stat_, errmsg_)
       end select
-    else if ( any(BINARY_EXT == ext) ) then
+    else if ( format_of(file, format) == "binary" ) then
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
       if ( present(locale  ) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
       if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
@@ -875,7 +898,7 @@ submodule (io_fortran_lib) file_io
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//SPACE//join(BINARY_EXT)
+                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//'. Or pass format="text" or format="binary".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -908,7 +931,7 @@ submodule (io_fortran_lib) file_io
 
     stat_=0; errmsg_=EMPTY_STR
 
-    if ( any(TEXT_EXT == ext) ) then
+    if ( format_of(file, format) == "text" ) then
       select rank(x)
         rank(1); continue
         rank(2); continue
@@ -958,7 +981,7 @@ submodule (io_fortran_lib) file_io
         rank(1); call to_text(x, file, header, delim_, fmt_, stat_, errmsg_)
         rank(2); call to_text(x, file, header, delim_, fmt_, stat_, errmsg_)
       end select
-    else if ( any(BINARY_EXT == ext) ) then
+    else if ( format_of(file, format) == "binary" ) then
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
       if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
       if ( present(fmt     ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
@@ -988,7 +1011,7 @@ submodule (io_fortran_lib) file_io
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//SPACE//join(BINARY_EXT)
+                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//'. Or pass format="text" or format="binary".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -1020,7 +1043,7 @@ submodule (io_fortran_lib) file_io
 
     stat_=0; errmsg_=EMPTY_STR
 
-    if ( any(TEXT_EXT == ext) ) then
+    if ( format_of(file, format) == "text" ) then
       select rank(x)
         rank(1); continue
         rank(2); continue
@@ -1070,7 +1093,7 @@ submodule (io_fortran_lib) file_io
         rank(1); call to_text(x, file, header, delim_, fmt_, stat_, errmsg_)
         rank(2); call to_text(x, file, header, delim_, fmt_, stat_, errmsg_)
       end select
-    else if ( any(BINARY_EXT == ext) ) then
+    else if ( format_of(file, format) == "binary" ) then
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
       if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
       if ( present(fmt     ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
@@ -1100,7 +1123,7 @@ submodule (io_fortran_lib) file_io
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//SPACE//join(BINARY_EXT)
+                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//'. Or pass format="text" or format="binary".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -1132,7 +1155,7 @@ submodule (io_fortran_lib) file_io
 
     stat_=0; errmsg_=EMPTY_STR
 
-    if ( any(TEXT_EXT == ext) ) then
+    if ( format_of(file, format) == "text" ) then
       select rank(x)
         rank(1); continue
         rank(2); continue
@@ -1182,7 +1205,7 @@ submodule (io_fortran_lib) file_io
         rank(1); call to_text(x, file, header, delim_, fmt_, stat_, errmsg_)
         rank(2); call to_text(x, file, header, delim_, fmt_, stat_, errmsg_)
       end select
-    else if ( any(BINARY_EXT == ext) ) then
+    else if ( format_of(file, format) == "binary" ) then
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
       if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
       if ( present(fmt     ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
@@ -1212,7 +1235,7 @@ submodule (io_fortran_lib) file_io
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//SPACE//join(BINARY_EXT)
+                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//'. Or pass format="text" or format="binary".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -1244,7 +1267,7 @@ submodule (io_fortran_lib) file_io
 
     stat_=0; errmsg_=EMPTY_STR
 
-    if ( any(TEXT_EXT == ext) ) then
+    if ( format_of(file, format) == "text" ) then
       select rank(x)
         rank(1); continue
         rank(2); continue
@@ -1294,7 +1317,7 @@ submodule (io_fortran_lib) file_io
         rank(1); call to_text(x, file, header, delim_, fmt_, stat_, errmsg_)
         rank(2); call to_text(x, file, header, delim_, fmt_, stat_, errmsg_)
       end select
-    else if ( any(BINARY_EXT == ext) ) then
+    else if ( format_of(file, format) == "binary" ) then
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
       if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
       if ( present(fmt     ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
@@ -1324,7 +1347,7 @@ submodule (io_fortran_lib) file_io
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//SPACE//join(BINARY_EXT)
+                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//'. Or pass format="text" or format="binary".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -1360,7 +1383,7 @@ submodule (io_fortran_lib) file_io
 
     stat_=0; errmsg_=EMPTY_STR
 
-    if ( any(TEXT_EXT == ext) ) then
+    if ( format_of(file, format) == "text" ) then
       header_ = optval(header, ABSENT_HEADER)
 
       if ( .not. present(locale) ) then
@@ -1465,7 +1488,7 @@ submodule (io_fortran_lib) file_io
 
     stat_=0; errmsg_=EMPTY_STR
 
-    if ( any(TEXT_EXT == ext) ) then
+    if ( format_of(file, format) == "text" ) then
       header_ = optval(header, ABSENT_HEADER)
 
       if ( .not. present(locale) ) then
@@ -1569,7 +1592,7 @@ submodule (io_fortran_lib) file_io
 
     stat_=0; errmsg_=EMPTY_STR
 
-    if ( any(TEXT_EXT == ext) ) then
+    if ( format_of(file, format) == "text" ) then
       header_ = optval(header, ABSENT_HEADER)
 
       if ( .not. present(locale) ) then
@@ -1700,7 +1723,7 @@ submodule (io_fortran_lib) file_io
       return
     end if
 
-    if ( any(BINARY_EXT == ext) ) then
+    if ( format_of(file, format) == "binary" ) then
       select rank(into)
         rank(1)
           call from_binary(file, into, data_shape, stat_, errmsg_)
@@ -1803,7 +1826,7 @@ submodule (io_fortran_lib) file_io
       return
     end if
 
-    if ( any(BINARY_EXT == ext) ) then
+    if ( format_of(file, format) == "binary" ) then
       select rank(into)
         rank(1)
           call from_binary(file, into, data_shape, stat_, errmsg_)
@@ -1905,7 +1928,7 @@ submodule (io_fortran_lib) file_io
       return
     end if
 
-    if ( any(BINARY_EXT == ext) ) then
+    if ( format_of(file, format) == "binary" ) then
       select rank(into)
         rank(1)
           call from_binary(file, into, data_shape, stat_, errmsg_)
@@ -1984,7 +2007,7 @@ submodule (io_fortran_lib) file_io
 
     stat_=0; errmsg_=EMPTY_STR
 
-    if ( any(TEXT_EXT == ext) ) then
+    if ( format_of(file, format) == "text" ) then
       header_ = optval(header, ABSENT_HEADER)
 
       if ( .not. present(locale) ) then
@@ -2087,7 +2110,7 @@ submodule (io_fortran_lib) file_io
 
     stat_=0; errmsg_=EMPTY_STR
 
-    if ( any(TEXT_EXT == ext) ) then
+    if ( format_of(file, format) == "text" ) then
       header_ = optval(header, ABSENT_HEADER)
 
       if ( .not. present(locale) ) then
@@ -2189,7 +2212,7 @@ submodule (io_fortran_lib) file_io
 
     stat_=0; errmsg_=EMPTY_STR
 
-    if ( any(TEXT_EXT == ext) ) then
+    if ( format_of(file, format) == "text" ) then
       header_ = optval(header, ABSENT_HEADER)
 
       if ( .not. present(locale) ) then
@@ -2318,7 +2341,7 @@ submodule (io_fortran_lib) file_io
       return
     end if
 
-    if ( any(BINARY_EXT == ext) ) then
+    if ( format_of(file, format) == "binary" ) then
       select rank(into)
         rank(1)
           call from_binary(file, into, data_shape, stat_, errmsg_)
@@ -2421,7 +2444,7 @@ submodule (io_fortran_lib) file_io
       return
     end if
 
-    if ( any(BINARY_EXT == ext) ) then
+    if ( format_of(file, format) == "binary" ) then
       select rank(into)
         rank(1)
           call from_binary(file, into, data_shape, stat_, errmsg_)
@@ -2523,7 +2546,7 @@ submodule (io_fortran_lib) file_io
       return
     end if
 
-    if ( any(BINARY_EXT == ext) ) then
+    if ( format_of(file, format) == "binary" ) then
       select rank(into)
         rank(1)
           call from_binary(file, into, data_shape, stat_, errmsg_)
@@ -2601,7 +2624,7 @@ submodule (io_fortran_lib) file_io
 
     stat_=0; errmsg_=EMPTY_STR
 
-    if ( any(TEXT_EXT == ext) ) then
+    if ( format_of(file, format) == "text" ) then
       header_ = optval(header, ABSENT_HEADER)
 
       delim_ = optval(delim, COMMA_DELIMITER)
@@ -2667,7 +2690,7 @@ submodule (io_fortran_lib) file_io
 
     stat_=0; errmsg_=EMPTY_STR
 
-    if ( any(TEXT_EXT == ext) ) then
+    if ( format_of(file, format) == "text" ) then
       header_ = optval(header, ABSENT_HEADER)
 
       delim_ = optval(delim, COMMA_DELIMITER)
@@ -2733,7 +2756,7 @@ submodule (io_fortran_lib) file_io
 
     stat_=0; errmsg_=EMPTY_STR
 
-    if ( any(TEXT_EXT == ext) ) then
+    if ( format_of(file, format) == "text" ) then
       header_ = optval(header, ABSENT_HEADER)
 
       delim_ = optval(delim, COMMA_DELIMITER)
@@ -2799,7 +2822,7 @@ submodule (io_fortran_lib) file_io
 
     stat_=0; errmsg_=EMPTY_STR
 
-    if ( any(TEXT_EXT == ext) ) then
+    if ( format_of(file, format) == "text" ) then
       header_ = optval(header, ABSENT_HEADER)
 
       delim_ = optval(delim, COMMA_DELIMITER)
@@ -2891,7 +2914,7 @@ submodule (io_fortran_lib) file_io
       return
     end if
 
-    if ( any(BINARY_EXT == ext) ) then
+    if ( format_of(file, format) == "binary" ) then
       select rank(into)
         rank(1)
           call from_binary(file, into, data_shape, stat_, errmsg_)
@@ -2993,7 +3016,7 @@ submodule (io_fortran_lib) file_io
       return
     end if
 
-    if ( any(BINARY_EXT == ext) ) then
+    if ( format_of(file, format) == "binary" ) then
       select rank(into)
         rank(1)
           call from_binary(file, into, data_shape, stat_, errmsg_)
@@ -3095,7 +3118,7 @@ submodule (io_fortran_lib) file_io
       return
     end if
 
-    if ( any(BINARY_EXT == ext) ) then
+    if ( format_of(file, format) == "binary" ) then
       select rank(into)
         rank(1)
           call from_binary(file, into, data_shape, stat_, errmsg_)
@@ -3197,7 +3220,7 @@ submodule (io_fortran_lib) file_io
       return
     end if
 
-    if ( any(BINARY_EXT == ext) ) then
+    if ( format_of(file, format) == "binary" ) then
       select rank(into)
         rank(1)
           call from_binary(file, into, data_shape, stat_, errmsg_)

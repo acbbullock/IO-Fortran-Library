@@ -39,7 +39,7 @@ submodule (io_fortran_lib) array_printing
     end if
 
     if ( len(im_) > 0 ) then
-      l = len(im_)
+      l = len(im_) + 1
     else
       l = 3
     end if
@@ -67,7 +67,7 @@ submodule (io_fortran_lib) array_printing
       x_str(i) = str(x(i), fmt=fmt_, decimals=decimals_, im=im_)
     end do
 
-    call aprint(x_str)
+    call aprint(x_str, unit=unit)
   end procedure aprint_1dc128
 #endif
 
@@ -101,7 +101,7 @@ submodule (io_fortran_lib) array_printing
     end if
 
     if ( len(im_) > 0 ) then
-      l = len(im_)
+      l = len(im_) + 1
     else
       l = 3
     end if
@@ -129,7 +129,7 @@ submodule (io_fortran_lib) array_printing
       x_str(i) = str(x(i), fmt=fmt_, decimals=decimals_, im=im_)
     end do
 
-    call aprint(x_str)
+    call aprint(x_str, unit=unit)
   end procedure aprint_1dc64
 
   module procedure aprint_1dc32
@@ -162,7 +162,7 @@ submodule (io_fortran_lib) array_printing
     end if
 
     if ( len(im_) > 0 ) then
-      l = len(im_)
+      l = len(im_) + 1
     else
       l = 3
     end if
@@ -190,7 +190,7 @@ submodule (io_fortran_lib) array_printing
       x_str(i) = str(x(i), fmt=fmt_, decimals=decimals_, im=im_)
     end do
 
-    call aprint(x_str)
+    call aprint(x_str, unit=unit)
   end procedure aprint_1dc32
 
 
@@ -225,7 +225,7 @@ submodule (io_fortran_lib) array_printing
     end if
 
     if ( len(im_) > 0 ) then
-      l = len(im_)
+      l = len(im_) + 1
     else
       l = 3
     end if
@@ -255,7 +255,7 @@ submodule (io_fortran_lib) array_printing
       end do
     end do
 
-    call aprint(x_str)
+    call aprint(x_str, unit=unit)
   end procedure aprint_2dc128
 #endif
 
@@ -289,7 +289,7 @@ submodule (io_fortran_lib) array_printing
     end if
 
     if ( len(im_) > 0 ) then
-      l = len(im_)
+      l = len(im_) + 1
     else
       l = 3
     end if
@@ -319,7 +319,7 @@ submodule (io_fortran_lib) array_printing
       end do
     end do
 
-    call aprint(x_str)
+    call aprint(x_str, unit=unit)
   end procedure aprint_2dc64
 
   module procedure aprint_2dc32
@@ -352,7 +352,7 @@ submodule (io_fortran_lib) array_printing
     end if
 
     if ( len(im_) > 0 ) then
-      l = len(im_)
+      l = len(im_) + 1
     else
       l = 3
     end if
@@ -382,7 +382,7 @@ submodule (io_fortran_lib) array_printing
       end do
     end do
 
-    call aprint(x_str)
+    call aprint(x_str, unit=unit)
   end procedure aprint_2dc32
 
 
@@ -428,7 +428,7 @@ submodule (io_fortran_lib) array_printing
       x_str(i) = str(x(i), fmt=fmt_, decimals=decimals_)
     end do
 
-    call aprint(x_str)
+    call aprint(x_str, unit=unit)
   end procedure aprint_1dr128
 #endif
 
@@ -473,7 +473,7 @@ submodule (io_fortran_lib) array_printing
       x_str(i) = str(x(i), fmt=fmt_, decimals=decimals_)
     end do
 
-    call aprint(x_str)
+    call aprint(x_str, unit=unit)
   end procedure aprint_1dr64
 
   module procedure aprint_1dr32
@@ -517,7 +517,7 @@ submodule (io_fortran_lib) array_printing
       x_str(i) = str(x(i), fmt=fmt_, decimals=decimals_)
     end do
 
-    call aprint(x_str)
+    call aprint(x_str, unit=unit)
   end procedure aprint_1dr32
 
 
@@ -565,7 +565,7 @@ submodule (io_fortran_lib) array_printing
       end do
     end do
 
-    call aprint(x_str)
+    call aprint(x_str, unit=unit)
   end procedure aprint_2dr128
 #endif
 
@@ -612,7 +612,7 @@ submodule (io_fortran_lib) array_printing
       end do
     end do
 
-    call aprint(x_str)
+    call aprint(x_str, unit=unit)
   end procedure aprint_2dr64
 
   module procedure aprint_2dr32
@@ -658,7 +658,7 @@ submodule (io_fortran_lib) array_printing
       end do
     end do
 
-    call aprint(x_str)
+    call aprint(x_str, unit=unit)
   end procedure aprint_2dr32
 
 
@@ -694,7 +694,7 @@ submodule (io_fortran_lib) array_printing
       x_str(i) = str(x(i), fmt=fmt_)
     end do
 
-    call aprint(x_str)
+    call aprint(x_str, unit=unit)
   end procedure aprint_1di64
 
   module procedure aprint_1di32
@@ -729,7 +729,7 @@ submodule (io_fortran_lib) array_printing
       x_str(i) = str(x(i), fmt=fmt_)
     end do
 
-    call aprint(x_str)
+    call aprint(x_str, unit=unit)
   end procedure aprint_1di32
 
   module procedure aprint_1di16
@@ -764,7 +764,7 @@ submodule (io_fortran_lib) array_printing
       x_str(i) = str(x(i), fmt=fmt_)
     end do
 
-    call aprint(x_str)
+    call aprint(x_str, unit=unit)
   end procedure aprint_1di16
 
   module procedure aprint_1di8
@@ -799,7 +799,7 @@ submodule (io_fortran_lib) array_printing
       x_str(i) = str(x(i), fmt=fmt_)
     end do
 
-    call aprint(x_str)
+    call aprint(x_str, unit=unit)
   end procedure aprint_1di8
 
 
@@ -837,7 +837,7 @@ submodule (io_fortran_lib) array_printing
       end do
     end do
 
-    call aprint(x_str)
+    call aprint(x_str, unit=unit)
   end procedure aprint_2di64
 
   module procedure aprint_2di32
@@ -874,7 +874,7 @@ submodule (io_fortran_lib) array_printing
       end do
     end do
 
-    call aprint(x_str)
+    call aprint(x_str, unit=unit)
   end procedure aprint_2di32
 
   module procedure aprint_2di16
@@ -911,7 +911,7 @@ submodule (io_fortran_lib) array_printing
       end do
     end do
 
-    call aprint(x_str)
+    call aprint(x_str, unit=unit)
   end procedure aprint_2di16
 
   module procedure aprint_2di8
@@ -948,7 +948,7 @@ submodule (io_fortran_lib) array_printing
       end do
     end do
 
-    call aprint(x_str)
+    call aprint(x_str, unit=unit)
   end procedure aprint_2di8
 
 
@@ -975,7 +975,7 @@ submodule (io_fortran_lib) array_printing
     end do
 
     do i = lbound(x, dim=1), ubound(x, dim=1)
-      write(*,"(a)") rows(i)%buf(:rows(i)%n)
+      write(optval(unit, output_unit),"(a)") rows(i)%buf(:rows(i)%n)
     end do
   end procedure aprint_1dchar
 
@@ -1002,7 +1002,7 @@ submodule (io_fortran_lib) array_printing
     end do
 
     do i = lbound(x, dim=1), ubound(x, dim=1)
-      write(*,"(a)") rows(i)%buf(:rows(i)%n)
+      write(optval(unit, output_unit),"(a)") rows(i)%buf(:rows(i)%n)
     end do
 
     contains
@@ -1055,7 +1055,7 @@ submodule (io_fortran_lib) array_printing
       end if
     end do
 
-    call aprint(char_arr)
+    call aprint(char_arr, unit=unit)
   end procedure aprint_1dString
 
   module procedure aprint_2dString
@@ -1081,6 +1081,6 @@ submodule (io_fortran_lib) array_printing
       end do
     end do
 
-    call aprint(char_arr)
+    call aprint(char_arr, unit=unit)
   end procedure aprint_2dString
 end submodule array_printing
