@@ -31,9 +31,21 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: fortran-lang/setup-fortran@v1
+        if: matrix.toolchain.compiler != 'flang'
         with:
           compiler: ${{ matrix.toolchain.compiler }}
           version: ${{ matrix.toolchain.version }}
+      # setup-fortran checks for the release by grepping apt.llvm.org's dists listing, which is now
+      # served compressed, so the check fails although the packages exist. Install them directly.
+      - name: Install LLVM Flang from apt.llvm.org
+        if: matrix.toolchain.compiler == 'flang'
+        run: |
+          v=${{ matrix.toolchain.version }}
+          curl -fsSL https://apt.llvm.org/llvm-snapshot.gpg.key | sudo tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc > /dev/null
+          echo "deb http://apt.llvm.org/noble/ llvm-toolchain-noble-$v main" | sudo tee /etc/apt/sources.list.d/llvm-toolchain-$v.list
+          sudo apt-get update -q
+          sudo apt-get install -y -q flang-$v clang-$v libomp-$v-dev libclang-rt-$v-dev
+          echo "/usr/lib/llvm-$v/bin" >> "$GITHUB_PATH"
       - uses: fortran-lang/setup-fpm@v10
         with:
           fpm-version: v0.12.0
