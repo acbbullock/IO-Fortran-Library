@@ -33,7 +33,8 @@ All array-based routines additionally support up to rank 15.
 
 The library is tested with `gfortran` 13 to 16, `ifx` 2025.3 and 2026, and
 `flang` 23 on Linux, with `gfortran` 16 and `flang` 23 on macOS (Apple
-Silicon), and with `gfortran` 16 and `ifx` 2026 on Windows. See the
+Silicon), `gfortran` 15 on macOS (Intel), and `gfortran` 16 and `ifx` 2026
+on Windows. See the
 [CI workflow](.github/workflows/ci.yml) for details.
 
 The `real128` routines are enabled on `ifx`, and on `gfortran` targets with
