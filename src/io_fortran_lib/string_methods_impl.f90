@@ -196,56 +196,45 @@ submodule (io_fortran_lib) string_methods
       separator_ = separator
     end if
 
-    if ( num_tokens > 500_i64 ) then
-      call self%join( tokens=[ join(tokens(:num_tokens/2_i64), separator_), &
-        join(tokens(1_i64+num_tokens/2_i64:), separator_) ], separator=separator_ )
-    else
-      call self%join_base(tokens=tokens, separator=separator_)
-    end if
+    call self%join_base(tokens=tokens, separator=separator_)
   end procedure join_into_self
 
   module procedure join_base
-    integer(i64), dimension(size(tokens, kind=i64)) :: lengths, cumm_lengths
-    integer(i64)                                    :: num_tokens, sep_len, total_length, pos, i
-
-    lengths=0_i64; cumm_lengths=0_i64; num_tokens=0_i64; sep_len=0_i64; total_length=0_i64; pos=0_i64; i=0_i64
+    character(len=:), allocatable :: text
+    integer(i64)                  :: num_tokens, sep_len, total_length, pos, n, i
 
     num_tokens = size(tokens, kind=i64)
-
-    lengths = tokens%len64()
-    sep_len = len(separator, kind=i64)
+    sep_len    = len(separator, kind=i64)
 
     if ( num_tokens == 0_i64 ) then
       self%s = EMPTY_STR; return
     end if
 
-    where ( lengths == -1_i64 ) lengths = 0_i64
-    total_length = sum(lengths)
+    total_length = (num_tokens - 1_i64)*sep_len
 
-    cumm_lengths(1_i64) = 1_i64
-
-    do i = 2_i64, num_tokens
-      cumm_lengths(i) = sum( lengths(:i-1_i64) ) + 1_i64
+    do i = 1_i64, num_tokens
+      total_length = total_length + max(tokens(i)%len64(), 0_i64)
     end do
 
-    if ( allocated(self%s) ) deallocate(self%s)
+    allocate( character(len=total_length) :: text )
 
-    total_length = total_length + (num_tokens - 1_i64)*sep_len
-    allocate( character(len=total_length) :: self%s )
+    pos = 1_i64
 
-    positional_transfer: do i = 1_i64, num_tokens
-      pos = cumm_lengths(i) + (i - 1_i64)*sep_len
-      if ( lengths(i) > 0_i64 ) then
-        self%s(pos:pos+lengths(i)-1_i64) = tokens(i)%s
-        if ( sep_len > 0_i64 ) then
-          if ( i < num_tokens ) self%s(pos+lengths(i):pos+lengths(i)+sep_len-1_i64) = separator
-        end if
-      else
-        if ( sep_len > 0_i64 ) then
-          if ( i < num_tokens ) self%s(pos:pos+sep_len-1_i64) = separator
-        end if
+    do i = 1_i64, num_tokens
+      n = max(tokens(i)%len64(), 0_i64)
+
+      if ( n > 0_i64 ) then
+        text(pos:pos+n-1_i64) = tokens(i)%s
+        pos = pos + n
       end if
-    end do positional_transfer
+
+      if ( (i < num_tokens) .and. (sep_len > 0_i64) ) then
+        text(pos:pos+sep_len-1_i64) = separator
+        pos = pos + sep_len
+      end if
+    end do
+
+    call move_alloc(text, self%s)
   end procedure join_base
 
   module procedure length

@@ -26,7 +26,6 @@ submodule (io_fortran_lib) join_split
   end procedure join_char
 
   module procedure join_string
-    type(String)                  :: token_pair(2)
     character(len=:), allocatable :: separator_
     integer(i64)                  :: num_tokens
 
@@ -46,12 +45,7 @@ submodule (io_fortran_lib) join_split
       separator_ = separator
     end if
 
-    if ( num_tokens > 500_i64 ) then
-      new = join(tokens=[ join(tokens(:num_tokens/2_i64), separator_), &
-                join(tokens(1_i64+num_tokens/2_i64:), separator_) ], separator=separator_)
-    else
-      call new%join_base(tokens=tokens, separator=separator_)
-    end if
+    call new%join_base(tokens=tokens, separator=separator_)
   end procedure join_string
 
   module procedure split_char

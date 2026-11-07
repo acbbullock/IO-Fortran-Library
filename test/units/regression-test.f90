@@ -157,6 +157,8 @@ program regression_test
     test_case("count_empty_consistent",      RETURNS, FIXED),     &
     test_case("join_all_empty",              RETURNS, FIXED),     &
     test_case("join_many_empty",            RETURNS, FIXED),     &
+    test_case("join_many_tokens",            RETURNS, FIXED),     &
+    test_case("join_into_token",             RETURNS, FIXED),     &
     test_case("join_no_tokens",             RETURNS, FIXED),     &
     test_case("join_unallocated_tokens",    RETURNS, FIXED),     &
     test_case("trim_whitespace",             RETURNS, FIXED),     &
@@ -832,6 +834,18 @@ contains
         many = String("")
         r = join(many, ",")
         call check(r%len() == 999, "The separators should survive the split for large arrays.")
+      case ("join_many_tokens")
+        allocate( many(200000) )
+        many = String("ab")
+        r = join(many, ",")
+        call check(r%len() == 3*200000 - 1, "All tokens and separators should be present.")
+        call check(r%as_str() == repeat("ab,", 199999)//"ab", "In order.")
+        call r%join(many(:3), ";")
+        call check(r%as_str() == "ab;ab;ab", "The bound join should agree.")
+      case ("join_into_token")
+        three(1) = String("a"); three(2) = String("b"); three(3) = String("c")
+        call three(1)%join(three, ",")
+        call check(three(1)%as_str() == "a,b,c", "Joining into one of the tokens.")
       case ("join_no_tokens")
         allocate( many(0) )
         r = join(many, ",")
