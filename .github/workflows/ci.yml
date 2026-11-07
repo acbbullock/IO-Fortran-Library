@@ -50,7 +50,6 @@ jobs:
           # Apple Silicon has no REAL(16), so this also tests building without the real128 procedures.
           - { os: macos-15, compiler: gcc, version: "16", flags: "-std=f2018 -O2 -g -fbacktrace" }
           - { os: macos-15, compiler: flang, version: "23", flags: "-O2 -cpp" }
-          - { os: macos-15-intel, compiler: gcc, version: "15", flags: "-std=f2018 -O2 -g -fbacktrace" }
           - { os: windows-2025, compiler: gcc, version: "16", flags: "-std=f2018 -O2 -g -fbacktrace" }
           - { os: windows-2025, compiler: intel, version: "2026.1", flags: "" }
     steps:
@@ -63,8 +62,22 @@ jobs:
       - uses: fortran-lang/setup-fpm@v10
         with:
           fpm-version: v0.12.0
+      - name: Name flang so that fpm uses flang-new options
+        if: matrix.compiler == 'flang'
+        run: |
+          mkdir -p "$HOME/flang-bin"
+          ln -sf "$(command -v ${{ steps.setup-fortran.outputs.fc }})" "$HOME/flang-bin/flang-new"
+          echo "$HOME/flang-bin" >> "$GITHUB_PATH"
+      - name: Move Git's link aside so that ifx finds the Microsoft linker
+        if: runner.os == 'Windows' && matrix.compiler == 'intel'
+        shell: bash
+        run: |
+          gnu_link="$(command -v link || true)"
+          case "$gnu_link" in
+            */usr/bin/link) mv "$gnu_link" "${gnu_link}-gnu" ;;
+          esac
       - name: Run tests
-        run: fpm test --compiler ${{ steps.setup-fortran.outputs.fc }} --flag "${{ matrix.flags }} -D R8 -D I4"
+        run: fpm test --compiler ${{ matrix.compiler == 'flang' && 'flang-new' || steps.setup-fortran.outputs.fc }} --flag "${{ matrix.flags }} -D R8 -D I4"
 
   checks:
     name: gfortran 16 runtime checks and sanitizers
