@@ -32,7 +32,7 @@ submodule (io_fortran_lib) string_methods
 
     self_len=0_i64; match_len=0_i64; max_pos=0_i64; upper_ind=0_i64; i=0_i64; j=0_i64; first_char=0; last_char=0
 
-    self_len  = self%len64()
+    self_len  = max(self%len64(), 0_i64)
     match_len = len(match, kind=i64)
 
     if ( self_len < 1_i64 ) then
@@ -105,8 +105,8 @@ submodule (io_fortran_lib) string_methods
 
     self_len=0_i64; match_len=0_i64; max_pos=0_i64; upper_ind=0_i64; i=0_i64; j=0_i64; first_char=0; last_char=0
 
-    self_len  = self%len64()
-    match_len = match%len64()
+    self_len  = max(self%len64(), 0_i64)
+    match_len = max(match%len64(), 0_i64)
 
     if ( self_len < 1_i64 ) then
       if ( self_len == match_len ) then
@@ -215,12 +215,12 @@ submodule (io_fortran_lib) string_methods
     lengths = tokens%len64()
     sep_len = len(separator, kind=i64)
 
-    where ( lengths == -1_i64 ) lengths = 0_i64
-    total_length = sum(lengths)
-
-    if ( total_length == 0_i64 ) then
+    if ( num_tokens == 0_i64 ) then
       self%s = EMPTY_STR; return
     end if
+
+    where ( lengths == -1_i64 ) lengths = 0_i64
+    total_length = sum(lengths)
 
     cumm_lengths(1_i64) = 1_i64
 
@@ -1068,7 +1068,7 @@ submodule (io_fortran_lib) string_methods
     if ( self%len() < 1 ) then
       new%s = EMPTY_STR
     else
-      new%s = trim(adjustl(self%s))
+      new%s = without_whitespace(self%s)
     end if
   end procedure trim_copy
 
@@ -1076,7 +1076,7 @@ submodule (io_fortran_lib) string_methods
     if ( self%len() < 1 ) then
       self%s = EMPTY_STR
     else
-      self%s = trim(adjustl(self%s))
+      self%s = without_whitespace(self%s)
     end if
   end procedure trim_inplace
 
@@ -1489,4 +1489,20 @@ submodule (io_fortran_lib) string_methods
 
     quoted_text(o+1_i64:o+1_i64) = QQUOTE
   end subroutine write_quoted
+
+  pure function without_whitespace(text) result(trimmed)
+    character(len=*), intent(in)  :: text
+    character(len=:), allocatable :: trimmed
+
+    character(len=*), parameter :: WHITESPACE = SPACE//TAB//CR//LF//achar(11)//achar(12)
+    integer(i64)                :: first
+
+    first = verify(text, WHITESPACE, kind=i64)
+
+    if ( first == 0_i64 ) then
+      trimmed = EMPTY_STR
+    else
+      trimmed = text(first:verify(text, WHITESPACE, back=.true., kind=i64))
+    end if
+  end function without_whitespace
 end submodule string_methods

@@ -53,13 +53,6 @@ submodule (io_fortran_lib) text_io
       return
     end if
 
-    if ( len(substring, kind=i64) == 0_i64 ) then
-      stat_   = ARG_ERR
-      errmsg_ = 'Error writing to file "'//file//'". String to write is empty.'
-      call stop_if_unhandled(stat_, errmsg_, present(stat))
-      return
-    end if
-
     if ( .not. present(append) ) then
       append_ => APPEND_TO_FILE
     else
@@ -169,13 +162,6 @@ submodule (io_fortran_lib) text_io
       return
     end if
 
-    if ( substring%len64() == 0_i64 ) then
-      stat_   = ARG_ERR
-      errmsg_ = 'Error writing to file "'//file//'". String to write is empty.'
-      call stop_if_unhandled(stat_, errmsg_, present(stat))
-      return
-    end if
-
     if ( .not. present(append) ) then
       append_ => APPEND_TO_FILE
     else
@@ -217,7 +203,7 @@ submodule (io_fortran_lib) text_io
       return
     end if
 
-    write(unit=file_unit, iostat=stat_, iomsg=errmsg_) substring%s
+    if ( allocated(substring%s) ) write(unit=file_unit, iostat=stat_, iomsg=errmsg_) substring%s
 
     if ( stat_ /= 0 ) then
       stat_ = WRITE_ERR

@@ -209,7 +209,8 @@ For `self` a scalar or array variable of any rank and of type `String`:
 
 *Description*: Returns a copy of a `String` elementally in which each
 string slice component has been trimmed of any leading or trailing
-whitespace.
+whitespace. Whitespace means a space, `TAB`, `CR`, `LF`, vertical
+tab or form feed.
 
 ### [trim_inplace](../../type/string.html#boundprocedure-trim_inplace)
 

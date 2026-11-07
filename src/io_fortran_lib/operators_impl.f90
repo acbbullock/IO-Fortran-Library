@@ -161,7 +161,7 @@ submodule (io_fortran_lib) operators
   end procedure char_string_excision
 
   module procedure repeat_chars
-    new = repeat(char_base, ncopies=ncopies)
+    new = repeat(char_base, ncopies=max(ncopies, 0))
   end procedure repeat_chars
 
   module procedure repeat_chars_1d
@@ -229,7 +229,7 @@ submodule (io_fortran_lib) operators
     integer,          intent(in)  :: ncopies
     character(len=*), intent(out) :: new
 
-    new = repeat(char_base, ncopies=ncopies)
+    new = repeat(char_base, ncopies=max(ncopies, 0))
   end subroutine repeat_into
 
   module procedure repeat_String
@@ -237,14 +237,14 @@ submodule (io_fortran_lib) operators
       new%s = EMPTY_STR; return
     end if
 
-    new%s = repeat(String_base%s, ncopies=ncopies)
+    new%s = repeat(String_base%s, ncopies=max(ncopies, 0))
   end procedure repeat_String
 
   module procedure string_equivalence
     integer :: Stringl_len, Stringr_len
 
-    Stringl_len = Stringl%len()
-    Stringr_len = Stringr%len()
+    Stringl_len = max(Stringl%len(), 0)
+    Stringr_len = max(Stringr%len(), 0)
 
     if ( Stringl_len /= Stringr_len ) then
       equal = .false.; return
@@ -260,7 +260,7 @@ submodule (io_fortran_lib) operators
   module procedure string_char_equivalence
     integer :: Stringl_len, charsr_len
 
-    Stringl_len = Stringl%len()
+    Stringl_len = max(Stringl%len(), 0)
     charsr_len  = len(charsr)
 
     if ( Stringl_len /= charsr_len ) then
@@ -278,7 +278,7 @@ submodule (io_fortran_lib) operators
     integer :: charsl_len, Stringr_len
 
     charsl_len  = len(charsl)
-    Stringr_len = Stringr%len()
+    Stringr_len = max(Stringr%len(), 0)
 
     if ( charsl_len /= Stringr_len ) then
       equal = .false.; return
@@ -294,8 +294,8 @@ submodule (io_fortran_lib) operators
   module procedure string_nonequivalence
     integer :: Stringl_len, Stringr_len
 
-    Stringl_len = Stringl%len()
-    Stringr_len = Stringr%len()
+    Stringl_len = max(Stringl%len(), 0)
+    Stringr_len = max(Stringr%len(), 0)
 
     if ( Stringl_len /= Stringr_len ) then
       unequal = .true.; return
@@ -311,7 +311,7 @@ submodule (io_fortran_lib) operators
   module procedure string_char_nonequivalence
     integer :: Stringl_len, charsr_len
 
-    Stringl_len = Stringl%len()
+    Stringl_len = max(Stringl%len(), 0)
     charsr_len  = len(charsr)
 
     if ( Stringl_len /= charsr_len ) then
@@ -329,7 +329,7 @@ submodule (io_fortran_lib) operators
     integer :: charsl_len, Stringr_len
 
     charsl_len  = len(charsl)
-    Stringr_len = Stringr%len()
+    Stringr_len = max(Stringr%len(), 0)
 
     if ( charsl_len /= Stringr_len ) then
       unequal = .true.; return

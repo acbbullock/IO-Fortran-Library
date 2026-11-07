@@ -14,11 +14,11 @@ program regression_test
   !! A case with `STOPS` should end the program with `error stop`, because an error with no `stat` argument to report it
   !! through must not go unnoticed. That behavior is planned for version 2.0.
   !---------------------------------------------------------------------------------------------------------------------
-  use, intrinsic :: iso_fortran_env, only: real32, real64, int8, int32, int64, compiler_version, compiler_options
+  use, intrinsic :: iso_fortran_env, only: real32, real64, int8, int32, int64
   use, intrinsic :: ieee_arithmetic, only: ieee_value, ieee_quiet_nan, ieee_positive_inf, ieee_is_nan, &
                                              ieee_is_negative
-  use io_fortran_lib, only: String, cast, str, join, echo, aprint, to_file, from_file, operator(==), operator(**), &
-                            operator(+), LF, CR, TAB
+  use io_fortran_lib, only: String, cast, str, join, echo, aprint, to_file, from_file, operator(==), operator(/=), &
+                            operator(**), operator(+), LF, CR, TAB
   implicit none (type, external)
 
   character(len=*), parameter :: dir = "./test/output/"
@@ -152,18 +152,23 @@ program regression_test
     test_case("digits_same_for_negative",   RETURNS, FIXED),     &
     test_case("complex_zero_part_fmt_f",    RETURNS, FIXED),     &
     ! The String type and operators.
-    test_case("unallocated_equals_empty",    RETURNS, KNOWN_BUG), &
-    test_case("count_empty_consistent",      RETURNS, KNOWN_BUG), &
-    test_case("join_all_empty",              RETURNS, KNOWN_BUG), &
-    test_case("trim_whitespace",             RETURNS, KNOWN_BUG), &
-    test_case("echo_blank_line",             RETURNS, KNOWN_BUG), &
-    test_case("repeat_negative",             RETURNS, UNDEFINED), &
+    test_case("unallocated_equals_empty",    RETURNS, FIXED),     &
+    test_case("count_empty_consistent",      RETURNS, FIXED),     &
+    test_case("join_all_empty",              RETURNS, FIXED),     &
+    test_case("join_many_empty",            RETURNS, FIXED),     &
+    test_case("join_no_tokens",             RETURNS, FIXED),     &
+    test_case("join_unallocated_tokens",    RETURNS, FIXED),     &
+    test_case("trim_whitespace",             RETURNS, FIXED),     &
+    test_case("echo_blank_line",             RETURNS, FIXED),     &
+    test_case("echo_unallocated",            RETURNS, FIXED),     &
+    test_case("repeat_negative",             RETURNS, FIXED),     &
     ! Behavior that works and has to stay that way.
     test_case("repeat_scalar",               RETURNS, FIXED),     &
     test_case("repeat_array",                RETURNS, FIXED),     &
     test_case("concat_plus_array",           RETURNS, FIXED),     &
     test_case("aprint_empty",                RETURNS, FIXED),     &
     test_case("binary_round_trip",           RETURNS, FIXED),     &
+    test_case("binary_wrong_rank_stat",      RETURNS, FIXED),     &
     test_case("binary_shape_too_large",      RETURNS, FIXED)      &
   ]
 
@@ -216,8 +221,8 @@ contains
         if ( met ) then
           write(*,"(a)") "UNEXPECTED PASS: "//trim(cases(i)%name)//" (fixed? change its marker to FIXED)"
         else
-          write(*,"(a,i0,a)") "UNEXPECTED FAILURE: "//trim(cases(i)%name)//" (exit status ", status, &
-                              ", see "//log//")"
+          write(*,"(a,i0,a)") "UNEXPECTED FAILURE: "//trim(cases(i)%name)//" (exit status ", status, "), which printed:"
+          call print_file(log)
         end if
       end if
     end do
@@ -227,6 +232,22 @@ contains
 
     if ( n_unexpected > 0 ) error stop "regression-test: unexpected results."
   end subroutine run_all_cases
+
+  subroutine print_file(file)
+    character(len=*), intent(in) :: file
+
+    character(len=:), allocatable :: text
+    integer :: n, u
+
+    inquire(file=file, size=n)
+    allocate( character(len=n) :: text )
+
+    open(newunit=u, file=file, access="stream", form="unformatted", status="old")
+    read(u) text
+    close(u)
+
+    write(*,"(a)") text
+  end subroutine print_file
 
   logical function is_readable(file)
     !-------------------------------------------------------------------------------------------------------------------
@@ -274,6 +295,7 @@ contains
     complex(real32)               :: z, zv(2)
     complex(real32), allocatable  :: zw(:), mz(:,:)
     type(String)                  :: special(2,4), column(2,1)
+    type(String), allocatable     :: many(:)
     integer(int64)                :: i64
     integer                       :: iv(3), stv(3)
     integer, allocatable          :: vi(:)
@@ -560,10 +582,8 @@ contains
         call check(all(cells%len() >= 0), "Every cell should be allocated.")
       case ("read_error_closes_binary")
         call to_file([1.0_real64,2.0_real64], file=file//".dat", stat=st, errmsg=msg)
-        if ( .not. ifx_checks_rank_of_unallocated() ) then
-          call from_file(file//".dat", into=v, data_shape=[100], stat=st, errmsg=msg)
-          call check(st /= 0, "The read should fail.")
-        end if
+        call from_file(file//".dat", into=v, data_shape=[100], stat=st, errmsg=msg)
+        call check(st /= 0, "The read should fail.")
         inquire(file=file//".dat", opened=opened)
         call check(.not. opened, "The file should be closed on return.")
       case ("write_quotes_only_when_needed")
@@ -775,23 +795,76 @@ contains
       case ("unallocated_equals_empty")
         r = String("")
         call check(s == r, "An unallocated String should equal an empty String.")
+        call check(r == s, "In either order.")
         call check(s == "", "An unallocated String should equal an empty character.")
+        call check("" == s, "In either order.")
+        call check(.not. (s /= r), "Not equal should agree.")
+        call check(.not. (s /= ""), "Not equal should agree with a character.")
+        call check(.not. ("" /= s), "In either order.")
+        call check(s /= "a", "An unallocated String should not equal text.")
       case ("count_empty_consistent")
         r = String("")
         call check(s%count("") == r%count(""), "Unallocated and empty Strings should count alike.")
+        call check(s%count(r) == r%count(s), "With a String to match as well.")
+        call check(s%count("a") == 0, "An unallocated String holds no text.")
       case ("join_all_empty")
         three = String("")
         r = join(three, ",")
         call check(r%as_str() == ",,", "Joining empty tokens should keep the separators.")
+        call r%join(three, ";")
+        call check(r%as_str() == ";;", "The bound join should agree.")
+        three(2) = String("x")
+        r = join(three, ",")
+        call check(r%as_str() == ",x,", "Some empty tokens.")
+      case ("join_many_empty")
+        allocate( many(1000) )
+        many = String("")
+        r = join(many, ",")
+        call check(r%len() == 999, "The separators should survive the split for large arrays.")
+      case ("join_no_tokens")
+        allocate( many(0) )
+        r = join(many, ",")
+        call check(r%len() == 0, "No tokens should give an empty result.")
+      case ("join_unallocated_tokens")
+        r = join(three, ",")
+        call check(r%as_str() == ",,", "Unallocated tokens are empty tokens.")
       case ("trim_whitespace")
         s = String(TAB//"hi"//LF)
         r = s%trim()
-        call check(r%len() == 2, "Trim should remove all leading and trailing whitespace.")
+        call check(r%as_str() == "hi", "Trim should remove all leading and trailing whitespace.")
+        s = String(" "//CR//LF//TAB//"a b"//TAB//"c"//CR//LF//" ")
+        r = s%trim()
+        call check(r%as_str() == "a b"//TAB//"c", "Whitespace inside should stay.")
+        call s%trim_inplace()
+        call check(s == r, "The inplace form should agree.")
+        s = String(TAB//LF//"  ")
+        r = s%trim()
+        call check(r%len() == 0, "All whitespace trims to empty.")
       case ("echo_blank_line")
+        call write_raw(file//".log", "")
+        call echo("a", file=file//".log", stat=st, errmsg=msg)
         call echo("", file=file//".log", stat=st, errmsg=msg)
         call check(st == 0, "A blank line should be accepted.")
+        call echo("b", file=file//".log", stat=st, errmsg=msg)
+        call s%read_file(file//".log")
+        call check(s%as_str() == "a"//LF//LF//"b"//LF, "The blank line should be in the file.")
+      case ("echo_unallocated")
+        call write_raw(file//".log", "")
+        call s%echo(file//".log", stat=st, errmsg=msg)
+        call check(st == 0, "An unallocated String is an empty line.")
+        call r%read_file(file//".log")
+        call check(r%as_str() == LF, "It should write only the terminator.")
       case ("repeat_negative")
         call check(len("ab"**(-1)) == 0, "A negative count should give an empty result.")
+        r = String("ab")**(-1)
+        call check(r%len() == 0, "The same for a String.")
+        call check(len(["ab","cd"]**(-2)) == 0, "The same for an array.")
+      case ("binary_wrong_rank_stat")
+        call to_file([1.0_real64,2.0_real64], file=file//".dat", stat=st, errmsg=msg)
+        call from_file(file//".dat", into=m2, data_shape=[2], stat=st, errmsg=msg)
+        call check(st /= 0, "A shape that does not match the rank should be reported through stat.")
+        call from_file(file//".dat", into=m2, data_shape=[2,1], stat=st, errmsg=msg)
+        call check((st == 0) .and. (m2(2,1) == 2.0_real64), "The right rank should read.")
 
       case ("repeat_scalar")
         call check("ab"**2 == "abab", "Scalar repetition.")
@@ -804,14 +877,12 @@ contains
         allocate( v32(0) )
         call aprint(v32)
       case ("binary_round_trip")
-        if ( ifx_checks_rank_of_unallocated() ) return
         call to_file([1.0_real64,2.0_real64], file=file//".dat", stat=st, errmsg=msg)
         call check(st == 0, "The write should succeed.")
         call from_file(file//".dat", into=v, data_shape=[2], stat=st, errmsg=msg)
         call check(st == 0, "The read should succeed.")
         call check(all(v == [1.0_real64,2.0_real64]), "The data should survive a round trip.")
       case ("binary_shape_too_large")
-        if ( ifx_checks_rank_of_unallocated() ) return
         call to_file([1.0_real64,2.0_real64], file=file//".dat", stat=st, errmsg=msg)
         call check(st == 0, "The write should succeed.")
         call from_file(file//".dat", into=v, data_shape=[100], stat=st, errmsg=msg)
@@ -822,15 +893,6 @@ contains
     end select
 
   end subroutine run_case
-
-  logical function ifx_checks_rank_of_unallocated()
-    !-------------------------------------------------------------------------------------------------------------------
-    !! `ifx -check pointers` reports "Attempt to fetch from allocatable variable" for `rank(x)` with `x` unallocated,
-    !! which ends any binary `from_file`. `gfortran -fcheck=all` accepts it, as does ifx without that check. See #44.
-    !-------------------------------------------------------------------------------------------------------------------
-    ifx_checks_rank_of_unallocated = (index(compiler_version(), "Intel") > 0) .and. &
-                                     (index(compiler_options(), "-check") > 0)
-  end function ifx_checks_rank_of_unallocated
 
   subroutine cast_i32_is(text, expected)
     character(len=*), intent(in) :: text

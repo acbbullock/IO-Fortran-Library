@@ -1733,6 +1733,7 @@ submodule (io_fortran_lib) file_io
 #ifdef IOFL_HAS_R128
   module procedure from_binaryfile_c128
     character(len=:), allocatable :: ext
+    integer                       :: into_rank
 
     character(len=:), pointer :: errmsg_
     integer,          pointer :: stat_
@@ -1756,7 +1757,26 @@ submodule (io_fortran_lib) file_io
 
     stat_=0; errmsg_=EMPTY_STR
 
-    if ( size(data_shape) /= rank(into) ) then
+    select rank(into)
+      rank(1); into_rank = 1
+      rank(2); into_rank = 2
+      rank(3); into_rank = 3
+      rank(4); into_rank = 4
+      rank(5); into_rank = 5
+      rank(6); into_rank = 6
+      rank(7); into_rank = 7
+      rank(8); into_rank = 8
+      rank(9); into_rank = 9
+      rank(10); into_rank = 10
+      rank(11); into_rank = 11
+      rank(12); into_rank = 12
+      rank(13); into_rank = 13
+      rank(14); into_rank = 14
+      rank(15); into_rank = 15
+      rank default; into_rank = -1
+    end select
+
+    if ( size(data_shape) /= into_rank ) then
       stat_   = ARG_ERR
       errmsg_ = "RANK/SHAPE mismatch: size of data_shape must match rank of output array."
       call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -1815,6 +1835,7 @@ submodule (io_fortran_lib) file_io
 #endif
   module procedure from_binaryfile_c64
     character(len=:), allocatable :: ext
+    integer                       :: into_rank
 
     character(len=:), pointer :: errmsg_
     integer,          pointer :: stat_
@@ -1838,7 +1859,26 @@ submodule (io_fortran_lib) file_io
 
     stat_=0; errmsg_=EMPTY_STR
 
-    if ( size(data_shape) /= rank(into) ) then
+    select rank(into)
+      rank(1); into_rank = 1
+      rank(2); into_rank = 2
+      rank(3); into_rank = 3
+      rank(4); into_rank = 4
+      rank(5); into_rank = 5
+      rank(6); into_rank = 6
+      rank(7); into_rank = 7
+      rank(8); into_rank = 8
+      rank(9); into_rank = 9
+      rank(10); into_rank = 10
+      rank(11); into_rank = 11
+      rank(12); into_rank = 12
+      rank(13); into_rank = 13
+      rank(14); into_rank = 14
+      rank(15); into_rank = 15
+      rank default; into_rank = -1
+    end select
+
+    if ( size(data_shape) /= into_rank ) then
       stat_   = ARG_ERR
       errmsg_ = "RANK/SHAPE mismatch: size of data_shape must match rank of output array."
       call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -1896,6 +1936,7 @@ submodule (io_fortran_lib) file_io
   end procedure from_binaryfile_c64
   module procedure from_binaryfile_c32
     character(len=:), allocatable :: ext
+    integer                       :: into_rank
 
     character(len=:), pointer :: errmsg_
     integer,          pointer :: stat_
@@ -1919,7 +1960,26 @@ submodule (io_fortran_lib) file_io
 
     stat_=0; errmsg_=EMPTY_STR
 
-    if ( size(data_shape) /= rank(into) ) then
+    select rank(into)
+      rank(1); into_rank = 1
+      rank(2); into_rank = 2
+      rank(3); into_rank = 3
+      rank(4); into_rank = 4
+      rank(5); into_rank = 5
+      rank(6); into_rank = 6
+      rank(7); into_rank = 7
+      rank(8); into_rank = 8
+      rank(9); into_rank = 9
+      rank(10); into_rank = 10
+      rank(11); into_rank = 11
+      rank(12); into_rank = 12
+      rank(13); into_rank = 13
+      rank(14); into_rank = 14
+      rank(15); into_rank = 15
+      rank default; into_rank = -1
+    end select
+
+    if ( size(data_shape) /= into_rank ) then
       stat_   = ARG_ERR
       errmsg_ = "RANK/SHAPE mismatch: size of data_shape must match rank of output array."
       call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -2294,6 +2354,7 @@ submodule (io_fortran_lib) file_io
 #ifdef IOFL_HAS_R128
   module procedure from_binaryfile_r128
     character(len=:), allocatable :: ext
+    integer                       :: into_rank
 
     character(len=:), pointer :: errmsg_
     integer,          pointer :: stat_
@@ -2317,7 +2378,26 @@ submodule (io_fortran_lib) file_io
 
     stat_=0; errmsg_=EMPTY_STR
 
-    if ( size(data_shape) /= rank(into) ) then
+    select rank(into)
+      rank(1); into_rank = 1
+      rank(2); into_rank = 2
+      rank(3); into_rank = 3
+      rank(4); into_rank = 4
+      rank(5); into_rank = 5
+      rank(6); into_rank = 6
+      rank(7); into_rank = 7
+      rank(8); into_rank = 8
+      rank(9); into_rank = 9
+      rank(10); into_rank = 10
+      rank(11); into_rank = 11
+      rank(12); into_rank = 12
+      rank(13); into_rank = 13
+      rank(14); into_rank = 14
+      rank(15); into_rank = 15
+      rank default; into_rank = -1
+    end select
+
+    if ( size(data_shape) /= into_rank ) then
       stat_   = ARG_ERR
       errmsg_ = "RANK/SHAPE mismatch: size of data_shape must match rank of output array."
       call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -2376,6 +2456,7 @@ submodule (io_fortran_lib) file_io
 #endif
   module procedure from_binaryfile_r64
     character(len=:), allocatable :: ext
+    integer                       :: into_rank
 
     character(len=:), pointer :: errmsg_
     integer,          pointer :: stat_
@@ -2399,7 +2480,26 @@ submodule (io_fortran_lib) file_io
 
     stat_=0; errmsg_=EMPTY_STR
 
-    if ( size(data_shape) /= rank(into) ) then
+    select rank(into)
+      rank(1); into_rank = 1
+      rank(2); into_rank = 2
+      rank(3); into_rank = 3
+      rank(4); into_rank = 4
+      rank(5); into_rank = 5
+      rank(6); into_rank = 6
+      rank(7); into_rank = 7
+      rank(8); into_rank = 8
+      rank(9); into_rank = 9
+      rank(10); into_rank = 10
+      rank(11); into_rank = 11
+      rank(12); into_rank = 12
+      rank(13); into_rank = 13
+      rank(14); into_rank = 14
+      rank(15); into_rank = 15
+      rank default; into_rank = -1
+    end select
+
+    if ( size(data_shape) /= into_rank ) then
       stat_   = ARG_ERR
       errmsg_ = "RANK/SHAPE mismatch: size of data_shape must match rank of output array."
       call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -2457,6 +2557,7 @@ submodule (io_fortran_lib) file_io
   end procedure from_binaryfile_r64
   module procedure from_binaryfile_r32
     character(len=:), allocatable :: ext
+    integer                       :: into_rank
 
     character(len=:), pointer :: errmsg_
     integer,          pointer :: stat_
@@ -2480,7 +2581,26 @@ submodule (io_fortran_lib) file_io
 
     stat_=0; errmsg_=EMPTY_STR
 
-    if ( size(data_shape) /= rank(into) ) then
+    select rank(into)
+      rank(1); into_rank = 1
+      rank(2); into_rank = 2
+      rank(3); into_rank = 3
+      rank(4); into_rank = 4
+      rank(5); into_rank = 5
+      rank(6); into_rank = 6
+      rank(7); into_rank = 7
+      rank(8); into_rank = 8
+      rank(9); into_rank = 9
+      rank(10); into_rank = 10
+      rank(11); into_rank = 11
+      rank(12); into_rank = 12
+      rank(13); into_rank = 13
+      rank(14); into_rank = 14
+      rank(15); into_rank = 15
+      rank default; into_rank = -1
+    end select
+
+    if ( size(data_shape) /= into_rank ) then
       stat_   = ARG_ERR
       errmsg_ = "RANK/SHAPE mismatch: size of data_shape must match rank of output array."
       call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -2828,6 +2948,7 @@ submodule (io_fortran_lib) file_io
 
   module procedure from_binaryfile_i64
     character(len=:), allocatable :: ext
+    integer                       :: into_rank
 
     character(len=:), pointer :: errmsg_
     integer,          pointer :: stat_
@@ -2851,7 +2972,26 @@ submodule (io_fortran_lib) file_io
 
     stat_=0; errmsg_=EMPTY_STR
 
-    if ( size(data_shape) /= rank(into) ) then
+    select rank(into)
+      rank(1); into_rank = 1
+      rank(2); into_rank = 2
+      rank(3); into_rank = 3
+      rank(4); into_rank = 4
+      rank(5); into_rank = 5
+      rank(6); into_rank = 6
+      rank(7); into_rank = 7
+      rank(8); into_rank = 8
+      rank(9); into_rank = 9
+      rank(10); into_rank = 10
+      rank(11); into_rank = 11
+      rank(12); into_rank = 12
+      rank(13); into_rank = 13
+      rank(14); into_rank = 14
+      rank(15); into_rank = 15
+      rank default; into_rank = -1
+    end select
+
+    if ( size(data_shape) /= into_rank ) then
       stat_   = ARG_ERR
       errmsg_ = "RANK/SHAPE mismatch: size of data_shape must match rank of output array."
       call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -2909,6 +3049,7 @@ submodule (io_fortran_lib) file_io
   end procedure from_binaryfile_i64
   module procedure from_binaryfile_i32
     character(len=:), allocatable :: ext
+    integer                       :: into_rank
 
     character(len=:), pointer :: errmsg_
     integer,          pointer :: stat_
@@ -2932,7 +3073,26 @@ submodule (io_fortran_lib) file_io
 
     stat_=0; errmsg_=EMPTY_STR
 
-    if ( size(data_shape) /= rank(into) ) then
+    select rank(into)
+      rank(1); into_rank = 1
+      rank(2); into_rank = 2
+      rank(3); into_rank = 3
+      rank(4); into_rank = 4
+      rank(5); into_rank = 5
+      rank(6); into_rank = 6
+      rank(7); into_rank = 7
+      rank(8); into_rank = 8
+      rank(9); into_rank = 9
+      rank(10); into_rank = 10
+      rank(11); into_rank = 11
+      rank(12); into_rank = 12
+      rank(13); into_rank = 13
+      rank(14); into_rank = 14
+      rank(15); into_rank = 15
+      rank default; into_rank = -1
+    end select
+
+    if ( size(data_shape) /= into_rank ) then
       stat_   = ARG_ERR
       errmsg_ = "RANK/SHAPE mismatch: size of data_shape must match rank of output array."
       call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -2990,6 +3150,7 @@ submodule (io_fortran_lib) file_io
   end procedure from_binaryfile_i32
   module procedure from_binaryfile_i16
     character(len=:), allocatable :: ext
+    integer                       :: into_rank
 
     character(len=:), pointer :: errmsg_
     integer,          pointer :: stat_
@@ -3013,7 +3174,26 @@ submodule (io_fortran_lib) file_io
 
     stat_=0; errmsg_=EMPTY_STR
 
-    if ( size(data_shape) /= rank(into) ) then
+    select rank(into)
+      rank(1); into_rank = 1
+      rank(2); into_rank = 2
+      rank(3); into_rank = 3
+      rank(4); into_rank = 4
+      rank(5); into_rank = 5
+      rank(6); into_rank = 6
+      rank(7); into_rank = 7
+      rank(8); into_rank = 8
+      rank(9); into_rank = 9
+      rank(10); into_rank = 10
+      rank(11); into_rank = 11
+      rank(12); into_rank = 12
+      rank(13); into_rank = 13
+      rank(14); into_rank = 14
+      rank(15); into_rank = 15
+      rank default; into_rank = -1
+    end select
+
+    if ( size(data_shape) /= into_rank ) then
       stat_   = ARG_ERR
       errmsg_ = "RANK/SHAPE mismatch: size of data_shape must match rank of output array."
       call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -3071,6 +3251,7 @@ submodule (io_fortran_lib) file_io
   end procedure from_binaryfile_i16
   module procedure from_binaryfile_i8
     character(len=:), allocatable :: ext
+    integer                       :: into_rank
 
     character(len=:), pointer :: errmsg_
     integer,          pointer :: stat_
@@ -3094,7 +3275,26 @@ submodule (io_fortran_lib) file_io
 
     stat_=0; errmsg_=EMPTY_STR
 
-    if ( size(data_shape) /= rank(into) ) then
+    select rank(into)
+      rank(1); into_rank = 1
+      rank(2); into_rank = 2
+      rank(3); into_rank = 3
+      rank(4); into_rank = 4
+      rank(5); into_rank = 5
+      rank(6); into_rank = 6
+      rank(7); into_rank = 7
+      rank(8); into_rank = 8
+      rank(9); into_rank = 9
+      rank(10); into_rank = 10
+      rank(11); into_rank = 11
+      rank(12); into_rank = 12
+      rank(13); into_rank = 13
+      rank(14); into_rank = 14
+      rank(15); into_rank = 15
+      rank default; into_rank = -1
+    end select
+
+    if ( size(data_shape) /= into_rank ) then
       stat_   = ARG_ERR
       errmsg_ = "RANK/SHAPE mismatch: size of data_shape must match rank of output array."
       call stop_if_unhandled(stat_, errmsg_, present(stat))

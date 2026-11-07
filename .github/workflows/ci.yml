@@ -17,10 +17,10 @@ jobs:
       matrix:
         kinds: ["-D R4 -D I1", "-D R8 -D I4", "-D R16 -D I8"]
         toolchain:
-          - { compiler: gcc, version: "13", fpm: gfortran, flags: "-std=f2018 -O2" }
-          - { compiler: gcc, version: "14", fpm: gfortran, flags: "-std=f2018 -O2" }
-          - { compiler: gcc, version: "15", fpm: gfortran, flags: "-std=f2018 -O2" }
-          - { compiler: gcc, version: "16", fpm: gfortran, flags: "-std=f2018 -O2" }
+          - { compiler: gcc, version: "13", fpm: gfortran, flags: "-std=f2018 -O2 -g -fbacktrace" }
+          - { compiler: gcc, version: "14", fpm: gfortran, flags: "-std=f2018 -O2 -g -fbacktrace" }
+          - { compiler: gcc, version: "15", fpm: gfortran, flags: "-std=f2018 -O2 -g -fbacktrace" }
+          - { compiler: gcc, version: "16", fpm: gfortran, flags: "-std=f2018 -O2 -g -fbacktrace" }
           - { compiler: intel, version: "2025.3", fpm: ifx, flags: "-stand f18 -O2" }
           - { compiler: intel, version: "2026.1", fpm: ifx, flags: "-stand f18 -O2" }
           - { compiler: flang, version: "23", fpm: flang-new, flags: "-O2 -cpp" }
