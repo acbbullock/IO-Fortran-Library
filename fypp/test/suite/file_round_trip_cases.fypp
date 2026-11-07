@@ -13,8 +13,8 @@ ${"[" + ", ".join(str(d) for d in ([3, 2, 2, 2][:r] + [1] * max(r - 4, 0))) + "]
 module file_round_trip_cases
   !---------------------------------------------------------------------------------------------------------------------
   !! Round trips through files for every kind: `to_file` then `from_file` on text files of rank 1 and 2 with each form
-  !! of header, for every locale, format, delimiter and imaginary unit, and on binary files of every rank. Values must
-  !! come back identical, the sign of zero included; NaN matches NaN.
+  !! of header, for every locale, format, delimiter and imaginary unit, and on binary and .npy files of every rank.
+  !! Values must come back identical, the sign of zero included; NaN matches NaN.
   !---------------------------------------------------------------------------------------------------------------------
   use, intrinsic :: iso_fortran_env, only: r128=>real128, r64=>real64, r32=>real32, &
                                            i64=>int64, i32=>int32, i16=>int16, i8=>int8
@@ -63,6 +63,9 @@ contains
 #:if k in QUAD_KINDS
 #endif
 #:endif
+#:endfor
+#:for k, decl, code, size in NPY_TYPES
+    call suite%add("npy_file_${k}$", npy_file_${k}$)
 #:endfor
 #:for c, r in COMPLEX_KINDS
 #:if c in QUAD_KINDS
@@ -171,9 +174,9 @@ ${loops}$
 ${ends}$
   end subroutine text_file_${name}$
 #:enddef
-#:def binary_file_case(name, decl, mold, expect)
-  subroutine binary_file_${name}$()
-    !! `to_file` then `from_file` on binary files of every rank.
+#:def binary_file_case(name, decl, mold, expect, ext="dat", prefix="binary")
+  subroutine ${prefix}$_file_${name}$()
+    !! `to_file` then `from_file` on ${ext}$ files of every rank.
     ${decl}$, allocatable :: values(:), sample(:)
 #:for r in RANKS
     ${decl}$, allocatable :: a${r}$${rank_suffix(r)}$, b${r}$${rank_suffix(r)}$
@@ -188,10 +191,14 @@ ${ends}$
 
 #:for r in RANKS
     a${r}$ = reshape(sample(1:${binary_size(r)}$), ${binary_shape(r)}$)
-    call to_file(a${r}$, file=scratch()//"_rank${r}$.dat", stat=st, errmsg=msg)
+    call to_file(a${r}$, file=scratch()//"_rank${r}$.${ext}$", stat=st, errmsg=msg)
     if ( succeeded(st, msg, "to_file (rank ${r}$)") ) then
-      call from_file(scratch()//"_rank${r}$.dat", into=b${r}$, data_shape=shape(a${r}$), &
+#:if ext == "npy"
+      call from_file(scratch()//"_rank${r}$.${ext}$", into=b${r}$, stat=st, errmsg=msg)
+#:else
+      call from_file(scratch()//"_rank${r}$.${ext}$", into=b${r}$, data_shape=shape(a${r}$), &
                      stat=st, errmsg=msg)
+#:endif
       if ( succeeded(st, msg, "from_file (rank ${r}$)") ) then
         call expect_equal(shape(b${r}$), shape(a${r}$), "Shape (rank ${r}$)")
         call ${expect}$(pack(b${r}$, .true.), pack(a${r}$, .true.), "Values (rank ${r}$)")
@@ -199,7 +206,7 @@ ${ends}$
     end if
 
 #:endfor
-  end subroutine binary_file_${name}$
+  end subroutine ${prefix}$_file_${name}$
 #:enddef
 #:for k in INT_KINDS
 $:text_file_case(k, "integer(" + k + ")", "0_" + k, &
@@ -243,6 +250,16 @@ $:binary_file_case(k, "real(" + k + ")", "0.0_" + k, "expect_identical")
 #:endif
 #:if k in QUAD_KINDS
 #endif
+#:endif
+
+#:endfor
+#:for k, decl, code, size in NPY_TYPES
+#:if code == "i"
+$:binary_file_case(k, decl, "0_" + k, "expect_equal", ext="npy", prefix="npy")
+#:elif code == "f"
+$:binary_file_case(k, decl, "0.0_" + k, "expect_identical", ext="npy", prefix="npy")
+#:else
+$:binary_file_case(k, decl, "(0.0_" + decl[8:11] + ",0.0_" + decl[8:11] + ")", "expect_identical", ext="npy", prefix="npy")
 #:endif
 
 #:endfor

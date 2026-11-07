@@ -1124,8 +1124,8 @@ module io_fortran_lib
 
     pure recursive module function format_of(file, format) result(file_format)
       !-----------------------------------------------------------------------------------------------------------------
-      !! Returns "text" or "binary" from `format` if present, or else from the extension of `file`, or "" if neither is
-      !! valid.
+      !! Returns "text", "binary" or "npy" from `format` if present, or else from the extension of `file`, or "" if
+      !! neither is valid.
       !-----------------------------------------------------------------------------------------------------------------
       character(len=*), intent(in)           :: file
       character(len=*), intent(in), optional :: format
@@ -1556,6 +1556,36 @@ module io_fortran_lib
 
 #:endfor
   end interface from_binary
+
+  interface to_npy                                                                                    ! Submodule npy_io
+    !-------------------------------------------------------------------------------------------------------------------
+    !! Private interface for writing an array to a NumPy `.npy` file.
+    !-------------------------------------------------------------------------------------------------------------------
+#:for k, decl, code, size in NPY_TYPES
+    recursive module subroutine to_npy_${k}$(x, file, stat, errmsg)
+      ${decl}$, intent(in)  :: x(..)
+      character(len=*), intent(in)  :: file
+      integer,          intent(out) :: stat
+      character(len=*), intent(out) :: errmsg
+    end subroutine to_npy_${k}$
+
+#:endfor
+  end interface to_npy
+
+  interface from_npy                                                                                  ! Submodule npy_io
+    !-------------------------------------------------------------------------------------------------------------------
+    !! Private interface for reading a NumPy `.npy` file into an array, which takes its shape from the file.
+    !-------------------------------------------------------------------------------------------------------------------
+#:for k, decl, code, size in NPY_TYPES
+    recursive module subroutine from_npy_${k}$(file, into, stat, errmsg)
+      character(len=*), intent(in)               :: file
+      ${decl}$, intent(out), allocatable :: into(..)
+      integer,          intent(out)              :: stat
+      character(len=*), intent(out)              :: errmsg
+    end subroutine from_npy_${k}$
+
+#:endfor
+  end interface from_npy
 
   interface aprint                                                                            ! Submodule array_printing
     !-------------------------------------------------------------------------------------------------------------------

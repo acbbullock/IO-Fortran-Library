@@ -60,6 +60,17 @@ of type `integer`, `real`, `complex`:
 call from_file(file, into, data_shape [, stat, errmsg, format])
 ```
 
+For reading a NumPy [.npy file](../UserInfo/file-ext.html#numpy-npy-files),
+which records its own shape, into an array `into` of any rank `1`-`15`
+and of type `integer`, `real`, `complex`:
+
+```fortran
+call from_file(file, into [, stat, errmsg, format])
+```
+
+`data_shape` may also be passed for a `.npy` file, and must then match
+the file.
+
 * `file` is of type `character(len=*)`
 * `data_shape` is of type `integer, dimension(:)`
 * `stat` is `optional` and of type `integer`
@@ -73,7 +84,7 @@ allocation status upon passing into `from_file` if already allocated.
 As a result, `from_file` does not allow reading into sections of
 already allocated arrays.
 
-@note When reading binary data, `data_shape` must be present and its
+@note When reading raw binary data, `data_shape` must be present and its
 size must equal the rank of `into`.
 
 ### Optional Arguments
@@ -115,5 +126,5 @@ NaN, including a cell missing from a short row. For `integer` data, which
 has no NaN, it is an error. Any other text that is not a valid number is
 an error, and `errmsg` gives the text with its row and column.
 
-Format: `format` is `optional`, and may be `"text"` or `"binary"`. If it is
+Format: `format` is `optional`, and may be `"text"`, `"binary"` or `"npy"`. If it is
 not present, the format comes from the [file extension](../UserInfo/file-ext.html).

@@ -1414,8 +1414,8 @@ module io_fortran_lib
 
     pure recursive module function format_of(file, format) result(file_format)
       !-----------------------------------------------------------------------------------------------------------------
-      !! Returns "text" or "binary" from `format` if present, or else from the extension of `file`, or "" if neither is
-      !! valid.
+      !! Returns "text", "binary" or "npy" from `format` if present, or else from the extension of `file`, or "" if
+      !! neither is valid.
       !-----------------------------------------------------------------------------------------------------------------
       character(len=*), intent(in)           :: file
       character(len=*), intent(in), optional :: format
@@ -2246,6 +2246,130 @@ module io_fortran_lib
     end subroutine from_binary_i8
 
   end interface from_binary
+
+  interface to_npy                                                                                    ! Submodule npy_io
+    !-------------------------------------------------------------------------------------------------------------------
+    !! Private interface for writing an array to a NumPy `.npy` file.
+    !-------------------------------------------------------------------------------------------------------------------
+    recursive module subroutine to_npy_c64(x, file, stat, errmsg)
+      complex(r64), intent(in)  :: x(..)
+      character(len=*), intent(in)  :: file
+      integer,          intent(out) :: stat
+      character(len=*), intent(out) :: errmsg
+    end subroutine to_npy_c64
+
+    recursive module subroutine to_npy_c32(x, file, stat, errmsg)
+      complex(r32), intent(in)  :: x(..)
+      character(len=*), intent(in)  :: file
+      integer,          intent(out) :: stat
+      character(len=*), intent(out) :: errmsg
+    end subroutine to_npy_c32
+
+    recursive module subroutine to_npy_r64(x, file, stat, errmsg)
+      real(r64), intent(in)  :: x(..)
+      character(len=*), intent(in)  :: file
+      integer,          intent(out) :: stat
+      character(len=*), intent(out) :: errmsg
+    end subroutine to_npy_r64
+
+    recursive module subroutine to_npy_r32(x, file, stat, errmsg)
+      real(r32), intent(in)  :: x(..)
+      character(len=*), intent(in)  :: file
+      integer,          intent(out) :: stat
+      character(len=*), intent(out) :: errmsg
+    end subroutine to_npy_r32
+
+    recursive module subroutine to_npy_i64(x, file, stat, errmsg)
+      integer(i64), intent(in)  :: x(..)
+      character(len=*), intent(in)  :: file
+      integer,          intent(out) :: stat
+      character(len=*), intent(out) :: errmsg
+    end subroutine to_npy_i64
+
+    recursive module subroutine to_npy_i32(x, file, stat, errmsg)
+      integer(i32), intent(in)  :: x(..)
+      character(len=*), intent(in)  :: file
+      integer,          intent(out) :: stat
+      character(len=*), intent(out) :: errmsg
+    end subroutine to_npy_i32
+
+    recursive module subroutine to_npy_i16(x, file, stat, errmsg)
+      integer(i16), intent(in)  :: x(..)
+      character(len=*), intent(in)  :: file
+      integer,          intent(out) :: stat
+      character(len=*), intent(out) :: errmsg
+    end subroutine to_npy_i16
+
+    recursive module subroutine to_npy_i8(x, file, stat, errmsg)
+      integer(i8), intent(in)  :: x(..)
+      character(len=*), intent(in)  :: file
+      integer,          intent(out) :: stat
+      character(len=*), intent(out) :: errmsg
+    end subroutine to_npy_i8
+
+  end interface to_npy
+
+  interface from_npy                                                                                  ! Submodule npy_io
+    !-------------------------------------------------------------------------------------------------------------------
+    !! Private interface for reading a NumPy `.npy` file into an array, which takes its shape from the file.
+    !-------------------------------------------------------------------------------------------------------------------
+    recursive module subroutine from_npy_c64(file, into, stat, errmsg)
+      character(len=*), intent(in)               :: file
+      complex(r64), intent(out), allocatable :: into(..)
+      integer,          intent(out)              :: stat
+      character(len=*), intent(out)              :: errmsg
+    end subroutine from_npy_c64
+
+    recursive module subroutine from_npy_c32(file, into, stat, errmsg)
+      character(len=*), intent(in)               :: file
+      complex(r32), intent(out), allocatable :: into(..)
+      integer,          intent(out)              :: stat
+      character(len=*), intent(out)              :: errmsg
+    end subroutine from_npy_c32
+
+    recursive module subroutine from_npy_r64(file, into, stat, errmsg)
+      character(len=*), intent(in)               :: file
+      real(r64), intent(out), allocatable :: into(..)
+      integer,          intent(out)              :: stat
+      character(len=*), intent(out)              :: errmsg
+    end subroutine from_npy_r64
+
+    recursive module subroutine from_npy_r32(file, into, stat, errmsg)
+      character(len=*), intent(in)               :: file
+      real(r32), intent(out), allocatable :: into(..)
+      integer,          intent(out)              :: stat
+      character(len=*), intent(out)              :: errmsg
+    end subroutine from_npy_r32
+
+    recursive module subroutine from_npy_i64(file, into, stat, errmsg)
+      character(len=*), intent(in)               :: file
+      integer(i64), intent(out), allocatable :: into(..)
+      integer,          intent(out)              :: stat
+      character(len=*), intent(out)              :: errmsg
+    end subroutine from_npy_i64
+
+    recursive module subroutine from_npy_i32(file, into, stat, errmsg)
+      character(len=*), intent(in)               :: file
+      integer(i32), intent(out), allocatable :: into(..)
+      integer,          intent(out)              :: stat
+      character(len=*), intent(out)              :: errmsg
+    end subroutine from_npy_i32
+
+    recursive module subroutine from_npy_i16(file, into, stat, errmsg)
+      character(len=*), intent(in)               :: file
+      integer(i16), intent(out), allocatable :: into(..)
+      integer,          intent(out)              :: stat
+      character(len=*), intent(out)              :: errmsg
+    end subroutine from_npy_i16
+
+    recursive module subroutine from_npy_i8(file, into, stat, errmsg)
+      character(len=*), intent(in)               :: file
+      integer(i8), intent(out), allocatable :: into(..)
+      integer,          intent(out)              :: stat
+      character(len=*), intent(out)              :: errmsg
+    end subroutine from_npy_i8
+
+  end interface from_npy
 
   interface aprint                                                                            ! Submodule array_printing
     !-------------------------------------------------------------------------------------------------------------------

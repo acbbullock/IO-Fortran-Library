@@ -100,6 +100,7 @@ Version 2.1 is compatible with 2.0: code that compiles against 2.0 compiles unch
 ### Added
 
 * `IOFL_`-prefixed names for the character constants: `IOFL_NL`, `IOFL_SPACE`, `IOFL_CR`, `IOFL_LF`, `IOFL_TAB`, `IOFL_FF`, `IOFL_VT`, `IOFL_BELL` and `IOFL_NUL`. The old names such as `CR`, `LF` and `TAB` stay, but they clash with variable names in a program that uses the module without an `only` list, so the documentation now uses the new names.
+* NumPy `.npy` files, selected by the `npy` extension or `format="npy"`. `to_file` writes them and `from_file` reads them, taking the shape from the file, so `data_shape` is not needed and the wrong kind or rank is an error rather than garbage. Files from `numpy.save`, in C order or either byte order, read correctly. `real128` is not supported, since NumPy has no IEEE quad type.
 * The error codes are exported as `IOFL_READ_ERR`, `IOFL_WRITE_ERR`, `IOFL_ALLOC_ERR` and `IOFL_ARG_ERR`, with the same values as before, so `stat` can be tested by name.
 
 ### Changed

@@ -47,7 +47,7 @@ submodule (io_fortran_lib) file_io
     file_format = EMPTY_STR
 
     if ( present(format) ) then
-      if ( (format == "text") .or. (format == "binary") ) file_format = format
+      if ( (format == "text") .or. (format == "binary") .or. (format == "npy") ) file_format = format
       return
     end if
 
@@ -57,6 +57,8 @@ submodule (io_fortran_lib) file_io
       file_format = "text"
     else if ( any(BINARY_EXT == ext) ) then
       file_format = "binary"
+    else if ( ext == "npy" ) then
+      file_format = "npy"
     end if
   end procedure format_of
 
@@ -161,7 +163,14 @@ submodule (io_fortran_lib) file_io
         rank(1); call to_text(x, file, header, locale_, delim_, fmt_, decimals, im_, stat_, errmsg_)
         rank(2); call to_text(x, file, header, locale_, delim_, fmt_, decimals, im_, stat_, errmsg_)
       end select
-    else if ( format_of(file, format) == "binary" ) then
+    else if ( (format_of(file, format) == "binary") .or. (format_of(file, format) == "npy") ) then
+      if ( format_of(file, format) == "npy" ) then
+        stat_   = ARG_ERR
+        errmsg_ = 'NumPy has no type for real128 data, so "'//file//'" cannot be a .npy file.'
+        call stop_if_unhandled(stat_, errmsg_, present(stat))
+        return
+      end if
+
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
       if ( present(locale  ) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
       if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
@@ -170,21 +179,36 @@ submodule (io_fortran_lib) file_io
       if ( present(im      ) ) write(*,"(a)") LF//'WARNING: im not supported for file type "'//ext//'".'
 
       select rank(x)
-        rank(1); call to_binary(x, file, stat_, errmsg_)
-        rank(2); call to_binary(x, file, stat_, errmsg_)
-        rank(3); call to_binary(x, file, stat_, errmsg_)
-        rank(4); call to_binary(x, file, stat_, errmsg_)
-        rank(5); call to_binary(x, file, stat_, errmsg_)
-        rank(6); call to_binary(x, file, stat_, errmsg_)
-        rank(7); call to_binary(x, file, stat_, errmsg_)
-        rank(8); call to_binary(x, file, stat_, errmsg_)
-        rank(9); call to_binary(x, file, stat_, errmsg_)
-        rank(10); call to_binary(x, file, stat_, errmsg_)
-        rank(11); call to_binary(x, file, stat_, errmsg_)
-        rank(12); call to_binary(x, file, stat_, errmsg_)
-        rank(13); call to_binary(x, file, stat_, errmsg_)
-        rank(14); call to_binary(x, file, stat_, errmsg_)
-        rank(15); call to_binary(x, file, stat_, errmsg_)
+        rank(1)
+          call to_binary(x, file, stat_, errmsg_)
+        rank(2)
+          call to_binary(x, file, stat_, errmsg_)
+        rank(3)
+          call to_binary(x, file, stat_, errmsg_)
+        rank(4)
+          call to_binary(x, file, stat_, errmsg_)
+        rank(5)
+          call to_binary(x, file, stat_, errmsg_)
+        rank(6)
+          call to_binary(x, file, stat_, errmsg_)
+        rank(7)
+          call to_binary(x, file, stat_, errmsg_)
+        rank(8)
+          call to_binary(x, file, stat_, errmsg_)
+        rank(9)
+          call to_binary(x, file, stat_, errmsg_)
+        rank(10)
+          call to_binary(x, file, stat_, errmsg_)
+        rank(11)
+          call to_binary(x, file, stat_, errmsg_)
+        rank(12)
+          call to_binary(x, file, stat_, errmsg_)
+        rank(13)
+          call to_binary(x, file, stat_, errmsg_)
+        rank(14)
+          call to_binary(x, file, stat_, errmsg_)
+        rank(15)
+          call to_binary(x, file, stat_, errmsg_)
         rank default
           stat_  = ARG_ERR
           errmsg_ = "Array has invalid rank. Supported ranks: 1-15."
@@ -194,7 +218,8 @@ submodule (io_fortran_lib) file_io
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//'. Or pass format="text" or format="binary".'
+                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//' npy. '// &
+                'Or pass format="text", format="binary" or format="npy".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -300,7 +325,7 @@ submodule (io_fortran_lib) file_io
         rank(1); call to_text(x, file, header, locale_, delim_, fmt_, decimals, im_, stat_, errmsg_)
         rank(2); call to_text(x, file, header, locale_, delim_, fmt_, decimals, im_, stat_, errmsg_)
       end select
-    else if ( format_of(file, format) == "binary" ) then
+    else if ( (format_of(file, format) == "binary") .or. (format_of(file, format) == "npy") ) then
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
       if ( present(locale  ) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
       if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
@@ -309,21 +334,96 @@ submodule (io_fortran_lib) file_io
       if ( present(im      ) ) write(*,"(a)") LF//'WARNING: im not supported for file type "'//ext//'".'
 
       select rank(x)
-        rank(1); call to_binary(x, file, stat_, errmsg_)
-        rank(2); call to_binary(x, file, stat_, errmsg_)
-        rank(3); call to_binary(x, file, stat_, errmsg_)
-        rank(4); call to_binary(x, file, stat_, errmsg_)
-        rank(5); call to_binary(x, file, stat_, errmsg_)
-        rank(6); call to_binary(x, file, stat_, errmsg_)
-        rank(7); call to_binary(x, file, stat_, errmsg_)
-        rank(8); call to_binary(x, file, stat_, errmsg_)
-        rank(9); call to_binary(x, file, stat_, errmsg_)
-        rank(10); call to_binary(x, file, stat_, errmsg_)
-        rank(11); call to_binary(x, file, stat_, errmsg_)
-        rank(12); call to_binary(x, file, stat_, errmsg_)
-        rank(13); call to_binary(x, file, stat_, errmsg_)
-        rank(14); call to_binary(x, file, stat_, errmsg_)
-        rank(15); call to_binary(x, file, stat_, errmsg_)
+        rank(1)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(2)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(3)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(4)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(5)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(6)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(7)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(8)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(9)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(10)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(11)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(12)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(13)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(14)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(15)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
         rank default
           stat_  = ARG_ERR
           errmsg_ = "Array has invalid rank. Supported ranks: 1-15."
@@ -333,7 +433,8 @@ submodule (io_fortran_lib) file_io
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//'. Or pass format="text" or format="binary".'
+                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//' npy. '// &
+                'Or pass format="text", format="binary" or format="npy".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -438,7 +539,7 @@ submodule (io_fortran_lib) file_io
         rank(1); call to_text(x, file, header, locale_, delim_, fmt_, decimals, im_, stat_, errmsg_)
         rank(2); call to_text(x, file, header, locale_, delim_, fmt_, decimals, im_, stat_, errmsg_)
       end select
-    else if ( format_of(file, format) == "binary" ) then
+    else if ( (format_of(file, format) == "binary") .or. (format_of(file, format) == "npy") ) then
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
       if ( present(locale  ) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
       if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
@@ -447,21 +548,96 @@ submodule (io_fortran_lib) file_io
       if ( present(im      ) ) write(*,"(a)") LF//'WARNING: im not supported for file type "'//ext//'".'
 
       select rank(x)
-        rank(1); call to_binary(x, file, stat_, errmsg_)
-        rank(2); call to_binary(x, file, stat_, errmsg_)
-        rank(3); call to_binary(x, file, stat_, errmsg_)
-        rank(4); call to_binary(x, file, stat_, errmsg_)
-        rank(5); call to_binary(x, file, stat_, errmsg_)
-        rank(6); call to_binary(x, file, stat_, errmsg_)
-        rank(7); call to_binary(x, file, stat_, errmsg_)
-        rank(8); call to_binary(x, file, stat_, errmsg_)
-        rank(9); call to_binary(x, file, stat_, errmsg_)
-        rank(10); call to_binary(x, file, stat_, errmsg_)
-        rank(11); call to_binary(x, file, stat_, errmsg_)
-        rank(12); call to_binary(x, file, stat_, errmsg_)
-        rank(13); call to_binary(x, file, stat_, errmsg_)
-        rank(14); call to_binary(x, file, stat_, errmsg_)
-        rank(15); call to_binary(x, file, stat_, errmsg_)
+        rank(1)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(2)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(3)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(4)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(5)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(6)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(7)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(8)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(9)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(10)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(11)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(12)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(13)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(14)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(15)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
         rank default
           stat_  = ARG_ERR
           errmsg_ = "Array has invalid rank. Supported ranks: 1-15."
@@ -471,7 +647,8 @@ submodule (io_fortran_lib) file_io
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//'. Or pass format="text" or format="binary".'
+                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//' npy. '// &
+                'Or pass format="text", format="binary" or format="npy".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -576,7 +753,14 @@ submodule (io_fortran_lib) file_io
         rank(1); call to_text(x, file, header, locale_, delim_, fmt_, decimals, stat_, errmsg_)
         rank(2); call to_text(x, file, header, locale_, delim_, fmt_, decimals, stat_, errmsg_)
       end select
-    else if ( format_of(file, format) == "binary" ) then
+    else if ( (format_of(file, format) == "binary") .or. (format_of(file, format) == "npy") ) then
+      if ( format_of(file, format) == "npy" ) then
+        stat_   = ARG_ERR
+        errmsg_ = 'NumPy has no type for real128 data, so "'//file//'" cannot be a .npy file.'
+        call stop_if_unhandled(stat_, errmsg_, present(stat))
+        return
+      end if
+
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
       if ( present(locale  ) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
       if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
@@ -584,21 +768,36 @@ submodule (io_fortran_lib) file_io
       if ( present(decimals) ) write(*,"(a)") LF//'WARNING: decimals not supported for file type "'//ext//'".'
 
       select rank(x)
-        rank(1); call to_binary(x, file, stat_, errmsg_)
-        rank(2); call to_binary(x, file, stat_, errmsg_)
-        rank(3); call to_binary(x, file, stat_, errmsg_)
-        rank(4); call to_binary(x, file, stat_, errmsg_)
-        rank(5); call to_binary(x, file, stat_, errmsg_)
-        rank(6); call to_binary(x, file, stat_, errmsg_)
-        rank(7); call to_binary(x, file, stat_, errmsg_)
-        rank(8); call to_binary(x, file, stat_, errmsg_)
-        rank(9); call to_binary(x, file, stat_, errmsg_)
-        rank(10); call to_binary(x, file, stat_, errmsg_)
-        rank(11); call to_binary(x, file, stat_, errmsg_)
-        rank(12); call to_binary(x, file, stat_, errmsg_)
-        rank(13); call to_binary(x, file, stat_, errmsg_)
-        rank(14); call to_binary(x, file, stat_, errmsg_)
-        rank(15); call to_binary(x, file, stat_, errmsg_)
+        rank(1)
+          call to_binary(x, file, stat_, errmsg_)
+        rank(2)
+          call to_binary(x, file, stat_, errmsg_)
+        rank(3)
+          call to_binary(x, file, stat_, errmsg_)
+        rank(4)
+          call to_binary(x, file, stat_, errmsg_)
+        rank(5)
+          call to_binary(x, file, stat_, errmsg_)
+        rank(6)
+          call to_binary(x, file, stat_, errmsg_)
+        rank(7)
+          call to_binary(x, file, stat_, errmsg_)
+        rank(8)
+          call to_binary(x, file, stat_, errmsg_)
+        rank(9)
+          call to_binary(x, file, stat_, errmsg_)
+        rank(10)
+          call to_binary(x, file, stat_, errmsg_)
+        rank(11)
+          call to_binary(x, file, stat_, errmsg_)
+        rank(12)
+          call to_binary(x, file, stat_, errmsg_)
+        rank(13)
+          call to_binary(x, file, stat_, errmsg_)
+        rank(14)
+          call to_binary(x, file, stat_, errmsg_)
+        rank(15)
+          call to_binary(x, file, stat_, errmsg_)
         rank default
           stat_  = ARG_ERR
           errmsg_ = "Array has invalid rank. Supported ranks: 1-15."
@@ -608,7 +807,8 @@ submodule (io_fortran_lib) file_io
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//'. Or pass format="text" or format="binary".'
+                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//' npy. '// &
+                'Or pass format="text", format="binary" or format="npy".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -712,7 +912,7 @@ submodule (io_fortran_lib) file_io
         rank(1); call to_text(x, file, header, locale_, delim_, fmt_, decimals, stat_, errmsg_)
         rank(2); call to_text(x, file, header, locale_, delim_, fmt_, decimals, stat_, errmsg_)
       end select
-    else if ( format_of(file, format) == "binary" ) then
+    else if ( (format_of(file, format) == "binary") .or. (format_of(file, format) == "npy") ) then
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
       if ( present(locale  ) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
       if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
@@ -720,21 +920,96 @@ submodule (io_fortran_lib) file_io
       if ( present(decimals) ) write(*,"(a)") LF//'WARNING: decimals not supported for file type "'//ext//'".'
 
       select rank(x)
-        rank(1); call to_binary(x, file, stat_, errmsg_)
-        rank(2); call to_binary(x, file, stat_, errmsg_)
-        rank(3); call to_binary(x, file, stat_, errmsg_)
-        rank(4); call to_binary(x, file, stat_, errmsg_)
-        rank(5); call to_binary(x, file, stat_, errmsg_)
-        rank(6); call to_binary(x, file, stat_, errmsg_)
-        rank(7); call to_binary(x, file, stat_, errmsg_)
-        rank(8); call to_binary(x, file, stat_, errmsg_)
-        rank(9); call to_binary(x, file, stat_, errmsg_)
-        rank(10); call to_binary(x, file, stat_, errmsg_)
-        rank(11); call to_binary(x, file, stat_, errmsg_)
-        rank(12); call to_binary(x, file, stat_, errmsg_)
-        rank(13); call to_binary(x, file, stat_, errmsg_)
-        rank(14); call to_binary(x, file, stat_, errmsg_)
-        rank(15); call to_binary(x, file, stat_, errmsg_)
+        rank(1)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(2)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(3)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(4)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(5)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(6)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(7)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(8)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(9)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(10)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(11)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(12)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(13)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(14)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(15)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
         rank default
           stat_  = ARG_ERR
           errmsg_ = "Array has invalid rank. Supported ranks: 1-15."
@@ -744,7 +1019,8 @@ submodule (io_fortran_lib) file_io
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//'. Or pass format="text" or format="binary".'
+                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//' npy. '// &
+                'Or pass format="text", format="binary" or format="npy".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -847,7 +1123,7 @@ submodule (io_fortran_lib) file_io
         rank(1); call to_text(x, file, header, locale_, delim_, fmt_, decimals, stat_, errmsg_)
         rank(2); call to_text(x, file, header, locale_, delim_, fmt_, decimals, stat_, errmsg_)
       end select
-    else if ( format_of(file, format) == "binary" ) then
+    else if ( (format_of(file, format) == "binary") .or. (format_of(file, format) == "npy") ) then
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
       if ( present(locale  ) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
       if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
@@ -855,21 +1131,96 @@ submodule (io_fortran_lib) file_io
       if ( present(decimals) ) write(*,"(a)") LF//'WARNING: decimals not supported for file type "'//ext//'".'
 
       select rank(x)
-        rank(1); call to_binary(x, file, stat_, errmsg_)
-        rank(2); call to_binary(x, file, stat_, errmsg_)
-        rank(3); call to_binary(x, file, stat_, errmsg_)
-        rank(4); call to_binary(x, file, stat_, errmsg_)
-        rank(5); call to_binary(x, file, stat_, errmsg_)
-        rank(6); call to_binary(x, file, stat_, errmsg_)
-        rank(7); call to_binary(x, file, stat_, errmsg_)
-        rank(8); call to_binary(x, file, stat_, errmsg_)
-        rank(9); call to_binary(x, file, stat_, errmsg_)
-        rank(10); call to_binary(x, file, stat_, errmsg_)
-        rank(11); call to_binary(x, file, stat_, errmsg_)
-        rank(12); call to_binary(x, file, stat_, errmsg_)
-        rank(13); call to_binary(x, file, stat_, errmsg_)
-        rank(14); call to_binary(x, file, stat_, errmsg_)
-        rank(15); call to_binary(x, file, stat_, errmsg_)
+        rank(1)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(2)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(3)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(4)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(5)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(6)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(7)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(8)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(9)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(10)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(11)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(12)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(13)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(14)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(15)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
         rank default
           stat_  = ARG_ERR
           errmsg_ = "Array has invalid rank. Supported ranks: 1-15."
@@ -879,7 +1230,8 @@ submodule (io_fortran_lib) file_io
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//'. Or pass format="text" or format="binary".'
+                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//' npy. '// &
+                'Or pass format="text", format="binary" or format="npy".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -962,27 +1314,102 @@ submodule (io_fortran_lib) file_io
         rank(1); call to_text(x, file, header, delim_, fmt_, stat_, errmsg_)
         rank(2); call to_text(x, file, header, delim_, fmt_, stat_, errmsg_)
       end select
-    else if ( format_of(file, format) == "binary" ) then
+    else if ( (format_of(file, format) == "binary") .or. (format_of(file, format) == "npy") ) then
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
       if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
       if ( present(fmt     ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
 
       select rank(x)
-        rank(1); call to_binary(x, file, stat_, errmsg_)
-        rank(2); call to_binary(x, file, stat_, errmsg_)
-        rank(3); call to_binary(x, file, stat_, errmsg_)
-        rank(4); call to_binary(x, file, stat_, errmsg_)
-        rank(5); call to_binary(x, file, stat_, errmsg_)
-        rank(6); call to_binary(x, file, stat_, errmsg_)
-        rank(7); call to_binary(x, file, stat_, errmsg_)
-        rank(8); call to_binary(x, file, stat_, errmsg_)
-        rank(9); call to_binary(x, file, stat_, errmsg_)
-        rank(10); call to_binary(x, file, stat_, errmsg_)
-        rank(11); call to_binary(x, file, stat_, errmsg_)
-        rank(12); call to_binary(x, file, stat_, errmsg_)
-        rank(13); call to_binary(x, file, stat_, errmsg_)
-        rank(14); call to_binary(x, file, stat_, errmsg_)
-        rank(15); call to_binary(x, file, stat_, errmsg_)
+        rank(1)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(2)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(3)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(4)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(5)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(6)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(7)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(8)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(9)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(10)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(11)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(12)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(13)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(14)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(15)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
         rank default
           stat_  = ARG_ERR
           errmsg_ = "Array has invalid rank. Supported ranks: 1-15."
@@ -992,7 +1419,8 @@ submodule (io_fortran_lib) file_io
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//'. Or pass format="text" or format="binary".'
+                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//' npy. '// &
+                'Or pass format="text", format="binary" or format="npy".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -1074,27 +1502,102 @@ submodule (io_fortran_lib) file_io
         rank(1); call to_text(x, file, header, delim_, fmt_, stat_, errmsg_)
         rank(2); call to_text(x, file, header, delim_, fmt_, stat_, errmsg_)
       end select
-    else if ( format_of(file, format) == "binary" ) then
+    else if ( (format_of(file, format) == "binary") .or. (format_of(file, format) == "npy") ) then
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
       if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
       if ( present(fmt     ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
 
       select rank(x)
-        rank(1); call to_binary(x, file, stat_, errmsg_)
-        rank(2); call to_binary(x, file, stat_, errmsg_)
-        rank(3); call to_binary(x, file, stat_, errmsg_)
-        rank(4); call to_binary(x, file, stat_, errmsg_)
-        rank(5); call to_binary(x, file, stat_, errmsg_)
-        rank(6); call to_binary(x, file, stat_, errmsg_)
-        rank(7); call to_binary(x, file, stat_, errmsg_)
-        rank(8); call to_binary(x, file, stat_, errmsg_)
-        rank(9); call to_binary(x, file, stat_, errmsg_)
-        rank(10); call to_binary(x, file, stat_, errmsg_)
-        rank(11); call to_binary(x, file, stat_, errmsg_)
-        rank(12); call to_binary(x, file, stat_, errmsg_)
-        rank(13); call to_binary(x, file, stat_, errmsg_)
-        rank(14); call to_binary(x, file, stat_, errmsg_)
-        rank(15); call to_binary(x, file, stat_, errmsg_)
+        rank(1)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(2)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(3)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(4)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(5)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(6)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(7)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(8)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(9)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(10)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(11)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(12)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(13)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(14)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(15)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
         rank default
           stat_  = ARG_ERR
           errmsg_ = "Array has invalid rank. Supported ranks: 1-15."
@@ -1104,7 +1607,8 @@ submodule (io_fortran_lib) file_io
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//'. Or pass format="text" or format="binary".'
+                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//' npy. '// &
+                'Or pass format="text", format="binary" or format="npy".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -1186,27 +1690,102 @@ submodule (io_fortran_lib) file_io
         rank(1); call to_text(x, file, header, delim_, fmt_, stat_, errmsg_)
         rank(2); call to_text(x, file, header, delim_, fmt_, stat_, errmsg_)
       end select
-    else if ( format_of(file, format) == "binary" ) then
+    else if ( (format_of(file, format) == "binary") .or. (format_of(file, format) == "npy") ) then
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
       if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
       if ( present(fmt     ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
 
       select rank(x)
-        rank(1); call to_binary(x, file, stat_, errmsg_)
-        rank(2); call to_binary(x, file, stat_, errmsg_)
-        rank(3); call to_binary(x, file, stat_, errmsg_)
-        rank(4); call to_binary(x, file, stat_, errmsg_)
-        rank(5); call to_binary(x, file, stat_, errmsg_)
-        rank(6); call to_binary(x, file, stat_, errmsg_)
-        rank(7); call to_binary(x, file, stat_, errmsg_)
-        rank(8); call to_binary(x, file, stat_, errmsg_)
-        rank(9); call to_binary(x, file, stat_, errmsg_)
-        rank(10); call to_binary(x, file, stat_, errmsg_)
-        rank(11); call to_binary(x, file, stat_, errmsg_)
-        rank(12); call to_binary(x, file, stat_, errmsg_)
-        rank(13); call to_binary(x, file, stat_, errmsg_)
-        rank(14); call to_binary(x, file, stat_, errmsg_)
-        rank(15); call to_binary(x, file, stat_, errmsg_)
+        rank(1)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(2)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(3)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(4)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(5)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(6)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(7)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(8)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(9)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(10)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(11)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(12)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(13)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(14)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(15)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
         rank default
           stat_  = ARG_ERR
           errmsg_ = "Array has invalid rank. Supported ranks: 1-15."
@@ -1216,7 +1795,8 @@ submodule (io_fortran_lib) file_io
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//'. Or pass format="text" or format="binary".'
+                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//' npy. '// &
+                'Or pass format="text", format="binary" or format="npy".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -1298,27 +1878,102 @@ submodule (io_fortran_lib) file_io
         rank(1); call to_text(x, file, header, delim_, fmt_, stat_, errmsg_)
         rank(2); call to_text(x, file, header, delim_, fmt_, stat_, errmsg_)
       end select
-    else if ( format_of(file, format) == "binary" ) then
+    else if ( (format_of(file, format) == "binary") .or. (format_of(file, format) == "npy") ) then
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
       if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
       if ( present(fmt     ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
 
       select rank(x)
-        rank(1); call to_binary(x, file, stat_, errmsg_)
-        rank(2); call to_binary(x, file, stat_, errmsg_)
-        rank(3); call to_binary(x, file, stat_, errmsg_)
-        rank(4); call to_binary(x, file, stat_, errmsg_)
-        rank(5); call to_binary(x, file, stat_, errmsg_)
-        rank(6); call to_binary(x, file, stat_, errmsg_)
-        rank(7); call to_binary(x, file, stat_, errmsg_)
-        rank(8); call to_binary(x, file, stat_, errmsg_)
-        rank(9); call to_binary(x, file, stat_, errmsg_)
-        rank(10); call to_binary(x, file, stat_, errmsg_)
-        rank(11); call to_binary(x, file, stat_, errmsg_)
-        rank(12); call to_binary(x, file, stat_, errmsg_)
-        rank(13); call to_binary(x, file, stat_, errmsg_)
-        rank(14); call to_binary(x, file, stat_, errmsg_)
-        rank(15); call to_binary(x, file, stat_, errmsg_)
+        rank(1)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(2)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(3)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(4)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(5)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(6)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(7)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(8)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(9)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(10)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(11)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(12)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(13)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(14)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
+        rank(15)
+          if ( format_of(file, format) == "npy" ) then
+            call to_npy(x, file, stat_, errmsg_)
+          else
+            call to_binary(x, file, stat_, errmsg_)
+          end if
         rank default
           stat_  = ARG_ERR
           errmsg_ = "Array has invalid rank. Supported ranks: 1-15."
@@ -1328,7 +1983,8 @@ submodule (io_fortran_lib) file_io
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//'. Or pass format="text" or format="binary".'
+                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//' npy. '// &
+                'Or pass format="text", format="binary" or format="npy".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -1432,10 +2088,15 @@ submodule (io_fortran_lib) file_io
           call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
+    else if ( format_of(file, format) == "npy" ) then
+      stat_   = ARG_ERR
+      errmsg_ = 'NumPy has no type for real128 data, so "'//file//'" cannot be a .npy file.'
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
+      return
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)
+                join(TEXT_EXT)//' npy. Or pass format="text" or format="npy".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -1537,10 +2198,37 @@ submodule (io_fortran_lib) file_io
           call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
+    else if ( format_of(file, format) == "npy" ) then
+      if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "npy".'
+      if ( present(locale) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "npy".'
+      if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "npy".'
+      if ( present(fmt   ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "npy".'
+      if ( present(im    ) ) write(*,"(a)") LF//'WARNING: im not supported for file type "npy".'
+
+      select rank(into)
+        rank(1); call from_npy(file, into, stat_, errmsg_)
+        rank(2); call from_npy(file, into, stat_, errmsg_)
+        rank(3); call from_npy(file, into, stat_, errmsg_)
+        rank(4); call from_npy(file, into, stat_, errmsg_)
+        rank(5); call from_npy(file, into, stat_, errmsg_)
+        rank(6); call from_npy(file, into, stat_, errmsg_)
+        rank(7); call from_npy(file, into, stat_, errmsg_)
+        rank(8); call from_npy(file, into, stat_, errmsg_)
+        rank(9); call from_npy(file, into, stat_, errmsg_)
+        rank(10); call from_npy(file, into, stat_, errmsg_)
+        rank(11); call from_npy(file, into, stat_, errmsg_)
+        rank(12); call from_npy(file, into, stat_, errmsg_)
+        rank(13); call from_npy(file, into, stat_, errmsg_)
+        rank(14); call from_npy(file, into, stat_, errmsg_)
+        rank(15); call from_npy(file, into, stat_, errmsg_)
+        rank default
+          stat_   = ARG_ERR
+          errmsg_ = "Array has invalid rank. Supported ranks: 1-15."
+      end select
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)
+                join(TEXT_EXT)//' npy. Or pass format="text" or format="npy".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -1641,10 +2329,37 @@ submodule (io_fortran_lib) file_io
           call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
+    else if ( format_of(file, format) == "npy" ) then
+      if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "npy".'
+      if ( present(locale) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "npy".'
+      if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "npy".'
+      if ( present(fmt   ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "npy".'
+      if ( present(im    ) ) write(*,"(a)") LF//'WARNING: im not supported for file type "npy".'
+
+      select rank(into)
+        rank(1); call from_npy(file, into, stat_, errmsg_)
+        rank(2); call from_npy(file, into, stat_, errmsg_)
+        rank(3); call from_npy(file, into, stat_, errmsg_)
+        rank(4); call from_npy(file, into, stat_, errmsg_)
+        rank(5); call from_npy(file, into, stat_, errmsg_)
+        rank(6); call from_npy(file, into, stat_, errmsg_)
+        rank(7); call from_npy(file, into, stat_, errmsg_)
+        rank(8); call from_npy(file, into, stat_, errmsg_)
+        rank(9); call from_npy(file, into, stat_, errmsg_)
+        rank(10); call from_npy(file, into, stat_, errmsg_)
+        rank(11); call from_npy(file, into, stat_, errmsg_)
+        rank(12); call from_npy(file, into, stat_, errmsg_)
+        rank(13); call from_npy(file, into, stat_, errmsg_)
+        rank(14); call from_npy(file, into, stat_, errmsg_)
+        rank(15); call from_npy(file, into, stat_, errmsg_)
+        rank default
+          stat_   = ARG_ERR
+          errmsg_ = "Array has invalid rank. Supported ranks: 1-15."
+      end select
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)
+                join(TEXT_EXT)//' npy. Or pass format="text" or format="npy".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -1704,7 +2419,12 @@ submodule (io_fortran_lib) file_io
       return
     end if
 
-    if ( format_of(file, format) == "binary" ) then
+    if ( format_of(file, format) == "npy" ) then
+      stat_   = ARG_ERR
+      errmsg_ = 'NumPy has no type for real128 data, so "'//file//'" cannot be a .npy file.'
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
+      return
+    else if ( format_of(file, format) == "binary" ) then
       select rank(into)
         rank(1)
           call from_binary(file, into, data_shape, stat_, errmsg_)
@@ -1807,7 +2527,130 @@ submodule (io_fortran_lib) file_io
       return
     end if
 
-    if ( format_of(file, format) == "binary" ) then
+    if ( format_of(file, format) == "npy" ) then
+      select rank(into)
+        rank(1)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(2)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(3)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(4)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(5)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(6)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(7)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(8)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(9)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(10)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(11)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(12)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(13)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(14)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(15)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+      end select
+    else if ( format_of(file, format) == "binary" ) then
       select rank(into)
         rank(1)
           call from_binary(file, into, data_shape, stat_, errmsg_)
@@ -1909,7 +2752,130 @@ submodule (io_fortran_lib) file_io
       return
     end if
 
-    if ( format_of(file, format) == "binary" ) then
+    if ( format_of(file, format) == "npy" ) then
+      select rank(into)
+        rank(1)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(2)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(3)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(4)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(5)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(6)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(7)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(8)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(9)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(10)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(11)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(12)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(13)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(14)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(15)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+      end select
+    else if ( format_of(file, format) == "binary" ) then
       select rank(into)
         rank(1)
           call from_binary(file, into, data_shape, stat_, errmsg_)
@@ -2054,10 +3020,15 @@ submodule (io_fortran_lib) file_io
           call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
+    else if ( format_of(file, format) == "npy" ) then
+      stat_   = ARG_ERR
+      errmsg_ = 'NumPy has no type for real128 data, so "'//file//'" cannot be a .npy file.'
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
+      return
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)
+                join(TEXT_EXT)//' npy. Or pass format="text" or format="npy".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -2157,10 +3128,36 @@ submodule (io_fortran_lib) file_io
           call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
+    else if ( format_of(file, format) == "npy" ) then
+      if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "npy".'
+      if ( present(locale) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "npy".'
+      if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "npy".'
+      if ( present(fmt   ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "npy".'
+
+      select rank(into)
+        rank(1); call from_npy(file, into, stat_, errmsg_)
+        rank(2); call from_npy(file, into, stat_, errmsg_)
+        rank(3); call from_npy(file, into, stat_, errmsg_)
+        rank(4); call from_npy(file, into, stat_, errmsg_)
+        rank(5); call from_npy(file, into, stat_, errmsg_)
+        rank(6); call from_npy(file, into, stat_, errmsg_)
+        rank(7); call from_npy(file, into, stat_, errmsg_)
+        rank(8); call from_npy(file, into, stat_, errmsg_)
+        rank(9); call from_npy(file, into, stat_, errmsg_)
+        rank(10); call from_npy(file, into, stat_, errmsg_)
+        rank(11); call from_npy(file, into, stat_, errmsg_)
+        rank(12); call from_npy(file, into, stat_, errmsg_)
+        rank(13); call from_npy(file, into, stat_, errmsg_)
+        rank(14); call from_npy(file, into, stat_, errmsg_)
+        rank(15); call from_npy(file, into, stat_, errmsg_)
+        rank default
+          stat_   = ARG_ERR
+          errmsg_ = "Array has invalid rank. Supported ranks: 1-15."
+      end select
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)
+                join(TEXT_EXT)//' npy. Or pass format="text" or format="npy".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -2259,10 +3256,36 @@ submodule (io_fortran_lib) file_io
           call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
+    else if ( format_of(file, format) == "npy" ) then
+      if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "npy".'
+      if ( present(locale) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "npy".'
+      if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "npy".'
+      if ( present(fmt   ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "npy".'
+
+      select rank(into)
+        rank(1); call from_npy(file, into, stat_, errmsg_)
+        rank(2); call from_npy(file, into, stat_, errmsg_)
+        rank(3); call from_npy(file, into, stat_, errmsg_)
+        rank(4); call from_npy(file, into, stat_, errmsg_)
+        rank(5); call from_npy(file, into, stat_, errmsg_)
+        rank(6); call from_npy(file, into, stat_, errmsg_)
+        rank(7); call from_npy(file, into, stat_, errmsg_)
+        rank(8); call from_npy(file, into, stat_, errmsg_)
+        rank(9); call from_npy(file, into, stat_, errmsg_)
+        rank(10); call from_npy(file, into, stat_, errmsg_)
+        rank(11); call from_npy(file, into, stat_, errmsg_)
+        rank(12); call from_npy(file, into, stat_, errmsg_)
+        rank(13); call from_npy(file, into, stat_, errmsg_)
+        rank(14); call from_npy(file, into, stat_, errmsg_)
+        rank(15); call from_npy(file, into, stat_, errmsg_)
+        rank default
+          stat_   = ARG_ERR
+          errmsg_ = "Array has invalid rank. Supported ranks: 1-15."
+      end select
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)
+                join(TEXT_EXT)//' npy. Or pass format="text" or format="npy".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -2322,7 +3345,12 @@ submodule (io_fortran_lib) file_io
       return
     end if
 
-    if ( format_of(file, format) == "binary" ) then
+    if ( format_of(file, format) == "npy" ) then
+      stat_   = ARG_ERR
+      errmsg_ = 'NumPy has no type for real128 data, so "'//file//'" cannot be a .npy file.'
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
+      return
+    else if ( format_of(file, format) == "binary" ) then
       select rank(into)
         rank(1)
           call from_binary(file, into, data_shape, stat_, errmsg_)
@@ -2425,7 +3453,130 @@ submodule (io_fortran_lib) file_io
       return
     end if
 
-    if ( format_of(file, format) == "binary" ) then
+    if ( format_of(file, format) == "npy" ) then
+      select rank(into)
+        rank(1)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(2)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(3)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(4)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(5)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(6)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(7)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(8)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(9)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(10)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(11)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(12)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(13)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(14)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(15)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+      end select
+    else if ( format_of(file, format) == "binary" ) then
       select rank(into)
         rank(1)
           call from_binary(file, into, data_shape, stat_, errmsg_)
@@ -2527,7 +3678,130 @@ submodule (io_fortran_lib) file_io
       return
     end if
 
-    if ( format_of(file, format) == "binary" ) then
+    if ( format_of(file, format) == "npy" ) then
+      select rank(into)
+        rank(1)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(2)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(3)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(4)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(5)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(6)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(7)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(8)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(9)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(10)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(11)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(12)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(13)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(14)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(15)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+      end select
+    else if ( format_of(file, format) == "binary" ) then
       select rank(into)
         rank(1)
           call from_binary(file, into, data_shape, stat_, errmsg_)
@@ -2635,10 +3909,35 @@ submodule (io_fortran_lib) file_io
           call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
+    else if ( format_of(file, format) == "npy" ) then
+      if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "npy".'
+      if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "npy".'
+      if ( present(fmt   ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "npy".'
+
+      select rank(into)
+        rank(1); call from_npy(file, into, stat_, errmsg_)
+        rank(2); call from_npy(file, into, stat_, errmsg_)
+        rank(3); call from_npy(file, into, stat_, errmsg_)
+        rank(4); call from_npy(file, into, stat_, errmsg_)
+        rank(5); call from_npy(file, into, stat_, errmsg_)
+        rank(6); call from_npy(file, into, stat_, errmsg_)
+        rank(7); call from_npy(file, into, stat_, errmsg_)
+        rank(8); call from_npy(file, into, stat_, errmsg_)
+        rank(9); call from_npy(file, into, stat_, errmsg_)
+        rank(10); call from_npy(file, into, stat_, errmsg_)
+        rank(11); call from_npy(file, into, stat_, errmsg_)
+        rank(12); call from_npy(file, into, stat_, errmsg_)
+        rank(13); call from_npy(file, into, stat_, errmsg_)
+        rank(14); call from_npy(file, into, stat_, errmsg_)
+        rank(15); call from_npy(file, into, stat_, errmsg_)
+        rank default
+          stat_   = ARG_ERR
+          errmsg_ = "Array has invalid rank. Supported ranks: 1-15."
+      end select
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)
+                join(TEXT_EXT)//' npy. Or pass format="text" or format="npy".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -2701,10 +4000,35 @@ submodule (io_fortran_lib) file_io
           call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
+    else if ( format_of(file, format) == "npy" ) then
+      if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "npy".'
+      if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "npy".'
+      if ( present(fmt   ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "npy".'
+
+      select rank(into)
+        rank(1); call from_npy(file, into, stat_, errmsg_)
+        rank(2); call from_npy(file, into, stat_, errmsg_)
+        rank(3); call from_npy(file, into, stat_, errmsg_)
+        rank(4); call from_npy(file, into, stat_, errmsg_)
+        rank(5); call from_npy(file, into, stat_, errmsg_)
+        rank(6); call from_npy(file, into, stat_, errmsg_)
+        rank(7); call from_npy(file, into, stat_, errmsg_)
+        rank(8); call from_npy(file, into, stat_, errmsg_)
+        rank(9); call from_npy(file, into, stat_, errmsg_)
+        rank(10); call from_npy(file, into, stat_, errmsg_)
+        rank(11); call from_npy(file, into, stat_, errmsg_)
+        rank(12); call from_npy(file, into, stat_, errmsg_)
+        rank(13); call from_npy(file, into, stat_, errmsg_)
+        rank(14); call from_npy(file, into, stat_, errmsg_)
+        rank(15); call from_npy(file, into, stat_, errmsg_)
+        rank default
+          stat_   = ARG_ERR
+          errmsg_ = "Array has invalid rank. Supported ranks: 1-15."
+      end select
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)
+                join(TEXT_EXT)//' npy. Or pass format="text" or format="npy".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -2767,10 +4091,35 @@ submodule (io_fortran_lib) file_io
           call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
+    else if ( format_of(file, format) == "npy" ) then
+      if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "npy".'
+      if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "npy".'
+      if ( present(fmt   ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "npy".'
+
+      select rank(into)
+        rank(1); call from_npy(file, into, stat_, errmsg_)
+        rank(2); call from_npy(file, into, stat_, errmsg_)
+        rank(3); call from_npy(file, into, stat_, errmsg_)
+        rank(4); call from_npy(file, into, stat_, errmsg_)
+        rank(5); call from_npy(file, into, stat_, errmsg_)
+        rank(6); call from_npy(file, into, stat_, errmsg_)
+        rank(7); call from_npy(file, into, stat_, errmsg_)
+        rank(8); call from_npy(file, into, stat_, errmsg_)
+        rank(9); call from_npy(file, into, stat_, errmsg_)
+        rank(10); call from_npy(file, into, stat_, errmsg_)
+        rank(11); call from_npy(file, into, stat_, errmsg_)
+        rank(12); call from_npy(file, into, stat_, errmsg_)
+        rank(13); call from_npy(file, into, stat_, errmsg_)
+        rank(14); call from_npy(file, into, stat_, errmsg_)
+        rank(15); call from_npy(file, into, stat_, errmsg_)
+        rank default
+          stat_   = ARG_ERR
+          errmsg_ = "Array has invalid rank. Supported ranks: 1-15."
+      end select
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)
+                join(TEXT_EXT)//' npy. Or pass format="text" or format="npy".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -2833,10 +4182,35 @@ submodule (io_fortran_lib) file_io
           call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
+    else if ( format_of(file, format) == "npy" ) then
+      if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "npy".'
+      if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "npy".'
+      if ( present(fmt   ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "npy".'
+
+      select rank(into)
+        rank(1); call from_npy(file, into, stat_, errmsg_)
+        rank(2); call from_npy(file, into, stat_, errmsg_)
+        rank(3); call from_npy(file, into, stat_, errmsg_)
+        rank(4); call from_npy(file, into, stat_, errmsg_)
+        rank(5); call from_npy(file, into, stat_, errmsg_)
+        rank(6); call from_npy(file, into, stat_, errmsg_)
+        rank(7); call from_npy(file, into, stat_, errmsg_)
+        rank(8); call from_npy(file, into, stat_, errmsg_)
+        rank(9); call from_npy(file, into, stat_, errmsg_)
+        rank(10); call from_npy(file, into, stat_, errmsg_)
+        rank(11); call from_npy(file, into, stat_, errmsg_)
+        rank(12); call from_npy(file, into, stat_, errmsg_)
+        rank(13); call from_npy(file, into, stat_, errmsg_)
+        rank(14); call from_npy(file, into, stat_, errmsg_)
+        rank(15); call from_npy(file, into, stat_, errmsg_)
+        rank default
+          stat_   = ARG_ERR
+          errmsg_ = "Array has invalid rank. Supported ranks: 1-15."
+      end select
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)
+                join(TEXT_EXT)//' npy. Or pass format="text" or format="npy".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -2895,7 +4269,130 @@ submodule (io_fortran_lib) file_io
       return
     end if
 
-    if ( format_of(file, format) == "binary" ) then
+    if ( format_of(file, format) == "npy" ) then
+      select rank(into)
+        rank(1)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(2)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(3)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(4)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(5)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(6)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(7)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(8)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(9)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(10)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(11)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(12)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(13)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(14)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(15)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+      end select
+    else if ( format_of(file, format) == "binary" ) then
       select rank(into)
         rank(1)
           call from_binary(file, into, data_shape, stat_, errmsg_)
@@ -2997,7 +4494,130 @@ submodule (io_fortran_lib) file_io
       return
     end if
 
-    if ( format_of(file, format) == "binary" ) then
+    if ( format_of(file, format) == "npy" ) then
+      select rank(into)
+        rank(1)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(2)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(3)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(4)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(5)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(6)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(7)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(8)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(9)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(10)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(11)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(12)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(13)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(14)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(15)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+      end select
+    else if ( format_of(file, format) == "binary" ) then
       select rank(into)
         rank(1)
           call from_binary(file, into, data_shape, stat_, errmsg_)
@@ -3099,7 +4719,130 @@ submodule (io_fortran_lib) file_io
       return
     end if
 
-    if ( format_of(file, format) == "binary" ) then
+    if ( format_of(file, format) == "npy" ) then
+      select rank(into)
+        rank(1)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(2)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(3)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(4)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(5)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(6)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(7)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(8)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(9)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(10)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(11)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(12)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(13)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(14)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(15)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+      end select
+    else if ( format_of(file, format) == "binary" ) then
       select rank(into)
         rank(1)
           call from_binary(file, into, data_shape, stat_, errmsg_)
@@ -3201,7 +4944,130 @@ submodule (io_fortran_lib) file_io
       return
     end if
 
-    if ( format_of(file, format) == "binary" ) then
+    if ( format_of(file, format) == "npy" ) then
+      select rank(into)
+        rank(1)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(2)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(3)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(4)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(5)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(6)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(7)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(8)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(9)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(10)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(11)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(12)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(13)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(14)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+        rank(15)
+          call from_npy(file, into, stat_, errmsg_)
+          if ( stat_ == 0 ) then
+            if ( any(shape(into) /= data_shape) ) then
+              stat_   = READ_ERR
+              errmsg_ = 'Error reading file "'//file//'": its shape differs from data_shape.'
+            end if
+          end if
+      end select
+    else if ( format_of(file, format) == "binary" ) then
       select rank(into)
         rank(1)
           call from_binary(file, into, data_shape, stat_, errmsg_)
