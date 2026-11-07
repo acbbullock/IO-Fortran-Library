@@ -15,7 +15,6 @@ submodule (io_fortran_lib) file_io
   character(len=1), parameter :: COMMA_DELIMITER = COMMA
   character(len=1), parameter :: SEMICOLON_DELIM = SEMICOLON
   character(len=2), parameter :: US_LOCALE       = LOCALES(1)
-  integer,          target :: MAX_DECIMALS    = 150
   logical,          target :: ABSENT_HEADER   = .false.
 
   contains ! Procedure bodies for module subprograms <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><
@@ -68,7 +67,6 @@ submodule (io_fortran_lib) file_io
 
     character(len=:), allocatable :: locale_, delim_, fmt_, im_
     character(len=:), pointer :: errmsg_
-    integer :: decimals_
     integer, pointer :: stat_
 
     character(len=1024), target :: dummy_msg
@@ -157,13 +155,11 @@ submodule (io_fortran_lib) file_io
         end if
       end if
 
-      decimals_ = optval(decimals, MAX_DECIMALS)
-
       im_ = optval(im, EMPTY_STRING)
 
       select rank(x)
-        rank(1); call to_text(x, file, header, locale_, delim_, fmt_, decimals_, im_, stat_, errmsg_)
-        rank(2); call to_text(x, file, header, locale_, delim_, fmt_, decimals_, im_, stat_, errmsg_)
+        rank(1); call to_text(x, file, header, locale_, delim_, fmt_, decimals, im_, stat_, errmsg_)
+        rank(2); call to_text(x, file, header, locale_, delim_, fmt_, decimals, im_, stat_, errmsg_)
       end select
     else if ( format_of(file, format) == "binary" ) then
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
@@ -210,7 +206,6 @@ submodule (io_fortran_lib) file_io
 
     character(len=:), allocatable :: locale_, delim_, fmt_, im_
     character(len=:), pointer :: errmsg_
-    integer :: decimals_
     integer, pointer :: stat_
 
     character(len=1024), target :: dummy_msg
@@ -299,13 +294,11 @@ submodule (io_fortran_lib) file_io
         end if
       end if
 
-      decimals_ = optval(decimals, MAX_DECIMALS)
-
       im_ = optval(im, EMPTY_STRING)
 
       select rank(x)
-        rank(1); call to_text(x, file, header, locale_, delim_, fmt_, decimals_, im_, stat_, errmsg_)
-        rank(2); call to_text(x, file, header, locale_, delim_, fmt_, decimals_, im_, stat_, errmsg_)
+        rank(1); call to_text(x, file, header, locale_, delim_, fmt_, decimals, im_, stat_, errmsg_)
+        rank(2); call to_text(x, file, header, locale_, delim_, fmt_, decimals, im_, stat_, errmsg_)
       end select
     else if ( format_of(file, format) == "binary" ) then
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
@@ -351,7 +344,6 @@ submodule (io_fortran_lib) file_io
 
     character(len=:), allocatable :: locale_, delim_, fmt_, im_
     character(len=:), pointer :: errmsg_
-    integer :: decimals_
     integer, pointer :: stat_
 
     character(len=1024), target :: dummy_msg
@@ -440,13 +432,11 @@ submodule (io_fortran_lib) file_io
         end if
       end if
 
-      decimals_ = optval(decimals, MAX_DECIMALS)
-
       im_ = optval(im, EMPTY_STRING)
 
       select rank(x)
-        rank(1); call to_text(x, file, header, locale_, delim_, fmt_, decimals_, im_, stat_, errmsg_)
-        rank(2); call to_text(x, file, header, locale_, delim_, fmt_, decimals_, im_, stat_, errmsg_)
+        rank(1); call to_text(x, file, header, locale_, delim_, fmt_, decimals, im_, stat_, errmsg_)
+        rank(2); call to_text(x, file, header, locale_, delim_, fmt_, decimals, im_, stat_, errmsg_)
       end select
     else if ( format_of(file, format) == "binary" ) then
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
@@ -494,7 +484,6 @@ submodule (io_fortran_lib) file_io
 
     character(len=:), allocatable :: locale_, delim_, fmt_
     character(len=:), pointer :: errmsg_
-    integer :: decimals_
     integer, pointer :: stat_
 
     character(len=1024), target :: dummy_msg
@@ -583,11 +572,9 @@ submodule (io_fortran_lib) file_io
         end if
       end if
 
-      decimals_ = optval(decimals, MAX_DECIMALS)
-
       select rank(x)
-        rank(1); call to_text(x, file, header, locale_, delim_, fmt_, decimals_, stat_, errmsg_)
-        rank(2); call to_text(x, file, header, locale_, delim_, fmt_, decimals_, stat_, errmsg_)
+        rank(1); call to_text(x, file, header, locale_, delim_, fmt_, decimals, stat_, errmsg_)
+        rank(2); call to_text(x, file, header, locale_, delim_, fmt_, decimals, stat_, errmsg_)
       end select
     else if ( format_of(file, format) == "binary" ) then
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
@@ -633,7 +620,6 @@ submodule (io_fortran_lib) file_io
 
     character(len=:), allocatable :: locale_, delim_, fmt_
     character(len=:), pointer :: errmsg_
-    integer :: decimals_
     integer, pointer :: stat_
 
     character(len=1024), target :: dummy_msg
@@ -722,11 +708,9 @@ submodule (io_fortran_lib) file_io
         end if
       end if
 
-      decimals_ = optval(decimals, MAX_DECIMALS)
-
       select rank(x)
-        rank(1); call to_text(x, file, header, locale_, delim_, fmt_, decimals_, stat_, errmsg_)
-        rank(2); call to_text(x, file, header, locale_, delim_, fmt_, decimals_, stat_, errmsg_)
+        rank(1); call to_text(x, file, header, locale_, delim_, fmt_, decimals, stat_, errmsg_)
+        rank(2); call to_text(x, file, header, locale_, delim_, fmt_, decimals, stat_, errmsg_)
       end select
     else if ( format_of(file, format) == "binary" ) then
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
@@ -771,7 +755,6 @@ submodule (io_fortran_lib) file_io
 
     character(len=:), allocatable :: locale_, delim_, fmt_
     character(len=:), pointer :: errmsg_
-    integer :: decimals_
     integer, pointer :: stat_
 
     character(len=1024), target :: dummy_msg
@@ -860,11 +843,9 @@ submodule (io_fortran_lib) file_io
         end if
       end if
 
-      decimals_ = optval(decimals, MAX_DECIMALS)
-
       select rank(x)
-        rank(1); call to_text(x, file, header, locale_, delim_, fmt_, decimals_, stat_, errmsg_)
-        rank(2); call to_text(x, file, header, locale_, delim_, fmt_, decimals_, stat_, errmsg_)
+        rank(1); call to_text(x, file, header, locale_, delim_, fmt_, decimals, stat_, errmsg_)
+        rank(2); call to_text(x, file, header, locale_, delim_, fmt_, decimals, stat_, errmsg_)
       end select
     else if ( format_of(file, format) == "binary" ) then
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'

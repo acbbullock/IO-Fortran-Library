@@ -119,6 +119,7 @@ for complete example programs.
 ### Fixed
 
 * `fmt="e"` and `fmt="f"` dropped the sign of negative zero, writing `0.0e+000` for `-0.0`, so it read back as positive zero. Complex values with a negative zero imaginary part were also written as `1.0e+000+-0.0e+000j`. `fmt="z"` was already correct.
+* `to_file` without `decimals` wrote text with at most 150 decimals, so with `fmt="f"` values below 1e-150 were written as zero, and `real64` values below about 1e-133 lost digits. It now uses the same default as `str`, which reads back exactly.
 
 ## Release Notes v2.0.0
 

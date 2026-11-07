@@ -18,9 +18,8 @@ module file_round_trip_cases
   !---------------------------------------------------------------------------------------------------------------------
   use, intrinsic :: iso_fortran_env, only: r128=>real128, r64=>real64, r32=>real32, &
                                            i64=>int64, i32=>int32, i16=>int16, i8=>int8
-  use, intrinsic :: ieee_arithmetic, only: ieee_is_finite
   use io_fortran_lib, only: str, to_file, from_file
-  use test_support,   only: test_suite, KNOWN_BUG, fail, failure_count, expect_equal, expect_identical, scratch
+  use test_support,   only: test_suite, fail, failure_count, expect_equal, expect_identical, scratch
   use test_values,    only: reset_random, test_values_of
   implicit none (type, external)
   private
@@ -37,31 +36,6 @@ module file_round_trip_cases
   character(len=4), parameter :: COLUMN_NAMES(COLS) = [ character(len=4) :: "a", "b c", "d", "e,f", "g", "h" ]
 
   integer, parameter :: N_FILE = 280                                          ! Random values for the text cases
-
-  interface f_safe
-    !! Whether `fmt="f"` writes a value exactly. Values below about 1e-133 lose digits until #61 is fixed.
-#:for k in INT_KINDS
-    module procedure :: f_safe_${k}$
-#:endfor
-#:for k in REAL_KINDS
-#:if k in QUAD_KINDS
-#ifdef IOFL_HAS_R128
-#:endif
-    module procedure :: f_safe_${k}$
-#:if k in QUAD_KINDS
-#endif
-#:endif
-#:endfor
-#:for c, r in COMPLEX_KINDS
-#:if c in QUAD_KINDS
-#ifdef IOFL_HAS_R128
-#:endif
-    module procedure :: f_safe_${c}$
-#:if c in QUAD_KINDS
-#endif
-#:endif
-#:endfor
-  end interface f_safe
 
   ! Header forms: one name, a name per column, one empty name, and none. Rank 1 uses the first and last.
   integer,           parameter :: ONE_NAME = 1, PER_COLUMN = 2, EMPTY_NAME = 3, NO_HEADER = 4
@@ -84,7 +58,7 @@ contains
     call suite%add("text_file_${k}$", text_file_${k}$)
     call suite%add("binary_file_${k}$", binary_file_${k}$)
 #:if k != "r32"
-    call suite%add("small_values_fmt_f_${k}$", small_values_fmt_f_${k}$, status=KNOWN_BUG)
+    call suite%add("small_values_fmt_f_${k}$", small_values_fmt_f_${k}$)
 #:endif
 #:if k in QUAD_KINDS
 #endif
@@ -97,7 +71,7 @@ contains
     call suite%add("text_file_${c}$", text_file_${c}$)
     call suite%add("binary_file_${c}$", binary_file_${c}$)
 #:if c != "c32"
-    call suite%add("small_values_fmt_f_${c}$", small_values_fmt_f_${c}$, status=KNOWN_BUG)
+    call suite%add("small_values_fmt_f_${c}$", small_values_fmt_f_${c}$)
 #:endif
 #:if c in QUAD_KINDS
 #endif
@@ -133,10 +107,10 @@ contains
     text = " (rank "//str(rank)//", header "//trim(HEADER_NAMES(header))//combo//")"
   end function context
 
-#:def text_file_case(name, decl, mold, loops, args, ends, ctx, counters, compare, fmt_expr)
+#:def text_file_case(name, decl, mold, loops, args, ends, ctx, counters, compare)
   subroutine text_file_${name}$()
     !! `to_file` then `from_file` on text files of rank 1 and 2, with each form of header.
-    ${decl}$, allocatable :: values(:), data(:), x1(:), y1(:), x2(:,:), y2(:,:)
+    ${decl}$, allocatable :: values(:), x1(:), y1(:), x2(:,:), y2(:,:)
     character(len=:), allocatable :: file, combo
     character(len=512)            :: msg
     integer                       :: ${counters}$, h, st, rows
@@ -149,11 +123,9 @@ contains
 ${loops}$
           combo = settings(${ctx}$)
 
-          data = values
-          if ( ${fmt_expr}$ == "f" ) data = pack(values, f_safe(values))        ! Until #61 is fixed
-          rows = size(data)/COLS
-          x1 = data
-          x2 = reshape(data(1:rows*COLS), [rows, COLS])
+          rows = size(values)/COLS
+          x1 = values
+          x2 = reshape(values(1:rows*COLS), [rows, COLS])
 
           do h = ONE_NAME, NO_HEADER, NO_HEADER - ONE_NAME
             select case (h)
@@ -234,14 +206,10 @@ $:text_file_case(k, "integer(" + k + ")", "0_" + k, &
     "    do l = 1, size(DELIMS)\n      do f = 1, size(INT_FMTS)", &
     "delim=DELIMS(l), fmt=INT_FMTS(f)", &
     "      end do\n    end do", &
-    "INT_FMTS(f), delim=DELIMS(l)", "l, f", "expect_equal", "INT_FMTS(f)")
+    "INT_FMTS(f), delim=DELIMS(l)", "l, f", "expect_equal")
 
 $:binary_file_case(k, "integer(" + k + ")", "0_" + k, "expect_equal")
 
-  elemental logical function f_safe_${k}$(x)
-    integer(${k}$), intent(in) :: x
-    f_safe_${k}$ = .true.
-  end function f_safe_${k}$
 
 #:endfor
 #:for k in REAL_KINDS
@@ -252,18 +220,14 @@ $:text_file_case(k, "real(" + k + ")", "0.0_" + k, &
     "    do l = 1, size(LOCALES)\n      do f = 1, size(REAL_FMTS)", &
     "locale=LOCALES(l), fmt=REAL_FMTS(f)", &
     "      end do\n    end do", &
-    "REAL_FMTS(f), locale=LOCALES(l)", "l, f", "expect_identical", "REAL_FMTS(f)")
+    "REAL_FMTS(f), locale=LOCALES(l)", "l, f", "expect_identical")
 
 $:binary_file_case(k, "real(" + k + ")", "0.0_" + k, "expect_identical")
 
-  elemental logical function f_safe_${k}$(x)
-    real(${k}$), intent(in) :: x
-    f_safe_${k}$ = (abs(x) >= 1.0e-100_${k}$) .or. (x == 0.0_${k}$) .or. (.not. ieee_is_finite(x))
-  end function f_safe_${k}$
 #:if k != "r32"
 
   subroutine small_values_fmt_f_${k}$()
-    !! Small values survive a text file with `fmt="f"`. They are written as zero, or with too few digits (#61).
+    !! Small values survive a text file with `fmt="f"` (#61).
     real(${k}$), allocatable :: x(:), y(:)
     character(len=512)     :: msg
     integer                :: st
@@ -290,18 +254,14 @@ $:text_file_case(c, "complex(" + r + ")", "(0.0_" + r + ",0.0_" + r + ")", &
     "    do m = 1, size(IMS)\n      do l = 1, size(LOCALES)\n        do f = 1, size(REAL_FMTS)", &
     "locale=LOCALES(l), fmt=REAL_FMTS(f), im=trim(IMS(m))", &
     "        end do\n      end do\n    end do", &
-    "REAL_FMTS(f), locale=LOCALES(l), im=IMS(m)", "m, l, f", "expect_identical", "REAL_FMTS(f)")
+    "REAL_FMTS(f), locale=LOCALES(l), im=IMS(m)", "m, l, f", "expect_identical")
 
 $:binary_file_case(c, "complex(" + r + ")", "(0.0_" + r + ",0.0_" + r + ")", "expect_identical")
 
-  elemental logical function f_safe_${c}$(z)
-    complex(${r}$), intent(in) :: z
-    f_safe_${c}$ = f_safe(real(z)) .and. f_safe(aimag(z))
-  end function f_safe_${c}$
 #:if c != "c32"
 
   subroutine small_values_fmt_f_${c}$()
-    !! Small parts survive a text file with `fmt="f"`. They are written as zero, or with too few digits (#61).
+    !! Small parts survive a text file with `fmt="f"` (#61).
     complex(${r}$), allocatable :: x(:), y(:)
     character(len=512)        :: msg
     integer                   :: st

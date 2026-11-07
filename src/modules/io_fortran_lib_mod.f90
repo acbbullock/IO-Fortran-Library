@@ -1819,7 +1819,7 @@ module io_fortran_lib
       character(len=*), intent(in)  :: locale
       character(len=*), intent(in)  :: delim
       character(len=*), intent(in)  :: fmt
-      integer,          intent(in)  :: decimals
+      integer,          intent(in), optional :: decimals
       character(len=*), intent(in)  :: im
       integer,          intent(out) :: stat
       character(len=*), intent(out) :: errmsg
@@ -1833,7 +1833,7 @@ module io_fortran_lib
       character(len=*), intent(in)  :: locale
       character(len=*), intent(in)  :: delim
       character(len=*), intent(in)  :: fmt
-      integer,          intent(in)  :: decimals
+      integer,          intent(in), optional :: decimals
       character(len=*), intent(in)  :: im
       integer,          intent(out) :: stat
       character(len=*), intent(out) :: errmsg
@@ -1846,7 +1846,7 @@ module io_fortran_lib
       character(len=*), intent(in)  :: locale
       character(len=*), intent(in)  :: delim
       character(len=*), intent(in)  :: fmt
-      integer,          intent(in)  :: decimals
+      integer,          intent(in), optional :: decimals
       character(len=*), intent(in)  :: im
       integer,          intent(out) :: stat
       character(len=*), intent(out) :: errmsg
@@ -1861,7 +1861,7 @@ module io_fortran_lib
       character(len=*), intent(in)  :: locale
       character(len=*), intent(in)  :: delim
       character(len=*), intent(in)  :: fmt
-      integer,          intent(in)  :: decimals
+      integer,          intent(in), optional :: decimals
       integer,          intent(out) :: stat
       character(len=*), intent(out) :: errmsg
     end subroutine to_text_r128
@@ -1874,7 +1874,7 @@ module io_fortran_lib
       character(len=*), intent(in)  :: locale
       character(len=*), intent(in)  :: delim
       character(len=*), intent(in)  :: fmt
-      integer,          intent(in)  :: decimals
+      integer,          intent(in), optional :: decimals
       integer,          intent(out) :: stat
       character(len=*), intent(out) :: errmsg
     end subroutine to_text_r64
@@ -1886,7 +1886,7 @@ module io_fortran_lib
       character(len=*), intent(in)  :: locale
       character(len=*), intent(in)  :: delim
       character(len=*), intent(in)  :: fmt
-      integer,          intent(in)  :: decimals
+      integer,          intent(in), optional :: decimals
       integer,          intent(out) :: stat
       character(len=*), intent(out) :: errmsg
     end subroutine to_text_r32

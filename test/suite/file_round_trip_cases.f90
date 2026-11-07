@@ -8,9 +8,8 @@ module file_round_trip_cases
   !---------------------------------------------------------------------------------------------------------------------
   use, intrinsic :: iso_fortran_env, only: r128=>real128, r64=>real64, r32=>real32, &
                                            i64=>int64, i32=>int32, i16=>int16, i8=>int8
-  use, intrinsic :: ieee_arithmetic, only: ieee_is_finite
   use io_fortran_lib, only: str, to_file, from_file
-  use test_support,   only: test_suite, KNOWN_BUG, fail, failure_count, expect_equal, expect_identical, scratch
+  use test_support,   only: test_suite, fail, failure_count, expect_equal, expect_identical, scratch
   use test_values,    only: reset_random, test_values_of
   implicit none (type, external)
   private
@@ -27,24 +26,6 @@ module file_round_trip_cases
   character(len=4), parameter :: COLUMN_NAMES(COLS) = [ character(len=4) :: "a", "b c", "d", "e,f", "g", "h" ]
 
   integer, parameter :: N_FILE = 280                                          ! Random values for the text cases
-
-  interface f_safe
-    !! Whether `fmt="f"` writes a value exactly. Values below about 1e-133 lose digits until #61 is fixed.
-    module procedure :: f_safe_i64
-    module procedure :: f_safe_i32
-    module procedure :: f_safe_i16
-    module procedure :: f_safe_i8
-#ifdef IOFL_HAS_R128
-    module procedure :: f_safe_r128
-#endif
-    module procedure :: f_safe_r64
-    module procedure :: f_safe_r32
-#ifdef IOFL_HAS_R128
-    module procedure :: f_safe_c128
-#endif
-    module procedure :: f_safe_c64
-    module procedure :: f_safe_c32
-  end interface f_safe
 
   ! Header forms: one name, a name per column, one empty name, and none. Rank 1 uses the first and last.
   integer,           parameter :: ONE_NAME = 1, PER_COLUMN = 2, EMPTY_NAME = 3, NO_HEADER = 4
@@ -67,21 +48,21 @@ contains
 #ifdef IOFL_HAS_R128
     call suite%add("text_file_r128", text_file_r128)
     call suite%add("binary_file_r128", binary_file_r128)
-    call suite%add("small_values_fmt_f_r128", small_values_fmt_f_r128, status=KNOWN_BUG)
+    call suite%add("small_values_fmt_f_r128", small_values_fmt_f_r128)
 #endif
     call suite%add("text_file_r64", text_file_r64)
     call suite%add("binary_file_r64", binary_file_r64)
-    call suite%add("small_values_fmt_f_r64", small_values_fmt_f_r64, status=KNOWN_BUG)
+    call suite%add("small_values_fmt_f_r64", small_values_fmt_f_r64)
     call suite%add("text_file_r32", text_file_r32)
     call suite%add("binary_file_r32", binary_file_r32)
 #ifdef IOFL_HAS_R128
     call suite%add("text_file_c128", text_file_c128)
     call suite%add("binary_file_c128", binary_file_c128)
-    call suite%add("small_values_fmt_f_c128", small_values_fmt_f_c128, status=KNOWN_BUG)
+    call suite%add("small_values_fmt_f_c128", small_values_fmt_f_c128)
 #endif
     call suite%add("text_file_c64", text_file_c64)
     call suite%add("binary_file_c64", binary_file_c64)
-    call suite%add("small_values_fmt_f_c64", small_values_fmt_f_c64, status=KNOWN_BUG)
+    call suite%add("small_values_fmt_f_c64", small_values_fmt_f_c64)
     call suite%add("text_file_c32", text_file_c32)
     call suite%add("binary_file_c32", binary_file_c32)
   end subroutine register_file_round_trip
@@ -116,7 +97,7 @@ contains
 
   subroutine text_file_i64()
     !! `to_file` then `from_file` on text files of rank 1 and 2, with each form of header.
-    integer(i64), allocatable :: values(:), data(:), x1(:), y1(:), x2(:,:), y2(:,:)
+    integer(i64), allocatable :: values(:), x1(:), y1(:), x2(:,:), y2(:,:)
     character(len=:), allocatable :: file, combo
     character(len=512)            :: msg
     integer                       :: l, f, h, st, rows
@@ -130,11 +111,9 @@ contains
       do f = 1, size(INT_FMTS)
           combo = settings(INT_FMTS(f), delim=DELIMS(l))
 
-          data = values
-          if ( INT_FMTS(f) == "f" ) data = pack(values, f_safe(values))        ! Until #61 is fixed
-          rows = size(data)/COLS
-          x1 = data
-          x2 = reshape(data(1:rows*COLS), [rows, COLS])
+          rows = size(values)/COLS
+          x1 = values
+          x2 = reshape(values(1:rows*COLS), [rows, COLS])
 
           do h = ONE_NAME, NO_HEADER, NO_HEADER - ONE_NAME
             select case (h)
@@ -374,14 +353,10 @@ contains
 
   end subroutine binary_file_i64
 
-  elemental logical function f_safe_i64(x)
-    integer(i64), intent(in) :: x
-    f_safe_i64 = .true.
-  end function f_safe_i64
 
   subroutine text_file_i32()
     !! `to_file` then `from_file` on text files of rank 1 and 2, with each form of header.
-    integer(i32), allocatable :: values(:), data(:), x1(:), y1(:), x2(:,:), y2(:,:)
+    integer(i32), allocatable :: values(:), x1(:), y1(:), x2(:,:), y2(:,:)
     character(len=:), allocatable :: file, combo
     character(len=512)            :: msg
     integer                       :: l, f, h, st, rows
@@ -395,11 +370,9 @@ contains
       do f = 1, size(INT_FMTS)
           combo = settings(INT_FMTS(f), delim=DELIMS(l))
 
-          data = values
-          if ( INT_FMTS(f) == "f" ) data = pack(values, f_safe(values))        ! Until #61 is fixed
-          rows = size(data)/COLS
-          x1 = data
-          x2 = reshape(data(1:rows*COLS), [rows, COLS])
+          rows = size(values)/COLS
+          x1 = values
+          x2 = reshape(values(1:rows*COLS), [rows, COLS])
 
           do h = ONE_NAME, NO_HEADER, NO_HEADER - ONE_NAME
             select case (h)
@@ -639,14 +612,10 @@ contains
 
   end subroutine binary_file_i32
 
-  elemental logical function f_safe_i32(x)
-    integer(i32), intent(in) :: x
-    f_safe_i32 = .true.
-  end function f_safe_i32
 
   subroutine text_file_i16()
     !! `to_file` then `from_file` on text files of rank 1 and 2, with each form of header.
-    integer(i16), allocatable :: values(:), data(:), x1(:), y1(:), x2(:,:), y2(:,:)
+    integer(i16), allocatable :: values(:), x1(:), y1(:), x2(:,:), y2(:,:)
     character(len=:), allocatable :: file, combo
     character(len=512)            :: msg
     integer                       :: l, f, h, st, rows
@@ -660,11 +629,9 @@ contains
       do f = 1, size(INT_FMTS)
           combo = settings(INT_FMTS(f), delim=DELIMS(l))
 
-          data = values
-          if ( INT_FMTS(f) == "f" ) data = pack(values, f_safe(values))        ! Until #61 is fixed
-          rows = size(data)/COLS
-          x1 = data
-          x2 = reshape(data(1:rows*COLS), [rows, COLS])
+          rows = size(values)/COLS
+          x1 = values
+          x2 = reshape(values(1:rows*COLS), [rows, COLS])
 
           do h = ONE_NAME, NO_HEADER, NO_HEADER - ONE_NAME
             select case (h)
@@ -904,14 +871,10 @@ contains
 
   end subroutine binary_file_i16
 
-  elemental logical function f_safe_i16(x)
-    integer(i16), intent(in) :: x
-    f_safe_i16 = .true.
-  end function f_safe_i16
 
   subroutine text_file_i8()
     !! `to_file` then `from_file` on text files of rank 1 and 2, with each form of header.
-    integer(i8), allocatable :: values(:), data(:), x1(:), y1(:), x2(:,:), y2(:,:)
+    integer(i8), allocatable :: values(:), x1(:), y1(:), x2(:,:), y2(:,:)
     character(len=:), allocatable :: file, combo
     character(len=512)            :: msg
     integer                       :: l, f, h, st, rows
@@ -925,11 +888,9 @@ contains
       do f = 1, size(INT_FMTS)
           combo = settings(INT_FMTS(f), delim=DELIMS(l))
 
-          data = values
-          if ( INT_FMTS(f) == "f" ) data = pack(values, f_safe(values))        ! Until #61 is fixed
-          rows = size(data)/COLS
-          x1 = data
-          x2 = reshape(data(1:rows*COLS), [rows, COLS])
+          rows = size(values)/COLS
+          x1 = values
+          x2 = reshape(values(1:rows*COLS), [rows, COLS])
 
           do h = ONE_NAME, NO_HEADER, NO_HEADER - ONE_NAME
             select case (h)
@@ -1169,15 +1130,11 @@ contains
 
   end subroutine binary_file_i8
 
-  elemental logical function f_safe_i8(x)
-    integer(i8), intent(in) :: x
-    f_safe_i8 = .true.
-  end function f_safe_i8
 
 #ifdef IOFL_HAS_R128
   subroutine text_file_r128()
     !! `to_file` then `from_file` on text files of rank 1 and 2, with each form of header.
-    real(r128), allocatable :: values(:), data(:), x1(:), y1(:), x2(:,:), y2(:,:)
+    real(r128), allocatable :: values(:), x1(:), y1(:), x2(:,:), y2(:,:)
     character(len=:), allocatable :: file, combo
     character(len=512)            :: msg
     integer                       :: l, f, h, st, rows
@@ -1191,11 +1148,9 @@ contains
       do f = 1, size(REAL_FMTS)
           combo = settings(REAL_FMTS(f), locale=LOCALES(l))
 
-          data = values
-          if ( REAL_FMTS(f) == "f" ) data = pack(values, f_safe(values))        ! Until #61 is fixed
-          rows = size(data)/COLS
-          x1 = data
-          x2 = reshape(data(1:rows*COLS), [rows, COLS])
+          rows = size(values)/COLS
+          x1 = values
+          x2 = reshape(values(1:rows*COLS), [rows, COLS])
 
           do h = ONE_NAME, NO_HEADER, NO_HEADER - ONE_NAME
             select case (h)
@@ -1435,13 +1390,9 @@ contains
 
   end subroutine binary_file_r128
 
-  elemental logical function f_safe_r128(x)
-    real(r128), intent(in) :: x
-    f_safe_r128 = (abs(x) >= 1.0e-100_r128) .or. (x == 0.0_r128) .or. (.not. ieee_is_finite(x))
-  end function f_safe_r128
 
   subroutine small_values_fmt_f_r128()
-    !! Small values survive a text file with `fmt="f"`. They are written as zero, or with too few digits (#61).
+    !! Small values survive a text file with `fmt="f"` (#61).
     real(r128), allocatable :: x(:), y(:)
     character(len=512)     :: msg
     integer                :: st
@@ -1458,7 +1409,7 @@ contains
 
   subroutine text_file_r64()
     !! `to_file` then `from_file` on text files of rank 1 and 2, with each form of header.
-    real(r64), allocatable :: values(:), data(:), x1(:), y1(:), x2(:,:), y2(:,:)
+    real(r64), allocatable :: values(:), x1(:), y1(:), x2(:,:), y2(:,:)
     character(len=:), allocatable :: file, combo
     character(len=512)            :: msg
     integer                       :: l, f, h, st, rows
@@ -1472,11 +1423,9 @@ contains
       do f = 1, size(REAL_FMTS)
           combo = settings(REAL_FMTS(f), locale=LOCALES(l))
 
-          data = values
-          if ( REAL_FMTS(f) == "f" ) data = pack(values, f_safe(values))        ! Until #61 is fixed
-          rows = size(data)/COLS
-          x1 = data
-          x2 = reshape(data(1:rows*COLS), [rows, COLS])
+          rows = size(values)/COLS
+          x1 = values
+          x2 = reshape(values(1:rows*COLS), [rows, COLS])
 
           do h = ONE_NAME, NO_HEADER, NO_HEADER - ONE_NAME
             select case (h)
@@ -1716,13 +1665,9 @@ contains
 
   end subroutine binary_file_r64
 
-  elemental logical function f_safe_r64(x)
-    real(r64), intent(in) :: x
-    f_safe_r64 = (abs(x) >= 1.0e-100_r64) .or. (x == 0.0_r64) .or. (.not. ieee_is_finite(x))
-  end function f_safe_r64
 
   subroutine small_values_fmt_f_r64()
-    !! Small values survive a text file with `fmt="f"`. They are written as zero, or with too few digits (#61).
+    !! Small values survive a text file with `fmt="f"` (#61).
     real(r64), allocatable :: x(:), y(:)
     character(len=512)     :: msg
     integer                :: st
@@ -1738,7 +1683,7 @@ contains
 
   subroutine text_file_r32()
     !! `to_file` then `from_file` on text files of rank 1 and 2, with each form of header.
-    real(r32), allocatable :: values(:), data(:), x1(:), y1(:), x2(:,:), y2(:,:)
+    real(r32), allocatable :: values(:), x1(:), y1(:), x2(:,:), y2(:,:)
     character(len=:), allocatable :: file, combo
     character(len=512)            :: msg
     integer                       :: l, f, h, st, rows
@@ -1752,11 +1697,9 @@ contains
       do f = 1, size(REAL_FMTS)
           combo = settings(REAL_FMTS(f), locale=LOCALES(l))
 
-          data = values
-          if ( REAL_FMTS(f) == "f" ) data = pack(values, f_safe(values))        ! Until #61 is fixed
-          rows = size(data)/COLS
-          x1 = data
-          x2 = reshape(data(1:rows*COLS), [rows, COLS])
+          rows = size(values)/COLS
+          x1 = values
+          x2 = reshape(values(1:rows*COLS), [rows, COLS])
 
           do h = ONE_NAME, NO_HEADER, NO_HEADER - ONE_NAME
             select case (h)
@@ -1996,15 +1939,11 @@ contains
 
   end subroutine binary_file_r32
 
-  elemental logical function f_safe_r32(x)
-    real(r32), intent(in) :: x
-    f_safe_r32 = (abs(x) >= 1.0e-100_r32) .or. (x == 0.0_r32) .or. (.not. ieee_is_finite(x))
-  end function f_safe_r32
 
 #ifdef IOFL_HAS_R128
   subroutine text_file_c128()
     !! `to_file` then `from_file` on text files of rank 1 and 2, with each form of header.
-    complex(r128), allocatable :: values(:), data(:), x1(:), y1(:), x2(:,:), y2(:,:)
+    complex(r128), allocatable :: values(:), x1(:), y1(:), x2(:,:), y2(:,:)
     character(len=:), allocatable :: file, combo
     character(len=512)            :: msg
     integer                       :: m, l, f, h, st, rows
@@ -2019,11 +1958,9 @@ contains
         do f = 1, size(REAL_FMTS)
           combo = settings(REAL_FMTS(f), locale=LOCALES(l), im=IMS(m))
 
-          data = values
-          if ( REAL_FMTS(f) == "f" ) data = pack(values, f_safe(values))        ! Until #61 is fixed
-          rows = size(data)/COLS
-          x1 = data
-          x2 = reshape(data(1:rows*COLS), [rows, COLS])
+          rows = size(values)/COLS
+          x1 = values
+          x2 = reshape(values(1:rows*COLS), [rows, COLS])
 
           do h = ONE_NAME, NO_HEADER, NO_HEADER - ONE_NAME
             select case (h)
@@ -2264,13 +2201,9 @@ contains
 
   end subroutine binary_file_c128
 
-  elemental logical function f_safe_c128(z)
-    complex(r128), intent(in) :: z
-    f_safe_c128 = f_safe(real(z)) .and. f_safe(aimag(z))
-  end function f_safe_c128
 
   subroutine small_values_fmt_f_c128()
-    !! Small parts survive a text file with `fmt="f"`. They are written as zero, or with too few digits (#61).
+    !! Small parts survive a text file with `fmt="f"` (#61).
     complex(r128), allocatable :: x(:), y(:)
     character(len=512)        :: msg
     integer                   :: st
@@ -2287,7 +2220,7 @@ contains
 
   subroutine text_file_c64()
     !! `to_file` then `from_file` on text files of rank 1 and 2, with each form of header.
-    complex(r64), allocatable :: values(:), data(:), x1(:), y1(:), x2(:,:), y2(:,:)
+    complex(r64), allocatable :: values(:), x1(:), y1(:), x2(:,:), y2(:,:)
     character(len=:), allocatable :: file, combo
     character(len=512)            :: msg
     integer                       :: m, l, f, h, st, rows
@@ -2302,11 +2235,9 @@ contains
         do f = 1, size(REAL_FMTS)
           combo = settings(REAL_FMTS(f), locale=LOCALES(l), im=IMS(m))
 
-          data = values
-          if ( REAL_FMTS(f) == "f" ) data = pack(values, f_safe(values))        ! Until #61 is fixed
-          rows = size(data)/COLS
-          x1 = data
-          x2 = reshape(data(1:rows*COLS), [rows, COLS])
+          rows = size(values)/COLS
+          x1 = values
+          x2 = reshape(values(1:rows*COLS), [rows, COLS])
 
           do h = ONE_NAME, NO_HEADER, NO_HEADER - ONE_NAME
             select case (h)
@@ -2547,13 +2478,9 @@ contains
 
   end subroutine binary_file_c64
 
-  elemental logical function f_safe_c64(z)
-    complex(r64), intent(in) :: z
-    f_safe_c64 = f_safe(real(z)) .and. f_safe(aimag(z))
-  end function f_safe_c64
 
   subroutine small_values_fmt_f_c64()
-    !! Small parts survive a text file with `fmt="f"`. They are written as zero, or with too few digits (#61).
+    !! Small parts survive a text file with `fmt="f"` (#61).
     complex(r64), allocatable :: x(:), y(:)
     character(len=512)        :: msg
     integer                   :: st
@@ -2569,7 +2496,7 @@ contains
 
   subroutine text_file_c32()
     !! `to_file` then `from_file` on text files of rank 1 and 2, with each form of header.
-    complex(r32), allocatable :: values(:), data(:), x1(:), y1(:), x2(:,:), y2(:,:)
+    complex(r32), allocatable :: values(:), x1(:), y1(:), x2(:,:), y2(:,:)
     character(len=:), allocatable :: file, combo
     character(len=512)            :: msg
     integer                       :: m, l, f, h, st, rows
@@ -2584,11 +2511,9 @@ contains
         do f = 1, size(REAL_FMTS)
           combo = settings(REAL_FMTS(f), locale=LOCALES(l), im=IMS(m))
 
-          data = values
-          if ( REAL_FMTS(f) == "f" ) data = pack(values, f_safe(values))        ! Until #61 is fixed
-          rows = size(data)/COLS
-          x1 = data
-          x2 = reshape(data(1:rows*COLS), [rows, COLS])
+          rows = size(values)/COLS
+          x1 = values
+          x2 = reshape(values(1:rows*COLS), [rows, COLS])
 
           do h = ONE_NAME, NO_HEADER, NO_HEADER - ONE_NAME
             select case (h)
@@ -2829,9 +2754,5 @@ contains
 
   end subroutine binary_file_c32
 
-  elemental logical function f_safe_c32(z)
-    complex(r32), intent(in) :: z
-    f_safe_c32 = f_safe(real(z)) .and. f_safe(aimag(z))
-  end function f_safe_c32
 
 end module file_round_trip_cases
