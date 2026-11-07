@@ -1,3 +1,4 @@
+#include "iofl_config.inc"
 submodule (io_fortran_lib) internal_io
   !---------------------------------------------------------------------------------------------------------------------
   !! This submodule provides module procedure implementations for the **public interfaces** `String`, `str`, and
@@ -48,6 +49,7 @@ submodule (io_fortran_lib) internal_io
   contains ! Procedure bodies for module subprograms <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><
 
   ! String ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#ifdef IOFL_HAS_R128
   module procedure new_string_from_c128
     character(len=1)              :: fmt_
     character(len=5)              :: decimal
@@ -288,6 +290,7 @@ submodule (io_fortran_lib) internal_io
       new%s = xre_str//"+"//xim_str//im_
     end if
   end procedure new_string_from_c128
+#endif
   module procedure new_string_from_c64
     character(len=1)              :: fmt_
     character(len=5)              :: decimal
@@ -745,6 +748,7 @@ submodule (io_fortran_lib) internal_io
     end if
   end procedure new_string_from_c32
 
+#ifdef IOFL_HAS_R128
   module procedure new_string_from_r128
     character(len=1) :: fmt_
     character(len=5) :: decimal
@@ -870,6 +874,7 @@ submodule (io_fortran_lib) internal_io
       new%s = new%s(:i+decimals); return
     end if
   end procedure new_string_from_r128
+#endif
   module procedure new_string_from_r64
     character(len=1) :: fmt_
     character(len=5) :: decimal
@@ -1425,6 +1430,7 @@ submodule (io_fortran_lib) internal_io
   end procedure new_string_from_empty
 
   ! str ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#ifdef IOFL_HAS_R128
   module procedure str_from_c128
     character(len=1)              :: fmt_
     character(len=5)              :: decimal
@@ -1665,6 +1671,7 @@ submodule (io_fortran_lib) internal_io
       x_str = xre_str//"+"//xim_str//im_
     end if
   end procedure str_from_c128
+#endif
   module procedure str_from_c64
     character(len=1)              :: fmt_
     character(len=5)              :: decimal
@@ -2122,6 +2129,7 @@ submodule (io_fortran_lib) internal_io
     end if
   end procedure str_from_c32
 
+#ifdef IOFL_HAS_R128
   module procedure str_from_r128
     character(len=1) :: fmt_
     character(len=5) :: decimal
@@ -2247,6 +2255,7 @@ submodule (io_fortran_lib) internal_io
       x_str = x_str(:i+decimals); return
     end if
   end procedure str_from_r128
+#endif
   module procedure str_from_r64
     character(len=1) :: fmt_
     character(len=5) :: decimal
@@ -2747,6 +2756,7 @@ submodule (io_fortran_lib) internal_io
   end procedure str_from_empty
 
   ! cast ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#ifdef IOFL_HAS_R128
   module procedure cast_c128_to_string
     character(len=1)              :: fmt_
     character(len=5)              :: decimal
@@ -2987,6 +2997,7 @@ submodule (io_fortran_lib) internal_io
       into%s = xre_str//"+"//xim_str//im_
     end if
   end procedure cast_c128_to_string
+#endif
   module procedure cast_c64_to_string
     character(len=1)              :: fmt_
     character(len=5)              :: decimal
@@ -3444,6 +3455,7 @@ submodule (io_fortran_lib) internal_io
     end if
   end procedure cast_c32_to_string
 
+#ifdef IOFL_HAS_R128
   module procedure cast_r128_to_string
     character(len=1) :: fmt_
     character(len=5) :: decimal
@@ -3570,6 +3582,7 @@ submodule (io_fortran_lib) internal_io
       into%s = into%s(:i+decimals); return
     end if
   end procedure cast_r128_to_string
+#endif
   module procedure cast_r64_to_string
     character(len=1) :: fmt_
     character(len=5) :: decimal
@@ -4112,6 +4125,7 @@ submodule (io_fortran_lib) internal_io
     end if
   end procedure cast_i8_to_string
 
+#ifdef IOFL_HAS_R128
   module procedure cast_c128_to_char
     character(len=1)              :: fmt_
     character(len=5)              :: decimal
@@ -4352,6 +4366,7 @@ submodule (io_fortran_lib) internal_io
       into = xre_str//"+"//xim_str//im_
     end if
   end procedure cast_c128_to_char
+#endif
   module procedure cast_c64_to_char
     character(len=1)              :: fmt_
     character(len=5)              :: decimal
@@ -4809,6 +4824,7 @@ submodule (io_fortran_lib) internal_io
     end if
   end procedure cast_c32_to_char
 
+#ifdef IOFL_HAS_R128
   module procedure cast_r128_to_char
     character(len=1) :: fmt_
     character(len=5) :: decimal
@@ -4935,6 +4951,7 @@ submodule (io_fortran_lib) internal_io
       into = into(:i+decimals); return
     end if
   end procedure cast_r128_to_char
+#endif
   module procedure cast_r64_to_char
     character(len=1) :: fmt_
     character(len=5) :: decimal
@@ -5481,6 +5498,7 @@ submodule (io_fortran_lib) internal_io
     end if
   end procedure cast_i8_to_char
 
+#ifdef IOFL_HAS_R128
   module procedure cast_string_to_c128
     character(len=1)              :: fmt_
     character(len=5)              :: decimal
@@ -5634,6 +5652,7 @@ submodule (io_fortran_lib) internal_io
       into = cmplx(z_re, z_im, kind=r128); return
     end if
   end procedure cast_string_to_c128
+#endif
   module procedure cast_string_to_c64
     character(len=1)              :: fmt_
     character(len=5)              :: decimal
@@ -5881,6 +5900,7 @@ submodule (io_fortran_lib) internal_io
     end if
   end procedure cast_string_to_c32
 
+#ifdef IOFL_HAS_R128
   module procedure cast_string_to_r128
     character(len=1) :: fmt_
     character(len=5) :: decimal
@@ -5925,6 +5945,7 @@ submodule (io_fortran_lib) internal_io
 
     read(unit=substring%s, fmt=*, decimal=decimal) into
   end procedure cast_string_to_r128
+#endif
   module procedure cast_string_to_r64
     character(len=1) :: fmt_
     character(len=5) :: decimal
@@ -6491,6 +6512,7 @@ submodule (io_fortran_lib) internal_io
     end if
   end procedure cast_string_to_i8
 
+#ifdef IOFL_HAS_R128
   module procedure cast_char_to_c128
     character(len=1)              :: fmt_
     character(len=5)              :: decimal
@@ -6644,6 +6666,7 @@ submodule (io_fortran_lib) internal_io
       into = cmplx(z_re, z_im, kind=r128); return
     end if
   end procedure cast_char_to_c128
+#endif
   module procedure cast_char_to_c64
     character(len=1)              :: fmt_
     character(len=5)              :: decimal
@@ -6891,6 +6914,7 @@ submodule (io_fortran_lib) internal_io
     end if
   end procedure cast_char_to_c32
 
+#ifdef IOFL_HAS_R128
   module procedure cast_char_to_r128
     character(len=1) :: fmt_
     character(len=5) :: decimal
@@ -6935,6 +6959,7 @@ submodule (io_fortran_lib) internal_io
 
     read(unit=substring, fmt=*, decimal=decimal) into
   end procedure cast_char_to_r128
+#endif
   module procedure cast_char_to_r64
     character(len=1) :: fmt_
     character(len=5) :: decimal

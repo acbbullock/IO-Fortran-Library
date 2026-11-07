@@ -1,3 +1,4 @@
+#include "iofl_config.inc"
 submodule (io_fortran_lib) text_io
   !---------------------------------------------------------------------------------------------------------------------
   !! This submodule provides module procedure implementations for the **public interface** `echo` and the **private
@@ -212,6 +213,7 @@ submodule (io_fortran_lib) text_io
     end if
   end procedure echo_string
 
+#ifdef IOFL_HAS_R128
   module procedure to_text_c128
     type(String)                      :: text_file
     type(String), allocatable, target :: cells(:,:)
@@ -263,6 +265,7 @@ submodule (io_fortran_lib) text_io
 
     call text_file%write_file(cells, file, NL, delim, .false., stat, errmsg)
   end procedure to_text_c128
+#endif
   module procedure to_text_c64
     type(String)                      :: text_file
     type(String), allocatable, target :: cells(:,:)
@@ -366,6 +369,7 @@ submodule (io_fortran_lib) text_io
     call text_file%write_file(cells, file, NL, delim, .false., stat, errmsg)
   end procedure to_text_c32
 
+#ifdef IOFL_HAS_R128
   module procedure to_text_r128
     type(String)                      :: text_file
     type(String), allocatable, target :: cells(:,:)
@@ -417,6 +421,7 @@ submodule (io_fortran_lib) text_io
 
     call text_file%write_file(cells, file, NL, delim, .false., stat, errmsg)
   end procedure to_text_r128
+#endif
   module procedure to_text_r64
     type(String)                      :: text_file
     type(String), allocatable, target :: cells(:,:)
@@ -726,6 +731,7 @@ submodule (io_fortran_lib) text_io
   end procedure to_text_i8
 
   ! Reading Procedures ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#ifdef IOFL_HAS_R128
   module procedure from_text_c128
     type(String)              :: text_file
     type(String), allocatable :: cells(:,:)
@@ -797,6 +803,7 @@ submodule (io_fortran_lib) text_io
         end if
     end select
   end procedure from_text_c128
+#endif
   module procedure from_text_c64
     type(String)              :: text_file
     type(String), allocatable :: cells(:,:)
@@ -1096,6 +1103,7 @@ submodule (io_fortran_lib) text_io
     end do positional_transfers
   end subroutine custom_read
 
+#ifdef IOFL_HAS_R128
   module procedure from_text_r128
     type(String)              :: text_file
     type(String), allocatable :: cells(:,:)
@@ -1163,6 +1171,7 @@ submodule (io_fortran_lib) text_io
         end if
     end select
   end procedure from_text_r128
+#endif
   module procedure from_text_r64
     type(String)              :: text_file
     type(String), allocatable :: cells(:,:)

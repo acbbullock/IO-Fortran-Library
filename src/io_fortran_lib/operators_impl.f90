@@ -1,3 +1,4 @@
+#include "iofl_config.inc"
 submodule (io_fortran_lib) operators
   !---------------------------------------------------------------------------------------------------------------------
   !! This submodule provides module procedure implementations for the **public interfaces** `operator(//)`,
@@ -54,10 +55,6 @@ submodule (io_fortran_lib) operators
 
     new%s = charsl//Stringr%s
   end procedure char_string_concatenation
-
-  module procedure char_concat_plus
-    new = charsl//charsr
-  end procedure char_concat_plus
 
   module procedure string_concat_plus
     if ( Stringl%len() < 1 ) then
@@ -166,6 +163,74 @@ submodule (io_fortran_lib) operators
   module procedure repeat_chars
     new = repeat(char_base, ncopies=ncopies)
   end procedure repeat_chars
+
+  module procedure repeat_chars_1d
+    call repeat_into(char_base, ncopies, new)
+  end procedure repeat_chars_1d
+
+  module procedure repeat_chars_2d
+    call repeat_into(char_base, ncopies, new)
+  end procedure repeat_chars_2d
+
+  module procedure repeat_chars_3d
+    call repeat_into(char_base, ncopies, new)
+  end procedure repeat_chars_3d
+
+  module procedure repeat_chars_4d
+    call repeat_into(char_base, ncopies, new)
+  end procedure repeat_chars_4d
+
+  module procedure repeat_chars_5d
+    call repeat_into(char_base, ncopies, new)
+  end procedure repeat_chars_5d
+
+  module procedure repeat_chars_6d
+    call repeat_into(char_base, ncopies, new)
+  end procedure repeat_chars_6d
+
+  module procedure repeat_chars_7d
+    call repeat_into(char_base, ncopies, new)
+  end procedure repeat_chars_7d
+
+  module procedure repeat_chars_8d
+    call repeat_into(char_base, ncopies, new)
+  end procedure repeat_chars_8d
+
+  module procedure repeat_chars_9d
+    call repeat_into(char_base, ncopies, new)
+  end procedure repeat_chars_9d
+
+  module procedure repeat_chars_10d
+    call repeat_into(char_base, ncopies, new)
+  end procedure repeat_chars_10d
+
+  module procedure repeat_chars_11d
+    call repeat_into(char_base, ncopies, new)
+  end procedure repeat_chars_11d
+
+  module procedure repeat_chars_12d
+    call repeat_into(char_base, ncopies, new)
+  end procedure repeat_chars_12d
+
+  module procedure repeat_chars_13d
+    call repeat_into(char_base, ncopies, new)
+  end procedure repeat_chars_13d
+
+  module procedure repeat_chars_14d
+    call repeat_into(char_base, ncopies, new)
+  end procedure repeat_chars_14d
+
+  module procedure repeat_chars_15d
+    call repeat_into(char_base, ncopies, new)
+  end procedure repeat_chars_15d
+
+  pure elemental subroutine repeat_into(char_base, ncopies, new)
+    character(len=*), intent(in)  :: char_base
+    integer,          intent(in)  :: ncopies
+    character(len=*), intent(out) :: new
+
+    new = repeat(char_base, ncopies=ncopies)
+  end subroutine repeat_into
 
   module procedure repeat_String
     if ( String_base%len() < 1 ) then

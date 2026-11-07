@@ -17,3 +17,9 @@ auto-examples = true
 
 [install]
 library = true
+
+[library]
+include-dir = "include"
+
+[preprocess]
+[preprocess.cpp]

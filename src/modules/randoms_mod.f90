@@ -1,3 +1,4 @@
+#include "iofl_config.inc"
 module randoms
   !---------------------------------------------------------------------------------------------------------------------
   !! This module provides Gaussian sampling utility routines for use in unit testing.
@@ -24,9 +25,11 @@ module randoms
     !! Implementation taken from <https://root.cern.ch/doc/master/TRandom_8cxx_source.html#l00274>
     !! UNURAN (c) 2000  W. Hoermann & J. Leydold, Institut f. Statistik, WU Wien
     !---------------------------------------------------------------------------------------------------------------
+#ifdef IOFL_HAS_R128
     impure real(r128) module function gauss_r128(mu, sig) result(gauss_res)
       real(r128), intent(in) :: mu, sig
     end function gauss_r128
+#endif
     impure real(r64) module function gauss_r64(mu, sig) result(gauss_res)
       real(r64), intent(in) :: mu, sig
     end function gauss_r64
@@ -39,10 +42,12 @@ module randoms
     !-------------------------------------------------------------------------------------------------------------------
     !! Applies `gauss` to whole arrays and scalars.
     !-------------------------------------------------------------------------------------------------------------------
+#ifdef IOFL_HAS_R128
     impure elemental module subroutine random_gauss_r128(x, mu, sig)
       real(r128), intent(inout) :: x
       real(r128), intent(in)    :: mu, sig
     end subroutine random_gauss_r128
+#endif
     impure elemental module subroutine random_gauss_r64(x, mu, sig)
       real(r64), intent(inout) :: x
       real(r64), intent(in)    :: mu, sig

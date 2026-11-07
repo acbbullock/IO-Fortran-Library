@@ -1,3 +1,4 @@
+#include "iofl_config.inc"
 submodule (randoms) gaussian_sampling
   !---------------------------------------------------------------------------------------------------------------------
   !! This submodule provides module procedure implementations for the **public interface** `random_gauss` and the
@@ -8,6 +9,7 @@ submodule (randoms) gaussian_sampling
   contains ! Procedure bodies for module subprograms <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><
 
   ! Gaussian sampling procedures ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#ifdef IOFL_HAS_R128
   module procedure gauss_r128
     real(r128) :: rn, x, y, z, res
 
@@ -102,6 +104,7 @@ submodule (randoms) gaussian_sampling
 
     gauss_res = res*sig + mu
   end procedure gauss_r128
+#endif
   module procedure gauss_r64
     real(r64) :: rn, x, y, z, res
 
@@ -292,9 +295,11 @@ submodule (randoms) gaussian_sampling
   end procedure gauss_r32
 
   ! Elemental procedures for gauss ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#ifdef IOFL_HAS_R128
   module procedure random_gauss_r128
     x = gauss(mu, sig)
   end procedure random_gauss_r128
+#endif
   module procedure random_gauss_r64
     x = gauss(mu, sig)
   end procedure random_gauss_r64

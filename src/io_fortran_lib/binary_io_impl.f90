@@ -1,3 +1,4 @@
+#include "iofl_config.inc"
 submodule (io_fortran_lib) binary_io
   !---------------------------------------------------------------------------------------------------------------------
   !! This submodule provides module procedure implementations for the **private interfaces** `to_binary` and
@@ -8,6 +9,7 @@ submodule (io_fortran_lib) binary_io
   contains ! Procedure bodies for module subprograms <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><
 
   ! Writing Procedures ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#ifdef IOFL_HAS_R128
   module procedure to_binary_c128
     logical :: exists
     integer :: file_unit
@@ -65,6 +67,7 @@ submodule (io_fortran_lib) binary_io
 
     stat=0; errmsg=EMPTY_STR
   end procedure to_binary_c128
+#endif
   module procedure to_binary_c64
     logical :: exists
     integer :: file_unit
@@ -180,6 +183,7 @@ submodule (io_fortran_lib) binary_io
     stat=0; errmsg=EMPTY_STR
   end procedure to_binary_c32
 
+#ifdef IOFL_HAS_R128
   module procedure to_binary_r128
     logical :: exists
     integer :: file_unit
@@ -237,6 +241,7 @@ submodule (io_fortran_lib) binary_io
 
     stat=0; errmsg=EMPTY_STR
   end procedure to_binary_r128
+#endif
   module procedure to_binary_r64
     logical :: exists
     integer :: file_unit
@@ -582,6 +587,7 @@ submodule (io_fortran_lib) binary_io
   end procedure to_binary_i8
 
   ! Reading Procedures ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#ifdef IOFL_HAS_R128
   module procedure from_binary_c128
     logical :: exists
     integer :: file_unit
@@ -692,6 +698,7 @@ submodule (io_fortran_lib) binary_io
 
     stat=0; errmsg=EMPTY_STR
   end procedure from_binary_c128
+#endif
   module procedure from_binary_c64
     logical :: exists
     integer :: file_unit
@@ -913,6 +920,7 @@ submodule (io_fortran_lib) binary_io
     stat=0; errmsg=EMPTY_STR
   end procedure from_binary_c32
 
+#ifdef IOFL_HAS_R128
   module procedure from_binary_r128
     logical :: exists
     integer :: file_unit
@@ -1023,6 +1031,7 @@ submodule (io_fortran_lib) binary_io
 
     stat=0; errmsg=EMPTY_STR
   end procedure from_binary_r128
+#endif
   module procedure from_binary_r64
     logical :: exists
     integer :: file_unit

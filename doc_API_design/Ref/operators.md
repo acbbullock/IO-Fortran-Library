@@ -58,7 +58,7 @@ For `x` a scalar or array of any rank, and of type `character` or
 result = x**ncopies
 ```
 
-* `ncopies` is of type `integer`
+* `ncopies` is a scalar of type `integer`
 
 @note The `**` operator is a wrapper for the
 [repeat](https://gcc.gnu.org/onlinedocs/gfortran/REPEAT.html)

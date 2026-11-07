@@ -1,3 +1,4 @@
+#include "iofl_config.inc"
 submodule (io_fortran_lib) file_io
   !---------------------------------------------------------------------------------------------------------------------
   !! This submodule provides module procedure implementations for the **public interfaces** `to_file` and
@@ -37,6 +38,7 @@ submodule (io_fortran_lib) file_io
   end procedure ext_of
 
   ! Writing Procedures ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#ifdef IOFL_HAS_R128
   module procedure to_file_c128
     character(len=:), allocatable :: ext
 
@@ -179,6 +181,7 @@ submodule (io_fortran_lib) file_io
                 join(TEXT_EXT)//SPACE//join(BINARY_EXT)
     end if
   end procedure to_file_c128
+#endif
   module procedure to_file_c64
     character(len=:), allocatable :: ext
 
@@ -464,6 +467,7 @@ submodule (io_fortran_lib) file_io
     end if
   end procedure to_file_c32
 
+#ifdef IOFL_HAS_R128
   module procedure to_file_r128
     character(len=:), allocatable :: ext
 
@@ -599,6 +603,7 @@ submodule (io_fortran_lib) file_io
                 join(TEXT_EXT)//SPACE//join(BINARY_EXT)
     end if
   end procedure to_file_r128
+#endif
   module procedure to_file_r64
     character(len=:), allocatable :: ext
 
@@ -1316,6 +1321,7 @@ submodule (io_fortran_lib) file_io
   end procedure to_file_i8
 
   ! Reading Procedures ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#ifdef IOFL_HAS_R128
   module procedure from_textfile_c128
     character(len=:), allocatable :: ext
 
@@ -1419,6 +1425,7 @@ submodule (io_fortran_lib) file_io
                 join(TEXT_EXT)
     end if
   end procedure from_textfile_c128
+#endif
   module procedure from_textfile_c64
     character(len=:), allocatable :: ext
 
@@ -1626,6 +1633,7 @@ submodule (io_fortran_lib) file_io
     end if
   end procedure from_textfile_c32
 
+#ifdef IOFL_HAS_R128
   module procedure from_binaryfile_c128
     character(len=:), allocatable :: ext
 
@@ -1702,6 +1710,7 @@ submodule (io_fortran_lib) file_io
       return
     end if
   end procedure from_binaryfile_c128
+#endif
   module procedure from_binaryfile_c64
     character(len=:), allocatable :: ext
 
@@ -1855,6 +1864,7 @@ submodule (io_fortran_lib) file_io
     end if
   end procedure from_binaryfile_c32
 
+#ifdef IOFL_HAS_R128
   module procedure from_textfile_r128
     character(len=:), allocatable :: ext
 
@@ -1952,6 +1962,7 @@ submodule (io_fortran_lib) file_io
                 join(TEXT_EXT)
     end if
   end procedure from_textfile_r128
+#endif
   module procedure from_textfile_r64
     character(len=:), allocatable :: ext
 
@@ -2147,6 +2158,7 @@ submodule (io_fortran_lib) file_io
     end if
   end procedure from_textfile_r32
 
+#ifdef IOFL_HAS_R128
   module procedure from_binaryfile_r128
     character(len=:), allocatable :: ext
 
@@ -2223,6 +2235,7 @@ submodule (io_fortran_lib) file_io
       return
     end if
   end procedure from_binaryfile_r128
+#endif
   module procedure from_binaryfile_r64
     character(len=:), allocatable :: ext
 
