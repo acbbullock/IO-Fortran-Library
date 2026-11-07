@@ -78,6 +78,54 @@ and the
 [tutorials](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Examples/index.html)
 for complete example programs.
 
+## Release Notes v2.0.0-alpha.1
+
+This is a pre-release. The API may still change before 2.0.0.
+
+### Breaking changes
+
+* **Errors no longer pass silently.** If an error occurs and `stat` is not present, the program ends with `error stop`. Pass `stat` to handle errors yourself. Before, these calls returned as if nothing had happened.
+* **`cast` rejects invalid numbers.** Text such as `"abc"`, `"12x"`, `"2*3.5"` or an out-of-range integer used to give a wrong value. It is now an error, reported through a new optional `stat` argument, which is elemental. The decimal mark must match the locale, an exponent needs its letter, and empty text is an error.
+* **An invalid `fmt` or `locale`** ends the program with `error stop` in `str`, `String` and `cast` (or sets `stat` for `cast`). It used to return an empty string.
+* **`decimals` rounds** instead of truncating, so `str(0.999, fmt="f", decimals=2)` gives `1.00`. The default `fmt="f"` output is rounded as well, and negative numbers now have the same number of digits as positive ones.
+* **Quotes in delimited text.** `read_file` removes the quotes around a quoted cell and reads `""` as one quote, so `cell_array` no longer holds the quote characters. `write_file` quotes a cell containing a separator character, a quote, `CR` or `LF`. An unclosed quote at the start of a cell is an error.
+* **Uneven rows.** The first row sets the number of columns. Shorter rows are filled with empty cells, and a longer row is an error.
+* **Empty numeric cells.** In `from_file`, an empty cell reads as NaN for `real` and `complex` data, and is an error for `integer` data.
+* **`**` takes a scalar `ncopies`.** Arrays of `character` of any rank still work, but an array-valued `ncopies` is gone, as it was not valid Fortran.
+* **`real128` procedures are only built when available:** on `ifx`, and on `gfortran` targets with `REAL(16)`. Other compilers, including `flang`, need `-DIOFL_HAS_R128` to enable them.
+* **Building without fpm** now needs the preprocessor (`-cpp` or `-fpp`) and `include` on the include path.
+* Unallocated and empty `String` values now compare and count the same, `trim` removes all whitespace rather than only spaces, `echo` accepts empty text, and a negative `**` count gives an empty result.
+
+### Fixed
+
+* `to_file` with an exact zero in `EU` locale wrote a file that could not be read back.
+* NaN and infinity could crash `str`, or be written in a form that could not be read back. They are now written as `NaN`, `Inf` and `-Inf`.
+* `fmt="f"` failed on very large and very small values.
+* `from_file` aborted on a bad number even with `stat`. It now reports the text with its row and column.
+* `read_file` dropped or crashed on a file with no final newline, and mishandled CRLF. Both now work with the default `row_separator`.
+* `write_file` overflowed the heap on an unallocated cell.
+* `to_file` with a scalar and no `stat` segfaulted, and `join` lost separators between empty tokens.
+* `str` and `String` returned nothing for `complex(real64)` with a zero part and `fmt="f"`.
+* `fmt="z"` lost the sign of negative zero.
+* Files were left open after some errors.
+* `join` is now linear in the number of tokens.
+* The library now builds on `ifx` 2026 and `flang`, and no longer crashes on `gfortran` 13-15 from its `String` finalizer, which has been removed.
+
+### Performance
+
+Validation costs some speed compared with v1.3.1: `from_file` takes about 10% longer for `real` data and about 30% longer for `integer` data, and `write_file` about 50% longer on a large table. Absolute times are small (0.55 s for 800,000 reals), and more performance work is planned.
+
+### Tested compilers
+
+`gfortran` 13-16, `ifx` 2025.3 and 2026, and `flang` 23, on Linux. macOS and Windows are not yet tested in CI.
+
+### Known compiler bugs
+
+These occur with no library code involved, so they can affect your own programs:
+
+* `gfortran` 15: `reshape` of an array constructor of a type with an allocatable component, such as `reshape([String("a"), ...], [2,4])`, gives wrong values.
+* `gfortran` 15 and 16: `a = [a(3), a(2), a(1)]` with such a type gives wrong values.
+
 ## Release Notes v1.3.1
 
 ### Improved
