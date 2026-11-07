@@ -78,6 +78,27 @@ and the
 [tutorials](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Examples/index.html)
 for complete example programs.
 
+## Release Notes v2.0.0-alpha.3
+
+This is a pre-release. The API may still change before 2.0.0.
+
+### Added
+
+* `<`, `<=`, `>` and `>=` for `String`, and for `String` with `character`. Bytes are compared in order, and a shorter string that matches the start of a longer one comes first, so these agree with `==`. Trailing blanks are significant, unlike the intrinsic comparison of two `character` values.
+* `read_line`, which reads the next record from a unit into a `String`: `call line%read_line(unit, stat=stat)`. At the end of the file, `stat` satisfies `is_iostat_end`.
+* `count64`, which returns a 64-bit count.
+* An optional `unit` for `aprint`.
+* An optional `format`, `"text"` or `"binary"`, for `to_file`, `from_file`, `read_file`, `write_file` and `echo`, so a file can have any extension or none.
+
+### Changed
+
+* File extensions are not case sensitive, so `.CSV` works.
+* The `randoms` module is no longer part of the library. Its Gaussian sampler was adapted from ROOT and UNU.RAN, and it was only used by the tests.
+
+### Fixed
+
+* `aprint` cut the last character from complex elements written with `im`, so `1.00+2.00j` printed as `1.00+2.00`.
+
 ## Release Notes v2.0.0-alpha.2
 
 This is a pre-release. The API may still change before 2.0.0.
