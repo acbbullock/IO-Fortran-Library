@@ -83,15 +83,54 @@ program regression_test
     test_case("cast_invalid_args_stat",     RETURNS, FIXED),     &
     test_case("cast_array_stat",            RETURNS, FIXED),     &
     ! Reading and writing delimited text.
-    test_case("read_no_final_newline",       RETURNS, KNOWN_BUG), &
-    test_case("read_one_line_no_newline",    RETURNS, UNDEFINED), &
-    test_case("read_crlf",                   RETURNS, KNOWN_BUG), &
-    test_case("read_row_wider_than_first",   RETURNS, UNDEFINED), &
-    test_case("read_row_narrower_than_first",RETURNS, KNOWN_BUG), &
-    test_case("read_quoted_newline",         RETURNS, KNOWN_BUG), &
-    test_case("read_empty_file_closes_unit", RETURNS, KNOWN_BUG), &
-    test_case("write_unallocated_cell",      RETURNS, UNDEFINED), &
-    test_case("csv_quotes_separator",        RETURNS, KNOWN_BUG), &
+    test_case("read_no_final_newline",       RETURNS, FIXED),     &
+    test_case("read_one_line_no_newline",    RETURNS, FIXED),     &
+    test_case("read_crlf",                   RETURNS, FIXED),     &
+    test_case("read_row_wider_than_first",   RETURNS, FIXED),     &
+    test_case("read_row_narrower_than_first",RETURNS, FIXED),     &
+    test_case("read_quoted_newline",         RETURNS, FIXED),     &
+    test_case("read_empty_file_closes_unit", RETURNS, FIXED),     &
+    test_case("write_unallocated_cell",      RETURNS, FIXED),     &
+    test_case("csv_quotes_separator",        RETURNS, FIXED),     &
+    test_case("read_row_wider_stops",       STOPS,   FIXED),     &
+    test_case("read_quote_not_closed_stops",STOPS,   FIXED),     &
+    test_case("read_quote_not_closed_stat", RETURNS, FIXED),     &
+    test_case("read_doubled_quotes",        RETURNS, FIXED),     &
+    test_case("read_text_after_closing_quote",RETURNS, FIXED),     &
+    test_case("read_quote_inside_cell",     RETURNS, FIXED),     &
+    test_case("read_cr_inside_quotes",      RETURNS, FIXED),     &
+    test_case("read_trailing_blank_lines",  RETURNS, FIXED),     &
+    test_case("read_blank_line_inside",     RETURNS, FIXED),     &
+    test_case("read_only_newlines",         RETURNS, FIXED),     &
+    test_case("read_multichar_separators",  RETURNS, FIXED),     &
+    test_case("read_tab_separator",         RETURNS, FIXED),     &
+    test_case("read_empty_last_cell",       RETURNS, FIXED),     &
+    test_case("read_narrow_rows_all_allocated",RETURNS, FIXED),     &
+    test_case("read_error_closes_binary",   RETURNS, FIXED),     &
+    test_case("write_quotes_only_when_needed",RETURNS, FIXED),     &
+    test_case("write_doubles_quotes",       RETURNS, FIXED),     &
+    test_case("write_single_column_empty_last",RETURNS, FIXED),     &
+    test_case("write_empty_array",          RETURNS, FIXED),     &
+    test_case("round_trip_all_special_cells",RETURNS, FIXED),     &
+    test_case("round_trip_custom_separators",RETURNS, FIXED),     &
+    test_case("tutorial_ancestry_round_trip",RETURNS, FIXED),     &
+    test_case("tutorial_hg38_round_trip",   RETURNS, FIXED),     &
+    test_case("from_file_quoted_numbers",   RETURNS, FIXED),     &
+    test_case("from_file_crlf",             RETURNS, FIXED),     &
+    test_case("from_file_no_final_newline", RETURNS, FIXED),     &
+    test_case("from_file_empty_cell",       RETURNS, FIXED),     &
+    test_case("from_file_empty_cell_header",RETURNS, FIXED),     &
+    test_case("from_file_empty_cell_hex",   RETURNS, FIXED),     &
+    test_case("from_file_empty_cell_complex",RETURNS, FIXED),     &
+    test_case("from_file_empty_cell_integer",RETURNS, FIXED),     &
+    test_case("from_file_pairs_no_final_newline",RETURNS, FIXED),     &
+    test_case("from_file_pairs_crlf",       RETURNS, FIXED),     &
+    test_case("from_file_pairs_wider_row",  RETURNS, FIXED),     &
+    test_case("from_file_pairs_not_closed", RETURNS, FIXED),     &
+    test_case("from_file_pairs_header_quoted",RETURNS, FIXED),     &
+    test_case("write_file_quotes_text_pairs",RETURNS, FIXED),     &
+    test_case("from_file_uneven_rows",      RETURNS, FIXED),     &
+    test_case("to_file_complex_round_trip",RETURNS, FIXED),     &
     ! Number formatting: exact zero with a comma decimal.
     test_case("eu_zero_str_real",            RETURNS, FIXED),     &
     test_case("eu_zero_str_complex",         RETURNS, FIXED),     &
@@ -160,6 +199,7 @@ contains
 
       if ( cases(i)%expected == STOPS ) then
         met = (status == 1) .or. (status == 128)                     ! `error stop`: 1 on gfortran and flang, 128 on ifx
+        if ( met ) met = is_readable(log)                            ! The message has to be of use to someone
       else
         met = (status == 0)
       end if
@@ -188,6 +228,35 @@ contains
     if ( n_unexpected > 0 ) error stop "regression-test: unexpected results."
   end subroutine run_all_cases
 
+  logical function is_readable(file)
+    !-------------------------------------------------------------------------------------------------------------------
+    !! Checks that the first line with text in a file is printable, since a compiler bug can garble a stop message.
+    !! Later lines are left alone, as they may hold a backtrace.
+    !-------------------------------------------------------------------------------------------------------------------
+    character(len=*), intent(in) :: file
+
+    character(len=:), allocatable :: text
+    integer :: first, i, n, u
+
+    inquire(file=file, size=n)
+    allocate( character(len=n) :: text )
+
+    open(newunit=u, file=file, access="stream", form="unformatted", status="old")
+    read(u) text
+    close(u)
+
+    is_readable = .false.
+    first = verify(text, CR//LF)
+    if ( first == 0 ) return
+
+    do i = first, n
+      if ( (text(i:i) == CR) .or. (text(i:i) == LF) ) exit
+      if ( (ichar(text(i:i)) < 32) .or. (ichar(text(i:i)) > 126) ) return
+    end do
+
+    is_readable = .true.
+  end function is_readable
+
   subroutine run_case(name)
     character(len=*), intent(in) :: name
 
@@ -202,7 +271,9 @@ contains
     real(real64)                  :: x, y
     real(real32), allocatable     :: v32(:)
     real(real64), allocatable     :: v(:)
-    complex(real32)               :: z
+    complex(real32)               :: z, zv(2)
+    complex(real32), allocatable  :: zw(:), mz(:,:)
+    type(String)                  :: special(2,4), column(2,1)
     integer(int64)                :: i64
     integer                       :: iv(3), stv(3)
     integer, allocatable          :: vi(:)
@@ -379,6 +450,7 @@ contains
         call write_raw(file//".csv", "a,b"//LF//"1,2"//LF//"3,4")
         call s%read_file(file//".csv", cell_array=cells)
         call check(all(shape(cells) == [3,2]), "The last row should be read.")
+        call check(cells(3,2)%as_str() == "4", "The last cell should be complete.")
       case ("read_one_line_no_newline")
         call write_raw(file//".csv", "a,b")
         call s%read_file(file//".csv", cell_array=cells)
@@ -386,19 +458,27 @@ contains
       case ("read_crlf")
         call write_raw(file//".csv", "1,2"//CR//LF//"3,4"//CR//LF)
         call s%read_file(file//".csv", cell_array=cells)
+        call check(all(shape(cells) == [2,2]), "CRLF should give the same shape.")
         call check(cells(1,2)%len() == 1, "The carriage return should not be part of the last cell.")
+        call check(cells(2,2)%as_str() == "4", "The carriage return should not be part of the last row.")
       case ("read_row_wider_than_first")
         call write_raw(file//".csv", "a,b"//LF//"1,2,3,4"//LF)
         call s%read_file(file//".csv", cell_array=cells, stat=st, errmsg=msg)
         call check(st /= 0, "A row wider than the first should be reported through stat.")
+        call check(index(msg, "Row 2 has 4 columns, but the first row has 2") > 0, "The message should name the row.")
       case ("read_row_narrower_than_first")
         call write_raw(file//".csv", "a,b,c"//LF//"1"//LF//"2,3,4"//LF)
         call s%read_file(file//".csv", cell_array=cells)
+        call check(all(shape(cells) == [3,3]), "The first row sets the shape.")
+        call check(cells(2,1)%as_str() == "1", "The cell should be read.")
         call check(cells(2,2)%len() == 0, "Missing cells should be empty, not unallocated.")
+        call check(cells(3,3)%as_str() == "4", "Later rows should line up.")
       case ("read_quoted_newline")
         call write_raw(file//".csv", "a,b"//LF//'"x'//LF//'y",2'//LF)
         call s%read_file(file//".csv", cell_array=cells)
         call check(all(shape(cells) == [2,2]), "A newline inside quotes should not end the row.")
+        call check(cells(2,1)%as_str() == "x"//LF//"y", "The newline should be kept and the quotes removed.")
+        call check(cells(2,2)%as_str() == "2", "The next cell should follow.")
       case ("read_empty_file_closes_unit")
         call write_raw(file//".txt", "")
         call s%read_file(file//".txt", stat=st, errmsg=msg)
@@ -407,12 +487,215 @@ contains
       case ("write_unallocated_cell")
         cell(1,1) = String("a"); cell(1,2) = String("b"); cell(2,1) = String("c")
         call s%write_file(cell, file=file//".csv")
-        call check(s%len() == 7, "An unallocated cell should be written as an empty cell.")
+        call check(s%as_str() == "a,b"//LF//"c,"//LF, "An unallocated cell should be written as an empty cell.")
       case ("csv_quotes_separator")
         one_row(1,1) = String("a,b"); one_row(1,2) = String("x")
         call s%write_file(one_row, file=file//".csv")
         call s%read_file(file//".csv", cell_array=cells)
         call check(size(cells, dim=2) == 2, "A separator inside a cell should survive a round trip.")
+        call check(cells(1,1)%as_str() == "a,b", "The cell should come back unchanged.")
+      case ("read_row_wider_stops")
+        call write_raw(file//".csv", "a,b"//LF//"1,2,3"//LF)
+        call s%read_file(file//".csv", cell_array=cells)
+      case ("read_quote_not_closed_stops")
+        call write_raw(file//".csv", 'a,"b'//LF)
+        call s%read_file(file//".csv", cell_array=cells)
+      case ("read_quote_not_closed_stat")
+        call write_raw(file//".csv", 'a,b'//LF//'1,"2'//LF)
+        call s%read_file(file//".csv", cell_array=cells, stat=st, errmsg=msg)
+        call check(st /= 0, "An open quote should be reported through stat.")
+        call check(index(msg, "row 2, column 2") > 0, "The message should name the location.")
+      case ("read_doubled_quotes")
+        call write_raw(file//".csv", '"say ""hi""",""""'//LF)
+        call s%read_file(file//".csv", cell_array=cells)
+        call check(cells(1,1)%as_str() == 'say "hi"', "Doubled quotes stand for one.")
+        call check(cells(1,2)%as_str() == '"', "A cell can be just a quote.")
+      case ("read_text_after_closing_quote")
+        call write_raw(file//".csv", '"ab"c,d'//CR//LF)
+        call s%read_file(file//".csv", cell_array=cells)
+        call check(cells(1,1)%as_str() == "abc", "Text after a closing quote is kept.")
+        call check(cells(1,2)%as_str() == "d", "The separator still ends the cell.")
+      case ("read_quote_inside_cell")
+        call write_raw(file//".csv", 'a"b,5"'//LF//' "c",d'//LF)
+        call s%read_file(file//".csv", cell_array=cells)
+        call check(cells(1,1)%as_str() == 'a"b', "A quote inside a cell is an ordinary character.")
+        call check(cells(1,2)%as_str() == '5"', "A quote at the end of a cell is an ordinary character.")
+        call check(cells(2,1)%as_str() == ' "c"', "Only a quote at the very start opens a quoted cell.")
+      case ("read_cr_inside_quotes")
+        call write_raw(file//".csv", '"a'//CR//'",b'//CR//LF)
+        call s%read_file(file//".csv", cell_array=cells)
+        call check(cells(1,1)%as_str() == "a"//CR, "A carriage return inside quotes is data.")
+        call check(cells(1,2)%as_str() == "b", "A carriage return before the newline is not.")
+      case ("read_trailing_blank_lines")
+        call write_raw(file//".csv", "a,b"//LF//"1,2"//LF//LF//CR//LF)
+        call s%read_file(file//".csv", cell_array=cells)
+        call check(all(shape(cells) == [2,2]), "Trailing blank lines should not add rows.")
+      case ("read_blank_line_inside")
+        call write_raw(file//".csv", "a,b"//LF//LF//"1,2"//LF)
+        call s%read_file(file//".csv", cell_array=cells)
+        call check(all(shape(cells) == [3,2]), "A blank line inside the data keeps its row.")
+        call check((cells(2,1)%len() == 0) .and. (cells(2,2)%len() == 0), "Its cells should be empty.")
+      case ("read_only_newlines")
+        call write_raw(file//".csv", LF//LF)
+        call s%read_file(file//".csv", cell_array=cells, stat=st, errmsg=msg)
+        call check(st /= 0, "A file with only newlines has no data.")
+      case ("read_multichar_separators")
+        call write_raw(file//".csv", "a||b##c|d||e##")
+        call s%read_file(file//".csv", cell_array=cells, row_separator="##", column_separator="||")
+        call check(all(shape(cells) == [2,2]), "Separators can be longer than one character.")
+        call check(cells(2,1)%as_str() == "c|d", "A partial separator is data.")
+        call check(cells(2,2)%as_str() == "e", "The last cell should be complete.")
+      case ("read_tab_separator")
+        call write_raw(file//".csv", "a"//TAB//"b,c"//LF)
+        call s%read_file(file//".csv", cell_array=cells, column_separator=TAB)
+        call check(cells(1,2)%as_str() == "b,c", "A comma is data with another separator.")
+      case ("read_empty_last_cell")
+        call write_raw(file//".csv", "a,b,"//LF//"1,2,")
+        call s%read_file(file//".csv", cell_array=cells)
+        call check(all(shape(cells) == [2,3]), "A trailing separator ends an empty cell.")
+        call check(cells(2,3)%len() == 0, "The cell should be empty.")
+      case ("read_narrow_rows_all_allocated")
+        call write_raw(file//".csv", "a,b,c"//LF//"1"//LF//LF//"2,3"//LF)
+        call s%read_file(file//".csv", cell_array=cells)
+        call check(all(cells%len() >= 0), "Every cell should be allocated.")
+      case ("read_error_closes_binary")
+        call to_file([1.0_real64,2.0_real64], file=file//".dat", stat=st, errmsg=msg)
+        if ( .not. ifx_checks_rank_of_unallocated() ) then
+          call from_file(file//".dat", into=v, data_shape=[100], stat=st, errmsg=msg)
+          call check(st /= 0, "The read should fail.")
+        end if
+        inquire(file=file//".dat", opened=opened)
+        call check(.not. opened, "The file should be closed on return.")
+      case ("write_quotes_only_when_needed")
+        cell(1,1) = String("1.5"); cell(1,2) = String("a b"); cell(2,1) = String("a;b"); cell(2,2) = String("")
+        call s%write_file(cell, file=file//".csv")
+        call check(s%as_str() == "1.5,a b"//LF//"a;b,"//LF, "Plain cells should be written as they are.")
+      case ("write_single_column_empty_last")
+        column(1,1) = String("a"); column(2,1) = String("")
+        call s%write_file(column, file=file//".csv")
+        call s%read_file(file//".csv", cell_array=cells)
+        call check(all(shape(cells) == [2,1]), "The empty last row should survive a round trip.")
+        call check(cells(2,1)%len() == 0, "It should still be empty.")
+      case ("write_doubles_quotes")
+        one_row(1,1) = String('say "hi"'); one_row(1,2) = String("a"//LF//"b")
+        call s%write_file(one_row, file=file//".csv")
+        call check(s%as_str() == '"say ""hi""","a'//LF//'b"'//LF, "Quotes should be doubled.")
+      case ("write_empty_array")
+        call s%write_file(cell(1:0,:), file=file//".csv", stat=st, errmsg=msg)
+        call check(st == 0, "An empty array should write an empty file.")
+        call check(s%len() == 0, "The text should be empty.")
+      case ("round_trip_all_special_cells")
+        special(1,:) = [String("a,b"), String('q"q'), String('"'), String("")]
+        special(2,:) = [String("l"//LF//"f"), String("c"//CR), String(CR//LF), String(" x ")]
+        call s%write_file(special, file=file//".csv")
+        call s%read_file(file//".csv", cell_array=cells)
+        call check(all(shape(cells) == shape(special)), "The shape should survive a round trip.")
+        call check(all(cells == special), "Every cell should survive a round trip.")
+      case ("round_trip_custom_separators")
+        special(1,:) = [String("a|b"), String("c;d"), String("e"//LF//"f"), String("g")]
+        special(2,:) = [String("##"), String("|"), String(""), String('"')]
+        call s%write_file(special, file=file//".csv", row_separator="##", column_separator="|")
+        call s%read_file(file//".csv", cell_array=cells, row_separator="##", column_separator="|")
+        call check(all(shape(cells) == shape(special)), "The shape should survive a round trip.")
+        call check(all(cells == special), "Every cell should survive a round trip.")
+      case ("tutorial_ancestry_round_trip")
+        call s%read_file("./data/ancestry_comp.csv", cell_array=cells, row_separator=CR+LF)
+        call check(cells(2,1)%as_str() == "Arab, Egyptian & Levantine", "The quoted cell should be read.")
+        call check(cells(2,5)%as_str() == "168717618", "The next column should line up.")
+        call r%write_file(cells, file=file//".csv", row_separator=CR+LF)
+        call check(r == s, "The file should be reproduced exactly.")
+      case ("tutorial_hg38_round_trip")
+        call s%read_file("./data/hg38.bed", cell_array=cells, column_separator=TAB)
+        call check(size(cells, dim=1) == 192262, "The tutorial says the file has 192262 lines.")
+        call r%write_file(cells, file=file//".bed", column_separator=TAB)
+        call check(r == s, "The file should be reproduced exactly.")
+      case ("from_file_quoted_numbers")
+        call write_raw(file//".csv", '"1.5","2.5"'//LF)
+        call from_file(file//".csv", into=m2, stat=st, errmsg=msg)
+        call check(st == 0, "Quoted numbers should be read.")
+        call check(all(m2 == reshape([1.5_real64,2.5_real64], [1,2])), "The values should be right.")
+      case ("from_file_crlf")
+        call write_raw(file//".csv", "1.5,2.5"//CR//LF//"3.5,4.5"//CR//LF)
+        call from_file(file//".csv", into=m2, stat=st, errmsg=msg)
+        call check(st == 0, "CRLF should be read.")
+        call check(m2(2,2) == 4.5_real64, "The values should be right.")
+      case ("from_file_no_final_newline")
+        call write_raw(file//".csv", "1"//LF//"2"//LF//"3")
+        call from_file(file//".csv", into=vi, stat=st, errmsg=msg)
+        call check((st == 0) .and. (size(vi) == 3), "The last row should be read.")
+        call check(vi(3) == 3, "The value should be right.")
+      case ("from_file_empty_cell")
+        call write_raw(file//".csv", "1,2"//LF//"3,"//LF//", "//LF)
+        call from_file(file//".csv", into=m2, stat=st, errmsg=msg)
+        call check(st == 0, "An empty cell should not be an error.")
+        call check(m2(1,2) == 2.0_real64, "Other cells should be read.")
+        call check(ieee_is_nan(m2(2,2)), "An empty cell should read as NaN.")
+        call check(ieee_is_nan(m2(3,1)) .and. ieee_is_nan(m2(3,2)), "A blank cell should read as NaN.")
+      case ("from_file_empty_cell_header")
+        call write_raw(file//".csv", "a,b"//LF//"1,"//LF)
+        call from_file(file//".csv", into=m2, header=.true., stat=st, errmsg=msg)
+        call check(st == 0, "An empty cell should not be an error.")
+        call check(all(shape(m2) == [1,2]), "The header should not count as data.")
+        call check((m2(1,1) == 1.0_real64) .and. ieee_is_nan(m2(1,2)), "The NaN should land in the right cell.")
+      case ("from_file_empty_cell_hex")
+        call write_raw(file//".csv", "0x3ff8000000000000,"//LF)
+        call from_file(file//".csv", into=m2, fmt="z", stat=st, errmsg=msg)
+        call check(st == 0, "An empty cell should not be an error.")
+        call check((m2(1,1) == 1.5_real64) .and. ieee_is_nan(m2(1,2)), "It should read as NaN.")
+      case ("from_file_empty_cell_complex")
+        call write_raw(file//".csv", "(1.5,2.5),"//LF)
+        call from_file(file//".csv", into=mz, stat=st, errmsg=msg)
+        call check(st == 0, "An empty cell should not be an error.")
+        call check(mz(1,1) == (1.5,2.5), "The ordered pair should be read.")
+        call check(ieee_is_nan(mz(1,2)%re) .and. ieee_is_nan(mz(1,2)%im), "Both parts should be NaN.")
+      case ("from_file_empty_cell_integer")
+        call write_raw(file//".csv", "1"//LF//LF//"3"//LF)
+        call from_file(file//".csv", into=vi, stat=st, errmsg=msg)
+        call check(st /= 0, "An integer has no NaN, so an empty cell is an error.")
+        call check(index(msg, "row 2, column 1") > 0, "The message should name the location.")
+      case ("from_file_uneven_rows")
+        call write_raw(file//".csv", "1,2"//LF//"3"//LF)
+        call from_file(file//".csv", into=m2, stat=st, errmsg=msg)
+        call check(st == 0, "A missing cell is an empty cell.")
+        call check((m2(2,1) == 3.0_real64) .and. ieee_is_nan(m2(2,2)), "It should read as NaN.")
+      case ("from_file_pairs_no_final_newline")
+        call write_raw(file//".csv", "(1.5,2.5),(3.5,4.5)"//LF//"(5.5,6.5),(7.5,8.5)")
+        call from_file(file//".csv", into=mz, stat=st, errmsg=msg)
+        call check((st == 0) .and. all(shape(mz) == [2,2]), "The last row should be read.")
+        call check(mz(2,2) == (7.5,8.5), "The value should be right.")
+      case ("from_file_pairs_crlf")
+        call write_raw(file//".csv", "(1.5,2.5),(3.5,4.5)"//CR//LF)
+        call from_file(file//".csv", into=mz, stat=st, errmsg=msg)
+        call check((st == 0) .and. all(shape(mz) == [1,2]), "CRLF should be read.")
+        call check(mz(1,2) == (3.5,4.5), "The value should be right.")
+      case ("from_file_pairs_wider_row")
+        call write_raw(file//".csv", "(1,2)"//LF//"(3,4),(5,6)"//LF)
+        call from_file(file//".csv", into=mz, stat=st, errmsg=msg)
+        call check(st /= 0, "A wider row should be reported through stat.")
+      case ("from_file_pairs_not_closed")
+        call write_raw(file//".csv", "(1,2"//LF)
+        call from_file(file//".csv", into=mz, stat=st, errmsg=msg)
+        call check(st /= 0, "A bad ordered pair should be reported through stat.")
+      case ("from_file_pairs_header_quoted")
+        call to_file(reshape([(1.5,2.5),(3.5,4.5)], [1,2]), file=file//".csv", header=["a,b","c d"], stat=st, &
+                     errmsg=msg)
+        call check(st == 0, "The write should succeed.")
+        call from_file(file//".csv", into=mz, header=.true., stat=st, errmsg=msg)
+        call check((st == 0) .and. all(shape(mz) == [1,2]), "A quoted header should not shift the columns.")
+        call check(mz(1,2) == (3.5,4.5), "The value should be right.")
+      case ("write_file_quotes_text_pairs")
+        one_row(1,1) = String("(a,b)"); one_row(1,2) = String("c")
+        call s%write_file(one_row, file=file//".csv")
+        call check(s%as_str() == '"(a,b)",c'//LF, "write_file should quote text that looks like a pair.")
+      case ("to_file_complex_round_trip")
+        zv = [(1.5,-2.5),(0.0,1.0)]
+        call to_file(zv, file=file//".csv", stat=st, errmsg=msg)
+        call check(st == 0, "The write should succeed.")
+        call s%read_file(file//".csv")
+        call check(s%as_str() == str(zv(1))//LF//str(zv(2))//LF, "Ordered pairs should not be quoted in a file.")
+        call from_file(file//".csv", into=zw, stat=st, errmsg=msg)
+        call check(st == 0, "The read should succeed.")
+        call check(all(zw == zv), "The default complex form should survive a round trip.")
 
       case ("eu_zero_str_real")
         call check(index(str(0.0, locale="EU"), ".") == 0, "A comma locale should not write a period.")

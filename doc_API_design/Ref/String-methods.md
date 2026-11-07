@@ -138,6 +138,18 @@ guaranteed to work on every platform.
 @note The `cell_array` must be `allocatable` and will be re-allocated
 internally (if already allocated).
 
+@note A cell that starts with a double quote runs to the closing quote,
+and any separators inside it are part of the cell. Two double quotes in
+a row inside it stand for one, and the outer quotes are not kept. A
+double quote anywhere else in a cell is an ordinary character. A quote
+that is not closed is an error.
+
+@note The first row sets the number of columns. A row with fewer cells
+is filled with empty cells, and a row with more is an error. Trailing
+blank lines and a missing final newline do not change the number of
+rows. With the default `row_separator`, `CRLF` line endings are
+accepted.
+
 ### [replace](../../type/string.html#boundprocedure-replace)
 
 For `self` a scalar or array variable of any rank and of type `String`:
@@ -234,6 +246,11 @@ designated `row_separator` and `column_separator` whose default values
 are `LF` and `","` respectively, and then streamed to an external text
 file. The file will be created if it does not exist, and will be
 appended to if `append` is `.true.`.
+
+@note A cell containing a separator, a double quote, `CR` or `LF` is
+written in double quotes, with any double quotes in it doubled, so that
+[read_file](#read_file) returns it unchanged. An unallocated cell is
+written as an empty cell. Other cells are written as they are.
 
 @note `file` may be a relative path, but absolute paths are not
 guaranteed to work on every platform.

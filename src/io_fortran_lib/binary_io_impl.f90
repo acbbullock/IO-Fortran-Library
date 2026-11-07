@@ -56,7 +56,9 @@ submodule (io_fortran_lib) binary_io
     end select
 
     if ( stat /= 0 ) then
-      stat = WRITE_ERR; return
+      stat = WRITE_ERR
+      call close_quietly(file_unit)
+      return
     end if
 
     close(unit=file_unit, iostat=stat, iomsg=errmsg)
@@ -114,7 +116,9 @@ submodule (io_fortran_lib) binary_io
     end select
 
     if ( stat /= 0 ) then
-      stat = WRITE_ERR; return
+      stat = WRITE_ERR
+      call close_quietly(file_unit)
+      return
     end if
 
     close(unit=file_unit, iostat=stat, iomsg=errmsg)
@@ -171,7 +175,9 @@ submodule (io_fortran_lib) binary_io
     end select
 
     if ( stat /= 0 ) then
-      stat = WRITE_ERR; return
+      stat = WRITE_ERR
+      call close_quietly(file_unit)
+      return
     end if
 
     close(unit=file_unit, iostat=stat, iomsg=errmsg)
@@ -230,7 +236,9 @@ submodule (io_fortran_lib) binary_io
     end select
 
     if ( stat /= 0 ) then
-      stat = WRITE_ERR; return
+      stat = WRITE_ERR
+      call close_quietly(file_unit)
+      return
     end if
 
     close(unit=file_unit, iostat=stat, iomsg=errmsg)
@@ -288,7 +296,9 @@ submodule (io_fortran_lib) binary_io
     end select
 
     if ( stat /= 0 ) then
-      stat = WRITE_ERR; return
+      stat = WRITE_ERR
+      call close_quietly(file_unit)
+      return
     end if
 
     close(unit=file_unit, iostat=stat, iomsg=errmsg)
@@ -345,7 +355,9 @@ submodule (io_fortran_lib) binary_io
     end select
 
     if ( stat /= 0 ) then
-      stat = WRITE_ERR; return
+      stat = WRITE_ERR
+      call close_quietly(file_unit)
+      return
     end if
 
     close(unit=file_unit, iostat=stat, iomsg=errmsg)
@@ -403,7 +415,9 @@ submodule (io_fortran_lib) binary_io
     end select
 
     if ( stat /= 0 ) then
-      stat = WRITE_ERR; return
+      stat = WRITE_ERR
+      call close_quietly(file_unit)
+      return
     end if
 
     close(unit=file_unit, iostat=stat, iomsg=errmsg)
@@ -460,7 +474,9 @@ submodule (io_fortran_lib) binary_io
     end select
 
     if ( stat /= 0 ) then
-      stat = WRITE_ERR; return
+      stat = WRITE_ERR
+      call close_quietly(file_unit)
+      return
     end if
 
     close(unit=file_unit, iostat=stat, iomsg=errmsg)
@@ -517,7 +533,9 @@ submodule (io_fortran_lib) binary_io
     end select
 
     if ( stat /= 0 ) then
-      stat = WRITE_ERR; return
+      stat = WRITE_ERR
+      call close_quietly(file_unit)
+      return
     end if
 
     close(unit=file_unit, iostat=stat, iomsg=errmsg)
@@ -574,7 +592,9 @@ submodule (io_fortran_lib) binary_io
     end select
 
     if ( stat /= 0 ) then
-      stat = WRITE_ERR; return
+      stat = WRITE_ERR
+      call close_quietly(file_unit)
+      return
     end if
 
     close(unit=file_unit, iostat=stat, iomsg=errmsg)
@@ -687,7 +707,9 @@ submodule (io_fortran_lib) binary_io
     end select
 
     if ( stat /= 0 ) then
-      stat = READ_ERR; return
+      stat = READ_ERR
+      call close_quietly(file_unit)
+      return
     end if
 
     close(unit=file_unit, iostat=stat, iomsg=errmsg)
@@ -798,7 +820,9 @@ submodule (io_fortran_lib) binary_io
     end select
 
     if ( stat /= 0 ) then
-      stat = READ_ERR; return
+      stat = READ_ERR
+      call close_quietly(file_unit)
+      return
     end if
 
     close(unit=file_unit, iostat=stat, iomsg=errmsg)
@@ -908,7 +932,9 @@ submodule (io_fortran_lib) binary_io
     end select
 
     if ( stat /= 0 ) then
-      stat = READ_ERR; return
+      stat = READ_ERR
+      call close_quietly(file_unit)
+      return
     end if
 
     close(unit=file_unit, iostat=stat, iomsg=errmsg)
@@ -1020,7 +1046,9 @@ submodule (io_fortran_lib) binary_io
     end select
 
     if ( stat /= 0 ) then
-      stat = READ_ERR; return
+      stat = READ_ERR
+      call close_quietly(file_unit)
+      return
     end if
 
     close(unit=file_unit, iostat=stat, iomsg=errmsg)
@@ -1131,7 +1159,9 @@ submodule (io_fortran_lib) binary_io
     end select
 
     if ( stat /= 0 ) then
-      stat = READ_ERR; return
+      stat = READ_ERR
+      call close_quietly(file_unit)
+      return
     end if
 
     close(unit=file_unit, iostat=stat, iomsg=errmsg)
@@ -1241,7 +1271,9 @@ submodule (io_fortran_lib) binary_io
     end select
 
     if ( stat /= 0 ) then
-      stat = READ_ERR; return
+      stat = READ_ERR
+      call close_quietly(file_unit)
+      return
     end if
 
     close(unit=file_unit, iostat=stat, iomsg=errmsg)
@@ -1352,7 +1384,9 @@ submodule (io_fortran_lib) binary_io
     end select
 
     if ( stat /= 0 ) then
-      stat = READ_ERR; return
+      stat = READ_ERR
+      call close_quietly(file_unit)
+      return
     end if
 
     close(unit=file_unit, iostat=stat, iomsg=errmsg)
@@ -1462,7 +1496,9 @@ submodule (io_fortran_lib) binary_io
     end select
 
     if ( stat /= 0 ) then
-      stat = READ_ERR; return
+      stat = READ_ERR
+      call close_quietly(file_unit)
+      return
     end if
 
     close(unit=file_unit, iostat=stat, iomsg=errmsg)
@@ -1572,7 +1608,9 @@ submodule (io_fortran_lib) binary_io
     end select
 
     if ( stat /= 0 ) then
-      stat = READ_ERR; return
+      stat = READ_ERR
+      call close_quietly(file_unit)
+      return
     end if
 
     close(unit=file_unit, iostat=stat, iomsg=errmsg)
@@ -1682,7 +1720,9 @@ submodule (io_fortran_lib) binary_io
     end select
 
     if ( stat /= 0 ) then
-      stat = READ_ERR; return
+      stat = READ_ERR
+      call close_quietly(file_unit)
+      return
     end if
 
     close(unit=file_unit, iostat=stat, iomsg=errmsg)

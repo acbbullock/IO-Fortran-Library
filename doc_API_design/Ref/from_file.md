@@ -109,3 +109,8 @@ REAL_FMTS = [ "e", "f", "z" ]
 Imaginary unit: `im` specifies the form of a complex number. If not
 present, `complex` numbers will be assumed to be written as ordered
 pairs, e.g. `(2.45,3.45)`.
+
+Empty cells: an empty or blank cell in `real` or `complex` data reads as
+NaN, including a cell missing from a short row. For `integer` data, which
+has no NaN, it is an error. Any other text that is not a valid number is
+an error, and `errmsg` gives the text with its row and column.

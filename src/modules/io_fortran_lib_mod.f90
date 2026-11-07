@@ -348,6 +348,45 @@ module io_fortran_lib
       character(len=*), intent(out), optional, target :: errmsg
     end subroutine write_file
 
+    impure recursive module subroutine read_cells(self, file, pairs, cell_array, row_separator, column_separator, stat, errmsg)
+      class(String),    intent(inout)                      :: self
+      character(len=*), intent(in)                         :: file
+      logical,          intent(in)                         :: pairs
+      type(String),     intent(out), optional, allocatable :: cell_array(:,:)
+      character(len=*), intent(in),  optional, target      :: row_separator, column_separator
+      integer,          intent(out), optional, target      :: stat
+      character(len=*), intent(out), optional, target      :: errmsg
+    end subroutine read_cells
+
+    impure recursive module subroutine write_cells(self, pairs, cell_array, file, row_separator, column_separator, append, &
+                                                  stat, errmsg)
+      class(String),    intent(inout)                 :: self
+      logical,          intent(in)                    :: pairs
+      type(String),     intent(in)                    :: cell_array(:,:)
+      character(len=*), intent(in)                    :: file
+      character(len=*), intent(in),  optional, target :: row_separator, column_separator
+      logical,          intent(in),  optional, target :: append
+      integer,          intent(out), optional, target :: stat
+      character(len=*), intent(out), optional, target :: errmsg
+    end subroutine write_cells
+
+    module subroutine stop_if_unhandled(stat, errmsg, handled)
+      !-----------------------------------------------------------------------------------------------------------------
+      !! Ends the program on an error when the caller did not pass `stat`, so that an error can't go unnoticed. This is
+      !! not `pure` because at `-O0`, ifx drops the `error stop` in a pure procedure with only `intent(in)` arguments.
+      !-----------------------------------------------------------------------------------------------------------------
+      integer,          intent(in) :: stat
+      character(len=*), intent(in) :: errmsg
+      logical,          intent(in) :: handled
+    end subroutine stop_if_unhandled
+
+    module subroutine close_quietly(unit)
+      !-----------------------------------------------------------------------------------------------------------------
+      !! Closes a file while handling another error, which is the one to report.
+      !-----------------------------------------------------------------------------------------------------------------
+      integer, intent(in) :: unit
+    end subroutine close_quietly
+
     impure recursive module subroutine write_string(substring, unit, iotype, v_list, iostat, iomsg)
       !-----------------------------------------------------------------------------------------------------------------
       !! Formatted write DTIO procedure for type `String`.
@@ -1999,17 +2038,6 @@ module io_fortran_lib
   end interface aprint
 
 contains
-  pure subroutine stop_if_unhandled(stat, errmsg, handled)
-    !-------------------------------------------------------------------------------------------------------------------
-    !! Ends the program on an error when the caller did not pass `stat`, so that an error can't go unnoticed.
-    !-------------------------------------------------------------------------------------------------------------------
-    integer,          intent(in) :: stat
-    character(len=*), intent(in) :: errmsg
-    logical,          intent(in) :: handled
-
-    if ( (stat /= 0) .and. (.not. handled) ) error stop trim(errmsg)
-  end subroutine stop_if_unhandled
-
   pure elemental function char_concat_plus(charsl, charsr) result(new)
     !-------------------------------------------------------------------------------------------------------------------
     !! Defined here rather than in submodule `operators` because ifx 2026.2 rejects this result length in the interface

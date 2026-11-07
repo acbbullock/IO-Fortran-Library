@@ -4,6 +4,7 @@ submodule (io_fortran_lib) text_io
   !! This submodule provides module procedure implementations for the **public interface** `echo` and the **private
   !! interfaces** `to_text` and `from_text`.
   !---------------------------------------------------------------------------------------------------------------------
+  use, intrinsic :: ieee_arithmetic, only: ieee_value, ieee_quiet_nan
   implicit none (type, external)
 
   ! Definitions and interfaces ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -104,6 +105,7 @@ submodule (io_fortran_lib) text_io
 
     if ( stat_ /= 0 ) then
       stat_ = WRITE_ERR
+      call close_quietly(file_unit)
       call stop_if_unhandled(stat_, errmsg_, present(stat))
       return
     end if
@@ -112,6 +114,7 @@ submodule (io_fortran_lib) text_io
 
     if ( stat_ /= 0 ) then
       stat_ = WRITE_ERR
+      call close_quietly(file_unit)
       call stop_if_unhandled(stat_, errmsg_, present(stat))
       return
     end if
@@ -218,6 +221,7 @@ submodule (io_fortran_lib) text_io
 
     if ( stat_ /= 0 ) then
       stat_ = WRITE_ERR
+      call close_quietly(file_unit)
       call stop_if_unhandled(stat_, errmsg_, present(stat))
       return
     end if
@@ -226,6 +230,7 @@ submodule (io_fortran_lib) text_io
 
     if ( stat_ /= 0 ) then
       stat_ = WRITE_ERR
+      call close_quietly(file_unit)
       call stop_if_unhandled(stat_, errmsg_, present(stat))
       return
     end if
@@ -291,7 +296,7 @@ submodule (io_fortran_lib) text_io
       rank(2); call cast(x, numerical_data, locale, fmt, decimals, im)
     end select
 
-    call text_file%write_file(cells, file, NL, delim, .false., stat, errmsg)
+    call write_cells(text_file, .true., cells, file, NL, delim, .false., stat, errmsg)
   end procedure to_text_c128
 #endif
   module procedure to_text_c64
@@ -343,7 +348,7 @@ submodule (io_fortran_lib) text_io
       rank(2); call cast(x, numerical_data, locale, fmt, decimals, im)
     end select
 
-    call text_file%write_file(cells, file, NL, delim, .false., stat, errmsg)
+    call write_cells(text_file, .true., cells, file, NL, delim, .false., stat, errmsg)
   end procedure to_text_c64
   module procedure to_text_c32
     type(String)                      :: text_file
@@ -394,7 +399,7 @@ submodule (io_fortran_lib) text_io
       rank(2); call cast(x, numerical_data, locale, fmt, decimals, im)
     end select
 
-    call text_file%write_file(cells, file, NL, delim, .false., stat, errmsg)
+    call write_cells(text_file, .true., cells, file, NL, delim, .false., stat, errmsg)
   end procedure to_text_c32
 
 #ifdef IOFL_HAS_R128
@@ -765,14 +770,13 @@ submodule (io_fortran_lib) text_io
     type(String), allocatable :: cells(:,:)
     integer                   :: nrows, ncols
     integer, allocatable      :: cell_stat(:,:)
+    logical, allocatable      :: blank(:,:)
+    integer                   :: first
+    real(r128)                 :: nan_part
 
     nrows=0; ncols=0
 
-    if ( len(im) > 0 ) then
-      call text_file%read_file(file, cells, NL, delim, stat, errmsg)
-    else
-      call custom_read(text_file, file, cells, NL, delim, stat, errmsg)
-    end if
+    call read_cells(text_file, file, len(im) == 0, cells, NL, delim, stat, errmsg)
 
     if ( stat /= 0 ) return
 
@@ -837,6 +841,22 @@ submodule (io_fortran_lib) text_io
           call cast(cells, into, locale=locale, fmt=fmt, im=im, stat=cell_stat)
         end if
     end select
+
+    if ( any(cell_stat /= 0) ) then
+      nan_part = ieee_value(0e0_r128, ieee_quiet_nan)
+      blank = is_blank(cells)
+      first = 1
+      if ( header ) first = 2
+
+      select rank(into)
+        rank(1)
+          where ( blank(first:,1) ) into = cmplx(nan_part, nan_part, kind=r128)
+        rank(2)
+          where ( blank(first:,:) ) into = cmplx(nan_part, nan_part, kind=r128)
+      end select
+
+      where ( blank ) cell_stat = 0
+    end if
 
     call report_cells(file, cells, cell_stat, stat, errmsg)
   end procedure from_text_c128
@@ -846,14 +866,13 @@ submodule (io_fortran_lib) text_io
     type(String), allocatable :: cells(:,:)
     integer                   :: nrows, ncols
     integer, allocatable      :: cell_stat(:,:)
+    logical, allocatable      :: blank(:,:)
+    integer                   :: first
+    real(r64)                 :: nan_part
 
     nrows=0; ncols=0
 
-    if ( len(im) > 0 ) then
-      call text_file%read_file(file, cells, NL, delim, stat, errmsg)
-    else
-      call custom_read(text_file, file, cells, NL, delim, stat, errmsg)
-    end if
+    call read_cells(text_file, file, len(im) == 0, cells, NL, delim, stat, errmsg)
 
     if ( stat /= 0 ) return
 
@@ -918,6 +937,22 @@ submodule (io_fortran_lib) text_io
           call cast(cells, into, locale=locale, fmt=fmt, im=im, stat=cell_stat)
         end if
     end select
+
+    if ( any(cell_stat /= 0) ) then
+      nan_part = ieee_value(0e0_r64, ieee_quiet_nan)
+      blank = is_blank(cells)
+      first = 1
+      if ( header ) first = 2
+
+      select rank(into)
+        rank(1)
+          where ( blank(first:,1) ) into = cmplx(nan_part, nan_part, kind=r64)
+        rank(2)
+          where ( blank(first:,:) ) into = cmplx(nan_part, nan_part, kind=r64)
+      end select
+
+      where ( blank ) cell_stat = 0
+    end if
 
     call report_cells(file, cells, cell_stat, stat, errmsg)
   end procedure from_text_c64
@@ -926,14 +961,13 @@ submodule (io_fortran_lib) text_io
     type(String), allocatable :: cells(:,:)
     integer                   :: nrows, ncols
     integer, allocatable      :: cell_stat(:,:)
+    logical, allocatable      :: blank(:,:)
+    integer                   :: first
+    real(r32)                 :: nan_part
 
     nrows=0; ncols=0
 
-    if ( len(im) > 0 ) then
-      call text_file%read_file(file, cells, NL, delim, stat, errmsg)
-    else
-      call custom_read(text_file, file, cells, NL, delim, stat, errmsg)
-    end if
+    call read_cells(text_file, file, len(im) == 0, cells, NL, delim, stat, errmsg)
 
     if ( stat /= 0 ) return
 
@@ -999,164 +1033,24 @@ submodule (io_fortran_lib) text_io
         end if
     end select
 
+    if ( any(cell_stat /= 0) ) then
+      nan_part = ieee_value(0e0_r32, ieee_quiet_nan)
+      blank = is_blank(cells)
+      first = 1
+      if ( header ) first = 2
+
+      select rank(into)
+        rank(1)
+          where ( blank(first:,1) ) into = cmplx(nan_part, nan_part, kind=r32)
+        rank(2)
+          where ( blank(first:,:) ) into = cmplx(nan_part, nan_part, kind=r32)
+      end select
+
+      where ( blank ) cell_stat = 0
+    end if
+
     call report_cells(file, cells, cell_stat, stat, errmsg)
   end procedure from_text_c32
-
-  impure recursive subroutine custom_read(text_file, file, cells, row_separator, column_separator, stat, errmsg)
-    type(String),     intent(inout)            :: text_file
-    character(len=*), intent(in)               :: file
-    type(String),     intent(out), allocatable :: cells(:,:)
-    character(len=*), intent(in)               :: row_separator, column_separator
-    integer,          intent(out)              :: stat
-    character(len=*), intent(out)              :: errmsg
-
-    integer(i64) :: file_length, l, i
-    integer      :: nrows, ncols, row, col, row_sep, col_sep, col_sep_len, open_paren, close_paren, current, file_unit
-    logical      :: exists, in_paren
-
-    stat=0; errmsg=EMPTY_STR
-
-    file_length=0_i64; l=0_i64; i=0_i64
-    nrows=0;ncols=0;row=0;col=0;row_sep=0;col_sep=0;col_sep_len=0;open_paren=0;close_paren=0;current=0;file_unit=0
-    exists=.false.; in_paren=.false.
-
-    inquire(file=file, exist=exists, iostat=stat, iomsg=errmsg)
-
-    if ( stat /= 0 ) then
-      stat = READ_ERR; return
-    end if
-
-    file_unit = input_unit
-
-    if ( exists ) then
-      open( newunit=file_unit, file=file, status="old", form="unformatted", &
-            action="read", access="stream", position="rewind", iostat=stat, iomsg=errmsg )
-    else
-      stat   = READ_ERR
-      errmsg = 'Error reading file "'//file//'". No such file exists.'
-      return
-    end if
-
-    if ( stat /= 0 ) then
-      stat = READ_ERR; return
-    end if
-
-    inquire(file=file, size=file_length, iostat=stat, iomsg=errmsg)
-
-    if ( stat /= 0 ) then
-      stat = READ_ERR; return
-    end if
-
-    if ( file_length == 0_i64 ) then
-      stat   = READ_ERR
-      errmsg = 'Error reading file "'//file//'". File is empty.'
-      return
-    end if
-
-    allocate( character(len=file_length) :: text_file%s, stat=stat, errmsg=errmsg )
-
-    if ( stat /= 0 ) then
-      stat = ALLOC_ERR; return
-    end if
-
-    read(unit=file_unit, iostat=stat, iomsg=errmsg) text_file%s
-
-    if ( stat /= 0 ) then
-      stat = READ_ERR; return
-    end if
-
-    close(unit=file_unit, iostat=stat, iomsg=errmsg)
-
-    if ( stat /= 0 ) then
-      stat = READ_ERR; return
-    end if
-
-    col_sep_len = len(column_separator)
-    row_sep = iachar(NL); col_sep = iachar(column_separator(1:1))
-    open_paren = iachar("("); close_paren = iachar(")")
-
-    nrows = text_file%count(match=NL)
-
-    ncols = 1; i = 1_i64; get_ncols: do
-      current = iachar(text_file%s(i:i))
-
-      if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. (current/=row_sep) ) then
-        i = i + 1_i64; cycle
-      end if
-
-      if ( current == open_paren ) then
-        in_paren = .true.; i = i + 1_i64; cycle
-      end if
-
-      if ( current == close_paren ) then
-        in_paren = .false.; i = i + 1_i64; cycle
-      end if
-
-      if ( current == col_sep ) then
-        if ( in_paren ) then
-          i = i + 1_i64; cycle
-        end if
-
-        if ( col_sep_len == 1 ) then
-          ncols = ncols + 1; i = i + 1_i64; cycle
-        else
-          if ( text_file%s(i:i+col_sep_len-1_i64) == column_separator ) then
-            ncols = ncols + 1; i = i + col_sep_len; cycle
-          else
-            i = i + 1_i64; cycle
-          end if
-        end if
-      end if
-
-      if ( current == row_sep ) exit get_ncols
-    end do get_ncols
-
-    allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
-
-    if ( stat /= 0 ) then
-      stat = ALLOC_ERR; return
-    end if
-
-    row = 1; col = 1; l = 1_i64; i = 1_i64; positional_transfers: do
-      current = iachar(text_file%s(i:i))
-
-      if ( (current/=open_paren) .and. (current/=close_paren) .and. (current/=col_sep) .and. (current/=row_sep) ) then
-        i = i + 1_i64; cycle
-      end if
-
-      if ( current == open_paren ) then
-        in_paren = .true.; i = i + 1_i64; cycle
-      end if
-
-      if ( current == close_paren ) then
-        in_paren = .false.; i = i + 1_i64; cycle
-      end if
-
-      if ( current == col_sep ) then
-        if ( in_paren ) then
-          i = i + 1_i64; cycle
-        end if
-
-        if ( col_sep_len == 1 ) then
-          cells(row,col)%s = text_file%s(l:i-1); i = i + 1_i64; l = i
-          col = col + 1; cycle
-        else
-          if ( text_file%s(i:i+col_sep_len-1_i64) == column_separator ) then
-            cells(row,col)%s = text_file%s(l:i-1); i = i + col_sep_len; l = i
-            col = col + 1; cycle
-          else
-            i = i + 1_i64; cycle
-          end if
-        end if
-      end if
-
-      if ( current == row_sep ) then
-        cells(row,col)%s = text_file%s(l:i-1)
-        if ( row == nrows ) exit positional_transfers
-        i = i + 1_i64; l = i; col = 1; row = row + 1; cycle
-      end if
-    end do positional_transfers
-  end subroutine custom_read
 
 #ifdef IOFL_HAS_R128
   module procedure from_text_r128
@@ -1164,6 +1058,8 @@ submodule (io_fortran_lib) text_io
     type(String), allocatable :: cells(:,:)
     integer                   :: nrows, ncols
     integer, allocatable      :: cell_stat(:,:)
+    logical, allocatable      :: blank(:,:)
+    integer                   :: first
 
     nrows=0; ncols=0
 
@@ -1232,6 +1128,21 @@ submodule (io_fortran_lib) text_io
           call cast(cells, into, locale=locale, fmt=fmt, stat=cell_stat)
         end if
     end select
+
+    if ( any(cell_stat /= 0) ) then
+      blank = is_blank(cells)
+      first = 1
+      if ( header ) first = 2
+
+      select rank(into)
+        rank(1)
+          where ( blank(first:,1) ) into = ieee_value(0e0_r128, ieee_quiet_nan)
+        rank(2)
+          where ( blank(first:,:) ) into = ieee_value(0e0_r128, ieee_quiet_nan)
+      end select
+
+      where ( blank ) cell_stat = 0
+    end if
 
     call report_cells(file, cells, cell_stat, stat, errmsg)
   end procedure from_text_r128
@@ -1241,6 +1152,8 @@ submodule (io_fortran_lib) text_io
     type(String), allocatable :: cells(:,:)
     integer                   :: nrows, ncols
     integer, allocatable      :: cell_stat(:,:)
+    logical, allocatable      :: blank(:,:)
+    integer                   :: first
 
     nrows=0; ncols=0
 
@@ -1309,6 +1222,21 @@ submodule (io_fortran_lib) text_io
           call cast(cells, into, locale=locale, fmt=fmt, stat=cell_stat)
         end if
     end select
+
+    if ( any(cell_stat /= 0) ) then
+      blank = is_blank(cells)
+      first = 1
+      if ( header ) first = 2
+
+      select rank(into)
+        rank(1)
+          where ( blank(first:,1) ) into = ieee_value(0e0_r64, ieee_quiet_nan)
+        rank(2)
+          where ( blank(first:,:) ) into = ieee_value(0e0_r64, ieee_quiet_nan)
+      end select
+
+      where ( blank ) cell_stat = 0
+    end if
 
     call report_cells(file, cells, cell_stat, stat, errmsg)
   end procedure from_text_r64
@@ -1317,6 +1245,8 @@ submodule (io_fortran_lib) text_io
     type(String), allocatable :: cells(:,:)
     integer                   :: nrows, ncols
     integer, allocatable      :: cell_stat(:,:)
+    logical, allocatable      :: blank(:,:)
+    integer                   :: first
 
     nrows=0; ncols=0
 
@@ -1385,6 +1315,21 @@ submodule (io_fortran_lib) text_io
           call cast(cells, into, locale=locale, fmt=fmt, stat=cell_stat)
         end if
     end select
+
+    if ( any(cell_stat /= 0) ) then
+      blank = is_blank(cells)
+      first = 1
+      if ( header ) first = 2
+
+      select rank(into)
+        rank(1)
+          where ( blank(first:,1) ) into = ieee_value(0e0_r32, ieee_quiet_nan)
+        rank(2)
+          where ( blank(first:,:) ) into = ieee_value(0e0_r32, ieee_quiet_nan)
+      end select
+
+      where ( blank ) cell_stat = 0
+    end if
 
     call report_cells(file, cells, cell_stat, stat, errmsg)
   end procedure from_text_r32
@@ -1710,4 +1655,17 @@ submodule (io_fortran_lib) text_io
     errmsg   = 'Error reading file "'//file//'". Invalid number "'//cells(location(1),location(2))%s// &
                '" at row '//str(location(1))//", column "//str(location(2))//"."
   end subroutine report_cells
+
+  pure function is_blank(cells) result(blank)
+    type(String), intent(in) :: cells(:,:)
+    logical                  :: blank(size(cells,1),size(cells,2))
+
+    integer :: row, col
+
+    do col = 1, size(cells, dim=2)
+      do row = 1, size(cells, dim=1)
+        blank(row,col) = verify(cells(row,col)%s, SPACE//TAB//CR//LF) == 0
+      end do
+    end do
+  end function is_blank
 end submodule text_io
