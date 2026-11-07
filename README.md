@@ -46,14 +46,41 @@ add `include` to the include path.
 
 ## Tests
 
-Run `fpm test`, adding for instance `--flag "-D R8 -D I4"` to select the
-`real` and `integer` kinds under test. With `flang-new`, also add `-cpp`,
-since the test programs use `__LINE__` and `__FILE__`, and `fpm` does not
-enable the preprocessor for that compiler. A failing test ends with a nonzero
-exit status. Test output goes to `test/output`.
+Run `fpm test`. With `flang-new`, add `--flag -cpp`, since fpm 0.12 does
+not enable the preprocessor for that compiler. A failing test ends with a
+nonzero exit status. Test output goes to `test/output`.
 
-`test/units/regression-test.f90` records known bugs as expected failures. If
-you fix one, the test fails until you update its marker to `FIXED`.
+The main suite is `test/tests.f90`, with its cases in `test/suite/`. Each
+case runs in its own process, so a case can check that a call ends the
+program with `error stop`, and a crash in one case doesn't stop the others.
+To run part of the suite, pass a pattern that matches `group/name`:
+
+```
+fpm test tests -- cast/                       # the cases in one group
+fpm test tests -- crlf                        # every case with "crlf" in its name
+fpm test tests -- --list                      # list the cases
+fpm test tests -- --in-process read_crlf      # run in one process, for a debugger
+```
+
+A case is a subroutine with no arguments, registered once in its group's
+`register_*` subroutine:
+
+```fortran
+call suite%add("read_crlf", read_crlf)
+call suite%add("cast_int_letters", cast_int_letters, expect=STOPS)
+```
+
+Inside a case, `expect_equal(actual, expected, message)` prints both values
+when they differ, and `check(condition, message)` tests anything else. A
+case reports every failed check, not just the first. Write files under
+`scratch()`, which is unique to the case and emptied at the start of each
+run. A case for a bug that isn't fixed yet takes `status=KNOWN_BUG`, and
+the suite fails once it passes, so the marker is removed with the fix. See
+`test/suite/test_support.f90` for the details.
+
+The older programs in `test/units` test one `real` and one `integer` kind
+per build, selected with for instance `--flag "-D R8 -D I4"`. They are being
+replaced by the main suite (#59).
 
 ## Generated sources
 
