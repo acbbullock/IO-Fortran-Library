@@ -10,136 +10,136 @@ submodule (io_fortran_lib) operators
   contains ! Procedure bodies for module subprograms <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><
 
   module procedure string_concatenation
-    if ( Stringl%len() < 1 ) then
-      if ( Stringr%len() < 1 ) then
-        new%s = EMPTY_STR; return
+    if ( Stringl%len64() < 1_i64 ) then
+      if ( Stringr%len64() < 1_i64 ) then
+        new%buf = EMPTY_STR; new%n = len(new%buf, kind=i64); return
       else
-        new%s = Stringr%s; return
+        new%buf = Stringr%buf(:Stringr%n); new%n = len(new%buf, kind=i64); return
       end if
     end if
 
-    if ( Stringr%len() < 1 ) then
-      new%s = Stringl%s; return
+    if ( Stringr%len64() < 1_i64 ) then
+      new%buf = Stringl%buf(:Stringl%n); new%n = len(new%buf, kind=i64); return
     end if
 
-    new%s = Stringl%s//Stringr%s
+    new%buf = Stringl%buf(:Stringl%n)//Stringr%buf(:Stringr%n); new%n = len(new%buf, kind=i64)
   end procedure string_concatenation
 
   module procedure string_char_concatenation
-    if ( Stringl%len() < 1 ) then
+    if ( Stringl%len64() < 1_i64 ) then
       if ( len(charsr) < 1 ) then
-        new%s = EMPTY_STR; return
+        new%buf = EMPTY_STR; new%n = len(new%buf, kind=i64); return
       else
-        new%s = charsr; return
+        new%buf = charsr; new%n = len(new%buf, kind=i64); return
       end if
     end if
 
     if ( len(charsr) < 1 ) then
-      new%s = Stringl%s; return
+      new%buf = Stringl%buf(:Stringl%n); new%n = len(new%buf, kind=i64); return
     end if
 
-    new%s = Stringl%s//charsr
+    new%buf = Stringl%buf(:Stringl%n)//charsr; new%n = len(new%buf, kind=i64)
   end procedure string_char_concatenation
 
   module procedure char_string_concatenation
     if ( len(charsl) < 1 ) then
-      if ( Stringr%len() < 1 ) then
-        new%s = EMPTY_STR; return
+      if ( Stringr%len64() < 1_i64 ) then
+        new%buf = EMPTY_STR; new%n = len(new%buf, kind=i64); return
       else
-        new%s = Stringr%s; return
+        new%buf = Stringr%buf(:Stringr%n); new%n = len(new%buf, kind=i64); return
       end if
     end if
 
-    if ( Stringr%len() < 1 ) then
-      new%s = charsl; return
+    if ( Stringr%len64() < 1_i64 ) then
+      new%buf = charsl; new%n = len(new%buf, kind=i64); return
     end if
 
-    new%s = charsl//Stringr%s
+    new%buf = charsl//Stringr%buf(:Stringr%n); new%n = len(new%buf, kind=i64)
   end procedure char_string_concatenation
 
   module procedure string_concat_plus
-    if ( Stringl%len() < 1 ) then
-      if ( Stringr%len() < 1 ) then
-        new%s = EMPTY_STR; return
+    if ( Stringl%len64() < 1_i64 ) then
+      if ( Stringr%len64() < 1_i64 ) then
+        new%buf = EMPTY_STR; new%n = len(new%buf, kind=i64); return
       else
-        new%s = Stringr%s; return
+        new%buf = Stringr%buf(:Stringr%n); new%n = len(new%buf, kind=i64); return
       end if
     end if
 
-    if ( Stringr%len() < 1 ) then
-      new%s = Stringl%s; return
+    if ( Stringr%len64() < 1_i64 ) then
+      new%buf = Stringl%buf(:Stringl%n); new%n = len(new%buf, kind=i64); return
     end if
 
-    new%s = Stringl%s//Stringr%s
+    new%buf = Stringl%buf(:Stringl%n)//Stringr%buf(:Stringr%n); new%n = len(new%buf, kind=i64)
   end procedure string_concat_plus
 
   module procedure string_char_concat_plus
-    if ( Stringl%len() < 1 ) then
+    if ( Stringl%len64() < 1_i64 ) then
       if ( len(charsr) < 1 ) then
-        new%s = EMPTY_STR; return
+        new%buf = EMPTY_STR; new%n = len(new%buf, kind=i64); return
       else
-        new%s = charsr; return
+        new%buf = charsr; new%n = len(new%buf, kind=i64); return
       end if
     end if
 
     if ( len(charsr) < 1 ) then
-      new%s = Stringl%s; return
+      new%buf = Stringl%buf(:Stringl%n); new%n = len(new%buf, kind=i64); return
     end if
 
-    new%s = Stringl%s//charsr
+    new%buf = Stringl%buf(:Stringl%n)//charsr; new%n = len(new%buf, kind=i64)
   end procedure string_char_concat_plus
 
   module procedure char_string_concat_plus
     if ( len(charsl) < 1 ) then
-      if ( Stringr%len() < 1 ) then
-        new%s = EMPTY_STR; return
+      if ( Stringr%len64() < 1_i64 ) then
+        new%buf = EMPTY_STR; new%n = len(new%buf, kind=i64); return
       else
-        new%s = Stringr%s; return
+        new%buf = Stringr%buf(:Stringr%n); new%n = len(new%buf, kind=i64); return
       end if
     end if
 
-    if ( Stringr%len() < 1 ) then
-      new%s = charsl; return
+    if ( Stringr%len64() < 1_i64 ) then
+      new%buf = charsl; new%n = len(new%buf, kind=i64); return
     end if
 
-    new%s = charsl//Stringr%s
+    new%buf = charsl//Stringr%buf(:Stringr%n); new%n = len(new%buf, kind=i64)
   end procedure char_string_concat_plus
 
   module procedure char_excision
     type(String) :: Stringl
 
-    Stringl%s = charsl
+    Stringl%buf = charsl; Stringl%n = len(Stringl%buf, kind=i64)
 
-    if ( Stringl%len() < 1 ) then
-      new%s = EMPTY_STR; return
+    if ( Stringl%len64() < 1_i64 ) then
+      new%buf = EMPTY_STR; new%n = len(new%buf, kind=i64); return
     end if
 
     if ( len(charsr) < 1 ) then
-      new%s = Stringl%s; return
+      new%buf = Stringl%buf(:Stringl%n); new%n = len(new%buf, kind=i64); return
     end if
 
     new = Stringl%replace(match=charsr, substring=EMPTY_STR)
   end procedure char_excision
 
   module procedure string_excision
-    if ( Stringl%len() < 1 ) then
-      new%s = EMPTY_STR; return
+    if ( Stringl%len64() < 1_i64 ) then
+      new%buf = EMPTY_STR; new%n = len(new%buf, kind=i64); return
     end if
 
-    if ( Stringr%len() < 1 ) then
-      new%s = Stringl%s; return
+    if ( Stringr%len64() < 1_i64 ) then
+      new%buf = Stringl%buf(:Stringl%n); new%n = len(new%buf, kind=i64); return
     end if
 
-    new = Stringl%replace(match=Stringr%s, substring=EMPTY_STR)
+    new = Stringl%replace(match=Stringr%buf(:Stringr%n), substring=EMPTY_STR)
   end procedure string_excision
 
   module procedure string_char_excision
-    if ( Stringl%len() < 1 ) then
-      new%s = EMPTY_STR; return
+    if ( Stringl%len64() < 1_i64 ) then
+      new%buf = EMPTY_STR; new%n = len(new%buf, kind=i64); return
     end if
 
     if ( len(charsr) < 1 ) then
-      new%s = Stringl%s; return
+      new%buf = Stringl%buf(:Stringl%n); new%n = len(new%buf, kind=i64); return
     end if
 
     new = Stringl%replace(match=charsr, substring=EMPTY_STR)
@@ -148,17 +148,17 @@ submodule (io_fortran_lib) operators
   module procedure char_string_excision
     type(String) :: Stringl
 
-    Stringl%s = charsl
+    Stringl%buf = charsl; Stringl%n = len(Stringl%buf, kind=i64)
 
-    if ( Stringl%len() < 1 ) then
-      new%s = EMPTY_STR; return
+    if ( Stringl%len64() < 1_i64 ) then
+      new%buf = EMPTY_STR; new%n = len(new%buf, kind=i64); return
     end if
 
-    if ( Stringr%len() < 1 ) then
-      new%s = Stringl%s; return
+    if ( Stringr%len64() < 1_i64 ) then
+      new%buf = Stringl%buf(:Stringl%n); new%n = len(new%buf, kind=i64); return
     end if
 
-    new = Stringl%replace(match=Stringr%s, substring=EMPTY_STR)
+    new = Stringl%replace(match=Stringr%buf(:Stringr%n), substring=EMPTY_STR)
   end procedure char_string_excision
 
   module procedure repeat_chars
@@ -235,18 +235,19 @@ submodule (io_fortran_lib) operators
   end subroutine repeat_into
 
   module procedure repeat_String
-    if ( String_base%len() < 1 ) then
-      new%s = EMPTY_STR; return
+    if ( String_base%len64() < 1_i64 ) then
+      new%buf = EMPTY_STR; new%n = len(new%buf, kind=i64); return
     end if
 
-    new%s = repeat(String_base%s, ncopies=max(ncopies, 0))
+    new%buf = repeat(String_base%buf(:String_base%n), ncopies=max(ncopies, 0))
+    new%n = len(new%buf, kind=i64)
   end procedure repeat_String
 
   module procedure string_equivalence
-    integer :: Stringl_len, Stringr_len
+    integer(i64) :: Stringl_len, Stringr_len
 
-    Stringl_len = max(Stringl%len(), 0)
-    Stringr_len = max(Stringr%len(), 0)
+    Stringl_len = max(Stringl%len64(), 0_i64)
+    Stringr_len = max(Stringr%len64(), 0_i64)
 
     if ( Stringl_len /= Stringr_len ) then
       equal = .false.; return
@@ -256,14 +257,14 @@ submodule (io_fortran_lib) operators
       equal = .true.; return
     end if
 
-    equal = ( Stringl%s == Stringr%s )
+    equal = ( Stringl%buf(:Stringl%n) == Stringr%buf(:Stringr%n) )
   end procedure string_equivalence
 
   module procedure string_char_equivalence
-    integer :: Stringl_len, charsr_len
+    integer(i64) :: Stringl_len, charsr_len
 
-    Stringl_len = max(Stringl%len(), 0)
-    charsr_len  = len(charsr)
+    Stringl_len = max(Stringl%len64(), 0_i64)
+    charsr_len  = len(charsr, kind=i64)
 
     if ( Stringl_len /= charsr_len ) then
       equal = .false.; return
@@ -273,14 +274,14 @@ submodule (io_fortran_lib) operators
       equal = .true.; return
     end if
 
-    equal = ( Stringl%s == charsr )
+    equal = ( Stringl%buf(:Stringl%n) == charsr )
   end procedure string_char_equivalence
 
   module procedure char_string_equivalence
-    integer :: charsl_len, Stringr_len
+    integer(i64) :: charsl_len, Stringr_len
 
-    charsl_len  = len(charsl)
-    Stringr_len = max(Stringr%len(), 0)
+    charsl_len  = len(charsl, kind=i64)
+    Stringr_len = max(Stringr%len64(), 0_i64)
 
     if ( charsl_len /= Stringr_len ) then
       equal = .false.; return
@@ -290,14 +291,14 @@ submodule (io_fortran_lib) operators
       equal = .true.; return
     end if
 
-    equal = ( charsl == Stringr%s )
+    equal = ( charsl == Stringr%buf(:Stringr%n) )
   end procedure char_string_equivalence
 
   module procedure string_nonequivalence
-    integer :: Stringl_len, Stringr_len
+    integer(i64) :: Stringl_len, Stringr_len
 
-    Stringl_len = max(Stringl%len(), 0)
-    Stringr_len = max(Stringr%len(), 0)
+    Stringl_len = max(Stringl%len64(), 0_i64)
+    Stringr_len = max(Stringr%len64(), 0_i64)
 
     if ( Stringl_len /= Stringr_len ) then
       unequal = .true.; return
@@ -307,14 +308,14 @@ submodule (io_fortran_lib) operators
       unequal = .false.; return
     end if
 
-    unequal = ( Stringl%s /= Stringr%s )
+    unequal = ( Stringl%buf(:Stringl%n) /= Stringr%buf(:Stringr%n) )
   end procedure string_nonequivalence
 
   module procedure string_char_nonequivalence
-    integer :: Stringl_len, charsr_len
+    integer(i64) :: Stringl_len, charsr_len
 
-    Stringl_len = max(Stringl%len(), 0)
-    charsr_len  = len(charsr)
+    Stringl_len = max(Stringl%len64(), 0_i64)
+    charsr_len  = len(charsr, kind=i64)
 
     if ( Stringl_len /= charsr_len ) then
       unequal = .true.; return
@@ -324,14 +325,14 @@ submodule (io_fortran_lib) operators
       unequal = .false.; return
     end if
 
-    unequal = ( Stringl%s /= charsr )
+    unequal = ( Stringl%buf(:Stringl%n) /= charsr )
   end procedure string_char_nonequivalence
 
   module procedure char_string_nonequivalence
-    integer :: charsl_len, Stringr_len
+    integer(i64) :: charsl_len, Stringr_len
 
-    charsl_len  = len(charsl)
-    Stringr_len = max(Stringr%len(), 0)
+    charsl_len  = len(charsl, kind=i64)
+    Stringr_len = max(Stringr%len64(), 0_i64)
 
     if ( charsl_len /= Stringr_len ) then
       unequal = .true.; return
@@ -341,6 +342,6 @@ submodule (io_fortran_lib) operators
       unequal = .false.; return
     end if
 
-    unequal = ( charsl /= Stringr%s )
+    unequal = ( charsl /= Stringr%buf(:Stringr%n) )
   end procedure char_string_nonequivalence
 end submodule operators

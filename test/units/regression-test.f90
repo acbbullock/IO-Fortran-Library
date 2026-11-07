@@ -17,8 +17,8 @@ program regression_test
   use, intrinsic :: iso_fortran_env, only: real32, real64, int8, int32, int64
   use, intrinsic :: ieee_arithmetic, only: ieee_value, ieee_quiet_nan, ieee_positive_inf, ieee_is_nan, &
                                              ieee_is_negative
-  use io_fortran_lib, only: String, cast, str, join, echo, aprint, to_file, from_file, operator(==), operator(/=), &
-                            operator(**), operator(+), LF, CR, TAB
+  use io_fortran_lib, only: String, cast, str, join, split, echo, aprint, to_file, from_file, operator(==), &
+                            operator(/=), operator(**), operator(+), LF, CR, TAB
   implicit none (type, external)
 
   character(len=*), parameter :: dir = "./test/output/"
@@ -166,6 +166,9 @@ program regression_test
     test_case("echo_unallocated",            RETURNS, FIXED),     &
     test_case("repeat_negative",             RETURNS, FIXED),     &
     ! Behavior that works and has to stay that way.
+    test_case("push_then_everything",        RETURNS, FIXED),     &
+    test_case("push_cast_number",            RETURNS, FIXED),     &
+    test_case("push_edge_cases",             RETURNS, FIXED),     &
     test_case("repeat_scalar",               RETURNS, FIXED),     &
     test_case("repeat_array",                RETURNS, FIXED),     &
     test_case("concat_plus_array",           RETURNS, FIXED),     &
@@ -298,7 +301,7 @@ contains
     complex(real32)               :: z, zv(2)
     complex(real32), allocatable  :: zw(:), mz(:,:)
     type(String)                  :: special(2,4), column(2,1)
-    type(String), allocatable     :: many(:)
+    type(String), allocatable     :: many(:), tokens(:)
     integer(int64)                :: i64
     integer                       :: iv(3), stv(3)
     integer, allocatable          :: vi(:)
@@ -891,6 +894,44 @@ contains
         call from_file(file//".dat", into=m2, data_shape=[2,1], stat=st, errmsg=msg)
         call check((st == 0) .and. (m2(2,1) == 2.0_real64), "The right rank should read.")
 
+      case ("push_then_everything")
+        do i = 1, 1000
+          call s%push("ab,")
+        end do
+        call check(s%len() == 3000, "The length should be the text, not the capacity.")
+        call check(s%as_str() == repeat("ab,", 1000), "The text should be intact.")
+        call check(s == repeat("ab,", 1000), "Comparison should ignore spare room.")
+        call check(s%count(",") == 1000, "Count should ignore spare room.")
+        r = s
+        call check((r == s) .and. (r%len() == 3000), "A copy should have the same text.")
+        call r%push("x")
+        call check((r%len() == 3001) .and. (s%len() == 3000), "A copy should be independent.")
+        r = s%replace(",", ";")
+        call check(r%len() == 3000, "Replace should ignore spare room.")
+        r = s%trim()
+        call check(r%len() == 3000, "Trim should ignore spare room.")
+        tokens = split(s, ",")
+        call check(size(tokens) == 1001, "Split should ignore spare room.")
+        call check(str(s) == repeat("ab,", 1000), "str should ignore spare room.")
+        call s%echo(file//".log", stat=st, errmsg=msg)
+        call r%read_file(file//".log")
+        call check(r%len() == 3001, "A file should hold only the text and the terminator.")
+      case ("push_cast_number")
+        call s%push("12"); call s%push("34")
+        call s%cast(into=i, stat=st)
+        call check((st == 0) .and. (i == 1234), "Spare room should not affect a cast.")
+      case ("push_edge_cases")
+        call s%push("")
+        call check(s%len() == 0, "Pushing nothing onto an unallocated String gives an empty String.")
+        call s%push(r)
+        call check(s%len() == 0, "Pushing an unallocated String adds nothing.")
+        call s%push("ab")
+        call s%push(s)
+        call check(s%as_str() == "abab", "Pushing a String onto itself.")
+        call s%empty()
+        call check(s%len() == 0, "Empty should clear the text.")
+        call s%push("c")
+        call check(s%as_str() == "c", "Pushing after empty.")
       case ("repeat_scalar")
         call check("ab"**2 == "abab", "Scalar repetition.")
         call check(len("ab"**0) == 0, "Zero copies.")

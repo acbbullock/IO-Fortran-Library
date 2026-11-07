@@ -36,7 +36,8 @@ submodule (io_fortran_lib) internal_io
 #ifdef IOFL_HAS_R128
 #:endif
   module procedure new_string_from_${k}$
-    new%s = complex_text(x, decimal_of(locale), real_fmt_of(fmt), decimals, im)
+    new%buf = complex_text(x, decimal_of(locale), real_fmt_of(fmt), decimals, im)
+    new%n = len(new%buf, kind=i64)
   end procedure new_string_from_${k}$
 #:if k in QUAD_KINDS
 #endif
@@ -49,7 +50,8 @@ submodule (io_fortran_lib) internal_io
 #ifdef IOFL_HAS_R128
 #:endif
   module procedure new_string_from_${k}$
-    new%s = real_text(x, decimal_of(locale), real_fmt_of(fmt), decimals)
+    new%buf = real_text(x, decimal_of(locale), real_fmt_of(fmt), decimals)
+    new%n = len(new%buf, kind=i64)
   end procedure new_string_from_${k}$
 #:if k in QUAD_KINDS
 #endif
@@ -59,23 +61,24 @@ submodule (io_fortran_lib) internal_io
 
 #:for k in INT_KINDS
   module procedure new_string_from_${k}$
-    new%s = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
+    new%buf = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
+    new%n = len(new%buf, kind=i64)
   end procedure new_string_from_${k}$
 
 #:endfor
 
   module procedure new_string_from_string
-    if ( x%len() < 1 ) then
-      new%s = EMPTY_STR
+    if ( x%len64() < 1_i64 ) then
+      new%buf = EMPTY_STR; new%n = len(new%buf, kind=i64)
     else
-      new%s = x%s
+      new%buf = x%buf(:x%n); new%n = len(new%buf, kind=i64)
     end if
   end procedure new_string_from_string
   module procedure new_string_from_char
-    new%s = x
+    new%buf = x; new%n = len(new%buf, kind=i64)
   end procedure new_string_from_char
   module procedure new_string_from_empty
-    new%s = EMPTY_STR
+    new%buf = EMPTY_STR; new%n = len(new%buf, kind=i64)
   end procedure new_string_from_empty
 
   ! str ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -113,10 +116,10 @@ submodule (io_fortran_lib) internal_io
 #:endfor
 
   module procedure str_from_string
-    if ( x%len() < 1 ) then
+    if ( x%len64() < 1_i64 ) then
       x_str = EMPTY_STR
     else
-      x_str = x%s
+      x_str = x%buf(:x%n)
     end if
   end procedure str_from_string
   module procedure str_from_char
@@ -132,7 +135,8 @@ submodule (io_fortran_lib) internal_io
 #ifdef IOFL_HAS_R128
 #:endif
   module procedure cast_${k}$_to_string
-    into%s = complex_text(x, decimal_of(locale), real_fmt_of(fmt), decimals, im)
+    into%buf = complex_text(x, decimal_of(locale), real_fmt_of(fmt), decimals, im)
+    into%n = len(into%buf, kind=i64)
   end procedure cast_${k}$_to_string
 #:if k in QUAD_KINDS
 #endif
@@ -145,7 +149,8 @@ submodule (io_fortran_lib) internal_io
 #ifdef IOFL_HAS_R128
 #:endif
   module procedure cast_${k}$_to_string
-    into%s = real_text(x, decimal_of(locale), real_fmt_of(fmt), decimals)
+    into%buf = real_text(x, decimal_of(locale), real_fmt_of(fmt), decimals)
+    into%n = len(into%buf, kind=i64)
   end procedure cast_${k}$_to_string
 #:if k in QUAD_KINDS
 #endif
@@ -155,7 +160,8 @@ submodule (io_fortran_lib) internal_io
 
 #:for k in INT_KINDS
   module procedure cast_${k}$_to_string
-    into%s = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
+    into%buf = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
+    into%n = len(into%buf, kind=i64)
   end procedure cast_${k}$_to_string
 
 #:endfor
@@ -198,8 +204,8 @@ submodule (io_fortran_lib) internal_io
 #ifdef IOFL_HAS_R128
 #:endif
   module procedure cast_string_to_${k}$
-    if ( allocated(substring%s) ) then
-      call cast_char_to_${k}$(substring%s, into, locale, fmt, im, stat)
+    if ( allocated(substring%buf) ) then
+      call cast_char_to_${k}$(substring%buf(:substring%n), into, locale, fmt, im, stat)
     else
       into = (0e0_${r}$,0e0_${r}$)
       call report_cast(READ_ERR, EMPTY_STR, stat)
@@ -216,8 +222,8 @@ submodule (io_fortran_lib) internal_io
 #ifdef IOFL_HAS_R128
 #:endif
   module procedure cast_string_to_${k}$
-    if ( allocated(substring%s) ) then
-      call cast_char_to_${k}$(substring%s, into, locale, fmt, stat)
+    if ( allocated(substring%buf) ) then
+      call cast_char_to_${k}$(substring%buf(:substring%n), into, locale, fmt, stat)
     else
       into = 0e0_${k}$
       call report_cast(READ_ERR, EMPTY_STR, stat)
@@ -231,8 +237,8 @@ submodule (io_fortran_lib) internal_io
 
 #:for k in INT_KINDS
   module procedure cast_string_to_${k}$
-    if ( allocated(substring%s) ) then
-      call cast_char_to_${k}$(substring%s, into, fmt, stat)
+    if ( allocated(substring%buf) ) then
+      call cast_char_to_${k}$(substring%buf(:substring%n), into, fmt, stat)
     else
       into = 0_${k}$
       call report_cast(READ_ERR, EMPTY_STR, stat)

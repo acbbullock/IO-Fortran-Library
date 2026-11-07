@@ -190,7 +190,7 @@ submodule (io_fortran_lib) text_io
       return
     end if
 
-    if ( allocated(substring%s) ) write(unit=file_unit, iostat=stat_, iomsg=errmsg_) substring%s
+    if ( allocated(substring%buf) ) write(unit=file_unit, iostat=stat_, iomsg=errmsg_) substring%buf(:substring%n)
 
     if ( stat_ /= 0 ) then
       stat_ = WRITE_ERR
@@ -247,15 +247,15 @@ submodule (io_fortran_lib) text_io
     if ( header_present ) then
       select rank(x)
         rank(1)
-          cells(1,1)%s = trim(header(1))
+          cells(1,1)%buf = trim(header(1)); cells(1,1)%n = len(cells(1,1)%buf, kind=i64)
         rank(2)
           if ( size(header) == 1 ) then
             do j = 1, ncols
-              cells(1,j)%s = trim(header(1))//str(j)
+              cells(1,j)%buf = trim(header(1))//str(j); cells(1,j)%n = len(cells(1,j)%buf, kind=i64)
             end do
           else
             do j = 1, ncols
-              cells(1,j)%s = trim(header(j))
+              cells(1,j)%buf = trim(header(j)); cells(1,j)%n = len(cells(1,j)%buf, kind=i64)
             end do
           end if
       end select
@@ -300,15 +300,15 @@ submodule (io_fortran_lib) text_io
     if ( header_present ) then
       select rank(x)
         rank(1)
-          cells(1,1)%s = trim(header(1))
+          cells(1,1)%buf = trim(header(1)); cells(1,1)%n = len(cells(1,1)%buf, kind=i64)
         rank(2)
           if ( size(header) == 1 ) then
             do j = 1, ncols
-              cells(1,j)%s = trim(header(1))//str(j)
+              cells(1,j)%buf = trim(header(1))//str(j); cells(1,j)%n = len(cells(1,j)%buf, kind=i64)
             end do
           else
             do j = 1, ncols
-              cells(1,j)%s = trim(header(j))
+              cells(1,j)%buf = trim(header(j)); cells(1,j)%n = len(cells(1,j)%buf, kind=i64)
             end do
           end if
       end select
@@ -352,15 +352,15 @@ submodule (io_fortran_lib) text_io
     if ( header_present ) then
       select rank(x)
         rank(1)
-          cells(1,1)%s = trim(header(1))
+          cells(1,1)%buf = trim(header(1)); cells(1,1)%n = len(cells(1,1)%buf, kind=i64)
         rank(2)
           if ( size(header) == 1 ) then
             do j = 1, ncols
-              cells(1,j)%s = trim(header(1))//str(j)
+              cells(1,j)%buf = trim(header(1))//str(j); cells(1,j)%n = len(cells(1,j)%buf, kind=i64)
             end do
           else
             do j = 1, ncols
-              cells(1,j)%s = trim(header(j))
+              cells(1,j)%buf = trim(header(j)); cells(1,j)%n = len(cells(1,j)%buf, kind=i64)
             end do
           end if
       end select
@@ -406,15 +406,15 @@ submodule (io_fortran_lib) text_io
     if ( header_present ) then
       select rank(x)
         rank(1)
-          cells(1,1)%s = trim(header(1))
+          cells(1,1)%buf = trim(header(1)); cells(1,1)%n = len(cells(1,1)%buf, kind=i64)
         rank(2)
           if ( size(header) == 1 ) then
             do j = 1, ncols
-              cells(1,j)%s = trim(header(1))//str(j)
+              cells(1,j)%buf = trim(header(1))//str(j); cells(1,j)%n = len(cells(1,j)%buf, kind=i64)
             end do
           else
             do j = 1, ncols
-              cells(1,j)%s = trim(header(j))
+              cells(1,j)%buf = trim(header(j)); cells(1,j)%n = len(cells(1,j)%buf, kind=i64)
             end do
           end if
       end select
@@ -459,15 +459,15 @@ submodule (io_fortran_lib) text_io
     if ( header_present ) then
       select rank(x)
         rank(1)
-          cells(1,1)%s = trim(header(1))
+          cells(1,1)%buf = trim(header(1)); cells(1,1)%n = len(cells(1,1)%buf, kind=i64)
         rank(2)
           if ( size(header) == 1 ) then
             do j = 1, ncols
-              cells(1,j)%s = trim(header(1))//str(j)
+              cells(1,j)%buf = trim(header(1))//str(j); cells(1,j)%n = len(cells(1,j)%buf, kind=i64)
             end do
           else
             do j = 1, ncols
-              cells(1,j)%s = trim(header(j))
+              cells(1,j)%buf = trim(header(j)); cells(1,j)%n = len(cells(1,j)%buf, kind=i64)
             end do
           end if
       end select
@@ -511,15 +511,15 @@ submodule (io_fortran_lib) text_io
     if ( header_present ) then
       select rank(x)
         rank(1)
-          cells(1,1)%s = trim(header(1))
+          cells(1,1)%buf = trim(header(1)); cells(1,1)%n = len(cells(1,1)%buf, kind=i64)
         rank(2)
           if ( size(header) == 1 ) then
             do j = 1, ncols
-              cells(1,j)%s = trim(header(1))//str(j)
+              cells(1,j)%buf = trim(header(1))//str(j); cells(1,j)%n = len(cells(1,j)%buf, kind=i64)
             end do
           else
             do j = 1, ncols
-              cells(1,j)%s = trim(header(j))
+              cells(1,j)%buf = trim(header(j)); cells(1,j)%n = len(cells(1,j)%buf, kind=i64)
             end do
           end if
       end select
@@ -564,15 +564,15 @@ submodule (io_fortran_lib) text_io
     if ( header_present ) then
       select rank(x)
         rank(1)
-          cells(1,1)%s = trim(header(1))
+          cells(1,1)%buf = trim(header(1)); cells(1,1)%n = len(cells(1,1)%buf, kind=i64)
         rank(2)
           if ( size(header) == 1 ) then
             do j = 1, ncols
-              cells(1,j)%s = trim(header(1))//str(j)
+              cells(1,j)%buf = trim(header(1))//str(j); cells(1,j)%n = len(cells(1,j)%buf, kind=i64)
             end do
           else
             do j = 1, ncols
-              cells(1,j)%s = trim(header(j))
+              cells(1,j)%buf = trim(header(j)); cells(1,j)%n = len(cells(1,j)%buf, kind=i64)
             end do
           end if
       end select
@@ -616,15 +616,15 @@ submodule (io_fortran_lib) text_io
     if ( header_present ) then
       select rank(x)
         rank(1)
-          cells(1,1)%s = trim(header(1))
+          cells(1,1)%buf = trim(header(1)); cells(1,1)%n = len(cells(1,1)%buf, kind=i64)
         rank(2)
           if ( size(header) == 1 ) then
             do j = 1, ncols
-              cells(1,j)%s = trim(header(1))//str(j)
+              cells(1,j)%buf = trim(header(1))//str(j); cells(1,j)%n = len(cells(1,j)%buf, kind=i64)
             end do
           else
             do j = 1, ncols
-              cells(1,j)%s = trim(header(j))
+              cells(1,j)%buf = trim(header(j)); cells(1,j)%n = len(cells(1,j)%buf, kind=i64)
             end do
           end if
       end select
@@ -668,15 +668,15 @@ submodule (io_fortran_lib) text_io
     if ( header_present ) then
       select rank(x)
         rank(1)
-          cells(1,1)%s = trim(header(1))
+          cells(1,1)%buf = trim(header(1)); cells(1,1)%n = len(cells(1,1)%buf, kind=i64)
         rank(2)
           if ( size(header) == 1 ) then
             do j = 1, ncols
-              cells(1,j)%s = trim(header(1))//str(j)
+              cells(1,j)%buf = trim(header(1))//str(j); cells(1,j)%n = len(cells(1,j)%buf, kind=i64)
             end do
           else
             do j = 1, ncols
-              cells(1,j)%s = trim(header(j))
+              cells(1,j)%buf = trim(header(j)); cells(1,j)%n = len(cells(1,j)%buf, kind=i64)
             end do
           end if
       end select
@@ -720,15 +720,15 @@ submodule (io_fortran_lib) text_io
     if ( header_present ) then
       select rank(x)
         rank(1)
-          cells(1,1)%s = trim(header(1))
+          cells(1,1)%buf = trim(header(1)); cells(1,1)%n = len(cells(1,1)%buf, kind=i64)
         rank(2)
           if ( size(header) == 1 ) then
             do j = 1, ncols
-              cells(1,j)%s = trim(header(1))//str(j)
+              cells(1,j)%buf = trim(header(1))//str(j); cells(1,j)%n = len(cells(1,j)%buf, kind=i64)
             end do
           else
             do j = 1, ncols
-              cells(1,j)%s = trim(header(j))
+              cells(1,j)%buf = trim(header(j)); cells(1,j)%n = len(cells(1,j)%buf, kind=i64)
             end do
           end if
       end select
@@ -1645,7 +1645,7 @@ submodule (io_fortran_lib) text_io
 
     location = findloc(cell_stat /= 0, .true.)
     stat     = READ_ERR
-    errmsg   = 'Error reading file "'//file//'". Invalid number "'//cells(location(1),location(2))%s// &
+    errmsg   = 'Error reading file "'//file//'". Invalid number "'//cells(location(1),location(2))%as_str()// &
                '" at row '//str(location(1))//", column "//str(location(2))//"."
   end subroutine report_cells
 
@@ -1657,7 +1657,7 @@ submodule (io_fortran_lib) text_io
 
     do col = 1, size(cells, dim=2)
       do row = 1, size(cells, dim=1)
-        blank(row,col) = verify(cells(row,col)%s, SPACE//TAB//CR//LF) == 0
+        blank(row,col) = verify(cells(row,col)%buf(:cells(row,col)%n), SPACE//TAB//CR//LF) == 0
       end do
     end do
   end function is_blank

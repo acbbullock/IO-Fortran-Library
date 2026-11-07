@@ -74,7 +74,8 @@ module io_fortran_lib
     !! treated as the [empty string](../module/io_fortran_lib.html#variable-empty_str).
     !-------------------------------------------------------------------------------------------------------------------
     private
-    character(len=:), allocatable :: s !! Component is an allocatable string
+    character(len=:), allocatable :: buf     !! Text in `buf(:n)`, with any room to grow after it
+    integer(i64)                  :: n = 0_i64 !! Length of the text
     contains
       private
 

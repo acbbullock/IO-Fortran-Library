@@ -19,10 +19,10 @@ submodule (io_fortran_lib) string_methods
   contains ! Procedure bodies for module subprograms <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><
 
   module procedure as_str
-    if ( self%len() < 1 ) then
+    if ( self%len64() < 1_i64 ) then
       string_slice = EMPTY_STR
     else
-      string_slice = self%s
+      string_slice = self%buf(:self%n)
     end if
   end procedure as_str
 
@@ -54,7 +54,7 @@ submodule (io_fortran_lib) string_methods
       i = 1_i64; do
         if ( i > max_pos ) return
 
-        if ( iachar(self%s(i:i)) /= first_char ) then
+        if ( iachar(self%buf(i:i)) /= first_char ) then
           i = i + 1_i64; cycle
         else
           occurrences = occurrences + 1; i = i + 1_i64; cycle
@@ -66,11 +66,11 @@ submodule (io_fortran_lib) string_methods
       i = 1_i64; do
         if ( i > max_pos ) return
 
-        if ( iachar(self%s(i:i)) /= first_char ) then
+        if ( iachar(self%buf(i:i)) /= first_char ) then
           i = i + 1_i64; cycle
         end if
 
-        if ( iachar(self%s(i+1_i64:i+1_i64)) /= last_char ) then
+        if ( iachar(self%buf(i+1_i64:i+1_i64)) /= last_char ) then
           i = i + 1_i64; cycle
         else
           occurrences = occurrences + 1; i = i + 2_i64; cycle
@@ -81,17 +81,17 @@ submodule (io_fortran_lib) string_methods
     i = 1_i64; do
       if ( i > max_pos ) return
 
-      if ( iachar(self%s(i:i)) /= first_char ) then
+      if ( iachar(self%buf(i:i)) /= first_char ) then
         i = i + 1_i64; cycle
       end if
 
       upper_ind = i+match_len-1_i64
 
-      if ( iachar(self%s(upper_ind:upper_ind)) /= last_char ) then
+      if ( iachar(self%buf(upper_ind:upper_ind)) /= last_char ) then
         i = i + 1_i64; cycle
       end if
 
-      if ( self%s(i:upper_ind) == match ) then
+      if ( self%buf(i:upper_ind) == match ) then
         occurrences = occurrences + 1; i = i + match_len; cycle
       else
         i = i + 1_i64; cycle
@@ -121,13 +121,13 @@ submodule (io_fortran_lib) string_methods
     end if
 
     occurrences = 0; max_pos = self_len-match_len+1_i64
-    first_char = iachar(match%s(1:1)); last_char = iachar(match%s(match_len:match_len))
+    first_char = iachar(match%buf(1:1)); last_char = iachar(match%buf(match_len:match_len))
 
     if ( match_len == 1_i64 ) then
       i = 1_i64; do
         if ( i > max_pos ) return
 
-        if ( iachar(self%s(i:i)) /= first_char ) then
+        if ( iachar(self%buf(i:i)) /= first_char ) then
           i = i + 1_i64; cycle
         else
           occurrences = occurrences + 1; i = i + 1_i64; cycle
@@ -139,11 +139,11 @@ submodule (io_fortran_lib) string_methods
       i = 1_i64; do
         if ( i > max_pos ) return
 
-        if ( iachar(self%s(i:i)) /= first_char ) then
+        if ( iachar(self%buf(i:i)) /= first_char ) then
           i = i + 1_i64; cycle
         end if
 
-        if ( iachar(self%s(i+1_i64:i+1_i64)) /= last_char ) then
+        if ( iachar(self%buf(i+1_i64:i+1_i64)) /= last_char ) then
           i = i + 1_i64; cycle
         else
           occurrences = occurrences + 1; i = i + 2_i64; cycle
@@ -154,17 +154,17 @@ submodule (io_fortran_lib) string_methods
     i = 1_i64; do
       if ( i > max_pos ) return
 
-      if ( iachar(self%s(i:i)) /= first_char ) then
+      if ( iachar(self%buf(i:i)) /= first_char ) then
         i = i + 1_i64; cycle
       end if
 
       upper_ind = i+match_len-1_i64
 
-      if ( iachar(self%s(upper_ind:upper_ind)) /= last_char ) then
+      if ( iachar(self%buf(upper_ind:upper_ind)) /= last_char ) then
         i = i + 1_i64; cycle
       end if
 
-      if ( self%s(i:upper_ind) == match%s ) then
+      if ( self%buf(i:upper_ind) == match%buf(:match%n) ) then
         occurrences = occurrences + 1; i = i + match_len; cycle
       else
         i = i + 1_i64; cycle
@@ -173,7 +173,7 @@ submodule (io_fortran_lib) string_methods
   end procedure count_substring_string
 
   module procedure empty
-    self%s = EMPTY_STR
+    self%buf = EMPTY_STR; self%n = len(self%buf, kind=i64)
   end procedure empty
 
   module procedure join_into_self
@@ -184,9 +184,9 @@ submodule (io_fortran_lib) string_methods
 
     if ( num_tokens == 1_i64 ) then
       if ( tokens(1_i64)%len64() < 1_i64 ) then
-        self%s = EMPTY_STR; return
+        self%buf = EMPTY_STR; self%n = len(self%buf, kind=i64); return
       else
-        self%s = tokens(1_i64)%s; return
+        self%buf = tokens(1_i64)%buf(:tokens(1_i64)%n); self%n = len(self%buf, kind=i64); return
       end if
     end if
 
@@ -207,7 +207,7 @@ submodule (io_fortran_lib) string_methods
     sep_len    = len(separator, kind=i64)
 
     if ( num_tokens == 0_i64 ) then
-      self%s = EMPTY_STR; return
+      self%buf = EMPTY_STR; self%n = len(self%buf, kind=i64); return
     end if
 
     total_length = (num_tokens - 1_i64)*sep_len
@@ -224,7 +224,7 @@ submodule (io_fortran_lib) string_methods
       n = max(tokens(i)%len64(), 0_i64)
 
       if ( n > 0_i64 ) then
-        text(pos:pos+n-1_i64) = tokens(i)%s
+        text(pos:pos+n-1_i64) = tokens(i)%buf(:tokens(i)%n)
         pos = pos + n
       end if
 
@@ -234,46 +234,35 @@ submodule (io_fortran_lib) string_methods
       end if
     end do
 
-    call move_alloc(text, self%s)
+    self%n = total_length
+    call move_alloc(text, self%buf)
   end procedure join_base
 
   module procedure length
-    if ( .not. allocated(self%s) ) then
+    if ( .not. allocated(self%buf) ) then
       self_len = -1
     else
-      self_len = len(self%s)
+      self_len = int(self%n)
     end if
   end procedure length
 
   module procedure length64
-    if ( .not. allocated(self%s) ) then
+    if ( .not. allocated(self%buf) ) then
       self_len = -1_i64
     else
-      self_len = len(self%s, kind=i64)
+      self_len = self%n
     end if
   end procedure length64
 
   module procedure push_chars
-    if ( self%len() < 1 ) then
-      self%s = substring
-    else
-      self%s = self%s//substring
-    end if
+    call append(self, substring)
   end procedure push_chars
 
   module procedure push_string
-    if ( self%len() < 1 ) then
-      if ( substring%len() < 1 ) then
-        self%s = EMPTY_STR
-      else
-        self%s = substring%s
-      end if
+    if ( allocated(substring%buf) ) then
+      call append(self, substring%buf(:substring%n))
     else
-      if ( substring%len() < 1 ) then
-        return
-      else
-        self%s = self%s//substring%s
-      end if
+      call append(self, EMPTY_STR)
     end if
   end procedure push_string
 
@@ -362,7 +351,7 @@ submodule (io_fortran_lib) string_methods
       return
     end if
 
-    if ( allocated(self%s) ) deallocate(self%s, stat=stat_, errmsg=errmsg_)
+    if ( allocated(self%buf) ) deallocate(self%buf, stat=stat_, errmsg=errmsg_)
 
     if ( stat_ /= 0 ) then
       stat_ = ALLOC_ERR
@@ -371,7 +360,8 @@ submodule (io_fortran_lib) string_methods
       return
     end if
 
-    allocate( character(len=file_length) :: self%s, stat=stat_, errmsg=errmsg_ )
+    allocate( character(len=file_length) :: self%buf, stat=stat_, errmsg=errmsg_ )
+    self%n = file_length
 
     if ( stat_ /= 0 ) then
       stat_ = ALLOC_ERR
@@ -380,7 +370,7 @@ submodule (io_fortran_lib) string_methods
       return
     end if
 
-    read(unit=file_unit, iostat=stat_, iomsg=errmsg_) self%s
+    read(unit=file_unit, iostat=stat_, iomsg=errmsg_) self%buf(:self%n)
 
     if ( stat_ /= 0 ) then
       stat_ = READ_ERR
@@ -439,7 +429,7 @@ submodule (io_fortran_lib) string_methods
       column_separator_ = optval(column_separator, COMMA_DELIMITER)
 
       strip_cr = (row_separator_ == LF)
-      last     = end_of_data(self%s, row_separator_, strip_cr)
+      last     = end_of_data(self%buf(:self%n), row_separator_, strip_cr)
 
       if ( last < 1_i64 ) then
         stat_   = READ_ERR
@@ -451,7 +441,7 @@ submodule (io_fortran_lib) string_methods
       nrows = 1; ncols = 0; row = 1; col = 1; pos = 1_i64
 
       count_cells: do
-        call scan_cell(self%s, last, pos, row_separator_, column_separator_, strip_cr, pairs, cell, stat_)
+        call scan_cell(self%buf(:self%n), last, pos, row_separator_, column_separator_, strip_cr, pairs, cell, stat_)
 
         if ( stat_ /= 0 ) then
           errmsg_ = 'Error reading file "'//file//'". Quote in row '//str(row)//", column "//str(col)// &
@@ -492,14 +482,17 @@ submodule (io_fortran_lib) string_methods
       row = 1; col = 1; pos = 1_i64
 
       transfer_cells: do
-        call scan_cell(self%s, last, pos, row_separator_, column_separator_, strip_cr, pairs, cell, stat_)
+        call scan_cell(self%buf(:self%n), last, pos, row_separator_, column_separator_, strip_cr, pairs, cell, stat_)
 
         if ( cell%escaped ) then
-          cell_array(row,col)%s = without_escapes(self%s(cell%l:cell%r))//self%s(cell%tail_l:cell%tail_r)
+          cell_array(row,col)%buf = without_escapes(self%buf(cell%l:cell%r))//self%buf(cell%tail_l:cell%tail_r)
+          cell_array(row,col)%n = len(cell_array(row,col)%buf, kind=i64)
         else if ( cell%quoted ) then
-          cell_array(row,col)%s = self%s(cell%l:cell%r)//self%s(cell%tail_l:cell%tail_r)
+          cell_array(row,col)%buf = self%buf(cell%l:cell%r)//self%buf(cell%tail_l:cell%tail_r)
+          cell_array(row,col)%n = len(cell_array(row,col)%buf, kind=i64)
         else
-          cell_array(row,col)%s = self%s(cell%l:cell%r)
+          cell_array(row,col)%buf = self%buf(cell%l:cell%r)
+          cell_array(row,col)%n = len(cell_array(row,col)%buf, kind=i64)
         end if
 
         if ( cell%ends == ENDS_COLUMN ) then
@@ -518,546 +511,90 @@ submodule (io_fortran_lib) string_methods
   end procedure read_cells
 
   module procedure replace_ch_copy
-    integer :: i, self_len, match_len, substring_len, diff_len
-    logical :: back_
-
-    i=0; self_len=0; match_len=0; substring_len=0; diff_len=0; back_=.false.
-
-    self_len      = self%len()
-    match_len     = len(match)
-    substring_len = len(substring)
-
-    if ( self_len < 1 ) then
-      new%s = EMPTY_STR; return
-    end if
-
-    if ( (match_len < 1) .or. (match_len > self_len) ) then
-      new%s = self%s; return
-    end if
-
-    if ( .not. present(back) ) then
-      back_ = .false.
+    if ( self%len64() < 1_i64 ) then
+      new%buf = EMPTY_STR; new%n = len(new%buf, kind=i64)
     else
-      back_ = back
-    end if
-
-    new%s = self%s
-
-    if ( .not. back_ ) then
-      i = 1; diff_len = 0
-      match_and_replace_forward: do while ( i <= self_len )
-        if ( self%s(i:i) == match(1:1) ) then
-          if ( i+match_len-1 > self_len ) exit match_and_replace_forward
-
-          if ( self%s(i:i+match_len-1) == match ) then
-            new%s = new%s(:i-1+diff_len)//substring//new%s(i+match_len+diff_len:)
-            diff_len = diff_len + ( substring_len - match_len )
-            i = i + match_len; cycle match_and_replace_forward
-          else
-            i = i + 1; cycle match_and_replace_forward
-          end if
-        else
-          i = i + 1; cycle match_and_replace_forward
-        end if
-      end do match_and_replace_forward
-    else
-      i = self_len
-      match_and_replace_backward: do while ( i > 0 )
-        if ( self%s(i:i) == match(match_len:match_len) ) then
-          if ( i-match_len+1 < 1 ) exit match_and_replace_backward
-
-          if ( self%s(i-match_len+1:i) == match ) then
-            new%s = new%s(:i-match_len)//substring//new%s(i+1:)
-            i = i - match_len; cycle match_and_replace_backward
-          else
-            i = i - 1; cycle match_and_replace_backward
-          end if
-        else
-          i = i - 1; cycle match_and_replace_backward
-        end if
-      end do match_and_replace_backward
+      new%buf = replaced(self%buf(:self%n), match, substring, optval(back, .false.))
+      new%n = len(new%buf, kind=i64)
     end if
   end procedure replace_ch_copy
 
   module procedure replace_st_copy
-    character(len=:), allocatable :: substring_
-    integer                       :: i, self_len, match_len, substring_len, diff_len
-    logical                       :: back_
-
-    i=0; self_len=0; match_len=0; substring_len=0; diff_len=0; back_=.false.
-
-    self_len      = self%len()
-    match_len     = match%len()
-    substring_len = substring%len()
-
-    if ( self_len < 1 ) then
-      new%s = EMPTY_STR; return
-    end if
-
-    if ( (match_len < 1) .or. (match_len > self_len) ) then
-      new%s = self%s; return
-    end if
-
-    if ( substring_len < 1 ) then
-      substring_ = EMPTY_STR
+    if ( self%len64() < 1_i64 ) then
+      new%buf = EMPTY_STR; new%n = len(new%buf, kind=i64)
     else
-      substring_ = substring%s
-    end if
-
-    if ( .not. present(back) ) then
-      back_ = .false.
-    else
-      back_ = back
-    end if
-
-    new%s = self%s
-
-    if ( .not. back_ ) then
-      i = 1; diff_len = 0
-      match_and_replace_forward: do while ( i <= self_len )
-        if ( self%s(i:i) == match%s(1:1) ) then
-          if ( i+match_len-1 > self_len ) exit match_and_replace_forward
-
-          if ( self%s(i:i+match_len-1) == match%s ) then
-            new%s = new%s(:i-1+diff_len)//substring_//new%s(i+match_len+diff_len:)
-            diff_len = diff_len + ( substring_len - match_len )
-            i = i + match_len; cycle match_and_replace_forward
-          else
-            i = i + 1; cycle match_and_replace_forward
-          end if
-        else
-          i = i + 1; cycle match_and_replace_forward
-        end if
-      end do match_and_replace_forward
-    else
-      i = self_len
-      match_and_replace_backward: do while ( i > 0 )
-        if ( self%s(i:i) == match%s(match_len:match_len) ) then
-          if ( i-match_len+1 < 1 ) exit match_and_replace_backward
-
-          if ( self%s(i-match_len+1:i) == match%s ) then
-            new%s = new%s(:i-match_len)//substring_//new%s(i+1:)
-            i = i - match_len; cycle match_and_replace_backward
-          else
-            i = i - 1; cycle match_and_replace_backward
-          end if
-        else
-          i = i - 1; cycle match_and_replace_backward
-        end if
-      end do match_and_replace_backward
+      new%buf = replaced(self%buf(:self%n), match%as_str(), substring%as_str(), optval(back, .false.))
+      new%n = len(new%buf, kind=i64)
     end if
   end procedure replace_st_copy
 
   module procedure replace_chst_copy
-    character(len=:), allocatable :: substring_
-    integer                       :: i, self_len, match_len, substring_len, diff_len
-    logical                       :: back_
-
-    i=0; self_len=0; match_len=0; substring_len=0; diff_len=0; back_=.false.
-
-    self_len      = self%len()
-    match_len     = len(match)
-    substring_len = substring%len()
-
-    if ( self_len < 1 ) then
-      new%s = EMPTY_STR; return
-    end if
-
-    if ( (match_len < 1) .or. (match_len > self_len) ) then
-      new%s = self%s; return
-    end if
-
-    if ( substring_len < 1 ) then
-      substring_ = EMPTY_STR
+    if ( self%len64() < 1_i64 ) then
+      new%buf = EMPTY_STR; new%n = len(new%buf, kind=i64)
     else
-      substring_ = substring%s
-    end if
-
-    if ( .not. present(back) ) then
-      back_ = .false.
-    else
-      back_ = back
-    end if
-
-    new%s = self%s
-
-    if ( .not. back_ ) then
-      i = 1; diff_len = 0
-      match_and_replace_forward: do while ( i <= self_len )
-        if ( self%s(i:i) == match(1:1) ) then
-          if ( i+match_len-1 > self_len ) exit match_and_replace_forward
-
-          if ( self%s(i:i+match_len-1) == match ) then
-            new%s = new%s(:i-1+diff_len)//substring_//new%s(i+match_len+diff_len:)
-            diff_len = diff_len + ( substring_len - match_len )
-            i = i + match_len; cycle match_and_replace_forward
-          else
-            i = i + 1; cycle match_and_replace_forward
-          end if
-        else
-          i = i + 1; cycle match_and_replace_forward
-        end if
-      end do match_and_replace_forward
-    else
-      i = self_len
-      match_and_replace_backward: do while ( i > 0 )
-        if ( self%s(i:i) == match(match_len:match_len) ) then
-          if ( i-match_len+1 < 1 ) exit match_and_replace_backward
-
-          if ( self%s(i-match_len+1:i) == match ) then
-            new%s = new%s(:i-match_len)//substring_//new%s(i+1:)
-            i = i - match_len; cycle match_and_replace_backward
-          else
-            i = i - 1; cycle match_and_replace_backward
-          end if
-        else
-          i = i - 1; cycle match_and_replace_backward
-        end if
-      end do match_and_replace_backward
+      new%buf = replaced(self%buf(:self%n), match, substring%as_str(), optval(back, .false.))
+      new%n = len(new%buf, kind=i64)
     end if
   end procedure replace_chst_copy
 
   module procedure replace_stch_copy
-    integer :: i, self_len, match_len, substring_len, diff_len
-    logical :: back_
-
-    i=0; self_len=0; match_len=0; substring_len=0; diff_len=0; back_=.false.
-
-    self_len      = self%len()
-    match_len     = match%len()
-    substring_len = len(substring)
-
-    if ( self_len < 1 ) then
-      new%s = EMPTY_STR; return
-    end if
-
-    if ( (match_len < 1) .or. (match_len > self_len) ) then
-      new%s = self%s; return
-    end if
-
-    if ( .not. present(back) ) then
-      back_ = .false.
+    if ( self%len64() < 1_i64 ) then
+      new%buf = EMPTY_STR; new%n = len(new%buf, kind=i64)
     else
-      back_ = back
-    end if
-
-    new%s = self%s
-
-    if ( .not. back_ ) then
-      i = 1; diff_len = 0
-      match_and_replace_forward: do while ( i <= self_len )
-        if ( self%s(i:i) == match%s(1:1) ) then
-          if ( i+match_len-1 > self_len ) exit match_and_replace_forward
-
-          if ( self%s(i:i+match_len-1) == match%s ) then
-            new%s = new%s(:i-1+diff_len)//substring//new%s(i+match_len+diff_len:)
-            diff_len = diff_len + ( substring_len - match_len )
-            i = i + match_len; cycle match_and_replace_forward
-          else
-            i = i + 1; cycle match_and_replace_forward
-          end if
-        else
-          i = i + 1; cycle match_and_replace_forward
-        end if
-      end do match_and_replace_forward
-    else
-      i = self_len
-      match_and_replace_backward: do while ( i > 0 )
-        if ( self%s(i:i) == match%s(match_len:match_len) ) then
-          if ( i-match_len+1 < 1 ) exit match_and_replace_backward
-
-          if ( self%s(i-match_len+1:i) == match%s ) then
-            new%s = new%s(:i-match_len)//substring//new%s(i+1:)
-            i = i - match_len; cycle match_and_replace_backward
-          else
-            i = i - 1; cycle match_and_replace_backward
-          end if
-        else
-          i = i - 1; cycle match_and_replace_backward
-        end if
-      end do match_and_replace_backward
+      new%buf = replaced(self%buf(:self%n), match%as_str(), substring, optval(back, .false.))
+      new%n = len(new%buf, kind=i64)
     end if
   end procedure replace_stch_copy
 
   module procedure replace_ch_inplace
-    type(String) :: new
-    integer      :: i, self_len, match_len, substring_len, diff_len
-    logical      :: back_
-
-    i=0; self_len=0; match_len=0; substring_len=0; diff_len=0; back_=.false.
-
-    self_len      = self%len()
-    match_len     = len(match)
-    substring_len = len(substring)
-
-    if ( self_len < 1 ) then
-      self%s = EMPTY_STR; return
-    end if
-
-    if ( (match_len < 1) .or. (match_len > self_len) ) return
-
-    if ( .not. present(back) ) then
-      back_ = .false.
+    if ( self%len64() < 1_i64 ) then
+      self%buf = EMPTY_STR; self%n = len(self%buf, kind=i64)
     else
-      back_ = back
+      self%buf = replaced(self%buf(:self%n), match, substring, optval(back, .false.))
+      self%n = len(self%buf, kind=i64)
     end if
-
-    new%s = self%s
-
-    if ( .not. back_ ) then
-      i = 1; diff_len = 0
-      match_and_replace_forward: do while ( i <= self_len )
-        if ( self%s(i:i) == match(1:1) ) then
-          if ( i+match_len-1 > self_len ) exit match_and_replace_forward
-
-          if ( self%s(i:i+match_len-1) == match ) then
-            new%s = new%s(:i-1+diff_len)//substring//new%s(i+match_len+diff_len:)
-            diff_len = diff_len + ( substring_len - match_len )
-            i = i + match_len; cycle match_and_replace_forward
-          else
-            i = i + 1; cycle match_and_replace_forward
-          end if
-        else
-          i = i + 1; cycle match_and_replace_forward
-        end if
-      end do match_and_replace_forward
-    else
-      i = self_len
-      match_and_replace_backward: do while ( i > 0 )
-        if ( self%s(i:i) == match(match_len:match_len) ) then
-          if ( i-match_len+1 < 1 ) exit match_and_replace_backward
-
-          if ( self%s(i-match_len+1:i) == match ) then
-            new%s = new%s(:i-match_len)//substring//new%s(i+1:)
-            i = i - match_len; cycle match_and_replace_backward
-          else
-            i = i - 1; cycle match_and_replace_backward
-          end if
-        else
-          i = i - 1; cycle match_and_replace_backward
-        end if
-      end do match_and_replace_backward
-    end if
-
-    self%s = new%s
   end procedure replace_ch_inplace
 
   module procedure replace_st_inplace
-    type(String)                  :: new
-    character(len=:), allocatable :: substring_
-    integer                       :: i, self_len, match_len, substring_len, diff_len
-    logical                       :: back_
-
-    i=0; self_len=0; match_len=0; substring_len=0; diff_len=0; back_=.false.
-
-    self_len      = self%len()
-    match_len     = match%len()
-    substring_len = substring%len()
-
-    if ( self_len < 1 ) then
-      self%s = EMPTY_STR; return
-    end if
-
-    if ( (match_len < 1) .or. (match_len > self_len) ) return
-
-    if ( substring_len < 1 ) then
-      substring_ = EMPTY_STR
+    if ( self%len64() < 1_i64 ) then
+      self%buf = EMPTY_STR; self%n = len(self%buf, kind=i64)
     else
-      substring_ = substring%s
+      self%buf = replaced(self%buf(:self%n), match%as_str(), substring%as_str(), optval(back, .false.))
+      self%n = len(self%buf, kind=i64)
     end if
-
-    if ( .not. present(back) ) then
-      back_ = .false.
-    else
-      back_ = back
-    end if
-
-    new%s = self%s
-
-    if ( .not. back_ ) then
-      i = 1; diff_len = 0
-      match_and_replace_forward: do while ( i <= self_len )
-        if ( self%s(i:i) == match%s(1:1) ) then
-          if ( i+match_len-1 > self_len ) exit match_and_replace_forward
-
-          if ( self%s(i:i+match_len-1) == match%s ) then
-            new%s = new%s(:i-1+diff_len)//substring_//new%s(i+match_len+diff_len:)
-            diff_len = diff_len + ( substring_len - match_len )
-            i = i + match_len; cycle match_and_replace_forward
-          else
-            i = i + 1; cycle match_and_replace_forward
-          end if
-        else
-          i = i + 1; cycle match_and_replace_forward
-        end if
-      end do match_and_replace_forward
-    else
-      i = self_len
-      match_and_replace_backward: do while ( i > 0 )
-        if ( self%s(i:i) == match%s(match_len:match_len) ) then
-          if ( i-match_len+1 < 1 ) exit match_and_replace_backward
-
-          if ( self%s(i-match_len+1:i) == match%s ) then
-            new%s = new%s(:i-match_len)//substring_//new%s(i+1:)
-            i = i - match_len; cycle match_and_replace_backward
-          else
-            i = i - 1; cycle match_and_replace_backward
-          end if
-        else
-          i = i - 1; cycle match_and_replace_backward
-        end if
-      end do match_and_replace_backward
-    end if
-
-    self%s = new%s
   end procedure replace_st_inplace
 
   module procedure replace_chst_inplace
-    type(String)                  :: new
-    character(len=:), allocatable :: substring_
-    integer                       :: i, self_len, match_len, substring_len, diff_len
-    logical                       :: back_
-
-    i=0; self_len=0; match_len=0; substring_len=0; diff_len=0; back_=.false.
-
-    self_len      = self%len()
-    match_len     = len(match)
-    substring_len = substring%len()
-
-    if ( self_len < 1 ) then
-      self%s = EMPTY_STR; return
-    end if
-
-    if ( (match_len < 1) .or. (match_len > self_len) ) return
-
-    if ( substring_len < 1 ) then
-      substring_ = EMPTY_STR
+    if ( self%len64() < 1_i64 ) then
+      self%buf = EMPTY_STR; self%n = len(self%buf, kind=i64)
     else
-      substring_ = substring%s
+      self%buf = replaced(self%buf(:self%n), match, substring%as_str(), optval(back, .false.))
+      self%n = len(self%buf, kind=i64)
     end if
-
-    if ( .not. present(back) ) then
-      back_ = .false.
-    else
-      back_ = back
-    end if
-
-    new%s = self%s
-
-    if ( .not. back_ ) then
-      i = 1; diff_len = 0
-      match_and_replace_forward: do while ( i <= self_len )
-        if ( self%s(i:i) == match(1:1) ) then
-          if ( i+match_len-1 > self_len ) exit match_and_replace_forward
-
-          if ( self%s(i:i+match_len-1) == match ) then
-            new%s = new%s(:i-1+diff_len)//substring_//new%s(i+match_len+diff_len:)
-            diff_len = diff_len + ( substring_len - match_len )
-            i = i + match_len; cycle match_and_replace_forward
-          else
-            i = i + 1; cycle match_and_replace_forward
-          end if
-        else
-          i = i + 1; cycle match_and_replace_forward
-        end if
-      end do match_and_replace_forward
-    else
-      i = self_len
-      match_and_replace_backward: do while ( i > 0 )
-        if ( self%s(i:i) == match(match_len:match_len) ) then
-          if ( i-match_len+1 < 1 ) exit match_and_replace_backward
-
-          if ( self%s(i-match_len+1:i) == match ) then
-            new%s = new%s(:i-match_len)//substring_//new%s(i+1:)
-            i = i - match_len; cycle match_and_replace_backward
-          else
-            i = i - 1; cycle match_and_replace_backward
-          end if
-        else
-          i = i - 1; cycle match_and_replace_backward
-        end if
-      end do match_and_replace_backward
-    end if
-
-    self%s = new%s
   end procedure replace_chst_inplace
 
   module procedure replace_stch_inplace
-    type(String) :: new
-    integer      :: i, self_len, match_len, substring_len, diff_len
-    logical      :: back_
-
-    i=0; self_len=0; match_len=0; substring_len=0; diff_len=0; back_=.false.
-
-    self_len      = self%len()
-    match_len     = match%len()
-    substring_len = len(substring)
-
-    if ( self_len < 1 ) then
-      self%s = EMPTY_STR; return
-    end if
-
-    if ( (match_len < 1) .or. (match_len > self_len) ) return
-
-    if ( .not. present(back) ) then
-      back_ = .false.
+    if ( self%len64() < 1_i64 ) then
+      self%buf = EMPTY_STR; self%n = len(self%buf, kind=i64)
     else
-      back_ = back
+      self%buf = replaced(self%buf(:self%n), match%as_str(), substring, optval(back, .false.))
+      self%n = len(self%buf, kind=i64)
     end if
-
-    new%s = self%s
-
-    if ( .not. back_ ) then
-      i = 1; diff_len = 0
-      match_and_replace_forward: do while ( i <= self_len )
-        if ( self%s(i:i) == match%s(1:1) ) then
-          if ( i+match_len-1 > self_len ) exit match_and_replace_forward
-
-          if ( self%s(i:i+match_len-1) == match%s ) then
-            new%s = new%s(:i-1+diff_len)//substring//new%s(i+match_len+diff_len:)
-            diff_len = diff_len + ( substring_len - match_len )
-            i = i + match_len; cycle match_and_replace_forward
-          else
-            i = i + 1; cycle match_and_replace_forward
-          end if
-        else
-          i = i + 1; cycle match_and_replace_forward
-        end if
-      end do match_and_replace_forward
-    else
-      i = self_len
-      match_and_replace_backward: do while ( i > 0 )
-        if ( self%s(i:i) == match%s(match_len:match_len) ) then
-          if ( i-match_len+1 < 1 ) exit match_and_replace_backward
-
-          if ( self%s(i-match_len+1:i) == match%s ) then
-            new%s = new%s(:i-match_len)//substring//new%s(i+1:)
-            i = i - match_len; cycle match_and_replace_backward
-          else
-            i = i - 1; cycle match_and_replace_backward
-          end if
-        else
-          i = i - 1; cycle match_and_replace_backward
-        end if
-      end do match_and_replace_backward
-    end if
-
-    self%s = new%s
   end procedure replace_stch_inplace
 
   module procedure trim_copy
-    if ( self%len() < 1 ) then
-      new%s = EMPTY_STR
+    if ( self%len64() < 1_i64 ) then
+      new%buf = EMPTY_STR; new%n = len(new%buf, kind=i64)
     else
-      new%s = without_whitespace(self%s)
+      new%buf = without_whitespace(self%buf(:self%n)); new%n = len(new%buf, kind=i64)
     end if
   end procedure trim_copy
 
   module procedure trim_inplace
-    if ( self%len() < 1 ) then
-      self%s = EMPTY_STR
+    if ( self%len64() < 1_i64 ) then
+      self%buf = EMPTY_STR; self%n = len(self%buf, kind=i64)
     else
-      self%s = without_whitespace(self%s)
+      self%buf = without_whitespace(self%buf(:self%n)); self%n = len(self%buf, kind=i64)
     end if
   end procedure trim_inplace
 
@@ -1153,7 +690,7 @@ submodule (io_fortran_lib) string_methods
     row_sep_len = len(row_separator_)
     col_sep_len = len(column_separator_)
 
-    if ( allocated(self%s) ) deallocate(self%s, stat=stat_, errmsg=errmsg_)
+    if ( allocated(self%buf) ) deallocate(self%buf, stat=stat_, errmsg=errmsg_)
 
     if ( stat_ /= 0 ) then
       stat_ = ALLOC_ERR
@@ -1187,20 +724,23 @@ submodule (io_fortran_lib) string_methods
 
         if ( quoted(row,col) ) lengths(row,col) = 2_i64
 
-        if ( .not. allocated(cell_array(row,col)%s) ) cycle
-        if ( len(cell_array(row,col)%s) == 0 ) cycle
+        if ( .not. allocated(cell_array(row,col)%buf) ) cycle
+        if ( cell_array(row,col)%n == 0_i64 ) cycle
 
-        lengths(row,col) = len(cell_array(row,col)%s, kind=i64)
-        quoted(row,col)  = needs_quotes(cell_array(row,col)%s, special, pairs)
+        associate ( cell => cell_array(row,col) )
+          lengths(row,col) = cell%n
+          quoted(row,col)  = needs_quotes(cell%buf(:cell%n), special, pairs)
 
-        if ( quoted(row,col) ) lengths(row,col) = lengths(row,col) + 2_i64 + quote_count(cell_array(row,col)%s)
+          if ( quoted(row,col) ) lengths(row,col) = cell%n + 2_i64 + quote_count(cell%buf(:cell%n))
+        end associate
       end do
     end do
 
     total_len = sum(lengths) + int(nrows, kind=i64)*row_sep_len + &
                 int(nrows, kind=i64)*(ncols - 1)*col_sep_len
 
-    allocate( character(len=total_len) :: self%s, stat=stat_, errmsg=errmsg_ )
+    allocate( character(len=total_len) :: self%buf, stat=stat_, errmsg=errmsg_ )
+    self%n = total_len
 
     if ( stat_ /= 0 ) then
       stat_ = ALLOC_ERR
@@ -1210,21 +750,25 @@ submodule (io_fortran_lib) string_methods
 
     row = 1; col = 1; pos = 1_i64; positional_transfers: do while ( (nrows > 0) .and. (ncols > 0) )
       if ( quoted(row,col) .and. (lengths(row,col) == 2_i64) ) then
-        self%s(pos:pos+1_i64) = QQUOTE//QQUOTE
+        self%buf(pos:pos+1_i64) = QQUOTE//QQUOTE
         pos = pos + 2_i64
-      else if ( quoted(row,col) ) then
-        call write_quoted(cell_array(row,col)%s, self%s(pos:pos+lengths(row,col)-1_i64))
-        pos = pos + lengths(row,col)
       else if ( lengths(row,col) > 0_i64 ) then
-        self%s(pos:pos+lengths(row,col)-1_i64) = cell_array(row,col)%s
+        associate ( cell => cell_array(row,col) )
+          if ( quoted(row,col) ) then
+            call write_quoted(cell%buf(:cell%n), self%buf(pos:pos+lengths(row,col)-1_i64))
+          else
+            self%buf(pos:pos+lengths(row,col)-1_i64) = cell%buf(:cell%n)
+          end if
+        end associate
+
         pos = pos + lengths(row,col)
       end if
 
       if ( col < ncols ) then
-        if ( col_sep_len > 0 ) self%s(pos:pos+col_sep_len-1_i64) = column_separator_
+        if ( col_sep_len > 0 ) self%buf(pos:pos+col_sep_len-1_i64) = column_separator_
         pos = pos + col_sep_len; col = col + 1; cycle
       else
-        if ( row_sep_len > 0 ) self%s(pos:pos+row_sep_len-1_i64) = row_separator_
+        if ( row_sep_len > 0 ) self%buf(pos:pos+row_sep_len-1_i64) = row_separator_
 
         if ( row < nrows ) then
           pos = pos + row_sep_len; row = row + 1; col = 1; cycle
@@ -1263,7 +807,7 @@ submodule (io_fortran_lib) string_methods
       return
     end if
 
-    write(unit=file_unit, iostat=stat_, iomsg=errmsg_) self%s
+    write(unit=file_unit, iostat=stat_, iomsg=errmsg_) self%buf(:self%n)
 
     if ( stat_ /= 0 ) then
       stat_ = WRITE_ERR
@@ -1284,10 +828,10 @@ submodule (io_fortran_lib) string_methods
   end procedure write_cells
 
   module procedure write_string
-    if ( substring%len() < 1 ) then
+    if ( substring%len64() < 1_i64 ) then
       write(unit=unit, fmt="(a)", iostat=iostat, iomsg=iomsg) EMPTY_STR
     else
-      write(unit=unit, fmt="(a)", iostat=iostat, iomsg=iomsg) substring%s
+      write(unit=unit, fmt="(a)", iostat=iostat, iomsg=iomsg) substring%buf(:substring%n)
     end if
   end procedure write_string
 
@@ -1489,4 +1033,111 @@ submodule (io_fortran_lib) string_methods
       trimmed = text(first:verify(text, WHITESPACE, back=.true., kind=i64))
     end if
   end function without_whitespace
+
+  pure function replaced(text, match, substring, back) result(new)
+    !-------------------------------------------------------------------------------------------------------------------
+    !! Returns `text` with non-overlapping occurrences of `match` replaced, in one pass to count them and one to copy.
+    !! Matches are taken from the start of `text`, or from the end with `back`, which matters when they could overlap.
+    !-------------------------------------------------------------------------------------------------------------------
+    character(len=*), intent(in)  :: text, match, substring
+    logical,          intent(in)  :: back
+    character(len=:), allocatable :: new
+
+    integer(i64) :: text_len, match_len, sub_len, matches, i, o
+
+    text_len = len(text, kind=i64); match_len = len(match, kind=i64); sub_len = len(substring, kind=i64)
+
+    if ( (match_len < 1_i64) .or. (match_len > text_len) ) then
+      new = text; return
+    end if
+
+    matches = 0_i64
+
+    if ( back ) then
+      i = text_len
+
+      do while ( i >= match_len )
+        if ( text(i-match_len+1_i64:i) == match ) then
+          matches = matches + 1_i64; i = i - match_len
+        else
+          i = i - 1_i64
+        end if
+      end do
+
+      allocate( character(len=text_len+matches*(sub_len-match_len)) :: new )
+
+      i = text_len; o = len(new, kind=i64)
+
+      do while ( i >= 1_i64 )
+        if ( i >= match_len ) then
+          if ( text(i-match_len+1_i64:i) == match ) then
+            if ( sub_len > 0_i64 ) new(o-sub_len+1_i64:o) = substring
+            o = o - sub_len; i = i - match_len
+            cycle
+          end if
+        end if
+
+        new(o:o) = text(i:i)
+        o = o - 1_i64; i = i - 1_i64
+      end do
+    else
+      i = 1_i64
+
+      do while ( i <= text_len-match_len+1_i64 )
+        if ( text(i:i+match_len-1_i64) == match ) then
+          matches = matches + 1_i64; i = i + match_len
+        else
+          i = i + 1_i64
+        end if
+      end do
+
+      allocate( character(len=text_len+matches*(sub_len-match_len)) :: new )
+
+      i = 1_i64; o = 1_i64
+
+      do while ( i <= text_len )
+        if ( i <= text_len-match_len+1_i64 ) then
+          if ( text(i:i+match_len-1_i64) == match ) then
+            if ( sub_len > 0_i64 ) new(o:o+sub_len-1_i64) = substring
+            o = o + sub_len; i = i + match_len
+            cycle
+          end if
+        end if
+
+        new(o:o) = text(i:i)
+        o = o + 1_i64; i = i + 1_i64
+      end do
+    end if
+  end function replaced
+
+  pure subroutine append(self, text)
+    !-------------------------------------------------------------------------------------------------------------------
+    !! Appends in place when there is room, or else at least doubles the capacity, so that repeated appends are linear.
+    !-------------------------------------------------------------------------------------------------------------------
+    class(String),    intent(inout) :: self
+    character(len=*), intent(in)    :: text
+
+    character(len=:), allocatable :: grown
+    integer(i64)                  :: old_len, new_len
+
+    old_len = 0_i64
+    if ( allocated(self%buf) ) old_len = self%n
+
+    new_len = old_len + len(text, kind=i64)
+
+    if ( allocated(self%buf) ) then
+      if ( new_len <= len(self%buf, kind=i64) ) then
+        self%buf(old_len+1_i64:new_len) = text
+        self%n = new_len; return
+      end if
+    end if
+
+    allocate( character(len=max(new_len, 2_i64*old_len, 32_i64)) :: grown )
+
+    if ( old_len > 0_i64 ) grown(:old_len) = self%buf(:old_len)
+    grown(old_len+1_i64:new_len) = text
+
+    call move_alloc(grown, self%buf)
+    self%n = new_len
+  end subroutine append
 end submodule string_methods

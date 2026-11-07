@@ -32,63 +32,73 @@ submodule (io_fortran_lib) internal_io
   ! String ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #ifdef IOFL_HAS_R128
   module procedure new_string_from_c128
-    new%s = complex_text(x, decimal_of(locale), real_fmt_of(fmt), decimals, im)
+    new%buf = complex_text(x, decimal_of(locale), real_fmt_of(fmt), decimals, im)
+    new%n = len(new%buf, kind=i64)
   end procedure new_string_from_c128
 #endif
 
   module procedure new_string_from_c64
-    new%s = complex_text(x, decimal_of(locale), real_fmt_of(fmt), decimals, im)
+    new%buf = complex_text(x, decimal_of(locale), real_fmt_of(fmt), decimals, im)
+    new%n = len(new%buf, kind=i64)
   end procedure new_string_from_c64
 
   module procedure new_string_from_c32
-    new%s = complex_text(x, decimal_of(locale), real_fmt_of(fmt), decimals, im)
+    new%buf = complex_text(x, decimal_of(locale), real_fmt_of(fmt), decimals, im)
+    new%n = len(new%buf, kind=i64)
   end procedure new_string_from_c32
 
 
 #ifdef IOFL_HAS_R128
   module procedure new_string_from_r128
-    new%s = real_text(x, decimal_of(locale), real_fmt_of(fmt), decimals)
+    new%buf = real_text(x, decimal_of(locale), real_fmt_of(fmt), decimals)
+    new%n = len(new%buf, kind=i64)
   end procedure new_string_from_r128
 #endif
 
   module procedure new_string_from_r64
-    new%s = real_text(x, decimal_of(locale), real_fmt_of(fmt), decimals)
+    new%buf = real_text(x, decimal_of(locale), real_fmt_of(fmt), decimals)
+    new%n = len(new%buf, kind=i64)
   end procedure new_string_from_r64
 
   module procedure new_string_from_r32
-    new%s = real_text(x, decimal_of(locale), real_fmt_of(fmt), decimals)
+    new%buf = real_text(x, decimal_of(locale), real_fmt_of(fmt), decimals)
+    new%n = len(new%buf, kind=i64)
   end procedure new_string_from_r32
 
 
   module procedure new_string_from_i64
-    new%s = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
+    new%buf = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
+    new%n = len(new%buf, kind=i64)
   end procedure new_string_from_i64
 
   module procedure new_string_from_i32
-    new%s = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
+    new%buf = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
+    new%n = len(new%buf, kind=i64)
   end procedure new_string_from_i32
 
   module procedure new_string_from_i16
-    new%s = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
+    new%buf = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
+    new%n = len(new%buf, kind=i64)
   end procedure new_string_from_i16
 
   module procedure new_string_from_i8
-    new%s = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
+    new%buf = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
+    new%n = len(new%buf, kind=i64)
   end procedure new_string_from_i8
 
 
   module procedure new_string_from_string
-    if ( x%len() < 1 ) then
-      new%s = EMPTY_STR
+    if ( x%len64() < 1_i64 ) then
+      new%buf = EMPTY_STR; new%n = len(new%buf, kind=i64)
     else
-      new%s = x%s
+      new%buf = x%buf(:x%n); new%n = len(new%buf, kind=i64)
     end if
   end procedure new_string_from_string
   module procedure new_string_from_char
-    new%s = x
+    new%buf = x; new%n = len(new%buf, kind=i64)
   end procedure new_string_from_char
   module procedure new_string_from_empty
-    new%s = EMPTY_STR
+    new%buf = EMPTY_STR; new%n = len(new%buf, kind=i64)
   end procedure new_string_from_empty
 
   ! str ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -140,10 +150,10 @@ submodule (io_fortran_lib) internal_io
 
 
   module procedure str_from_string
-    if ( x%len() < 1 ) then
+    if ( x%len64() < 1_i64 ) then
       x_str = EMPTY_STR
     else
-      x_str = x%s
+      x_str = x%buf(:x%n)
     end if
   end procedure str_from_string
   module procedure str_from_char
@@ -156,48 +166,58 @@ submodule (io_fortran_lib) internal_io
   ! cast ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #ifdef IOFL_HAS_R128
   module procedure cast_c128_to_string
-    into%s = complex_text(x, decimal_of(locale), real_fmt_of(fmt), decimals, im)
+    into%buf = complex_text(x, decimal_of(locale), real_fmt_of(fmt), decimals, im)
+    into%n = len(into%buf, kind=i64)
   end procedure cast_c128_to_string
 #endif
 
   module procedure cast_c64_to_string
-    into%s = complex_text(x, decimal_of(locale), real_fmt_of(fmt), decimals, im)
+    into%buf = complex_text(x, decimal_of(locale), real_fmt_of(fmt), decimals, im)
+    into%n = len(into%buf, kind=i64)
   end procedure cast_c64_to_string
 
   module procedure cast_c32_to_string
-    into%s = complex_text(x, decimal_of(locale), real_fmt_of(fmt), decimals, im)
+    into%buf = complex_text(x, decimal_of(locale), real_fmt_of(fmt), decimals, im)
+    into%n = len(into%buf, kind=i64)
   end procedure cast_c32_to_string
 
 
 #ifdef IOFL_HAS_R128
   module procedure cast_r128_to_string
-    into%s = real_text(x, decimal_of(locale), real_fmt_of(fmt), decimals)
+    into%buf = real_text(x, decimal_of(locale), real_fmt_of(fmt), decimals)
+    into%n = len(into%buf, kind=i64)
   end procedure cast_r128_to_string
 #endif
 
   module procedure cast_r64_to_string
-    into%s = real_text(x, decimal_of(locale), real_fmt_of(fmt), decimals)
+    into%buf = real_text(x, decimal_of(locale), real_fmt_of(fmt), decimals)
+    into%n = len(into%buf, kind=i64)
   end procedure cast_r64_to_string
 
   module procedure cast_r32_to_string
-    into%s = real_text(x, decimal_of(locale), real_fmt_of(fmt), decimals)
+    into%buf = real_text(x, decimal_of(locale), real_fmt_of(fmt), decimals)
+    into%n = len(into%buf, kind=i64)
   end procedure cast_r32_to_string
 
 
   module procedure cast_i64_to_string
-    into%s = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
+    into%buf = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
+    into%n = len(into%buf, kind=i64)
   end procedure cast_i64_to_string
 
   module procedure cast_i32_to_string
-    into%s = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
+    into%buf = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
+    into%n = len(into%buf, kind=i64)
   end procedure cast_i32_to_string
 
   module procedure cast_i16_to_string
-    into%s = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
+    into%buf = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
+    into%n = len(into%buf, kind=i64)
   end procedure cast_i16_to_string
 
   module procedure cast_i8_to_string
-    into%s = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
+    into%buf = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
+    into%n = len(into%buf, kind=i64)
   end procedure cast_i8_to_string
 
 
@@ -250,8 +270,8 @@ submodule (io_fortran_lib) internal_io
 
 #ifdef IOFL_HAS_R128
   module procedure cast_string_to_c128
-    if ( allocated(substring%s) ) then
-      call cast_char_to_c128(substring%s, into, locale, fmt, im, stat)
+    if ( allocated(substring%buf) ) then
+      call cast_char_to_c128(substring%buf(:substring%n), into, locale, fmt, im, stat)
     else
       into = (0e0_r128,0e0_r128)
       call report_cast(READ_ERR, EMPTY_STR, stat)
@@ -260,8 +280,8 @@ submodule (io_fortran_lib) internal_io
 #endif
 
   module procedure cast_string_to_c64
-    if ( allocated(substring%s) ) then
-      call cast_char_to_c64(substring%s, into, locale, fmt, im, stat)
+    if ( allocated(substring%buf) ) then
+      call cast_char_to_c64(substring%buf(:substring%n), into, locale, fmt, im, stat)
     else
       into = (0e0_r64,0e0_r64)
       call report_cast(READ_ERR, EMPTY_STR, stat)
@@ -269,8 +289,8 @@ submodule (io_fortran_lib) internal_io
   end procedure cast_string_to_c64
 
   module procedure cast_string_to_c32
-    if ( allocated(substring%s) ) then
-      call cast_char_to_c32(substring%s, into, locale, fmt, im, stat)
+    if ( allocated(substring%buf) ) then
+      call cast_char_to_c32(substring%buf(:substring%n), into, locale, fmt, im, stat)
     else
       into = (0e0_r32,0e0_r32)
       call report_cast(READ_ERR, EMPTY_STR, stat)
@@ -280,8 +300,8 @@ submodule (io_fortran_lib) internal_io
 
 #ifdef IOFL_HAS_R128
   module procedure cast_string_to_r128
-    if ( allocated(substring%s) ) then
-      call cast_char_to_r128(substring%s, into, locale, fmt, stat)
+    if ( allocated(substring%buf) ) then
+      call cast_char_to_r128(substring%buf(:substring%n), into, locale, fmt, stat)
     else
       into = 0e0_r128
       call report_cast(READ_ERR, EMPTY_STR, stat)
@@ -290,8 +310,8 @@ submodule (io_fortran_lib) internal_io
 #endif
 
   module procedure cast_string_to_r64
-    if ( allocated(substring%s) ) then
-      call cast_char_to_r64(substring%s, into, locale, fmt, stat)
+    if ( allocated(substring%buf) ) then
+      call cast_char_to_r64(substring%buf(:substring%n), into, locale, fmt, stat)
     else
       into = 0e0_r64
       call report_cast(READ_ERR, EMPTY_STR, stat)
@@ -299,8 +319,8 @@ submodule (io_fortran_lib) internal_io
   end procedure cast_string_to_r64
 
   module procedure cast_string_to_r32
-    if ( allocated(substring%s) ) then
-      call cast_char_to_r32(substring%s, into, locale, fmt, stat)
+    if ( allocated(substring%buf) ) then
+      call cast_char_to_r32(substring%buf(:substring%n), into, locale, fmt, stat)
     else
       into = 0e0_r32
       call report_cast(READ_ERR, EMPTY_STR, stat)
@@ -309,8 +329,8 @@ submodule (io_fortran_lib) internal_io
 
 
   module procedure cast_string_to_i64
-    if ( allocated(substring%s) ) then
-      call cast_char_to_i64(substring%s, into, fmt, stat)
+    if ( allocated(substring%buf) ) then
+      call cast_char_to_i64(substring%buf(:substring%n), into, fmt, stat)
     else
       into = 0_i64
       call report_cast(READ_ERR, EMPTY_STR, stat)
@@ -318,8 +338,8 @@ submodule (io_fortran_lib) internal_io
   end procedure cast_string_to_i64
 
   module procedure cast_string_to_i32
-    if ( allocated(substring%s) ) then
-      call cast_char_to_i32(substring%s, into, fmt, stat)
+    if ( allocated(substring%buf) ) then
+      call cast_char_to_i32(substring%buf(:substring%n), into, fmt, stat)
     else
       into = 0_i32
       call report_cast(READ_ERR, EMPTY_STR, stat)
@@ -327,8 +347,8 @@ submodule (io_fortran_lib) internal_io
   end procedure cast_string_to_i32
 
   module procedure cast_string_to_i16
-    if ( allocated(substring%s) ) then
-      call cast_char_to_i16(substring%s, into, fmt, stat)
+    if ( allocated(substring%buf) ) then
+      call cast_char_to_i16(substring%buf(:substring%n), into, fmt, stat)
     else
       into = 0_i16
       call report_cast(READ_ERR, EMPTY_STR, stat)
@@ -336,8 +356,8 @@ submodule (io_fortran_lib) internal_io
   end procedure cast_string_to_i16
 
   module procedure cast_string_to_i8
-    if ( allocated(substring%s) ) then
-      call cast_char_to_i8(substring%s, into, fmt, stat)
+    if ( allocated(substring%buf) ) then
+      call cast_char_to_i8(substring%buf(:substring%n), into, fmt, stat)
     else
       into = 0_i8
       call report_cast(READ_ERR, EMPTY_STR, stat)

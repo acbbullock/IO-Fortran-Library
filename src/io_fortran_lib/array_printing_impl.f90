@@ -963,19 +963,19 @@ submodule (io_fortran_lib) array_printing
     do i = lbound(x, dim=1), ubound(x, dim=1)
       if ( i == lbound(x, dim=1) ) then
         if ( i == ubound(x, dim=1) ) then
-          rows(i)%s = LF//'    '//adjustl( x(i) )//LF
+          rows(i)%buf = LF//'    '//adjustl( x(i) )//LF; rows(i)%n = len(rows(i)%buf, kind=i64)
         else
-          rows(i)%s = LF//'    '//adjustl( x(i) )
+          rows(i)%buf = LF//'    '//adjustl( x(i) ); rows(i)%n = len(rows(i)%buf, kind=i64)
         end if
       else if ( i == ubound(x, dim=1) ) then
-        rows(i)%s = '    '//adjustl( x(i) )//LF
+        rows(i)%buf = '    '//adjustl( x(i) )//LF; rows(i)%n = len(rows(i)%buf, kind=i64)
       else
-        rows(i)%s = '    '//adjustl( x(i) )
+        rows(i)%buf = '    '//adjustl( x(i) ); rows(i)%n = len(rows(i)%buf, kind=i64)
       end if
     end do
 
     do i = lbound(x, dim=1), ubound(x, dim=1)
-      write(*,"(a)") rows(i)%s
+      write(*,"(a)") rows(i)%buf(:rows(i)%n)
     end do
   end procedure aprint_1dchar
 
@@ -990,19 +990,19 @@ submodule (io_fortran_lib) array_printing
     do i = lbound(x, dim=1), ubound(x, dim=1)
       if ( i == lbound(x, dim=1) ) then
         if ( i == ubound(x, dim=1) ) then
-          rows(i)%s = LF//'    '//accum( x(i,:) )//LF
+          rows(i)%buf = LF//'    '//accum( x(i,:) )//LF; rows(i)%n = len(rows(i)%buf, kind=i64)
         else
-          rows(i)%s = LF//'    '//accum( x(i,:) )
+          rows(i)%buf = LF//'    '//accum( x(i,:) ); rows(i)%n = len(rows(i)%buf, kind=i64)
         end if
       else if ( i == ubound(x, dim=1) ) then
-        rows(i)%s = '    '//accum( x(i,:) )//LF
+        rows(i)%buf = '    '//accum( x(i,:) )//LF; rows(i)%n = len(rows(i)%buf, kind=i64)
       else
-        rows(i)%s = '    '//accum( x(i,:) )
+        rows(i)%buf = '    '//accum( x(i,:) ); rows(i)%n = len(rows(i)%buf, kind=i64)
       end if
     end do
 
     do i = lbound(x, dim=1), ubound(x, dim=1)
-      write(*,"(a)") rows(i)%s
+      write(*,"(a)") rows(i)%buf(:rows(i)%n)
     end do
 
     contains
@@ -1051,7 +1051,7 @@ submodule (io_fortran_lib) array_printing
       if ( lengths(i) < 1 ) then
         char_arr(i) = EMPTY_STR
       else
-        char_arr(i) = x(i)%s
+        char_arr(i) = x(i)%buf(:x(i)%n)
       end if
     end do
 
@@ -1076,7 +1076,7 @@ submodule (io_fortran_lib) array_printing
         if ( lengths(i,j) < 1 ) then
           char_arr(i,j) = EMPTY_STR
         else
-          char_arr(i,j) = x(i,j)%s
+          char_arr(i,j) = x(i,j)%buf(:x(i,j)%n)
         end if
       end do
     end do
