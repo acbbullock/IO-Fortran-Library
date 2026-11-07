@@ -286,7 +286,7 @@ submodule (io_fortran_lib) string_methods
     character(len=:), pointer :: errmsg_
     integer,          pointer :: stat_
 
-    character(len=0), target :: dummy_msg
+    character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
 
     integer(i64) :: file_length
@@ -314,13 +314,16 @@ submodule (io_fortran_lib) string_methods
       errmsg_ = 'Error reading file "'//file//'" with extension "'//ext//'". To use read_file, the data to '// &
                 "be read into a String must be formatted as text with one of the following file extensions: "// &
                 join(TEXT_EXT)
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
       return
     end if
 
     inquire(file=file, exist=exists, iostat=stat_, iomsg=errmsg_)
 
     if ( stat_ /= 0 ) then
-      stat_ = READ_ERR; return
+      stat_ = READ_ERR
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
+      return
     end if
 
     file_unit = input_unit
@@ -331,47 +334,61 @@ submodule (io_fortran_lib) string_methods
     else
       stat_   = READ_ERR
       errmsg_ = 'Error reading file "'//file//'". No such file exists.'
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
       return
     end if
 
     if ( stat_ /= 0 ) then
-      stat_ = READ_ERR; return
+      stat_ = READ_ERR
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
+      return
     end if
 
     inquire(file=file, size=file_length, iostat=stat_, iomsg=errmsg_)
 
     if ( stat_ /= 0 ) then
-      stat_ = READ_ERR; return
+      stat_ = READ_ERR
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
+      return
     end if
 
     if ( file_length == 0_i64 ) then
       stat_   = READ_ERR
       errmsg_ = 'Error reading file "'//file//'". File is empty.'
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
       return
     end if
 
     if ( allocated(self%s) ) deallocate(self%s, stat=stat_, errmsg=errmsg_)
 
     if ( stat_ /= 0 ) then
-      stat_ = ALLOC_ERR; return
+      stat_ = ALLOC_ERR
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
+      return
     end if
 
     allocate( character(len=file_length) :: self%s, stat=stat_, errmsg=errmsg_ )
 
     if ( stat_ /= 0 ) then
-      stat_ = ALLOC_ERR; return
+      stat_ = ALLOC_ERR
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
+      return
     end if
 
     read(unit=file_unit, iostat=stat_, iomsg=errmsg_) self%s
 
     if ( stat_ /= 0 ) then
-      stat_ = READ_ERR; return
+      stat_ = READ_ERR
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
+      return
     end if
 
     close(unit=file_unit, iostat=stat_, iomsg=errmsg_)
 
     if ( stat_ /= 0 ) then
-      stat_ = READ_ERR; return
+      stat_ = READ_ERR
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
+      return
     end if
 
     if ( .not. present(cell_array) ) then
@@ -379,6 +396,7 @@ submodule (io_fortran_lib) string_methods
                                                       file//'" without a cell array output. Ignoring argument...'
       if ( present(column_separator) ) write(*,"(a)") LF//'WARNING: Column separator was provided for read of file "'//&
                                                       file//'" without a cell array output. Ignoring argument...'
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
       return
     end if
 
@@ -387,6 +405,7 @@ submodule (io_fortran_lib) string_methods
         stat_   = ARG_ERR
         errmsg_ = 'Error: Cannot populate a cell array with the contents of file "'//file//'" '// &
                   "using an empty row separator."
+        call stop_if_unhandled(stat_, errmsg_, present(stat))
         return
       end if
     end if
@@ -396,6 +415,7 @@ submodule (io_fortran_lib) string_methods
         stat_   = ARG_ERR
         errmsg_ = 'Error: Cannot populate a cell array with the contents of file "'//file//'" '// &
                   "using an empty column separator."
+        call stop_if_unhandled(stat_, errmsg_, present(stat))
         return
       end if
     end if
@@ -472,7 +492,9 @@ submodule (io_fortran_lib) string_methods
       allocate( cell_array(nrows,ncols), stat=stat_, errmsg=errmsg_ )
 
       if ( stat_ /= 0 ) then
-        stat_ = ALLOC_ERR; return
+        stat_ = ALLOC_ERR
+        call stop_if_unhandled(stat_, errmsg_, present(stat))
+        return
       end if
 
       row = 1; col = 1; l = 1_i64; i = 1_i64; positional_transfers: do
@@ -519,6 +541,8 @@ submodule (io_fortran_lib) string_methods
         end if
       end do positional_transfers
     end block cell_block
+
+    call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure read_file
 
   module procedure replace_ch_copy
@@ -1072,7 +1096,7 @@ submodule (io_fortran_lib) string_methods
     logical,          pointer :: append_
     integer,          pointer :: stat_
 
-    character(len=0), target :: dummy_msg
+    character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
 
     integer(i64), allocatable :: lengths(:,:)
@@ -1106,6 +1130,7 @@ submodule (io_fortran_lib) string_methods
       stat_ = ARG_ERR
       errmsg_ = 'Cannot write to file "'//file//'" due to unsupported file extension "'//ext//'". '// &
                 'Supported file extensions: '//join(TEXT_EXT)
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
       return
     end if
 
@@ -1135,7 +1160,9 @@ submodule (io_fortran_lib) string_methods
     if ( allocated(self%s) ) deallocate(self%s, stat=stat_, errmsg=errmsg_)
 
     if ( stat_ /= 0 ) then
-      stat_ = ALLOC_ERR; return
+      stat_ = ALLOC_ERR
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
+      return
     end if
 
     lengths = cell_array%len64()
@@ -1144,7 +1171,9 @@ submodule (io_fortran_lib) string_methods
     allocate( character(len=total_len) :: self%s, stat=stat_, errmsg=errmsg_ )
 
     if ( stat_ /= 0 ) then
-      stat_ = ALLOC_ERR; return
+      stat_ = ALLOC_ERR
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
+      return
     end if
 
     row = 1; col = 1; pos = 1_i64; positional_transfers: do
@@ -1170,7 +1199,9 @@ submodule (io_fortran_lib) string_methods
     inquire(file=file, exist=exists, iostat=stat_, iomsg=errmsg_)
 
     if ( stat_ /= 0 ) then
-      stat_ = WRITE_ERR; return
+      stat_ = WRITE_ERR
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
+      return
     end if
 
     file_unit = output_unit
@@ -1189,20 +1220,28 @@ submodule (io_fortran_lib) string_methods
     end if
 
     if ( stat_ /= 0 ) then
-      stat_ = WRITE_ERR; return
+      stat_ = WRITE_ERR
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
+      return
     end if
 
     write(unit=file_unit, iostat=stat_, iomsg=errmsg_) self%s
 
     if ( stat_ /= 0 ) then
-      stat_ = WRITE_ERR; return
+      stat_ = WRITE_ERR
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
+      return
     end if
 
     close(unit=file_unit, iostat=stat_, iomsg=errmsg_)
 
     if ( stat_ /= 0 ) then
-      stat_ = WRITE_ERR; return
+      stat_ = WRITE_ERR
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
+      return
     end if
+
+    call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure write_file
 
   module procedure write_string

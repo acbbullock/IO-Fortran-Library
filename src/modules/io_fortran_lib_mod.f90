@@ -948,135 +948,155 @@ module io_fortran_lib
     end subroutine cast_i8_to_char
 
 #ifdef IOFL_HAS_R128
-    pure elemental recursive module subroutine cast_string_to_c128(substring, into, locale, fmt, im)
+    pure elemental recursive module subroutine cast_string_to_c128(substring, into, locale, fmt, im, stat)
       class(String),    intent(in)           :: substring
       complex(r128),    intent(out)          :: into
       character(len=*), intent(in), optional :: locale
       character(len=*), intent(in), optional :: fmt
       character(len=*), intent(in), optional :: im
+      integer,          intent(out), optional :: stat
     end subroutine cast_string_to_c128
 #endif
-    pure elemental recursive module subroutine cast_string_to_c64(substring, into, locale, fmt, im)
+    pure elemental recursive module subroutine cast_string_to_c64(substring, into, locale, fmt, im, stat)
       class(String),    intent(in)           :: substring
       complex(r64),     intent(out)          :: into
       character(len=*), intent(in), optional :: locale
       character(len=*), intent(in), optional :: fmt
       character(len=*), intent(in), optional :: im
+      integer,          intent(out), optional :: stat
     end subroutine cast_string_to_c64
-    pure elemental recursive module subroutine cast_string_to_c32(substring, into, locale, fmt, im)
+    pure elemental recursive module subroutine cast_string_to_c32(substring, into, locale, fmt, im, stat)
       class(String),    intent(in)           :: substring
       complex(r32),     intent(out)          :: into
       character(len=*), intent(in), optional :: locale
       character(len=*), intent(in), optional :: fmt
       character(len=*), intent(in), optional :: im
+      integer,          intent(out), optional :: stat
     end subroutine cast_string_to_c32
 
 #ifdef IOFL_HAS_R128
-    pure elemental recursive module subroutine cast_string_to_r128(substring, into, locale, fmt)
+    pure elemental recursive module subroutine cast_string_to_r128(substring, into, locale, fmt, stat)
       class(String),    intent(in)           :: substring
       real(r128),       intent(out)          :: into
       character(len=*), intent(in), optional :: locale
       character(len=*), intent(in), optional :: fmt
+      integer,          intent(out), optional :: stat
     end subroutine cast_string_to_r128
 #endif
-    pure elemental recursive module subroutine cast_string_to_r64(substring, into, locale, fmt)
+    pure elemental recursive module subroutine cast_string_to_r64(substring, into, locale, fmt, stat)
       class(String),    intent(in)           :: substring
       real(r64),        intent(out)          :: into
       character(len=*), intent(in), optional :: locale
       character(len=*), intent(in), optional :: fmt
+      integer,          intent(out), optional :: stat
     end subroutine cast_string_to_r64
-    pure elemental recursive module subroutine cast_string_to_r32(substring, into, locale, fmt)
+    pure elemental recursive module subroutine cast_string_to_r32(substring, into, locale, fmt, stat)
       class(String),    intent(in)           :: substring
       real(r32),        intent(out)          :: into
       character(len=*), intent(in), optional :: locale
       character(len=*), intent(in), optional :: fmt
+      integer,          intent(out), optional :: stat
     end subroutine cast_string_to_r32
 
-    pure elemental recursive module subroutine cast_string_to_i64(substring, into, fmt)
+    pure elemental recursive module subroutine cast_string_to_i64(substring, into, fmt, stat)
       class(String),    intent(in)           :: substring
       integer(i64),     intent(out)          :: into
       character(len=*), intent(in), optional :: fmt
+      integer,          intent(out), optional :: stat
     end subroutine cast_string_to_i64
-    pure elemental recursive module subroutine cast_string_to_i32(substring, into, fmt)
+    pure elemental recursive module subroutine cast_string_to_i32(substring, into, fmt, stat)
       class(String),    intent(in)           :: substring
       integer(i32),     intent(out)          :: into
       character(len=*), intent(in), optional :: fmt
+      integer,          intent(out), optional :: stat
     end subroutine cast_string_to_i32
-    pure elemental recursive module subroutine cast_string_to_i16(substring, into, fmt)
+    pure elemental recursive module subroutine cast_string_to_i16(substring, into, fmt, stat)
       class(String),    intent(in)           :: substring
       integer(i16),     intent(out)          :: into
       character(len=*), intent(in), optional :: fmt
+      integer,          intent(out), optional :: stat
     end subroutine cast_string_to_i16
-    pure elemental recursive module subroutine cast_string_to_i8(substring, into, fmt)
+    pure elemental recursive module subroutine cast_string_to_i8(substring, into, fmt, stat)
       class(String),    intent(in)           :: substring
       integer(i8),      intent(out)          :: into
       character(len=*), intent(in), optional :: fmt
+      integer,          intent(out), optional :: stat
     end subroutine cast_string_to_i8
 
 #ifdef IOFL_HAS_R128
-    pure recursive module subroutine cast_char_to_c128(substring, into, locale, fmt, im)
+    pure recursive module subroutine cast_char_to_c128(substring, into, locale, fmt, im, stat)
       character(len=*), intent(in)           :: substring
       complex(r128),    intent(out)          :: into
       character(len=*), intent(in), optional :: locale
       character(len=*), intent(in), optional :: fmt
       character(len=*), intent(in), optional :: im
+      integer,          intent(out), optional :: stat
     end subroutine cast_char_to_c128
 #endif
-    pure recursive module subroutine cast_char_to_c64(substring, into, locale, fmt, im)
+    pure recursive module subroutine cast_char_to_c64(substring, into, locale, fmt, im, stat)
       character(len=*), intent(in)           :: substring
       complex(r64),     intent(out)          :: into
       character(len=*), intent(in), optional :: locale
       character(len=*), intent(in), optional :: fmt
       character(len=*), intent(in), optional :: im
+      integer,          intent(out), optional :: stat
     end subroutine cast_char_to_c64
-    pure recursive module subroutine cast_char_to_c32(substring, into, locale, fmt, im)
+    pure recursive module subroutine cast_char_to_c32(substring, into, locale, fmt, im, stat)
       character(len=*), intent(in)           :: substring
       complex(r32),     intent(out)          :: into
       character(len=*), intent(in), optional :: locale
       character(len=*), intent(in), optional :: fmt
       character(len=*), intent(in), optional :: im
+      integer,          intent(out), optional :: stat
     end subroutine cast_char_to_c32
 
 #ifdef IOFL_HAS_R128
-    pure recursive module subroutine cast_char_to_r128(substring, into, locale, fmt)
+    pure recursive module subroutine cast_char_to_r128(substring, into, locale, fmt, stat)
       character(len=*), intent(in)           :: substring
       real(r128),       intent(out)          :: into
       character(len=*), intent(in), optional :: locale
       character(len=*), intent(in), optional :: fmt
+      integer,          intent(out), optional :: stat
     end subroutine cast_char_to_r128
 #endif
-    pure recursive module subroutine cast_char_to_r64(substring, into, locale, fmt)
+    pure recursive module subroutine cast_char_to_r64(substring, into, locale, fmt, stat)
       character(len=*), intent(in)           :: substring
       real(r64),        intent(out)          :: into
       character(len=*), intent(in), optional :: locale
       character(len=*), intent(in), optional :: fmt
+      integer,          intent(out), optional :: stat
     end subroutine cast_char_to_r64
-    pure recursive module subroutine cast_char_to_r32(substring, into, locale, fmt)
+    pure recursive module subroutine cast_char_to_r32(substring, into, locale, fmt, stat)
       character(len=*), intent(in)           :: substring
       real(r32),        intent(out)          :: into
       character(len=*), intent(in), optional :: locale
       character(len=*), intent(in), optional :: fmt
+      integer,          intent(out), optional :: stat
     end subroutine cast_char_to_r32
 
-    pure recursive module subroutine cast_char_to_i64(substring, into, fmt)
+    pure recursive module subroutine cast_char_to_i64(substring, into, fmt, stat)
       character(len=*), intent(in)           :: substring
       integer(i64),     intent(out)          :: into
       character(len=*), intent(in), optional :: fmt
+      integer,          intent(out), optional :: stat
     end subroutine cast_char_to_i64
-    pure recursive module subroutine cast_char_to_i32(substring, into, fmt)
+    pure recursive module subroutine cast_char_to_i32(substring, into, fmt, stat)
       character(len=*), intent(in)           :: substring
       integer(i32),     intent(out)          :: into
       character(len=*), intent(in), optional :: fmt
+      integer,          intent(out), optional :: stat
     end subroutine cast_char_to_i32
-    pure recursive module subroutine cast_char_to_i16(substring, into, fmt)
+    pure recursive module subroutine cast_char_to_i16(substring, into, fmt, stat)
       character(len=*), intent(in)           :: substring
       integer(i16),     intent(out)          :: into
       character(len=*), intent(in), optional :: fmt
+      integer,          intent(out), optional :: stat
     end subroutine cast_char_to_i16
-    pure recursive module subroutine cast_char_to_i8(substring, into, fmt)
+    pure recursive module subroutine cast_char_to_i8(substring, into, fmt, stat)
       character(len=*), intent(in)           :: substring
       integer(i8),      intent(out)          :: into
       character(len=*), intent(in), optional :: fmt
+      integer,          intent(out), optional :: stat
     end subroutine cast_char_to_i8
   end interface cast
 
@@ -1979,6 +1999,17 @@ module io_fortran_lib
   end interface aprint
 
 contains
+  pure subroutine stop_if_unhandled(stat, errmsg, handled)
+    !-------------------------------------------------------------------------------------------------------------------
+    !! Ends the program on an error when the caller did not pass `stat`, so that an error can't go unnoticed.
+    !-------------------------------------------------------------------------------------------------------------------
+    integer,          intent(in) :: stat
+    character(len=*), intent(in) :: errmsg
+    logical,          intent(in) :: handled
+
+    if ( (stat /= 0) .and. (.not. handled) ) error stop trim(errmsg)
+  end subroutine stop_if_unhandled
+
   pure elemental function char_concat_plus(charsl, charsr) result(new)
     !-------------------------------------------------------------------------------------------------------------------
     !! Defined here rather than in submodule `operators` because ifx 2026.2 rejects this result length in the interface

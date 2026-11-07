@@ -46,7 +46,7 @@ submodule (io_fortran_lib) file_io
     character(len=:), pointer :: locale_, delim_, fmt_, im_, errmsg_
     integer,          pointer :: decimals_, stat_
 
-    character(len=0), target :: dummy_msg
+    character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
 
     ext = ext_of(file)
@@ -72,6 +72,7 @@ submodule (io_fortran_lib) file_io
         rank default
           stat_   = ARG_ERR
           errmsg_ = "Cannot write an array of rank "//str(rank(x))//" to text file."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
 
@@ -83,12 +84,14 @@ submodule (io_fortran_lib) file_io
             rank(1)
               stat_ = ARG_ERR
               errmsg_ = 'Invalid header for file "'//file//'". Header for this data must have size 1.'
+              call stop_if_unhandled(stat_, errmsg_, present(stat))
               return
             rank(2)
               if ( size(header) /= size(x, dim=2) ) then
                 stat_ = ARG_ERR
                 errmsg_ = 'Invalid header for file "'//file//'". Header for this data must have size 1 or size '// &
                           str(size(x, dim=2))//"."
+                call stop_if_unhandled(stat_, errmsg_, present(stat))
                 return
               end if
           end select
@@ -104,6 +107,7 @@ submodule (io_fortran_lib) file_io
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid locale "'//locale//'" for file "'//file//'". Locale must be one of: '//join(LOCALES)
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
         end if
       end if
@@ -126,6 +130,7 @@ submodule (io_fortran_lib) file_io
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid format "'//fmt//'" for file "'//file//'". Format must be one of: '//join(REAL_FMTS)
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
         end if
       end if
@@ -171,8 +176,9 @@ submodule (io_fortran_lib) file_io
         rank(14); call to_binary(x, file, stat_, errmsg_)
         rank(15); call to_binary(x, file, stat_, errmsg_)
         rank default
-          stat   = ARG_ERR
-          errmsg = "Array has invalid rank. Supported ranks: 1-15."
+          stat_  = ARG_ERR
+          errmsg_ = "Array has invalid rank. Supported ranks: 1-15."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
     else
@@ -180,6 +186,8 @@ submodule (io_fortran_lib) file_io
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
                 join(TEXT_EXT)//SPACE//join(BINARY_EXT)
     end if
+
+    call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure to_file_c128
 #endif
   module procedure to_file_c64
@@ -189,7 +197,7 @@ submodule (io_fortran_lib) file_io
     character(len=:), pointer :: locale_, delim_, fmt_, im_, errmsg_
     integer,          pointer :: decimals_, stat_
 
-    character(len=0), target :: dummy_msg
+    character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
 
     ext = ext_of(file)
@@ -215,6 +223,7 @@ submodule (io_fortran_lib) file_io
         rank default
           stat_   = ARG_ERR
           errmsg_ = "Cannot write an array of rank "//str(rank(x))//" to text file."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
 
@@ -226,12 +235,14 @@ submodule (io_fortran_lib) file_io
             rank(1)
               stat_ = ARG_ERR
               errmsg_ = 'Invalid header for file "'//file//'". Header for this data must have size 1.'
+              call stop_if_unhandled(stat_, errmsg_, present(stat))
               return
             rank(2)
               if ( size(header) /= size(x, dim=2) ) then
                 stat_ = ARG_ERR
                 errmsg_ = 'Invalid header for file "'//file//'". Header for this data must have size 1 or size '// &
                           str(size(x, dim=2))//"."
+                call stop_if_unhandled(stat_, errmsg_, present(stat))
                 return
               end if
           end select
@@ -247,6 +258,7 @@ submodule (io_fortran_lib) file_io
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid locale "'//locale//'" for file "'//file//'". Locale must be one of: '//join(LOCALES)
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
         end if
       end if
@@ -269,6 +281,7 @@ submodule (io_fortran_lib) file_io
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid format "'//fmt//'" for file "'//file//'". Format must be one of: '//join(REAL_FMTS)
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
         end if
       end if
@@ -314,8 +327,9 @@ submodule (io_fortran_lib) file_io
         rank(14); call to_binary(x, file, stat_, errmsg_)
         rank(15); call to_binary(x, file, stat_, errmsg_)
         rank default
-          stat   = ARG_ERR
-          errmsg = "Array has invalid rank. Supported ranks: 1-15."
+          stat_  = ARG_ERR
+          errmsg_ = "Array has invalid rank. Supported ranks: 1-15."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
     else
@@ -323,6 +337,8 @@ submodule (io_fortran_lib) file_io
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
                 join(TEXT_EXT)//SPACE//join(BINARY_EXT)
     end if
+
+    call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure to_file_c64
   module procedure to_file_c32
     character(len=:), allocatable :: ext
@@ -331,7 +347,7 @@ submodule (io_fortran_lib) file_io
     character(len=:), pointer :: locale_, delim_, fmt_, im_, errmsg_
     integer,          pointer :: decimals_, stat_
 
-    character(len=0), target :: dummy_msg
+    character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
 
     ext = ext_of(file)
@@ -357,6 +373,7 @@ submodule (io_fortran_lib) file_io
         rank default
           stat_   = ARG_ERR
           errmsg_ = "Cannot write an array of rank "//str(rank(x))//" to text file."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
 
@@ -368,12 +385,14 @@ submodule (io_fortran_lib) file_io
             rank(1)
               stat_ = ARG_ERR
               errmsg_ = 'Invalid header for file "'//file//'". Header for this data must have size 1.'
+              call stop_if_unhandled(stat_, errmsg_, present(stat))
               return
             rank(2)
               if ( size(header) /= size(x, dim=2) ) then
                 stat_ = ARG_ERR
                 errmsg_ = 'Invalid header for file "'//file//'". Header for this data must have size 1 or size '// &
                           str(size(x, dim=2))//"."
+                call stop_if_unhandled(stat_, errmsg_, present(stat))
                 return
               end if
           end select
@@ -389,6 +408,7 @@ submodule (io_fortran_lib) file_io
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid locale "'//locale//'" for file "'//file//'". Locale must be one of: '//join(LOCALES)
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
         end if
       end if
@@ -411,6 +431,7 @@ submodule (io_fortran_lib) file_io
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid format "'//fmt//'" for file "'//file//'". Format must be one of: '//join(REAL_FMTS)
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
         end if
       end if
@@ -456,8 +477,9 @@ submodule (io_fortran_lib) file_io
         rank(14); call to_binary(x, file, stat_, errmsg_)
         rank(15); call to_binary(x, file, stat_, errmsg_)
         rank default
-          stat   = ARG_ERR
-          errmsg = "Array has invalid rank. Supported ranks: 1-15."
+          stat_  = ARG_ERR
+          errmsg_ = "Array has invalid rank. Supported ranks: 1-15."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
     else
@@ -465,6 +487,8 @@ submodule (io_fortran_lib) file_io
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
                 join(TEXT_EXT)//SPACE//join(BINARY_EXT)
     end if
+
+    call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure to_file_c32
 
 #ifdef IOFL_HAS_R128
@@ -475,7 +499,7 @@ submodule (io_fortran_lib) file_io
     character(len=:), pointer :: locale_, delim_, fmt_, errmsg_
     integer,          pointer :: decimals_, stat_
 
-    character(len=0), target :: dummy_msg
+    character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
 
     ext = ext_of(file)
@@ -501,6 +525,7 @@ submodule (io_fortran_lib) file_io
         rank default
           stat_   = ARG_ERR
           errmsg_ = "Cannot write an array of rank "//str(rank(x))//" to text file."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
 
@@ -512,12 +537,14 @@ submodule (io_fortran_lib) file_io
             rank(1)
               stat_ = ARG_ERR
               errmsg_ = 'Invalid header for file "'//file//'". Header for this data must have size 1.'
+              call stop_if_unhandled(stat_, errmsg_, present(stat))
               return
             rank(2)
               if ( size(header) /= size(x, dim=2) ) then
                 stat_ = ARG_ERR
                 errmsg_ = 'Invalid header for file "'//file//'". Header for this data must have size 1 or size '// &
                           str(size(x, dim=2))//"."
+                call stop_if_unhandled(stat_, errmsg_, present(stat))
                 return
               end if
           end select
@@ -533,6 +560,7 @@ submodule (io_fortran_lib) file_io
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid locale "'//locale//'" for file "'//file//'". Locale must be one of: '//join(LOCALES)
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
         end if
       end if
@@ -555,6 +583,7 @@ submodule (io_fortran_lib) file_io
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid format "'//fmt//'" for file "'//file//'". Format must be one of: '//join(REAL_FMTS)
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
         end if
       end if
@@ -593,8 +622,9 @@ submodule (io_fortran_lib) file_io
         rank(14); call to_binary(x, file, stat_, errmsg_)
         rank(15); call to_binary(x, file, stat_, errmsg_)
         rank default
-          stat   = ARG_ERR
-          errmsg = "Array has invalid rank. Supported ranks: 1-15."
+          stat_  = ARG_ERR
+          errmsg_ = "Array has invalid rank. Supported ranks: 1-15."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
     else
@@ -602,6 +632,8 @@ submodule (io_fortran_lib) file_io
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
                 join(TEXT_EXT)//SPACE//join(BINARY_EXT)
     end if
+
+    call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure to_file_r128
 #endif
   module procedure to_file_r64
@@ -611,7 +643,7 @@ submodule (io_fortran_lib) file_io
     character(len=:), pointer :: locale_, delim_, fmt_, errmsg_
     integer,          pointer :: decimals_, stat_
 
-    character(len=0), target :: dummy_msg
+    character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
 
     ext = ext_of(file)
@@ -637,6 +669,7 @@ submodule (io_fortran_lib) file_io
         rank default
           stat_   = ARG_ERR
           errmsg_ = "Cannot write an array of rank "//str(rank(x))//" to text file."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
 
@@ -648,12 +681,14 @@ submodule (io_fortran_lib) file_io
             rank(1)
               stat_ = ARG_ERR
               errmsg_ = 'Invalid header for file "'//file//'". Header for this data must have size 1.'
+              call stop_if_unhandled(stat_, errmsg_, present(stat))
               return
             rank(2)
               if ( size(header) /= size(x, dim=2) ) then
                 stat_ = ARG_ERR
                 errmsg_ = 'Invalid header for file "'//file//'". Header for this data must have size 1 or size '// &
                           str(size(x, dim=2))//"."
+                call stop_if_unhandled(stat_, errmsg_, present(stat))
                 return
               end if
           end select
@@ -669,6 +704,7 @@ submodule (io_fortran_lib) file_io
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid locale "'//locale//'" for file "'//file//'". Locale must be one of: '//join(LOCALES)
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
         end if
       end if
@@ -691,6 +727,7 @@ submodule (io_fortran_lib) file_io
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid format "'//fmt//'" for file "'//file//'". Format must be one of: '//join(REAL_FMTS)
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
         end if
       end if
@@ -729,8 +766,9 @@ submodule (io_fortran_lib) file_io
         rank(14); call to_binary(x, file, stat_, errmsg_)
         rank(15); call to_binary(x, file, stat_, errmsg_)
         rank default
-          stat   = ARG_ERR
-          errmsg = "Array has invalid rank. Supported ranks: 1-15."
+          stat_  = ARG_ERR
+          errmsg_ = "Array has invalid rank. Supported ranks: 1-15."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
     else
@@ -738,6 +776,8 @@ submodule (io_fortran_lib) file_io
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
                 join(TEXT_EXT)//SPACE//join(BINARY_EXT)
     end if
+
+    call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure to_file_r64
   module procedure to_file_r32
     character(len=:), allocatable :: ext
@@ -746,7 +786,7 @@ submodule (io_fortran_lib) file_io
     character(len=:), pointer :: locale_, delim_, fmt_, errmsg_
     integer,          pointer :: decimals_, stat_
 
-    character(len=0), target :: dummy_msg
+    character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
 
     ext = ext_of(file)
@@ -772,6 +812,7 @@ submodule (io_fortran_lib) file_io
         rank default
           stat_   = ARG_ERR
           errmsg_ = "Cannot write an array of rank "//str(rank(x))//" to text file."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
 
@@ -783,12 +824,14 @@ submodule (io_fortran_lib) file_io
             rank(1)
               stat_ = ARG_ERR
               errmsg_ = 'Invalid header for file "'//file//'". Header for this data must have size 1.'
+              call stop_if_unhandled(stat_, errmsg_, present(stat))
               return
             rank(2)
               if ( size(header) /= size(x, dim=2) ) then
                 stat_ = ARG_ERR
                 errmsg_ = 'Invalid header for file "'//file//'". Header for this data must have size 1 or size '// &
                           str(size(x, dim=2))//"."
+                call stop_if_unhandled(stat_, errmsg_, present(stat))
                 return
               end if
           end select
@@ -804,6 +847,7 @@ submodule (io_fortran_lib) file_io
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid locale "'//locale//'" for file "'//file//'". Locale must be one of: '//join(LOCALES)
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
         end if
       end if
@@ -826,6 +870,7 @@ submodule (io_fortran_lib) file_io
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid format "'//fmt//'" for file "'//file//'". Format must be one of: '//join(REAL_FMTS)
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
         end if
       end if
@@ -864,8 +909,9 @@ submodule (io_fortran_lib) file_io
         rank(14); call to_binary(x, file, stat_, errmsg_)
         rank(15); call to_binary(x, file, stat_, errmsg_)
         rank default
-          stat   = ARG_ERR
-          errmsg = "Array has invalid rank. Supported ranks: 1-15."
+          stat_  = ARG_ERR
+          errmsg_ = "Array has invalid rank. Supported ranks: 1-15."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
     else
@@ -873,6 +919,8 @@ submodule (io_fortran_lib) file_io
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
                 join(TEXT_EXT)//SPACE//join(BINARY_EXT)
     end if
+
+    call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure to_file_r32
 
   module procedure to_file_i64
@@ -882,7 +930,7 @@ submodule (io_fortran_lib) file_io
     character(len=:), pointer :: delim_, fmt_, errmsg_
     integer,          pointer :: stat_
 
-    character(len=0), target :: dummy_msg
+    character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
 
     ext = ext_of(file)
@@ -908,6 +956,7 @@ submodule (io_fortran_lib) file_io
         rank default
           stat_   = ARG_ERR
           errmsg_ = "Cannot write an array of rank "//str(rank(x))//" to text file."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
 
@@ -919,12 +968,14 @@ submodule (io_fortran_lib) file_io
             rank(1)
               stat_ = ARG_ERR
               errmsg_ = 'Invalid header for file "'//file//'". Header for this data must have size 1.'
+              call stop_if_unhandled(stat_, errmsg_, present(stat))
               return
             rank(2)
               if ( size(header) /= size(x, dim=2) ) then
                 stat_ = ARG_ERR
                 errmsg_ = 'Invalid header for file "'//file//'". Header for this data must have size 1 or size '// &
                           str(size(x, dim=2))//"."
+                call stop_if_unhandled(stat_, errmsg_, present(stat))
                 return
               end if
           end select
@@ -946,6 +997,7 @@ submodule (io_fortran_lib) file_io
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid format "'//fmt//'" for file "'//file//'". Format must be one of: '//join(INT_FMTS)
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
         end if
       end if
@@ -976,8 +1028,9 @@ submodule (io_fortran_lib) file_io
         rank(14); call to_binary(x, file, stat_, errmsg_)
         rank(15); call to_binary(x, file, stat_, errmsg_)
         rank default
-          stat   = ARG_ERR
-          errmsg = "Array has invalid rank. Supported ranks: 1-15."
+          stat_  = ARG_ERR
+          errmsg_ = "Array has invalid rank. Supported ranks: 1-15."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
     else
@@ -985,6 +1038,8 @@ submodule (io_fortran_lib) file_io
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
                 join(TEXT_EXT)//SPACE//join(BINARY_EXT)
     end if
+
+    call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure to_file_i64
   module procedure to_file_i32
     character(len=:), allocatable :: ext
@@ -993,7 +1048,7 @@ submodule (io_fortran_lib) file_io
     character(len=:), pointer :: delim_, fmt_, errmsg_
     integer,          pointer :: stat_
 
-    character(len=0), target :: dummy_msg
+    character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
 
     ext = ext_of(file)
@@ -1019,6 +1074,7 @@ submodule (io_fortran_lib) file_io
         rank default
           stat_   = ARG_ERR
           errmsg_ = "Cannot write an array of rank "//str(rank(x))//" to text file."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
 
@@ -1030,12 +1086,14 @@ submodule (io_fortran_lib) file_io
             rank(1)
               stat_ = ARG_ERR
               errmsg_ = 'Invalid header for file "'//file//'". Header for this data must have size 1.'
+              call stop_if_unhandled(stat_, errmsg_, present(stat))
               return
             rank(2)
               if ( size(header) /= size(x, dim=2) ) then
                 stat_ = ARG_ERR
                 errmsg_ = 'Invalid header for file "'//file//'". Header for this data must have size 1 or size '// &
                           str(size(x, dim=2))//"."
+                call stop_if_unhandled(stat_, errmsg_, present(stat))
                 return
               end if
           end select
@@ -1057,6 +1115,7 @@ submodule (io_fortran_lib) file_io
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid format "'//fmt//'" for file "'//file//'". Format must be one of: '//join(INT_FMTS)
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
         end if
       end if
@@ -1087,8 +1146,9 @@ submodule (io_fortran_lib) file_io
         rank(14); call to_binary(x, file, stat_, errmsg_)
         rank(15); call to_binary(x, file, stat_, errmsg_)
         rank default
-          stat   = ARG_ERR
-          errmsg = "Array has invalid rank. Supported ranks: 1-15."
+          stat_  = ARG_ERR
+          errmsg_ = "Array has invalid rank. Supported ranks: 1-15."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
     else
@@ -1096,6 +1156,8 @@ submodule (io_fortran_lib) file_io
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
                 join(TEXT_EXT)//SPACE//join(BINARY_EXT)
     end if
+
+    call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure to_file_i32
   module procedure to_file_i16
     character(len=:), allocatable :: ext
@@ -1104,7 +1166,7 @@ submodule (io_fortran_lib) file_io
     character(len=:), pointer :: delim_, fmt_, errmsg_
     integer,          pointer :: stat_
 
-    character(len=0), target :: dummy_msg
+    character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
 
     ext = ext_of(file)
@@ -1130,6 +1192,7 @@ submodule (io_fortran_lib) file_io
         rank default
           stat_   = ARG_ERR
           errmsg_ = "Cannot write an array of rank "//str(rank(x))//" to text file."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
 
@@ -1141,12 +1204,14 @@ submodule (io_fortran_lib) file_io
             rank(1)
               stat_ = ARG_ERR
               errmsg_ = 'Invalid header for file "'//file//'". Header for this data must have size 1.'
+              call stop_if_unhandled(stat_, errmsg_, present(stat))
               return
             rank(2)
               if ( size(header) /= size(x, dim=2) ) then
                 stat_ = ARG_ERR
                 errmsg_ = 'Invalid header for file "'//file//'". Header for this data must have size 1 or size '// &
                           str(size(x, dim=2))//"."
+                call stop_if_unhandled(stat_, errmsg_, present(stat))
                 return
               end if
           end select
@@ -1168,6 +1233,7 @@ submodule (io_fortran_lib) file_io
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid format "'//fmt//'" for file "'//file//'". Format must be one of: '//join(INT_FMTS)
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
         end if
       end if
@@ -1198,8 +1264,9 @@ submodule (io_fortran_lib) file_io
         rank(14); call to_binary(x, file, stat_, errmsg_)
         rank(15); call to_binary(x, file, stat_, errmsg_)
         rank default
-          stat   = ARG_ERR
-          errmsg = "Array has invalid rank. Supported ranks: 1-15."
+          stat_  = ARG_ERR
+          errmsg_ = "Array has invalid rank. Supported ranks: 1-15."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
     else
@@ -1207,6 +1274,8 @@ submodule (io_fortran_lib) file_io
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
                 join(TEXT_EXT)//SPACE//join(BINARY_EXT)
     end if
+
+    call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure to_file_i16
   module procedure to_file_i8
     character(len=:), allocatable :: ext
@@ -1215,7 +1284,7 @@ submodule (io_fortran_lib) file_io
     character(len=:), pointer :: delim_, fmt_, errmsg_
     integer,          pointer :: stat_
 
-    character(len=0), target :: dummy_msg
+    character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
 
     ext = ext_of(file)
@@ -1241,6 +1310,7 @@ submodule (io_fortran_lib) file_io
         rank default
           stat_   = ARG_ERR
           errmsg_ = "Cannot write an array of rank "//str(rank(x))//" to text file."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
 
@@ -1252,12 +1322,14 @@ submodule (io_fortran_lib) file_io
             rank(1)
               stat_ = ARG_ERR
               errmsg_ = 'Invalid header for file "'//file//'". Header for this data must have size 1.'
+              call stop_if_unhandled(stat_, errmsg_, present(stat))
               return
             rank(2)
               if ( size(header) /= size(x, dim=2) ) then
                 stat_ = ARG_ERR
                 errmsg_ = 'Invalid header for file "'//file//'". Header for this data must have size 1 or size '// &
                           str(size(x, dim=2))//"."
+                call stop_if_unhandled(stat_, errmsg_, present(stat))
                 return
               end if
           end select
@@ -1279,6 +1351,7 @@ submodule (io_fortran_lib) file_io
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid format "'//fmt//'" for file "'//file//'". Format must be one of: '//join(INT_FMTS)
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
         end if
       end if
@@ -1309,8 +1382,9 @@ submodule (io_fortran_lib) file_io
         rank(14); call to_binary(x, file, stat_, errmsg_)
         rank(15); call to_binary(x, file, stat_, errmsg_)
         rank default
-          stat   = ARG_ERR
-          errmsg = "Array has invalid rank. Supported ranks: 1-15."
+          stat_  = ARG_ERR
+          errmsg_ = "Array has invalid rank. Supported ranks: 1-15."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
     else
@@ -1318,6 +1392,8 @@ submodule (io_fortran_lib) file_io
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
                 join(TEXT_EXT)//SPACE//join(BINARY_EXT)
     end if
+
+    call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure to_file_i8
 
   ! Reading Procedures ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1329,7 +1405,7 @@ submodule (io_fortran_lib) file_io
     logical,          pointer :: header_
     integer,          pointer :: stat_
 
-    character(len=0), target :: dummy_msg
+    character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
 
     ext = ext_of(file)
@@ -1363,6 +1439,7 @@ submodule (io_fortran_lib) file_io
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid locale "'//locale//'" for file "'//file//'". Locale must be one of: '//join(LOCALES)
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
         end if
       end if
@@ -1379,12 +1456,14 @@ submodule (io_fortran_lib) file_io
           if ( delim_ == POINT ) then
             stat_   = ARG_ERR
             errmsg_ = "Invalid delimiter for numbers having US style decimal."
+            call stop_if_unhandled(stat_, errmsg_, present(stat))
             return
           end if
         else
           if ( delim_ == COMMA ) then
             stat_   = ARG_ERR
             errmsg_ = "Invalid delimiter for numbers having EU style decimal."
+            call stop_if_unhandled(stat_, errmsg_, present(stat))
             return
           end if
         end if
@@ -1399,6 +1478,7 @@ submodule (io_fortran_lib) file_io
           stat_   = ARG_ERR
           errmsg_ = 'Invalid format "'//fmt//'" for read of file "'//file//'" '// &
                     "into complex array. Format must be one of: "//join(REAL_FMTS)
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
         end if
       end if
@@ -1417,6 +1497,7 @@ submodule (io_fortran_lib) file_io
         rank default
           stat_   = ARG_ERR
           errmsg_ = "Array has invalid rank. Supported ranks: 1-2."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
     else
@@ -1424,6 +1505,8 @@ submodule (io_fortran_lib) file_io
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
                 join(TEXT_EXT)
     end if
+
+    call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure from_textfile_c128
 #endif
   module procedure from_textfile_c64
@@ -1433,7 +1516,7 @@ submodule (io_fortran_lib) file_io
     logical,          pointer :: header_
     integer,          pointer :: stat_
 
-    character(len=0), target :: dummy_msg
+    character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
 
     ext = ext_of(file)
@@ -1467,6 +1550,7 @@ submodule (io_fortran_lib) file_io
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid locale "'//locale//'" for file "'//file//'". Locale must be one of: '//join(LOCALES)
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
         end if
       end if
@@ -1483,12 +1567,14 @@ submodule (io_fortran_lib) file_io
           if ( delim_ == POINT ) then
             stat_   = ARG_ERR
             errmsg_ = "Invalid delimiter for numbers having US style decimal."
+            call stop_if_unhandled(stat_, errmsg_, present(stat))
             return
           end if
         else
           if ( delim_ == COMMA ) then
             stat_   = ARG_ERR
             errmsg_ = "Invalid delimiter for numbers having EU style decimal."
+            call stop_if_unhandled(stat_, errmsg_, present(stat))
             return
           end if
         end if
@@ -1503,6 +1589,7 @@ submodule (io_fortran_lib) file_io
           stat_   = ARG_ERR
           errmsg_ = 'Invalid format "'//fmt//'" for read of file "'//file//'" '// &
                     "into complex array. Format must be one of: "//join(REAL_FMTS)
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
         end if
       end if
@@ -1521,6 +1608,7 @@ submodule (io_fortran_lib) file_io
         rank default
           stat_   = ARG_ERR
           errmsg_ = "Array has invalid rank. Supported ranks: 1-2."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
     else
@@ -1528,6 +1616,8 @@ submodule (io_fortran_lib) file_io
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
                 join(TEXT_EXT)
     end if
+
+    call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure from_textfile_c64
   module procedure from_textfile_c32
     character(len=:), allocatable :: ext
@@ -1536,7 +1626,7 @@ submodule (io_fortran_lib) file_io
     logical,          pointer :: header_
     integer,          pointer :: stat_
 
-    character(len=0), target :: dummy_msg
+    character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
 
     ext = ext_of(file)
@@ -1570,6 +1660,7 @@ submodule (io_fortran_lib) file_io
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid locale "'//locale//'" for file "'//file//'". Locale must be one of: '//join(LOCALES)
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
         end if
       end if
@@ -1586,12 +1677,14 @@ submodule (io_fortran_lib) file_io
           if ( delim_ == POINT ) then
             stat_   = ARG_ERR
             errmsg_ = "Invalid delimiter for numbers having US style decimal."
+            call stop_if_unhandled(stat_, errmsg_, present(stat))
             return
           end if
         else
           if ( delim_ == COMMA ) then
             stat_   = ARG_ERR
             errmsg_ = "Invalid delimiter for numbers having EU style decimal."
+            call stop_if_unhandled(stat_, errmsg_, present(stat))
             return
           end if
         end if
@@ -1606,6 +1699,7 @@ submodule (io_fortran_lib) file_io
           stat_   = ARG_ERR
           errmsg_ = 'Invalid format "'//fmt//'" for read of file "'//file//'" '// &
                     "into complex array. Format must be one of: "//join(REAL_FMTS)
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
         end if
       end if
@@ -1624,6 +1718,7 @@ submodule (io_fortran_lib) file_io
         rank default
           stat_   = ARG_ERR
           errmsg_ = "Array has invalid rank. Supported ranks: 1-2."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
     else
@@ -1631,6 +1726,8 @@ submodule (io_fortran_lib) file_io
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
                 join(TEXT_EXT)
     end if
+
+    call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure from_textfile_c32
 
 #ifdef IOFL_HAS_R128
@@ -1640,7 +1737,7 @@ submodule (io_fortran_lib) file_io
     character(len=:), pointer :: errmsg_
     integer,          pointer :: stat_
 
-    character(len=0), target :: dummy_msg
+    character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
 
     ext = ext_of(file)
@@ -1662,6 +1759,7 @@ submodule (io_fortran_lib) file_io
     if ( size(data_shape) /= rank(into) ) then
       stat_   = ARG_ERR
       errmsg_ = "RANK/SHAPE mismatch: size of data_shape must match rank of output array."
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
       return
     end if
 
@@ -1698,8 +1796,9 @@ submodule (io_fortran_lib) file_io
         rank(15)
           call from_binary(file, into, data_shape, stat_, errmsg_)
         rank default
-          stat   = ARG_ERR
-          errmsg = "Array has invalid rank. Supported ranks: 1-15."
+          stat_  = ARG_ERR
+          errmsg_ = "Array has invalid rank. Supported ranks: 1-15."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
     else
@@ -1707,8 +1806,11 @@ submodule (io_fortran_lib) file_io
       errmsg_ = 'Error reading file "'//file//'" with extension "'//ext//'". '// &
                 "If attempting to read a text file, the data_shape argument must not be specified."// &
                 "If attempting to read a binary file, the supported file extensions are: "//join(BINARY_EXT)
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
       return
     end if
+
+    call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure from_binaryfile_c128
 #endif
   module procedure from_binaryfile_c64
@@ -1717,7 +1819,7 @@ submodule (io_fortran_lib) file_io
     character(len=:), pointer :: errmsg_
     integer,          pointer :: stat_
 
-    character(len=0), target :: dummy_msg
+    character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
 
     ext = ext_of(file)
@@ -1739,6 +1841,7 @@ submodule (io_fortran_lib) file_io
     if ( size(data_shape) /= rank(into) ) then
       stat_   = ARG_ERR
       errmsg_ = "RANK/SHAPE mismatch: size of data_shape must match rank of output array."
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
       return
     end if
 
@@ -1775,8 +1878,9 @@ submodule (io_fortran_lib) file_io
         rank(15)
           call from_binary(file, into, data_shape, stat_, errmsg_)
         rank default
-          stat   = ARG_ERR
-          errmsg = "Array has invalid rank. Supported ranks: 1-15."
+          stat_  = ARG_ERR
+          errmsg_ = "Array has invalid rank. Supported ranks: 1-15."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
     else
@@ -1784,8 +1888,11 @@ submodule (io_fortran_lib) file_io
       errmsg_ = 'Error reading file "'//file//'" with extension "'//ext//'". '// &
                 "If attempting to read a text file, the data_shape argument must not be specified."// &
                 "If attempting to read a binary file, the supported file extensions are: "//join(BINARY_EXT)
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
       return
     end if
+
+    call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure from_binaryfile_c64
   module procedure from_binaryfile_c32
     character(len=:), allocatable :: ext
@@ -1793,7 +1900,7 @@ submodule (io_fortran_lib) file_io
     character(len=:), pointer :: errmsg_
     integer,          pointer :: stat_
 
-    character(len=0), target :: dummy_msg
+    character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
 
     ext = ext_of(file)
@@ -1815,6 +1922,7 @@ submodule (io_fortran_lib) file_io
     if ( size(data_shape) /= rank(into) ) then
       stat_   = ARG_ERR
       errmsg_ = "RANK/SHAPE mismatch: size of data_shape must match rank of output array."
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
       return
     end if
 
@@ -1851,8 +1959,9 @@ submodule (io_fortran_lib) file_io
         rank(15)
           call from_binary(file, into, data_shape, stat_, errmsg_)
         rank default
-          stat   = ARG_ERR
-          errmsg = "Array has invalid rank. Supported ranks: 1-15."
+          stat_  = ARG_ERR
+          errmsg_ = "Array has invalid rank. Supported ranks: 1-15."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
     else
@@ -1860,8 +1969,11 @@ submodule (io_fortran_lib) file_io
       errmsg_ = 'Error reading file "'//file//'" with extension "'//ext//'". '// &
                 "If attempting to read a text file, the data_shape argument must not be specified."// &
                 "If attempting to read a binary file, the supported file extensions are: "//join(BINARY_EXT)
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
       return
     end if
+
+    call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure from_binaryfile_c32
 
 #ifdef IOFL_HAS_R128
@@ -1872,7 +1984,7 @@ submodule (io_fortran_lib) file_io
     logical,          pointer :: header_
     integer,          pointer :: stat_
 
-    character(len=0), target :: dummy_msg
+    character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
 
     ext = ext_of(file)
@@ -1906,6 +2018,7 @@ submodule (io_fortran_lib) file_io
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid locale "'//locale//'" for file "'//file//'". Locale must be one of: '//join(LOCALES)
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
         end if
       end if
@@ -1922,12 +2035,14 @@ submodule (io_fortran_lib) file_io
           if ( delim_ == POINT ) then
             stat_   = ARG_ERR
             errmsg_ = "Invalid delimiter for numbers having US style decimal."
+            call stop_if_unhandled(stat_, errmsg_, present(stat))
             return
           end if
         else
           if ( delim_ == COMMA ) then
             stat_   = ARG_ERR
             errmsg_ = "Invalid delimiter for numbers having EU style decimal."
+            call stop_if_unhandled(stat_, errmsg_, present(stat))
             return
           end if
         end if
@@ -1942,6 +2057,7 @@ submodule (io_fortran_lib) file_io
           stat_   = ARG_ERR
           errmsg_ = 'Invalid format "'//fmt//'" for read of file "'//file//'" '// &
                     "into real array. Format must be one of: "//join(REAL_FMTS)
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
         end if
       end if
@@ -1954,6 +2070,7 @@ submodule (io_fortran_lib) file_io
         rank default
           stat_   = ARG_ERR
           errmsg_ = "Array has invalid rank. Supported ranks: 1-2."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
     else
@@ -1961,6 +2078,8 @@ submodule (io_fortran_lib) file_io
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
                 join(TEXT_EXT)
     end if
+
+    call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure from_textfile_r128
 #endif
   module procedure from_textfile_r64
@@ -1970,7 +2089,7 @@ submodule (io_fortran_lib) file_io
     logical,          pointer :: header_
     integer,          pointer :: stat_
 
-    character(len=0), target :: dummy_msg
+    character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
 
     ext = ext_of(file)
@@ -2004,6 +2123,7 @@ submodule (io_fortran_lib) file_io
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid locale "'//locale//'" for file "'//file//'". Locale must be one of: '//join(LOCALES)
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
         end if
       end if
@@ -2020,12 +2140,14 @@ submodule (io_fortran_lib) file_io
           if ( delim_ == POINT ) then
             stat_   = ARG_ERR
             errmsg_ = "Invalid delimiter for numbers having US style decimal."
+            call stop_if_unhandled(stat_, errmsg_, present(stat))
             return
           end if
         else
           if ( delim_ == COMMA ) then
             stat_   = ARG_ERR
             errmsg_ = "Invalid delimiter for numbers having EU style decimal."
+            call stop_if_unhandled(stat_, errmsg_, present(stat))
             return
           end if
         end if
@@ -2040,6 +2162,7 @@ submodule (io_fortran_lib) file_io
           stat_   = ARG_ERR
           errmsg_ = 'Invalid format "'//fmt//'" for read of file "'//file//'" '// &
                     "into real array. Format must be one of: "//join(REAL_FMTS)
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
         end if
       end if
@@ -2052,6 +2175,7 @@ submodule (io_fortran_lib) file_io
         rank default
           stat_   = ARG_ERR
           errmsg_ = "Array has invalid rank. Supported ranks: 1-2."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
     else
@@ -2059,6 +2183,8 @@ submodule (io_fortran_lib) file_io
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
                 join(TEXT_EXT)
     end if
+
+    call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure from_textfile_r64
   module procedure from_textfile_r32
     character(len=:), allocatable :: ext
@@ -2067,7 +2193,7 @@ submodule (io_fortran_lib) file_io
     logical,          pointer :: header_
     integer,          pointer :: stat_
 
-    character(len=0), target :: dummy_msg
+    character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
 
     ext = ext_of(file)
@@ -2101,6 +2227,7 @@ submodule (io_fortran_lib) file_io
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid locale "'//locale//'" for file "'//file//'". Locale must be one of: '//join(LOCALES)
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
         end if
       end if
@@ -2117,12 +2244,14 @@ submodule (io_fortran_lib) file_io
           if ( delim_ == POINT ) then
             stat_   = ARG_ERR
             errmsg_ = "Invalid delimiter for numbers having US style decimal."
+            call stop_if_unhandled(stat_, errmsg_, present(stat))
             return
           end if
         else
           if ( delim_ == COMMA ) then
             stat_   = ARG_ERR
             errmsg_ = "Invalid delimiter for numbers having EU style decimal."
+            call stop_if_unhandled(stat_, errmsg_, present(stat))
             return
           end if
         end if
@@ -2137,6 +2266,7 @@ submodule (io_fortran_lib) file_io
           stat_   = ARG_ERR
           errmsg_ = 'Invalid format "'//fmt//'" for read of file "'//file//'" '// &
                     "into real array. Format must be one of: "//join(REAL_FMTS)
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
         end if
       end if
@@ -2149,6 +2279,7 @@ submodule (io_fortran_lib) file_io
         rank default
           stat_   = ARG_ERR
           errmsg_ = "Array has invalid rank. Supported ranks: 1-2."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
     else
@@ -2156,6 +2287,8 @@ submodule (io_fortran_lib) file_io
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
                 join(TEXT_EXT)
     end if
+
+    call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure from_textfile_r32
 
 #ifdef IOFL_HAS_R128
@@ -2165,7 +2298,7 @@ submodule (io_fortran_lib) file_io
     character(len=:), pointer :: errmsg_
     integer,          pointer :: stat_
 
-    character(len=0), target :: dummy_msg
+    character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
 
     ext = ext_of(file)
@@ -2187,6 +2320,7 @@ submodule (io_fortran_lib) file_io
     if ( size(data_shape) /= rank(into) ) then
       stat_   = ARG_ERR
       errmsg_ = "RANK/SHAPE mismatch: size of data_shape must match rank of output array."
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
       return
     end if
 
@@ -2223,8 +2357,9 @@ submodule (io_fortran_lib) file_io
         rank(15)
           call from_binary(file, into, data_shape, stat_, errmsg_)
         rank default
-          stat   = ARG_ERR
-          errmsg = "Array has invalid rank. Supported ranks: 1-15."
+          stat_  = ARG_ERR
+          errmsg_ = "Array has invalid rank. Supported ranks: 1-15."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
     else
@@ -2232,8 +2367,11 @@ submodule (io_fortran_lib) file_io
       errmsg_ = 'Error reading file "'//file//'" with extension "'//ext//'". '// &
                 "If attempting to read a text file, the data_shape argument must not be specified."// &
                 "If attempting to read a binary file, the supported file extensions are: "//join(BINARY_EXT)
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
       return
     end if
+
+    call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure from_binaryfile_r128
 #endif
   module procedure from_binaryfile_r64
@@ -2242,7 +2380,7 @@ submodule (io_fortran_lib) file_io
     character(len=:), pointer :: errmsg_
     integer,          pointer :: stat_
 
-    character(len=0), target :: dummy_msg
+    character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
 
     ext = ext_of(file)
@@ -2264,6 +2402,7 @@ submodule (io_fortran_lib) file_io
     if ( size(data_shape) /= rank(into) ) then
       stat_   = ARG_ERR
       errmsg_ = "RANK/SHAPE mismatch: size of data_shape must match rank of output array."
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
       return
     end if
 
@@ -2300,8 +2439,9 @@ submodule (io_fortran_lib) file_io
         rank(15)
           call from_binary(file, into, data_shape, stat_, errmsg_)
         rank default
-          stat   = ARG_ERR
-          errmsg = "Array has invalid rank. Supported ranks: 1-15."
+          stat_  = ARG_ERR
+          errmsg_ = "Array has invalid rank. Supported ranks: 1-15."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
     else
@@ -2309,8 +2449,11 @@ submodule (io_fortran_lib) file_io
       errmsg_ = 'Error reading file "'//file//'" with extension "'//ext//'". '// &
                 "If attempting to read a text file, the data_shape argument must not be specified."// &
                 "If attempting to read a binary file, the supported file extensions are: "//join(BINARY_EXT)
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
       return
     end if
+
+    call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure from_binaryfile_r64
   module procedure from_binaryfile_r32
     character(len=:), allocatable :: ext
@@ -2318,7 +2461,7 @@ submodule (io_fortran_lib) file_io
     character(len=:), pointer :: errmsg_
     integer,          pointer :: stat_
 
-    character(len=0), target :: dummy_msg
+    character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
 
     ext = ext_of(file)
@@ -2340,6 +2483,7 @@ submodule (io_fortran_lib) file_io
     if ( size(data_shape) /= rank(into) ) then
       stat_   = ARG_ERR
       errmsg_ = "RANK/SHAPE mismatch: size of data_shape must match rank of output array."
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
       return
     end if
 
@@ -2376,8 +2520,9 @@ submodule (io_fortran_lib) file_io
         rank(15)
           call from_binary(file, into, data_shape, stat_, errmsg_)
         rank default
-          stat   = ARG_ERR
-          errmsg = "Array has invalid rank. Supported ranks: 1-15."
+          stat_  = ARG_ERR
+          errmsg_ = "Array has invalid rank. Supported ranks: 1-15."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
     else
@@ -2385,8 +2530,11 @@ submodule (io_fortran_lib) file_io
       errmsg_ = 'Error reading file "'//file//'" with extension "'//ext//'". '// &
                 "If attempting to read a text file, the data_shape argument must not be specified."// &
                 "If attempting to read a binary file, the supported file extensions are: "//join(BINARY_EXT)
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
       return
     end if
+
+    call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure from_binaryfile_r32
 
   module procedure from_textfile_i64
@@ -2396,7 +2544,7 @@ submodule (io_fortran_lib) file_io
     logical,          pointer :: header_
     integer,          pointer :: stat_
 
-    character(len=0), target :: dummy_msg
+    character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
 
     ext = ext_of(file)
@@ -2437,6 +2585,7 @@ submodule (io_fortran_lib) file_io
           stat_   = ARG_ERR
           errmsg_ = 'Invalid format "'//fmt//'" for read of file "'//file//'" '// &
                     "into integer array. Format must be one of: "//join(INT_FMTS)
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
         end if
       end if
@@ -2449,6 +2598,7 @@ submodule (io_fortran_lib) file_io
         rank default
           stat_   = ARG_ERR
           errmsg_ = "Array has invalid rank. Supported ranks: 1-2."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
     else
@@ -2456,6 +2606,8 @@ submodule (io_fortran_lib) file_io
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
                 join(TEXT_EXT)
     end if
+
+    call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure from_textfile_i64
   module procedure from_textfile_i32
     character(len=:), allocatable :: ext
@@ -2464,7 +2616,7 @@ submodule (io_fortran_lib) file_io
     logical,          pointer :: header_
     integer,          pointer :: stat_
 
-    character(len=0), target :: dummy_msg
+    character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
 
     ext = ext_of(file)
@@ -2505,6 +2657,7 @@ submodule (io_fortran_lib) file_io
           stat_   = ARG_ERR
           errmsg_ = 'Invalid format "'//fmt//'" for read of file "'//file//'" '// &
                     "into integer array. Format must be one of: "//join(INT_FMTS)
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
         end if
       end if
@@ -2517,6 +2670,7 @@ submodule (io_fortran_lib) file_io
         rank default
           stat_   = ARG_ERR
           errmsg_ = "Array has invalid rank. Supported ranks: 1-2."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
     else
@@ -2524,6 +2678,8 @@ submodule (io_fortran_lib) file_io
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
                 join(TEXT_EXT)
     end if
+
+    call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure from_textfile_i32
   module procedure from_textfile_i16
     character(len=:), allocatable :: ext
@@ -2532,7 +2688,7 @@ submodule (io_fortran_lib) file_io
     logical,          pointer :: header_
     integer,          pointer :: stat_
 
-    character(len=0), target :: dummy_msg
+    character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
 
     ext = ext_of(file)
@@ -2573,6 +2729,7 @@ submodule (io_fortran_lib) file_io
           stat_   = ARG_ERR
           errmsg_ = 'Invalid format "'//fmt//'" for read of file "'//file//'" '// &
                     "into integer array. Format must be one of: "//join(INT_FMTS)
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
         end if
       end if
@@ -2585,6 +2742,7 @@ submodule (io_fortran_lib) file_io
         rank default
           stat_   = ARG_ERR
           errmsg_ = "Array has invalid rank. Supported ranks: 1-2."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
     else
@@ -2592,6 +2750,8 @@ submodule (io_fortran_lib) file_io
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
                 join(TEXT_EXT)
     end if
+
+    call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure from_textfile_i16
   module procedure from_textfile_i8
     character(len=:), allocatable :: ext
@@ -2600,7 +2760,7 @@ submodule (io_fortran_lib) file_io
     logical,          pointer :: header_
     integer,          pointer :: stat_
 
-    character(len=0), target :: dummy_msg
+    character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
 
     ext = ext_of(file)
@@ -2641,6 +2801,7 @@ submodule (io_fortran_lib) file_io
           stat_   = ARG_ERR
           errmsg_ = 'Invalid format "'//fmt//'" for read of file "'//file//'" '// &
                     "into integer array. Format must be one of: "//join(INT_FMTS)
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
         end if
       end if
@@ -2653,6 +2814,7 @@ submodule (io_fortran_lib) file_io
         rank default
           stat_   = ARG_ERR
           errmsg_ = "Array has invalid rank. Supported ranks: 1-2."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
     else
@@ -2660,6 +2822,8 @@ submodule (io_fortran_lib) file_io
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
                 join(TEXT_EXT)
     end if
+
+    call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure from_textfile_i8
 
   module procedure from_binaryfile_i64
@@ -2668,7 +2832,7 @@ submodule (io_fortran_lib) file_io
     character(len=:), pointer :: errmsg_
     integer,          pointer :: stat_
 
-    character(len=0), target :: dummy_msg
+    character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
 
     ext = ext_of(file)
@@ -2690,6 +2854,7 @@ submodule (io_fortran_lib) file_io
     if ( size(data_shape) /= rank(into) ) then
       stat_   = ARG_ERR
       errmsg_ = "RANK/SHAPE mismatch: size of data_shape must match rank of output array."
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
       return
     end if
 
@@ -2726,8 +2891,9 @@ submodule (io_fortran_lib) file_io
         rank(15)
           call from_binary(file, into, data_shape, stat_, errmsg_)
         rank default
-          stat   = ARG_ERR
-          errmsg = "Array has invalid rank. Supported ranks: 1-15."
+          stat_  = ARG_ERR
+          errmsg_ = "Array has invalid rank. Supported ranks: 1-15."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
     else
@@ -2735,8 +2901,11 @@ submodule (io_fortran_lib) file_io
       errmsg_ = 'Error reading file "'//file//'" with extension "'//ext//'". '// &
                 "If attempting to read a text file, the data_shape argument must not be specified."// &
                 "If attempting to read a binary file, the supported file extensions are: "//join(BINARY_EXT)
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
       return
     end if
+
+    call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure from_binaryfile_i64
   module procedure from_binaryfile_i32
     character(len=:), allocatable :: ext
@@ -2744,7 +2913,7 @@ submodule (io_fortran_lib) file_io
     character(len=:), pointer :: errmsg_
     integer,          pointer :: stat_
 
-    character(len=0), target :: dummy_msg
+    character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
 
     ext = ext_of(file)
@@ -2766,6 +2935,7 @@ submodule (io_fortran_lib) file_io
     if ( size(data_shape) /= rank(into) ) then
       stat_   = ARG_ERR
       errmsg_ = "RANK/SHAPE mismatch: size of data_shape must match rank of output array."
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
       return
     end if
 
@@ -2802,8 +2972,9 @@ submodule (io_fortran_lib) file_io
         rank(15)
           call from_binary(file, into, data_shape, stat_, errmsg_)
         rank default
-          stat   = ARG_ERR
-          errmsg = "Array has invalid rank. Supported ranks: 1-15."
+          stat_  = ARG_ERR
+          errmsg_ = "Array has invalid rank. Supported ranks: 1-15."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
     else
@@ -2811,8 +2982,11 @@ submodule (io_fortran_lib) file_io
       errmsg_ = 'Error reading file "'//file//'" with extension "'//ext//'". '// &
                 "If attempting to read a text file, the data_shape argument must not be specified."// &
                 "If attempting to read a binary file, the supported file extensions are: "//join(BINARY_EXT)
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
       return
     end if
+
+    call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure from_binaryfile_i32
   module procedure from_binaryfile_i16
     character(len=:), allocatable :: ext
@@ -2820,7 +2994,7 @@ submodule (io_fortran_lib) file_io
     character(len=:), pointer :: errmsg_
     integer,          pointer :: stat_
 
-    character(len=0), target :: dummy_msg
+    character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
 
     ext = ext_of(file)
@@ -2842,6 +3016,7 @@ submodule (io_fortran_lib) file_io
     if ( size(data_shape) /= rank(into) ) then
       stat_   = ARG_ERR
       errmsg_ = "RANK/SHAPE mismatch: size of data_shape must match rank of output array."
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
       return
     end if
 
@@ -2878,8 +3053,9 @@ submodule (io_fortran_lib) file_io
         rank(15)
           call from_binary(file, into, data_shape, stat_, errmsg_)
         rank default
-          stat   = ARG_ERR
-          errmsg = "Array has invalid rank. Supported ranks: 1-15."
+          stat_  = ARG_ERR
+          errmsg_ = "Array has invalid rank. Supported ranks: 1-15."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
     else
@@ -2887,8 +3063,11 @@ submodule (io_fortran_lib) file_io
       errmsg_ = 'Error reading file "'//file//'" with extension "'//ext//'". '// &
                 "If attempting to read a text file, the data_shape argument must not be specified."// &
                 "If attempting to read a binary file, the supported file extensions are: "//join(BINARY_EXT)
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
       return
     end if
+
+    call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure from_binaryfile_i16
   module procedure from_binaryfile_i8
     character(len=:), allocatable :: ext
@@ -2896,7 +3075,7 @@ submodule (io_fortran_lib) file_io
     character(len=:), pointer :: errmsg_
     integer,          pointer :: stat_
 
-    character(len=0), target :: dummy_msg
+    character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
 
     ext = ext_of(file)
@@ -2918,6 +3097,7 @@ submodule (io_fortran_lib) file_io
     if ( size(data_shape) /= rank(into) ) then
       stat_   = ARG_ERR
       errmsg_ = "RANK/SHAPE mismatch: size of data_shape must match rank of output array."
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
       return
     end if
 
@@ -2954,8 +3134,9 @@ submodule (io_fortran_lib) file_io
         rank(15)
           call from_binary(file, into, data_shape, stat_, errmsg_)
         rank default
-          stat   = ARG_ERR
-          errmsg = "Array has invalid rank. Supported ranks: 1-15."
+          stat_  = ARG_ERR
+          errmsg_ = "Array has invalid rank. Supported ranks: 1-15."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
     else
@@ -2963,7 +3144,10 @@ submodule (io_fortran_lib) file_io
       errmsg_ = 'Error reading file "'//file//'" with extension "'//ext//'". '// &
                 "If attempting to read a text file, the data_shape argument must not be specified."// &
                 "If attempting to read a binary file, the supported file extensions are: "//join(BINARY_EXT)
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
       return
     end if
+
+    call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure from_binaryfile_i8
 end submodule file_io

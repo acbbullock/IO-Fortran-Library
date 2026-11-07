@@ -14,7 +14,7 @@ program regression_test
   !! A case with `STOPS` should end the program with `error stop`, because an error with no `stat` argument to report it
   !! through must not go unnoticed. That behavior is planned for version 2.0.
   !---------------------------------------------------------------------------------------------------------------------
-  use, intrinsic :: iso_fortran_env, only: real32, real64, int8, int32, compiler_version, compiler_options
+  use, intrinsic :: iso_fortran_env, only: real32, real64, int8, int32, int64, compiler_version, compiler_options
   use, intrinsic :: ieee_arithmetic, only: ieee_value, ieee_quiet_nan, ieee_positive_inf, ieee_is_nan, &
                                              ieee_is_negative
   use io_fortran_lib, only: String, cast, str, join, echo, aprint, to_file, from_file, operator(==), operator(**), &
@@ -41,25 +41,47 @@ program regression_test
     test_case("self_stops",                  STOPS,   FIXED),     &
     test_case("self_failed_check",           RETURNS, KNOWN_BUG), &
     ! An error with no `stat` must not go unnoticed.
-    test_case("to_file_bad_extension",       STOPS,   KNOWN_BUG), &
-    test_case("from_file_missing",           STOPS,   KNOWN_BUG), &
-    test_case("cast_int_letters",            STOPS,   KNOWN_BUG), &
-    test_case("cast_int_trailing_junk",      STOPS,   KNOWN_BUG), &
-    test_case("cast_int_decimal_point",      STOPS,   KNOWN_BUG), &
-    test_case("cast_int32_overflow",         STOPS,   KNOWN_BUG), &
-    test_case("cast_int32_just_over_range",  STOPS,   KNOWN_BUG), &
-    test_case("cast_int8_just_over_range",   STOPS,   KNOWN_BUG), &
-    test_case("cast_real_letters",           STOPS,   KNOWN_BUG), &
-    test_case("cast_real_empty",             STOPS,   KNOWN_BUG), &
-    test_case("cast_real_repeat_count",      STOPS,   KNOWN_BUG), &
-    test_case("cast_real_two_values",        STOPS,   KNOWN_BUG), &
-    test_case("cast_real_trailing_junk",     STOPS,   KNOWN_BUG), &
-    test_case("cast_real_slash",             STOPS,   KNOWN_BUG), &
+    test_case("to_file_bad_extension",       STOPS,   FIXED),     &
+    test_case("from_file_missing",           STOPS,   FIXED),     &
+    test_case("cast_int_letters",            STOPS,   FIXED),     &
+    test_case("cast_int_trailing_junk",      STOPS,   FIXED),     &
+    test_case("cast_int_decimal_point",      STOPS,   FIXED),     &
+    test_case("cast_int32_overflow",         STOPS,   FIXED),     &
+    test_case("cast_int32_just_over_range",  STOPS,   FIXED),     &
+    test_case("cast_int8_just_over_range",   STOPS,   FIXED),     &
+    test_case("cast_real_letters",           STOPS,   FIXED),     &
+    test_case("cast_real_empty",             STOPS,   FIXED),     &
+    test_case("cast_real_repeat_count",      STOPS,   FIXED),     &
+    test_case("cast_real_two_values",        STOPS,   FIXED),     &
+    test_case("cast_real_trailing_junk",     STOPS,   FIXED),     &
+    test_case("cast_real_slash",             STOPS,   FIXED),     &
     test_case("str_invalid_fmt",             STOPS,   FIXED),     &
     test_case("str_invalid_locale",          STOPS,   FIXED),     &
     ! Errors must be reported through `stat`, and absent optional arguments must not be touched.
-    test_case("from_file_bad_number_stat",   RETURNS, KNOWN_BUG), &
-    test_case("to_file_scalar_binary",       RETURNS, UNDEFINED), &
+    test_case("from_file_bad_number_stat",   RETURNS, FIXED),     &
+    test_case("to_file_scalar_binary",       STOPS,   FIXED),     &
+    test_case("read_file_missing",          STOPS,   FIXED),     &
+    test_case("write_file_bad_extension",   STOPS,   FIXED),     &
+    test_case("echo_bad_extension",         STOPS,   FIXED),     &
+    test_case("from_file_bad_number",       STOPS,   FIXED),     &
+    test_case("cast_bad_complex",           STOPS,   FIXED),     &
+    test_case("cast_invalid_fmt",           STOPS,   FIXED),     &
+    test_case("cast_invalid_locale",        STOPS,   FIXED),     &
+    test_case("to_file_scalar_binary_stat", RETURNS, FIXED),     &
+    test_case("from_file_bad_number_location",RETURNS, FIXED),     &
+    test_case("from_file_bad_cell_int",     RETURNS, FIXED),     &
+    test_case("cast_int_valid",             RETURNS, FIXED),     &
+    test_case("cast_int_stat",              RETURNS, FIXED),     &
+    test_case("cast_int_hex",               RETURNS, FIXED),     &
+    test_case("cast_real_valid",            RETURNS, FIXED),     &
+    test_case("cast_real_stat",             RETURNS, FIXED),     &
+    test_case("cast_real_wrong_decimal_mark",RETURNS, FIXED),     &
+    test_case("cast_real_hex",              RETURNS, FIXED),     &
+    test_case("cast_complex_valid",         RETURNS, FIXED),     &
+    test_case("cast_complex_stat",          RETURNS, FIXED),     &
+    test_case("cast_unallocated_stat",      RETURNS, FIXED),     &
+    test_case("cast_invalid_args_stat",     RETURNS, FIXED),     &
+    test_case("cast_array_stat",            RETURNS, FIXED),     &
     ! Reading and writing delimited text.
     test_case("read_no_final_newline",       RETURNS, KNOWN_BUG), &
     test_case("read_one_line_no_newline",    RETURNS, UNDEFINED), &
@@ -173,7 +195,7 @@ contains
     type(String)                  :: s, r, cell(2,2), one_row(1,2), three(3)
     type(String), allocatable     :: cells(:,:)
     character(len=512)            :: msg
-    integer                       :: st, u, i
+    integer                       :: st, i
     integer(int8)                 :: i8
     logical                       :: opened, exists
     real(real32)                  :: x32
@@ -181,6 +203,10 @@ contains
     real(real32), allocatable     :: v32(:)
     real(real64), allocatable     :: v(:)
     complex(real32)               :: z
+    integer(int64)                :: i64
+    integer                       :: iv(3), stv(3)
+    integer, allocatable          :: vi(:)
+    real(real64), allocatable     :: m2(:,:)
 
     file = dir//"regression_"//name
     st = 0; msg = ""
@@ -232,8 +258,122 @@ contains
         call check(st /= 0, "A bad number should be reported through stat.")
       case ("to_file_scalar_binary")
         call to_file(1.0_real64, file=file//".dat")
-        inquire(file=file//".dat", exist=exists, size=i)
-        call check(exists .and. (i == 8), "The file should hold one real64 value.")
+      case ("to_file_scalar_binary_stat")
+        call to_file(1.0_real64, file=file//".dat", stat=st, errmsg=msg)
+        call check(st /= 0, "A scalar should be rejected through stat.")
+      case ("read_file_missing")
+        call s%read_file(file//"_missing.csv")
+      case ("write_file_bad_extension")
+        cell = String("a")
+        call s%write_file(cell, file=file//".tsv")
+      case ("echo_bad_extension")
+        call echo("text", file=file//".tsv")
+      case ("from_file_bad_number")
+        call write_raw(file//".csv", "1.0"//LF//"oops"//LF)
+        call from_file(file//".csv", into=v)
+      case ("from_file_bad_number_location")
+        call write_raw(file//".csv", "1,2"//LF//"3,oops"//LF)
+        call from_file(file//".csv", into=m2, stat=st, errmsg=msg)
+        call check(st /= 0, "A bad number should be reported through stat.")
+        call check(index(msg, "oops") > 0, "The message should name the text.")
+        call check(index(msg, "row 2, column 2") > 0, "The message should name the location.")
+      case ("from_file_bad_cell_int")
+        call write_raw(file//".csv", "1"//LF//"2.5"//LF)
+        call from_file(file//".csv", into=vi, stat=st, errmsg=msg)
+        call check(st /= 0, "A bad integer should be reported through stat.")
+      case ("cast_bad_complex")
+        call cast("abc", into=z)
+      case ("cast_invalid_fmt")
+        call cast("1", into=x, fmt="q")
+      case ("cast_invalid_locale")
+        call cast("1", into=x, locale="JP")
+      case ("cast_int_valid")
+        call cast_i32_is("7", 7); call cast_i32_is("+7", 7); call cast_i32_is("-7", -7); call cast_i32_is("  12 ", 12)
+        call cast_i32_is("0", 0); call cast_i32_is("007", 7); call cast_i32_is("12"//CR, 12)
+        call cast_i32_is("2147483647", huge(1_int32)); call cast_i32_is("-2147483648", -huge(1_int32)-1_int32)
+        call cast("127", into=i8, stat=st); call check((st == 0) .and. (i8 == 127_int8), "Largest int8.")
+        call cast("-128", into=i8, stat=st); call check((st == 0) .and. (i8 == -127_int8-1_int8), "Smallest int8.")
+        call cast("9223372036854775807", into=i64, stat=st)
+        call check((st == 0) .and. (i64 == huge(1_int64)), "Largest int64.")
+        call cast("-9223372036854775808", into=i64, stat=st)
+        call check((st == 0) .and. (i64 == -huge(1_int64)-1_int64), "Smallest int64.")
+      case ("cast_int_stat")
+        call cast_i32_fails(""); call cast_i32_fails("   "); call cast_i32_fails("abc"); call cast_i32_fails("12x")
+        call cast_i32_fails("3.5"); call cast_i32_fails("+"); call cast_i32_fails("-"); call cast_i32_fails("1 2")
+        call cast_i32_fails("--1"); call cast_i32_fails("2147483648"); call cast_i32_fails("-2147483649")
+        call cast_i32_fails("99999999999999999999999999")
+        call cast("128", into=i8, stat=st); call check((st /= 0) .and. (i8 == 0_int8), "Just over int8.")
+        call cast("-129", into=i8, stat=st); call check((st /= 0) .and. (i8 == 0_int8), "Just under int8.")
+        call cast("9223372036854775808", into=i64, stat=st); call check(st /= 0, "Just over int64.")
+        call cast("-9223372036854775809", into=i64, stat=st); call check(st /= 0, "Just under int64.")
+      case ("cast_int_hex")
+        call cast("0xff", into=i8, fmt="z", stat=st); call check((st == 0) .and. (i8 == -1_int8), "All bits set.")
+        call cast("0x7f", into=i8, fmt="z", stat=st); call check((st == 0) .and. (i8 == 127_int8), "Largest int8.")
+        call cast("ff", into=i, fmt="z", stat=st); call check((st == 0) .and. (i == 255), "Without a prefix.")
+        call cast("0XFF", into=i, fmt="z", stat=st); call check((st == 0) .and. (i == 255), "Uppercase.")
+        call cast("0x000000ff", into=i8, fmt="z", stat=st)
+        call check((st == 0) .and. (i8 == -1_int8), "Leading zeros.")
+        call cast("0x", into=i, fmt="z", stat=st); call check(st /= 0, "No digits.")
+        call cast("0xg", into=i, fmt="z", stat=st); call check(st /= 0, "Not a hex digit.")
+        call cast("0x1ff", into=i8, fmt="z", stat=st); call check(st /= 0, "Too large for int8.")
+        call cast("0x1ffffffff", into=i, fmt="z", stat=st); call check(st /= 0, "Too large for int32.")
+      case ("cast_real_valid")
+        call cast_r64_is("1.5e3", 1500.0_real64, "US"); call cast_r64_is(".5", 0.5_real64, "US")
+        call cast_r64_is("5.", 5.0_real64, "US"); call cast_r64_is("-2", -2.0_real64, "US")
+        call cast_r64_is("+3.25", 3.25_real64, "US"); call cast_r64_is("1d2", 100.0_real64, "US")
+        call cast_r64_is("  7 ", 7.0_real64, "US"); call cast_r64_is("1E-2", 0.01_real64, "US")
+        call cast_r64_is("1,5", 1.5_real64, "EU"); call cast_r64_is("-1,5e1", -15.0_real64, "EU")
+        call cast_r64_is("2.5"//CR, 2.5_real64, "US")
+        call cast("NaN", into=x, stat=st); call check((st == 0) .and. ieee_is_nan(x), "NaN.")
+        call cast("Inf", into=x, stat=st); call check((st == 0) .and. (x > huge(x)), "Inf.")
+        call cast("-Inf", into=x, stat=st); call check((st == 0) .and. (x < -huge(x)), "-Inf.")
+        call cast("infinity", into=x, stat=st); call check((st == 0) .and. (x > huge(x)), "infinity.")
+      case ("cast_real_stat")
+        call cast_r64_fails("", "US"); call cast_r64_fails("  ", "US"); call cast_r64_fails("abc", "US")
+        call cast_r64_fails("2*3.5", "US"); call cast_r64_fails("1 2", "US"); call cast_r64_fails("7,junk", "US")
+        call cast_r64_fails("/", "US"); call cast_r64_fails(".", "US"); call cast_r64_fails("e5", "US")
+        call cast_r64_fails("1e", "US"); call cast_r64_fails("1e+", "US"); call cast_r64_fails("1.2.3", "US")
+        call cast_r64_fails("+", "US"); call cast_r64_fails("1e5x", "US"); call cast_r64_fails("NaNN", "US")
+      case ("cast_real_wrong_decimal_mark")
+        call cast_r64_fails("1,5", "US"); call cast_r64_fails("1.5", "EU")
+      case ("cast_real_hex")
+        call cast("0x3ff8000000000000", into=x, fmt="z", stat=st); call check((st == 0) .and. (x == 1.5_real64), "1.5.")
+        call cast("0x3fc00000", into=x32, fmt="z", stat=st); call check((st == 0) .and. (x32 == 1.5), "real32 1.5.")
+        call cast("0x1ffffffff", into=x32, fmt="z", stat=st); call check(st /= 0, "Too large for real32.")
+        call cast("0xzz", into=x, fmt="z", stat=st); call check(st /= 0, "Not a hex digit.")
+      case ("cast_complex_valid")
+        call cast("(1.5,-2.5)", into=z, stat=st); call check((st == 0) .and. (z == (1.5,-2.5)), "Ordered pair.")
+        call cast("(1,5;-2,5)", into=z, locale="EU", stat=st); call check((st == 0) .and. (z == (1.5,-2.5)), "EU pair.")
+        call cast("1.5-2.5j", into=z, im="j", stat=st); call check((st == 0) .and. (z == (1.5,-2.5)), "Unit j.")
+        call cast("-1.5+2.5*1i", into=z, im="*1i", stat=st); call check((st == 0) .and. (z == (-1.5,2.5)), "Unit *1i.")
+        call cast("1.5e-1-2.5e+1j", into=z, im="j", stat=st)
+        call check((st == 0) .and. (abs(z - (0.15,-25.0)) < 1e-5), "Exponents should not be split.")
+        call cast("(0x3fc00000,0x40200000)", into=z, fmt="z", stat=st)
+        call check((st == 0) .and. (z == (1.5,2.5)), "Hexadecimal pair.")
+        call cast("0x3fc00000+0x40200000j", into=z, fmt="z", im="j", stat=st)
+        call check((st == 0) .and. (z == (1.5,2.5)), "Hexadecimal with a unit.")
+        call cast("(NaN,-Inf)", into=z, stat=st); call check((st == 0) .and. ieee_is_nan(z%re), "Special values.")
+        call cast("NaN-Infj", into=z, im="j", stat=st); call check((st == 0) .and. (z%im < 0.0), "Special values.")
+      case ("cast_complex_stat")
+        call cast_c32_fails("", ""); call cast_c32_fails("abc", ""); call cast_c32_fails("(1,2", "")
+        call cast_c32_fails("1,2)", ""); call cast_c32_fails("()", ""); call cast_c32_fails("(1;2)", "")
+        call cast_c32_fails("(a,b)", ""); call cast_c32_fails("(1,)", ""); call cast_c32_fails("(,2)", "")
+        call cast_c32_fails("(1,2,3)", ""); call cast_c32_fails("1+2", "j"); call cast_c32_fails("1.5j", "j")
+        call cast_c32_fails("j", "j"); call cast_c32_fails("+j", "j"); call cast_c32_fails("abc+defj", "j")
+      case ("cast_unallocated_stat")
+        call s%cast(into=i, stat=st); call check((st /= 0) .and. (i == 0), "Integer.")
+        call s%cast(into=x, stat=st); call check((st /= 0) .and. (x == 0.0_real64), "Real.")
+        call s%cast(into=z, stat=st); call check((st /= 0) .and. (z == (0.0,0.0)), "Complex.")
+      case ("cast_invalid_args_stat")
+        call cast("1", into=x, fmt="q", stat=st); call check(st /= 0, "Invalid real fmt.")
+        call cast("1", into=x, locale="JP", stat=st); call check(st /= 0, "Invalid locale.")
+        call cast("1", into=i, fmt="q", stat=st); call check(st /= 0, "Invalid int fmt.")
+        call cast("(1,2)", into=z, fmt="q", stat=st); call check(st /= 0, "Invalid complex fmt.")
+      case ("cast_array_stat")
+        three(1) = String("1"); three(2) = String("oops"); three(3) = String("3")
+        call cast(three, into=iv, stat=stv)
+        call check(all((stv /= 0) .eqv. [.false.,.true.,.false.]), "Each cell should have its own status.")
+        call check(all(iv == [1,0,3]), "Each valid cell should still be cast.")
 
       case ("read_no_final_newline")
         call write_raw(file//".csv", "a,b"//LF//"1,2"//LF//"3,4")
@@ -398,8 +538,6 @@ contains
         error stop "Unknown case: "//name
     end select
 
-    ! The kinds below are only referenced by some cases.
-    if ( .false. ) write(*,*) kind(u), int32
   end subroutine run_case
 
   logical function ifx_checks_rank_of_unallocated()
@@ -410,6 +548,57 @@ contains
     ifx_checks_rank_of_unallocated = (index(compiler_version(), "Intel") > 0) .and. &
                                      (index(compiler_options(), "-check") > 0)
   end function ifx_checks_rank_of_unallocated
+
+  subroutine cast_i32_is(text, expected)
+    character(len=*), intent(in) :: text
+    integer,          intent(in) :: expected
+
+    integer :: value, status
+
+    call cast(text, into=value, stat=status)
+    call check((status == 0) .and. (value == expected), 'Should be valid: "'//text//'"')
+  end subroutine cast_i32_is
+
+  subroutine cast_i32_fails(text)
+    character(len=*), intent(in) :: text
+
+    integer :: value, status
+
+    call cast(text, into=value, stat=status)
+    call check((status /= 0) .and. (value == 0), 'Should be rejected: "'//text//'"')
+  end subroutine cast_i32_fails
+
+  subroutine cast_r64_is(text, expected, locale)
+    character(len=*), intent(in) :: text, locale
+    real(real64),     intent(in) :: expected
+
+    real(real64) :: value
+    integer      :: status
+
+    call cast(text, into=value, locale=locale, stat=status)
+    call check((status == 0) .and. (abs(value - expected) <= 1e-12_real64*abs(expected)), &
+               'Should be valid: "'//text//'"')
+  end subroutine cast_r64_is
+
+  subroutine cast_r64_fails(text, locale)
+    character(len=*), intent(in) :: text, locale
+
+    real(real64) :: value
+    integer      :: status
+
+    call cast(text, into=value, locale=locale, stat=status)
+    call check((status /= 0) .and. (value == 0.0_real64), 'Should be rejected: "'//text//'"')
+  end subroutine cast_r64_fails
+
+  subroutine cast_c32_fails(text, im)
+    character(len=*), intent(in) :: text, im
+
+    complex(real32) :: value
+    integer         :: status
+
+    call cast(text, into=value, im=im, stat=status)
+    call check((status /= 0) .and. (value == (0.0,0.0)), 'Should be rejected: "'//text//'"')
+  end subroutine cast_c32_fails
 
   subroutine check_repeat_array()
     character(len=2), parameter :: a(2)   = ["ab","cd"]
