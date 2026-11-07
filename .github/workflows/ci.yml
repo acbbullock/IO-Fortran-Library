@@ -60,8 +60,9 @@ jobs:
           # Apple Silicon has no REAL(16), so this also tests building without the real128 procedures.
           - { os: macos-15, compiler: gcc, version: "16", flags: "-std=f2018 -O2 -g -fbacktrace" }
           - { os: macos-15, compiler: flang, version: "23", flags: "-O2 -cpp" }
-          # Intel macOS has REAL(16). setup-fpm's macOS binary needs a gfortran 12 runtime, so fpm is built from source.
-          - { os: macos-15-intel, compiler: gcc, version: "16", flags: "-std=f2018 -O2 -g -fbacktrace", fpm: source }
+          # Intel macOS has REAL(16), but Homebrew has no gcc 16 for it. setup-fpm's macOS binary needs a gfortran 12
+          # runtime, so fpm is built from source.
+          - { os: macos-15-intel, compiler: gcc, version: "15", flags: "-std=f2018 -O2 -g -fbacktrace", fpm: source }
           - { os: windows-2025, compiler: gcc, version: "16", flags: "-std=f2018 -O2 -g -fbacktrace" }
           - { os: windows-2025, compiler: intel, version: "2026.1", flags: "" }
     steps:
