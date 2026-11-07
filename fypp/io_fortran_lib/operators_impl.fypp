@@ -173,7 +173,7 @@ submodule (io_fortran_lib) operators
 
 #:endfor
 
-  pure elemental subroutine repeat_into(char_base, ncopies, new)
+  elemental subroutine repeat_into(char_base, ncopies, new)
     character(len=*), intent(in)  :: char_base
     integer,          intent(in)  :: ncopies
     character(len=*), intent(out) :: new

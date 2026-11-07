@@ -226,7 +226,7 @@ submodule (io_fortran_lib) operators
   end procedure repeat_chars_15d
 
 
-  pure elemental subroutine repeat_into(char_base, ncopies, new)
+  elemental subroutine repeat_into(char_base, ncopies, new)
     character(len=*), intent(in)  :: char_base
     integer,          intent(in)  :: ncopies
     character(len=*), intent(out) :: new
