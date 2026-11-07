@@ -12,7 +12,7 @@ For reading textual data into an array `into` of rank `1` or `2` and of
 type `integer`:
 
 ```fortran
-call from_file(file, into [, header, delim, fmt, stat, errmsg])
+call from_file(file, into [, header, delim, fmt, stat, errmsg, format])
 ```
 
 * `file` is of type `character(len=*)`
@@ -26,7 +26,7 @@ For reading textual data into an array `into` of rank `1` or `2` and of
 type `real`:
 
 ```fortran
-call from_file(file, into [, header, locale, delim, fmt, stat, errmsg])
+call from_file(file, into [, header, locale, delim, fmt, stat, errmsg, format])
 ```
 
 * `file` is of type `character(len=*)`
@@ -41,7 +41,7 @@ For reading textual data into an array `into` of rank `1` or `2` and of
 type `complex`:
 
 ```fortran
-call from_file(file, into [, header, locale, delim, fmt, im, stat, errmsg])
+call from_file(file, into [, header, locale, delim, fmt, im, stat, errmsg, format])
 ```
 
 * `file` is of type `character(len=*)`
@@ -57,7 +57,7 @@ For reading binary data into an array `into` of any rank `1`-`15` and
 of type `integer`, `real`, `complex`:
 
 ```fortran
-call from_file(file, into, data_shape [, stat, errmsg])
+call from_file(file, into, data_shape [, stat, errmsg, format])
 ```
 
 * `file` is of type `character(len=*)`
@@ -109,3 +109,11 @@ REAL_FMTS = [ "e", "f", "z" ]
 Imaginary unit: `im` specifies the form of a complex number. If not
 present, `complex` numbers will be assumed to be written as ordered
 pairs, e.g. `(2.45,3.45)`.
+
+Empty cells: an empty or blank cell in `real` or `complex` data reads as
+NaN, including a cell missing from a short row. For `integer` data, which
+has no NaN, it is an error. Any other text that is not a valid number is
+an error, and `errmsg` gives the text with its row and column.
+
+Format: `format` is `optional`, and may be `"text"` or `"binary"`. If it is
+not present, the format comes from the [file extension](../UserInfo/file-ext.html).

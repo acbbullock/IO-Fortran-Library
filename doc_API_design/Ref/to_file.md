@@ -12,7 +12,7 @@ For writing textual data from an array `x` of rank `1`, `2` and of type
 `integer`:
 
 ```fortran
-call to_file(x, file [, header, delim, fmt, stat, errmsg])
+call to_file(x, file [, header, delim, fmt, stat, errmsg, format])
 ```
 
 * `file` is of type `character(len=*)`
@@ -26,7 +26,7 @@ For writing textual data from an array `x` of rank `1`, `2` and of type
 `real`:
 
 ```fortran
-call to_file(x, file [, header, locale, delim, fmt, decimals, stat, errmsg])
+call to_file(x, file [, header, locale, delim, fmt, decimals, stat, errmsg, format])
 ```
 
 * `file` is of type `character(len=*)`
@@ -42,7 +42,7 @@ For writing textual data from an array `x` of rank `1`, `2` and of type
 `complex`:
 
 ```fortran
-call to_file(x, file [, header, locale, delim, fmt, decimals, im, stat, errmsg])
+call to_file(x, file [, header, locale, delim, fmt, decimals, im, stat, errmsg, format])
 ```
 
 * `file` is of type `character(len=*)`
@@ -59,7 +59,7 @@ For writing binary data from an array `x` of any rank `1`-`15` and of
 type `integer`, `real`, `complex`:
 
 ```fortran
-call to_file(x, file [, stat, errmsg])
+call to_file(x, file [, stat, errmsg, format])
 ```
 
 * `file` is of type `character(len=*)`
@@ -106,10 +106,14 @@ REAL_FMTS = [ "e", "f", "z" ]
 
 Decimals: `decimals` specifies the number of digits on the rhs of the
 radix point, with a default determined internally based on the
-[text format](../UserInfo/text-fmts.html) and precision.
+[text format](../UserInfo/text-fmts.html) and precision. The value is
+rounded to that number of digits.
 
 Imaginary unit: `im` specifies the form of a complex number. By
 default, `complex` numbers will be written as ordered pairs, e.g.
 `(2.45,3.45)`. If `im` is specified, then the number will be written as
 a sum with the specified imaginary unit, e.g. `2.45+3.45j` for `im="j"`
 or `2.45+3.45*1i` for `im="*1i"`.
+
+Format: `format` is `optional`, and may be `"text"` or `"binary"`. If it is
+not present, the format comes from the [file extension](../UserInfo/file-ext.html).

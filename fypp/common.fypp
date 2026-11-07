@@ -1,0 +1,12 @@
+#! Definitions shared by the templates. Run fypp/generate.sh after changing any template, and commit the result in src.
+#:set COMPLEX_KINDS = [("c128", "r128"), ("c64", "r64"), ("c32", "r32")]
+#:set REAL_KINDS = ["r128", "r64", "r32"]
+#:set INT_KINDS = ["i64", "i32", "i16", "i8"]
+#:set QUAD_KINDS = ["c128", "r128"]
+#:set RANKS = list(range(1, 16))
+#:set E_DECIMALS = {"r128": 35, "r64": 17, "r32": 8}
+#:set E_DIGITS = {"r128": 4, "r64": 3, "r32": 2}
+#:set F_DIGITS = {"r128": 36, "r64": 18, "r32": 9}
+#:set SAME_SIZE_INT = {"r64": "i64", "r32": "i32"}
+#:set ORDER_OPERATORS = [("<", "lt", "Less than"), ("<=", "le", "Less than or equal"), (">", "gt", "Greater than"), (">=", "ge", "Greater than or equal")]
+#:set ORDER_TESTS = {"lt": "< 0", "le": "<= 0", "gt": "> 0", "ge": ">= 0"}

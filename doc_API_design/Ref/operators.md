@@ -58,7 +58,7 @@ For `x` a scalar or array of any rank, and of type `character` or
 result = x**ncopies
 ```
 
-* `ncopies` is of type `integer`
+* `ncopies` is a scalar of type `integer`
 
 @note The `**` operator is a wrapper for the
 [repeat](https://gcc.gnu.org/onlinedocs/gfortran/REPEAT.html)
@@ -89,3 +89,21 @@ result = (x /= y)
 ```fortran
 result = (x .ne. y)
 ```
+
+### Ordering
+
+For `x` and `y` scalars or arrays of any compatible rank, and of any
+combination of type `character` and `String` with at least one `String`:
+
+```fortran
+result = x < y
+result = x <= y
+result = x > y
+result = x >= y
+```
+
+@note Bytes are compared in order, as unsigned values. A shorter string
+that matches the start of a longer one comes first, and an unallocated
+`String` acts as the empty string. Trailing blanks are significant, so
+`String("a") < String("a ")`. This agrees with `==` and `/=`, and differs
+from the comparison of two `character` values, which pads with blanks.

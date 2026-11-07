@@ -1,2742 +1,159 @@
+! Generated from fypp/io_fortran_lib/internal_io_impl.fypp by fypp/generate.sh. Edit that file, not this one.
+#include "iofl_config.inc"
 submodule (io_fortran_lib) internal_io
   !---------------------------------------------------------------------------------------------------------------------
   !! This submodule provides module procedure implementations for the **public interfaces** `String`, `str`, and
   !! `cast`.
   !---------------------------------------------------------------------------------------------------------------------
+  use, intrinsic :: ieee_arithmetic, only: ieee_is_nan, ieee_is_finite, ieee_is_negative
   implicit none (type, external)
 
+  integer, parameter :: MAX_F_DECIMALS = 200 ! Most decimals to request from an `f` edit descriptor
+
+  interface real_text
+#ifdef IOFL_HAS_R128
+    module procedure real_text_r128
+#endif
+    module procedure real_text_r64, real_text_r32
+  end interface real_text
+
+  interface complex_text
+#ifdef IOFL_HAS_R128
+    module procedure complex_text_c128
+#endif
+    module procedure complex_text_c64, complex_text_c32
+  end interface complex_text
+
   ! Definitions and interfaces ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  integer(i64), parameter :: largest_i64  =   huge(1_i64)         ! Largest 64-bit signed integer
-  integer(i32), parameter :: largest_i32  =   huge(1_i32)         ! Largest 32-bit signed integer
-  integer(i16), parameter :: largest_i16  =   huge(1_i16)         ! Largest 16-bit signed integer
-  integer(i8),  parameter :: largest_i8   =   huge(1_i8)          ! Largest 8-bit signed integer
-  integer(i64), parameter :: smallest_i64 = - huge(1_i64) - 1_i64 ! Smallest 64-bit signed integer
-  integer(i32), parameter :: smallest_i32 = - huge(1_i32) - 1_i32 ! Smallest 32-bit signed integer
-  integer(i16), parameter :: smallest_i16 = - huge(1_i16) - 1_i16 ! Smallest 16-bit signed integer
-  integer(i8),  parameter :: smallest_i8  = - huge(1_i8)  - 1_i8  ! Smallest 8-bit signed integer
-
-  ! Define powers of 10 for each storage size:
-  integer(i64), parameter :: TENS_i64(0:18) = int([ 1e0_r64,  1e1_r64,  1e2_r64,  1e3_r64,  &
-                                                    1e4_r64,  1e5_r64,  1e6_r64,  1e7_r64,  &
-                                                    1e8_r64,  1e9_r64,  1e10_r64, 1e11_r64, &
-                                                    1e12_r64, 1e13_r64, 1e14_r64, 1e15_r64, &
-                                                    1e16_r64, 1e17_r64, 1e18_r64 ],         &
-                                                    kind=i64                                )
-  integer(i32), parameter :: TENS_i32(0:9)  = int([ 1e0_r32, 1e1_r32, 1e2_r32, 1e3_r32,     &
-                                                    1e4_r32, 1e5_r32, 1e6_r32, 1e7_r32,     &
-                                                    1e8_r32, 1e9_r32 ],                     &
-                                                    kind=i32                                )
-  integer(i16), parameter :: TENS_i16(0:4)  = int([ 1e0_r32, 1e1_r32, 1e2_r32, 1e3_r32,     &
-                                                    1e4_r32 ],                              &
-                                                    kind=i16                                )
-  integer(i8),  parameter :: TENS_i8(0:2)   = int([ 1e0_r32, 1e1_r32, 1e2_r32 ],            &
-                                                    kind=i8                                 )
-
-  ! Define powers of 16 for each storage size:
-  integer(i64), parameter :: SIXTEENS_i64(0:15) = [ 16_i64**0,  16_i64**1,  16_i64**2,  16_i64**3,  &
-                                                    16_i64**4,  16_i64**5,  16_i64**6,  16_i64**7,  &
-                                                    16_i64**8,  16_i64**9,  16_i64**10, 16_i64**11, &
-                                                    16_i64**12, 16_i64**13, 16_i64**14, 16_i64**15  ]
-  integer(i32), parameter :: SIXTEENS_i32(0:7)  = [ 16_i32**0,  16_i32**1,  16_i32**2,  16_i32**3,  &
-                                                    16_i32**4,  16_i32**5,  16_i32**6,  16_i32**7   ]
-  integer(i16), parameter :: SIXTEENS_i16(0:3)  = [ 16_i16**0,  16_i16**1,  16_i16**2,  16_i16**3   ]
-  integer(i8),  parameter :: SIXTEENS_i8(0:1)   = [ 16_i8**0,   16_i8**1                            ]
-
-  ! Define hex string digits:
   character(len=1), parameter :: DIGITS_A(0:15) = ["0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f"]
 
   contains ! Procedure bodies for module subprograms <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><
 
   ! String ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#ifdef IOFL_HAS_R128
   module procedure new_string_from_c128
-    character(len=1)              :: fmt_
-    character(len=5)              :: decimal
-    character(len=:), allocatable :: xre_str, xim_str, im_
-    integer                       :: e, decimals_, i
-
-    e=0; decimals_=0; i=0
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "e"
-    else
-      if ( any(REAL_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        new%s = EMPTY_STR; return
-      end if
-    end if
-
-    if_z_re: if ( fmt_ == "z" ) then
-      if ( x%re /= 0e0_r128 ) then
-        xre_str = "0x00000000000000000000000000000000"
-      else
-        xre_str = "0x0"; exit if_z_re
-      end if
-
-      write(unit=xre_str(3:), fmt="(z32)") x%re
-
-      do i = 3, 34
-        if ( (xre_str(i:i) >= "A") .and. (xre_str(i:i) <= "F") ) xre_str(i:i) = achar(iachar(xre_str(i:i))+32)
-      end do
-    end if if_z_re
-    if_z_im: if ( fmt_ == "z" ) then
-      if ( x%im /= 0e0_r128 ) then
-        xim_str = "0x00000000000000000000000000000000"
-      else
-        xim_str = "0x0"; exit if_z_im
-      end if
-
-      write(unit=xim_str(3:), fmt="(z32)") x%im
-
-      do i = 3, 34
-        if ( (xim_str(i:i) >= "A") .and. (xim_str(i:i) <= "F") ) xim_str(i:i) = achar(iachar(xim_str(i:i))+32)
-      end do
-    end if if_z_im
-
-    if ( .not. present(locale) ) then
-      decimal = "POINT"
-    else
-      if ( locale == "US" ) then
-        decimal = "POINT"
-      else if ( locale == "EU" ) then
-        decimal = "COMMA"
-      else
-        new%s = EMPTY_STR; return
-      end if
-    end if
-
-    if_eorf_re: if ( fmt_ == "e" ) then
-      if ( x%re == 0e0_r128 ) then
-        xre_str = "0.0e+0000"; exit if_eorf_re
-      end if
-
-      if ( x%re < 0e0_r128 ) then
-        xre_str = "00000000000000000000000000000000000000000000"
-        write(unit=xre_str, fmt="(es44.35e4)", decimal=decimal) x%re
-        xre_str(39:39) = "e"
-      else
-        xre_str = "0000000000000000000000000000000000000000000"
-        write(unit=xre_str, fmt="(es43.35e4)", decimal=decimal) x%re
-        xre_str(38:38) = "e"
-      end if
-
-      if ( .not. present(decimals) ) exit if_eorf_re
-
-      if ( decimals >= 35 ) exit if_eorf_re
-
-      if ( decimals < 0 ) then
-        decimals_ = 0
-      else
-        decimals_ = decimals
-      end if
-
-      i = 1; do
-        if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) then
-          xre_str = xre_str(:i+decimals_)//xre_str(i+36:); exit if_eorf_re
-        end if
-        i = i + 1; cycle
-      end do
-    else if ( fmt_ == "f" ) then
-      if ( abs(x%re) /= 0e0_r128 ) then
-        e = int(log10(abs(x%re)))
-      else
-        xre_str = "0.0"; exit if_eorf_re
-      end if
-
-      if ( e == 0 ) then
-        if ( floor(x%re) > 0 ) e = 1 + e
-      else if ( e > 0 ) then
-        e = 1 + e
-      end if
-
-      allocate( character(len=125) :: xre_str )
-
-      if ( e > 0 ) then
-        write(unit=xre_str, fmt="(f0.36)", decimal=decimal) x%re
-      else
-        write(unit=xre_str, fmt="(f0.100)", decimal=decimal) x%re
-      end if
-
-      i = 1; do
-        if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) exit
-        i = i + 1; cycle
-      end do
-
-      if ( (i == 1) .or. ( (i == 2) .and. (xre_str(1:1) == "-") ) ) then
-        xre_str(i+1:125) = xre_str(i:124); xre_str(i:i) = "0"; i = i + 1
-      end if
-
-      if ( i > 36 ) then
-        xre_str = xre_str(:i); exit if_eorf_re
-      end if
-
-      if ( .not. present(decimals) ) then
-        xre_str = xre_str(:i+36-e); exit if_eorf_re
-      end if
-
-      if ( decimals <= 0 ) then
-        xre_str = xre_str(:i); exit if_eorf_re
-      end if
-
-      if ( decimals >= 36-e ) then
-        xre_str = xre_str(:i+36-e); exit if_eorf_re
-      end if
-
-      xre_str = xre_str(:i+decimals); exit if_eorf_re
-    end if if_eorf_re
-    if_eorf_im: if ( fmt_ == "e" ) then
-      if ( x%im == 0e0_r128 ) then
-        xim_str = "0.0e+0000"; exit if_eorf_im
-      end if
-
-      if ( x%im < 0e0_r128 ) then
-        xim_str = "00000000000000000000000000000000000000000000"
-        write(unit=xim_str, fmt="(es44.35e4)", decimal=decimal) x%im
-        xim_str(39:39) = "e"
-      else
-        xim_str = "0000000000000000000000000000000000000000000"
-        write(unit=xim_str, fmt="(es43.35e4)", decimal=decimal) x%im
-        xim_str(38:38) = "e"
-      end if
-
-      if ( .not. present(decimals) ) exit if_eorf_im
-
-      if ( decimals >= 35 ) exit if_eorf_im
-
-      if ( decimals < 0 ) then
-        decimals_ = 0
-      else
-        decimals_ = decimals
-      end if
-
-      i = 1; do
-        if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) then
-          xim_str = xim_str(:i+decimals_)//xim_str(i+36:); exit if_eorf_im
-        end if
-        i = i + 1; cycle
-      end do
-    else if ( fmt_ == "f" ) then
-      if ( abs(x%im) /= 0e0_r128 ) then
-        e = int(log10(abs(x%im)))
-      else
-        xim_str = "0.0"; exit if_eorf_im
-      end if
-
-      if ( e == 0 ) then
-        if ( floor(x%im) > 0 ) e = 1 + e
-      else if ( e > 0 ) then
-        e = 1 + e
-      end if
-
-      allocate( character(len=125) :: xim_str )
-
-      if ( e > 0 ) then
-        write(unit=xim_str, fmt="(f0.36)", decimal=decimal) x%im
-      else
-        write(unit=xim_str, fmt="(f0.100)", decimal=decimal) x%im
-      end if
-
-      i = 1; do
-        if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) exit
-        i = i + 1; cycle
-      end do
-
-      if ( (i == 1) .or. ( (i == 2) .and. (xim_str(1:1) == "-") ) ) then
-        xim_str(i+1:125) = xim_str(i:124); xim_str(i:i) = "0"; i = i + 1
-      end if
-
-      if ( i > 36 ) then
-        xim_str = xim_str(:i); exit if_eorf_im
-      end if
-
-      if ( .not. present(decimals) ) then
-        xim_str = xim_str(:i+36-e); exit if_eorf_im
-      end if
-
-      if ( decimals <= 0 ) then
-        xim_str = xim_str(:i); exit if_eorf_im
-      end if
-
-      if ( decimals >= 36-e ) then
-        xim_str = xim_str(:i+36-e); exit if_eorf_im
-      end if
-
-      xim_str = xim_str(:i+decimals); exit if_eorf_im
-    end if if_eorf_im
-
-    if ( .not. present(im) ) then
-      im_ = EMPTY_STR
-    else
-      im_ = im
-    end if
-
-    if ( im_ == EMPTY_STR ) then
-      if ( decimal == "POINT" ) then
-        new%s = "("//xre_str//COMMA//xim_str//")"; return
-      else
-        new%s = "("//xre_str//SEMICOLON//xim_str//")"; return
-      end if
-    end if
-
-    if ( fmt_ == "z" ) then
-      new%s = xre_str//"+"//xim_str//im_; return
-    end if
-
-    if ( x%im < 0e0_r128 ) then
-      new%s = xre_str//xim_str//im_
-    else
-      new%s = xre_str//"+"//xim_str//im_
-    end if
+    new%buf = complex_text(x, decimal_of(locale), real_fmt_of(fmt), decimals, im)
+    new%n = len(new%buf, kind=i64)
   end procedure new_string_from_c128
+#endif
+
   module procedure new_string_from_c64
-    character(len=1)              :: fmt_
-    character(len=5)              :: decimal
-    character(len=:), allocatable :: xre_str, xim_str, im_
-    integer                       :: e, decimals_, i
-
-    e=0; decimals_=0; i=0
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "e"
-    else
-      if ( any(REAL_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        new%s = EMPTY_STR; return
-      end if
-    end if
-
-    if_z_re: if ( fmt_ == "z" ) then
-      if ( x%re == 0e0_r64 ) then
-        xre_str = "0x0"; exit if_z_re
-      end if
-
-      call cast(transfer(source=x%re, mold=1_i64), into=xre_str, fmt="z"); exit if_z_re
-    end if if_z_re
-    if_z_im: if ( fmt_ == "z" ) then
-      if ( x%im == 0e0_r64 ) then
-        xim_str = "0x0"; exit if_z_im
-      end if
-
-      call cast(transfer(source=x%im, mold=1_i64), into=xim_str, fmt="z"); exit if_z_im
-    end if if_z_im
-
-    if ( .not. present(locale) ) then
-      decimal = "POINT"
-    else
-      if ( locale == "US" ) then
-        decimal = "POINT"
-      else if ( locale == "EU" ) then
-        decimal = "COMMA"
-      else
-        new%s = EMPTY_STR; return
-      end if
-    end if
-
-    if_eorf_re: if ( fmt_ == "e" ) then
-      if ( x%re == 0e0_r64 ) then
-        xre_str = "0.0e+000"; exit if_eorf_re
-      end if
-
-      if ( x%re < 0e0_r64 ) then
-        xre_str = "0000000000000000000000000"
-        write(unit=xre_str, fmt="(es25.17e3)", decimal=decimal) x%re
-        xre_str(21:21) = "e"
-      else
-        xre_str = "000000000000000000000000"
-        write(unit=xre_str, fmt="(es24.17e3)", decimal=decimal) x%re
-        xre_str(20:20) = "e"
-      end if
-
-      if ( .not. present(decimals) ) exit if_eorf_re
-
-      if ( decimals >= 17 ) exit if_eorf_re
-
-      if ( decimals < 0 ) then
-        decimals_ = 0
-      else
-        decimals_ = decimals
-      end if
-
-      i = 1; do
-        if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) then
-          xre_str = xre_str(:i+decimals_)//xre_str(i+18:); exit if_eorf_re
-        end if
-        i = i + 1; cycle
-      end do
-    else if ( fmt_ == "f" ) then
-      if ( abs(x%re) /= 0e0_r64 ) then
-        e = int(log10(abs(x%re)))
-      else
-        xre_str = "0.0"; return
-      end if
-
-      if ( e == 0 ) then
-        if ( floor(x%re) > 0 ) e = 1 + e
-      else if ( e > 0 ) then
-        e = 1 + e
-      end if
-
-      allocate( character(len=100) :: xre_str )
-
-      if ( e > 0 ) then
-        write(unit=xre_str, fmt="(f0.18)", decimal=decimal) x%re
-      else
-        write(unit=xre_str, fmt="(f0.80)", decimal=decimal) x%re
-      end if
-
-      i = 1; do
-        if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) exit
-        i = i + 1; cycle
-      end do
-
-      if ( (i == 1) .or. ( (i == 2) .and. (xre_str(1:1) == "-") ) ) then
-        xre_str(i+1:100) = xre_str(i:99); xre_str(i:i) = "0"; i = i + 1
-      end if
-
-      if ( i > 18 ) then
-        xre_str = xre_str(:i); exit if_eorf_re
-      end if
-
-      if ( .not. present(decimals) ) then
-        xre_str = xre_str(:i+18-e); exit if_eorf_re
-      end if
-
-      if ( decimals <= 0 ) then
-        xre_str = xre_str(:i); exit if_eorf_re
-      end if
-
-      if ( decimals >= 18-e ) then
-        xre_str = xre_str(:i+18-e); exit if_eorf_re
-      end if
-
-      xre_str = xre_str(:i+decimals); exit if_eorf_re
-    end if if_eorf_re
-    if_eorf_im: if ( fmt_ == "e" ) then
-      if ( x%im == 0e0_r64 ) then
-        xim_str = "0.0e+000"; exit if_eorf_im
-      end if
-
-      if ( x%im < 0e0_r64 ) then
-        xim_str = "0000000000000000000000000"
-        write(unit=xim_str, fmt="(es25.17e3)", decimal=decimal) x%im
-        xim_str(21:21) = "e"
-      else
-        xim_str = "000000000000000000000000"
-        write(unit=xim_str, fmt="(es24.17e3)", decimal=decimal) x%im
-        xim_str(20:20) = "e"
-      end if
-
-      if ( .not. present(decimals) ) exit if_eorf_im
-
-      if ( decimals >= 17 ) exit if_eorf_im
-
-      if ( decimals < 0 ) then
-        decimals_ = 0
-      else
-        decimals_ = decimals
-      end if
-
-      i = 1; do
-        if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) then
-          xim_str = xim_str(:i+decimals_)//xim_str(i+18:); exit if_eorf_im
-        end if
-        i = i + 1; cycle
-      end do
-    else if ( fmt_ == "f" ) then
-      if ( abs(x%im) /= 0e0_r64 ) then
-        e = int(log10(abs(x%im)))
-      else
-        xim_str = "0.0"; return
-      end if
-
-      if ( e == 0 ) then
-        if ( floor(x%im) > 0 ) e = 1 + e
-      else if ( e > 0 ) then
-        e = 1 + e
-      end if
-
-      allocate( character(len=100) :: xim_str )
-
-      if ( e > 0 ) then
-        write(unit=xim_str, fmt="(f0.18)", decimal=decimal) x%im
-      else
-        write(unit=xim_str, fmt="(f0.80)", decimal=decimal) x%im
-      end if
-
-      i = 1; do
-        if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) exit
-        i = i + 1; cycle
-      end do
-
-      if ( (i == 1) .or. ( (i == 2) .and. (xim_str(1:1) == "-") ) ) then
-        xim_str(i+1:100) = xim_str(i:99); xim_str(i:i) = "0"; i = i + 1
-      end if
-
-      if ( i > 18 ) then
-        xim_str = xim_str(:i); exit if_eorf_im
-      end if
-
-      if ( .not. present(decimals) ) then
-        xim_str = xim_str(:i+18-e); exit if_eorf_im
-      end if
-
-      if ( decimals <= 0 ) then
-        xim_str = xim_str(:i); exit if_eorf_im
-      end if
-
-      if ( decimals >= 18-e ) then
-        xim_str = xim_str(:i+18-e); exit if_eorf_im
-      end if
-
-      xim_str = xim_str(:i+decimals); exit if_eorf_im
-    end if if_eorf_im
-
-    if ( .not. present(im) ) then
-      im_ = EMPTY_STR
-    else
-      im_ = im
-    end if
-
-    if ( im_ == EMPTY_STR ) then
-      if ( decimal == "POINT" ) then
-        new%s = "("//xre_str//COMMA//xim_str//")"; return
-      else
-        new%s = "("//xre_str//SEMICOLON//xim_str//")"; return
-      end if
-    end if
-
-    if ( fmt_ == "z" ) then
-      new%s = xre_str//"+"//xim_str//im_; return
-    end if
-
-    if ( x%im < 0e0_r64 ) then
-      new%s = xre_str//xim_str//im_
-    else
-      new%s = xre_str//"+"//xim_str//im_
-    end if
+    new%buf = complex_text(x, decimal_of(locale), real_fmt_of(fmt), decimals, im)
+    new%n = len(new%buf, kind=i64)
   end procedure new_string_from_c64
+
   module procedure new_string_from_c32
-    character(len=1)              :: fmt_
-    character(len=5)              :: decimal
-    character(len=:), allocatable :: xre_str, xim_str, im_
-    integer                       :: e, decimals_, i
-
-    e=0; decimals_=0; i=0
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "e"
-    else
-      if ( any(REAL_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        new%s = EMPTY_STR; return
-      end if
-    end if
-
-    if_z_re: if ( fmt_ == "z" ) then
-      if ( x%re == 0e0_r32 ) then
-        xre_str = "0x0"; exit if_z_re
-      end if
-
-      call cast(transfer(source=x%re, mold=1_i32), into=xre_str, fmt="z"); exit if_z_re
-    end if if_z_re
-    if_z_im: if ( fmt_ == "z" ) then
-      if ( x%im == 0e0_r32 ) then
-        xim_str = "0x0"; exit if_z_im
-      end if
-
-      call cast(transfer(source=x%im, mold=1_i32), into=xim_str, fmt="z"); exit if_z_im
-    end if if_z_im
-
-    if ( .not. present(locale) ) then
-      decimal = "POINT"
-    else
-      if ( locale == "US" ) then
-        decimal = "POINT"
-      else if ( locale == "EU" ) then
-        decimal = "COMMA"
-      else
-        new%s = EMPTY_STR; return
-      end if
-    end if
-
-    if_eorf_re: if ( fmt_ == "e" ) then
-      if ( x%re == 0e0_r32 ) then
-        xre_str = "0.0e+00"; exit if_eorf_re
-      end if
-
-      if ( x%re < 0e0_r32 ) then
-        xre_str = "000000000000000"
-        write(unit=xre_str, fmt="(es15.8e2)", decimal=decimal) x%re
-        xre_str(12:12) = "e"
-      else
-        xre_str = "00000000000000"
-        write(unit=xre_str, fmt="(es14.8e2)", decimal=decimal) x%re
-        xre_str(11:11) = "e"
-      end if
-
-      if ( .not. present(decimals) ) exit if_eorf_re
-
-      if ( decimals >= 8 ) exit if_eorf_re
-
-      if ( decimals < 0 ) then
-        decimals_ = 0
-      else
-        decimals_ = decimals
-      end if
-
-      i = 1; do
-        if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) then
-          xre_str = xre_str(:i+decimals_)//xre_str(i+9:); exit if_eorf_re
-        end if
-        i = i + 1; cycle
-      end do
-    else if ( fmt_ == "f" ) then
-      if ( abs(x%re) /= 0e0_r32 ) then
-        e = int(log10(abs(x%re)))
-      else
-        xre_str = "0.0"; exit if_eorf_re
-      end if
-
-      if ( e == 0 ) then
-        if ( floor(x%re) > 0 ) e = 1 + e
-      else if ( e > 0 ) then
-        e = 1 + e
-      end if
-
-      allocate( character(len=75) :: xre_str )
-
-      if ( e > 0 ) then
-        write(unit=xre_str, fmt="(f0.9)", decimal=decimal) x%re
-      else
-        write(unit=xre_str, fmt="(f0.70)", decimal=decimal) x%re
-      end if
-
-      i = 1; do
-        if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) exit
-        i = i + 1; cycle
-      end do
-
-      if ( (i == 1) .or. ( (i == 2) .and. (xre_str(1:1) == "-") ) ) then
-        xre_str(i+1:75) = xre_str(i:74); xre_str(i:i) = "0"; i = i + 1
-      end if
-
-      if ( i > 9 ) then
-        xre_str = xre_str(:i); exit if_eorf_re
-      end if
-
-      if ( .not. present(decimals) ) then
-        xre_str = xre_str(:i+9-e); exit if_eorf_re
-      end if
-
-      if ( decimals <= 0 ) then
-        xre_str = xre_str(:i); exit if_eorf_re
-      end if
-
-      if ( decimals >= 9-e ) then
-        xre_str = xre_str(:i+9-e); exit if_eorf_re
-      end if
-
-      xre_str = xre_str(:i+decimals); exit if_eorf_re
-    end if if_eorf_re
-    if_eorf_im: if ( fmt_ == "e" ) then
-      if ( x%im == 0e0_r32 ) then
-        xim_str = "0.0e+00"; exit if_eorf_im
-      end if
-
-      if ( x%im < 0e0_r32 ) then
-        xim_str = "000000000000000"
-        write(unit=xim_str, fmt="(es15.8e2)", decimal=decimal) x%im
-        xim_str(12:12) = "e"
-      else
-        xim_str = "00000000000000"
-        write(unit=xim_str, fmt="(es14.8e2)", decimal=decimal) x%im
-        xim_str(11:11) = "e"
-      end if
-
-      if ( .not. present(decimals) ) exit if_eorf_im
-
-      if ( decimals >= 8 ) exit if_eorf_im
-
-      if ( decimals < 0 ) then
-        decimals_ = 0
-      else
-        decimals_ = decimals
-      end if
-
-      i = 1; do
-        if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) then
-          xim_str = xim_str(:i+decimals_)//xim_str(i+9:); exit if_eorf_im
-        end if
-        i = i + 1; cycle
-      end do
-    else if ( fmt_ == "f" ) then
-      if ( abs(x%im) /= 0e0_r32 ) then
-        e = int(log10(abs(x%im)))
-      else
-        xim_str = "0.0"; exit if_eorf_im
-      end if
-
-      if ( e == 0 ) then
-        if ( floor(x%im) > 0 ) e = 1 + e
-      else if ( e > 0 ) then
-        e = 1 + e
-      end if
-
-      allocate( character(len=75) :: xim_str )
-
-      if ( e > 0 ) then
-        write(unit=xim_str, fmt="(f0.9)", decimal=decimal) x%im
-      else
-        write(unit=xim_str, fmt="(f0.70)", decimal=decimal) x%im
-      end if
-
-      i = 1; do
-        if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) exit
-        i = i + 1; cycle
-      end do
-
-      if ( (i == 1) .or. ( (i == 2) .and. (xim_str(1:1) == "-") ) ) then
-        xim_str(i+1:75) = xim_str(i:74); xim_str(i:i) = "0"; i = i + 1
-      end if
-
-      if ( i > 9 ) then
-        xim_str = xim_str(:i); exit if_eorf_im
-      end if
-
-      if ( .not. present(decimals) ) then
-        xim_str = xim_str(:i+9-e); exit if_eorf_im
-      end if
-
-      if ( decimals <= 0 ) then
-        xim_str = xim_str(:i); exit if_eorf_im
-      end if
-
-      if ( decimals >= 9-e ) then
-        xim_str = xim_str(:i+9-e); exit if_eorf_im
-      end if
-
-      xim_str = xim_str(:i+decimals); exit if_eorf_im
-    end if if_eorf_im
-
-    if ( .not. present(im) ) then
-      im_ = EMPTY_STR
-    else
-      im_ = im
-    end if
-
-    if ( im_ == EMPTY_STR ) then
-      if ( decimal == "POINT" ) then
-        new%s = "("//xre_str//COMMA//xim_str//")"; return
-      else
-        new%s = "("//xre_str//SEMICOLON//xim_str//")"; return
-      end if
-    end if
-
-    if ( fmt_ == "z" ) then
-      new%s = xre_str//"+"//xim_str//im_; return
-    end if
-
-    if ( x%im < 0e0_r32 ) then
-      new%s = xre_str//xim_str//im_
-    else
-      new%s = xre_str//"+"//xim_str//im_
-    end if
+    new%buf = complex_text(x, decimal_of(locale), real_fmt_of(fmt), decimals, im)
+    new%n = len(new%buf, kind=i64)
   end procedure new_string_from_c32
 
+
+#ifdef IOFL_HAS_R128
   module procedure new_string_from_r128
-    character(len=1) :: fmt_
-    character(len=5) :: decimal
-    integer          :: e, decimals_, i
-
-    e=0; decimals_=0; i=0
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "e"
-    else
-      if ( any(REAL_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        new%s = EMPTY_STR; return
-      end if
-    end if
-
-    if ( fmt_ == "z" ) then
-      if ( x /= 0e0_r128 ) then
-        new%s = "0x00000000000000000000000000000000"
-      else
-        new%s = "0x0"; return
-      end if
-
-      write(unit=new%s(3:), fmt="(z32)") x
-
-      do i = 3, 34
-        if ( (new%s(i:i) >= "A") .and. (new%s(i:i) <= "F") ) new%s(i:i) = achar(iachar(new%s(i:i)) + 32)
-      end do
-
-      return
-    end if
-
-    if ( .not. present(locale) ) then
-      decimal = "POINT"
-    else
-      if ( locale == "US" ) then
-        decimal = "POINT"
-      else if ( locale == "EU" ) then
-        decimal = "COMMA"
-      else
-        new%s = EMPTY_STR; return
-      end if
-    end if
-
-    if ( fmt_ == "e" ) then
-      if ( x == 0e0_r128 ) then
-        new%s = "0.0e+0000"; return
-      end if
-
-      if ( x < 0e0_r128 ) then
-        new%s = "00000000000000000000000000000000000000000000"
-        write(unit=new%s, fmt="(es44.35e4)", decimal=decimal) x
-        new%s(39:39) = "e"
-      else
-        new%s = "0000000000000000000000000000000000000000000"
-        write(unit=new%s, fmt="(es43.35e4)", decimal=decimal) x
-        new%s(38:38) = "e"
-      end if
-
-      if ( .not. present(decimals) ) return
-
-      if ( decimals >= 35 ) return
-
-      if ( decimals < 0 ) then
-        decimals_ = 0
-      else
-        decimals_ = decimals
-      end if
-
-      i = 1; do
-        if ( (new%s(i:i) == POINT) .or. (new%s(i:i) == COMMA) ) then
-          new%s = new%s(:i+decimals_)//new%s(i+36:); return
-        end if
-        i = i + 1; cycle
-      end do
-    else if ( fmt_ == "f" ) then
-      if ( abs(x) /= 0e0_r128 ) then
-        e = int(log10(abs(x)))
-      else
-        new%s = "0.0"; return
-      end if
-
-      if ( e == 0 ) then
-        if ( floor(x) > 0 ) e = 1 + e
-      else if ( e > 0 ) then
-        e = 1 + e
-      end if
-
-      allocate( character(len=125) :: new%s )
-
-      if ( e > 0 ) then
-        write(unit=new%s, fmt="(f0.36)", decimal=decimal) x
-      else
-        write(unit=new%s, fmt="(f0.100)", decimal=decimal) x
-      end if
-
-      i = 1; do
-        if ( (new%s(i:i) == POINT) .or. (new%s(i:i) == COMMA) ) exit
-        i = i + 1; cycle
-      end do
-
-      if ( (i == 1) .or. ( (i == 2) .and. (new%s(1:1) == "-") ) ) then
-        new%s(i+1:125) = new%s(i:124); new%s(i:i) = "0"; i = i + 1
-      end if
-
-      if ( i > 36 ) then
-        new%s = new%s(:i); return
-      end if
-
-      if ( .not. present(decimals) ) then
-        new%s = new%s(:i+36-e); return
-      end if
-
-      if ( decimals <= 0 ) then
-        new%s = new%s(:i); return
-      end if
-
-      if ( decimals >= 36-e ) then
-        new%s = new%s(:i+36-e); return
-      end if
-
-      new%s = new%s(:i+decimals); return
-    end if
+    new%buf = real_text(x, decimal_of(locale), real_fmt_of(fmt), decimals)
+    new%n = len(new%buf, kind=i64)
   end procedure new_string_from_r128
+#endif
+
   module procedure new_string_from_r64
-    character(len=1) :: fmt_
-    character(len=5) :: decimal
-    integer          :: e, decimals_, i
-
-    e=0; decimals_=0; i=0
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "e"
-    else
-      if ( any(REAL_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        new%s = EMPTY_STR; return
-      end if
-    end if
-
-    if ( fmt_ == "z" ) then
-      if ( x == 0e0_r64 ) then
-        new%s = "0x0"; return
-      end if
-
-      inline_cast: block
-        integer(i64) :: x_int, num, next; character(len=18) :: buffer; integer :: ascii_code
-        logical :: negative
-
-        x_int = transfer(source=x, mold=x_int)
-
-        if ( x_int < 0_i64 ) then
-          num = (x_int + 1_i64) + largest_i64; negative = .true.; buffer(1:) = "0x0000000000000000"
-        else
-          num = x_int; negative = .false.
-        end if
-
-        i = len(buffer); extract_hex_digits: do
-          next = num/16_i64; buffer(i:i) = DIGITS_A(num - 16_i64*next); if ( next == 0_i64 ) exit
-          num = next; i = i - 1; cycle
-        end do extract_hex_digits
-
-        if ( negative ) then
-          ascii_code = iachar(buffer(3:3))
-          if ( ascii_code < 50 ) then
-            buffer(3:3) = achar(ascii_code + 8)
-          else
-            buffer(3:3) = achar(ascii_code + 47)
-          end if
-          new%s = buffer(1:); return
-        else
-          buffer(i-2:i-1) = "0x"; new%s = buffer(i-2:); return
-        end if
-      end block inline_cast
-    end if
-
-    if ( .not. present(locale) ) then
-      decimal = "POINT"
-    else
-      if ( locale == "US" ) then
-        decimal = "POINT"
-      else if ( locale == "EU" ) then
-        decimal = "COMMA"
-      else
-        new%s = EMPTY_STR; return
-      end if
-    end if
-
-    if ( fmt_ == "e" ) then
-      if ( x == 0e0_r64 ) then
-        new%s = "0.0e+000"; return
-      end if
-
-      if ( x < 0e0_r64 ) then
-        new%s = "0000000000000000000000000"
-        write(unit=new%s, fmt="(es25.17e3)", decimal=decimal) x
-        new%s(21:21) = "e"
-      else
-        new%s = "000000000000000000000000"
-        write(unit=new%s, fmt="(es24.17e3)", decimal=decimal) x
-        new%s(20:20) = "e"
-      end if
-
-      if ( .not. present(decimals) ) return
-
-      if ( decimals >= 17 ) return
-
-      if ( decimals < 0 ) then
-        decimals_ = 0
-      else
-        decimals_ = decimals
-      end if
-
-      i = 1; do
-        if ( (new%s(i:i) == POINT) .or. (new%s(i:i) == COMMA) ) then
-          new%s = new%s(:i+decimals_)//new%s(i+18:); return
-        end if
-        i = i + 1; cycle
-      end do
-    else if ( fmt_ == "f" ) then
-      if ( abs(x) /= 0e0_r64 ) then
-        e = int(log10(abs(x)))
-      else
-        new%s = "0.0"; return
-      end if
-
-      if ( e == 0 ) then
-        if ( floor(x) > 0 ) e = 1 + e
-      else if ( e > 0 ) then
-        e = 1 + e
-      end if
-
-      allocate( character(len=100) :: new%s )
-
-      if ( e > 0 ) then
-        write(unit=new%s, fmt="(f0.18)", decimal=decimal) x
-      else
-        write(unit=new%s, fmt="(f0.80)", decimal=decimal) x
-      end if
-
-      i = 1; do
-        if ( (new%s(i:i) == POINT) .or. (new%s(i:i) == COMMA) ) exit
-        i = i + 1; cycle
-      end do
-
-      if ( (i == 1) .or. ( (i == 2) .and. (new%s(1:1) == "-") ) ) then
-        new%s(i+1:100) = new%s(i:99); new%s(i:i) = "0"; i = i + 1
-      end if
-
-      if ( i > 18 ) then
-        new%s = new%s(:i); return
-      end if
-
-      if ( .not. present(decimals) ) then
-        new%s = new%s(:i+18-e); return
-      end if
-
-      if ( decimals <= 0 ) then
-        new%s = new%s(:i); return
-      end if
-
-      if ( decimals >= 18-e ) then
-        new%s = new%s(:i+18-e); return
-      end if
-
-      new%s = new%s(:i+decimals); return
-    end if
+    new%buf = real_text(x, decimal_of(locale), real_fmt_of(fmt), decimals)
+    new%n = len(new%buf, kind=i64)
   end procedure new_string_from_r64
+
   module procedure new_string_from_r32
-    character(len=1) :: fmt_
-    character(len=5) :: decimal
-    integer          :: e, decimals_, i
-
-    e=0; decimals_=0; i=0
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "e"
-    else
-      if ( any(REAL_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        new%s = EMPTY_STR; return
-      end if
-    end if
-
-    if ( fmt_ == "z" ) then
-      if ( x == 0e0_r32 ) then
-        new%s = "0x0"; return
-      end if
-
-      inline_cast: block
-        integer :: x_int, num, next; character(len=10) :: buffer; integer :: ascii_code; logical :: negative
-
-        x_int = transfer(source=x, mold=x_int)
-
-        if ( x_int < 0 ) then
-          num = (x_int + 1) + largest_i32; negative = .true.; buffer(1:) = "0x00000000"
-        else
-          num = x_int; negative = .false.
-        end if
-
-        i = len(buffer); extract_hex_digits: do
-          next = num/16; buffer(i:i) = DIGITS_A(num - 16*next); if ( next == 0 ) exit
-          num = next; i = i - 1; cycle
-        end do extract_hex_digits
-
-        if ( negative ) then
-          ascii_code = iachar(buffer(3:3))
-          if ( ascii_code < 50 ) then
-            buffer(3:3) = achar(ascii_code + 8)
-          else
-            buffer(3:3) = achar(ascii_code + 47)
-          end if
-          new%s = buffer(1:); return
-        else
-          buffer(i-2:i-1) = "0x"; new%s = buffer(i-2:); return
-        end if
-      end block inline_cast
-    end if
-
-    if ( .not. present(locale) ) then
-      decimal = "POINT"
-    else
-      if ( locale == "US" ) then
-        decimal = "POINT"
-      else if ( locale == "EU" ) then
-        decimal = "COMMA"
-      else
-        new%s = EMPTY_STR; return
-      end if
-    end if
-
-    if ( fmt_ == "e" ) then
-      if ( x == 0e0_r32 ) then
-        new%s = "0.0e+00"; return
-      end if
-
-      if ( x < 0e0_r32 ) then
-        new%s = "000000000000000"
-        write(unit=new%s, fmt="(es15.8e2)", decimal=decimal) x
-        new%s(12:12) = "e"
-      else
-        new%s = "00000000000000"
-        write(unit=new%s, fmt="(es14.8e2)", decimal=decimal) x
-        new%s(11:11) = "e"
-      end if
-
-      if ( .not. present(decimals) ) return
-
-      if ( decimals >= 8 ) return
-
-      if ( decimals < 0 ) then
-        decimals_ = 0
-      else
-        decimals_ = decimals
-      end if
-
-      i = 1; do
-        if ( (new%s(i:i) == POINT) .or. (new%s(i:i) == COMMA) ) then
-          new%s = new%s(:i+decimals_)//new%s(i+9:); return
-        end if
-        i = i + 1; cycle
-      end do
-    else if ( fmt_ == "f" ) then
-      if ( abs(x) /= 0e0_r32 ) then
-        e = int(log10(abs(x)))
-      else
-        new%s = "0.0"; return
-      end if
-
-      if ( e == 0 ) then
-        if ( floor(x) > 0 ) e = 1 + e
-      else if ( e > 0 ) then
-        e = 1 + e
-      end if
-
-      allocate( character(len=75) :: new%s )
-
-      if ( e > 0 ) then
-        write(unit=new%s, fmt="(f0.9)", decimal=decimal) x
-      else
-        write(unit=new%s, fmt="(f0.70)", decimal=decimal) x
-      end if
-
-      i = 1; do
-        if ( (new%s(i:i) == POINT) .or. (new%s(i:i) == COMMA) ) exit
-        i = i + 1; cycle
-      end do
-
-      if ( (i == 1) .or. ( (i == 2) .and. (new%s(1:1) == "-") ) ) then
-        new%s(i+1:75) = new%s(i:74); new%s(i:i) = "0"; i = i + 1
-      end if
-
-      if ( i > 9 ) then
-        new%s = new%s(:i); return
-      end if
-
-      if ( .not. present(decimals) ) then
-        new%s = new%s(:i+9-e); return
-      end if
-
-      if ( decimals <= 0 ) then
-        new%s = new%s(:i); return
-      end if
-
-      if ( decimals >= 9-e ) then
-        new%s = new%s(:i+9-e); return
-      end if
-
-      new%s = new%s(:i+decimals); return
-    end if
+    new%buf = real_text(x, decimal_of(locale), real_fmt_of(fmt), decimals)
+    new%n = len(new%buf, kind=i64)
   end procedure new_string_from_r32
 
+
   module procedure new_string_from_i64
-    character(len=1)  :: fmt_
-    character(len=20) :: buffer
-    integer(i64)      :: num, next
-    integer           :: ascii_code, i
-    logical           :: negative
-
-    num=0_i64; next=0_i64; ascii_code=0; i=0; negative=.false.
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "i"
-    else
-      if ( any(INT_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        new%s = EMPTY_STR; return
-      end if
-    end if
-
-    if ( fmt_ == "i" ) then
-      if ( x < 0_i64 ) then
-        if ( x == smallest_i64 ) then
-          new%s = "-9223372036854775808"; return
-        end if
-        num = -x; negative = .true.
-      else
-        num = x; negative = .false.
-      end if
-
-      i = len(buffer); extract_digits: do
-        next = num/10_i64; buffer(i:i) = achar(num - 10_i64*next + 48_i64); if ( next == 0_i64 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_digits
-
-      if ( negative ) then
-        buffer(i-1:i-1) = "-"; new%s = buffer(i-1:); return
-      else
-        new%s = buffer(i:); return
-      end if
-    else
-      if ( x < 0_i64 ) then
-        num = (x + 1_i64) + largest_i64; negative = .true.; buffer(3:) = "0x0000000000000000"
-      else
-        num = x; negative = .false.
-      end if
-
-      i = len(buffer); extract_hex_digits: do
-        next = num/16_i64; buffer(i:i) = DIGITS_A(num - 16_i64*next); if ( next == 0_i64 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_hex_digits
-
-      if ( negative ) then
-        ascii_code = iachar(buffer(5:5))
-        if ( ascii_code < 50 ) then
-          buffer(5:5) = achar(ascii_code + 8)
-        else
-          buffer(5:5) = achar(ascii_code + 47)
-        end if
-        new%s = buffer(3:); return
-      else
-        buffer(i-2:i-1) = "0x"; new%s = buffer(i-2:); return
-      end if
-    end if
+    new%buf = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
+    new%n = len(new%buf, kind=i64)
   end procedure new_string_from_i64
+
   module procedure new_string_from_i32
-    character(len=1)  :: fmt_
-    character(len=11) :: buffer
-    integer           :: num, next, ascii_code, i
-    logical           :: negative
-
-    num=0; next=0; ascii_code=0; i=0; negative=.false.
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "i"
-    else
-      if ( any(INT_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        new%s = EMPTY_STR; return
-      end if
-    end if
-
-    if ( fmt_ == "i" ) then
-      if ( x < 0 ) then
-        if ( x == smallest_i32 ) then
-          new%s = "-2147483648"; return
-        end if
-        num = -x; negative = .true.
-      else
-        num = x; negative = .false.
-      end if
-
-      i = len(buffer); extract_digits: do
-        next = num/10; buffer(i:i) = achar(num - 10*next + 48); if ( next == 0 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_digits
-
-      if ( negative ) then
-        buffer(i-1:i-1) = "-"; new%s = buffer(i-1:); return
-      else
-        new%s = buffer(i:); return
-      end if
-    else
-      if ( x < 0 ) then
-        num = (x + 1) + largest_i32; negative = .true.; buffer(2:) = "0x00000000"
-      else
-        num = x; negative = .false.
-      end if
-
-      i = len(buffer); extract_hex_digits: do
-        next = num/16; buffer(i:i) = DIGITS_A(num - 16*next); if ( next == 0 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_hex_digits
-
-      if ( negative ) then
-        ascii_code = iachar(buffer(4:4))
-        if ( ascii_code < 50 ) then
-          buffer(4:4) = achar(ascii_code + 8)
-        else
-          buffer(4:4) = achar(ascii_code + 47)
-        end if
-        new%s = buffer(2:); return
-      else
-        buffer(i-2:i-1) = "0x"; new%s = buffer(i-2:); return
-      end if
-    end if
+    new%buf = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
+    new%n = len(new%buf, kind=i64)
   end procedure new_string_from_i32
+
   module procedure new_string_from_i16
-    character(len=1) :: fmt_
-    character(len=6) :: buffer
-    integer          :: num, next, ascii_code, i
-    logical          :: negative
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "i"
-    else
-      if ( any(INT_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        new%s = EMPTY_STR; return
-      end if
-    end if
-
-    if ( fmt_ == "i" ) then
-      if ( x < 0_i16 ) then
-        if ( x == smallest_i16 ) then
-          new%s = "-32768"; return
-        end if
-        num = int(-x); negative = .true.
-      else
-        num = int(x); negative = .false.
-      end if
-
-      i = len(buffer); extract_digits: do
-        next = num/10; buffer(i:i) = achar(num - 10*next + 48); if ( next == 0 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_digits
-
-      if ( negative ) then
-        buffer(i-1:i-1) = "-"; new%s = buffer(i-1:); return
-      else
-        new%s = buffer(i:); return
-      end if
-    else
-      if ( x < 0_i16 ) then
-        num = int((x + 1_i16) + largest_i16); negative = .true.; buffer(1:) = "0x0000"
-      else
-        num = int(x); negative = .false.
-      end if
-
-      i = len(buffer); extract_hex_digits: do
-        next = num/16; buffer(i:i) = DIGITS_A(num - 16*next); if ( next == 0 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_hex_digits
-
-      if ( negative ) then
-        ascii_code = iachar(buffer(3:3))
-        if ( ascii_code < 50 ) then
-          buffer(3:3) = achar(ascii_code + 8)
-        else
-          buffer(3:3) = achar(ascii_code + 47)
-        end if
-        new%s = buffer(1:); return
-      else
-        buffer(i-2:i-1) = "0x"; new%s = buffer(i-2:); return
-      end if
-    end if
+    new%buf = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
+    new%n = len(new%buf, kind=i64)
   end procedure new_string_from_i16
+
   module procedure new_string_from_i8
-    character(len=1) :: fmt_
-    character(len=4) :: buffer
-    integer          :: num, next, ascii_code, i
-    logical          :: negative
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "i"
-    else
-      if ( any(INT_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        new%s = EMPTY_STR; return
-      end if
-    end if
-
-    if ( fmt_ == "i" ) then
-      if ( x < 0_i8 ) then
-        if ( x == smallest_i8 ) then
-          new%s = "-128"; return
-        end if
-        num = int(-x); negative = .true.
-      else
-        num = int(x); negative = .false.
-      end if
-
-      i = len(buffer); extract_digits: do
-        next = num/10; buffer(i:i) = achar(num - 10*next + 48); if ( next == 0 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_digits
-
-      if ( negative ) then
-        buffer(i-1:i-1) = "-"; new%s = buffer(i-1:); return
-      else
-        new%s = buffer(i:); return
-      end if
-    else
-      if ( x < 0_i8 ) then
-        num = int((x + 1_i8) + largest_i8); negative = .true.; buffer(1:) = "0x00"
-      else
-        num = int(x); negative = .false.
-      end if
-
-      i = len(buffer); extract_hex_digits: do
-        next = num/16; buffer(i:i) = DIGITS_A(num - 16*next); if ( next == 0 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_hex_digits
-
-      if ( negative ) then
-        ascii_code = iachar(buffer(3:3))
-        if ( ascii_code < 50 ) then
-          buffer(3:3) = achar(ascii_code + 8)
-        else
-          buffer(3:3) = achar(ascii_code + 47)
-        end if
-        new%s = buffer(1:); return
-      else
-        buffer(i-2:i-1) = "0x"; new%s = buffer(i-2:); return
-      end if
-    end if
+    new%buf = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
+    new%n = len(new%buf, kind=i64)
   end procedure new_string_from_i8
 
+
   module procedure new_string_from_string
-    if ( x%len() < 1 ) then
-      new%s = EMPTY_STR
+    if ( x%len64() < 1_i64 ) then
+      new%buf = EMPTY_STR; new%n = len(new%buf, kind=i64)
     else
-      new%s = x%s
+      new%buf = x%buf(:x%n); new%n = len(new%buf, kind=i64)
     end if
   end procedure new_string_from_string
   module procedure new_string_from_char
-    new%s = x
+    new%buf = x; new%n = len(new%buf, kind=i64)
   end procedure new_string_from_char
   module procedure new_string_from_empty
-    new%s = EMPTY_STR
+    new%buf = EMPTY_STR; new%n = len(new%buf, kind=i64)
   end procedure new_string_from_empty
 
   ! str ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#ifdef IOFL_HAS_R128
   module procedure str_from_c128
-    character(len=1)              :: fmt_
-    character(len=5)              :: decimal
-    character(len=:), allocatable :: xre_str, xim_str, im_
-    integer                       :: e, decimals_, i
-
-    e=0; decimals_=0; i=0
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "e"
-    else
-      if ( any(REAL_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        x_str = EMPTY_STR; return
-      end if
-    end if
-
-    if_z_re: if ( fmt_ == "z" ) then
-      if ( x%re /= 0e0_r128 ) then
-        xre_str = "0x00000000000000000000000000000000"
-      else
-        xre_str = "0x0"; exit if_z_re
-      end if
-
-      write(unit=xre_str(3:), fmt="(z32)") x%re
-
-      do i = 3, 34
-        if ( (xre_str(i:i) >= "A") .and. (xre_str(i:i) <= "F") ) xre_str(i:i) = achar(iachar(xre_str(i:i))+32)
-      end do
-    end if if_z_re
-    if_z_im: if ( fmt_ == "z" ) then
-      if ( x%im /= 0e0_r128 ) then
-        xim_str = "0x00000000000000000000000000000000"
-      else
-        xim_str = "0x0"; exit if_z_im
-      end if
-
-      write(unit=xim_str(3:), fmt="(z32)") x%im
-
-      do i = 3, 34
-        if ( (xim_str(i:i) >= "A") .and. (xim_str(i:i) <= "F") ) xim_str(i:i) = achar(iachar(xim_str(i:i))+32)
-      end do
-    end if if_z_im
-
-    if ( .not. present(locale) ) then
-      decimal = "POINT"
-    else
-      if ( locale == "US" ) then
-        decimal = "POINT"
-      else if ( locale == "EU" ) then
-        decimal = "COMMA"
-      else
-        x_str = EMPTY_STR; return
-      end if
-    end if
-
-    if_eorf_re: if ( fmt_ == "e" ) then
-      if ( x%re == 0e0_r128 ) then
-        xre_str = "0.0e+0000"; exit if_eorf_re
-      end if
-
-      if ( x%re < 0e0_r128 ) then
-        xre_str = "00000000000000000000000000000000000000000000"
-        write(unit=xre_str, fmt="(es44.35e4)", decimal=decimal) x%re
-        xre_str(39:39) = "e"
-      else
-        xre_str = "0000000000000000000000000000000000000000000"
-        write(unit=xre_str, fmt="(es43.35e4)", decimal=decimal) x%re
-        xre_str(38:38) = "e"
-      end if
-
-      if ( .not. present(decimals) ) exit if_eorf_re
-
-      if ( decimals >= 35 ) exit if_eorf_re
-
-      if ( decimals < 0 ) then
-        decimals_ = 0
-      else
-        decimals_ = decimals
-      end if
-
-      i = 1; do
-        if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) then
-          xre_str = xre_str(:i+decimals_)//xre_str(i+36:); exit if_eorf_re
-        end if
-        i = i + 1; cycle
-      end do
-    else if ( fmt_ == "f" ) then
-      if ( abs(x%re) /= 0e0_r128 ) then
-        e = int(log10(abs(x%re)))
-      else
-        xre_str = "0.0"; exit if_eorf_re
-      end if
-
-      if ( e == 0 ) then
-        if ( floor(x%re) > 0 ) e = 1 + e
-      else if ( e > 0 ) then
-        e = 1 + e
-      end if
-
-      allocate( character(len=125) :: xre_str )
-
-      if ( e > 0 ) then
-        write(unit=xre_str, fmt="(f0.36)", decimal=decimal) x%re
-      else
-        write(unit=xre_str, fmt="(f0.100)", decimal=decimal) x%re
-      end if
-
-      i = 1; do
-        if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) exit
-        i = i + 1; cycle
-      end do
-
-      if ( (i == 1) .or. ( (i == 2) .and. (xre_str(1:1) == "-") ) ) then
-        xre_str(i+1:125) = xre_str(i:124); xre_str(i:i) = "0"; i = i + 1
-      end if
-
-      if ( i > 36 ) then
-        xre_str = xre_str(:i); exit if_eorf_re
-      end if
-
-      if ( .not. present(decimals) ) then
-        xre_str = xre_str(:i+36-e); exit if_eorf_re
-      end if
-
-      if ( decimals <= 0 ) then
-        xre_str = xre_str(:i); exit if_eorf_re
-      end if
-
-      if ( decimals >= 36-e ) then
-        xre_str = xre_str(:i+36-e); exit if_eorf_re
-      end if
-
-      xre_str = xre_str(:i+decimals); exit if_eorf_re
-    end if if_eorf_re
-    if_eorf_im: if ( fmt_ == "e" ) then
-      if ( x%im == 0e0_r128 ) then
-        xim_str = "0.0e+0000"; exit if_eorf_im
-      end if
-
-      if ( x%im < 0e0_r128 ) then
-        xim_str = "00000000000000000000000000000000000000000000"
-        write(unit=xim_str, fmt="(es44.35e4)", decimal=decimal) x%im
-        xim_str(39:39) = "e"
-      else
-        xim_str = "0000000000000000000000000000000000000000000"
-        write(unit=xim_str, fmt="(es43.35e4)", decimal=decimal) x%im
-        xim_str(38:38) = "e"
-      end if
-
-      if ( .not. present(decimals) ) exit if_eorf_im
-
-      if ( decimals >= 35 ) exit if_eorf_im
-
-      if ( decimals < 0 ) then
-        decimals_ = 0
-      else
-        decimals_ = decimals
-      end if
-
-      i = 1; do
-        if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) then
-          xim_str = xim_str(:i+decimals_)//xim_str(i+36:); exit if_eorf_im
-        end if
-        i = i + 1; cycle
-      end do
-    else if ( fmt_ == "f" ) then
-      if ( abs(x%im) /= 0e0_r128 ) then
-        e = int(log10(abs(x%im)))
-      else
-        xim_str = "0.0"; exit if_eorf_im
-      end if
-
-      if ( e == 0 ) then
-        if ( floor(x%im) > 0 ) e = 1 + e
-      else if ( e > 0 ) then
-        e = 1 + e
-      end if
-
-      allocate( character(len=125) :: xim_str )
-
-      if ( e > 0 ) then
-        write(unit=xim_str, fmt="(f0.36)", decimal=decimal) x%im
-      else
-        write(unit=xim_str, fmt="(f0.100)", decimal=decimal) x%im
-      end if
-
-      i = 1; do
-        if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) exit
-        i = i + 1; cycle
-      end do
-
-      if ( (i == 1) .or. ( (i == 2) .and. (xim_str(1:1) == "-") ) ) then
-        xim_str(i+1:125) = xim_str(i:124); xim_str(i:i) = "0"; i = i + 1
-      end if
-
-      if ( i > 36 ) then
-        xim_str = xim_str(:i); exit if_eorf_im
-      end if
-
-      if ( .not. present(decimals) ) then
-        xim_str = xim_str(:i+36-e); exit if_eorf_im
-      end if
-
-      if ( decimals <= 0 ) then
-        xim_str = xim_str(:i); exit if_eorf_im
-      end if
-
-      if ( decimals >= 36-e ) then
-        xim_str = xim_str(:i+36-e); exit if_eorf_im
-      end if
-
-      xim_str = xim_str(:i+decimals); exit if_eorf_im
-    end if if_eorf_im
-
-    if ( .not. present(im) ) then
-      im_ = EMPTY_STR
-    else
-      im_ = im
-    end if
-
-    if ( im_ == EMPTY_STR ) then
-      if ( decimal == "POINT" ) then
-        x_str = "("//xre_str//COMMA//xim_str//")"; return
-      else
-        x_str = "("//xre_str//SEMICOLON//xim_str//")"; return
-      end if
-    end if
-
-    if ( fmt_ == "z" ) then
-      x_str = xre_str//"+"//xim_str//im_; return
-    end if
-
-    if ( x%im < 0e0_r128 ) then
-      x_str = xre_str//xim_str//im_
-    else
-      x_str = xre_str//"+"//xim_str//im_
-    end if
+    x_str = complex_text(x, decimal_of(locale), real_fmt_of(fmt), decimals, im)
   end procedure str_from_c128
+#endif
+
   module procedure str_from_c64
-    character(len=1)              :: fmt_
-    character(len=5)              :: decimal
-    character(len=:), allocatable :: xre_str, xim_str, im_
-    integer                       :: e, decimals_, i
-
-    e=0; decimals_=0; i=0
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "e"
-    else
-      if ( any(REAL_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        x_str = EMPTY_STR; return
-      end if
-    end if
-
-    if_z_re: if ( fmt_ == "z" ) then
-      if ( x%re == 0e0_r64 ) then
-        xre_str = "0x0"; exit if_z_re
-      end if
-
-      call cast(transfer(source=x%re, mold=1_i64), into=xre_str, fmt="z"); exit if_z_re
-    end if if_z_re
-    if_z_im: if ( fmt_ == "z" ) then
-      if ( x%im == 0e0_r64 ) then
-        xim_str = "0x0"; exit if_z_im
-      end if
-
-      call cast(transfer(source=x%im, mold=1_i64), into=xim_str, fmt="z"); exit if_z_im
-    end if if_z_im
-
-    if ( .not. present(locale) ) then
-      decimal = "POINT"
-    else
-      if ( locale == "US" ) then
-        decimal = "POINT"
-      else if ( locale == "EU" ) then
-        decimal = "COMMA"
-      else
-        x_str = EMPTY_STR; return
-      end if
-    end if
-
-    if_eorf_re: if ( fmt_ == "e" ) then
-      if ( x%re == 0e0_r64 ) then
-        xre_str = "0.0e+000"; exit if_eorf_re
-      end if
-
-      if ( x%re < 0e0_r64 ) then
-        xre_str = "0000000000000000000000000"
-        write(unit=xre_str, fmt="(es25.17e3)", decimal=decimal) x%re
-        xre_str(21:21) = "e"
-      else
-        xre_str = "000000000000000000000000"
-        write(unit=xre_str, fmt="(es24.17e3)", decimal=decimal) x%re
-        xre_str(20:20) = "e"
-      end if
-
-      if ( .not. present(decimals) ) exit if_eorf_re
-
-      if ( decimals >= 17 ) exit if_eorf_re
-
-      if ( decimals < 0 ) then
-        decimals_ = 0
-      else
-        decimals_ = decimals
-      end if
-
-      i = 1; do
-        if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) then
-          xre_str = xre_str(:i+decimals_)//xre_str(i+18:); exit if_eorf_re
-        end if
-        i = i + 1; cycle
-      end do
-    else if ( fmt_ == "f" ) then
-      if ( abs(x%re) /= 0e0_r64 ) then
-        e = int(log10(abs(x%re)))
-      else
-        xre_str = "0.0"; return
-      end if
-
-      if ( e == 0 ) then
-        if ( floor(x%re) > 0 ) e = 1 + e
-      else if ( e > 0 ) then
-        e = 1 + e
-      end if
-
-      allocate( character(len=100) :: xre_str )
-
-      if ( e > 0 ) then
-        write(unit=xre_str, fmt="(f0.18)", decimal=decimal) x%re
-      else
-        write(unit=xre_str, fmt="(f0.80)", decimal=decimal) x%re
-      end if
-
-      i = 1; do
-        if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) exit
-        i = i + 1; cycle
-      end do
-
-      if ( (i == 1) .or. ( (i == 2) .and. (xre_str(1:1) == "-") ) ) then
-        xre_str(i+1:100) = xre_str(i:99); xre_str(i:i) = "0"; i = i + 1
-      end if
-
-      if ( i > 18 ) then
-        xre_str = xre_str(:i); exit if_eorf_re
-      end if
-
-      if ( .not. present(decimals) ) then
-        xre_str = xre_str(:i+18-e); exit if_eorf_re
-      end if
-
-      if ( decimals <= 0 ) then
-        xre_str = xre_str(:i); exit if_eorf_re
-      end if
-
-      if ( decimals >= 18-e ) then
-        xre_str = xre_str(:i+18-e); exit if_eorf_re
-      end if
-
-      xre_str = xre_str(:i+decimals); exit if_eorf_re
-    end if if_eorf_re
-    if_eorf_im: if ( fmt_ == "e" ) then
-      if ( x%im == 0e0_r64 ) then
-        xim_str = "0.0e+000"; exit if_eorf_im
-      end if
-
-      if ( x%im < 0e0_r64 ) then
-        xim_str = "0000000000000000000000000"
-        write(unit=xim_str, fmt="(es25.17e3)", decimal=decimal) x%im
-        xim_str(21:21) = "e"
-      else
-        xim_str = "000000000000000000000000"
-        write(unit=xim_str, fmt="(es24.17e3)", decimal=decimal) x%im
-        xim_str(20:20) = "e"
-      end if
-
-      if ( .not. present(decimals) ) exit if_eorf_im
-
-      if ( decimals >= 17 ) exit if_eorf_im
-
-      if ( decimals < 0 ) then
-        decimals_ = 0
-      else
-        decimals_ = decimals
-      end if
-
-      i = 1; do
-        if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) then
-          xim_str = xim_str(:i+decimals_)//xim_str(i+18:); exit if_eorf_im
-        end if
-        i = i + 1; cycle
-      end do
-    else if ( fmt_ == "f" ) then
-      if ( abs(x%im) /= 0e0_r64 ) then
-        e = int(log10(abs(x%im)))
-      else
-        xim_str = "0.0"; return
-      end if
-
-      if ( e == 0 ) then
-        if ( floor(x%im) > 0 ) e = 1 + e
-      else if ( e > 0 ) then
-        e = 1 + e
-      end if
-
-      allocate( character(len=100) :: xim_str )
-
-      if ( e > 0 ) then
-        write(unit=xim_str, fmt="(f0.18)", decimal=decimal) x%im
-      else
-        write(unit=xim_str, fmt="(f0.80)", decimal=decimal) x%im
-      end if
-
-      i = 1; do
-        if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) exit
-        i = i + 1; cycle
-      end do
-
-      if ( (i == 1) .or. ( (i == 2) .and. (xim_str(1:1) == "-") ) ) then
-        xim_str(i+1:100) = xim_str(i:99); xim_str(i:i) = "0"; i = i + 1
-      end if
-
-      if ( i > 18 ) then
-        xim_str = xim_str(:i); exit if_eorf_im
-      end if
-
-      if ( .not. present(decimals) ) then
-        xim_str = xim_str(:i+18-e); exit if_eorf_im
-      end if
-
-      if ( decimals <= 0 ) then
-        xim_str = xim_str(:i); exit if_eorf_im
-      end if
-
-      if ( decimals >= 18-e ) then
-        xim_str = xim_str(:i+18-e); exit if_eorf_im
-      end if
-
-      xim_str = xim_str(:i+decimals); exit if_eorf_im
-    end if if_eorf_im
-
-    if ( .not. present(im) ) then
-      im_ = EMPTY_STR
-    else
-      im_ = im
-    end if
-
-    if ( im_ == EMPTY_STR ) then
-      if ( decimal == "POINT" ) then
-        x_str = "("//xre_str//COMMA//xim_str//")"; return
-      else
-        x_str = "("//xre_str//SEMICOLON//xim_str//")"; return
-      end if
-    end if
-
-    if ( fmt_ == "z" ) then
-      x_str = xre_str//"+"//xim_str//im_; return
-    end if
-
-    if ( x%im < 0e0_r64 ) then
-      x_str = xre_str//xim_str//im_
-    else
-      x_str = xre_str//"+"//xim_str//im_
-    end if
+    x_str = complex_text(x, decimal_of(locale), real_fmt_of(fmt), decimals, im)
   end procedure str_from_c64
+
   module procedure str_from_c32
-    character(len=1)              :: fmt_
-    character(len=5)              :: decimal
-    character(len=:), allocatable :: xre_str, xim_str, im_
-    integer                       :: e, decimals_, i
-
-    e=0; decimals_=0; i=0
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "e"
-    else
-      if ( any(REAL_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        x_str = EMPTY_STR; return
-      end if
-    end if
-
-    if_z_re: if ( fmt_ == "z" ) then
-      if ( x%re == 0e0_r32 ) then
-        xre_str = "0x0"; exit if_z_re
-      end if
-
-      call cast(transfer(source=x%re, mold=1_i32), into=xre_str, fmt="z"); exit if_z_re
-    end if if_z_re
-    if_z_im: if ( fmt_ == "z" ) then
-      if ( x%im == 0e0_r32 ) then
-        xim_str = "0x0"; exit if_z_im
-      end if
-
-      call cast(transfer(source=x%im, mold=1_i32), into=xim_str, fmt="z"); exit if_z_im
-    end if if_z_im
-
-    if ( .not. present(locale) ) then
-      decimal = "POINT"
-    else
-      if ( locale == "US" ) then
-        decimal = "POINT"
-      else if ( locale == "EU" ) then
-        decimal = "COMMA"
-      else
-        x_str = EMPTY_STR; return
-      end if
-    end if
-
-    if_eorf_re: if ( fmt_ == "e" ) then
-      if ( x%re == 0e0_r32 ) then
-        xre_str = "0.0e+00"; exit if_eorf_re
-      end if
-
-      if ( x%re < 0e0_r32 ) then
-        xre_str = "000000000000000"
-        write(unit=xre_str, fmt="(es15.8e2)", decimal=decimal) x%re
-        xre_str(12:12) = "e"
-      else
-        xre_str = "00000000000000"
-        write(unit=xre_str, fmt="(es14.8e2)", decimal=decimal) x%re
-        xre_str(11:11) = "e"
-      end if
-
-      if ( .not. present(decimals) ) exit if_eorf_re
-
-      if ( decimals >= 8 ) exit if_eorf_re
-
-      if ( decimals < 0 ) then
-        decimals_ = 0
-      else
-        decimals_ = decimals
-      end if
-
-      i = 1; do
-        if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) then
-          xre_str = xre_str(:i+decimals_)//xre_str(i+9:); exit if_eorf_re
-        end if
-        i = i + 1; cycle
-      end do
-    else if ( fmt_ == "f" ) then
-      if ( abs(x%re) /= 0e0_r32 ) then
-        e = int(log10(abs(x%re)))
-      else
-        xre_str = "0.0"; exit if_eorf_re
-      end if
-
-      if ( e == 0 ) then
-        if ( floor(x%re) > 0 ) e = 1 + e
-      else if ( e > 0 ) then
-        e = 1 + e
-      end if
-
-      allocate( character(len=75) :: xre_str )
-
-      if ( e > 0 ) then
-        write(unit=xre_str, fmt="(f0.9)", decimal=decimal) x%re
-      else
-        write(unit=xre_str, fmt="(f0.70)", decimal=decimal) x%re
-      end if
-
-      i = 1; do
-        if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) exit
-        i = i + 1; cycle
-      end do
-
-      if ( (i == 1) .or. ( (i == 2) .and. (xre_str(1:1) == "-") ) ) then
-        xre_str(i+1:75) = xre_str(i:74); xre_str(i:i) = "0"; i = i + 1
-      end if
-
-      if ( i > 9 ) then
-        xre_str = xre_str(:i); exit if_eorf_re
-      end if
-
-      if ( .not. present(decimals) ) then
-        xre_str = xre_str(:i+9-e); exit if_eorf_re
-      end if
-
-      if ( decimals <= 0 ) then
-        xre_str = xre_str(:i); exit if_eorf_re
-      end if
-
-      if ( decimals >= 9-e ) then
-        xre_str = xre_str(:i+9-e); exit if_eorf_re
-      end if
-
-      xre_str = xre_str(:i+decimals); exit if_eorf_re
-    end if if_eorf_re
-    if_eorf_im: if ( fmt_ == "e" ) then
-      if ( x%im == 0e0_r32 ) then
-        xim_str = "0.0e+00"; exit if_eorf_im
-      end if
-
-      if ( x%im < 0e0_r32 ) then
-        xim_str = "000000000000000"
-        write(unit=xim_str, fmt="(es15.8e2)", decimal=decimal) x%im
-        xim_str(12:12) = "e"
-      else
-        xim_str = "00000000000000"
-        write(unit=xim_str, fmt="(es14.8e2)", decimal=decimal) x%im
-        xim_str(11:11) = "e"
-      end if
-
-      if ( .not. present(decimals) ) exit if_eorf_im
-
-      if ( decimals >= 8 ) exit if_eorf_im
-
-      if ( decimals < 0 ) then
-        decimals_ = 0
-      else
-        decimals_ = decimals
-      end if
-
-      i = 1; do
-        if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) then
-          xim_str = xim_str(:i+decimals_)//xim_str(i+9:); exit if_eorf_im
-        end if
-        i = i + 1; cycle
-      end do
-    else if ( fmt_ == "f" ) then
-      if ( abs(x%im) /= 0e0_r32 ) then
-        e = int(log10(abs(x%im)))
-      else
-        xim_str = "0.0"; exit if_eorf_im
-      end if
-
-      if ( e == 0 ) then
-        if ( floor(x%im) > 0 ) e = 1 + e
-      else if ( e > 0 ) then
-        e = 1 + e
-      end if
-
-      allocate( character(len=75) :: xim_str )
-
-      if ( e > 0 ) then
-        write(unit=xim_str, fmt="(f0.9)", decimal=decimal) x%im
-      else
-        write(unit=xim_str, fmt="(f0.70)", decimal=decimal) x%im
-      end if
-
-      i = 1; do
-        if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) exit
-        i = i + 1; cycle
-      end do
-
-      if ( (i == 1) .or. ( (i == 2) .and. (xim_str(1:1) == "-") ) ) then
-        xim_str(i+1:75) = xim_str(i:74); xim_str(i:i) = "0"; i = i + 1
-      end if
-
-      if ( i > 9 ) then
-        xim_str = xim_str(:i); exit if_eorf_im
-      end if
-
-      if ( .not. present(decimals) ) then
-        xim_str = xim_str(:i+9-e); exit if_eorf_im
-      end if
-
-      if ( decimals <= 0 ) then
-        xim_str = xim_str(:i); exit if_eorf_im
-      end if
-
-      if ( decimals >= 9-e ) then
-        xim_str = xim_str(:i+9-e); exit if_eorf_im
-      end if
-
-      xim_str = xim_str(:i+decimals); exit if_eorf_im
-    end if if_eorf_im
-
-    if ( .not. present(im) ) then
-      im_ = EMPTY_STR
-    else
-      im_ = im
-    end if
-
-    if ( im_ == EMPTY_STR ) then
-      if ( decimal == "POINT" ) then
-        x_str = "("//xre_str//COMMA//xim_str//")"; return
-      else
-        x_str = "("//xre_str//SEMICOLON//xim_str//")"; return
-      end if
-    end if
-
-    if ( fmt_ == "z" ) then
-      x_str = xre_str//"+"//xim_str//im_; return
-    end if
-
-    if ( x%im < 0e0_r32 ) then
-      x_str = xre_str//xim_str//im_
-    else
-      x_str = xre_str//"+"//xim_str//im_
-    end if
+    x_str = complex_text(x, decimal_of(locale), real_fmt_of(fmt), decimals, im)
   end procedure str_from_c32
 
+
+#ifdef IOFL_HAS_R128
   module procedure str_from_r128
-    character(len=1) :: fmt_
-    character(len=5) :: decimal
-    integer          :: e, decimals_, i
-
-    e=0; decimals_=0; i=0
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "e"
-    else
-      if ( any(REAL_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        x_str = EMPTY_STR; return
-      end if
-    end if
-
-    if ( fmt_ == "z" ) then
-      if ( x /= 0e0_r128 ) then
-        x_str = "0x00000000000000000000000000000000"
-      else
-        x_str = "0x0"; return
-      end if
-
-      write(unit=x_str(3:), fmt="(z32)") x
-
-      do i = 3, 34
-        if ( (x_str(i:i) >= "A") .and. (x_str(i:i) <= "F") ) x_str(i:i) = achar(iachar(x_str(i:i)) + 32)
-      end do
-
-      return
-    end if
-
-    if ( .not. present(locale) ) then
-      decimal = "POINT"
-    else
-      if ( locale == "US" ) then
-        decimal = "POINT"
-      else if ( locale == "EU" ) then
-        decimal = "COMMA"
-      else
-        x_str = EMPTY_STR; return
-      end if
-    end if
-
-    if ( fmt_ == "e" ) then
-      if ( x == 0e0_r128 ) then
-        x_str = "0.0e+0000"; return
-      end if
-
-      if ( x < 0e0_r128 ) then
-        x_str = "00000000000000000000000000000000000000000000"
-        write(unit=x_str, fmt="(es44.35e4)", decimal=decimal) x
-        x_str(39:39) = "e"
-      else
-        x_str = "0000000000000000000000000000000000000000000"
-        write(unit=x_str, fmt="(es43.35e4)", decimal=decimal) x
-        x_str(38:38) = "e"
-      end if
-
-      if ( .not. present(decimals) ) return
-
-      if ( decimals >= 35 ) return
-
-      if ( decimals < 0 ) then
-        decimals_ = 0
-      else
-        decimals_ = decimals
-      end if
-
-      i = 1; do
-        if ( (x_str(i:i) == POINT) .or. (x_str(i:i) == COMMA) ) then
-          x_str = x_str(:i+decimals_)//x_str(i+36:); return
-        end if
-        i = i + 1; cycle
-      end do
-    else if ( fmt_ == "f" ) then
-      if ( abs(x) /= 0e0_r128 ) then
-        e = int(log10(abs(x)))
-      else
-        x_str = "0.0"; return
-      end if
-
-      if ( e == 0 ) then
-        if ( floor(x) > 0 ) e = 1 + e
-      else if ( e > 0 ) then
-        e = 1 + e
-      end if
-
-      allocate( character(len=125) :: x_str )
-
-      if ( e > 0 ) then
-        write(unit=x_str, fmt="(f0.36)", decimal=decimal) x
-      else
-        write(unit=x_str, fmt="(f0.100)", decimal=decimal) x
-      end if
-
-      i = 1; do
-        if ( (x_str(i:i) == POINT) .or. (x_str(i:i) == COMMA) ) exit
-        i = i + 1; cycle
-      end do
-
-      if ( (i == 1) .or. ( (i == 2) .and. (x_str(1:1) == "-") ) ) then
-        x_str(i+1:125) = x_str(i:124); x_str(i:i) = "0"; i = i + 1
-      end if
-
-      if ( i > 36 ) then
-        x_str = x_str(:i); return
-      end if
-
-      if ( .not. present(decimals) ) then
-        x_str = x_str(:i+36-e); return
-      end if
-
-      if ( decimals <= 0 ) then
-        x_str = x_str(:i); return
-      end if
-
-      if ( decimals >= 36-e ) then
-        x_str = x_str(:i+36-e); return
-      end if
-
-      x_str = x_str(:i+decimals); return
-    end if
+    x_str = real_text(x, decimal_of(locale), real_fmt_of(fmt), decimals)
   end procedure str_from_r128
+#endif
+
   module procedure str_from_r64
-    character(len=1) :: fmt_
-    character(len=5) :: decimal
-    integer          :: e, decimals_, i
-
-    e=0; decimals_=0; i=0
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "e"
-    else
-      if ( any(REAL_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        x_str = EMPTY_STR; return
-      end if
-    end if
-
-    if ( fmt_ == "z" ) then
-      if ( x == 0e0_r64 ) then
-        x_str = "0x0"; return
-      end if
-
-      call cast(transfer(source=x, mold=1_i64), into=x_str, fmt="z"); return
-    end if
-
-    if ( .not. present(locale) ) then
-      decimal = "POINT"
-    else
-      if ( locale == "US" ) then
-        decimal = "POINT"
-      else if ( locale == "EU" ) then
-        decimal = "COMMA"
-      else
-        x_str = EMPTY_STR; return
-      end if
-    end if
-
-    if ( fmt_ == "e" ) then
-      if ( x == 0e0_r64 ) then
-        x_str = "0.0e+000"; return
-      end if
-
-      if ( x < 0e0_r64 ) then
-        x_str = "0000000000000000000000000"
-        write(unit=x_str, fmt="(es25.17e3)", decimal=decimal) x
-        x_str(21:21) = "e"
-      else
-        x_str = "000000000000000000000000"
-        write(unit=x_str, fmt="(es24.17e3)", decimal=decimal) x
-        x_str(20:20) = "e"
-      end if
-
-      if ( .not. present(decimals) ) return
-
-      if ( decimals >= 17 ) return
-
-      if ( decimals < 0 ) then
-        decimals_ = 0
-      else
-        decimals_ = decimals
-      end if
-
-      i = 1; do
-        if ( (x_str(i:i) == POINT) .or. (x_str(i:i) == COMMA) ) then
-          x_str = x_str(:i+decimals_)//x_str(i+18:); return
-        end if
-        i = i + 1; cycle
-      end do
-    else if ( fmt_ == "f" ) then
-      if ( abs(x) /= 0e0_r64 ) then
-        e = int(log10(abs(x)))
-      else
-        x_str = "0.0"; return
-      end if
-
-      if ( e == 0 ) then
-        if ( floor(x) > 0 ) e = 1 + e
-      else if ( e > 0 ) then
-        e = 1 + e
-      end if
-
-      allocate( character(len=100) :: x_str )
-
-      if ( e > 0 ) then
-        write(unit=x_str, fmt="(f0.18)", decimal=decimal) x
-      else
-        write(unit=x_str, fmt="(f0.80)", decimal=decimal) x
-      end if
-
-      i = 1; do
-        if ( (x_str(i:i) == POINT) .or. (x_str(i:i) == COMMA) ) exit
-        i = i + 1; cycle
-      end do
-
-      if ( (i == 1) .or. ( (i == 2) .and. (x_str(1:1) == "-") ) ) then
-        x_str(i+1:100) = x_str(i:99); x_str(i:i) = "0"; i = i + 1
-      end if
-
-      if ( i > 18 ) then
-        x_str = x_str(:i); return
-      end if
-
-      if ( .not. present(decimals) ) then
-        x_str = x_str(:i+18-e); return
-      end if
-
-      if ( decimals <= 0 ) then
-        x_str = x_str(:i); return
-      end if
-
-      if ( decimals >= 18-e ) then
-        x_str = x_str(:i+18-e); return
-      end if
-
-      x_str = x_str(:i+decimals); return
-    end if
+    x_str = real_text(x, decimal_of(locale), real_fmt_of(fmt), decimals)
   end procedure str_from_r64
+
   module procedure str_from_r32
-    character(len=1) :: fmt_
-    character(len=5) :: decimal
-    integer          :: e, decimals_, i
-
-    e=0; decimals_=0; i=0
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "e"
-    else
-      if ( any(REAL_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        x_str = EMPTY_STR; return
-      end if
-    end if
-
-    if ( fmt_ == "z" ) then
-      if ( x == 0e0_r32 ) then
-        x_str = "0x0"; return
-      end if
-
-      call cast(transfer(source=x, mold=1_i32), into=x_str, fmt="z"); return
-    end if
-
-    if ( .not. present(locale) ) then
-      decimal = "POINT"
-    else
-      if ( locale == "US" ) then
-        decimal = "POINT"
-      else if ( locale == "EU" ) then
-        decimal = "COMMA"
-      else
-        x_str = EMPTY_STR; return
-      end if
-    end if
-
-    if ( fmt_ == "e" ) then
-      if ( x == 0e0_r32 ) then
-        x_str = "0.0e+00"; return
-      end if
-
-      if ( x < 0e0_r32 ) then
-        x_str = "000000000000000"
-        write(unit=x_str, fmt="(es15.8e2)", decimal=decimal) x
-        x_str(12:12) = "e"
-      else
-        x_str = "00000000000000"
-        write(unit=x_str, fmt="(es14.8e2)", decimal=decimal) x
-        x_str(11:11) = "e"
-      end if
-
-      if ( .not. present(decimals) ) return
-
-      if ( decimals >= 8 ) return
-
-      if ( decimals < 0 ) then
-        decimals_ = 0
-      else
-        decimals_ = decimals
-      end if
-
-      i = 1; do
-        if ( (x_str(i:i) == POINT) .or. (x_str(i:i) == COMMA) ) then
-          x_str = x_str(:i+decimals_)//x_str(i+9:); return
-        end if
-        i = i + 1; cycle
-      end do
-    else if ( fmt_ == "f" ) then
-      if ( abs(x) /= 0e0_r32 ) then
-        e = int(log10(abs(x)))
-      else
-        x_str = "0.0"; return
-      end if
-
-      if ( e == 0 ) then
-        if ( floor(x) > 0 ) e = 1 + e
-      else if ( e > 0 ) then
-        e = 1 + e
-      end if
-
-      allocate( character(len=75) :: x_str )
-
-      if ( e > 0 ) then
-        write(unit=x_str, fmt="(f0.9)", decimal=decimal) x
-      else
-        write(unit=x_str, fmt="(f0.70)", decimal=decimal) x
-      end if
-
-      i = 1; do
-        if ( (x_str(i:i) == POINT) .or. (x_str(i:i) == COMMA) ) exit
-        i = i + 1; cycle
-      end do
-
-      if ( (i == 1) .or. ( (i == 2) .and. (x_str(1:1) == "-") ) ) then
-        x_str(i+1:75) = x_str(i:74); x_str(i:i) = "0"; i = i + 1
-      end if
-
-      if ( i > 9 ) then
-        x_str = x_str(:i); return
-      end if
-
-      if ( .not. present(decimals) ) then
-        x_str = x_str(:i+9-e); return
-      end if
-
-      if ( decimals <= 0 ) then
-        x_str = x_str(:i); return
-      end if
-
-      if ( decimals >= 9-e ) then
-        x_str = x_str(:i+9-e); return
-      end if
-
-      x_str = x_str(:i+decimals); return
-    end if
+    x_str = real_text(x, decimal_of(locale), real_fmt_of(fmt), decimals)
   end procedure str_from_r32
 
+
   module procedure str_from_i64
-    character(len=1)  :: fmt_
-    character(len=20) :: buffer
-    integer(i64)      :: num, next
-    integer           :: ascii_code, i
-    logical           :: negative
-
-    num=0_i64; next=0_i64; ascii_code=0; i=0; negative=.false.
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "i"
-    else
-      if ( any(INT_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        x_str = EMPTY_STR; return
-      end if
-    end if
-
-    if ( fmt_ == "i" ) then
-      if ( x < 0_i64 ) then
-        if ( x == smallest_i64 ) then
-          x_str = "-9223372036854775808"; return
-        end if
-        num = -x; negative = .true.
-      else
-        num = x; negative = .false.
-      end if
-
-      i = len(buffer); extract_digits: do
-        next = num/10_i64; buffer(i:i) = achar(num - 10_i64*next + 48_i64); if ( next == 0_i64 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_digits
-
-      if ( negative ) then
-        buffer(i-1:i-1) = "-"; x_str = buffer(i-1:); return
-      else
-        x_str = buffer(i:); return
-      end if
-    else
-      if ( x < 0_i64 ) then
-        num = (x + 1_i64) + largest_i64; negative = .true.; buffer(3:) = "0x0000000000000000"
-      else
-        num = x; negative = .false.
-      end if
-
-      i = len(buffer); extract_hex_digits: do
-        next = num/16_i64; buffer(i:i) = DIGITS_A(num - 16_i64*next); if ( next == 0_i64 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_hex_digits
-
-      if ( negative ) then
-        ascii_code = iachar(buffer(5:5))
-        if ( ascii_code < 50 ) then
-          buffer(5:5) = achar(ascii_code + 8)
-        else
-          buffer(5:5) = achar(ascii_code + 47)
-        end if
-        x_str = buffer(3:); return
-      else
-        buffer(i-2:i-1) = "0x"; x_str = buffer(i-2:); return
-      end if
-    end if
+    x_str = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
   end procedure str_from_i64
+
   module procedure str_from_i32
-    character(len=1)  :: fmt_
-    character(len=11) :: buffer
-    integer           :: num, next, ascii_code, i
-    logical           :: negative
-
-    num=0; next=0; ascii_code=0; i=0; negative=.false.
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "i"
-    else
-      if ( (any(INT_FMTS == fmt)) ) then
-        fmt_ = fmt
-      else
-        x_str = EMPTY_STR; return
-      end if
-    end if
-
-    if ( fmt_ == "i" ) then
-      if ( x < 0 ) then
-        if ( x == smallest_i32 ) then
-          x_str = "-2147483648"; return
-        end if
-        num = -x; negative = .true.
-      else
-        num = x; negative = .false.
-      end if
-
-      i = len(buffer); extract_digits: do
-        next = num/10; buffer(i:i) = achar(num - 10*next + 48); if ( next == 0 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_digits
-
-      if ( negative ) then
-        buffer(i-1:i-1) = "-"; x_str = buffer(i-1:); return
-      else
-        x_str = buffer(i:); return
-      end if
-    else
-      if ( x < 0 ) then
-        num = (x + 1) + largest_i32; negative = .true.; buffer(2:) = "0x00000000"
-      else
-        num = x; negative = .false.
-      end if
-
-      i = len(buffer); extract_hex_digits: do
-        next = num/16; buffer(i:i) = DIGITS_A(num - 16*next); if ( next == 0 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_hex_digits
-
-      if ( negative ) then
-        ascii_code = iachar(buffer(4:4))
-        if ( ascii_code < 50 ) then
-          buffer(4:4) = achar(ascii_code + 8)
-        else
-          buffer(4:4) = achar(ascii_code + 47)
-        end if
-        x_str = buffer(2:); return
-      else
-        buffer(i-2:i-1) = "0x"; x_str = buffer(i-2:); return
-      end if
-    end if
+    x_str = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
   end procedure str_from_i32
+
   module procedure str_from_i16
-    character(len=1) :: fmt_
-    character(len=6) :: buffer
-    integer          :: num, next, ascii_code, i
-    logical          :: negative
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "i"
-    else
-      if ( any(INT_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        x_str = EMPTY_STR; return
-      end if
-    end if
-
-    if ( fmt_ == "i" ) then
-      if ( x < 0_i16 ) then
-        if ( x == smallest_i16 ) then
-          x_str = "-32768"; return
-        end if
-        num = int(-x); negative = .true.
-      else
-        num = int(x); negative = .false.
-      end if
-
-      i = len(buffer); extract_digits: do
-        next = num/10; buffer(i:i) = achar(num - 10*next + 48); if ( next == 0 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_digits
-
-      if ( negative ) then
-        buffer(i-1:i-1) = "-"; x_str = buffer(i-1:); return
-      else
-        x_str = buffer(i:); return
-      end if
-    else
-      if ( x < 0_i16 ) then
-        num = int((x + 1_i16) + largest_i16); negative = .true.; buffer(1:) = "0x0000"
-      else
-        num = int(x); negative = .false.
-      end if
-
-      i = len(buffer); extract_hex_digits: do
-        next = num/16; buffer(i:i) = DIGITS_A(num - 16*next); if ( next == 0 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_hex_digits
-
-      if ( negative ) then
-        ascii_code = iachar(buffer(3:3))
-        if ( ascii_code < 50 ) then
-          buffer(3:3) = achar(ascii_code + 8)
-        else
-          buffer(3:3) = achar(ascii_code + 47)
-        end if
-        x_str = buffer(1:); return
-      else
-        buffer(i-2:i-1) = "0x"; x_str = buffer(i-2:); return
-      end if
-    end if
+    x_str = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
   end procedure str_from_i16
+
   module procedure str_from_i8
-    character(len=1) :: fmt_
-    character(len=4) :: buffer
-    integer          :: num, next, ascii_code, i
-    logical          :: negative
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "i"
-    else
-      if ( any(INT_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        x_str = EMPTY_STR; return
-      end if
-    end if
-
-    if ( fmt_ == "i" ) then
-      if ( x < 0_i8 ) then
-        if ( x == smallest_i8 ) then
-          x_str = "-128"; return
-        end if
-        num = int(-x); negative = .true.
-      else
-        num = int(x); negative = .false.
-      end if
-
-      i = len(buffer); extract_digits: do
-        next = num/10; buffer(i:i) = achar(num - 10*next + 48); if ( next == 0 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_digits
-
-      if ( negative ) then
-        buffer(i-1:i-1) = "-"; x_str = buffer(i-1:); return
-      else
-        x_str = buffer(i:); return
-      end if
-    else
-      if ( x < 0_i8 ) then
-        num = int((x + 1_i8) + largest_i8); negative = .true.; buffer(1:) = "0x00"
-      else
-        num = int(x); negative = .false.
-      end if
-
-      i = len(buffer); extract_hex_digits: do
-        next = num/16; buffer(i:i) = DIGITS_A(num - 16*next); if ( next == 0 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_hex_digits
-
-      if ( negative ) then
-        ascii_code = iachar(buffer(3:3))
-        if ( ascii_code < 50 ) then
-          buffer(3:3) = achar(ascii_code + 8)
-        else
-          buffer(3:3) = achar(ascii_code + 47)
-        end if
-        x_str = buffer(1:); return
-      else
-        buffer(i-2:i-1) = "0x"; x_str = buffer(i-2:); return
-      end if
-    end if
+    x_str = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
   end procedure str_from_i8
 
+
   module procedure str_from_string
-    if ( x%len() < 1 ) then
+    if ( x%len64() < 1_i64 ) then
       x_str = EMPTY_STR
     else
-      x_str = x%s
+      x_str = x%buf(:x%n)
     end if
   end procedure str_from_string
   module procedure str_from_char
@@ -2747,4663 +164,1255 @@ submodule (io_fortran_lib) internal_io
   end procedure str_from_empty
 
   ! cast ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#ifdef IOFL_HAS_R128
   module procedure cast_c128_to_string
-    character(len=1)              :: fmt_
-    character(len=5)              :: decimal
-    character(len=:), allocatable :: xre_str, xim_str, im_
-    integer                       :: e, decimals_, i
-
-    e=0; decimals_=0; i=0
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "e"
-    else
-      if ( any(REAL_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        into%s = EMPTY_STR; return
-      end if
-    end if
-
-    if_z_re: if ( fmt_ == "z" ) then
-      if ( x%re /= 0e0_r128 ) then
-        xre_str = "0x00000000000000000000000000000000"
-      else
-        xre_str = "0x0"; exit if_z_re
-      end if
-
-      write(unit=xre_str(3:), fmt="(z32)") x%re
-
-      do i = 3, 34
-        if ( (xre_str(i:i) >= "A") .and. (xre_str(i:i) <= "F") ) xre_str(i:i) = achar(iachar(xre_str(i:i))+32)
-      end do
-    end if if_z_re
-    if_z_im: if ( fmt_ == "z" ) then
-      if ( x%im /= 0e0_r128 ) then
-        xim_str = "0x00000000000000000000000000000000"
-      else
-        xim_str = "0x0"; exit if_z_im
-      end if
-
-      write(unit=xim_str(3:), fmt="(z32)") x%im
-
-      do i = 3, 34
-        if ( (xim_str(i:i) >= "A") .and. (xim_str(i:i) <= "F") ) xim_str(i:i) = achar(iachar(xim_str(i:i))+32)
-      end do
-    end if if_z_im
-
-    if ( .not. present(locale) ) then
-      decimal = "POINT"
-    else
-      if ( locale == "US" ) then
-        decimal = "POINT"
-      else if ( locale == "EU" ) then
-        decimal = "COMMA"
-      else
-        into%s = EMPTY_STR; return
-      end if
-    end if
-
-    if_eorf_re: if ( fmt_ == "e" ) then
-      if ( x%re == 0e0_r128 ) then
-        xre_str = "0.0e+0000"; exit if_eorf_re
-      end if
-
-      if ( x%re < 0e0_r128 ) then
-        xre_str = "00000000000000000000000000000000000000000000"
-        write(unit=xre_str, fmt="(es44.35e4)", decimal=decimal) x%re
-        xre_str(39:39) = "e"
-      else
-        xre_str = "0000000000000000000000000000000000000000000"
-        write(unit=xre_str, fmt="(es43.35e4)", decimal=decimal) x%re
-        xre_str(38:38) = "e"
-      end if
-
-      if ( .not. present(decimals) ) exit if_eorf_re
-
-      if ( decimals >= 35 ) exit if_eorf_re
-
-      if ( decimals < 0 ) then
-        decimals_ = 0
-      else
-        decimals_ = decimals
-      end if
-
-      i = 1; do
-        if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) then
-          xre_str = xre_str(:i+decimals_)//xre_str(i+36:); exit if_eorf_re
-        end if
-        i = i + 1; cycle
-      end do
-    else if ( fmt_ == "f" ) then
-      if ( abs(x%re) /= 0e0_r128 ) then
-        e = int(log10(abs(x%re)))
-      else
-        xre_str = "0.0"; exit if_eorf_re
-      end if
-
-      if ( e == 0 ) then
-        if ( floor(x%re) > 0 ) e = 1 + e
-      else if ( e > 0 ) then
-        e = 1 + e
-      end if
-
-      allocate( character(len=125) :: xre_str )
-
-      if ( e > 0 ) then
-        write(unit=xre_str, fmt="(f0.36)", decimal=decimal) x%re
-      else
-        write(unit=xre_str, fmt="(f0.100)", decimal=decimal) x%re
-      end if
-
-      i = 1; do
-        if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) exit
-        i = i + 1; cycle
-      end do
-
-      if ( (i == 1) .or. ( (i == 2) .and. (xre_str(1:1) == "-") ) ) then
-        xre_str(i+1:125) = xre_str(i:124); xre_str(i:i) = "0"; i = i + 1
-      end if
-
-      if ( i > 36 ) then
-        xre_str = xre_str(:i); exit if_eorf_re
-      end if
-
-      if ( .not. present(decimals) ) then
-        xre_str = xre_str(:i+36-e); exit if_eorf_re
-      end if
-
-      if ( decimals <= 0 ) then
-        xre_str = xre_str(:i); exit if_eorf_re
-      end if
-
-      if ( decimals >= 36-e ) then
-        xre_str = xre_str(:i+36-e); exit if_eorf_re
-      end if
-
-      xre_str = xre_str(:i+decimals); exit if_eorf_re
-    end if if_eorf_re
-    if_eorf_im: if ( fmt_ == "e" ) then
-      if ( x%im == 0e0_r128 ) then
-        xim_str = "0.0e+0000"; exit if_eorf_im
-      end if
-
-      if ( x%im < 0e0_r128 ) then
-        xim_str = "00000000000000000000000000000000000000000000"
-        write(unit=xim_str, fmt="(es44.35e4)", decimal=decimal) x%im
-        xim_str(39:39) = "e"
-      else
-        xim_str = "0000000000000000000000000000000000000000000"
-        write(unit=xim_str, fmt="(es43.35e4)", decimal=decimal) x%im
-        xim_str(38:38) = "e"
-      end if
-
-      if ( .not. present(decimals) ) exit if_eorf_im
-
-      if ( decimals >= 35 ) exit if_eorf_im
-
-      if ( decimals < 0 ) then
-        decimals_ = 0
-      else
-        decimals_ = decimals
-      end if
-
-      i = 1; do
-        if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) then
-          xim_str = xim_str(:i+decimals_)//xim_str(i+36:); exit if_eorf_im
-        end if
-        i = i + 1; cycle
-      end do
-    else if ( fmt_ == "f" ) then
-      if ( abs(x%im) /= 0e0_r128 ) then
-        e = int(log10(abs(x%im)))
-      else
-        xim_str = "0.0"; exit if_eorf_im
-      end if
-
-      if ( e == 0 ) then
-        if ( floor(x%im) > 0 ) e = 1 + e
-      else if ( e > 0 ) then
-        e = 1 + e
-      end if
-
-      allocate( character(len=125) :: xim_str )
-
-      if ( e > 0 ) then
-        write(unit=xim_str, fmt="(f0.36)", decimal=decimal) x%im
-      else
-        write(unit=xim_str, fmt="(f0.100)", decimal=decimal) x%im
-      end if
-
-      i = 1; do
-        if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) exit
-        i = i + 1; cycle
-      end do
-
-      if ( (i == 1) .or. ( (i == 2) .and. (xim_str(1:1) == "-") ) ) then
-        xim_str(i+1:125) = xim_str(i:124); xim_str(i:i) = "0"; i = i + 1
-      end if
-
-      if ( i > 36 ) then
-        xim_str = xim_str(:i); exit if_eorf_im
-      end if
-
-      if ( .not. present(decimals) ) then
-        xim_str = xim_str(:i+36-e); exit if_eorf_im
-      end if
-
-      if ( decimals <= 0 ) then
-        xim_str = xim_str(:i); exit if_eorf_im
-      end if
-
-      if ( decimals >= 36-e ) then
-        xim_str = xim_str(:i+36-e); exit if_eorf_im
-      end if
-
-      xim_str = xim_str(:i+decimals); exit if_eorf_im
-    end if if_eorf_im
-
-    if ( .not. present(im) ) then
-      im_ = EMPTY_STR
-    else
-      im_ = im
-    end if
-
-    if ( im_ == EMPTY_STR ) then
-      if ( decimal == "POINT" ) then
-        into%s = "("//xre_str//COMMA//xim_str//")"; return
-      else
-        into%s = "("//xre_str//SEMICOLON//xim_str//")"; return
-      end if
-    end if
-
-    if ( fmt_ == "z" ) then
-      into%s = xre_str//"+"//xim_str//im_; return
-    end if
-
-    if ( x%im < 0e0_r128 ) then
-      into%s = xre_str//xim_str//im_
-    else
-      into%s = xre_str//"+"//xim_str//im_
-    end if
+    into%buf = complex_text(x, decimal_of(locale), real_fmt_of(fmt), decimals, im)
+    into%n = len(into%buf, kind=i64)
   end procedure cast_c128_to_string
+#endif
+
   module procedure cast_c64_to_string
-    character(len=1)              :: fmt_
-    character(len=5)              :: decimal
-    character(len=:), allocatable :: xre_str, xim_str, im_
-    integer                       :: e, decimals_, i
-
-    e=0; decimals_=0; i=0
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "e"
-    else
-      if ( any(REAL_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        into%s = EMPTY_STR; return
-      end if
-    end if
-
-    if_z_re: if ( fmt_ == "z" ) then
-      if ( x%re == 0e0_r64 ) then
-        xre_str = "0x0"; exit if_z_re
-      end if
-
-      call cast(transfer(source=x%re, mold=1_i64), into=xre_str, fmt="z"); exit if_z_re
-    end if if_z_re
-    if_z_im: if ( fmt_ == "z" ) then
-      if ( x%im == 0e0_r64 ) then
-        xim_str = "0x0"; exit if_z_im
-      end if
-
-      call cast(transfer(source=x%im, mold=1_i64), into=xim_str, fmt="z"); exit if_z_im
-    end if if_z_im
-
-    if ( .not. present(locale) ) then
-      decimal = "POINT"
-    else
-      if ( locale == "US" ) then
-        decimal = "POINT"
-      else if ( locale == "EU" ) then
-        decimal = "COMMA"
-      else
-        into%s = EMPTY_STR; return
-      end if
-    end if
-
-    if_eorf_re: if ( fmt_ == "e" ) then
-      if ( x%re == 0e0_r64 ) then
-        xre_str = "0.0e+000"; exit if_eorf_re
-      end if
-
-      if ( x%re < 0e0_r64 ) then
-        xre_str = "0000000000000000000000000"
-        write(unit=xre_str, fmt="(es25.17e3)", decimal=decimal) x%re
-        xre_str(21:21) = "e"
-      else
-        xre_str = "000000000000000000000000"
-        write(unit=xre_str, fmt="(es24.17e3)", decimal=decimal) x%re
-        xre_str(20:20) = "e"
-      end if
-
-      if ( .not. present(decimals) ) exit if_eorf_re
-
-      if ( decimals >= 17 ) exit if_eorf_re
-
-      if ( decimals < 0 ) then
-        decimals_ = 0
-      else
-        decimals_ = decimals
-      end if
-
-      i = 1; do
-        if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) then
-          xre_str = xre_str(:i+decimals_)//xre_str(i+18:); exit if_eorf_re
-        end if
-        i = i + 1; cycle
-      end do
-    else if ( fmt_ == "f" ) then
-      if ( abs(x%re) /= 0e0_r64 ) then
-        e = int(log10(abs(x%re)))
-      else
-        xre_str = "0.0"; return
-      end if
-
-      if ( e == 0 ) then
-        if ( floor(x%re) > 0 ) e = 1 + e
-      else if ( e > 0 ) then
-        e = 1 + e
-      end if
-
-      allocate( character(len=100) :: xre_str )
-
-      if ( e > 0 ) then
-        write(unit=xre_str, fmt="(f0.18)", decimal=decimal) x%re
-      else
-        write(unit=xre_str, fmt="(f0.80)", decimal=decimal) x%re
-      end if
-
-      i = 1; do
-        if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) exit
-        i = i + 1; cycle
-      end do
-
-      if ( (i == 1) .or. ( (i == 2) .and. (xre_str(1:1) == "-") ) ) then
-        xre_str(i+1:100) = xre_str(i:99); xre_str(i:i) = "0"; i = i + 1
-      end if
-
-      if ( i > 18 ) then
-        xre_str = xre_str(:i); exit if_eorf_re
-      end if
-
-      if ( .not. present(decimals) ) then
-        xre_str = xre_str(:i+18-e); exit if_eorf_re
-      end if
-
-      if ( decimals <= 0 ) then
-        xre_str = xre_str(:i); exit if_eorf_re
-      end if
-
-      if ( decimals >= 18-e ) then
-        xre_str = xre_str(:i+18-e); exit if_eorf_re
-      end if
-
-      xre_str = xre_str(:i+decimals); exit if_eorf_re
-    end if if_eorf_re
-    if_eorf_im: if ( fmt_ == "e" ) then
-      if ( x%im == 0e0_r64 ) then
-        xim_str = "0.0e+000"; exit if_eorf_im
-      end if
-
-      if ( x%im < 0e0_r64 ) then
-        xim_str = "0000000000000000000000000"
-        write(unit=xim_str, fmt="(es25.17e3)", decimal=decimal) x%im
-        xim_str(21:21) = "e"
-      else
-        xim_str = "000000000000000000000000"
-        write(unit=xim_str, fmt="(es24.17e3)", decimal=decimal) x%im
-        xim_str(20:20) = "e"
-      end if
-
-      if ( .not. present(decimals) ) exit if_eorf_im
-
-      if ( decimals >= 17 ) exit if_eorf_im
-
-      if ( decimals < 0 ) then
-        decimals_ = 0
-      else
-        decimals_ = decimals
-      end if
-
-      i = 1; do
-        if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) then
-          xim_str = xim_str(:i+decimals_)//xim_str(i+18:); exit if_eorf_im
-        end if
-        i = i + 1; cycle
-      end do
-    else if ( fmt_ == "f" ) then
-      if ( abs(x%im) /= 0e0_r64 ) then
-        e = int(log10(abs(x%im)))
-      else
-        xim_str = "0.0"; return
-      end if
-
-      if ( e == 0 ) then
-        if ( floor(x%im) > 0 ) e = 1 + e
-      else if ( e > 0 ) then
-        e = 1 + e
-      end if
-
-      allocate( character(len=100) :: xim_str )
-
-      if ( e > 0 ) then
-        write(unit=xim_str, fmt="(f0.18)", decimal=decimal) x%im
-      else
-        write(unit=xim_str, fmt="(f0.80)", decimal=decimal) x%im
-      end if
-
-      i = 1; do
-        if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) exit
-        i = i + 1; cycle
-      end do
-
-      if ( (i == 1) .or. ( (i == 2) .and. (xim_str(1:1) == "-") ) ) then
-        xim_str(i+1:100) = xim_str(i:99); xim_str(i:i) = "0"; i = i + 1
-      end if
-
-      if ( i > 18 ) then
-        xim_str = xim_str(:i); exit if_eorf_im
-      end if
-
-      if ( .not. present(decimals) ) then
-        xim_str = xim_str(:i+18-e); exit if_eorf_im
-      end if
-
-      if ( decimals <= 0 ) then
-        xim_str = xim_str(:i); exit if_eorf_im
-      end if
-
-      if ( decimals >= 18-e ) then
-        xim_str = xim_str(:i+18-e); exit if_eorf_im
-      end if
-
-      xim_str = xim_str(:i+decimals); exit if_eorf_im
-    end if if_eorf_im
-
-    if ( .not. present(im) ) then
-      im_ = EMPTY_STR
-    else
-      im_ = im
-    end if
-
-    if ( im_ == EMPTY_STR ) then
-      if ( decimal == "POINT" ) then
-        into%s = "("//xre_str//COMMA//xim_str//")"; return
-      else
-        into%s = "("//xre_str//SEMICOLON//xim_str//")"; return
-      end if
-    end if
-
-    if ( fmt_ == "z" ) then
-      into%s = xre_str//"+"//xim_str//im_; return
-    end if
-
-    if ( x%im < 0e0_r64 ) then
-      into%s = xre_str//xim_str//im_
-    else
-      into%s = xre_str//"+"//xim_str//im_
-    end if
+    into%buf = complex_text(x, decimal_of(locale), real_fmt_of(fmt), decimals, im)
+    into%n = len(into%buf, kind=i64)
   end procedure cast_c64_to_string
+
   module procedure cast_c32_to_string
-    character(len=1)              :: fmt_
-    character(len=5)              :: decimal
-    character(len=:), allocatable :: xre_str, xim_str, im_
-    integer                       :: e, decimals_, i
-
-    e=0; decimals_=0; i=0
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "e"
-    else
-      if ( any(REAL_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        into%s = EMPTY_STR; return
-      end if
-    end if
-
-    if_z_re: if ( fmt_ == "z" ) then
-      if ( x%re == 0e0_r32 ) then
-        xre_str = "0x0"; exit if_z_re
-      end if
-
-      call cast(transfer(source=x%re, mold=1_i32), into=xre_str, fmt="z"); exit if_z_re
-    end if if_z_re
-    if_z_im: if ( fmt_ == "z" ) then
-      if ( x%im == 0e0_r32 ) then
-        xim_str = "0x0"; exit if_z_im
-      end if
-
-      call cast(transfer(source=x%im, mold=1_i32), into=xim_str, fmt="z"); exit if_z_im
-    end if if_z_im
-
-    if ( .not. present(locale) ) then
-      decimal = "POINT"
-    else
-      if ( locale == "US" ) then
-        decimal = "POINT"
-      else if ( locale == "EU" ) then
-        decimal = "COMMA"
-      else
-        into%s = EMPTY_STR; return
-      end if
-    end if
-
-    if_eorf_re: if ( fmt_ == "e" ) then
-      if ( x%re == 0e0_r32 ) then
-        xre_str = "0.0e+00"; exit if_eorf_re
-      end if
-
-      if ( x%re < 0e0_r32 ) then
-        xre_str = "000000000000000"
-        write(unit=xre_str, fmt="(es15.8e2)", decimal=decimal) x%re
-        xre_str(12:12) = "e"
-      else
-        xre_str = "00000000000000"
-        write(unit=xre_str, fmt="(es14.8e2)", decimal=decimal) x%re
-        xre_str(11:11) = "e"
-      end if
-
-      if ( .not. present(decimals) ) exit if_eorf_re
-
-      if ( decimals >= 8 ) exit if_eorf_re
-
-      if ( decimals < 0 ) then
-        decimals_ = 0
-      else
-        decimals_ = decimals
-      end if
-
-      i = 1; do
-        if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) then
-          xre_str = xre_str(:i+decimals_)//xre_str(i+9:); exit if_eorf_re
-        end if
-        i = i + 1; cycle
-      end do
-    else if ( fmt_ == "f" ) then
-      if ( abs(x%re) /= 0e0_r32 ) then
-        e = int(log10(abs(x%re)))
-      else
-        xre_str = "0.0"; exit if_eorf_re
-      end if
-
-      if ( e == 0 ) then
-        if ( floor(x%re) > 0 ) e = 1 + e
-      else if ( e > 0 ) then
-        e = 1 + e
-      end if
-
-      allocate( character(len=75) :: xre_str )
-
-      if ( e > 0 ) then
-        write(unit=xre_str, fmt="(f0.9)", decimal=decimal) x%re
-      else
-        write(unit=xre_str, fmt="(f0.70)", decimal=decimal) x%re
-      end if
-
-      i = 1; do
-        if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) exit
-        i = i + 1; cycle
-      end do
-
-      if ( (i == 1) .or. ( (i == 2) .and. (xre_str(1:1) == "-") ) ) then
-        xre_str(i+1:75) = xre_str(i:74); xre_str(i:i) = "0"; i = i + 1
-      end if
-
-      if ( i > 9 ) then
-        xre_str = xre_str(:i); exit if_eorf_re
-      end if
-
-      if ( .not. present(decimals) ) then
-        xre_str = xre_str(:i+9-e); exit if_eorf_re
-      end if
-
-      if ( decimals <= 0 ) then
-        xre_str = xre_str(:i); exit if_eorf_re
-      end if
-
-      if ( decimals >= 9-e ) then
-        xre_str = xre_str(:i+9-e); exit if_eorf_re
-      end if
-
-      xre_str = xre_str(:i+decimals); exit if_eorf_re
-    end if if_eorf_re
-    if_eorf_im: if ( fmt_ == "e" ) then
-      if ( x%im == 0e0_r32 ) then
-        xim_str = "0.0e+00"; exit if_eorf_im
-      end if
-
-      if ( x%im < 0e0_r32 ) then
-        xim_str = "000000000000000"
-        write(unit=xim_str, fmt="(es15.8e2)", decimal=decimal) x%im
-        xim_str(12:12) = "e"
-      else
-        xim_str = "00000000000000"
-        write(unit=xim_str, fmt="(es14.8e2)", decimal=decimal) x%im
-        xim_str(11:11) = "e"
-      end if
-
-      if ( .not. present(decimals) ) exit if_eorf_im
-
-      if ( decimals >= 8 ) exit if_eorf_im
-
-      if ( decimals < 0 ) then
-        decimals_ = 0
-      else
-        decimals_ = decimals
-      end if
-
-      i = 1; do
-        if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) then
-          xim_str = xim_str(:i+decimals_)//xim_str(i+9:); exit if_eorf_im
-        end if
-        i = i + 1; cycle
-      end do
-    else if ( fmt_ == "f" ) then
-      if ( abs(x%im) /= 0e0_r32 ) then
-        e = int(log10(abs(x%im)))
-      else
-        xim_str = "0.0"; exit if_eorf_im
-      end if
-
-      if ( e == 0 ) then
-        if ( floor(x%im) > 0 ) e = 1 + e
-      else if ( e > 0 ) then
-        e = 1 + e
-      end if
-
-      allocate( character(len=75) :: xim_str )
-
-      if ( e > 0 ) then
-        write(unit=xim_str, fmt="(f0.9)", decimal=decimal) x%im
-      else
-        write(unit=xim_str, fmt="(f0.70)", decimal=decimal) x%im
-      end if
-
-      i = 1; do
-        if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) exit
-        i = i + 1; cycle
-      end do
-
-      if ( (i == 1) .or. ( (i == 2) .and. (xim_str(1:1) == "-") ) ) then
-        xim_str(i+1:75) = xim_str(i:74); xim_str(i:i) = "0"; i = i + 1
-      end if
-
-      if ( i > 9 ) then
-        xim_str = xim_str(:i); exit if_eorf_im
-      end if
-
-      if ( .not. present(decimals) ) then
-        xim_str = xim_str(:i+9-e); exit if_eorf_im
-      end if
-
-      if ( decimals <= 0 ) then
-        xim_str = xim_str(:i); exit if_eorf_im
-      end if
-
-      if ( decimals >= 9-e ) then
-        xim_str = xim_str(:i+9-e); exit if_eorf_im
-      end if
-
-      xim_str = xim_str(:i+decimals); exit if_eorf_im
-    end if if_eorf_im
-
-    if ( .not. present(im) ) then
-      im_ = EMPTY_STR
-    else
-      im_ = im
-    end if
-
-    if ( im_ == EMPTY_STR ) then
-      if ( decimal == "POINT" ) then
-        into%s = "("//xre_str//COMMA//xim_str//")"; return
-      else
-        into%s = "("//xre_str//SEMICOLON//xim_str//")"; return
-      end if
-    end if
-
-    if ( fmt_ == "z" ) then
-      into%s = xre_str//"+"//xim_str//im_; return
-    end if
-
-    if ( x%im < 0e0_r32 ) then
-      into%s = xre_str//xim_str//im_
-    else
-      into%s = xre_str//"+"//xim_str//im_
-    end if
+    into%buf = complex_text(x, decimal_of(locale), real_fmt_of(fmt), decimals, im)
+    into%n = len(into%buf, kind=i64)
   end procedure cast_c32_to_string
 
+
+#ifdef IOFL_HAS_R128
   module procedure cast_r128_to_string
-    character(len=1) :: fmt_
-    character(len=5) :: decimal
-    integer          :: e, decimals_, i
-
-    e=0; decimals_=0; i=0
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "e"
-    else
-      if ( any(REAL_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        into%s = EMPTY_STR; return
-      end if
-    end if
-
-    if ( fmt_ == "z" ) then
-      if ( x /= 0e0_r128 ) then
-        into%s = "0x00000000000000000000000000000000"
-      else
-        into%s = "0x0"; return
-      end if
-
-      write(unit=into%s(3:), fmt="(z32)") x
-
-      do i = 3, 34
-        if ( (into%s(i:i) >= "A") .and. (into%s(i:i) <= "F") ) into%s(i:i) = achar(iachar(into%s(i:i)) + 32)
-      end do
-
-      return
-    end if
-
-    if ( .not. present(locale) ) then
-      decimal = "POINT"
-    else
-      if ( locale == "US" ) then
-        decimal = "POINT"
-      else if ( locale == "EU" ) then
-        decimal = "COMMA"
-      else
-        into%s = EMPTY_STR; return
-      end if
-    end if
-
-    if ( fmt_ == "e" ) then
-      if ( x == 0e0_r128 ) then
-        into%s = "0.0e+0000"; return
-      end if
-
-      if ( x < 0e0_r128 ) then
-        into%s = "00000000000000000000000000000000000000000000"
-        write(unit=into%s, fmt="(es44.35e4)", decimal=decimal) x
-        into%s(39:39) = "e"
-      else
-        into%s = "0000000000000000000000000000000000000000000"
-        write(unit=into%s, fmt="(es43.35e4)", decimal=decimal) x
-        into%s(38:38) = "e"
-      end if
-
-      if ( .not. present(decimals) ) return
-
-      if ( decimals >= 35 ) return
-
-      if ( decimals < 0 ) then
-        decimals_ = 0
-      else
-        decimals_ = decimals
-      end if
-
-      i = 1; do
-        if ( (into%s(i:i) == POINT) .or. (into%s(i:i) == COMMA) ) then
-          into%s = into%s(:i+decimals_)//into%s(i+36:); return
-        end if
-        i = i + 1; cycle
-      end do
-    else if ( fmt_ == "f" ) then
-      if ( abs(x) /= 0e0_r128 ) then
-        e = int(log10(abs(x)))
-      else
-        into%s = "0.0"; return
-      end if
-
-      if ( e == 0 ) then
-        if ( floor(x) > 0 ) e = 1 + e
-      else if ( e > 0 ) then
-        e = 1 + e
-      end if
-
-      if ( allocated(into%s) ) deallocate(into%s)
-      allocate( character(len=125) :: into%s )
-
-      if ( e > 0 ) then
-        write(unit=into%s, fmt="(f0.36)", decimal=decimal) x
-      else
-        write(unit=into%s, fmt="(f0.100)", decimal=decimal) x
-      end if
-
-      i = 1; do
-        if ( (into%s(i:i) == POINT) .or. (into%s(i:i) == COMMA) ) exit
-        i = i + 1; cycle
-      end do
-
-      if ( (i == 1) .or. ( (i == 2) .and. (into%s(1:1) == "-") ) ) then
-        into%s(i+1:125) = into%s(i:124); into%s(i:i) = "0"; i = i + 1
-      end if
-
-      if ( i > 36 ) then
-        into%s = into%s(:i); return
-      end if
-
-      if ( .not. present(decimals) ) then
-        into%s = into%s(:i+36-e); return
-      end if
-
-      if ( decimals <= 0 ) then
-        into%s = into%s(:i); return
-      end if
-
-      if ( decimals >= 36-e ) then
-        into%s = into%s(:i+36-e); return
-      end if
-
-      into%s = into%s(:i+decimals); return
-    end if
+    into%buf = real_text(x, decimal_of(locale), real_fmt_of(fmt), decimals)
+    into%n = len(into%buf, kind=i64)
   end procedure cast_r128_to_string
+#endif
+
   module procedure cast_r64_to_string
-    character(len=1) :: fmt_
-    character(len=5) :: decimal
-    integer          :: e, decimals_, i
-
-    e=0; decimals_=0; i=0
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "e"
-    else
-      if ( any(REAL_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        into%s = EMPTY_STR; return
-      end if
-    end if
-
-    if ( fmt_ == "z" ) then
-      if ( x == 0e0_r64 ) then
-        into%s = "0x0"; return
-      end if
-
-      inline_cast: block
-        integer(i64) :: x_int, num, next; character(len=18) :: buffer; integer :: ascii_code
-        logical :: negative
-
-        x_int = transfer(source=x, mold=x_int)
-
-        if ( x_int < 0_i64 ) then
-          num = (x_int + 1_i64) + largest_i64; negative = .true.; buffer(1:) = "0x0000000000000000"
-        else
-          num = x_int; negative = .false.
-        end if
-
-        i = len(buffer); extract_hex_digits: do
-          next = num/16_i64; buffer(i:i) = DIGITS_A(num - 16_i64*next); if ( next == 0_i64 ) exit
-          num = next; i = i - 1; cycle
-        end do extract_hex_digits
-
-        if ( negative ) then
-          ascii_code = iachar(buffer(3:3))
-          if ( ascii_code < 50 ) then
-            buffer(3:3) = achar(ascii_code + 8)
-          else
-            buffer(3:3) = achar(ascii_code + 47)
-          end if
-          into%s = buffer(1:); return
-        else
-          buffer(i-2:i-1) = "0x"; into%s = buffer(i-2:); return
-        end if
-      end block inline_cast
-    end if
-
-    if ( .not. present(locale) ) then
-      decimal = "POINT"
-    else
-      if ( locale == "US" ) then
-        decimal = "POINT"
-      else if ( locale == "EU" ) then
-        decimal = "COMMA"
-      else
-        into%s = EMPTY_STR; return
-      end if
-    end if
-
-    if ( fmt_ == "e" ) then
-      if ( x == 0e0_r64 ) then
-        into%s = "0.0e+000"; return
-      end if
-
-      if ( x < 0e0_r64 ) then
-        into%s = "0000000000000000000000000"
-        write(unit=into%s, fmt="(es25.17e3)", decimal=decimal) x
-        into%s(21:21) = "e"
-      else
-        into%s = "000000000000000000000000"
-        write(unit=into%s, fmt="(es24.17e3)", decimal=decimal) x
-        into%s(20:20) = "e"
-      end if
-
-      if ( .not. present(decimals) ) return
-
-      if ( decimals >= 17 ) return
-
-      if ( decimals < 0 ) then
-        decimals_ = 0
-      else
-        decimals_ = decimals
-      end if
-
-      i = 1; do
-        if ( (into%s(i:i) == POINT) .or. (into%s(i:i) == COMMA) ) then
-          into%s = into%s(:i+decimals_)//into%s(i+18:); return
-        end if
-        i = i + 1; cycle
-      end do
-    else if ( fmt_ == "f" ) then
-      if ( abs(x) /= 0e0_r64 ) then
-        e = int(log10(abs(x)))
-      else
-        into%s = "0.0"; return
-      end if
-
-      if ( e == 0 ) then
-        if ( floor(x) > 0 ) e = 1 + e
-      else if ( e > 0 ) then
-        e = 1 + e
-      end if
-
-      if ( allocated(into%s) ) deallocate(into%s)
-      allocate( character(len=100) :: into%s )
-
-      if ( e > 0 ) then
-        write(unit=into%s, fmt="(f0.18)", decimal=decimal) x
-      else
-        write(unit=into%s, fmt="(f0.80)", decimal=decimal) x
-      end if
-
-      i = 1; do
-        if ( (into%s(i:i) == POINT) .or. (into%s(i:i) == COMMA) ) exit
-        i = i + 1; cycle
-      end do
-
-      if ( (i == 1) .or. ( (i == 2) .and. (into%s(1:1) == "-") ) ) then
-        into%s(i+1:100) = into%s(i:99); into%s(i:i) = "0"; i = i + 1
-      end if
-
-      if ( i > 18 ) then
-        into%s = into%s(:i); return
-      end if
-
-      if ( .not. present(decimals) ) then
-        into%s = into%s(:i+18-e); return
-      end if
-
-      if ( decimals <= 0 ) then
-        into%s = into%s(:i); return
-      end if
-
-      if ( decimals >= 18-e ) then
-        into%s = into%s(:i+18-e); return
-      end if
-
-      into%s = into%s(:i+decimals); return
-    end if
+    into%buf = real_text(x, decimal_of(locale), real_fmt_of(fmt), decimals)
+    into%n = len(into%buf, kind=i64)
   end procedure cast_r64_to_string
+
   module procedure cast_r32_to_string
-    character(len=1) :: fmt_
-    character(len=5) :: decimal
-    integer          :: e, decimals_, i
-
-    e=0; decimals_=0; i=0
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "e"
-    else
-      if ( any(REAL_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        into%s = EMPTY_STR; return
-      end if
-    end if
-
-    if ( fmt_ == "z" ) then
-      if ( x == 0e0_r32 ) then
-        into%s = "0x0"; return
-      end if
-
-      inline_cast: block
-        integer :: x_int, num, next; character(len=10) :: buffer; integer :: ascii_code; logical :: negative
-
-        x_int = transfer(source=x, mold=x_int)
-
-        if ( x_int < 0 ) then
-          num = (x_int + 1) + largest_i32; negative = .true.; buffer(1:) = "0x00000000"
-        else
-          num = x_int; negative = .false.
-        end if
-
-        i = len(buffer); extract_hex_digits: do
-          next = num/16; buffer(i:i) = DIGITS_A(num - 16*next); if ( next == 0 ) exit
-          num = next; i = i - 1; cycle
-        end do extract_hex_digits
-
-        if ( negative ) then
-          ascii_code = iachar(buffer(3:3))
-          if ( ascii_code < 50 ) then
-            buffer(3:3) = achar(ascii_code + 8)
-          else
-            buffer(3:3) = achar(ascii_code + 47)
-          end if
-          into%s = buffer(1:); return
-        else
-          buffer(i-2:i-1) = "0x"; into%s = buffer(i-2:); return
-        end if
-      end block inline_cast
-    end if
-
-    if ( .not. present(locale) ) then
-      decimal = "POINT"
-    else
-      if ( locale == "US" ) then
-        decimal = "POINT"
-      else if ( locale == "EU" ) then
-        decimal = "COMMA"
-      else
-        into%s = EMPTY_STR; return
-      end if
-    end if
-
-    if ( fmt_ == "e" ) then
-      if ( x == 0e0_r32 ) then
-        into%s = "0.0e+00"; return
-      end if
-
-      if ( x < 0e0_r32 ) then
-        into%s = "000000000000000"
-        write(unit=into%s, fmt="(es15.8e2)", decimal=decimal) x
-        into%s(12:12) = "e"
-      else
-        into%s = "00000000000000"
-        write(unit=into%s, fmt="(es14.8e2)", decimal=decimal) x
-        into%s(11:11) = "e"
-      end if
-
-      if ( .not. present(decimals) ) return
-
-      if ( decimals >= 8 ) return
-
-      if ( decimals < 0 ) then
-        decimals_ = 0
-      else
-        decimals_ = decimals
-      end if
-
-      i = 1; do
-        if ( (into%s(i:i) == POINT) .or. (into%s(i:i) == COMMA) ) then
-          into%s = into%s(:i+decimals_)//into%s(i+9:); return
-        end if
-        i = i + 1; cycle
-      end do
-    else if ( fmt_ == "f" ) then
-      if ( abs(x) /= 0e0_r32 ) then
-        e = int(log10(abs(x)))
-      else
-        into%s = "0.0"; return
-      end if
-
-      if ( e == 0 ) then
-        if ( floor(x) > 0 ) e = 1 + e
-      else if ( e > 0 ) then
-        e = 1 + e
-      end if
-
-      if ( allocated(into%s) ) deallocate(into%s)
-      allocate( character(len=75) :: into%s )
-
-      if ( e > 0 ) then
-        write(unit=into%s, fmt="(f0.9)", decimal=decimal) x
-      else
-        write(unit=into%s, fmt="(f0.70)", decimal=decimal) x
-      end if
-
-      i = 1; do
-        if ( (into%s(i:i) == POINT) .or. (into%s(i:i) == COMMA) ) exit
-        i = i + 1; cycle
-      end do
-
-      if ( (i == 1) .or. ( (i == 2) .and. (into%s(1:1) == "-") ) ) then
-        into%s(i+1:75) = into%s(i:74); into%s(i:i) = "0"; i = i + 1
-      end if
-
-      if ( i > 9 ) then
-        into%s = into%s(:i); return
-      end if
-
-      if ( .not. present(decimals) ) then
-        into%s = into%s(:i+9-e); return
-      end if
-
-      if ( decimals <= 0 ) then
-        into%s = into%s(:i); return
-      end if
-
-      if ( decimals >= 9-e ) then
-        into%s = into%s(:i+9-e); return
-      end if
-
-      into%s = into%s(:i+decimals); return
-    end if
+    into%buf = real_text(x, decimal_of(locale), real_fmt_of(fmt), decimals)
+    into%n = len(into%buf, kind=i64)
   end procedure cast_r32_to_string
 
+
   module procedure cast_i64_to_string
-    character(len=1)  :: fmt_
-    character(len=20) :: buffer
-    integer(i64)      :: num, next
-    integer           :: ascii_code, i
-    logical           :: negative
-
-    num=0_i64; next=0_i64; ascii_code=0; i=0; negative=.false.
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "i"
-    else
-      if ( any(INT_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        into%s = EMPTY_STR; return
-      end if
-    end if
-
-    if ( fmt_ == "i" ) then
-      if ( x < 0_i64 ) then
-        if ( x == smallest_i64 ) then
-          into%s = "-9223372036854775808"; return
-        end if
-        num = -x; negative = .true.
-      else
-        num = x; negative = .false.
-      end if
-
-      i = len(buffer); extract_digits: do
-        next = num/10_i64; buffer(i:i) = achar(num - 10_i64*next + 48_i64); if ( next == 0_i64 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_digits
-
-      if ( negative ) then
-        buffer(i-1:i-1) = "-"; into%s = buffer(i-1:); return
-      else
-        into%s = buffer(i:); return
-      end if
-    else
-      if ( x < 0_i64 ) then
-        num = (x + 1_i64) + largest_i64; negative = .true.; buffer(3:) = "0x0000000000000000"
-      else
-        num = x; negative = .false.
-      end if
-
-      i = len(buffer); extract_hex_digits: do
-        next = num/16_i64; buffer(i:i) = DIGITS_A(num - 16_i64*next); if ( next == 0_i64 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_hex_digits
-
-      if ( negative ) then
-        ascii_code = iachar(buffer(5:5))
-        if ( ascii_code < 50 ) then
-          buffer(5:5) = achar(ascii_code + 8)
-        else
-          buffer(5:5) = achar(ascii_code + 47)
-        end if
-        into%s = buffer(3:); return
-      else
-        buffer(i-2:i-1) = "0x"; into%s = buffer(i-2:); return
-      end if
-    end if
+    into%buf = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
+    into%n = len(into%buf, kind=i64)
   end procedure cast_i64_to_string
+
   module procedure cast_i32_to_string
-    character(len=1)  :: fmt_
-    character(len=11) :: buffer
-    integer           :: num, next, ascii_code, i
-    logical           :: negative
-
-    num=0; next=0; ascii_code=0; i=0; negative=.false.
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "i"
-    else
-      if ( any(INT_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        into%s = EMPTY_STR; return
-      end if
-    end if
-
-    if ( fmt_ == "i" ) then
-      if ( x < 0_i32 ) then
-        if ( x == smallest_i32 ) then
-          into%s = "-2147483648"; return
-        end if
-        num = -x; negative = .true.
-      else
-        num = x; negative = .false.
-      end if
-
-      i = len(buffer); extract_digits: do
-        next = num/10; buffer(i:i) = achar(num - 10*next + 48); if ( next == 0 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_digits
-
-      if ( negative ) then
-        buffer(i-1:i-1) = "-"; into%s = buffer(i-1:); return
-      else
-        into%s = buffer(i:); return
-      end if
-    else
-      if ( x < 0_i32 ) then
-        num = (x + 1) + largest_i32; negative = .true.; buffer(2:) = "0x00000000"
-      else
-        num = x; negative = .false.
-      end if
-
-      i = len(buffer); extract_hex_digits: do
-        next = num/16; buffer(i:i) = DIGITS_A(num - 16*next); if ( next == 0 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_hex_digits
-
-      if ( negative ) then
-        ascii_code = iachar(buffer(4:4))
-        if ( ascii_code < 50 ) then
-          buffer(4:4) = achar(ascii_code + 8)
-        else
-          buffer(4:4) = achar(ascii_code + 47)
-        end if
-        into%s = buffer(2:); return
-      else
-        buffer(i-2:i-1) = "0x"; into%s = buffer(i-2:); return
-      end if
-    end if
+    into%buf = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
+    into%n = len(into%buf, kind=i64)
   end procedure cast_i32_to_string
+
   module procedure cast_i16_to_string
-    character(len=1) :: fmt_
-    character(len=6) :: buffer
-    integer          :: num, next, ascii_code, i
-    logical          :: negative
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "i"
-    else
-      if ( any(INT_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        into%s = EMPTY_STR; return
-      end if
-    end if
-
-    if ( fmt_ == "i" ) then
-      if ( x < 0_i16 ) then
-        if ( x == smallest_i16 ) then
-          into%s = "-32768"; return
-        end if
-        num = int(-x); negative = .true.
-      else
-        num = int(x); negative = .false.
-      end if
-
-      i = len(buffer); extract_digits: do
-        next = num/10; buffer(i:i) = achar(num - 10*next + 48); if ( next == 0 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_digits
-
-      if ( negative ) then
-        buffer(i-1:i-1) = "-"; into%s = buffer(i-1:); return
-      else
-        into%s = buffer(i:); return
-      end if
-    else
-      if ( x < 0_i16 ) then
-        num = int((x + 1_i16) + largest_i16); negative = .true.; buffer(1:) = "0x0000"
-      else
-        num = int(x); negative = .false.
-      end if
-
-      i = len(buffer); extract_hex_digits: do
-        next = num/16; buffer(i:i) = DIGITS_A(num - 16*next); if ( next == 0 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_hex_digits
-
-      if ( negative ) then
-        ascii_code = iachar(buffer(3:3))
-        if ( ascii_code < 50 ) then
-          buffer(3:3) = achar(ascii_code + 8)
-        else
-          buffer(3:3) = achar(ascii_code + 47)
-        end if
-        into%s = buffer(1:); return
-      else
-        buffer(i-2:i-1) = "0x"; into%s = buffer(i-2:); return
-      end if
-    end if
+    into%buf = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
+    into%n = len(into%buf, kind=i64)
   end procedure cast_i16_to_string
+
   module procedure cast_i8_to_string
-    character(len=1) :: fmt_
-    character(len=4) :: buffer
-    integer          :: num, next, ascii_code, i
-    logical          :: negative
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "i"
-    else
-      if ( any(INT_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        into%s = EMPTY_STR; return
-      end if
-    end if
-
-    if ( fmt_ == "i" ) then
-      if ( x < 0_i8 ) then
-        if ( x == smallest_i8 ) then
-          into%s = "-128"; return
-        end if
-        num = int(-x); negative = .true.
-      else
-        num = int(x); negative = .false.
-      end if
-
-      i = len(buffer); extract_digits: do
-        next = num/10; buffer(i:i) = achar(num - 10*next + 48); if ( next == 0 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_digits
-
-      if ( negative ) then
-        buffer(i-1:i-1) = "-"; into%s = buffer(i-1:); return
-      else
-        into%s = buffer(i:); return
-      end if
-    else
-      if ( x < 0_i8 ) then
-        num = int((x + 1_i8) + largest_i8); negative = .true.; buffer(1:) = "0x00"
-      else
-        num = int(x); negative = .false.
-      end if
-
-      i = len(buffer); extract_hex_digits: do
-        next = num/16; buffer(i:i) = DIGITS_A(num - 16*next); if ( next == 0 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_hex_digits
-
-      if ( negative ) then
-        ascii_code = iachar(buffer(3:3))
-        if ( ascii_code < 50 ) then
-          buffer(3:3) = achar(ascii_code + 8)
-        else
-          buffer(3:3) = achar(ascii_code + 47)
-        end if
-        into%s = buffer(1:); return
-      else
-        buffer(i-2:i-1) = "0x"; into%s = buffer(i-2:); return
-      end if
-    end if
+    into%buf = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
+    into%n = len(into%buf, kind=i64)
   end procedure cast_i8_to_string
 
+
+#ifdef IOFL_HAS_R128
   module procedure cast_c128_to_char
-    character(len=1)              :: fmt_
-    character(len=5)              :: decimal
-    character(len=:), allocatable :: xre_str, xim_str, im_
-    integer                       :: e, decimals_, i
-
-    e=0; decimals_=0; i=0
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "e"
-    else
-      if ( any(REAL_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        into = EMPTY_STR; return
-      end if
-    end if
-
-    if_z_re: if ( fmt_ == "z" ) then
-      if ( x%re /= 0e0_r128 ) then
-        xre_str = "0x00000000000000000000000000000000"
-      else
-        xre_str = "0x0"; exit if_z_re
-      end if
-
-      write(unit=xre_str(3:), fmt="(z32)") x%re
-
-      do i = 3, 34
-        if ( (xre_str(i:i) >= "A") .and. (xre_str(i:i) <= "F") ) xre_str(i:i) = achar(iachar(xre_str(i:i))+32)
-      end do
-    end if if_z_re
-    if_z_im: if ( fmt_ == "z" ) then
-      if ( x%im /= 0e0_r128 ) then
-        xim_str = "0x00000000000000000000000000000000"
-      else
-        xim_str = "0x0"; exit if_z_im
-      end if
-
-      write(unit=xim_str(3:), fmt="(z32)") x%im
-
-      do i = 3, 34
-        if ( (xim_str(i:i) >= "A") .and. (xim_str(i:i) <= "F") ) xim_str(i:i) = achar(iachar(xim_str(i:i))+32)
-      end do
-    end if if_z_im
-
-    if ( .not. present(locale) ) then
-      decimal = "POINT"
-    else
-      if ( locale == "US" ) then
-        decimal = "POINT"
-      else if ( locale == "EU" ) then
-        decimal = "COMMA"
-      else
-        into = EMPTY_STR; return
-      end if
-    end if
-
-    if_eorf_re: if ( fmt_ == "e" ) then
-      if ( x%re == 0e0_r128 ) then
-        xre_str = "0.0e+0000"; exit if_eorf_re
-      end if
-
-      if ( x%re < 0e0_r128 ) then
-        xre_str = "00000000000000000000000000000000000000000000"
-        write(unit=xre_str, fmt="(es44.35e4)", decimal=decimal) x%re
-        xre_str(39:39) = "e"
-      else
-        xre_str = "0000000000000000000000000000000000000000000"
-        write(unit=xre_str, fmt="(es43.35e4)", decimal=decimal) x%re
-        xre_str(38:38) = "e"
-      end if
-
-      if ( .not. present(decimals) ) exit if_eorf_re
-
-      if ( decimals >= 35 ) exit if_eorf_re
-
-      if ( decimals < 0 ) then
-        decimals_ = 0
-      else
-        decimals_ = decimals
-      end if
-
-      i = 1; do
-        if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) then
-          xre_str = xre_str(:i+decimals_)//xre_str(i+36:); exit if_eorf_re
-        end if
-        i = i + 1; cycle
-      end do
-    else if ( fmt_ == "f" ) then
-      if ( abs(x%re) /= 0e0_r128 ) then
-        e = int(log10(abs(x%re)))
-      else
-        xre_str = "0.0"; exit if_eorf_re
-      end if
-
-      if ( e == 0 ) then
-        if ( floor(x%re) > 0 ) e = 1 + e
-      else if ( e > 0 ) then
-        e = 1 + e
-      end if
-
-      allocate( character(len=125) :: xre_str )
-
-      if ( e > 0 ) then
-        write(unit=xre_str, fmt="(f0.36)", decimal=decimal) x%re
-      else
-        write(unit=xre_str, fmt="(f0.100)", decimal=decimal) x%re
-      end if
-
-      i = 1; do
-        if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) exit
-        i = i + 1; cycle
-      end do
-
-      if ( (i == 1) .or. ( (i == 2) .and. (xre_str(1:1) == "-") ) ) then
-        xre_str(i+1:125) = xre_str(i:124); xre_str(i:i) = "0"; i = i + 1
-      end if
-
-      if ( i > 36 ) then
-        xre_str = xre_str(:i); exit if_eorf_re
-      end if
-
-      if ( .not. present(decimals) ) then
-        xre_str = xre_str(:i+36-e); exit if_eorf_re
-      end if
-
-      if ( decimals <= 0 ) then
-        xre_str = xre_str(:i); exit if_eorf_re
-      end if
-
-      if ( decimals >= 36-e ) then
-        xre_str = xre_str(:i+36-e); exit if_eorf_re
-      end if
-
-      xre_str = xre_str(:i+decimals); exit if_eorf_re
-    end if if_eorf_re
-    if_eorf_im: if ( fmt_ == "e" ) then
-      if ( x%im == 0e0_r128 ) then
-        xim_str = "0.0e+0000"; exit if_eorf_im
-      end if
-
-      if ( x%im < 0e0_r128 ) then
-        xim_str = "00000000000000000000000000000000000000000000"
-        write(unit=xim_str, fmt="(es44.35e4)", decimal=decimal) x%im
-        xim_str(39:39) = "e"
-      else
-        xim_str = "0000000000000000000000000000000000000000000"
-        write(unit=xim_str, fmt="(es43.35e4)", decimal=decimal) x%im
-        xim_str(38:38) = "e"
-      end if
-
-      if ( .not. present(decimals) ) exit if_eorf_im
-
-      if ( decimals >= 35 ) exit if_eorf_im
-
-      if ( decimals < 0 ) then
-        decimals_ = 0
-      else
-        decimals_ = decimals
-      end if
-
-      i = 1; do
-        if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) then
-          xim_str = xim_str(:i+decimals_)//xim_str(i+36:); exit if_eorf_im
-        end if
-        i = i + 1; cycle
-      end do
-    else if ( fmt_ == "f" ) then
-      if ( abs(x%im) /= 0e0_r128 ) then
-        e = int(log10(abs(x%im)))
-      else
-        xim_str = "0.0"; exit if_eorf_im
-      end if
-
-      if ( e == 0 ) then
-        if ( floor(x%im) > 0 ) e = 1 + e
-      else if ( e > 0 ) then
-        e = 1 + e
-      end if
-
-      allocate( character(len=125) :: xim_str )
-
-      if ( e > 0 ) then
-        write(unit=xim_str, fmt="(f0.36)", decimal=decimal) x%im
-      else
-        write(unit=xim_str, fmt="(f0.100)", decimal=decimal) x%im
-      end if
-
-      i = 1; do
-        if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) exit
-        i = i + 1; cycle
-      end do
-
-      if ( (i == 1) .or. ( (i == 2) .and. (xim_str(1:1) == "-") ) ) then
-        xim_str(i+1:125) = xim_str(i:124); xim_str(i:i) = "0"; i = i + 1
-      end if
-
-      if ( i > 36 ) then
-        xim_str = xim_str(:i); exit if_eorf_im
-      end if
-
-      if ( .not. present(decimals) ) then
-        xim_str = xim_str(:i+36-e); exit if_eorf_im
-      end if
-
-      if ( decimals <= 0 ) then
-        xim_str = xim_str(:i); exit if_eorf_im
-      end if
-
-      if ( decimals >= 36-e ) then
-        xim_str = xim_str(:i+36-e); exit if_eorf_im
-      end if
-
-      xim_str = xim_str(:i+decimals); exit if_eorf_im
-    end if if_eorf_im
-
-    if ( .not. present(im) ) then
-      im_ = EMPTY_STR
-    else
-      im_ = im
-    end if
-
-    if ( im_ == EMPTY_STR ) then
-      if ( decimal == "POINT" ) then
-        into = "("//xre_str//COMMA//xim_str//")"; return
-      else
-        into = "("//xre_str//SEMICOLON//xim_str//")"; return
-      end if
-    end if
-
-    if ( fmt_ == "z" ) then
-      into = xre_str//"+"//xim_str//im_; return
-    end if
-
-    if ( x%im < 0e0_r128 ) then
-      into = xre_str//xim_str//im_
-    else
-      into = xre_str//"+"//xim_str//im_
-    end if
+    into = complex_text(x, decimal_of(locale), real_fmt_of(fmt), decimals, im)
   end procedure cast_c128_to_char
+#endif
+
   module procedure cast_c64_to_char
-    character(len=1)              :: fmt_
-    character(len=5)              :: decimal
-    character(len=:), allocatable :: xre_str, xim_str, im_
-    integer                       :: e, decimals_, i
-
-    e=0; decimals_=0; i=0
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "e"
-    else
-      if ( any(REAL_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        into = EMPTY_STR; return
-      end if
-    end if
-
-    if_z_re: if ( fmt_ == "z" ) then
-      if ( x%re == 0e0_r64 ) then
-        xre_str = "0x0"; exit if_z_re
-      end if
-
-      call cast(transfer(source=x%re, mold=1_i64), into=xre_str, fmt="z"); exit if_z_re
-    end if if_z_re
-    if_z_im: if ( fmt_ == "z" ) then
-      if ( x%im == 0e0_r64 ) then
-        xim_str = "0x0"; exit if_z_im
-      end if
-
-      call cast(transfer(source=x%im, mold=1_i64), into=xim_str, fmt="z"); exit if_z_im
-    end if if_z_im
-
-    if ( .not. present(locale) ) then
-      decimal = "POINT"
-    else
-      if ( locale == "US" ) then
-        decimal = "POINT"
-      else if ( locale == "EU" ) then
-        decimal = "COMMA"
-      else
-        into = EMPTY_STR; return
-      end if
-    end if
-
-    if_eorf_re: if ( fmt_ == "e" ) then
-      if ( x%re == 0e0_r64 ) then
-        xre_str = "0.0e+000"; exit if_eorf_re
-      end if
-
-      if ( x%re < 0e0_r64 ) then
-        xre_str = "0000000000000000000000000"
-        write(unit=xre_str, fmt="(es25.17e3)", decimal=decimal) x%re
-        xre_str(21:21) = "e"
-      else
-        xre_str = "000000000000000000000000"
-        write(unit=xre_str, fmt="(es24.17e3)", decimal=decimal) x%re
-        xre_str(20:20) = "e"
-      end if
-
-      if ( .not. present(decimals) ) exit if_eorf_re
-
-      if ( decimals >= 17 ) exit if_eorf_re
-
-      if ( decimals < 0 ) then
-        decimals_ = 0
-      else
-        decimals_ = decimals
-      end if
-
-      i = 1; do
-        if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) then
-          xre_str = xre_str(:i+decimals_)//xre_str(i+18:); exit if_eorf_re
-        end if
-        i = i + 1; cycle
-      end do
-    else if ( fmt_ == "f" ) then
-      if ( abs(x%re) /= 0e0_r64 ) then
-        e = int(log10(abs(x%re)))
-      else
-        xre_str = "0.0"; return
-      end if
-
-      if ( e == 0 ) then
-        if ( floor(x%re) > 0 ) e = 1 + e
-      else if ( e > 0 ) then
-        e = 1 + e
-      end if
-
-      allocate( character(len=100) :: xre_str )
-
-      if ( e > 0 ) then
-        write(unit=xre_str, fmt="(f0.18)", decimal=decimal) x%re
-      else
-        write(unit=xre_str, fmt="(f0.80)", decimal=decimal) x%re
-      end if
-
-      i = 1; do
-        if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) exit
-        i = i + 1; cycle
-      end do
-
-      if ( (i == 1) .or. ( (i == 2) .and. (xre_str(1:1) == "-") ) ) then
-        xre_str(i+1:100) = xre_str(i:99); xre_str(i:i) = "0"; i = i + 1
-      end if
-
-      if ( i > 18 ) then
-        xre_str = xre_str(:i); exit if_eorf_re
-      end if
-
-      if ( .not. present(decimals) ) then
-        xre_str = xre_str(:i+18-e); exit if_eorf_re
-      end if
-
-      if ( decimals <= 0 ) then
-        xre_str = xre_str(:i); exit if_eorf_re
-      end if
-
-      if ( decimals >= 18-e ) then
-        xre_str = xre_str(:i+18-e); exit if_eorf_re
-      end if
-
-      xre_str = xre_str(:i+decimals); exit if_eorf_re
-    end if if_eorf_re
-    if_eorf_im: if ( fmt_ == "e" ) then
-      if ( x%im == 0e0_r64 ) then
-        xim_str = "0.0e+000"; exit if_eorf_im
-      end if
-
-      if ( x%im < 0e0_r64 ) then
-        xim_str = "0000000000000000000000000"
-        write(unit=xim_str, fmt="(es25.17e3)", decimal=decimal) x%im
-        xim_str(21:21) = "e"
-      else
-        xim_str = "000000000000000000000000"
-        write(unit=xim_str, fmt="(es24.17e3)", decimal=decimal) x%im
-        xim_str(20:20) = "e"
-      end if
-
-      if ( .not. present(decimals) ) exit if_eorf_im
-
-      if ( decimals >= 17 ) exit if_eorf_im
-
-      if ( decimals < 0 ) then
-        decimals_ = 0
-      else
-        decimals_ = decimals
-      end if
-
-      i = 1; do
-        if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) then
-          xim_str = xim_str(:i+decimals_)//xim_str(i+18:); exit if_eorf_im
-        end if
-        i = i + 1; cycle
-      end do
-    else if ( fmt_ == "f" ) then
-      if ( abs(x%im) /= 0e0_r64 ) then
-        e = int(log10(abs(x%im)))
-      else
-        xim_str = "0.0"; return
-      end if
-
-      if ( e == 0 ) then
-        if ( floor(x%im) > 0 ) e = 1 + e
-      else if ( e > 0 ) then
-        e = 1 + e
-      end if
-
-      allocate( character(len=100) :: xim_str )
-
-      if ( e > 0 ) then
-        write(unit=xim_str, fmt="(f0.18)", decimal=decimal) x%im
-      else
-        write(unit=xim_str, fmt="(f0.80)", decimal=decimal) x%im
-      end if
-
-      i = 1; do
-        if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) exit
-        i = i + 1; cycle
-      end do
-
-      if ( (i == 1) .or. ( (i == 2) .and. (xim_str(1:1) == "-") ) ) then
-        xim_str(i+1:100) = xim_str(i:99); xim_str(i:i) = "0"; i = i + 1
-      end if
-
-      if ( i > 18 ) then
-        xim_str = xim_str(:i); exit if_eorf_im
-      end if
-
-      if ( .not. present(decimals) ) then
-        xim_str = xim_str(:i+18-e); exit if_eorf_im
-      end if
-
-      if ( decimals <= 0 ) then
-        xim_str = xim_str(:i); exit if_eorf_im
-      end if
-
-      if ( decimals >= 18-e ) then
-        xim_str = xim_str(:i+18-e); exit if_eorf_im
-      end if
-
-      xim_str = xim_str(:i+decimals); exit if_eorf_im
-    end if if_eorf_im
-
-    if ( .not. present(im) ) then
-      im_ = EMPTY_STR
-    else
-      im_ = im
-    end if
-
-    if ( im_ == EMPTY_STR ) then
-      if ( decimal == "POINT" ) then
-        into = "("//xre_str//COMMA//xim_str//")"; return
-      else
-        into = "("//xre_str//SEMICOLON//xim_str//")"; return
-      end if
-    end if
-
-    if ( fmt_ == "z" ) then
-      into = xre_str//"+"//xim_str//im_; return
-    end if
-
-    if ( x%im < 0e0_r64 ) then
-      into = xre_str//xim_str//im_
-    else
-      into = xre_str//"+"//xim_str//im_
-    end if
+    into = complex_text(x, decimal_of(locale), real_fmt_of(fmt), decimals, im)
   end procedure cast_c64_to_char
+
   module procedure cast_c32_to_char
-    character(len=1)              :: fmt_
-    character(len=5)              :: decimal
-    character(len=:), allocatable :: xre_str, xim_str, im_
-    integer                       :: e, decimals_, i
-
-    e=0; decimals_=0; i=0
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "e"
-    else
-      if ( any(REAL_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        into = EMPTY_STR; return
-      end if
-    end if
-
-    if_z_re: if ( fmt_ == "z" ) then
-      if ( x%re == 0e0_r32 ) then
-        xre_str = "0x0"; exit if_z_re
-      end if
-
-      call cast(transfer(source=x%re, mold=1_i32), into=xre_str, fmt="z"); exit if_z_re
-    end if if_z_re
-    if_z_im: if ( fmt_ == "z" ) then
-      if ( x%im == 0e0_r32 ) then
-        xim_str = "0x0"; exit if_z_im
-      end if
-
-      call cast(transfer(source=x%im, mold=1_i32), into=xim_str, fmt="z"); exit if_z_im
-    end if if_z_im
-
-    if ( .not. present(locale) ) then
-      decimal = "POINT"
-    else
-      if ( locale == "US" ) then
-        decimal = "POINT"
-      else if ( locale == "EU" ) then
-        decimal = "COMMA"
-      else
-        into = EMPTY_STR; return
-      end if
-    end if
-
-    if_eorf_re: if ( fmt_ == "e" ) then
-      if ( x%re == 0e0_r32 ) then
-        xre_str = "0.0e+00"; exit if_eorf_re
-      end if
-
-      if ( x%re < 0e0_r32 ) then
-        xre_str = "000000000000000"
-        write(unit=xre_str, fmt="(es15.8e2)", decimal=decimal) x%re
-        xre_str(12:12) = "e"
-      else
-        xre_str = "00000000000000"
-        write(unit=xre_str, fmt="(es14.8e2)", decimal=decimal) x%re
-        xre_str(11:11) = "e"
-      end if
-
-      if ( .not. present(decimals) ) exit if_eorf_re
-
-      if ( decimals >= 8 ) exit if_eorf_re
-
-      if ( decimals < 0 ) then
-        decimals_ = 0
-      else
-        decimals_ = decimals
-      end if
-
-      i = 1; do
-        if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) then
-          xre_str = xre_str(:i+decimals_)//xre_str(i+9:); exit if_eorf_re
-        end if
-        i = i + 1; cycle
-      end do
-    else if ( fmt_ == "f" ) then
-      if ( abs(x%re) /= 0e0_r32 ) then
-        e = int(log10(abs(x%re)))
-      else
-        xre_str = "0.0"; exit if_eorf_re
-      end if
-
-      if ( e == 0 ) then
-        if ( floor(x%re) > 0 ) e = 1 + e
-      else if ( e > 0 ) then
-        e = 1 + e
-      end if
-
-      allocate( character(len=75) :: xre_str )
-
-      if ( e > 0 ) then
-        write(unit=xre_str, fmt="(f0.9)", decimal=decimal) x%re
-      else
-        write(unit=xre_str, fmt="(f0.70)", decimal=decimal) x%re
-      end if
-
-      i = 1; do
-        if ( (xre_str(i:i) == POINT) .or. (xre_str(i:i) == COMMA) ) exit
-        i = i + 1; cycle
-      end do
-
-      if ( (i == 1) .or. ( (i == 2) .and. (xre_str(1:1) == "-") ) ) then
-        xre_str(i+1:75) = xre_str(i:74); xre_str(i:i) = "0"; i = i + 1
-      end if
-
-      if ( i > 9 ) then
-        xre_str = xre_str(:i); exit if_eorf_re
-      end if
-
-      if ( .not. present(decimals) ) then
-        xre_str = xre_str(:i+9-e); exit if_eorf_re
-      end if
-
-      if ( decimals <= 0 ) then
-        xre_str = xre_str(:i); exit if_eorf_re
-      end if
-
-      if ( decimals >= 9-e ) then
-        xre_str = xre_str(:i+9-e); exit if_eorf_re
-      end if
-
-      xre_str = xre_str(:i+decimals); exit if_eorf_re
-    end if if_eorf_re
-    if_eorf_im: if ( fmt_ == "e" ) then
-      if ( x%im == 0e0_r32 ) then
-        xim_str = "0.0e+00"; exit if_eorf_im
-      end if
-
-      if ( x%im < 0e0_r32 ) then
-        xim_str = "000000000000000"
-        write(unit=xim_str, fmt="(es15.8e2)", decimal=decimal) x%im
-        xim_str(12:12) = "e"
-      else
-        xim_str = "00000000000000"
-        write(unit=xim_str, fmt="(es14.8e2)", decimal=decimal) x%im
-        xim_str(11:11) = "e"
-      end if
-
-      if ( .not. present(decimals) ) exit if_eorf_im
-
-      if ( decimals >= 8 ) exit if_eorf_im
-
-      if ( decimals < 0 ) then
-        decimals_ = 0
-      else
-        decimals_ = decimals
-      end if
-
-      i = 1; do
-        if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) then
-          xim_str = xim_str(:i+decimals_)//xim_str(i+9:); exit if_eorf_im
-        end if
-        i = i + 1; cycle
-      end do
-    else if ( fmt_ == "f" ) then
-      if ( abs(x%im) /= 0e0_r32 ) then
-        e = int(log10(abs(x%im)))
-      else
-        xim_str = "0.0"; exit if_eorf_im
-      end if
-
-      if ( e == 0 ) then
-        if ( floor(x%im) > 0 ) e = 1 + e
-      else if ( e > 0 ) then
-        e = 1 + e
-      end if
-
-      allocate( character(len=75) :: xim_str )
-
-      if ( e > 0 ) then
-        write(unit=xim_str, fmt="(f0.9)", decimal=decimal) x%im
-      else
-        write(unit=xim_str, fmt="(f0.70)", decimal=decimal) x%im
-      end if
-
-      i = 1; do
-        if ( (xim_str(i:i) == POINT) .or. (xim_str(i:i) == COMMA) ) exit
-        i = i + 1; cycle
-      end do
-
-      if ( (i == 1) .or. ( (i == 2) .and. (xim_str(1:1) == "-") ) ) then
-        xim_str(i+1:75) = xim_str(i:74); xim_str(i:i) = "0"; i = i + 1
-      end if
-
-      if ( i > 9 ) then
-        xim_str = xim_str(:i); exit if_eorf_im
-      end if
-
-      if ( .not. present(decimals) ) then
-        xim_str = xim_str(:i+9-e); exit if_eorf_im
-      end if
-
-      if ( decimals <= 0 ) then
-        xim_str = xim_str(:i); exit if_eorf_im
-      end if
-
-      if ( decimals >= 9-e ) then
-        xim_str = xim_str(:i+9-e); exit if_eorf_im
-      end if
-
-      xim_str = xim_str(:i+decimals); exit if_eorf_im
-    end if if_eorf_im
-
-    if ( .not. present(im) ) then
-      im_ = EMPTY_STR
-    else
-      im_ = im
-    end if
-
-    if ( im_ == EMPTY_STR ) then
-      if ( decimal == "POINT" ) then
-        into = "("//xre_str//COMMA//xim_str//")"; return
-      else
-        into = "("//xre_str//SEMICOLON//xim_str//")"; return
-      end if
-    end if
-
-    if ( fmt_ == "z" ) then
-      into = xre_str//"+"//xim_str//im_; return
-    end if
-
-    if ( x%im < 0e0_r32 ) then
-      into = xre_str//xim_str//im_
-    else
-      into = xre_str//"+"//xim_str//im_
-    end if
+    into = complex_text(x, decimal_of(locale), real_fmt_of(fmt), decimals, im)
   end procedure cast_c32_to_char
 
+
+#ifdef IOFL_HAS_R128
   module procedure cast_r128_to_char
-    character(len=1) :: fmt_
-    character(len=5) :: decimal
-    integer          :: e, decimals_, i
-
-    e=0; decimals_=0; i=0
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "e"
-    else
-      if ( any(REAL_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        into = EMPTY_STR; return
-      end if
-    end if
-
-    if ( fmt_ == "z" ) then
-      if ( x /= 0e0_r128 ) then
-        into = "0x00000000000000000000000000000000"
-      else
-        into = "0x0"; return
-      end if
-
-      write(unit=into(3:), fmt="(z32)") x
-
-      do i = 3, 34
-        if ( (into(i:i) >= "A") .and. (into(i:i) <= "F") ) into(i:i) = achar(iachar(into(i:i)) + 32)
-      end do
-
-      return
-    end if
-
-    if ( .not. present(locale) ) then
-      decimal = "POINT"
-    else
-      if ( locale == "US" ) then
-        decimal = "POINT"
-      else if ( locale == "EU" ) then
-        decimal = "COMMA"
-      else
-        into = EMPTY_STR; return
-      end if
-    end if
-
-    if ( fmt_ == "e" ) then
-      if ( x == 0e0_r128 ) then
-        into = "0.0e+0000"; return
-      end if
-
-      if ( x < 0e0_r128 ) then
-        into = "00000000000000000000000000000000000000000000"
-        write(unit=into, fmt="(es44.35e4)", decimal=decimal) x
-        into(39:39) = "e"
-      else
-        into = "0000000000000000000000000000000000000000000"
-        write(unit=into, fmt="(es43.35e4)", decimal=decimal) x
-        into(38:38) = "e"
-      end if
-
-      if ( .not. present(decimals) ) return
-
-      if ( decimals >= 35 ) return
-
-      if ( decimals < 0 ) then
-        decimals_ = 0
-      else
-        decimals_ = decimals
-      end if
-
-      i = 1; do
-        if ( (into(i:i) == POINT) .or. (into(i:i) == COMMA) ) then
-          into = into(:i+decimals_)//into(i+36:); return
-        end if
-        i = i + 1; cycle
-      end do
-    else if ( fmt_ == "f" ) then
-      if ( abs(x) /= 0e0_r128 ) then
-        e = int(log10(abs(x)))
-      else
-        into = "0.0"; return
-      end if
-
-      if ( e == 0 ) then
-        if ( floor(x) > 0 ) e = 1 + e
-      else if ( e > 0 ) then
-        e = 1 + e
-      end if
-
-      if ( allocated(into) ) deallocate(into)
-      allocate( character(len=125) :: into )
-
-      if ( e > 0 ) then
-        write(unit=into, fmt="(f0.36)", decimal=decimal) x
-      else
-        write(unit=into, fmt="(f0.100)", decimal=decimal) x
-      end if
-
-      i = 1; do
-        if ( (into(i:i) == POINT) .or. (into(i:i) == COMMA) ) exit
-        i = i + 1; cycle
-      end do
-
-      if ( (i == 1) .or. ( (i == 2) .and. (into(1:1) == "-") ) ) then
-        into(i+1:125) = into(i:124); into(i:i) = "0"; i = i + 1
-      end if
-
-      if ( i > 36 ) then
-        into = into(:i); return
-      end if
-
-      if ( .not. present(decimals) ) then
-        into = into(:i+36-e); return
-      end if
-
-      if ( decimals <= 0 ) then
-        into = into(:i); return
-      end if
-
-      if ( decimals >= 36-e ) then
-        into = into(:i+36-e); return
-      end if
-
-      into = into(:i+decimals); return
-    end if
+    into = real_text(x, decimal_of(locale), real_fmt_of(fmt), decimals)
   end procedure cast_r128_to_char
+#endif
+
   module procedure cast_r64_to_char
-    character(len=1) :: fmt_
-    character(len=5) :: decimal
-    integer          :: e, decimals_, i
-
-    e=0; decimals_=0; i=0
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "e"
-    else
-      if ( any(REAL_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        into = EMPTY_STR; return
-      end if
-    end if
-
-    if ( fmt_ == "z" ) then
-      if ( x == 0e0_r64 ) then
-        into = "0x0"; return
-      end if
-
-      inline_cast: block
-        integer(i64) :: x_int, num, next; character(len=18) :: buffer; integer :: ascii_code
-        logical :: negative
-
-        x_int = transfer(source=x, mold=x_int)
-
-        if ( x_int < 0_i64 ) then
-          num = (x_int + 1_i64) + largest_i64; negative = .true.; buffer(1:) = "0x0000000000000000"
-        else
-          num = x_int; negative = .false.
-        end if
-
-        i = len(buffer); extract_hex_digits: do
-          next = num/16_i64; buffer(i:i) = DIGITS_A(num - 16_i64*next); if ( next == 0_i64 ) exit
-          num = next; i = i - 1; cycle
-        end do extract_hex_digits
-
-        if ( negative ) then
-          ascii_code = iachar(buffer(3:3))
-          if ( ascii_code < 50 ) then
-            buffer(3:3) = achar(ascii_code + 8)
-          else
-            buffer(3:3) = achar(ascii_code + 47)
-          end if
-          into = buffer(1:); return
-        else
-          buffer(i-2:i-1) = "0x"; into = buffer(i-2:); return
-        end if
-      end block inline_cast
-    end if
-
-    if ( .not. present(locale) ) then
-      decimal = "POINT"
-    else
-      if ( locale == "US" ) then
-        decimal = "POINT"
-      else if ( locale == "EU" ) then
-        decimal = "COMMA"
-      else
-        into = EMPTY_STR; return
-      end if
-    end if
-
-    if ( fmt_ == "e" ) then
-      if ( x == 0e0_r64 ) then
-        into = "0.0e+000"; return
-      end if
-
-      if ( x < 0e0_r64 ) then
-        into = "0000000000000000000000000"
-        write(unit=into, fmt="(es25.17e3)", decimal=decimal) x
-        into(21:21) = "e"
-      else
-        into = "000000000000000000000000"
-        write(unit=into, fmt="(es24.17e3)", decimal=decimal) x
-        into(20:20) = "e"
-      end if
-
-      if ( .not. present(decimals) ) return
-
-      if ( decimals >= 17 ) return
-
-      if ( decimals < 0 ) then
-        decimals_ = 0
-      else
-        decimals_ = decimals
-      end if
-
-      i = 1; do
-        if ( (into(i:i) == POINT) .or. (into(i:i) == COMMA) ) then
-          into = into(:i+decimals_)//into(i+18:); return
-        end if
-        i = i + 1; cycle
-      end do
-    else if ( fmt_ == "f" ) then
-      if ( abs(x) /= 0e0_r64 ) then
-        e = int(log10(abs(x)))
-      else
-        into = "0.0"; return
-      end if
-
-      if ( e == 0 ) then
-        if ( floor(x) > 0 ) e = 1 + e
-      else if ( e > 0 ) then
-        e = 1 + e
-      end if
-
-      if ( allocated(into) ) deallocate(into)
-      allocate( character(len=100) :: into )
-
-      if ( e > 0 ) then
-        write(unit=into, fmt="(f0.18)", decimal=decimal) x
-      else
-        write(unit=into, fmt="(f0.80)", decimal=decimal) x
-      end if
-
-      i = 1; do
-        if ( (into(i:i) == POINT) .or. (into(i:i) == COMMA) ) exit
-        i = i + 1; cycle
-      end do
-
-      if ( (i == 1) .or. ( (i == 2) .and. (into(1:1) == "-") ) ) then
-        into(i+1:100) = into(i:99); into(i:i) = "0"; i = i + 1
-      end if
-
-      if ( i > 18 ) then
-        into = into(:i); return
-      end if
-
-      if ( .not. present(decimals) ) then
-        into = into(:i+18-e); return
-      end if
-
-      if ( decimals <= 0 ) then
-        into = into(:i); return
-      end if
-
-      if ( decimals >= 18-e ) then
-        into = into(:i+18-e); return
-      end if
-
-      into = into(:i+decimals); return
-    end if
+    into = real_text(x, decimal_of(locale), real_fmt_of(fmt), decimals)
   end procedure cast_r64_to_char
+
   module procedure cast_r32_to_char
-    character(len=1) :: fmt_
-    character(len=5) :: decimal
-    integer          :: e, decimals_, i
-
-    e=0; decimals_=0; i=0
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "e"
-    else
-      if ( any(REAL_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        into = EMPTY_STR; return
-      end if
-    end if
-
-    if ( fmt_ == "z" ) then
-      if ( x == 0e0_r32 ) then
-        into = "0x0"; return
-      end if
-
-      inline_cast: block
-        integer :: x_int, num, next; character(len=10) :: buffer; integer :: ascii_code; logical :: negative
-
-        x_int = transfer(source=x, mold=x_int)
-
-        if ( x_int < 0 ) then
-          num = (x_int + 1) + largest_i32; negative = .true.; buffer(1:) = "0x00000000"
-        else
-          num = x_int; negative = .false.
-        end if
-
-        i = len(buffer); extract_hex_digits: do
-          next = num/16; buffer(i:i) = DIGITS_A(num - 16*next); if ( next == 0 ) exit
-          num = next; i = i - 1; cycle
-        end do extract_hex_digits
-
-        if ( negative ) then
-          ascii_code = iachar(buffer(3:3))
-          if ( ascii_code < 50 ) then
-            buffer(3:3) = achar(ascii_code + 8)
-          else
-            buffer(3:3) = achar(ascii_code + 47)
-          end if
-          into = buffer(1:); return
-        else
-          buffer(i-2:i-1) = "0x"; into = buffer(i-2:); return
-        end if
-      end block inline_cast
-    end if
-
-    if ( .not. present(locale) ) then
-      decimal = "POINT"
-    else
-      if ( locale == "US" ) then
-        decimal = "POINT"
-      else if ( locale == "EU" ) then
-        decimal = "COMMA"
-      else
-        into = EMPTY_STR; return
-      end if
-    end if
-
-    if ( fmt_ == "e" ) then
-      if ( x == 0e0_r32 ) then
-        into = "0.0e+00"; return
-      end if
-
-      if ( x < 0e0_r32 ) then
-        into = "000000000000000"
-        write(unit=into, fmt="(es15.8e2)", decimal=decimal) x
-        into(12:12) = "e"
-      else
-        into = "00000000000000"
-        write(unit=into, fmt="(es14.8e2)", decimal=decimal) x
-        into(11:11) = "e"
-      end if
-
-      if ( .not. present(decimals) ) return
-
-      if ( decimals >= 8 ) return
-
-      if ( decimals < 0 ) then
-        decimals_ = 0
-      else
-        decimals_ = decimals
-      end if
-
-      i = 1; do
-        if ( (into(i:i) == POINT) .or. (into(i:i) == COMMA) ) then
-          into = into(:i+decimals_)//into(i+9:); return
-        end if
-        i = i + 1; cycle
-      end do
-    else if ( fmt_ == "f" ) then
-      if ( abs(x) /= 0e0_r32 ) then
-        e = int(log10(abs(x)))
-      else
-        into = "0.0"; return
-      end if
-
-      if ( e == 0 ) then
-        if ( floor(x) > 0 ) e = 1 + e
-      else if ( e > 0 ) then
-        e = 1 + e
-      end if
-
-      if ( allocated(into) ) deallocate(into)
-      allocate( character(len=75) :: into )
-
-      if ( e > 0 ) then
-        write(unit=into, fmt="(f0.9)", decimal=decimal) x
-      else
-        write(unit=into, fmt="(f0.70)", decimal=decimal) x
-      end if
-
-      i = 1; do
-        if ( (into(i:i) == POINT) .or. (into(i:i) == COMMA) ) exit
-        i = i + 1; cycle
-      end do
-
-      if ( (i == 1) .or. ( (i == 2) .and. (into(1:1) == "-") ) ) then
-        into(i+1:75) = into(i:74); into(i:i) = "0"; i = i + 1
-      end if
-
-      if ( i > 9 ) then
-        into = into(:i); return
-      end if
-
-      if ( .not. present(decimals) ) then
-        into = into(:i+9-e); return
-      end if
-
-      if ( decimals <= 0 ) then
-        into = into(:i); return
-      end if
-
-      if ( decimals >= 9-e ) then
-        into = into(:i+9-e); return
-      end if
-
-      into = into(:i+decimals); return
-    end if
+    into = real_text(x, decimal_of(locale), real_fmt_of(fmt), decimals)
   end procedure cast_r32_to_char
 
+
   module procedure cast_i64_to_char
-    character(len=1)  :: fmt_
-    character(len=20) :: buffer
-    integer(i64)      :: num, next
-    integer           :: ascii_code, i
-    logical           :: negative
-
-    num=0_i64; next=0_i64; ascii_code=0; i=0; negative=.false.
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "i"
-    else
-      if ( any(INT_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        into = EMPTY_STR; return
-      end if
-    end if
-
-    if ( fmt_ == "i" ) then
-      if ( x < 0_i64 ) then
-        if ( x == smallest_i64 ) then
-          into = "-9223372036854775808"; return
-        end if
-        num = -x; negative = .true.
-      else
-        num = x; negative = .false.
-      end if
-
-      i = len(buffer); extract_digits: do
-        next = num/10_i64; buffer(i:i) = achar(num - 10_i64*next + 48_i64); if ( next == 0_i64 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_digits
-
-      if ( negative ) then
-        buffer(i-1:i-1) = "-"; into = buffer(i-1:); return
-      else
-        into = buffer(i:); return
-      end if
-    else
-      if ( x < 0_i64 ) then
-        num = (x + 1_i64) + largest_i64; negative = .true.; buffer(3:) = "0x0000000000000000"
-      else
-        num = x; negative = .false.
-      end if
-
-      i = len(buffer); extract_hex_digits: do
-        next = num/16_i64; buffer(i:i) = DIGITS_A(num - 16_i64*next); if ( next == 0_i64 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_hex_digits
-
-      if ( negative ) then
-        ascii_code = iachar(buffer(5:5))
-        if ( ascii_code < 50 ) then
-          buffer(5:5) = achar(ascii_code + 8)
-        else
-          buffer(5:5) = achar(ascii_code + 47)
-        end if
-        into = buffer(3:); return
-      else
-        buffer(i-2:i-1) = "0x"; into = buffer(i-2:); return
-      end if
-    end if
+    into = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
   end procedure cast_i64_to_char
+
   module procedure cast_i32_to_char
-    character(len=1)  :: fmt_
-    character(len=11) :: buffer
-    integer           :: num, next, ascii_code, i
-    logical           :: negative
-
-    num=0; next=0; ascii_code=0; i=0; negative=.false.
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "i"
-    else
-      if ( any(INT_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        into = EMPTY_STR; return
-      end if
-    end if
-
-    if ( fmt_ == "i" ) then
-      if ( x < 0_i32 ) then
-        if ( x == smallest_i32 ) then
-          into = "-2147483648"; return
-        end if
-        num = -x; negative = .true.
-      else
-        num = x; negative = .false.
-      end if
-
-      i = len(buffer); extract_digits: do
-        next = num/10; buffer(i:i) = achar(num - 10*next + 48); if ( next == 0 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_digits
-
-      if ( negative ) then
-        buffer(i-1:i-1) = "-"; into = buffer(i-1:); return
-      else
-        into = buffer(i:); return
-      end if
-    else
-      if ( x < 0_i32 ) then
-        num = (x + 1) + largest_i32; negative = .true.; buffer(2:) = "0x00000000"
-      else
-        num = x; negative = .false.
-      end if
-
-      i = len(buffer); extract_hex_digits: do
-        next = num/16; buffer(i:i) = DIGITS_A(num - 16*next); if ( next == 0 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_hex_digits
-
-      if ( negative ) then
-        ascii_code = iachar(buffer(4:4))
-        if ( ascii_code < 50 ) then
-          buffer(4:4) = achar(ascii_code + 8)
-        else
-          buffer(4:4) = achar(ascii_code + 47)
-        end if
-        into = buffer(2:); return
-      else
-        buffer(i-2:i-1) = "0x"; into = buffer(i-2:); return
-      end if
-    end if
+    into = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
   end procedure cast_i32_to_char
+
   module procedure cast_i16_to_char
-    character(len=1) :: fmt_
-    character(len=6) :: buffer
-    integer          :: num, next, ascii_code, i
-    logical          :: negative
-
-    num=0; next=0; ascii_code=0; i=0; negative=.false.
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "i"
-    else
-      if ( any(INT_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        into = EMPTY_STR; return
-      end if
-    end if
-
-    if ( fmt_ == "i" ) then
-      if ( x < 0_i16 ) then
-        if ( x == smallest_i16 ) then
-          into = "-32768"; return
-        end if
-        num = int(-x); negative = .true.
-      else
-        num = int(x); negative = .false.
-      end if
-
-      i = len(buffer); extract_digits: do
-        next = num/10; buffer(i:i) = achar(num - 10*next + 48); if ( next == 0 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_digits
-
-      if ( negative ) then
-        buffer(i-1:i-1) = "-"; into = buffer(i-1:); return
-      else
-        into = buffer(i:); return
-      end if
-    else
-      if ( x < 0_i16 ) then
-        num = int((x + 1_i16) + largest_i16); negative = .true.; buffer(1:) = "0x0000"
-      else
-        num = int(x); negative = .false.
-      end if
-
-      i = len(buffer); extract_hex_digits: do
-        next = num/16; buffer(i:i) = DIGITS_A(num - 16*next); if ( next == 0 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_hex_digits
-
-      if ( negative ) then
-        ascii_code = iachar(buffer(3:3))
-        if ( ascii_code < 50 ) then
-          buffer(3:3) = achar(ascii_code + 8)
-        else
-          buffer(3:3) = achar(ascii_code + 47)
-        end if
-        into = buffer(1:); return
-      else
-        buffer(i-2:i-1) = "0x"; into = buffer(i-2:); return
-      end if
-    end if
+    into = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
   end procedure cast_i16_to_char
+
   module procedure cast_i8_to_char
-    character(len=1) :: fmt_
-    character(len=4) :: buffer
-    integer          :: num, next, ascii_code, i
-    logical          :: negative
-
-    num=0; next=0; ascii_code=0; i=0; negative=.false.
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "i"
-    else
-      if ( any(INT_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        into = EMPTY_STR; return
-      end if
-    end if
-
-    if ( fmt_ == "i" ) then
-      if ( x < 0_i8 ) then
-        if ( x == smallest_i8 ) then
-          into = "-128"; return
-        end if
-        num = int(-x); negative = .true.
-      else
-        num = int(x); negative = .false.
-      end if
-
-      i = len(buffer); extract_digits: do
-        next = num/10; buffer(i:i) = achar(num - 10*next + 48); if ( next == 0 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_digits
-
-      if ( negative ) then
-        buffer(i-1:i-1) = "-"; into = buffer(i-1:); return
-      else
-        into = buffer(i:); return
-      end if
-    else
-      if ( x < 0_i8 ) then
-        num = int((x + 1_i8) + largest_i8); negative = .true.; buffer(1:) = "0x00"
-      else
-        num = int(x); negative = .false.
-      end if
-
-      i = len(buffer); extract_hex_digits: do
-        next = num/16; buffer(i:i) = DIGITS_A(num - 16*next); if ( next == 0 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_hex_digits
-
-      if ( negative ) then
-        ascii_code = iachar(buffer(3:3))
-        if ( ascii_code < 50 ) then
-          buffer(3:3) = achar(ascii_code + 8)
-        else
-          buffer(3:3) = achar(ascii_code + 47)
-        end if
-        into = buffer(1:); return
-      else
-        buffer(i-2:i-1) = "0x"; into = buffer(i-2:); return
-      end if
-    end if
+    into = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
   end procedure cast_i8_to_char
 
+
+#ifdef IOFL_HAS_R128
   module procedure cast_string_to_c128
-    character(len=1)              :: fmt_
-    character(len=5)              :: decimal
-    character(len=:), allocatable :: im_
-
-    real(r128) :: z_re, z_im
-    integer    :: substring_len, l, r, i, sep_code, e_code, im_len
-
-    z_re=0e0_r128; z_im=0e0_r128; substring_len=0; l=0; r=0; i=0; sep_code=0; e_code=0; im_len=0
-
-    substring_len = substring%len()
-
-    if ( substring_len < 1 ) then
-      into = (0e0_r128,0e0_r128); return
-    end if
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "e"
+    if ( allocated(substring%buf) ) then
+      call cast_char_to_c128(substring%buf(:substring%n), into, locale, fmt, im, stat)
     else
-      if ( any(REAL_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        into = (0e0_r128,0e0_r128); return
-      end if
-    end if
-
-    if ( .not. present(im) ) then
-      im_ = EMPTY_STR
-    else
-      im_ = im
-    end if
-
-    if ( .not. present(locale) ) then
-      decimal = "POINT"
-    else
-      if ( locale == "US" ) then
-        decimal = "POINT"
-      else if ( locale == "EU" ) then
-        decimal = "COMMA"
-      else
-        into = (0e0_r128,0e0_r128); return
-      end if
-    end if
-
-    if ( len(im_) == 0 ) then
-      if ( decimal == "POINT" ) then
-        sep_code = iachar(COMMA)
-      else
-        sep_code = iachar(SEMICOLON)
-      end if
-
-      l = 1; do
-        if ( iachar(substring%s(l:l)) == 40 ) exit
-        l = l + 1; cycle
-      end do
-
-      r = substring_len; do
-        if ( iachar(substring%s(r:r)) == 41 ) exit
-        r = r - 1; cycle
-      end do
-
-      i = l+1; do
-        if ( iachar(substring%s(i:i)) == sep_code ) exit
-        i = i + 1; cycle
-      end do
-
-      if ( fmt_ == "z" ) then
-        if ( i-l-1 > 2 ) then
-          if ( substring%s(l+1:l+2) == "0x" ) then
-            read(unit=substring%s(l+3:i-1), fmt="(z100)") z_re
-          else
-            read(unit=substring%s(l+1:i-1), fmt="(z100)") z_re
-          end if
-        else
-          read(unit=substring%s(l+1:i-1), fmt="(z100)") z_re
-        end if
-
-        if ( r-i-1 > 2 ) then
-          if ( substring%s(i+1:i+2) == "0x" ) then
-            read(unit=substring%s(i+3:r-1), fmt="(z100)") z_im
-          else
-            read(unit=substring%s(i+1:r-1), fmt="(z100)") z_im
-          end if
-        else
-          read(unit=substring%s(i+1:r-1), fmt="(z100)") z_im
-        end if
-
-        into = cmplx(z_re, z_im, kind=r128); return
-      else
-        read(unit=substring%s(l+1:i-1), fmt=*, decimal=decimal) z_re
-        read(unit=substring%s(i+1:r-1), fmt=*, decimal=decimal) z_im
-        into = cmplx(z_re, z_im, kind=r128); return
-      end if
-    end if
-
-    sep_code = iachar("+"); e_code = iachar("e"); im_len = len(im_)
-
-    l = 1; do
-      if ( iachar(substring%s(l:l)) > sep_code ) exit
-      l = l + 1; cycle
-    end do
-
-    r = substring_len-im_len+1; do
-      if ( substring%s(r:r+im_len-1) == im_ ) exit
-      r = r - 1; cycle
-    end do
-
-    if ( fmt_ == "z" ) then
-      i = l+1; do
-        if ( iachar(substring%s(i:i)) == sep_code ) exit
-        i = i + 1; cycle
-      end do
-    else
-      i = l+1; do
-        if ( (iachar(substring%s(i:i)) == sep_code) .or. (iachar(substring%s(i:i)) == sep_code+2) ) then
-          if ( (iachar(substring%s(i-1:i-1)) == e_code).or.(iachar(substring%s(i-1:i-1)) == e_code-32) ) then
-            i = i + 1; cycle
-          else
-            exit
-          end if
-        end if
-        i = i + 1; cycle
-      end do
-    end if
-
-    if ( fmt_ == "z" ) then
-      if ( i-l > 2 ) then
-        if ( substring%s(l:l+1) == "0x" ) then
-          read(unit=substring%s(l+2:i-1), fmt="(z100)") z_re
-        else
-          read(unit=substring%s(l:i-1), fmt="(z100)") z_re
-        end if
-      else
-        read(unit=substring%s(l:i-1), fmt="(z100)") z_re
-      end if
-
-      if ( r-i-1 > 2 ) then
-        if ( substring%s(i+1:i+2) == "0x" ) then
-          read(unit=substring%s(i+3:r-1), fmt="(z100)") z_im
-        else
-          read(unit=substring%s(i+1:r-1), fmt="(z100)") z_im
-        end if
-      else
-        read(unit=substring%s(i+1:r-1), fmt="(z100)") z_im
-      end if
-
-      into = cmplx(z_re, z_im, kind=r128); return
-    else
-      read(unit=substring%s(l:i-1), fmt=*, decimal=decimal) z_re
-      read(unit=substring%s(i:r-1), fmt=*, decimal=decimal) z_im
-      into = cmplx(z_re, z_im, kind=r128); return
+      into = (0e0_r128,0e0_r128)
+      call report_cast(READ_ERR, EMPTY_STR, stat)
     end if
   end procedure cast_string_to_c128
+#endif
+
   module procedure cast_string_to_c64
-    character(len=1)              :: fmt_
-    character(len=5)              :: decimal
-    character(len=:), allocatable :: im_
-
-    real(r64) :: z_re, z_im
-    integer :: substring_len, l, r, i, sep_code, e_code, im_len
-
-    z_re=0e0_r64; z_im=0e0_r64; substring_len=0; l=0; r=0; i=0; sep_code=0; e_code=0; im_len=0
-
-    substring_len = substring%len()
-
-    if ( substring_len < 1 ) then
-      into = (0e0_r64,0e0_r64); return
-    end if
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "e"
+    if ( allocated(substring%buf) ) then
+      call cast_char_to_c64(substring%buf(:substring%n), into, locale, fmt, im, stat)
     else
-      if ( any(REAL_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        into = (0e0_r64,0e0_r64); return
-      end if
-    end if
-
-    if ( .not. present(im) ) then
-      im_ = EMPTY_STR
-    else
-      im_ = im
-    end if
-
-    if ( .not. present(locale) ) then
-      decimal = "POINT"
-    else
-      if ( locale == "US" ) then
-        decimal = "POINT"
-      else if ( locale == "EU" ) then
-        decimal = "COMMA"
-      else
-        into = (0e0_r64,0e0_r64); return
-      end if
-    end if
-
-    if ( len(im_) == 0 ) then
-      if ( decimal == "POINT" ) then
-        sep_code = iachar(COMMA)
-      else
-        sep_code = iachar(SEMICOLON)
-      end if
-
-      l = 1; do
-        if ( iachar(substring%s(l:l)) == 40 ) exit
-        l = l + 1; cycle
-      end do
-
-      r = substring_len; do
-        if ( iachar(substring%s(r:r)) == 41 ) exit
-        r = r - 1; cycle
-      end do
-
-      i = l+1; do
-        if ( iachar(substring%s(i:i)) == sep_code ) exit
-        i = i + 1; cycle
-      end do
-
-      if ( fmt_ == "z" ) then
-        block; integer(i64) :: num; character(len=i-l-1) :: hex_str_re; character(len=r-i-1) :: hex_str_im
-          hex_str_re = substring%s(l+1:i-1); hex_str_im = substring%s(i+1:r-1)
-          call cast(hex_str_re, into=num, fmt="z"); z_re = transfer(source=num, mold=z_re)
-          call cast(hex_str_im, into=num, fmt="z"); z_im = transfer(source=num, mold=z_im)
-          into = cmplx(z_re, z_im, kind=r64); return
-        end block
-      else
-        read(unit=substring%s(l+1:i-1), fmt=*, decimal=decimal) z_re
-        read(unit=substring%s(i+1:r-1), fmt=*, decimal=decimal) z_im
-        into = cmplx(z_re, z_im, kind=r64); return
-      end if
-    end if
-
-    sep_code = iachar("+"); e_code = iachar("e"); im_len = len(im_)
-
-    l = 1; do
-      if ( iachar(substring%s(l:l)) > sep_code ) exit
-      l = l + 1; cycle
-    end do
-
-    r = substring_len-im_len+1; do
-      if ( substring%s(r:r+im_len-1) == im_ ) exit
-      r = r - 1; cycle
-    end do
-
-    if ( fmt_ == "z" ) then
-      i = l+1; do
-        if ( iachar(substring%s(i:i)) == sep_code ) exit
-        i = i + 1; cycle
-      end do
-    else
-      i = l+1; do
-        if ( (iachar(substring%s(i:i)) == sep_code) .or. (iachar(substring%s(i:i)) == sep_code+2) ) then
-          if ( (iachar(substring%s(i-1:i-1)) == e_code).or.(iachar(substring%s(i-1:i-1)) == e_code-32) ) then
-            i = i + 1; cycle
-          else
-            exit
-          end if
-        end if
-        i = i + 1; cycle
-      end do
-    end if
-
-    if ( fmt_ == "z" ) then
-      block; integer(i64) :: num; character(len=i-l) :: hex_str_re; character(len=r-i-1) :: hex_str_im
-        hex_str_re = substring%s(l:i-1); hex_str_im = substring%s(i+1:r-1)
-        call cast(hex_str_re, into=num, fmt="z"); z_re = transfer(source=num, mold=z_re)
-        call cast(hex_str_im, into=num, fmt="z"); z_im = transfer(source=num, mold=z_im)
-        into = cmplx(z_re, z_im, kind=r64); return
-      end block
-    else
-      read(unit=substring%s(l:i-1), fmt=*, decimal=decimal) z_re
-      read(unit=substring%s(i:r-1), fmt=*, decimal=decimal) z_im
-      into = cmplx(z_re, z_im, kind=r64); return
+      into = (0e0_r64,0e0_r64)
+      call report_cast(READ_ERR, EMPTY_STR, stat)
     end if
   end procedure cast_string_to_c64
+
   module procedure cast_string_to_c32
-    character(len=1)              :: fmt_
-    character(len=5)              :: decimal
-    character(len=:), allocatable :: im_
-
-    real(r32) :: z_re, z_im
-    integer :: substring_len, l, r, i, sep_code, e_code, im_len
-
-    z_re=0e0_r32; z_im=0e0_r32; substring_len=0; l=0; r=0; i=0; sep_code=0; e_code=0; im_len=0
-
-    substring_len = substring%len()
-
-    if ( substring_len < 1 ) then
-      into = (0e0_r32,0e0_r32); return
-    end if
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "e"
+    if ( allocated(substring%buf) ) then
+      call cast_char_to_c32(substring%buf(:substring%n), into, locale, fmt, im, stat)
     else
-      if ( any(REAL_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        into = (0e0_r32,0e0_r32); return
-      end if
-    end if
-
-    if ( .not. present(im) ) then
-      im_ = EMPTY_STR
-    else
-      im_ = im
-    end if
-
-    if ( .not. present(locale) ) then
-      decimal = "POINT"
-    else
-      if ( locale == "US" ) then
-        decimal = "POINT"
-      else if ( locale == "EU" ) then
-        decimal = "COMMA"
-      else
-        into = (0e0_r32,0e0_r32); return
-      end if
-    end if
-
-    if ( len(im_) == 0 ) then
-      if ( decimal == "POINT" ) then
-        sep_code = iachar(COMMA)
-      else
-        sep_code = iachar(SEMICOLON)
-      end if
-
-      l = 1; do
-        if ( iachar(substring%s(l:l)) == 40 ) exit
-        l = l + 1; cycle
-      end do
-
-      r = substring_len; do
-        if ( iachar(substring%s(r:r)) == 41 ) exit
-        r = r - 1; cycle
-      end do
-
-      i = l+1; do
-        if ( iachar(substring%s(i:i)) == sep_code ) exit
-        i = i + 1; cycle
-      end do
-
-      if ( fmt_ == "z" ) then
-        block; integer :: num; character(len=i-l-1) :: hex_str_re; character(len=r-i-1) :: hex_str_im
-          hex_str_re = substring%s(l+1:i-1); hex_str_im = substring%s(i+1:r-1)
-          call cast(hex_str_re, into=num, fmt="z"); z_re = transfer(source=num, mold=z_re)
-          call cast(hex_str_im, into=num, fmt="z"); z_im = transfer(source=num, mold=z_im)
-          into = cmplx(z_re, z_im, kind=r32); return
-        end block
-      else
-        read(unit=substring%s(l+1:i-1), fmt=*, decimal=decimal) z_re
-        read(unit=substring%s(i+1:r-1), fmt=*, decimal=decimal) z_im
-        into = cmplx(z_re, z_im, kind=r32); return
-      end if
-    end if
-
-    sep_code = iachar("+"); e_code = iachar("e"); im_len = len(im_)
-
-    l = 1; do
-      if ( iachar(substring%s(l:l)) > sep_code ) exit
-      l = l + 1; cycle
-    end do
-
-    r = substring_len-im_len+1; do
-      if ( substring%s(r:r+im_len-1) == im_ ) exit
-      r = r - 1; cycle
-    end do
-
-    if ( fmt_ == "z" ) then
-      i = l+1; do
-        if ( iachar(substring%s(i:i)) == sep_code ) exit
-        i = i + 1; cycle
-      end do
-    else
-      i = l+1; do
-        if ( (iachar(substring%s(i:i)) == sep_code) .or. (iachar(substring%s(i:i)) == sep_code+2) ) then
-          if ( (iachar(substring%s(i-1:i-1)) == e_code).or.(iachar(substring%s(i-1:i-1)) == e_code-32) ) then
-            i = i + 1; cycle
-          else
-            exit
-          end if
-        end if
-        i = i + 1; cycle
-      end do
-    end if
-
-    if ( fmt_ == "z" ) then
-      block; integer :: num; character(len=i-l) :: hex_str_re; character(len=r-i-1) :: hex_str_im
-        hex_str_re = substring%s(l:i-1); hex_str_im = substring%s(i+1:r-1)
-        call cast(hex_str_re, into=num, fmt="z"); z_re = transfer(source=num, mold=z_re)
-        call cast(hex_str_im, into=num, fmt="z"); z_im = transfer(source=num, mold=z_im)
-        into = cmplx(z_re, z_im, kind=r32); return
-      end block
-    else
-      read(unit=substring%s(l:i-1), fmt=*, decimal=decimal) z_re
-      read(unit=substring%s(i:r-1), fmt=*, decimal=decimal) z_im
-      into = cmplx(z_re, z_im, kind=r32); return
+      into = (0e0_r32,0e0_r32)
+      call report_cast(READ_ERR, EMPTY_STR, stat)
     end if
   end procedure cast_string_to_c32
 
+
+#ifdef IOFL_HAS_R128
   module procedure cast_string_to_r128
-    character(len=1) :: fmt_
-    character(len=5) :: decimal
-
-    if ( substring%len() < 1 ) then
-      into = 0e0_r128; return
-    end if
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "e"
+    if ( allocated(substring%buf) ) then
+      call cast_char_to_r128(substring%buf(:substring%n), into, locale, fmt, stat)
     else
-      if ( any(REAL_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        into = 0e0_r128; return
-      end if
+      into = 0e0_r128
+      call report_cast(READ_ERR, EMPTY_STR, stat)
     end if
-
-    if ( fmt_ == "z" ) then
-      if ( substring%len() > 2 ) then
-        if ( substring%s(1:2) == "0x" ) then
-          read(unit=substring%s(3:), fmt="(z100)") into; return
-        else
-          read(unit=substring%s, fmt="(z100)") into; return
-        end if
-      else
-        read(unit=substring%s, fmt="(z100)") into; return
-      end if
-    end if
-
-    if ( .not. present(locale) ) then
-      decimal = "POINT"
-    else
-      if ( locale == "US" ) then
-        decimal = "POINT"
-      else if ( locale == "EU" ) then
-        decimal = "COMMA"
-      else
-        into = 0e0_r128; return
-      end if
-    end if
-
-    read(unit=substring%s, fmt=*, decimal=decimal) into
   end procedure cast_string_to_r128
+#endif
+
   module procedure cast_string_to_r64
-    character(len=1) :: fmt_
-    character(len=5) :: decimal
-
-    if ( substring%len() < 1 ) then
-      into = 0e0_r64; return
-    end if
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "e"
+    if ( allocated(substring%buf) ) then
+      call cast_char_to_r64(substring%buf(:substring%n), into, locale, fmt, stat)
     else
-      if ( any(REAL_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        into = 0e0_r64; return
-      end if
+      into = 0e0_r64
+      call report_cast(READ_ERR, EMPTY_STR, stat)
     end if
-
-    if ( fmt_ == "z" ) then
-      inline_cast: block; integer(i64) :: num; integer :: substring_len, r, l, i, digit; logical ::negative
-        substring_len = substring%len()
-
-        r = substring_len; do
-          if ( (iachar(substring%s(r:r)) > 47) .or. (r == 1) ) exit
-          r = r - 1; cycle
-        end do
-
-        l = 1; do
-          if ( (iachar(substring%s(l:l)) > 47) .or. (l == substring_len) ) then
-            if ( r-l+1 > 2 ) then
-              if ( iachar(substring%s(l+1:l+1)) == 120 ) l = l + 2
-            end if
-            exit
-          end if
-          l = l + 1; cycle
-        end do
-
-        if ( (r-l+1 == 16) .and. (iachar(substring%s(l:l)) > 55) ) then
-          negative = .true.
-        else
-          negative = .false.
-        end if
-
-        num = 0_i64
-
-        do i = 0, ubound(SIXTEENS_i64, dim=1)
-          digit = iachar(substring%s(r:r)) - 48
-
-          if ( digit > 16 ) then
-            if ( digit < 23 ) then
-              digit = digit - 7
-            else
-              digit = digit - 39
-            end if
-          end if
-
-          if ( r > l ) then
-            num = num + int(digit,i64)*SIXTEENS_i64(i); r = r - 1; cycle
-          else
-            if ( negative ) then
-              digit = digit - 8; num = num + int(digit,i64)*SIXTEENS_i64(i)
-              num = (num - 1_i64) - largest_i64
-              into = transfer(source=num, mold=into); return
-            else
-              num = num + int(digit,i64)*SIXTEENS_i64(i)
-              into = transfer(source=num, mold=into); return
-            end if
-          end if
-        end do
-      end block inline_cast
-    end if
-
-    if ( .not. present(locale) ) then
-      decimal = "POINT"
-    else
-      if ( locale == "US" ) then
-        decimal = "POINT"
-      else if ( locale == "EU" ) then
-        decimal = "COMMA"
-      else
-        into = 0e0_r64; return
-      end if
-    end if
-
-    read(unit=substring%s, fmt=*, decimal=decimal) into
   end procedure cast_string_to_r64
+
   module procedure cast_string_to_r32
-    character(len=1) :: fmt_
-    character(len=5) :: decimal
-
-    if ( substring%len() < 1 ) then
-      into = 0e0_r32; return
-    end if
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "e"
+    if ( allocated(substring%buf) ) then
+      call cast_char_to_r32(substring%buf(:substring%n), into, locale, fmt, stat)
     else
-      if ( any(REAL_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        into = 0e0_r32; return
-      end if
+      into = 0e0_r32
+      call report_cast(READ_ERR, EMPTY_STR, stat)
     end if
-
-    if ( fmt_ == "z" ) then
-      inline_cast: block; integer :: num, substring_len, r, l, i, digit; logical :: negative
-        substring_len = substring%len()
-
-        r = substring_len; do
-          if ( (iachar(substring%s(r:r)) > 47) .or. (r == 1) ) exit
-          r = r - 1; cycle
-        end do
-
-        l = 1; do
-          if ( (iachar(substring%s(l:l)) > 47) .or. (l == substring_len) ) then
-            if ( r-l+1 > 2 ) then
-              if ( iachar(substring%s(l+1:l+1)) == 120 ) l = l + 2
-            end if
-            exit
-          end if
-          l = l + 1; cycle
-        end do
-
-        if ( (r-l+1 == 8) .and. (iachar(substring%s(l:l)) > 55) ) then
-          negative = .true.
-        else
-          negative = .false.
-        end if
-
-        num = 0
-
-        do i = 0, ubound(SIXTEENS_i32, dim=1)
-          digit = iachar(substring%s(r:r)) - 48
-
-          if ( digit > 16 ) then
-            if ( digit < 23 ) then
-              digit = digit - 7
-            else
-              digit = digit - 39
-            end if
-          end if
-
-          if ( r > l ) then
-            num = num + digit*SIXTEENS_i32(i); r = r - 1; cycle
-          else
-            if ( negative ) then
-              digit = digit - 8; num = num + digit*SIXTEENS_i32(i)
-              num = (num - 1) - largest_i32
-              into = transfer(source=num, mold=into); return
-            else
-              num = num + digit*SIXTEENS_i32(i)
-              into = transfer(source=num, mold=into); return
-            end if
-          end if
-        end do
-      end block inline_cast
-    end if
-
-    if ( .not. present(locale) ) then
-      decimal = "POINT"
-    else
-      if ( locale == "US" ) then
-        decimal = "POINT"
-      else if ( locale == "EU" ) then
-        decimal = "COMMA"
-      else
-        into = 0e0_r32; return
-      end if
-    end if
-
-    read(unit=substring%s, fmt=*, decimal=decimal) into
   end procedure cast_string_to_r32
 
+
   module procedure cast_string_to_i64
-    character(len=1) :: fmt_
-    integer          :: substring_len, r, l, i, digit
-    logical          :: negative
-
-    substring_len=0; r=0; l=0; i=0; digit=0; negative=.false.
-
-    substring_len = substring%len()
-
-    if ( substring_len < 1 ) then
-      into = 0_i64; return
-    end if
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "i"
+    if ( allocated(substring%buf) ) then
+      call cast_char_to_i64(substring%buf(:substring%n), into, fmt, stat)
     else
-      if ( any(INT_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        into = 0_i64; return
-      end if
-    end if
-
-    if ( fmt_ == "i" ) then
-      r = substring_len; do
-        if ( (iachar(substring%s(r:r)) > 44) .or. (r == 1) ) exit
-        r = r - 1; cycle
-      end do
-
-      l = 1; do
-        if ( (iachar(substring%s(l:l)) > 44) .or. (l == substring_len) ) exit
-        l = l + 1; cycle
-      end do
-
-      if ( iachar(substring%s(l:l)) == 45 ) then
-        negative = .true.; l = l + 1
-      else
-        negative = .false.
-      end if
-
       into = 0_i64
-
-      do i = 0, ubound(TENS_i64, dim=1)
-        into = into + int(iachar(substring%s(r:r)) - 48,i64)*TENS_i64(i); if ( r == l ) exit
-        r = r - 1; cycle
-      end do
-
-      if ( .not. negative ) return
-
-      into = -into; return
-    else
-      r = substring_len; do
-        if ( (iachar(substring%s(r:r)) > 47) .or. (r == 1) ) exit
-        r = r - 1; cycle
-      end do
-
-      l = 1; do
-        if ( (iachar(substring%s(l:l)) > 47) .or. (l == substring_len) ) then
-          if ( r-l+1 > 2 ) then
-            if ( iachar(substring%s(l+1:l+1)) == 120 ) l = l + 2
-          end if
-          exit
-        end if
-        l = l + 1; cycle
-      end do
-
-      if ( (r-l+1 == 16) .and. (iachar(substring%s(l:l)) > 55) ) then
-        negative = .true.
-      else
-        negative = .false.
-      end if
-
-      into = 0_i64
-
-      do i = 0, ubound(SIXTEENS_i64, dim=1)
-        digit = iachar(substring%s(r:r)) - 48
-
-        if ( digit > 16 ) then
-          if ( digit < 23 ) then
-            digit = digit - 7
-          else
-            digit = digit - 39
-          end if
-        end if
-
-        if ( r > l ) then
-          into = into + int(digit,i64)*SIXTEENS_i64(i); r = r - 1; cycle
-        else
-          if ( negative ) then
-            digit = digit - 8; into = into + int(digit,i64)*SIXTEENS_i64(i)
-            into = (into - 1_i64) - largest_i64; return
-          else
-            into = into + int(digit,i64)*SIXTEENS_i64(i); return
-          end if
-        end if
-      end do
+      call report_cast(READ_ERR, EMPTY_STR, stat)
     end if
   end procedure cast_string_to_i64
+
   module procedure cast_string_to_i32
-    character(len=1) :: fmt_
-    integer          :: substring_len, r, l, i, digit
-    logical          :: negative
-
-    substring_len=0; r=0; l=0; i=0; digit=0; negative=.false.
-
-    substring_len = substring%len()
-
-    if ( substring_len < 1 ) then
-      into = 0_i32; return
-    end if
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "i"
+    if ( allocated(substring%buf) ) then
+      call cast_char_to_i32(substring%buf(:substring%n), into, fmt, stat)
     else
-      if ( any(INT_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        into = 0_i32; return
-      end if
-    end if
-
-    if ( fmt_ == "i" ) then
-      r = substring_len; do
-        if ( (iachar(substring%s(r:r)) > 44) .or. (r == 1) ) exit
-        r = r - 1; cycle
-      end do
-
-      l = 1; do
-        if ( (iachar(substring%s(l:l)) > 44) .or. (l == substring_len) ) exit
-        l = l + 1; cycle
-      end do
-
-      if ( iachar(substring%s(l:l)) == 45 ) then
-        negative = .true.; l = l + 1
-      else
-        negative = .false.
-      end if
-
       into = 0_i32
-
-      do i = 0, ubound(TENS_i32, dim=1)
-        into = into + (iachar(substring%s(r:r)) - 48)*TENS_i32(i); if ( r == l ) exit
-        r = r - 1; cycle
-      end do
-
-      if ( .not. negative ) return
-
-      into = -into; return
-    else
-      r = substring_len; do
-        if ( (iachar(substring%s(r:r)) > 47) .or. (r == 1) ) exit
-        r = r - 1; cycle
-      end do
-
-      l = 1; do
-        if ( (iachar(substring%s(l:l)) > 47) .or. (l == substring_len) ) then
-          if ( r-l+1 > 2 ) then
-            if ( iachar(substring%s(l+1:l+1)) == 120 ) l = l + 2
-          end if
-          exit
-        end if
-        l = l + 1; cycle
-      end do
-
-      if ( (r-l+1 == 8) .and. (iachar(substring%s(l:l)) > 55) ) then
-        negative = .true.
-      else
-        negative = .false.
-      end if
-
-      into = 0_i32
-
-      do i = 0, ubound(SIXTEENS_i32, dim=1)
-        digit = iachar(substring%s(r:r)) - 48
-
-        if ( digit > 16 ) then
-          if ( digit < 23 ) then
-            digit = digit - 7
-          else
-            digit = digit - 39
-          end if
-        end if
-
-        if ( r > l ) then
-          into = into + digit*SIXTEENS_i32(i); r = r - 1; cycle
-        else
-          if ( negative ) then
-            digit = digit - 8; into = into + digit*SIXTEENS_i32(i)
-            into = (into - 1) - largest_i32; return
-          else
-            into = into + digit*SIXTEENS_i32(i); return
-          end if
-        end if
-      end do
+      call report_cast(READ_ERR, EMPTY_STR, stat)
     end if
   end procedure cast_string_to_i32
+
   module procedure cast_string_to_i16
-    character(len=1) :: fmt_
-    integer          :: substring_len, r, l, i, digit
-    logical          :: negative
-
-    substring_len=0; r=0; l=0; i=0; digit=0; negative=.false.
-
-    substring_len = substring%len()
-
-    if ( substring_len < 1 ) then
-      into = 0_i16; return
-    end if
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "i"
+    if ( allocated(substring%buf) ) then
+      call cast_char_to_i16(substring%buf(:substring%n), into, fmt, stat)
     else
-      if ( any(INT_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        into = 0_i16; return
-      end if
-    end if
-
-    if ( fmt_ == "i" ) then
-      r = substring_len; do
-        if ( (iachar(substring%s(r:r)) > 44) .or. (r == 1) ) exit
-        r = r - 1; cycle
-      end do
-
-      l = 1; do
-        if ( (iachar(substring%s(l:l)) > 44) .or. (l == substring_len) ) exit
-        l = l + 1; cycle
-      end do
-
-      if ( iachar(substring%s(l:l)) == 45 ) then
-        negative = .true.; l = l + 1
-      else
-        negative = .false.
-      end if
-
       into = 0_i16
-
-      do i = 0, ubound(TENS_i16, dim=1)
-        into = into + int(iachar(substring%s(r:r)) - 48,i16)*TENS_i16(i); if ( r == l ) exit
-        r = r - 1; cycle
-      end do
-
-      if ( .not. negative ) return
-
-      into = -into; return
-    else
-      r = substring_len; do
-        if ( (iachar(substring%s(r:r)) > 47) .or. (r == 1) ) exit
-        r = r - 1; cycle
-      end do
-
-      l = 1; do
-        if ( (iachar(substring%s(l:l)) > 47) .or. (l == substring_len) ) then
-          if ( r-l+1 > 2 ) then
-            if ( iachar(substring%s(l+1:l+1)) == 120 ) l = l + 2
-          end if
-          exit
-        end if
-        l = l + 1; cycle
-      end do
-
-      if ( (r-l+1 == 4) .and. (iachar(substring%s(l:l)) > 55) ) then
-        negative = .true.
-      else
-        negative = .false.
-      end if
-
-      into = 0_i16
-
-      do i = 0, ubound(SIXTEENS_i16, dim=1)
-        digit = iachar(substring%s(r:r)) - 48
-
-        if ( digit > 16 ) then
-          if ( digit < 23 ) then
-            digit = digit - 7
-          else
-            digit = digit - 39
-          end if
-        end if
-
-        if ( r > l ) then
-          into = into + int(digit,i16)*SIXTEENS_i16(i); r = r - 1; cycle
-        else
-          if ( negative ) then
-            digit = digit - 8; into = into + int(digit,i16)*SIXTEENS_i16(i)
-            into = (into - 1_i16) - largest_i16; return
-          else
-            into = into + int(digit,i16)*SIXTEENS_i16(i); return
-          end if
-        end if
-      end do
+      call report_cast(READ_ERR, EMPTY_STR, stat)
     end if
   end procedure cast_string_to_i16
+
   module procedure cast_string_to_i8
-    character(len=1) :: fmt_
-    integer          :: substring_len, r, l, i, digit
-    logical          :: negative
-
-    substring_len=0; r=0; l=0; i=0; digit=0; negative=.false.
-
-    substring_len = substring%len()
-
-    if ( substring_len < 1 ) then
-      into = 0_i8; return
-    end if
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "i"
+    if ( allocated(substring%buf) ) then
+      call cast_char_to_i8(substring%buf(:substring%n), into, fmt, stat)
     else
-      if ( any(INT_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        into = 0_i8; return
-      end if
-    end if
-
-    if ( fmt_ == "i" ) then
-      r = substring_len; do
-        if ( (iachar(substring%s(r:r)) > 44) .or. (r == 1) ) exit
-        r = r - 1; cycle
-      end do
-
-      l = 1; do
-        if ( (iachar(substring%s(l:l)) > 44) .or. (l == substring_len) ) exit
-        l = l + 1; cycle
-      end do
-
-      if ( iachar(substring%s(l:l)) == 45 ) then
-        negative = .true.; l = l + 1
-      else
-        negative = .false.
-      end if
-
       into = 0_i8
-
-      do i = 0, ubound(TENS_i16, dim=1)
-        into = into + int(iachar(substring%s(r:r)) - 48,i16)*TENS_i16(i); if ( r == l ) exit
-        r = r - 1; cycle
-      end do
-
-      if ( .not. negative ) return
-
-      into = -into; return
-    else
-      r = substring_len; do
-        if ( (iachar(substring%s(r:r)) > 47) .or. (r == 1) ) exit
-        r = r - 1; cycle
-      end do
-
-      l = 1; do
-        if ( (iachar(substring%s(l:l)) > 47) .or. (l == substring_len) ) then
-          if ( r-l+1 > 2 ) then
-            if ( iachar(substring%s(l+1:l+1)) == 120 ) l = l + 2
-          end if
-          exit
-        end if
-        l = l + 1; cycle
-      end do
-
-      if ( (r-l+1 == 2) .and. (iachar(substring%s(l:l)) > 55) ) then
-        negative = .true.
-      else
-        negative = .false.
-      end if
-
-      into = 0_i8
-
-      do i = 0, ubound(SIXTEENS_i8, dim=1)
-        digit = iachar(substring%s(r:r)) - 48
-
-        if ( digit > 16 ) then
-          if ( digit < 23 ) then
-            digit = digit - 7
-          else
-            digit = digit - 39
-          end if
-        end if
-
-        if ( r > l ) then
-          into = into + int(digit,i8)*SIXTEENS_i8(i); r = r - 1; cycle
-        else
-          if ( negative ) then
-            digit = digit - 8; into = into + int(digit,i8)*SIXTEENS_i8(i)
-            into = (into - 1_i8) - largest_i8; return
-          else
-            into = into + int(digit,i8)*SIXTEENS_i8(i); return
-          end if
-        end if
-      end do
+      call report_cast(READ_ERR, EMPTY_STR, stat)
     end if
   end procedure cast_string_to_i8
 
+
+#ifdef IOFL_HAS_R128
   module procedure cast_char_to_c128
-    character(len=1)              :: fmt_
-    character(len=5)              :: decimal
-    character(len=:), allocatable :: im_
+    character(len=1) :: fmt_
+    character(len=5) :: decimal
+    integer          :: status
 
-    real(r128) :: z_re, z_im
-    integer    :: substring_len, l, r, i, sep_code, e_code, im_len
+    into = (0e0_r128,0e0_r128)
 
-    z_re=0e0_r128; z_im=0e0_r128; substring_len=0; l=0; r=0; i=0; sep_code=0; e_code=0; im_len=0
+    call cast_args(REAL_FMTS, "e", fmt, locale, fmt_, decimal, status)
+    if ( status == 0 ) call parse_complex_c128(substring, decimal, fmt_, im, into, status)
 
-    substring_len = len(substring)
-
-    if ( substring_len < 1 ) then
-      into = (0e0_r128,0e0_r128); return
-    end if
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "e"
-    else
-      if ( any(REAL_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        into = (0e0_r128,0e0_r128); return
-      end if
-    end if
-
-    if ( .not. present(im) ) then
-      im_ = EMPTY_STR
-    else
-      im_ = im
-    end if
-
-    if ( .not. present(locale) ) then
-      decimal = "POINT"
-    else
-      if ( locale == "US" ) then
-        decimal = "POINT"
-      else if ( locale == "EU" ) then
-        decimal = "COMMA"
-      else
-        into = (0e0_r128,0e0_r128); return
-      end if
-    end if
-
-    if ( len(im_) == 0 ) then
-      if ( decimal == "POINT" ) then
-        sep_code = iachar(COMMA)
-      else
-        sep_code = iachar(SEMICOLON)
-      end if
-
-      l = 1; do
-        if ( iachar(substring(l:l)) == 40 ) exit
-        l = l + 1; cycle
-      end do
-
-      r = substring_len; do
-        if ( iachar(substring(r:r)) == 41 ) exit
-        r = r - 1; cycle
-      end do
-
-      i = l+1; do
-        if ( iachar(substring(i:i)) == sep_code ) exit
-        i = i + 1; cycle
-      end do
-
-      if ( fmt_ == "z" ) then
-        if ( i-l-1 > 2 ) then
-          if ( substring(l+1:l+2) == "0x" ) then
-            read(unit=substring(l+3:i-1), fmt="(z100)") z_re
-          else
-            read(unit=substring(l+1:i-1), fmt="(z100)") z_re
-          end if
-        else
-          read(unit=substring(l+1:i-1), fmt="(z100)") z_re
-        end if
-
-        if ( r-i-1 > 2 ) then
-          if ( substring(i+1:i+2) == "0x" ) then
-            read(unit=substring(i+3:r-1), fmt="(z100)") z_im
-          else
-            read(unit=substring(i+1:r-1), fmt="(z100)") z_im
-          end if
-        else
-          read(unit=substring(i+1:r-1), fmt="(z100)") z_im
-        end if
-
-        into = cmplx(z_re, z_im, kind=r128); return
-      else
-        read(unit=substring(l+1:i-1), fmt=*, decimal=decimal) z_re
-        read(unit=substring(i+1:r-1), fmt=*, decimal=decimal) z_im
-        into = cmplx(z_re, z_im, kind=r128); return
-      end if
-    end if
-
-    sep_code = iachar("+"); e_code = iachar("e"); im_len = len(im_)
-
-    l = 1; do
-      if ( iachar(substring(l:l)) > sep_code ) exit
-      l = l + 1; cycle
-    end do
-
-    r = substring_len-im_len+1; do
-      if ( substring(r:r+im_len-1) == im_ ) exit
-      r = r - 1; cycle
-    end do
-
-    if ( fmt_ == "z" ) then
-      i = l+1; do
-        if ( iachar(substring(i:i)) == sep_code ) exit
-        i = i + 1; cycle
-      end do
-    else
-      i = l+1; do
-        if ( (iachar(substring(i:i)) == sep_code) .or. (iachar(substring(i:i)) == sep_code+2) ) then
-          if ( (iachar(substring(i-1:i-1)) == e_code).or.(iachar(substring(i-1:i-1)) == e_code-32) ) then
-            i = i + 1; cycle
-          else
-            exit
-          end if
-        end if
-        i = i + 1; cycle
-      end do
-    end if
-
-    if ( fmt_ == "z" ) then
-      if ( i-l > 2 ) then
-        if ( substring(l:l+1) == "0x" ) then
-          read(unit=substring(l+2:i-1), fmt="(z100)") z_re
-        else
-          read(unit=substring(l:i-1), fmt="(z100)") z_re
-        end if
-      else
-        read(unit=substring(l:i-1), fmt="(z100)") z_re
-      end if
-
-      if ( r-i-1 > 2 ) then
-        if ( substring(i+1:i+2) == "0x" ) then
-          read(unit=substring(i+3:r-1), fmt="(z100)") z_im
-        else
-          read(unit=substring(i+1:r-1), fmt="(z100)") z_im
-        end if
-      else
-        read(unit=substring(i+1:r-1), fmt="(z100)") z_im
-      end if
-
-      into = cmplx(z_re, z_im, kind=r128); return
-    else
-      read(unit=substring(l:i-1), fmt=*, decimal=decimal) z_re
-      read(unit=substring(i:r-1), fmt=*, decimal=decimal) z_im
-      into = cmplx(z_re, z_im, kind=r128); return
-    end if
+    call report_cast(status, substring, stat)
   end procedure cast_char_to_c128
+#endif
+
   module procedure cast_char_to_c64
-    character(len=1)              :: fmt_
-    character(len=5)              :: decimal
-    character(len=:), allocatable :: im_
+    character(len=1) :: fmt_
+    character(len=5) :: decimal
+    integer          :: status
 
-    real(r64) :: z_re, z_im
-    integer   :: substring_len, l, r, i, sep_code, e_code, im_len
+    into = (0e0_r64,0e0_r64)
 
-    z_re=0e0_r64; z_im=0e0_r64; substring_len=0; l=0; r=0; i=0; sep_code=0; e_code=0; im_len=0
+    call cast_args(REAL_FMTS, "e", fmt, locale, fmt_, decimal, status)
+    if ( status == 0 ) call parse_complex_c64(substring, decimal, fmt_, im, into, status)
 
-    substring_len = len(substring)
-
-    if ( substring_len < 1 ) then
-      into = (0e0_r64,0e0_r64); return
-    end if
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "e"
-    else
-      if ( any(REAL_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        into = (0e0_r64,0e0_r64); return
-      end if
-    end if
-
-    if ( .not. present(im) ) then
-      im_ = EMPTY_STR
-    else
-      im_ = im
-    end if
-
-    if ( .not. present(locale) ) then
-      decimal = "POINT"
-    else
-      if ( locale == "US" ) then
-        decimal = "POINT"
-      else if ( locale == "EU" ) then
-        decimal = "COMMA"
-      else
-        into = (0e0_r64,0e0_r64); return
-      end if
-    end if
-
-    if ( len(im_) == 0 ) then
-      if ( decimal == "POINT" ) then
-        sep_code = iachar(COMMA)
-      else
-        sep_code = iachar(SEMICOLON)
-      end if
-
-      l = 1; do
-        if ( iachar(substring(l:l)) == 40 ) exit
-        l = l + 1; cycle
-      end do
-
-      r = substring_len; do
-        if ( iachar(substring(r:r)) == 41 ) exit
-        r = r - 1; cycle
-      end do
-
-      i = l+1; do
-        if ( iachar(substring(i:i)) == sep_code ) exit
-        i = i + 1; cycle
-      end do
-
-      if ( fmt_ == "z" ) then
-        block; integer(i64) :: num; character(len=i-l-1) :: hex_str_re; character(len=r-i-1) :: hex_str_im
-          hex_str_re = substring(l+1:i-1); hex_str_im = substring(i+1:r-1)
-          call cast(hex_str_re, into=num, fmt="z"); z_re = transfer(source=num, mold=z_re)
-          call cast(hex_str_im, into=num, fmt="z"); z_im = transfer(source=num, mold=z_im)
-          into = cmplx(z_re, z_im, kind=r64); return
-        end block
-      else
-        read(unit=substring(l+1:i-1), fmt=*, decimal=decimal) z_re
-        read(unit=substring(i+1:r-1), fmt=*, decimal=decimal) z_im
-        into = cmplx(z_re, z_im, kind=r64); return
-      end if
-    end if
-
-    sep_code = iachar("+"); e_code = iachar("e"); im_len = len(im_)
-
-    l = 1; do
-      if ( iachar(substring(l:l)) > sep_code ) exit
-      l = l + 1; cycle
-    end do
-
-    r = substring_len-im_len+1; do
-      if ( substring(r:r+im_len-1) == im_ ) exit
-      r = r - 1; cycle
-    end do
-
-    if ( fmt_ == "z" ) then
-      i = l+1; do
-        if ( iachar(substring(i:i)) == sep_code ) exit
-        i = i + 1; cycle
-      end do
-    else
-      i = l+1; do
-        if ( (iachar(substring(i:i)) == sep_code) .or. (iachar(substring(i:i)) == sep_code+2) ) then
-          if ( (iachar(substring(i-1:i-1)) == e_code).or.(iachar(substring(i-1:i-1)) == e_code-32) ) then
-            i = i + 1; cycle
-          else
-            exit
-          end if
-        end if
-        i = i + 1; cycle
-      end do
-    end if
-
-    if ( fmt_ == "z" ) then
-      block; integer(i64) :: num; character(len=i-l) :: hex_str_re; character(len=r-i-1) :: hex_str_im
-        hex_str_re = substring(l:i-1); hex_str_im = substring(i+1:r-1)
-        call cast(hex_str_re, into=num, fmt="z"); z_re = transfer(source=num, mold=z_re)
-        call cast(hex_str_im, into=num, fmt="z"); z_im = transfer(source=num, mold=z_im)
-        into = cmplx(z_re, z_im, kind=r64); return
-      end block
-    else
-      read(unit=substring(l:i-1), fmt=*, decimal=decimal) z_re
-      read(unit=substring(i:r-1), fmt=*, decimal=decimal) z_im
-      into = cmplx(z_re, z_im, kind=r64); return
-    end if
+    call report_cast(status, substring, stat)
   end procedure cast_char_to_c64
+
   module procedure cast_char_to_c32
-    character(len=1)              :: fmt_
-    character(len=5)              :: decimal
-    character(len=:), allocatable :: im_
+    character(len=1) :: fmt_
+    character(len=5) :: decimal
+    integer          :: status
 
-    real(r32) :: z_re, z_im
-    integer   :: substring_len, l, r, i, sep_code, e_code, im_len
+    into = (0e0_r32,0e0_r32)
 
-    z_re=0e0_r32; z_im=0e0_r32; substring_len=0; l=0; r=0; i=0; sep_code=0; e_code=0; im_len=0
+    call cast_args(REAL_FMTS, "e", fmt, locale, fmt_, decimal, status)
+    if ( status == 0 ) call parse_complex_c32(substring, decimal, fmt_, im, into, status)
 
-    substring_len = len(substring)
-
-    if ( substring_len < 1 ) then
-      into = (0e0_r32,0e0_r32); return
-    end if
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "e"
-    else
-      if ( any(REAL_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        into = (0e0_r32,0e0_r32); return
-      end if
-    end if
-
-    if ( .not. present(im) ) then
-      im_ = EMPTY_STR
-    else
-      im_ = im
-    end if
-
-    if ( .not. present(locale) ) then
-      decimal = "POINT"
-    else
-      if ( locale == "US" ) then
-        decimal = "POINT"
-      else if ( locale == "EU" ) then
-        decimal = "COMMA"
-      else
-        into = (0e0_r32,0e0_r32); return
-      end if
-    end if
-
-    if ( len(im_) == 0 ) then
-      if ( decimal == "POINT" ) then
-        sep_code = iachar(COMMA)
-      else
-        sep_code = iachar(SEMICOLON)
-      end if
-
-      l = 1; do
-        if ( iachar(substring(l:l)) == 40 ) exit
-        l = l + 1; cycle
-      end do
-
-      r = substring_len; do
-        if ( iachar(substring(r:r)) == 41 ) exit
-        r = r - 1; cycle
-      end do
-
-      i = l+1; do
-        if ( iachar(substring(i:i)) == sep_code ) exit
-        i = i + 1; cycle
-      end do
-
-      if ( fmt_ == "z" ) then
-        block; integer :: num; character(len=i-l-1) :: hex_str_re; character(len=r-i-1) :: hex_str_im
-          hex_str_re = substring(l+1:i-1); hex_str_im = substring(i+1:r-1)
-          call cast(hex_str_re, into=num, fmt="z"); z_re = transfer(source=num, mold=z_re)
-          call cast(hex_str_im, into=num, fmt="z"); z_im = transfer(source=num, mold=z_im)
-          into = cmplx(z_re, z_im, kind=r32); return
-        end block
-      else
-        read(unit=substring(l+1:i-1), fmt=*, decimal=decimal) z_re
-        read(unit=substring(i+1:r-1), fmt=*, decimal=decimal) z_im
-        into = cmplx(z_re, z_im, kind=r32); return
-      end if
-    end if
-
-    sep_code = iachar("+"); e_code = iachar("e"); im_len = len(im_)
-
-    l = 1; do
-      if ( iachar(substring(l:l)) > sep_code ) exit
-      l = l + 1; cycle
-    end do
-
-    r = substring_len-im_len+1; do
-      if ( substring(r:r+im_len-1) == im_ ) exit
-      r = r - 1; cycle
-    end do
-
-    if ( fmt_ == "z" ) then
-      i = l+1; do
-        if ( iachar(substring(i:i)) == sep_code ) exit
-        i = i + 1; cycle
-      end do
-    else
-      i = l+1; do
-        if ( (iachar(substring(i:i)) == sep_code) .or. (iachar(substring(i:i)) == sep_code+2) ) then
-          if ( (iachar(substring(i-1:i-1)) == e_code).or.(iachar(substring(i-1:i-1)) == e_code-32) ) then
-            i = i + 1; cycle
-          else
-            exit
-          end if
-        end if
-        i = i + 1; cycle
-      end do
-    end if
-
-    if ( fmt_ == "z" ) then
-      block; integer :: num; character(len=i-l) :: hex_str_re; character(len=r-i-1) :: hex_str_im
-        hex_str_re = substring(l:i-1); hex_str_im = substring(i+1:r-1)
-        call cast(hex_str_re, into=num, fmt="z"); z_re = transfer(source=num, mold=z_re)
-        call cast(hex_str_im, into=num, fmt="z"); z_im = transfer(source=num, mold=z_im)
-        into = cmplx(z_re, z_im, kind=r32); return
-      end block
-    else
-      read(unit=substring(l:i-1), fmt=*, decimal=decimal) z_re
-      read(unit=substring(i:r-1), fmt=*, decimal=decimal) z_im
-      into = cmplx(z_re, z_im, kind=r32); return
-    end if
+    call report_cast(status, substring, stat)
   end procedure cast_char_to_c32
 
+
+#ifdef IOFL_HAS_R128
   module procedure cast_char_to_r128
     character(len=1) :: fmt_
     character(len=5) :: decimal
+    integer          :: status
 
-    if ( len(substring) < 1 ) then
-      into = 0e0_r128; return
-    end if
+    into = 0e0_r128
 
-    if ( .not. present(fmt) ) then
-      fmt_ = "e"
-    else
-      if ( any(REAL_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        into = 0e0_r128; return
-      end if
-    end if
+    call cast_args(REAL_FMTS, "e", fmt, locale, fmt_, decimal, status)
+    if ( status == 0 ) call parse_real_r128(substring, decimal, fmt_, into, status)
 
-    if ( fmt_ == "z" ) then
-      if ( len(substring) > 2 ) then
-        if ( substring(1:2) == "0x" ) then
-          read(unit=substring(3:), fmt="(z100)") into; return
-        else
-          read(unit=substring, fmt="(z100)") into; return
-        end if
-      else
-        read(unit=substring, fmt="(z100)") into; return
-      end if
-    end if
-
-    if ( .not. present(locale) ) then
-      decimal = "POINT"
-    else
-      if ( locale == "US" ) then
-        decimal = "POINT"
-      else if ( locale == "EU" ) then
-        decimal = "COMMA"
-      else
-        into = 0e0_r128; return
-      end if
-    end if
-
-    read(unit=substring, fmt=*, decimal=decimal) into
+    call report_cast(status, substring, stat)
   end procedure cast_char_to_r128
+#endif
+
   module procedure cast_char_to_r64
     character(len=1) :: fmt_
     character(len=5) :: decimal
-    integer(i64)     :: num
+    integer          :: status
 
-    if ( len(substring) < 1 ) then
-      into = 0e0_r64; return
-    end if
+    into = 0e0_r64
 
-    if ( .not. present(fmt) ) then
-      fmt_ = "e"
-    else
-      if ( any(REAL_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        into = 0e0_r64; return
-      end if
-    end if
+    call cast_args(REAL_FMTS, "e", fmt, locale, fmt_, decimal, status)
+    if ( status == 0 ) call parse_real_r64(substring, decimal, fmt_, into, status)
 
-    if ( fmt_ == "z" ) then
-      call cast(substring, into=num, fmt="z")
-      into = transfer(source=num, mold=into)
-      return
-    end if
-
-    if ( .not. present(locale) ) then
-      decimal = "POINT"
-    else
-      if ( locale == "US" ) then
-        decimal = "POINT"
-      else if ( locale == "EU" ) then
-        decimal = "COMMA"
-      else
-        into = 0e0_r64; return
-      end if
-    end if
-
-    read(unit=substring, fmt=*, decimal=decimal) into
+    call report_cast(status, substring, stat)
   end procedure cast_char_to_r64
+
   module procedure cast_char_to_r32
     character(len=1) :: fmt_
     character(len=5) :: decimal
-    integer(i32)     :: num
+    integer          :: status
 
-    if ( len(substring) < 1 ) then
-      into = 0e0_r32; return
-    end if
+    into = 0e0_r32
 
-    if ( .not. present(fmt) ) then
-      fmt_ = "e"
-    else
-      if ( any(REAL_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        into = 0e0_r32; return
-      end if
-    end if
+    call cast_args(REAL_FMTS, "e", fmt, locale, fmt_, decimal, status)
+    if ( status == 0 ) call parse_real_r32(substring, decimal, fmt_, into, status)
 
-    if ( fmt_ == "z" ) then
-      call cast(substring, into=num, fmt="z")
-      into = transfer(source=num, mold=into)
-      return
-    end if
-
-    if ( .not. present(locale) ) then
-      decimal = "POINT"
-    else
-      if ( locale == "US" ) then
-        decimal = "POINT"
-      else if ( locale == "EU" ) then
-        decimal = "COMMA"
-      else
-        into = 0e0_r32; return
-      end if
-    end if
-
-    read(unit=substring, fmt=*, decimal=decimal) into
+    call report_cast(status, substring, stat)
   end procedure cast_char_to_r32
+
 
   module procedure cast_char_to_i64
     character(len=1) :: fmt_
-    integer          :: substring_len, r, l, i, digit
-    logical          :: negative
+    character(len=5) :: decimal
+    integer          :: status
 
-    substring_len=0; r=0; l=0; i=0; digit=0; negative=.false.
+    into = 0_i64
 
-    substring_len = len(substring)
+    call cast_args(INT_FMTS, "i", fmt=fmt, fmt_=fmt_, decimal=decimal, status=status)
+    if ( status == 0 ) call parse_int_i64(substring, fmt_, into, status)
 
-    if ( substring_len < 1 ) then
-      into = 0_i64; return
-    end if
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "i"
-    else
-      if ( any(INT_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        into = 0_i64; return
-      end if
-    end if
-
-    if ( fmt_ == "i" ) then
-      r = substring_len; do
-        if ( (iachar(substring(r:r)) > 44) .or. (r == 1) ) exit
-        r = r - 1; cycle
-      end do
-
-      l = 1; do
-        if ( (iachar(substring(l:l)) > 44) .or. (l == substring_len) ) exit
-        l = l + 1; cycle
-      end do
-
-      if ( iachar(substring(l:l)) == 45 ) then
-        negative = .true.; l = l + 1
-      else
-        negative = .false.
-      end if
-
-      into = 0_i64
-
-      do i = 0, ubound(TENS_i64, dim=1)
-        into = into + int(iachar(substring(r:r)) - 48,i64)*TENS_i64(i); if ( r == l ) exit
-        r = r - 1; cycle
-      end do
-
-      if ( .not. negative ) return
-
-      into = -into; return
-    else
-      r = substring_len; do
-        if ( (iachar(substring(r:r)) > 47) .or. (r == 1) ) exit
-        r = r - 1; cycle
-      end do
-
-      l = 1; do
-        if ( (iachar(substring(l:l)) > 47) .or. (l == substring_len) ) then
-          if ( r-l+1 > 2 ) then
-            if ( iachar(substring(l+1:l+1)) == 120 ) l = l + 2
-          end if
-          exit
-        end if
-        l = l + 1; cycle
-      end do
-
-      if ( (r-l+1 == 16) .and. (iachar(substring(l:l)) > 55) ) then
-        negative = .true.
-      else
-        negative = .false.
-      end if
-
-      into = 0_i64
-
-      do i = 0, ubound(SIXTEENS_i64, dim=1)
-        digit = iachar(substring(r:r)) - 48
-
-        if ( digit > 16 ) then
-          if ( digit < 23 ) then
-            digit = digit - 7
-          else
-            digit = digit - 39
-          end if
-        end if
-
-        if ( r > l ) then
-          into = into + int(digit,i64)*SIXTEENS_i64(i); r = r - 1; cycle
-        else
-          if ( negative ) then
-            digit = digit - 8; into = into + int(digit,i64)*SIXTEENS_i64(i)
-            into = (into - 1_i64) - largest_i64; return
-          else
-            into = into + int(digit,i64)*SIXTEENS_i64(i); return
-          end if
-        end if
-      end do
-    end if
+    call report_cast(status, substring, stat)
   end procedure cast_char_to_i64
+
   module procedure cast_char_to_i32
     character(len=1) :: fmt_
-    integer          :: substring_len, r, l, i, digit
-    logical          :: negative
+    character(len=5) :: decimal
+    integer          :: status
 
-    substring_len=0; r=0; l=0; i=0; digit=0; negative=.false.
+    into = 0_i32
 
-    substring_len = len(substring)
+    call cast_args(INT_FMTS, "i", fmt=fmt, fmt_=fmt_, decimal=decimal, status=status)
+    if ( status == 0 ) call parse_int_i32(substring, fmt_, into, status)
 
-    if ( substring_len < 1 ) then
-      into = 0_i32; return
-    end if
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "i"
-    else
-      if ( any(INT_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        into = 0_i32; return
-      end if
-    end if
-
-    if ( fmt_ == "i" ) then
-      r = substring_len; do
-        if ( (iachar(substring(r:r)) > 44) .or. (r == 1) ) exit
-        r = r - 1; cycle
-      end do
-
-      l = 1; do
-        if ( (iachar(substring(l:l)) > 44) .or. (l == substring_len) ) exit
-        l = l + 1; cycle
-      end do
-
-      if ( iachar(substring(l:l)) == 45 ) then
-        negative = .true.; l = l + 1
-      else
-        negative = .false.
-      end if
-
-      into = 0_i32
-
-      do i = 0, ubound(TENS_i32, dim=1)
-        into = into + (iachar(substring(r:r)) - 48)*TENS_i32(i); if ( r == l ) exit
-        r = r - 1; cycle
-      end do
-
-      if ( .not. negative ) return
-
-      into = -into; return
-    else
-      r = substring_len; do
-        if ( (iachar(substring(r:r)) > 47) .or. (r == 1) ) exit
-        r = r - 1; cycle
-      end do
-
-      l = 1; do
-        if ( (iachar(substring(l:l)) > 47) .or. (l == substring_len) ) then
-          if ( r-l+1 > 2 ) then
-            if ( iachar(substring(l+1:l+1)) == 120 ) l = l + 2
-          end if
-          exit
-        end if
-        l = l + 1; cycle
-      end do
-
-      if ( (r-l+1 == 8) .and. (iachar(substring(l:l)) > 55) ) then
-        negative = .true.
-      else
-        negative = .false.
-      end if
-
-      into = 0_i32
-
-      do i = 0, ubound(SIXTEENS_i32, dim=1)
-        digit = iachar(substring(r:r)) - 48
-
-        if ( digit > 16 ) then
-          if ( digit < 23 ) then
-            digit = digit - 7
-          else
-            digit = digit - 39
-          end if
-        end if
-
-        if ( r > l ) then
-          into = into + digit*SIXTEENS_i32(i); r = r - 1; cycle
-        else
-          if ( negative ) then
-            digit = digit - 8; into = into + digit*SIXTEENS_i32(i)
-            into = (into - 1) - largest_i32; return
-          else
-            into = into + digit*SIXTEENS_i32(i); return
-          end if
-        end if
-      end do
-    end if
+    call report_cast(status, substring, stat)
   end procedure cast_char_to_i32
+
   module procedure cast_char_to_i16
     character(len=1) :: fmt_
-    integer          :: substring_len, r, l, i, digit
-    logical          :: negative
+    character(len=5) :: decimal
+    integer          :: status
 
-    substring_len=0; r=0; l=0; i=0; digit=0; negative=.false.
+    into = 0_i16
 
-    substring_len = len(substring)
+    call cast_args(INT_FMTS, "i", fmt=fmt, fmt_=fmt_, decimal=decimal, status=status)
+    if ( status == 0 ) call parse_int_i16(substring, fmt_, into, status)
 
-    if ( substring_len < 1 ) then
-      into = 0_i16; return
-    end if
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "i"
-    else
-      if ( any(INT_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        into = 0_i16; return
-      end if
-    end if
-
-    if ( fmt_ == "i" ) then
-      r = substring_len; do
-        if ( (iachar(substring(r:r)) > 44) .or. (r == 1) ) exit
-        r = r - 1; cycle
-      end do
-
-      l = 1; do
-        if ( (iachar(substring(l:l)) > 44) .or. (l == substring_len) ) exit
-        l = l + 1; cycle
-      end do
-
-      if ( iachar(substring(l:l)) == 45 ) then
-        negative = .true.; l = l + 1
-      else
-        negative = .false.
-      end if
-
-      into = 0_i16
-
-      do i = 0, ubound(TENS_i16, dim=1)
-        into = into + int(iachar(substring(r:r)) - 48,i16)*TENS_i16(i); if ( r == l ) exit
-        r = r - 1; cycle
-      end do
-
-      if ( .not. negative ) return
-
-      into = -into; return
-    else
-      r = substring_len; do
-        if ( (iachar(substring(r:r)) > 47) .or. (r == 1) ) exit
-        r = r - 1; cycle
-      end do
-
-      l = 1; do
-        if ( (iachar(substring(l:l)) > 47) .or. (l == substring_len) ) then
-          if ( r-l+1 > 2 ) then
-            if ( iachar(substring(l+1:l+1)) == 120 ) l = l + 2
-          end if
-          exit
-        end if
-        l = l + 1; cycle
-      end do
-
-      if ( (r-l+1 == 4) .and. (iachar(substring(l:l)) > 55) ) then
-        negative = .true.
-      else
-        negative = .false.
-      end if
-
-      into = 0_i16
-
-      do i = 0, ubound(SIXTEENS_i16, dim=1)
-        digit = iachar(substring(r:r)) - 48
-
-        if ( digit > 16 ) then
-          if ( digit < 23 ) then
-            digit = digit - 7
-          else
-            digit = digit - 39
-          end if
-        end if
-
-        if ( r > l ) then
-          into = into + int(digit,i16)*SIXTEENS_i16(i); r = r - 1; cycle
-        else
-          if ( negative ) then
-            digit = digit - 8; into = into + int(digit,i16)*SIXTEENS_i16(i)
-            into = (into - 1_i16) - largest_i16; return
-          else
-            into = into + int(digit,i16)*SIXTEENS_i16(i); return
-          end if
-        end if
-      end do
-    end if
+    call report_cast(status, substring, stat)
   end procedure cast_char_to_i16
+
   module procedure cast_char_to_i8
     character(len=1) :: fmt_
-    integer          :: substring_len, r, l, i, digit
-    logical          :: negative
+    character(len=5) :: decimal
+    integer          :: status
 
-    substring_len=0; r=0; l=0; i=0; digit=0; negative=.false.
+    into = 0_i8
 
-    substring_len = len(substring)
+    call cast_args(INT_FMTS, "i", fmt=fmt, fmt_=fmt_, decimal=decimal, status=status)
+    if ( status == 0 ) call parse_int_i8(substring, fmt_, into, status)
 
-    if ( substring_len < 1 ) then
-      into = 0_i8; return
+    call report_cast(status, substring, stat)
+  end procedure cast_char_to_i8
+
+
+  ! Number formatting, shared by `String`, `str` and `cast` ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  pure function int_fmt_of(fmt) result(fmt_)
+    character(len=*), intent(in), optional :: fmt
+    character(len=1)                       :: fmt_
+
+    fmt_ = "i"
+    if ( .not. present(fmt) ) return
+
+    if ( .not. any(INT_FMTS == fmt) ) error stop 'Invalid fmt "'//fmt//'": must be one of the INT_FMTS.'
+    fmt_ = fmt
+  end function int_fmt_of
+
+  pure function int_text(x, bits, fmt) result(text)
+    !-------------------------------------------------------------------------------------------------------------------
+    !! Returns the text of an integer of `bits` bits. A negative number in `fmt="z"` is its full bit pattern, and digits
+    !! are found from a negative number in `fmt="i"`, since the most negative integer has no positive counterpart.
+    !-------------------------------------------------------------------------------------------------------------------
+    integer(i64),     intent(in)  :: x
+    integer,          intent(in)  :: bits
+    character(len=*), intent(in)  :: fmt
+    character(len=:), allocatable :: text
+
+    character(len=20) :: buffer
+    integer(i64)      :: num
+    integer           :: i, digit, width
+
+    i = len(buffer)
+
+    if ( fmt == "i" ) then
+      num = x
+      if ( x > 0_i64 ) num = -x
+
+      do
+        buffer(i:i) = achar(iachar("0") - int(mod(num, 10_i64)))
+        num = num/10_i64
+        if ( num == 0_i64 ) exit
+        i = i - 1
+      end do
+
+      if ( x < 0_i64 ) then
+        i = i - 1; buffer(i:i) = "-"
+      end if
+    else
+      width = bits/4
+      num   = x
+      if ( bits < 64 ) num = ibits(x, 0, bits)
+
+      do digit = 0, width - 1
+        if ( (x >= 0_i64) .and. (digit > 0) .and. (ishft(num, -4*digit) == 0_i64) ) exit
+        buffer(i-digit:i-digit) = DIGITS_A(ibits(num, 4*digit, 4))
+      end do
+
+      i = i - digit + 1
+      i = i - 2; buffer(i:i+1) = "0x"
     end if
 
-    if ( .not. present(fmt) ) then
-      fmt_ = "i"
+    text = buffer(i:)
+  end function int_text
+
+  pure function decimal_of(locale) result(decimal)
+    character(len=*), intent(in), optional :: locale
+    character(len=5)                       :: decimal
+
+    decimal = "POINT"
+    if ( .not. present(locale) ) return
+
+    if ( locale == "EU" ) then
+      decimal = "COMMA"
+    else if ( locale /= "US" ) then
+      error stop 'Invalid locale "'//locale//'": must be one of the LOCALES.'
+    end if
+  end function decimal_of
+
+  pure function real_fmt_of(fmt) result(fmt_)
+    character(len=*), intent(in), optional :: fmt
+    character(len=1)                       :: fmt_
+
+    fmt_ = "e"
+    if ( .not. present(fmt) ) return
+
+    if ( .not. any(REAL_FMTS == fmt) ) error stop 'Invalid fmt "'//fmt//'": must be one of the REAL_FMTS.'
+    fmt_ = fmt
+  end function real_fmt_of
+
+  pure function zero_text(decimal, fmt, e_digits) result(text)
+    character(len=*), intent(in)  :: decimal, fmt
+    integer,          intent(in)  :: e_digits
+    character(len=:), allocatable :: text
+
+    character(len=1) :: mark
+
+    mark = POINT
+    if ( decimal == "COMMA" ) mark = COMMA
+
+    text = "0"//mark//"0"
+    if ( fmt == "e" ) text = text//"e+"//repeat("0", e_digits)
+  end function zero_text
+
+  pure function e_edit(width, d, e_digits) result(edit)
+    integer, intent(in) :: width, d, e_digits
+    character(len=32)   :: edit
+
+    write(unit=edit, fmt="(a,i0,a,i0,a,i0,a)") "(es", width, ".", d, "e", e_digits, ")"
+  end function e_edit
+
+  pure function f_edit(width, d) result(edit)
+    integer, intent(in) :: width, d
+    character(len=32)   :: edit
+
+    write(unit=edit, fmt="(a,i0,a,i0,a)") "(f", width, ".", d, ")"
+  end function f_edit
+
+  pure function small_f_text(e_text, d) result(text)
+    !-------------------------------------------------------------------------------------------------------------------
+    !! Returns `e_text`, a number in `es` form with a negative exponent, in `f` form with `d` decimals. Very small
+    !! numbers go through this because ifx writes only zeros past about 255 decimals with an `f` edit descriptor.
+    !-------------------------------------------------------------------------------------------------------------------
+    character(len=*), intent(in)  :: e_text
+    integer,          intent(in)  :: d
+    character(len=:), allocatable :: text
+
+    integer :: first, i_e, power, target_len
+
+    first = 1
+    if ( e_text(1:1) == "-" ) first = 2
+
+    i_e = index(e_text, "E")
+    read(unit=e_text(i_e+1:), fmt=*) power
+
+    text = e_text(:first-1)//"0"//e_text(first+1:first+1)//repeat("0", -power-1)// &
+           e_text(first:first)//e_text(first+2:i_e-1)
+
+    target_len = first + 1 + d
+
+    if ( len(text) < target_len ) then
+      text = text//repeat("0", target_len-len(text))
     else
-      if ( any(INT_FMTS == fmt) ) then
+      text = text(:target_len)
+    end if
+  end function small_f_text
+
+  pure function join_complex(re, im_part, negative, decimal, fmt, im) result(text)
+    character(len=*), intent(in)           :: re, im_part, decimal, fmt
+    logical,          intent(in)           :: negative
+    character(len=*), intent(in), optional :: im
+    character(len=:), allocatable          :: text
+
+    character(len=:), allocatable :: im_
+
+    im_ = EMPTY_STR
+    if ( present(im) ) im_ = im
+
+    if ( im_ == EMPTY_STR ) then
+      if ( decimal == "POINT" ) then
+        text = "("//re//COMMA//im_part//")"
+      else
+        text = "("//re//SEMICOLON//im_part//")"
+      end if
+    else if ( negative .and. (fmt /= "z") ) then
+      text = re//im_part//im_
+    else
+      text = re//"+"//im_part//im_
+    end if
+  end function join_complex
+
+#ifdef IOFL_HAS_R128
+  pure function real_text_r128(x, decimal, fmt, decimals) result(text)
+    real(r128),        intent(in)           :: x
+    character(len=*), intent(in)           :: decimal, fmt
+    integer,          intent(in), optional :: decimals
+    character(len=:), allocatable          :: text
+
+    integer, parameter :: E_DECIMALS = 35, E_DIGITS = 4, F_DIGITS = 36
+    integer            :: d, e, i, n
+
+    if ( fmt == "z" ) then
+      if ( (x == 0e0_r128) .and. (.not. ieee_is_negative(x)) ) then
+        text = "0x0"; return
+      end if
+
+      allocate( character(len=34) :: text )
+      text(1:2) = "0x"
+      write(unit=text(3:), fmt="(z32.32)") x
+
+      do i = 3, 34
+        if ( (text(i:i) >= "A") .and. (text(i:i) <= "F") ) text(i:i) = achar(iachar(text(i:i)) + 32)
+      end do
+
+      return
+    end if
+
+    if ( ieee_is_nan(x) ) then
+      text = "NaN"; return
+    else if ( .not. ieee_is_finite(x) ) then
+      text = "Inf"
+      if ( x < 0e0_r128 ) text = "-Inf"
+      return
+    end if
+
+    if ( x == 0e0_r128 ) then
+      text = zero_text(decimal, fmt, E_DIGITS); return
+    end if
+
+    if ( fmt == "e" ) then
+      d = E_DECIMALS
+      if ( present(decimals) ) d = max(min(decimals, E_DECIMALS), 0)
+
+      allocate( character(len=d+E_DIGITS+8) :: text )
+      write(unit=text, fmt=e_edit(len(text), d, E_DIGITS), decimal=decimal) x
+      text = trim(adjustl(text))
+
+      i = index(text, "E"); text(i:i) = "e"
+    else
+      if ( abs(x) >= 1e0_r128 ) then
+        e = 1 + floor(log10(abs(x)))
+      else
+        e = int(log10(abs(x)))
+      end if
+
+      d = max(F_DIGITS - e, 0)
+      if ( present(decimals) ) d = max(min(decimals, d), 0)
+
+      if ( d > MAX_F_DECIMALS ) then
+        n = max(d + floor(log10(abs(x))) + 1, 1)
+
+        allocate( character(len=n+E_DIGITS+8) :: text )
+        write(unit=text, fmt=e_edit(len(text), n-1, E_DIGITS), decimal=decimal) x
+        text = small_f_text(trim(adjustl(text)), d); return
+      end if
+
+      allocate( character(len=max(e,1)+d+4) :: text )
+      write(unit=text, fmt=f_edit(len(text), d), decimal=decimal) x
+      text = trim(adjustl(text))
+    end if
+  end function real_text_r128
+#endif
+
+  pure function real_text_r64(x, decimal, fmt, decimals) result(text)
+    real(r64),        intent(in)           :: x
+    character(len=*), intent(in)           :: decimal, fmt
+    integer,          intent(in), optional :: decimals
+    character(len=:), allocatable          :: text
+
+    integer, parameter :: E_DECIMALS = 17, E_DIGITS = 3, F_DIGITS = 18
+    integer            :: d, e, i, n
+
+    if ( fmt == "z" ) then
+      if ( (x == 0e0_r64) .and. (.not. ieee_is_negative(x)) ) then
+        text = "0x0"; return
+      end if
+
+      call cast(transfer(source=x, mold=1_i64), into=text, fmt="z"); return
+    end if
+
+    if ( ieee_is_nan(x) ) then
+      text = "NaN"; return
+    else if ( .not. ieee_is_finite(x) ) then
+      text = "Inf"
+      if ( x < 0e0_r64 ) text = "-Inf"
+      return
+    end if
+
+    if ( x == 0e0_r64 ) then
+      text = zero_text(decimal, fmt, E_DIGITS); return
+    end if
+
+    if ( fmt == "e" ) then
+      d = E_DECIMALS
+      if ( present(decimals) ) d = max(min(decimals, E_DECIMALS), 0)
+
+      allocate( character(len=d+E_DIGITS+8) :: text )
+      write(unit=text, fmt=e_edit(len(text), d, E_DIGITS), decimal=decimal) x
+      text = trim(adjustl(text))
+
+      i = index(text, "E"); text(i:i) = "e"
+    else
+      if ( abs(x) >= 1e0_r64 ) then
+        e = 1 + floor(log10(abs(x)))
+      else
+        e = int(log10(abs(x)))
+      end if
+
+      d = max(F_DIGITS - e, 0)
+      if ( present(decimals) ) d = max(min(decimals, d), 0)
+
+      if ( d > MAX_F_DECIMALS ) then
+        n = max(d + floor(log10(abs(x))) + 1, 1)
+
+        allocate( character(len=n+E_DIGITS+8) :: text )
+        write(unit=text, fmt=e_edit(len(text), n-1, E_DIGITS), decimal=decimal) x
+        text = small_f_text(trim(adjustl(text)), d); return
+      end if
+
+      allocate( character(len=max(e,1)+d+4) :: text )
+      write(unit=text, fmt=f_edit(len(text), d), decimal=decimal) x
+      text = trim(adjustl(text))
+    end if
+  end function real_text_r64
+
+  pure function real_text_r32(x, decimal, fmt, decimals) result(text)
+    real(r32),        intent(in)           :: x
+    character(len=*), intent(in)           :: decimal, fmt
+    integer,          intent(in), optional :: decimals
+    character(len=:), allocatable          :: text
+
+    integer, parameter :: E_DECIMALS = 8, E_DIGITS = 2, F_DIGITS = 9
+    integer            :: d, e, i, n
+
+    if ( fmt == "z" ) then
+      if ( (x == 0e0_r32) .and. (.not. ieee_is_negative(x)) ) then
+        text = "0x0"; return
+      end if
+
+      call cast(transfer(source=x, mold=1_i32), into=text, fmt="z"); return
+    end if
+
+    if ( ieee_is_nan(x) ) then
+      text = "NaN"; return
+    else if ( .not. ieee_is_finite(x) ) then
+      text = "Inf"
+      if ( x < 0e0_r32 ) text = "-Inf"
+      return
+    end if
+
+    if ( x == 0e0_r32 ) then
+      text = zero_text(decimal, fmt, E_DIGITS); return
+    end if
+
+    if ( fmt == "e" ) then
+      d = E_DECIMALS
+      if ( present(decimals) ) d = max(min(decimals, E_DECIMALS), 0)
+
+      allocate( character(len=d+E_DIGITS+8) :: text )
+      write(unit=text, fmt=e_edit(len(text), d, E_DIGITS), decimal=decimal) x
+      text = trim(adjustl(text))
+
+      i = index(text, "E"); text(i:i) = "e"
+    else
+      if ( abs(x) >= 1e0_r32 ) then
+        e = 1 + floor(log10(abs(x)))
+      else
+        e = int(log10(abs(x)))
+      end if
+
+      d = max(F_DIGITS - e, 0)
+      if ( present(decimals) ) d = max(min(decimals, d), 0)
+
+      if ( d > MAX_F_DECIMALS ) then
+        n = max(d + floor(log10(abs(x))) + 1, 1)
+
+        allocate( character(len=n+E_DIGITS+8) :: text )
+        write(unit=text, fmt=e_edit(len(text), n-1, E_DIGITS), decimal=decimal) x
+        text = small_f_text(trim(adjustl(text)), d); return
+      end if
+
+      allocate( character(len=max(e,1)+d+4) :: text )
+      write(unit=text, fmt=f_edit(len(text), d), decimal=decimal) x
+      text = trim(adjustl(text))
+    end if
+  end function real_text_r32
+
+#ifdef IOFL_HAS_R128
+  pure function complex_text_c128(x, decimal, fmt, decimals, im) result(text)
+    complex(r128),     intent(in)           :: x
+    character(len=*), intent(in)           :: decimal, fmt
+    integer,          intent(in), optional :: decimals
+    character(len=*), intent(in), optional :: im
+    character(len=:), allocatable          :: text
+
+    text = join_complex( real_text_r128(x%re, decimal, fmt, decimals), &
+                         real_text_r128(x%im, decimal, fmt, decimals), &
+                         x%im < 0e0_r128, decimal, fmt, im )
+  end function complex_text_c128
+#endif
+
+  pure function complex_text_c64(x, decimal, fmt, decimals, im) result(text)
+    complex(r64),     intent(in)           :: x
+    character(len=*), intent(in)           :: decimal, fmt
+    integer,          intent(in), optional :: decimals
+    character(len=*), intent(in), optional :: im
+    character(len=:), allocatable          :: text
+
+    text = join_complex( real_text_r64(x%re, decimal, fmt, decimals), &
+                         real_text_r64(x%im, decimal, fmt, decimals), &
+                         x%im < 0e0_r64, decimal, fmt, im )
+  end function complex_text_c64
+
+  pure function complex_text_c32(x, decimal, fmt, decimals, im) result(text)
+    complex(r32),     intent(in)           :: x
+    character(len=*), intent(in)           :: decimal, fmt
+    integer,          intent(in), optional :: decimals
+    character(len=*), intent(in), optional :: im
+    character(len=:), allocatable          :: text
+
+    text = join_complex( real_text_r32(x%re, decimal, fmt, decimals), &
+                         real_text_r32(x%im, decimal, fmt, decimals), &
+                         x%im < 0e0_r32, decimal, fmt, im )
+  end function complex_text_c32
+
+
+  ! Number parsing, shared by `cast` for `character` and `String` ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  pure subroutine cast_args(fmts, default_fmt, fmt, locale, fmt_, decimal, status)
+    character(len=*), intent(in)           :: fmts(:), default_fmt
+    character(len=*), intent(in), optional :: fmt, locale
+    character(len=1), intent(out)          :: fmt_
+    character(len=5), intent(out)          :: decimal
+    integer,          intent(out)          :: status
+
+    status = 0; fmt_ = default_fmt; decimal = "POINT"
+
+    if ( present(fmt) ) then
+      if ( any(fmts == fmt) ) then
         fmt_ = fmt
       else
-        into = 0_i8; return
+        status = ARG_ERR
       end if
     end if
 
-    if ( fmt_ == "i" ) then
-      r = substring_len; do
-        if ( (iachar(substring(r:r)) > 44) .or. (r == 1) ) exit
-        r = r - 1; cycle
-      end do
-
-      l = 1; do
-        if ( (iachar(substring(l:l)) > 44) .or. (l == substring_len) ) exit
-        l = l + 1; cycle
-      end do
-
-      if ( iachar(substring(l:l)) == 45 ) then
-        negative = .true.; l = l + 1
-      else
-        negative = .false.
+    if ( present(locale) ) then
+      if ( locale == "EU" ) then
+        decimal = "COMMA"
+      else if ( locale /= "US" ) then
+        status = ARG_ERR
       end if
-
-      into = 0_i8
-
-      do i = 0, ubound(TENS_i16, dim=1)
-        into = into + int(iachar(substring(r:r)) - 48,i16)*TENS_i16(i); if ( r == l ) exit
-        r = r - 1; cycle
-      end do
-
-      if ( .not. negative ) return
-
-      into = -into; return
-    else
-      r = substring_len; do
-        if ( (iachar(substring(r:r)) > 47) .or. (r == 1) ) exit
-        r = r - 1; cycle
-      end do
-
-      l = 1; do
-        if ( (iachar(substring(l:l)) > 47) .or. (l == substring_len) ) then
-          if ( r-l+1 > 2 ) then
-            if ( iachar(substring(l+1:l+1)) == 120 ) l = l + 2
-          end if
-          exit
-        end if
-        l = l + 1; cycle
-      end do
-
-      if ( (r-l+1 == 2) .and. (iachar(substring(l:l)) > 55) ) then
-        negative = .true.
-      else
-        negative = .false.
-      end if
-
-      into = 0_i8
-
-      do i = 0, ubound(SIXTEENS_i8, dim=1)
-        digit = iachar(substring(r:r)) - 48
-
-        if ( digit > 16 ) then
-          if ( digit < 23 ) then
-            digit = digit - 7
-          else
-            digit = digit - 39
-          end if
-        end if
-
-        if ( r > l ) then
-          into = into + int(digit,i8)*SIXTEENS_i8(i); r = r - 1; cycle
-        else
-          if ( negative ) then
-            digit = digit - 8; into = into + int(digit,i8)*SIXTEENS_i8(i)
-            into = (into - 1_i8) - largest_i8; return
-          else
-            into = into + int(digit,i8)*SIXTEENS_i8(i); return
-          end if
-        end if
-      end do
     end if
-  end procedure cast_char_to_i8
+  end subroutine cast_args
+
+  pure subroutine report_cast(status, text, stat)
+    integer,          intent(in)            :: status
+    character(len=*), intent(in)            :: text
+    integer,          intent(out), optional :: stat
+
+    if ( present(stat) ) then
+      stat = status
+    else if ( status == ARG_ERR ) then
+      error stop "Invalid fmt or locale in cast."
+    else if ( status /= 0 ) then
+      error stop 'Invalid number in cast: "'//text(:min(len(text),64))//'"'
+    end if
+  end subroutine report_cast
+
+  pure subroutine trimmed_bounds(text, l, r)
+    character(len=*), intent(in)  :: text
+    integer,          intent(out) :: l, r
+
+    l = 1; r = len(text)
+
+    do while ( l <= r )
+      if ( .not. is_space(text(l:l)) ) exit
+      l = l + 1
+    end do
+
+    do while ( r >= l )
+      if ( .not. is_space(text(r:r)) ) exit
+      r = r - 1
+    end do
+  end subroutine trimmed_bounds
+
+  elemental function is_space(c) result(blank)
+    character(len=1), intent(in) :: c
+    logical                      :: blank
+
+    blank = (c == SPACE) .or. (c == TAB) .or. (c == CR) .or. (c == LF)
+  end function is_space
+
+  elemental function digit_value(c, base) result(digit)
+    character(len=1), intent(in) :: c
+    integer,          intent(in) :: base
+    integer                      :: digit
+
+    digit = -1
+
+    if ( (c >= "0") .and. (c <= "9") ) then
+      digit = iachar(c) - iachar("0")
+    else if ( (base == 16) .and. (c >= "a") .and. (c <= "f") ) then
+      digit = iachar(c) - iachar("a") + 10
+    else if ( (base == 16) .and. (c >= "A") .and. (c <= "F") ) then
+      digit = iachar(c) - iachar("A") + 10
+    end if
+  end function digit_value
+
+  pure subroutine hex_bounds(text, max_digits, l, r, status)
+    !-------------------------------------------------------------------------------------------------------------------
+    !! Finds the hexadecimal digits in `text`, after any "0x". Leading zeros do not count toward `max_digits`.
+    !-------------------------------------------------------------------------------------------------------------------
+    character(len=*), intent(in)  :: text
+    integer,          intent(in)  :: max_digits
+    integer,          intent(out) :: l, r, status
+
+    integer :: i, significant
+
+    status = READ_ERR
+    call trimmed_bounds(text, l, r)
+
+    if ( r - l >= 1 ) then
+      if ( (text(l:l) == "0") .and. ((text(l+1:l+1) == "x") .or. (text(l+1:l+1) == "X")) ) l = l + 2
+    end if
+
+    if ( l > r ) return
+
+    significant = 0
+
+    do i = l, r
+      if ( digit_value(text(i:i), 16) < 0 ) return
+      if ( (significant > 0) .or. (text(i:i) /= "0") ) significant = significant + 1
+    end do
+
+    if ( significant <= max_digits ) status = 0
+  end subroutine hex_bounds
+
+  pure subroutine parse_integer(text, fmt, bits, value, status)
+    !-------------------------------------------------------------------------------------------------------------------
+    !! Parses an integer that fits in `bits` bits. Decimal digits accumulate as a negative number, since the most
+    !! negative integer has no positive counterpart. Hexadecimal digits are the bit pattern, so "0xff" is -1 for 8 bits.
+    !-------------------------------------------------------------------------------------------------------------------
+    character(len=*), intent(in)  :: text, fmt
+    integer,          intent(in)  :: bits
+    integer(i64),     intent(out) :: value
+    integer,          intent(out) :: status
+
+    integer(i64) :: smallest
+    integer      :: i, l, r, digit
+    logical      :: negative
+
+    value = 0_i64
+
+    if ( fmt == "z" ) then
+      call hex_bounds(text, bits/4, l, r, status)
+      if ( status /= 0 ) return
+
+      do i = l, r
+        value = ior(ishft(value, 4), int(digit_value(text(i:i), 16), i64))
+      end do
+
+      if ( bits < 64 ) then
+        if ( btest(value, bits-1) ) value = ior(value, ishft(-1_i64, bits))
+      end if
+
+      return
+    end if
+
+    status = READ_ERR
+    call trimmed_bounds(text, l, r)
+    if ( l > r ) return
+
+    negative = (text(l:l) == "-")
+    if ( negative .or. (text(l:l) == "+") ) l = l + 1
+    if ( l > r ) return
+
+    smallest = ishft(-1_i64, bits-1)
+
+    do i = l, r
+      digit = digit_value(text(i:i), 10)
+
+      if ( digit < 0 ) then
+        value = 0_i64; return
+      end if
+
+      if ( value < (smallest + digit)/10_i64 ) then
+        value = 0_i64; return
+      end if
+
+      value = 10_i64*value - digit
+    end do
+
+    if ( .not. negative ) then
+      if ( value == smallest ) then
+        value = 0_i64; return
+      end if
+
+      value = -value
+    end if
+
+    status = 0
+  end subroutine parse_integer
+
+  pure function lowercase(text) result(lower)
+    character(len=*), intent(in) :: text
+    character(len=len(text))     :: lower
+
+    integer :: i
+
+    do i = 1, len(text)
+      lower(i:i) = text(i:i)
+      if ( (text(i:i) >= "A") .and. (text(i:i) <= "Z") ) lower(i:i) = achar(iachar(text(i:i)) + 32)
+    end do
+  end function lowercase
+
+  pure function is_real_text(text, decimal) result(valid)
+    !-------------------------------------------------------------------------------------------------------------------
+    !! Checks for an optional sign, then NaN, Inf, Infinity, or digits with an optional decimal mark and exponent. This
+    !! comes before list-directed input, which would otherwise accept forms such as "2*3.5", "1 2", "7,junk" and "/".
+    !-------------------------------------------------------------------------------------------------------------------
+    character(len=*), intent(in) :: text, decimal
+    logical                      :: valid
+
+    character(len=1) :: mark
+    integer          :: i, n, digits
+
+    valid = .false.; n = len(text); i = 1
+    if ( n < 1 ) return
+
+    mark = POINT
+    if ( decimal == "COMMA" ) mark = COMMA
+
+    if ( (text(1:1) == "+") .or. (text(1:1) == "-") ) i = 2
+    if ( i > n ) return
+
+    if ( index("nNiI", text(i:i)) > 0 ) then
+      valid = (lowercase(text(i:)) == "nan") .or. (lowercase(text(i:)) == "inf") .or. &
+              (lowercase(text(i:)) == "infinity")
+      return
+    end if
+
+    digits = 0
+
+    do while ( i <= n )
+      if ( digit_value(text(i:i), 10) < 0 ) exit
+      digits = digits + 1; i = i + 1
+    end do
+
+    if ( i <= n ) then
+      if ( text(i:i) == mark ) then
+        i = i + 1
+
+        do while ( i <= n )
+          if ( digit_value(text(i:i), 10) < 0 ) exit
+          digits = digits + 1; i = i + 1
+        end do
+      end if
+    end if
+
+    if ( digits == 0 ) return
+
+    if ( i > n ) then
+      valid = .true.; return
+    end if
+
+    if ( index("eEdDqQ", text(i:i)) == 0 ) return
+    i = i + 1
+    if ( i > n ) return
+
+    if ( (text(i:i) == "+") .or. (text(i:i) == "-") ) i = i + 1
+    if ( i > n ) return
+
+    do while ( i <= n )
+      if ( digit_value(text(i:i), 10) < 0 ) return
+      i = i + 1
+    end do
+
+    valid = .true.
+  end function is_real_text
+
+  pure subroutine split_complex(text, decimal, fmt, im, re_l, re_r, im_l, im_r, status)
+    !-------------------------------------------------------------------------------------------------------------------
+    !! Finds the real and imaginary parts of `text`, either "(re,im)" or "(re;im)" by locale, or "re+imj" with `im` as
+    !! the imaginary unit. Only the bounds of the parts are checked here, as they are parsed as real numbers afterward.
+    !-------------------------------------------------------------------------------------------------------------------
+    character(len=*), intent(in)           :: text, decimal, fmt
+    character(len=*), intent(in), optional :: im
+    integer,          intent(out)          :: re_l, re_r, im_l, im_r, status
+
+    character(len=1) :: separator
+    integer          :: i, l, r, im_len
+
+    re_l = 1; re_r = 0; im_l = 1; im_r = 0
+    status = READ_ERR
+
+    call trimmed_bounds(text, l, r)
+    if ( l > r ) return
+
+    im_len = 0
+    if ( present(im) ) im_len = len(im)
+
+    if ( im_len == 0 ) then
+      if ( (r - l < 2) .or. (text(l:l) /= "(") .or. (text(r:r) /= ")") ) return
+
+      separator = COMMA
+      if ( decimal == "COMMA" ) separator = SEMICOLON
+
+      i = index(text(l+1:r-1), separator)
+      if ( i == 0 ) return
+
+      i = l + i
+      re_l = l + 1; re_r = i - 1; im_l = i + 1; im_r = r - 1
+      status = 0; return
+    end if
+
+    if ( r - l + 1 <= im_len ) return
+    if ( text(r-im_len+1:r) /= im ) return
+
+    r = r - im_len
+
+    do i = l + 1, r
+      if ( (text(i:i) /= "+") .and. ((fmt == "z") .or. (text(i:i) /= "-")) ) cycle
+      if ( (fmt /= "z") .and. (index("eEdDqQ", text(i-1:i-1)) /= 0) ) cycle
+
+      re_l = l; re_r = i - 1; im_r = r
+
+      im_l = i
+      if ( (fmt == "z") .or. (text(i:i) == "+") ) im_l = i + 1
+
+      status = 0; return
+    end do
+  end subroutine split_complex
+
+  pure subroutine parse_int_i64(text, fmt, value, status)
+    character(len=*), intent(in)  :: text, fmt
+    integer(i64),   intent(out) :: value
+    integer,          intent(out) :: status
+
+    integer(i64) :: number
+
+    call parse_integer(text, fmt, int(bit_size(value)), number, status)
+    value = int(number, i64)
+  end subroutine parse_int_i64
+
+  pure subroutine parse_int_i32(text, fmt, value, status)
+    character(len=*), intent(in)  :: text, fmt
+    integer(i32),   intent(out) :: value
+    integer,          intent(out) :: status
+
+    integer(i64) :: number
+
+    call parse_integer(text, fmt, int(bit_size(value)), number, status)
+    value = int(number, i32)
+  end subroutine parse_int_i32
+
+  pure subroutine parse_int_i16(text, fmt, value, status)
+    character(len=*), intent(in)  :: text, fmt
+    integer(i16),   intent(out) :: value
+    integer,          intent(out) :: status
+
+    integer(i64) :: number
+
+    call parse_integer(text, fmt, int(bit_size(value)), number, status)
+    value = int(number, i16)
+  end subroutine parse_int_i16
+
+  pure subroutine parse_int_i8(text, fmt, value, status)
+    character(len=*), intent(in)  :: text, fmt
+    integer(i8),   intent(out) :: value
+    integer,          intent(out) :: status
+
+    integer(i64) :: number
+
+    call parse_integer(text, fmt, int(bit_size(value)), number, status)
+    value = int(number, i8)
+  end subroutine parse_int_i8
+
+
+#ifdef IOFL_HAS_R128
+  pure subroutine parse_real_r128(text, decimal, fmt, value, status)
+    character(len=*), intent(in)  :: text, decimal, fmt
+    real(r128),        intent(out) :: value
+    integer,          intent(out) :: status
+
+    integer :: l, r
+
+    value = 0e0_r128
+
+    if ( fmt == "z" ) then
+      call hex_bounds(text, 32, l, r, status)
+      if ( status /= 0 ) return
+
+      read(unit=text(l:r), fmt="(z100)", iostat=status) value
+
+      if ( status /= 0 ) then
+        value = 0e0_r128; status = READ_ERR
+      end if
+
+      return
+    end if
+
+    call trimmed_bounds(text, l, r)
+
+    if ( .not. is_real_text(text(l:r), decimal) ) then
+      status = READ_ERR; return
+    end if
+
+    read(unit=text(l:r), fmt=*, decimal=decimal, iostat=status) value
+
+    if ( status /= 0 ) then
+      value = 0e0_r128; status = READ_ERR
+    end if
+  end subroutine parse_real_r128
+#endif
+
+  pure subroutine parse_real_r64(text, decimal, fmt, value, status)
+    character(len=*), intent(in)  :: text, decimal, fmt
+    real(r64),        intent(out) :: value
+    integer,          intent(out) :: status
+
+    integer(i64) :: number
+    integer :: l, r
+
+    value = 0e0_r64
+
+    if ( fmt == "z" ) then
+      call parse_int_i64(text, "z", number, status)
+      if ( status == 0 ) value = transfer(source=number, mold=value)
+
+      return
+    end if
+
+    call trimmed_bounds(text, l, r)
+
+    if ( .not. is_real_text(text(l:r), decimal) ) then
+      status = READ_ERR; return
+    end if
+
+    read(unit=text(l:r), fmt=*, decimal=decimal, iostat=status) value
+
+    if ( status /= 0 ) then
+      value = 0e0_r64; status = READ_ERR
+    end if
+  end subroutine parse_real_r64
+
+  pure subroutine parse_real_r32(text, decimal, fmt, value, status)
+    character(len=*), intent(in)  :: text, decimal, fmt
+    real(r32),        intent(out) :: value
+    integer,          intent(out) :: status
+
+    integer(i32) :: number
+    integer :: l, r
+
+    value = 0e0_r32
+
+    if ( fmt == "z" ) then
+      call parse_int_i32(text, "z", number, status)
+      if ( status == 0 ) value = transfer(source=number, mold=value)
+
+      return
+    end if
+
+    call trimmed_bounds(text, l, r)
+
+    if ( .not. is_real_text(text(l:r), decimal) ) then
+      status = READ_ERR; return
+    end if
+
+    read(unit=text(l:r), fmt=*, decimal=decimal, iostat=status) value
+
+    if ( status /= 0 ) then
+      value = 0e0_r32; status = READ_ERR
+    end if
+  end subroutine parse_real_r32
+
+#ifdef IOFL_HAS_R128
+  pure subroutine parse_complex_c128(text, decimal, fmt, im, value, status)
+    character(len=*), intent(in)           :: text, decimal, fmt
+    character(len=*), intent(in), optional :: im
+    complex(r128),     intent(out)          :: value
+    integer,          intent(out)          :: status
+
+    real(r128) :: re_part, im_part
+    integer   :: re_l, re_r, im_l, im_r
+
+    value = (0e0_r128,0e0_r128)
+
+    call split_complex(text, decimal, fmt, im, re_l, re_r, im_l, im_r, status)
+    if ( status /= 0 ) return
+
+    call parse_real_r128(text(re_l:re_r), decimal, fmt, re_part, status)
+    if ( status /= 0 ) return
+
+    call parse_real_r128(text(im_l:im_r), decimal, fmt, im_part, status)
+    if ( status == 0 ) value = cmplx(re_part, im_part, kind=r128)
+  end subroutine parse_complex_c128
+#endif
+
+  pure subroutine parse_complex_c64(text, decimal, fmt, im, value, status)
+    character(len=*), intent(in)           :: text, decimal, fmt
+    character(len=*), intent(in), optional :: im
+    complex(r64),     intent(out)          :: value
+    integer,          intent(out)          :: status
+
+    real(r64) :: re_part, im_part
+    integer   :: re_l, re_r, im_l, im_r
+
+    value = (0e0_r64,0e0_r64)
+
+    call split_complex(text, decimal, fmt, im, re_l, re_r, im_l, im_r, status)
+    if ( status /= 0 ) return
+
+    call parse_real_r64(text(re_l:re_r), decimal, fmt, re_part, status)
+    if ( status /= 0 ) return
+
+    call parse_real_r64(text(im_l:im_r), decimal, fmt, im_part, status)
+    if ( status == 0 ) value = cmplx(re_part, im_part, kind=r64)
+  end subroutine parse_complex_c64
+
+  pure subroutine parse_complex_c32(text, decimal, fmt, im, value, status)
+    character(len=*), intent(in)           :: text, decimal, fmt
+    character(len=*), intent(in), optional :: im
+    complex(r32),     intent(out)          :: value
+    integer,          intent(out)          :: status
+
+    real(r32) :: re_part, im_part
+    integer   :: re_l, re_r, im_l, im_r
+
+    value = (0e0_r32,0e0_r32)
+
+    call split_complex(text, decimal, fmt, im, re_l, re_r, im_l, im_r, status)
+    if ( status /= 0 ) return
+
+    call parse_real_r32(text(re_l:re_r), decimal, fmt, re_part, status)
+    if ( status /= 0 ) return
+
+    call parse_real_r32(text(im_l:im_r), decimal, fmt, im_part, status)
+    if ( status == 0 ) value = cmplx(re_part, im_part, kind=r32)
+  end subroutine parse_complex_c32
+
 end submodule internal_io

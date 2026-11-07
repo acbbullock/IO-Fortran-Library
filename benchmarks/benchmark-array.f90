@@ -1,6 +1,5 @@
 program main
   use, intrinsic :: iso_fortran_env, only: int64, rk=>real32, dp=>real64, compiler_version, compiler_options
-  use randoms, only: random_gauss
   use io_fortran_lib, only: String, cast, str, LF, operator(+)
   implicit none (type, external)
 
@@ -13,7 +12,7 @@ program main
   integer,  parameter   :: n = 15000
   real(rk), allocatable :: x(:,:), y(:,:)
 
-  allocate( x(n,n), cells(n,n) ); call random_gauss(x, 0e0_rk, 1.0_rk)
+  allocate( x(n,n), cells(n,n) ); call random_number(x); x = x - 0.5_rk
   write(*,"(a)")  "Compiler version: " + compiler_version()
   write(*,"(a)")  "Compiler options: " + compiler_options() + LF
 

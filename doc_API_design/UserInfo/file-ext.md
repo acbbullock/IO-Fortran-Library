@@ -3,8 +3,18 @@ title: File extensions
 author: Austin C Bullock
 ---
 
-When writing to file or reading from file, a valid file extension must
-be present.
+When writing to file or reading from file, the file's format comes from
+the `format` argument if present, and otherwise from its extension.
+Extensions are not case sensitive.
+
+The `format` argument may be `"text"` or `"binary"`, and allows a file to
+have any name, as in:
+
+```fortran
+call to_file(x, file="data.tsv", delim=TAB, format="text")
+```
+
+Without `format`, a valid file extension must be present.
 
 The following are valid text file extensions:
 

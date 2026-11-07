@@ -30,3 +30,10 @@ argument to the procedure.
 In all cases, the `errmsg` will contain more detailed information about
 the error that occured. If no error condition occurs, the `stat` will
 return `0` and the `errmsg` will be empty.
+
+If an error occurs and `stat` is not present, the program ends with
+`error stop`, showing the same message. Pass `stat` to handle an error
+in your own program.
+
+An invalid number in a file is a `READ_ERR`, and the `errmsg` gives the
+text and its row and column.

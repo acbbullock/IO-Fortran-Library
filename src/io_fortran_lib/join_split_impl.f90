@@ -18,15 +18,14 @@ submodule (io_fortran_lib) join_split
 
     temp_String = join(String(tokens), separator=separator_)
 
-    if ( temp_String%len() < 1 ) then
+    if ( temp_String%len64() < 1_i64 ) then
       new = EMPTY_STR
     else
-      new = temp_String%s
+      new = temp_String%buf(:temp_String%n)
     end if
   end procedure join_char
 
   module procedure join_string
-    type(String)                  :: token_pair(2)
     character(len=:), allocatable :: separator_
     integer(i64)                  :: num_tokens
 
@@ -34,9 +33,9 @@ submodule (io_fortran_lib) join_split
 
     if ( num_tokens == 1_i64 ) then
       if ( tokens(1_i64)%len64() < 1_i64 ) then
-        new%s = EMPTY_STR; return
+        new%buf = EMPTY_STR; new%n = len(new%buf, kind=i64); return
       else
-        new%s = tokens(1_i64)%s; return
+        new%buf = tokens(1_i64)%buf(:tokens(1_i64)%n); new%n = len(new%buf, kind=i64); return
       end if
     end if
 
@@ -46,12 +45,7 @@ submodule (io_fortran_lib) join_split
       separator_ = separator
     end if
 
-    if ( num_tokens > 500_i64 ) then
-      new = join(tokens=[ join(tokens(:num_tokens/2_i64), separator_), &
-                join(tokens(1_i64+num_tokens/2_i64:), separator_) ], separator=separator_)
-    else
-      call new%join_base(tokens=tokens, separator=separator_)
-    end if
+    call new%join_base(tokens=tokens, separator=separator_)
   end procedure join_string
 
   module procedure split_char
@@ -68,15 +62,18 @@ submodule (io_fortran_lib) join_split
 
   module procedure split_string
     character(len=:), allocatable :: separator_
-    integer(i64)                  :: substring_len, l, i
-    integer                       :: sep_len, num_seps, sep, token, current
+    integer(i64)                  :: substring_len, l, i, num_seps, token
+    integer                       :: sep_len, sep, current
 
     substring_len=0_i64; l=0_i64; i=0_i64; sep_len=0; num_seps=0; sep=0; token=0; current=0
 
     substring_len = substring%len64()
 
     if ( substring_len < 1_i64 ) then
-      allocate( tokens(1) ); tokens(1)%s = EMPTY_STR; return
+      allocate( tokens(1) )
+      tokens(1)%buf = EMPTY_STR
+      tokens(1)%n = len(tokens(1)%buf, kind=i64)
+      return
     end if
 
     if ( .not. present(separator) ) then
@@ -90,15 +87,18 @@ submodule (io_fortran_lib) join_split
     if ( sep_len == 0 ) then
       allocate( tokens(substring_len) )
       do i = 1_i64, substring_len
-        tokens(i)%s = substring%s(i:i)
+        tokens(i)%buf = substring%buf(i:i); tokens(i)%n = len(tokens(i)%buf, kind=i64)
       end do
       return
     end if
 
-    num_seps = substring%count(match=separator_)
+    num_seps = substring%count64(match=separator_)
 
     if ( num_seps == 0 ) then
-      allocate( tokens(1) ); tokens(1)%s = substring%s; return
+      allocate( tokens(1) )
+      tokens(1)%buf = substring%buf(:substring%n)
+      tokens(1)%n = len(tokens(1)%buf, kind=i64)
+      return
     end if
 
     allocate( tokens(num_seps + 1) )
@@ -106,23 +106,28 @@ submodule (io_fortran_lib) join_split
     sep = iachar(separator_(1:1))
 
     i = 1_i64; l = 1_i64; token = 1; positional_transfers: do
-      current = iachar(substring%s(i:i))
+      current = iachar(substring%buf(i:i))
 
       if ( current /= sep ) then
         i = i + 1_i64; cycle
       end if
 
       if ( sep_len == 1 ) then
-        tokens(token)%s = substring%s(l:i-1)
+        tokens(token)%buf = substring%buf(l:i-1); tokens(token)%n = len(tokens(token)%buf, kind=i64)
         if ( token == num_seps ) then
-          tokens(num_seps+1)%s = substring%s(i+1:); return
+          tokens(num_seps+1)%buf = substring%buf(i+1:substring%n)
+          tokens(num_seps+1)%n = len(tokens(num_seps+1)%buf, kind=i64)
+          return
         end if
         token = token + 1; i = i + 1_i64; l = i; cycle
       else
-        if ( substring%s(i:i+sep_len-1) == separator_ ) then
-          tokens(token)%s = substring%s(l:i-1)
+        if ( substring%buf(i:i+sep_len-1) == separator_ ) then
+          tokens(token)%buf = substring%buf(l:i-1)
+          tokens(token)%n = len(tokens(token)%buf, kind=i64)
           if ( token == num_seps ) then
-            tokens(num_seps+1)%s = substring%s(i+sep_len:); return
+            tokens(num_seps+1)%buf = substring%buf(i+sep_len:substring%n)
+            tokens(num_seps+1)%n = len(tokens(num_seps+1)%buf, kind=i64)
+            return
           end if
           token = token + 1; i = i + sep_len; l = i; cycle
         else

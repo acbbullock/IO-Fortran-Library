@@ -122,10 +122,8 @@ of `elemental` procedures.
 [read_file](../Ref/String-methods.html#read_file). The default
 `row_separator` is `LF`, and the default `column_separator` is `","`.
 
-@warning When reading files with `CRLF` line endings, be sure to
-specify `row_separator=CR//LF` or pre-process the file to `LF`. Trying
-to cast data with a hidden `CR` character may result in an I/O syntax
-error.
+@note Files with `CRLF` line endings are read correctly with the
+default `row_separator`.
 
 For a slightly more advanced example, consider the following program
 to read in and cast the data of mixed type contained in the example

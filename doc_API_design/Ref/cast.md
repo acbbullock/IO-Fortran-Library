@@ -54,11 +54,11 @@ For casting `substring` of type `character` (scalar only) or `String`
 (any rank) into a variable `into` of type `integer`:
 
 ```fortran
-call cast(substring, into [, fmt])
+call cast(substring, into [, fmt, stat])
 ```
 
 ```fortran
-call substring%cast(into [, fmt])
+call substring%cast(into [, fmt, stat])
 ```
 
 * `fmt` is `optional`, may be one of `INT_FMTS`
@@ -67,11 +67,11 @@ For casting `substring` of type `character` (scalar only) or `String`
 (any rank) into a variable `into` of type `real`:
 
 ```fortran
-call cast(substring, into [, locale, fmt])
+call cast(substring, into [, locale, fmt, stat])
 ```
 
 ```fortran
-call substring%cast(into [, locale, fmt])
+call substring%cast(into [, locale, fmt, stat])
 ```
 
 * `locale` is `optional`, may be one of `LOCALES`
@@ -81,11 +81,11 @@ For casting `substring` of type `character` (scalar only) or `String`
 (any rank) into a variable `into` of type `complex`:
 
 ```fortran
-call cast(substring, into [, locale, fmt, im])
+call cast(substring, into [, locale, fmt, im, stat])
 ```
 
 ```fortran
-call substring%cast(into [, locale, fmt, im])
+call substring%cast(into [, locale, fmt, im, stat])
 ```
 
 * `locale` is `optional`, may be one of `LOCALES`
@@ -122,9 +122,17 @@ Locales (default is `"US"`):
 LOCALES = [ "US", "EU" ]
 ```
 
+Status: when casting a string to a number, `stat` is an `optional`
+`integer`, of the same rank and shape as `into` for an array. It returns
+`0` on success, `READ_ERR` if the text is not a valid number of the kind
+of `into`, including one out of range, and `ARG_ERR` for an invalid `fmt`
+or `locale`. On an error, the corresponding element of `into` is zero. If
+`stat` is not present, an error ends the program with `error stop`.
+
 Decimals: `decimals` specifies the number of digits on the rhs of the
 radix point, with a default determined internally based on the
-[text format](../UserInfo/text-fmts.html) and precision.
+[text format](../UserInfo/text-fmts.html) and precision. The value is
+rounded to that number of digits.
 
 Imaginary unit: `im` specifies the form of a complex number. If not
 present, `complex` numbers will be assumed to be written as ordered

@@ -52,6 +52,9 @@ up to a few `epsilon` in as many as a fifth of transfers. However, the
 will never produce losses as it involves direct bit transfer (no
 base-10 ⇆ base-2 conversions are involved).
 
+@note With the `"e"` and `"f"` formats, a NaN is written as `NaN`, and
+infinities as `Inf` and `-Inf`. These forms read back correctly.
+
 @note For negative integers, the hexadecimal format `"z"` produces
 ambiguities across storage sizes. For instance, the integer `0xff`
 equates to `-1` in `int8` storage but equates to `255` in larger
