@@ -223,7 +223,7 @@ contains
 
     do i = 1, size(cases)
       log = dir//"regression_"//trim(cases(i)%name)//".log"
-      command = '"'//self//'" '//trim(cases(i)%name)//' > "'//log//'" 2>&1'
+      command = shell_word(self)//" "//trim(cases(i)%name)//" > "//shell_word(log)//" 2>&1"
 
       status = -1; cmdstat = 0
       call execute_command_line(command, wait=.true., exitstat=status, cmdstat=cmdstat)
@@ -262,6 +262,30 @@ contains
 
     if ( n_unexpected > 0 ) error stop "regression-test: unexpected results."
   end subroutine run_all_cases
+
+  function shell_word(path) result(word)
+    !-------------------------------------------------------------------------------------------------------------------
+    !! Returns `path` for a command line. It is quoted only if it holds a space, since cmd.exe drops the first and last
+    !! quotes of a command that starts with one. On Windows, slashes become backslashes.
+    !-------------------------------------------------------------------------------------------------------------------
+    character(len=*), intent(in)  :: path
+    character(len=:), allocatable :: word
+
+    character(len=16) :: os
+    integer           :: i, status
+
+    word = path
+
+    call get_environment_variable("OS", os, status=status)
+
+    if ( (status == 0) .and. (os == "Windows_NT") ) then
+      do i = 1, len(word)
+        if ( word(i:i) == "/" ) word(i:i) = achar(92)
+      end do
+    end if
+
+    if ( index(word, " ") > 0 ) word = '"'//word//'"'
+  end function shell_word
 
   subroutine print_file(file)
     character(len=*), intent(in) :: file

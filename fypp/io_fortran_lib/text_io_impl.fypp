@@ -705,9 +705,11 @@ submodule (io_fortran_lib) text_io
 
   pure function is_blank(cells) result(blank)
     type(String), intent(in) :: cells(:,:)
-    logical                  :: blank(size(cells,1),size(cells,2))
+    logical, allocatable     :: blank(:,:)
 
     integer :: row, col
+
+    allocate( blank(size(cells, dim=1),size(cells, dim=2)) )
 
     do col = 1, size(cells, dim=2)
       do row = 1, size(cells, dim=1)

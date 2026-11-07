@@ -1,6 +1,6 @@
 ---
 project: IO-Fortran-Library
-version: 1.3.1
+version: 2.0.0
 summary: A portable, standard I/O library for Modern Fortran
 author: Austin C Bullock
 github: https://github.com/acbbullock
@@ -11,6 +11,10 @@ print_creation_date: true
 md_extensions: markdown.extensions.toc
 page_dir: doc_API_design
 externalize: true
+preprocess: true
+fpp_extensions: f90
+include: ./include
+macro: IOFL_HAS_R128
 ---
 
 [TOC]
@@ -44,8 +48,8 @@ string data).
 
 @note The module is fully self-contained, with no external
 dependencies, and is written to be portable and compliant to the
-Fortran 2018 standard such that no special extensions or compiler
-options should be required. The public interfaces accept all intrinsic
+Fortran 2018 standard such that no special extensions should be
+required. The public interfaces accept all intrinsic
 numeric types (`integer`, `real`, and `complex`) and all standard kinds
 provided by the intrinsic `iso_fortran_env` module (`int8`, `int16`,
 `int32`, `int64`, `real32`, `real64`, and `real128`). All array-based
@@ -60,7 +64,7 @@ units to access the routines:
 
 ```toml
 [dependencies]
-IO-Fortran-Library = { git="https://github.com/acbbullock/IO-Fortran-Library", branch="main" }
+IO-Fortran-Library = { git="https://github.com/acbbullock/IO-Fortran-Library", tag="v2.0.0" }
 ```
 
 See the [important user information](page/UserInfo/index.html) and

@@ -40,6 +40,32 @@ jobs:
       - name: Run tests
         run: fpm test --compiler ${{ matrix.toolchain.fpm }} --flag "${{ matrix.toolchain.flags }} ${{ matrix.kinds }}"
 
+  platforms:
+    name: ${{ matrix.os }} ${{ matrix.compiler }} ${{ matrix.version }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Apple Silicon has no REAL(16), so this also tests building without the real128 procedures.
+          - { os: macos-15, compiler: gcc, version: "16", flags: "-std=f2018 -O2 -g -fbacktrace" }
+          - { os: macos-15, compiler: flang, version: "23", flags: "-O2 -cpp" }
+          - { os: macos-15-intel, compiler: gcc, version: "15", flags: "-std=f2018 -O2 -g -fbacktrace" }
+          - { os: windows-2025, compiler: gcc, version: "16", flags: "-std=f2018 -O2 -g -fbacktrace" }
+          - { os: windows-2025, compiler: intel, version: "2026.1", flags: "" }
+    steps:
+      - uses: actions/checkout@v7
+      - uses: fortran-lang/setup-fortran@v1
+        id: setup-fortran
+        with:
+          compiler: ${{ matrix.compiler }}
+          version: ${{ matrix.version }}
+      - uses: fortran-lang/setup-fpm@v10
+        with:
+          fpm-version: v0.12.0
+      - name: Run tests
+        run: fpm test --compiler ${{ steps.setup-fortran.outputs.fc }} --flag "${{ matrix.flags }} -D R8 -D I4"
+
   checks:
     name: gfortran 16 runtime checks and sanitizers
     runs-on: ubuntu-24.04

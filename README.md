@@ -18,7 +18,7 @@ module in your program units to access the routines:
 
 ```toml
 [dependencies]
-IO-Fortran-Library = { git="https://github.com/acbbullock/IO-Fortran-Library", branch="main" }
+IO-Fortran-Library = { git="https://github.com/acbbullock/IO-Fortran-Library", tag="v2.0.0" }
 ```
 
 The module is fully self-contained, with no external dependencies, and
@@ -31,8 +31,9 @@ All array-based routines additionally support up to rank 15.
 
 ## Compilers
 
-The library is tested with `gfortran`, `ifx` and `flang`. See the
-[CI workflow](.github/workflows/ci.yml) for the versions.
+The library is tested with `gfortran` 13 to 16, `ifx` 2025.3 and 2026, and
+`flang` 23 on Linux, and with `gfortran`, `flang` and `ifx` on macOS and
+Windows. See the [CI workflow](.github/workflows/ci.yml) for details.
 
 The `real128` routines are enabled on `ifx`, and on `gfortran` targets with
 `REAL(16)`. They are left out on other compilers, including `flang`. To

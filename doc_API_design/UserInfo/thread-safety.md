@@ -4,7 +4,9 @@ author: Austin C Bullock
 ---
 
 The IO-Fortran-Library promotes thread-safety by explicitly enforcing
-recursion with the `recursive` keyword on all module procedures.
+recursion with the `recursive` keyword on all module procedures, and it
+has no module variables that change while a program runs: its defaults
+are constants.
 However, performing I/O in parallel regions has the tendency to result
 in unexpected behavior. For instance, inspect the output of the
 following program with multiple coarray images:
