@@ -5,8 +5,8 @@ program regression_test
   !! Many of these bugs crash the process, so every case runs in a child process: with no arguments this program runs
   !! each case by launching itself with the case name, and judges the case by the exit status.
   !!
-  !! A case marked `KNOWN_BUG` is an expected failure. If it starts passing the suite fails, so that the marker is removed
-  !! in the same change as the fix. A case marked `UNDEFINED` is a known bug with undefined behavior, such as an
+  !! A case marked `KNOWN_BUG` is an expected failure. If it starts passing the suite fails, so that the marker is
+  !! removed in the same change as the fix. A case marked `UNDEFINED` is a known bug with undefined behavior, such as an
   !! out-of-bounds access, which can appear to work at some optimization levels, so either result is accepted. Replace
   !! `UNDEFINED` with `FIXED` in the change that fixes the bug. Child output is kept in
   !! `test/output/regression_<case>.log`.
@@ -15,7 +15,8 @@ program regression_test
   !! through must not go unnoticed. That behavior is planned for version 2.0.
   !---------------------------------------------------------------------------------------------------------------------
   use, intrinsic :: iso_fortran_env, only: real32, real64, int8, int32, compiler_version, compiler_options
-  use, intrinsic :: ieee_arithmetic, only: ieee_value, ieee_quiet_nan, ieee_positive_inf, ieee_is_nan
+  use, intrinsic :: ieee_arithmetic, only: ieee_value, ieee_quiet_nan, ieee_positive_inf, ieee_is_nan, &
+                                             ieee_is_negative
   use io_fortran_lib, only: String, cast, str, join, echo, aprint, to_file, from_file, operator(==), operator(**), &
                             operator(+), LF, CR, TAB
   implicit none (type, external)
@@ -54,8 +55,8 @@ program regression_test
     test_case("cast_real_two_values",        STOPS,   KNOWN_BUG), &
     test_case("cast_real_trailing_junk",     STOPS,   KNOWN_BUG), &
     test_case("cast_real_slash",             STOPS,   KNOWN_BUG), &
-    test_case("str_invalid_fmt",             STOPS,   KNOWN_BUG), &
-    test_case("str_invalid_locale",          STOPS,   KNOWN_BUG), &
+    test_case("str_invalid_fmt",             STOPS,   FIXED),     &
+    test_case("str_invalid_locale",          STOPS,   FIXED),     &
     ! Errors must be reported through `stat`, and absent optional arguments must not be touched.
     test_case("from_file_bad_number_stat",   RETURNS, KNOWN_BUG), &
     test_case("to_file_scalar_binary",       RETURNS, UNDEFINED), &
@@ -70,27 +71,32 @@ program regression_test
     test_case("write_unallocated_cell",      RETURNS, UNDEFINED), &
     test_case("csv_quotes_separator",        RETURNS, KNOWN_BUG), &
     ! Number formatting: exact zero with a comma decimal.
-    test_case("eu_zero_str_real",            RETURNS, KNOWN_BUG), &
-    test_case("eu_zero_str_complex",         RETURNS, KNOWN_BUG), &
-    test_case("eu_zero_cast_round_trip",     RETURNS, KNOWN_BUG), &
-    test_case("eu_zero_file_round_trip",     RETURNS, KNOWN_BUG), &
+    test_case("eu_zero_str_real",            RETURNS, FIXED),     &
+    test_case("eu_zero_str_complex",         RETURNS, FIXED),     &
+    test_case("eu_zero_cast_round_trip",     RETURNS, FIXED),     &
+    test_case("eu_zero_file_round_trip",     RETURNS, FIXED),     &
     test_case("us_zero_file_round_trip",     RETURNS, FIXED),     &
     ! Number formatting: special and extreme values.
-    test_case("nan_str",                     RETURNS, KNOWN_BUG), &
-    test_case("nan_str_fmt_f",               RETURNS, UNDEFINED), &
-    test_case("nan_file_round_trip",         RETURNS, KNOWN_BUG), &
-    test_case("inf_str_decimals",            RETURNS, UNDEFINED), &
-    test_case("inf_str_fmt_f",               RETURNS, UNDEFINED), &
-    test_case("huge_str_fmt_f",              RETURNS, KNOWN_BUG), &
-    test_case("large_str_fmt_f",             RETURNS, KNOWN_BUG), &
-    test_case("negative_zero_hex",           RETURNS, KNOWN_BUG), &
+    test_case("nan_str",                     RETURNS, FIXED),     &
+    test_case("nan_str_fmt_f",               RETURNS, FIXED),     &
+    test_case("nan_file_round_trip",         RETURNS, FIXED),     &
+    test_case("inf_str_decimals",            RETURNS, FIXED),     &
+    test_case("inf_str_fmt_f",               RETURNS, FIXED),     &
+    test_case("huge_str_fmt_f",              RETURNS, FIXED),     &
+    test_case("large_str_fmt_f",             RETURNS, FIXED),     &
+    test_case("negative_zero_hex",           RETURNS, FIXED),     &
+    test_case("tiny_str_fmt_f",             RETURNS, FIXED),     &
+    test_case("decimals_round_fmt_e",       RETURNS, FIXED),     &
+    test_case("decimals_round_fmt_f",       RETURNS, FIXED),     &
+    test_case("digits_same_for_negative",   RETURNS, FIXED),     &
+    test_case("complex_zero_part_fmt_f",    RETURNS, FIXED),     &
     ! The String type and operators.
     test_case("unallocated_equals_empty",    RETURNS, KNOWN_BUG), &
     test_case("count_empty_consistent",      RETURNS, KNOWN_BUG), &
     test_case("join_all_empty",              RETURNS, KNOWN_BUG), &
     test_case("trim_whitespace",             RETURNS, KNOWN_BUG), &
     test_case("echo_blank_line",             RETURNS, KNOWN_BUG), &
-    test_case("repeat_negative",             RETURNS, KNOWN_BUG), &
+    test_case("repeat_negative",             RETURNS, UNDEFINED), &
     ! Behavior that works and has to stay that way.
     test_case("repeat_scalar",               RETURNS, FIXED),     &
     test_case("repeat_array",                RETURNS, FIXED),     &
@@ -131,7 +137,7 @@ contains
       end if
 
       if ( cases(i)%expected == STOPS ) then
-        met = (status == 1) .or. (status == 128)                       ! `error stop`: 1 on gfortran and flang, 128 on ifx
+        met = (status == 1) .or. (status == 128)                     ! `error stop`: 1 on gfortran and flang, 128 on ifx
       else
         met = (status == 0)
       end if
@@ -319,7 +325,29 @@ contains
         call check(abs(y/1e120_real64 - 1.0_real64) < 1e-10_real64, "The value should be written in full.")
       case ("negative_zero_hex")
         call cast(str(-0.0_real64, fmt="z"), into=y, fmt="z")
-        call check(sign(1.0_real64, y) < 0.0_real64, "The sign of zero should survive a hexadecimal round trip.")
+        call check(ieee_is_negative(y), "The sign of zero should survive a hexadecimal round trip.")
+
+      case ("tiny_str_fmt_f")
+        call read_back(str(1e-300_real64, fmt="f"), y)
+        call check(abs(y/1e-300_real64 - 1.0_real64) < 1e-10_real64, "The value should be written in full.")
+        call read_back(str(-1e-300_real64, fmt="f"), y)
+        call check(abs(y/1e-300_real64 + 1.0_real64) < 1e-10_real64, "The sign should be kept.")
+        call check(index(str(1e-300_real64, fmt="f", locale="EU"), ",") == 2, "A comma locale should write a comma.")
+        call check(len(str(1e-300_real64, fmt="f", decimals=250)) == 252, "Decimals should set the length.")
+      case ("decimals_round_fmt_e")
+        call check(str(1.999_real64, fmt="e", decimals=2) == "2.00e+000", "Decimals should round.")
+        call check(str(9.999_real64, fmt="e", decimals=2) == "1.00e+001", "Rounding should carry into the exponent.")
+        call check(str(1.994_real64, fmt="e", decimals=2) == "1.99e+000", "Decimals should round down when closer.")
+      case ("decimals_round_fmt_f")
+        call check(str(0.999_real64, fmt="f", decimals=2) == "1.00", "Decimals should round.")
+        call check(str(999.999_real64, fmt="f", decimals=2) == "1000.00", "Rounding should add a digit.")
+        call check(str(-0.999_real64, fmt="f", decimals=2) == "-1.00", "Rounding should keep the sign.")
+        call check(str(0.994_real64, fmt="f", decimals=2) == "0.99", "Decimals should round down when closer.")
+      case ("digits_same_for_negative")
+        call check(str(-5.0_real64, fmt="f") == "-"//str(5.0_real64, fmt="f"), "The sign should not change the digits.")
+      case ("complex_zero_part_fmt_f")
+        call check(str((1.0_real64,0.0_real64), fmt="f") == "("//str(1.0_real64, fmt="f")//",0.0)", "Zero imag part.")
+        call check(str((0.0_real64,1.0_real64), fmt="f") == "(0.0,"//str(1.0_real64, fmt="f")//")", "Zero real part.")
 
       case ("unallocated_equals_empty")
         r = String("")
@@ -376,8 +404,8 @@ contains
 
   logical function ifx_checks_rank_of_unallocated()
     !-------------------------------------------------------------------------------------------------------------------
-    !! `ifx -check pointers` reports "Attempt to fetch from allocatable variable" for `rank(x)` with `x` unallocated, which
-    !! ends any binary `from_file`. `gfortran -fcheck=all` accepts it, as does ifx without that check.
+    !! `ifx -check pointers` reports "Attempt to fetch from allocatable variable" for `rank(x)` with `x` unallocated,
+    !! which ends any binary `from_file`. `gfortran -fcheck=all` accepts it, as does ifx without that check. See #44.
     !-------------------------------------------------------------------------------------------------------------------
     ifx_checks_rank_of_unallocated = (index(compiler_version(), "Intel") > 0) .and. &
                                      (index(compiler_options(), "-check") > 0)

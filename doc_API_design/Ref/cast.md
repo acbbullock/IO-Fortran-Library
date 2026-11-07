@@ -124,7 +124,8 @@ LOCALES = [ "US", "EU" ]
 
 Decimals: `decimals` specifies the number of digits on the rhs of the
 radix point, with a default determined internally based on the
-[text format](../UserInfo/text-fmts.html) and precision.
+[text format](../UserInfo/text-fmts.html) and precision. The value is
+rounded to that number of digits.
 
 Imaginary unit: `im` specifies the form of a complex number. If not
 present, `complex` numbers will be assumed to be written as ordered
