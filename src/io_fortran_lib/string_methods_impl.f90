@@ -1303,10 +1303,6 @@ submodule (io_fortran_lib) string_methods
     end if
   end procedure write_string
 
-  module procedure scrub
-    if ( allocated(self%s) ) deallocate(self%s)
-  end procedure scrub
-
   ! Delimited text ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   pure function end_of_data(text, row_sep, strip_cr) result(last)
     !-------------------------------------------------------------------------------------------------------------------

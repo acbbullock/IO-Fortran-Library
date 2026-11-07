@@ -120,7 +120,6 @@ module io_fortran_lib
       procedure, pass(self), public :: trim_inplace
       procedure, pass(self), public :: write_file
       procedure, pass(substring)    :: write_string
-      final                         :: scrub
   end type String
 
   interface                                                                                   ! Submodule string_methods
@@ -399,12 +398,6 @@ module io_fortran_lib
       character(len=*), intent(inout) :: iomsg
     end subroutine write_string
 
-    pure elemental recursive module subroutine scrub(self)
-      !-----------------------------------------------------------------------------------------------------------------
-      !! Finalization procedure for type `String`.
-      !-----------------------------------------------------------------------------------------------------------------
-      type(String), intent(inout) :: self
-    end subroutine scrub
   end interface
 
   interface operator(//)                                                                           ! Submodule operators

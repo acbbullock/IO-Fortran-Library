@@ -111,6 +111,7 @@ program regression_test
     test_case("write_doubles_quotes",       RETURNS, FIXED),     &
     test_case("write_single_column_empty_last",RETURNS, FIXED),     &
     test_case("write_empty_array",          RETURNS, FIXED),     &
+    test_case("string_array_constructors",   RETURNS, FIXED),     &
     test_case("round_trip_all_special_cells",RETURNS, FIXED),     &
     test_case("round_trip_custom_separators",RETURNS, FIXED),     &
     test_case("tutorial_ancestry_round_trip",RETURNS, FIXED),     &
@@ -604,6 +605,16 @@ contains
         call s%write_file(cell(1:0,:), file=file//".csv", stat=st, errmsg=msg)
         call check(st == 0, "An empty array should write an empty file.")
         call check(s%len() == 0, "The text should be empty.")
+      case ("string_array_constructors")
+        special(1,:) = [String("a"), String("b"), String("c"), String("d")]
+        special(2,:) = [String("e"), String("f"), String("g"), String("h")]
+        call check(special(1,3)%as_str() == "c", "A constructor assigned to a section.")
+        call check(special(2,4)%as_str() == "h", "A constructor assigned to another section.")
+        special(1,:) = [String("i"), String("j"), String("k"), String("l")]
+        call check(special(1,3)%as_str() == "k", "A section assigned again.")
+        call check(special(2,1)%as_str() == "e", "Other sections should keep their values.")
+        three = [String("x"), String("y"), String("z")]
+        call check(three(3)%as_str() == "z", "A constructor assigned to a whole array.")
       case ("round_trip_all_special_cells")
         special(1,:) = [String("a,b"), String('q"q'), String('"'), String("")]
         special(2,:) = [String("l"//LF//"f"), String("c"//CR), String(CR//LF), String(" x ")]
