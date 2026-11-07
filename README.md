@@ -46,10 +46,10 @@ add `include` to the include path.
 
 ## Tests
 
-Run `fpm test`. One build tests every kind. With `flang-new`, add
-`--flag -cpp`, since fpm 0.12 does not enable the preprocessor for that
-compiler. A failing test ends with a
-nonzero exit status. Test output goes to `test/output`.
+Run `fpm test`. One build tests every kind and rank. With `flang-new`,
+add `--flag -cpp`, since fpm 0.12 does not enable the preprocessor for that
+compiler. A failing test ends with a nonzero exit status. Test output goes
+to `test/output`.
 
 The main suite is `test/tests.f90`, with its cases in `test/suite/`. Each
 case runs in its own process, so a case can check that a call ends the
@@ -63,29 +63,8 @@ fpm test tests -- --list                      # list the cases
 fpm test tests -- --in-process read_crlf      # run in one process, for a debugger
 ```
 
-A case is a subroutine with no arguments, registered once in its group's
-`register_*` subroutine:
-
-```fortran
-call suite%add("read_crlf", read_crlf)
-call suite%add("cast_int_letters", cast_int_letters, expect=STOPS)
-```
-
-Inside a case, `expect_equal(actual, expected, message)` prints both values
-when they differ, and `check(condition, message)` tests anything else. A
-case reports every failed check, not just the first. Write files under
-`scratch()`, which is unique to the case and emptied at the start of each
-run. A case for a bug that isn't fixed yet takes `status=KNOWN_BUG`, and
-the suite fails once it passes, so the marker is removed with the fix. See
-`test/suite/test_support.f90` for the details.
-
-The `text_round_trip` and `file_round_trip` groups check that values of
-every kind and rank survive `str` and `cast`, `String` arrays, text files
-and binary files exactly. They use edge values (zeros, `huge`, `tiny`,
-subnormals, NaN and infinities) and seeded random values from
-`test/suite/test_values.f90`, which gives the same values on every
-compiler. These groups, `test_support` and `test_values` are generated from
-the fypp templates in `fypp/test/suite`, like the library sources.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for how to add a case, what the
+`KNOWN_BUG` and `STOPS` markers mean, and how the generated sources work.
 
 ## Generated sources
 
@@ -115,6 +94,10 @@ and the
 for complete example programs.
 
 ## Release Notes v2.1.0 (in development)
+
+### Changed
+
+* The `data` directory is gone, so a project that depends on the library no longer downloads 4.4 MB of test data. The tests generate their data, and the tutorials say where to get the files they use.
 
 ### Fixed
 

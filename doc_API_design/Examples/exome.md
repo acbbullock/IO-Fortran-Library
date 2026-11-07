@@ -13,11 +13,12 @@ consumption when reading and writing large text files, streamlining
 performance for Fortran bioinformatics applications.
 
 To demonstrate the speed of file I/O, the following program reads the
-Twist Human Core Exome target `.bed` file for hg38 obtained from
+Twist Human Core Exome target `.bed` file for hg38 into a cell array and
+then writes the cell array to a new file in a round-trip, comparing the
+two files for an exact match and providing the total time elapsed.
+Download the hg38 target file from
 [Twist Bioscience](https://www.twistbioscience.com/resources/data-files/ngs-human-core-exome-panel-bed-file)
-into a cell array and then writes the cell array to a new file in a
-round-trip, comparing the two files for an exact match and providing
-the total time elapsed:
+and save it as `hg38.bed` in the directory you run the program from:
 
 ```fortran
 program main
@@ -33,8 +34,8 @@ program main
 
     call system_clock(t1)
 
-    call hg38%read_file("./data/hg38.bed", cell_array=cells, column_separator=TAB)
-    call hg38_new%write_file(cells, "./data/hg38_new.bed", column_separator=TAB)
+    call hg38%read_file("hg38.bed", cell_array=cells, column_separator=TAB)
+    call hg38_new%write_file(cells, "hg38_new.bed", column_separator=TAB)
 
     call system_clock(t2, count_rate=rate); wall_time = real(t2-t1,real64)/rate
 
@@ -44,8 +45,8 @@ program main
 end program main
 ```
 
-The file `hg38.bed` is provided locally in `/data` and contains
-`192262` lines of `TAB`-delimited data.
+The file contains about 190,000 lines of `TAB`-delimited data: a
+chromosome, a start point and an end point on each line.
 
 @note With the Intel Fortran compiler `ifx`, we may need to specify
 `-heap-arrays 0` to avoid a segmentation fault when reading a file of

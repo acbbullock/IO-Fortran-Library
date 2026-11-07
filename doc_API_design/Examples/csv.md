@@ -125,9 +125,19 @@ of `elemental` procedures.
 @note Files with `CRLF` line endings are read correctly with the
 default `row_separator`.
 
-For a slightly more advanced example, consider the following program
-to read in and cast the data of mixed type contained in the example
-data `/data/ancestry_comp.csv`:
+For a slightly more advanced example, consider a file `segments.csv`
+of mixed data, with `CRLF` line endings and a quoted first column that
+contains commas:
+
+```text
+Group,Copy,Chromosome,Start Point,End Point
+"North, Coastal & Island",1,chr3,43161545,168717618
+"North, Coastal & Island",2,chr6,18091973,93456038
+"South, Inland",1,chr8,34845054,128939702
+"South, Inland",2,chrX,2781479,155701383
+```
+
+The following program reads it in and casts each column:
 
 ```fortran
 program main
@@ -142,7 +152,7 @@ program main
     integer(int64), allocatable :: start_point(:), end_point(:)
     integer :: nrows
 
-    call csv%read_file("./data/ancestry_comp.csv", cell_array=cells, row_separator=CR+LF)
+    call csv%read_file("segments.csv", cell_array=cells, row_separator=CR+LF)
     write(*,*) csv
 
     nrows = size(cells, dim=1) - 1

@@ -2,8 +2,9 @@ module delimited_cases
   !---------------------------------------------------------------------------------------------------------------------
   !! `read_file` and `write_file`: newlines, CRLF, quoting, uneven rows, and round trips.
   !---------------------------------------------------------------------------------------------------------------------
-  use io_fortran_lib, only: String, LF, CR, TAB, operator(==), operator(/=), operator(+), operator(>), operator(>=)
+  use io_fortran_lib, only: String, str, LF, CR, TAB, operator(==), operator(/=), operator(+), operator(>), operator(>=)
   use test_support, only: test_suite, STOPS, check, expect_equal, scratch, write_raw
+  use test_values, only: reset_random, random_values
   implicit none (type, external)
   private
 
@@ -45,8 +46,9 @@ contains
     call suite%add("write_empty_array", write_empty_array)
     call suite%add("round_trip_all_special_cells", round_trip_all_special_cells)
     call suite%add("round_trip_custom_separators", round_trip_custom_separators)
-    call suite%add("tutorial_ancestry_round_trip", tutorial_ancestry_round_trip)
-    call suite%add("tutorial_hg38_round_trip", tutorial_hg38_round_trip)
+    call suite%add("csv_quoted_crlf_round_trip", csv_quoted_crlf_round_trip)
+    call suite%add("tsv_large_round_trip", tsv_large_round_trip)
+    call suite%add("read_tab_in_quotes", read_tab_in_quotes)
     call suite%add("write_file_quotes_text_pairs", write_file_quotes_text_pairs)
   end subroutine register_delimited
 
@@ -441,32 +443,92 @@ contains
     call check(all(cells == special), "Every cell should survive a round trip.")
   end subroutine round_trip_custom_separators
 
-  subroutine tutorial_ancestry_round_trip()
-    character(len=:), allocatable :: file
-    type(String)                  :: s, r
-    type(String), allocatable     :: cells(:,:)
+  subroutine csv_quoted_crlf_round_trip()
+    !! A CSV file of mixed data with CRLF line endings, quoted cells holding commas and quotes, and a header, like the
+    !! example in the CSV tutorial.
+    character(len=*), parameter :: labels(4) = [ character(len=26) :: '"North, Coastal & Island"', '"South, Inland"', &
+                                                 'East', '"West ""Upper"" Valley"' ]
+    integer,          parameter :: rows = 190
 
-    file = scratch()
+    type(String)              :: text, s, r
+    type(String), allocatable :: cells(:,:)
+    integer                   :: numbers(3*rows), i
 
-    call s%read_file("./data/ancestry_comp.csv", cell_array=cells, row_separator=CR+LF)
-    call expect_equal(cells(2,1)%as_str(), "Arab, Egyptian & Levantine", "The quoted cell should be read.")
-    call expect_equal(cells(2,5)%as_str(), "168717618", "The next column should line up.")
-    call r%write_file(cells, file=file//".csv", row_separator=CR+LF)
+    call reset_random()
+    call random_values(numbers)
+    numbers = abs(mod(numbers, 200000000)) + 1
+
+    call text%push("Group,Copy,Chromosome,Start Point,End Point"//CR//LF)
+    do i = 1, rows
+      call text%push(trim(labels(mod(i-1, 4) + 1))//","//str(mod(i, 2) + 1)//","//chromosome(numbers(3*i))//","// &
+                     str(numbers(3*i-1))//","//str(numbers(3*i-1) + numbers(3*i-2)/4)//CR//LF)
+    end do
+    call write_raw(scratch()//".csv", text%as_str())
+
+    call s%read_file(scratch()//".csv", cell_array=cells, row_separator=CR+LF)
+    call expect_equal(size(cells, dim=1), rows + 1, "Every row and the header should be read.")
+    call expect_equal(size(cells, dim=2), 5, "The commas inside quotes are not separators.")
+    call expect_equal(cells(2,1), "North, Coastal & Island", "The quotes around a cell are removed.")
+    call expect_equal(cells(5,1), 'West "Upper" Valley', "A doubled quote is one quote.")
+    call expect_equal(cells(2,5), str(numbers(2) + numbers(1)/4), "The last column should line up.")
+
+    call r%write_file(cells, file=scratch()//"_out.csv", row_separator=CR+LF)
     call check(r == s, "The file should be reproduced exactly.")
-  end subroutine tutorial_ancestry_round_trip
+  end subroutine csv_quoted_crlf_round_trip
 
-  subroutine tutorial_hg38_round_trip()
-    character(len=:), allocatable :: file
-    type(String)                  :: s, r
-    type(String), allocatable     :: cells(:,:)
+  subroutine tsv_large_round_trip()
+    !! A large tab-separated file shaped like a .bed file: a chromosome, a start point and an end point on each of
+    !! 192262 lines, like the file in the exome tutorial.
+    integer, parameter :: rows = 192262
 
-    file = scratch()
+    type(String)              :: text, s, r
+    type(String), allocatable :: cells(:,:)
+    integer, allocatable      :: numbers(:)
+    integer                   :: i
 
-    call s%read_file("./data/hg38.bed", cell_array=cells, column_separator=TAB)
-    call expect_equal(size(cells, dim=1), 192262, "The tutorial says the file has 192262 lines.")
-    call r%write_file(cells, file=file//".bed", column_separator=TAB)
+    call reset_random()
+    allocate( numbers(2*rows) )
+    call random_values(numbers)
+    numbers = abs(mod(numbers, 248000000)) + 1
+
+    do i = 1, rows
+      call text%push(chromosome(numbers(2*i))//TAB//str(numbers(2*i-1))//TAB// &
+                     str(numbers(2*i-1) + mod(numbers(2*i), 1000) + 50)//LF)
+    end do
+    call write_raw(scratch()//".bed", text%as_str())
+
+    call s%read_file(scratch()//".bed", cell_array=cells, column_separator=TAB)
+    call expect_equal(size(cells, dim=1), rows, "Every line should be read.")
+    call expect_equal(size(cells, dim=2), 3, "Every line has three columns.")
+    call r%write_file(cells, file=scratch()//"_out.bed", column_separator=TAB)
     call check(r == s, "The file should be reproduced exactly.")
-  end subroutine tutorial_hg38_round_trip
+  end subroutine tsv_large_round_trip
+
+  function chromosome(n) result(name)
+    !! Returns a chromosome name, chr1 to chr22, chrX or chrY, chosen by `n`.
+    integer, intent(in)           :: n
+    character(len=:), allocatable :: name
+
+    select case (mod(n, 24))
+      case (22)
+        name = "chrX"
+      case (23)
+        name = "chrY"
+      case default
+        name = "chr"//str(mod(n, 24) + 1)
+    end select
+  end function chromosome
+
+  subroutine read_tab_in_quotes()
+    !! The example in CONTRIBUTING.md.
+    type(String)              :: s
+    type(String), allocatable :: cells(:,:)
+
+    call write_raw(scratch()//".txt", '"a'//TAB//'b"'//TAB//"c"//LF)
+    call s%read_file(scratch()//".txt", cell_array=cells, column_separator=TAB)
+    call expect_equal(size(cells, dim=2), 2, "A tab inside quotes is not a separator.")
+    call expect_equal(cells(1,1), "a"//TAB//"b", "The quoted cell keeps its tab.")
+  end subroutine read_tab_in_quotes
 
   subroutine write_file_quotes_text_pairs()
     character(len=:), allocatable :: file

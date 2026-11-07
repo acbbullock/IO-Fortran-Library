@@ -1,2 +1,0 @@
-# The data files are compared byte for byte in the tests, so keep their line endings on every platform.
-data/* -text
