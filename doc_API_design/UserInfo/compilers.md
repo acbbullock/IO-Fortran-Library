@@ -6,7 +6,9 @@ author: Austin C Bullock
 ## Supported compilers
 
 The library is tested in CI with `gfortran` 13 to 16, `ifx` 2025.3 and
-2026, and `flang` 23. It is written to the Fortran 2018 standard.
+2026, and `flang` 23 on Linux, with `gfortran` 16 and `flang` 23 on macOS
+(Apple Silicon), and with `gfortran` 16 and `ifx` 2026 on Windows. It is
+written to the Fortran 2018 standard.
 
 The `real128` and `complex(real128)` routines are built on `ifx`, and on
 `gfortran` targets that support `REAL(16)`. They are left out on other
