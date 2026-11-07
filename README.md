@@ -78,6 +78,30 @@ and the
 [tutorials](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Examples/index.html)
 for complete example programs.
 
+## Release Notes v2.0.0-alpha.2
+
+This is a pre-release. The API may still change before 2.0.0.
+
+### Fixed
+
+* **Strings over 2 GB lost data silently.** `as_str`, `str`, `trim`, `replace`, repeating and concatenating all gave wrong or empty results on such strings. This bug is also in v1.3.1 and v2.0.0-alpha.1.
+* `replace` with an unallocated `substring` gave a garbled result. It now acts as an empty string, as documented.
+
+### Performance
+
+`push` and `replace` are now linear rather than quadratic:
+
+| Operation | v1.3.1 | v2.0.0-alpha.2 |
+|---|---|---|
+| `push`, 40,000 appends | 5.32 s | 0.002 s |
+| `push`, 2.56 million appends | did not finish in 30 s | 0.054 s |
+| `replace`, 40,000 matches | 0.407 s | under 0.01 s |
+| `replace`, 640,000 matches | did not finish in 40 s | 0.024 s |
+
+### Known limitation
+
+`count` and `len()` still return default integers. For strings over about 2.1 GB use `len64()`. A 64-bit `count` is planned.
+
 ## Release Notes v2.0.0-alpha.1
 
 This is a pre-release. The API may still change before 2.0.0.
