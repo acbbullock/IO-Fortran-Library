@@ -52,5 +52,5 @@ the form `split(substring)`.
 
 ### Optional Arguments
 
-Separator (default is `SPACE`): the separator to use when joining or
+Separator (default is `IOFL_SPACE`): the separator to use when joining or
 splitting.

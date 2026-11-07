@@ -95,6 +95,13 @@ for complete example programs.
 
 ## Release Notes v2.1.0 (in development)
 
+Version 2.1 is compatible with 2.0: code that compiles against 2.0 compiles unchanged and gives the same results, except where noted under Fixed.
+
+### Added
+
+* `IOFL_`-prefixed names for the character constants: `IOFL_NL`, `IOFL_SPACE`, `IOFL_CR`, `IOFL_LF`, `IOFL_TAB`, `IOFL_FF`, `IOFL_VT`, `IOFL_BELL` and `IOFL_NUL`. The old names such as `CR`, `LF` and `TAB` stay, but they clash with variable names in a program that uses the module without an `only` list, so the documentation now uses the new names.
+* The error codes are exported as `IOFL_READ_ERR`, `IOFL_WRITE_ERR`, `IOFL_ALLOC_ERR` and `IOFL_ARG_ERR`, with the same values as before, so `stat` can be tested by name.
+
 ### Changed
 
 * The `data` directory is gone, so a project that depends on the library no longer downloads 4.4 MB of test data. The tests generate their data, and the tutorials say where to get the files they use.

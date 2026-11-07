@@ -11,7 +11,7 @@ The `format` argument may be `"text"` or `"binary"`, and allows a file to
 have any name, as in:
 
 ```fortran
-call to_file(x, file="data.tsv", delim=TAB, format="text")
+call to_file(x, file="data.tsv", delim=IOFL_TAB, format="text")
 ```
 
 Without `format`, a valid file extension must be present.

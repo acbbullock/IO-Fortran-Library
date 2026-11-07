@@ -2,7 +2,7 @@ module read_line_cases
   !---------------------------------------------------------------------------------------------------------------------
   !! `read_line`.
   !---------------------------------------------------------------------------------------------------------------------
-  use io_fortran_lib, only: String, LF, operator(==), operator(/=)
+  use io_fortran_lib, only: String, IOFL_LF, operator(==), operator(/=)
   use test_support, only: test_suite, STOPS, check, expect_equal, scratch, write_raw
   implicit none (type, external)
   private
@@ -30,7 +30,8 @@ contains
 
     file = scratch(); st = 0
 
-    call write_raw(file//".txt", "  first line "//LF//LF//"third"//LF//repeat("x", 700)//LF//"no newline")
+    call write_raw(file//".txt", "  first line "//IOFL_LF//IOFL_LF//"third"//IOFL_LF//repeat("x", 700)//IOFL_LF// &
+                                 "no newline")
     open(newunit=i, file=file//".txt", status="old", action="read")
     call s%read_line(i, stat=st)
     call check((st == 0) .and. (s == "  first line "), "Blanks should be kept.")
@@ -54,7 +55,7 @@ contains
 
     file = scratch()
 
-    call write_raw(file//".txt", repeat("y", 256)//LF//repeat("z", 512)//LF//"end"//LF)
+    call write_raw(file//".txt", repeat("y", 256)//IOFL_LF//repeat("z", 512)//IOFL_LF//"end"//IOFL_LF)
     open(newunit=i, file=file//".txt", status="old", action="read")
     call s%read_line(i)
     call check(s == repeat("y", 256), "A line exactly as long as the internal buffer.")
@@ -72,7 +73,7 @@ contains
 
     file = scratch()
 
-    call write_raw(file//".txt", "abc"//LF)
+    call write_raw(file//".txt", "abc"//IOFL_LF)
     open(newunit=i, file=file//".txt", status="old", action="read")
     call s%read_line(i)
     close(i)

@@ -4,7 +4,7 @@ module array_files_cases
   !---------------------------------------------------------------------------------------------------------------------
   use, intrinsic :: iso_fortran_env, only: real32, real64
   use, intrinsic :: ieee_arithmetic, only: ieee_value, ieee_quiet_nan, ieee_is_nan
-  use io_fortran_lib, only: String, str, to_file, from_file, LF, CR, operator(==), operator(/=), operator(>)
+  use io_fortran_lib, only: String, str, to_file, from_file, IOFL_LF, IOFL_CR, operator(==), operator(/=), operator(>)
   use test_support, only: test_suite, STOPS, check, expect_equal, scratch, write_raw
   implicit none (type, external)
   private
@@ -59,7 +59,7 @@ contains
 
     file = scratch(); st = 0; msg = ""
 
-    call write_raw(file//".csv", "1.0"//LF//"oops"//LF)
+    call write_raw(file//".csv", "1.0"//IOFL_LF//"oops"//IOFL_LF)
     call from_file(file//".csv", into=v, stat=st, errmsg=msg)
     call check(st /= 0, "A bad number should be reported through stat.")
   end subroutine from_file_bad_number_stat
@@ -70,7 +70,7 @@ contains
 
     file = scratch()
 
-    call write_raw(file//".csv", "1.0"//LF//"oops"//LF)
+    call write_raw(file//".csv", "1.0"//IOFL_LF//"oops"//IOFL_LF)
     call from_file(file//".csv", into=v)
   end subroutine from_file_bad_number
 
@@ -82,7 +82,7 @@ contains
 
     file = scratch(); st = 0; msg = ""
 
-    call write_raw(file//".csv", "1,2"//LF//"3,oops"//LF)
+    call write_raw(file//".csv", "1,2"//IOFL_LF//"3,oops"//IOFL_LF)
     call from_file(file//".csv", into=m2, stat=st, errmsg=msg)
     call check(st /= 0, "A bad number should be reported through stat.")
     call check(index(msg, "oops") > 0, "The message should name the text.")
@@ -97,7 +97,7 @@ contains
 
     file = scratch(); st = 0; msg = ""
 
-    call write_raw(file//".csv", "1"//LF//"2.5"//LF)
+    call write_raw(file//".csv", "1"//IOFL_LF//"2.5"//IOFL_LF)
     call from_file(file//".csv", into=vi, stat=st, errmsg=msg)
     call check(st /= 0, "A bad integer should be reported through stat.")
   end subroutine from_file_bad_cell_int
@@ -110,7 +110,7 @@ contains
 
     file = scratch(); st = 0; msg = ""
 
-    call write_raw(file//".csv", '"1.5","2.5"'//LF)
+    call write_raw(file//".csv", '"1.5","2.5"'//IOFL_LF)
     call from_file(file//".csv", into=m2, stat=st, errmsg=msg)
     call expect_equal(st, 0, "Quoted numbers should be read.")
     call check(all(m2 == reshape([1.5_real64,2.5_real64], [1,2])), "The values should be right.")
@@ -124,7 +124,7 @@ contains
 
     file = scratch(); st = 0; msg = ""
 
-    call write_raw(file//".csv", "1.5,2.5"//CR//LF//"3.5,4.5"//CR//LF)
+    call write_raw(file//".csv", "1.5,2.5"//IOFL_CR//IOFL_LF//"3.5,4.5"//IOFL_CR//IOFL_LF)
     call from_file(file//".csv", into=m2, stat=st, errmsg=msg)
     call expect_equal(st, 0, "CRLF should be read.")
     call check(m2(2,2) == 4.5_real64, "The values should be right.")
@@ -138,7 +138,7 @@ contains
 
     file = scratch(); st = 0; msg = ""
 
-    call write_raw(file//".csv", "1"//LF//"2"//LF//"3")
+    call write_raw(file//".csv", "1"//IOFL_LF//"2"//IOFL_LF//"3")
     call from_file(file//".csv", into=vi, stat=st, errmsg=msg)
     call check((st == 0) .and. (size(vi) == 3), "The last row should be read.")
     call expect_equal(vi(3), 3, "The value should be right.")
@@ -152,7 +152,7 @@ contains
 
     file = scratch(); st = 0; msg = ""
 
-    call write_raw(file//".csv", "1,2"//LF//"3,"//LF//", "//LF)
+    call write_raw(file//".csv", "1,2"//IOFL_LF//"3,"//IOFL_LF//", "//IOFL_LF)
     call from_file(file//".csv", into=m2, stat=st, errmsg=msg)
     call expect_equal(st, 0, "An empty cell should not be an error.")
     call check(m2(1,2) == 2.0_real64, "Other cells should be read.")
@@ -168,7 +168,7 @@ contains
 
     file = scratch(); st = 0; msg = ""
 
-    call write_raw(file//".csv", "a,b"//LF//"1,"//LF)
+    call write_raw(file//".csv", "a,b"//IOFL_LF//"1,"//IOFL_LF)
     call from_file(file//".csv", into=m2, header=.true., stat=st, errmsg=msg)
     call expect_equal(st, 0, "An empty cell should not be an error.")
     call check(all(shape(m2) == [1,2]), "The header should not count as data.")
@@ -183,7 +183,7 @@ contains
 
     file = scratch(); st = 0; msg = ""
 
-    call write_raw(file//".csv", "0x3ff8000000000000,"//LF)
+    call write_raw(file//".csv", "0x3ff8000000000000,"//IOFL_LF)
     call from_file(file//".csv", into=m2, fmt="z", stat=st, errmsg=msg)
     call expect_equal(st, 0, "An empty cell should not be an error.")
     call check((m2(1,1) == 1.5_real64) .and. ieee_is_nan(m2(1,2)), "It should read as NaN.")
@@ -197,7 +197,7 @@ contains
 
     file = scratch(); st = 0; msg = ""
 
-    call write_raw(file//".csv", "(1.5,2.5),"//LF)
+    call write_raw(file//".csv", "(1.5,2.5),"//IOFL_LF)
     call from_file(file//".csv", into=mz, stat=st, errmsg=msg)
     call expect_equal(st, 0, "An empty cell should not be an error.")
     call check(mz(1,1) == (1.5,2.5), "The ordered pair should be read.")
@@ -212,7 +212,7 @@ contains
 
     file = scratch(); st = 0; msg = ""
 
-    call write_raw(file//".csv", "1"//LF//LF//"3"//LF)
+    call write_raw(file//".csv", "1"//IOFL_LF//IOFL_LF//"3"//IOFL_LF)
     call from_file(file//".csv", into=vi, stat=st, errmsg=msg)
     call check(st /= 0, "An integer has no NaN, so an empty cell is an error.")
     call check(index(msg, "row 2, column 1") > 0, "The message should name the location.")
@@ -226,7 +226,7 @@ contains
 
     file = scratch(); st = 0; msg = ""
 
-    call write_raw(file//".csv", "(1.5,2.5),(3.5,4.5)"//LF//"(5.5,6.5),(7.5,8.5)")
+    call write_raw(file//".csv", "(1.5,2.5),(3.5,4.5)"//IOFL_LF//"(5.5,6.5),(7.5,8.5)")
     call from_file(file//".csv", into=mz, stat=st, errmsg=msg)
     call check((st == 0) .and. all(shape(mz) == [2,2]), "The last row should be read.")
     call check(mz(2,2) == (7.5,8.5), "The value should be right.")
@@ -240,7 +240,7 @@ contains
 
     file = scratch(); st = 0; msg = ""
 
-    call write_raw(file//".csv", "(1.5,2.5),(3.5,4.5)"//CR//LF)
+    call write_raw(file//".csv", "(1.5,2.5),(3.5,4.5)"//IOFL_CR//IOFL_LF)
     call from_file(file//".csv", into=mz, stat=st, errmsg=msg)
     call check((st == 0) .and. all(shape(mz) == [1,2]), "CRLF should be read.")
     call check(mz(1,2) == (3.5,4.5), "The value should be right.")
@@ -254,7 +254,7 @@ contains
 
     file = scratch(); st = 0; msg = ""
 
-    call write_raw(file//".csv", "(1,2)"//LF//"(3,4),(5,6)"//LF)
+    call write_raw(file//".csv", "(1,2)"//IOFL_LF//"(3,4),(5,6)"//IOFL_LF)
     call from_file(file//".csv", into=mz, stat=st, errmsg=msg)
     call check(st /= 0, "A wider row should be reported through stat.")
   end subroutine from_file_pairs_wider_row
@@ -267,7 +267,7 @@ contains
 
     file = scratch(); st = 0; msg = ""
 
-    call write_raw(file//".csv", "(1,2"//LF)
+    call write_raw(file//".csv", "(1,2"//IOFL_LF)
     call from_file(file//".csv", into=mz, stat=st, errmsg=msg)
     call check(st /= 0, "A bad ordered pair should be reported through stat.")
   end subroutine from_file_pairs_not_closed
@@ -296,7 +296,7 @@ contains
 
     file = scratch(); st = 0; msg = ""
 
-    call write_raw(file//".csv", "1,2"//LF//"3"//LF)
+    call write_raw(file//".csv", "1,2"//IOFL_LF//"3"//IOFL_LF)
     call from_file(file//".csv", into=m2, stat=st, errmsg=msg)
     call expect_equal(st, 0, "A missing cell is an empty cell.")
     call check((m2(2,1) == 3.0_real64) .and. ieee_is_nan(m2(2,2)), "It should read as NaN.")
@@ -316,7 +316,7 @@ contains
     call to_file(zv, file=file//".csv", stat=st, errmsg=msg)
     call expect_equal(st, 0, "The write should succeed.")
     call s%read_file(file//".csv")
-    call check(s%as_str() == str(zv(1))//LF//str(zv(2))//LF, "Ordered pairs should not be quoted in a file.")
+    call check(s%as_str() == str(zv(1))//IOFL_LF//str(zv(2))//IOFL_LF, "Ordered pairs should not be quoted in a file.")
     call from_file(file//".csv", into=zw, stat=st, errmsg=msg)
     call expect_equal(st, 0, "The read should succeed.")
     call check(all(zw == zv), "The default complex form should survive a round trip.")

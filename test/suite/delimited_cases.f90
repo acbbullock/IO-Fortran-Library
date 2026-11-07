@@ -2,7 +2,8 @@ module delimited_cases
   !---------------------------------------------------------------------------------------------------------------------
   !! `read_file` and `write_file`: newlines, CRLF, quoting, uneven rows, and round trips.
   !---------------------------------------------------------------------------------------------------------------------
-  use io_fortran_lib, only: String, str, LF, CR, TAB, operator(==), operator(/=), operator(+), operator(>), operator(>=)
+  use io_fortran_lib, only: String, str, IOFL_LF, IOFL_CR, IOFL_TAB, operator(==), operator(/=), operator(+), &
+                            operator(>), operator(>=)
   use test_support, only: test_suite, STOPS, check, expect_equal, scratch, write_raw
   use test_values, only: reset_random, random_values
   implicit none (type, external)
@@ -68,7 +69,7 @@ contains
 
     file = scratch()
 
-    call write_raw(file//".csv", "a,b"//LF//"1,2"//LF//"3,4")
+    call write_raw(file//".csv", "a,b"//IOFL_LF//"1,2"//IOFL_LF//"3,4")
     call s%read_file(file//".csv", cell_array=cells)
     call check(all(shape(cells) == [3,2]), "The last row should be read.")
     call expect_equal(cells(3,2)%as_str(), "4", "The last cell should be complete.")
@@ -93,7 +94,7 @@ contains
 
     file = scratch()
 
-    call write_raw(file//".csv", "1,2"//CR//LF//"3,4"//CR//LF)
+    call write_raw(file//".csv", "1,2"//IOFL_CR//IOFL_LF//"3,4"//IOFL_CR//IOFL_LF)
     call s%read_file(file//".csv", cell_array=cells)
     call check(all(shape(cells) == [2,2]), "CRLF should give the same shape.")
     call expect_equal(cells(1,2)%len(), 1, "The carriage return should not be part of the last cell.")
@@ -109,7 +110,7 @@ contains
 
     file = scratch(); st = 0; msg = ""
 
-    call write_raw(file//".csv", "a,b"//LF//"1,2,3,4"//LF)
+    call write_raw(file//".csv", "a,b"//IOFL_LF//"1,2,3,4"//IOFL_LF)
     call s%read_file(file//".csv", cell_array=cells, stat=st, errmsg=msg)
     call check(st /= 0, "A row wider than the first should be reported through stat.")
     call check(index(msg, "Row 2 has 4 columns, but the first row has 2") > 0, "The message should name the row.")
@@ -122,7 +123,7 @@ contains
 
     file = scratch()
 
-    call write_raw(file//".csv", "a,b,c"//LF//"1"//LF//"2,3,4"//LF)
+    call write_raw(file//".csv", "a,b,c"//IOFL_LF//"1"//IOFL_LF//"2,3,4"//IOFL_LF)
     call s%read_file(file//".csv", cell_array=cells)
     call check(all(shape(cells) == [3,3]), "The first row sets the shape.")
     call expect_equal(cells(2,1)%as_str(), "1", "The cell should be read.")
@@ -137,10 +138,10 @@ contains
 
     file = scratch()
 
-    call write_raw(file//".csv", "a,b"//LF//'"x'//LF//'y",2'//LF)
+    call write_raw(file//".csv", "a,b"//IOFL_LF//'"x'//IOFL_LF//'y",2'//IOFL_LF)
     call s%read_file(file//".csv", cell_array=cells)
     call check(all(shape(cells) == [2,2]), "A newline inside quotes should not end the row.")
-    call check(cells(2,1)%as_str() == "x"//LF//"y", "The newline should be kept and the quotes removed.")
+    call check(cells(2,1)%as_str() == "x"//IOFL_LF//"y", "The newline should be kept and the quotes removed.")
     call expect_equal(cells(2,2)%as_str(), "2", "The next cell should follow.")
   end subroutine read_quoted_newline
 
@@ -167,7 +168,7 @@ contains
 
     cell(1,1) = String("a"); cell(1,2) = String("b"); cell(2,1) = String("c")
     call s%write_file(cell, file=file//".csv")
-    call check(s%as_str() == "a,b"//LF//"c,"//LF, "An unallocated cell should be written as an empty cell.")
+    call check(s%as_str() == "a,b"//IOFL_LF//"c,"//IOFL_LF, "An unallocated cell should be written as an empty cell.")
   end subroutine write_unallocated_cell
 
   subroutine csv_quotes_separator()
@@ -191,7 +192,7 @@ contains
 
     file = scratch()
 
-    call write_raw(file//".csv", "a,b"//LF//"1,2,3"//LF)
+    call write_raw(file//".csv", "a,b"//IOFL_LF//"1,2,3"//IOFL_LF)
     call s%read_file(file//".csv", cell_array=cells)
   end subroutine read_row_wider_stops
 
@@ -202,7 +203,7 @@ contains
 
     file = scratch()
 
-    call write_raw(file//".csv", 'a,"b'//LF)
+    call write_raw(file//".csv", 'a,"b'//IOFL_LF)
     call s%read_file(file//".csv", cell_array=cells)
   end subroutine read_quote_not_closed_stops
 
@@ -215,7 +216,7 @@ contains
 
     file = scratch(); st = 0; msg = ""
 
-    call write_raw(file//".csv", 'a,b'//LF//'1,"2'//LF)
+    call write_raw(file//".csv", 'a,b'//IOFL_LF//'1,"2'//IOFL_LF)
     call s%read_file(file//".csv", cell_array=cells, stat=st, errmsg=msg)
     call check(st /= 0, "An open quote should be reported through stat.")
     call check(index(msg, "row 2, column 2") > 0, "The message should name the location.")
@@ -228,7 +229,7 @@ contains
 
     file = scratch()
 
-    call write_raw(file//".csv", '"say ""hi""",""""'//LF)
+    call write_raw(file//".csv", '"say ""hi""",""""'//IOFL_LF)
     call s%read_file(file//".csv", cell_array=cells)
     call expect_equal(cells(1,1)%as_str(), 'say "hi"', "Doubled quotes stand for one.")
     call expect_equal(cells(1,2)%as_str(), '"', "A cell can be just a quote.")
@@ -241,7 +242,7 @@ contains
 
     file = scratch()
 
-    call write_raw(file//".csv", '"ab"c,d'//CR//LF)
+    call write_raw(file//".csv", '"ab"c,d'//IOFL_CR//IOFL_LF)
     call s%read_file(file//".csv", cell_array=cells)
     call expect_equal(cells(1,1)%as_str(), "abc", "Text after a closing quote is kept.")
     call expect_equal(cells(1,2)%as_str(), "d", "The separator still ends the cell.")
@@ -254,7 +255,7 @@ contains
 
     file = scratch()
 
-    call write_raw(file//".csv", 'a"b,5"'//LF//' "c",d'//LF)
+    call write_raw(file//".csv", 'a"b,5"'//IOFL_LF//' "c",d'//IOFL_LF)
     call s%read_file(file//".csv", cell_array=cells)
     call expect_equal(cells(1,1)%as_str(), 'a"b', "A quote inside a cell is an ordinary character.")
     call expect_equal(cells(1,2)%as_str(), '5"', "A quote at the end of a cell is an ordinary character.")
@@ -268,9 +269,9 @@ contains
 
     file = scratch()
 
-    call write_raw(file//".csv", '"a'//CR//'",b'//CR//LF)
+    call write_raw(file//".csv", '"a'//IOFL_CR//'",b'//IOFL_CR//IOFL_LF)
     call s%read_file(file//".csv", cell_array=cells)
-    call check(cells(1,1)%as_str() == "a"//CR, "A carriage return inside quotes is data.")
+    call check(cells(1,1)%as_str() == "a"//IOFL_CR, "A carriage return inside quotes is data.")
     call expect_equal(cells(1,2)%as_str(), "b", "A carriage return before the newline is not.")
   end subroutine read_cr_inside_quotes
 
@@ -281,7 +282,7 @@ contains
 
     file = scratch()
 
-    call write_raw(file//".csv", "a,b"//LF//"1,2"//LF//LF//CR//LF)
+    call write_raw(file//".csv", "a,b"//IOFL_LF//"1,2"//IOFL_LF//IOFL_LF//IOFL_CR//IOFL_LF)
     call s%read_file(file//".csv", cell_array=cells)
     call check(all(shape(cells) == [2,2]), "Trailing blank lines should not add rows.")
   end subroutine read_trailing_blank_lines
@@ -293,7 +294,7 @@ contains
 
     file = scratch()
 
-    call write_raw(file//".csv", "a,b"//LF//LF//"1,2"//LF)
+    call write_raw(file//".csv", "a,b"//IOFL_LF//IOFL_LF//"1,2"//IOFL_LF)
     call s%read_file(file//".csv", cell_array=cells)
     call check(all(shape(cells) == [3,2]), "A blank line inside the data keeps its row.")
     call check((cells(2,1)%len() == 0) .and. (cells(2,2)%len() == 0), "Its cells should be empty.")
@@ -308,7 +309,7 @@ contains
 
     file = scratch(); st = 0; msg = ""
 
-    call write_raw(file//".csv", LF//LF)
+    call write_raw(file//".csv", IOFL_LF//IOFL_LF)
     call s%read_file(file//".csv", cell_array=cells, stat=st, errmsg=msg)
     call check(st /= 0, "A file with only newlines has no data.")
   end subroutine read_only_newlines
@@ -334,8 +335,8 @@ contains
 
     file = scratch()
 
-    call write_raw(file//".csv", "a"//TAB//"b,c"//LF)
-    call s%read_file(file//".csv", cell_array=cells, column_separator=TAB)
+    call write_raw(file//".csv", "a"//IOFL_TAB//"b,c"//IOFL_LF)
+    call s%read_file(file//".csv", cell_array=cells, column_separator=IOFL_TAB)
     call expect_equal(cells(1,2)%as_str(), "b,c", "A comma is data with another separator.")
   end subroutine read_tab_separator
 
@@ -346,7 +347,7 @@ contains
 
     file = scratch()
 
-    call write_raw(file//".csv", "a,b,"//LF//"1,2,")
+    call write_raw(file//".csv", "a,b,"//IOFL_LF//"1,2,")
     call s%read_file(file//".csv", cell_array=cells)
     call check(all(shape(cells) == [2,3]), "A trailing separator ends an empty cell.")
     call expect_equal(cells(2,3)%len(), 0, "The cell should be empty.")
@@ -359,7 +360,7 @@ contains
 
     file = scratch()
 
-    call write_raw(file//".csv", "a,b,c"//LF//"1"//LF//LF//"2,3"//LF)
+    call write_raw(file//".csv", "a,b,c"//IOFL_LF//"1"//IOFL_LF//IOFL_LF//"2,3"//IOFL_LF)
     call s%read_file(file//".csv", cell_array=cells)
     call check(all(cells%len() >= 0), "Every cell should be allocated.")
   end subroutine read_narrow_rows_all_allocated
@@ -372,7 +373,7 @@ contains
 
     cell(1,1) = String("1.5"); cell(1,2) = String("a b"); cell(2,1) = String("a;b"); cell(2,2) = String("")
     call s%write_file(cell, file=file//".csv")
-    call check(s%as_str() == "1.5,a b"//LF//"a;b,"//LF, "Plain cells should be written as they are.")
+    call check(s%as_str() == "1.5,a b"//IOFL_LF//"a;b,"//IOFL_LF, "Plain cells should be written as they are.")
   end subroutine write_quotes_only_when_needed
 
   subroutine write_doubles_quotes()
@@ -381,9 +382,9 @@ contains
 
     file = scratch()
 
-    one_row(1,1) = String('say "hi"'); one_row(1,2) = String("a"//LF//"b")
+    one_row(1,1) = String('say "hi"'); one_row(1,2) = String("a"//IOFL_LF//"b")
     call s%write_file(one_row, file=file//".csv")
-    call check(s%as_str() == '"say ""hi""","a'//LF//'b"'//LF, "Quotes should be doubled.")
+    call check(s%as_str() == '"say ""hi""","a'//IOFL_LF//'b"'//IOFL_LF, "Quotes should be doubled.")
   end subroutine write_doubles_quotes
 
   subroutine write_single_column_empty_last()
@@ -421,7 +422,7 @@ contains
     file = scratch()
 
     special(1,:) = [String("a,b"), String('q"q'), String('"'), String("")]
-    special(2,:) = [String("l"//LF//"f"), String("c"//CR), String(CR//LF), String(" x ")]
+    special(2,:) = [String("l"//IOFL_LF//"f"), String("c"//IOFL_CR), String(IOFL_CR//IOFL_LF), String(" x ")]
     call s%write_file(special, file=file//".csv")
     call s%read_file(file//".csv", cell_array=cells)
     call check(all(shape(cells) == shape(special)), "The shape should survive a round trip.")
@@ -435,7 +436,7 @@ contains
 
     file = scratch()
 
-    special(1,:) = [String("a|b"), String("c;d"), String("e"//LF//"f"), String("g")]
+    special(1,:) = [String("a|b"), String("c;d"), String("e"//IOFL_LF//"f"), String("g")]
     special(2,:) = [String("##"), String("|"), String(""), String('"')]
     call s%write_file(special, file=file//".csv", row_separator="##", column_separator="|")
     call s%read_file(file//".csv", cell_array=cells, row_separator="##", column_separator="|")
@@ -458,21 +459,21 @@ contains
     call random_values(numbers)
     numbers = abs(mod(numbers, 200000000)) + 1
 
-    call text%push("Group,Copy,Chromosome,Start Point,End Point"//CR//LF)
+    call text%push("Group,Copy,Chromosome,Start Point,End Point"//IOFL_CR//IOFL_LF)
     do i = 1, rows
       call text%push(trim(labels(mod(i-1, 4) + 1))//","//str(mod(i, 2) + 1)//","//chromosome(numbers(3*i))//","// &
-                     str(numbers(3*i-1))//","//str(numbers(3*i-1) + numbers(3*i-2)/4)//CR//LF)
+                     str(numbers(3*i-1))//","//str(numbers(3*i-1) + numbers(3*i-2)/4)//IOFL_CR//IOFL_LF)
     end do
     call write_raw(scratch()//".csv", text%as_str())
 
-    call s%read_file(scratch()//".csv", cell_array=cells, row_separator=CR+LF)
+    call s%read_file(scratch()//".csv", cell_array=cells, row_separator=IOFL_CR+IOFL_LF)
     call expect_equal(size(cells, dim=1), rows + 1, "Every row and the header should be read.")
     call expect_equal(size(cells, dim=2), 5, "The commas inside quotes are not separators.")
     call expect_equal(cells(2,1), "North, Coastal & Island", "The quotes around a cell are removed.")
     call expect_equal(cells(5,1), 'West "Upper" Valley', "A doubled quote is one quote.")
     call expect_equal(cells(2,5), str(numbers(2) + numbers(1)/4), "The last column should line up.")
 
-    call r%write_file(cells, file=scratch()//"_out.csv", row_separator=CR+LF)
+    call r%write_file(cells, file=scratch()//"_out.csv", row_separator=IOFL_CR+IOFL_LF)
     call check(r == s, "The file should be reproduced exactly.")
   end subroutine csv_quoted_crlf_round_trip
 
@@ -492,15 +493,15 @@ contains
     numbers = abs(mod(numbers, 248000000)) + 1
 
     do i = 1, rows
-      call text%push(chromosome(numbers(2*i))//TAB//str(numbers(2*i-1))//TAB// &
-                     str(numbers(2*i-1) + mod(numbers(2*i), 1000) + 50)//LF)
+      call text%push(chromosome(numbers(2*i))//IOFL_TAB//str(numbers(2*i-1))//IOFL_TAB// &
+                     str(numbers(2*i-1) + mod(numbers(2*i), 1000) + 50)//IOFL_LF)
     end do
     call write_raw(scratch()//".bed", text%as_str())
 
-    call s%read_file(scratch()//".bed", cell_array=cells, column_separator=TAB)
+    call s%read_file(scratch()//".bed", cell_array=cells, column_separator=IOFL_TAB)
     call expect_equal(size(cells, dim=1), rows, "Every line should be read.")
     call expect_equal(size(cells, dim=2), 3, "Every line has three columns.")
-    call r%write_file(cells, file=scratch()//"_out.bed", column_separator=TAB)
+    call r%write_file(cells, file=scratch()//"_out.bed", column_separator=IOFL_TAB)
     call check(r == s, "The file should be reproduced exactly.")
   end subroutine tsv_large_round_trip
 
@@ -524,10 +525,10 @@ contains
     type(String)              :: s
     type(String), allocatable :: cells(:,:)
 
-    call write_raw(scratch()//".txt", '"a'//TAB//'b"'//TAB//"c"//LF)
-    call s%read_file(scratch()//".txt", cell_array=cells, column_separator=TAB)
+    call write_raw(scratch()//".txt", '"a'//IOFL_TAB//'b"'//IOFL_TAB//"c"//IOFL_LF)
+    call s%read_file(scratch()//".txt", cell_array=cells, column_separator=IOFL_TAB)
     call expect_equal(size(cells, dim=2), 2, "A tab inside quotes is not a separator.")
-    call expect_equal(cells(1,1), "a"//TAB//"b", "The quoted cell keeps its tab.")
+    call expect_equal(cells(1,1), "a"//IOFL_TAB//"b", "The quoted cell keeps its tab.")
   end subroutine read_tab_in_quotes
 
   subroutine write_file_quotes_text_pairs()
@@ -538,6 +539,6 @@ contains
 
     one_row(1,1) = String("(a,b)"); one_row(1,2) = String("c")
     call s%write_file(one_row, file=file//".csv")
-    call check(s%as_str() == '"(a,b)",c'//LF, "write_file should quote text that looks like a pair.")
+    call check(s%as_str() == '"(a,b)",c'//IOFL_LF, "write_file should quote text that looks like a pair.")
   end subroutine write_file_quotes_text_pairs
 end module delimited_cases

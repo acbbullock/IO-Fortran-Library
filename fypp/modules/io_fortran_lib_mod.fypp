@@ -18,22 +18,35 @@ module io_fortran_lib
   ! Public API list ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   public :: aprint, to_file, from_file                                                       ! Array I/O
   public :: String, str, cast, join, split, echo                                             ! String I/O
-  public :: NL, SPACE, CR, FF, VT, LF, TAB, HT, BELL, NUL, CNUL                              ! Constants
+  public :: IOFL_NL, IOFL_SPACE, IOFL_CR, IOFL_LF, IOFL_TAB, IOFL_FF, IOFL_VT, IOFL_BELL, IOFL_NUL ! Constants
+  public :: IOFL_READ_ERR, IOFL_WRITE_ERR, IOFL_ALLOC_ERR, IOFL_ARG_ERR                     ! Error codes
+  public :: NL, SPACE, CR, FF, VT, LF, TAB, HT, BELL, NUL, CNUL                              ! Constants, old names
   public :: operator(//), operator(+), operator(-), operator(**), operator(==), operator(/=) ! Operators
   public :: operator(<), operator(<=), operator(>), operator(>=)                             ! Operators
 
   ! Definitions and Interfaces ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  character(len=1), parameter :: NL        = new_line("a") !! The newline character (system agnostic)
-  character(len=1), parameter :: SPACE     = achar(32)     !! The space character
-  character(len=1), parameter :: CR        = achar(13)     !! The carriage return character
-  character(len=1), parameter :: FF        = achar(12)     !! The form feed character
-  character(len=1), parameter :: VT        = achar(11)     !! The vertical tab character
-  character(len=1), parameter :: LF        = achar(10)     !! The line feed character
-  character(len=1), parameter :: TAB       = achar(9)      !! The horizontal tab character
-  character(len=1), parameter :: HT        = achar(9)      !! The horizontal tab character (alternate name)
-  character(len=1), parameter :: BELL      = achar(7)      !! The bell/alert character
-  character(len=1), parameter :: NUL       = achar(0)      !! The null character
-  character(len=1), parameter :: CNUL      = c_null_char   !! The C null character re-exported from iso_c_binding
+  character(len=1), parameter :: IOFL_NL    = new_line("a") !! The newline character (system agnostic)
+  character(len=1), parameter :: IOFL_SPACE = achar(32)     !! The space character
+  character(len=1), parameter :: IOFL_CR    = achar(13)     !! The carriage return character
+  character(len=1), parameter :: IOFL_LF    = achar(10)     !! The line feed character
+  character(len=1), parameter :: IOFL_TAB   = achar(9)      !! The horizontal tab character
+  character(len=1), parameter :: IOFL_FF    = achar(12)     !! The form feed character
+  character(len=1), parameter :: IOFL_VT    = achar(11)     !! The vertical tab character
+  character(len=1), parameter :: IOFL_BELL  = achar(7)      !! The bell/alert character
+  character(len=1), parameter :: IOFL_NUL   = c_null_char   !! The null character, which is also C's string terminator
+
+  ! The names before 2.1, kept for compatibility. Prefer the `IOFL_` names, which don't clash with variable names.
+  character(len=1), parameter :: NL        = IOFL_NL       !! Same as `IOFL_NL`
+  character(len=1), parameter :: SPACE     = IOFL_SPACE    !! Same as `IOFL_SPACE`
+  character(len=1), parameter :: CR        = IOFL_CR       !! Same as `IOFL_CR`
+  character(len=1), parameter :: FF        = IOFL_FF       !! Same as `IOFL_FF`
+  character(len=1), parameter :: VT        = IOFL_VT       !! Same as `IOFL_VT`
+  character(len=1), parameter :: LF        = IOFL_LF       !! Same as `IOFL_LF`
+  character(len=1), parameter :: TAB       = IOFL_TAB      !! Same as `IOFL_TAB`
+  character(len=1), parameter :: HT        = IOFL_TAB      !! Same as `IOFL_TAB`
+  character(len=1), parameter :: BELL      = IOFL_BELL     !! Same as `IOFL_BELL`
+  character(len=1), parameter :: NUL       = achar(0)      !! Same as `IOFL_NUL`
+  character(len=1), parameter :: CNUL      = c_null_char   !! Same as `IOFL_NUL`
 
   character(len=*), parameter :: COMPILER  = compiler_version() ! Compiler version
   character(len=0), parameter :: EMPTY_STR = ""                 ! The empty string
@@ -56,10 +69,15 @@ module io_fortran_lib
                                                    "bed", "gff", &
                                                    "gtf"         ]
 
-  integer, parameter :: READ_ERR  = 1 ! Read error code
-  integer, parameter :: WRITE_ERR = 2 ! Write error code
-  integer, parameter :: ALLOC_ERR = 3 ! Allocation error code
-  integer, parameter :: ARG_ERR   = 4 ! Argument error code
+  integer, parameter :: IOFL_READ_ERR  = 1 !! `stat` after an error reading, inquiring about or closing a file
+  integer, parameter :: IOFL_WRITE_ERR = 2 !! `stat` after an error writing or closing a file
+  integer, parameter :: IOFL_ALLOC_ERR = 3 !! `stat` after a failed allocation
+  integer, parameter :: IOFL_ARG_ERR   = 4 !! `stat` after an invalid argument
+
+  integer, parameter :: READ_ERR  = IOFL_READ_ERR  ! Internal names of the error codes
+  integer, parameter :: WRITE_ERR = IOFL_WRITE_ERR
+  integer, parameter :: ALLOC_ERR = IOFL_ALLOC_ERR
+  integer, parameter :: ARG_ERR   = IOFL_ARG_ERR
 
   type String
     !-------------------------------------------------------------------------------------------------------------------

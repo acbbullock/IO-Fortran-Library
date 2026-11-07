@@ -4,7 +4,8 @@ module cast_cases
   !---------------------------------------------------------------------------------------------------------------------
   use, intrinsic :: iso_fortran_env, only: real32, real64, int8, int32, int64
   use, intrinsic :: ieee_arithmetic, only: ieee_is_nan
-  use io_fortran_lib, only: String, cast, str, CR, operator(==), operator(/=), operator(<), operator(<=), operator(>)
+  use io_fortran_lib, only: String, cast, str, IOFL_CR, operator(==), operator(/=), operator(<), operator(<=), &
+                            operator(>)
   use test_support, only: test_suite, STOPS, check
   implicit none (type, external)
   private
@@ -145,7 +146,7 @@ contains
     st = 0
 
     call cast_i32_is("7", 7); call cast_i32_is("+7", 7); call cast_i32_is("-7", -7); call cast_i32_is("  12 ", 12)
-    call cast_i32_is("0", 0); call cast_i32_is("007", 7); call cast_i32_is("12"//CR, 12)
+    call cast_i32_is("0", 0); call cast_i32_is("007", 7); call cast_i32_is("12"//IOFL_CR, 12)
     call cast_i32_is("2147483647", huge(1_int32)); call cast_i32_is("-2147483648", -huge(1_int32)-1_int32)
     call cast("127", into=i8, stat=st); call check((st == 0) .and. (i8 == 127_int8), "Largest int8.")
     call cast("-128", into=i8, stat=st); call check((st == 0) .and. (i8 == -127_int8-1_int8), "Smallest int8.")
@@ -201,7 +202,7 @@ contains
     call cast_r64_is("+3.25", 3.25_real64, "US"); call cast_r64_is("1d2", 100.0_real64, "US")
     call cast_r64_is("  7 ", 7.0_real64, "US"); call cast_r64_is("1E-2", 0.01_real64, "US")
     call cast_r64_is("1,5", 1.5_real64, "EU"); call cast_r64_is("-1,5e1", -15.0_real64, "EU")
-    call cast_r64_is("2.5"//CR, 2.5_real64, "US")
+    call cast_r64_is("2.5"//IOFL_CR, 2.5_real64, "US")
     call cast("NaN", into=x, stat=st); call check((st == 0) .and. ieee_is_nan(x), "NaN.")
     call cast("Inf", into=x, stat=st); call check((st == 0) .and. (x > huge(x)), "Inf.")
     call cast("-Inf", into=x, stat=st); call check((st == 0) .and. (x < -huge(x)), "-Inf.")

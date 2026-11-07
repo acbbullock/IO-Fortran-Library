@@ -69,7 +69,7 @@ call to_file(x, file [, stat, errmsg, format])
 @note `file` may be a relative path, but absolute paths are not
 guaranteed to work on every platform.
 
-@note `to_file` will always use the `NL` line ending when writing text
+@note `to_file` will always use the `IOFL_NL` line ending when writing text
 files (which on most systems equates to `LF`).
 
 ### Optional Arguments

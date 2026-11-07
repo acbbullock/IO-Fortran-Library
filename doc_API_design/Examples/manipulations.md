@@ -60,7 +60,7 @@ timestamp:
 
 ```fortran
 program main
-    use io_fortran_lib, only: String, join, split, LF, operator(+), operator(-)
+    use io_fortran_lib, only: String, join, split, IOFL_LF, operator(+), operator(-)
     implicit none (type, external)
 
     type(String) :: time_stamp, new_time_stamp
@@ -70,14 +70,14 @@ program main
 
     call date_and_time(date=date, time=time)
 
-    time_stamp = String("Date : " + date + LF + "Time : " + time)
+    time_stamp = String("Date : " + date + IOFL_LF + "Time : " + time)
 
-    write(*,"(a)") "ORIGINAL TIME STAMP:" + LF + time_stamp%as_str() + LF
+    write(*,"(a)") "ORIGINAL TIME STAMP:" + IOFL_LF + time_stamp%as_str() + IOFL_LF
 
-    tokens = split(time_stamp, separator=LF) - "Date : " - "Time : " + [" : Date", " : Time"]
+    tokens = split(time_stamp, separator=IOFL_LF) - "Date : " - "Time : " + [" : Date", " : Time"]
     new_time_stamp = join(tokens, separator=" | ")
 
-    write(*,"(a)") "RECONSTRUCTED TIME STAMP:" + LF + new_time_stamp%as_str()
+    write(*,"(a)") "RECONSTRUCTED TIME STAMP:" + IOFL_LF + new_time_stamp%as_str()
 end program main
 ```
 

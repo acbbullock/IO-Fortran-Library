@@ -4,6 +4,7 @@ program tests
   !---------------------------------------------------------------------------------------------------------------------
   use test_support, only: test_suite
   use harness_cases, only: register_harness
+  use api_cases, only: register_api
   use cast_cases, only: register_cast
   use str_cases, only: register_str
   use array_files_cases, only: register_array_files
@@ -21,6 +22,7 @@ program tests
   type(test_suite) :: suite
 
   call register_harness(suite)
+  call register_api(suite)
   call register_cast(suite)
   call register_str(suite)
   call register_array_files(suite)

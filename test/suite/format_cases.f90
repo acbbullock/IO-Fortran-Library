@@ -3,7 +3,7 @@ module format_cases
   !! The `format` argument and file extensions.
   !---------------------------------------------------------------------------------------------------------------------
   use, intrinsic :: iso_fortran_env, only: real64
-  use io_fortran_lib, only: String, echo, to_file, from_file, TAB, operator(==), operator(/=)
+  use io_fortran_lib, only: String, echo, to_file, from_file, IOFL_TAB, operator(==), operator(/=)
   use test_support, only: test_suite, STOPS, check, expect_equal, scratch
   implicit none (type, external)
   private
@@ -120,8 +120,8 @@ contains
     file = scratch(); st = 0; msg = ""
 
     one_row(1,1) = String("a"); one_row(1,2) = String("b")
-    call s%write_file(one_row, file=file//".tsv", column_separator=TAB, format="text")
-    call s%read_file(file//".tsv", cell_array=cells, column_separator=TAB, format="text")
+    call s%write_file(one_row, file=file//".tsv", column_separator=IOFL_TAB, format="text")
+    call s%read_file(file//".tsv", cell_array=cells, column_separator=IOFL_TAB, format="text")
     call expect_equal(cells(1,2), "b", "read_file and write_file should accept format.")
     call echo("line", file=file//".json", format="text", stat=st, errmsg=msg)
     call expect_equal(st, 0, "echo should accept format.")

@@ -3,8 +3,8 @@ module string_cases
   !! The `String` type: comparison, counting, `join`, `trim`, `echo`, repetition, and `push`.
   !---------------------------------------------------------------------------------------------------------------------
   use, intrinsic :: iso_fortran_env, only: int64
-  use io_fortran_lib, only: String, str, join, split, echo, LF, CR, TAB, operator(==), operator(/=), operator(**), &
-                            operator(+)
+  use io_fortran_lib, only: String, str, join, split, echo, IOFL_LF, IOFL_CR, IOFL_TAB, operator(==), operator(/=), &
+                            operator(**), operator(+)
   use test_support, only: test_suite, check, expect_equal, scratch, write_raw
   implicit none (type, external)
   private
@@ -140,15 +140,15 @@ contains
   subroutine trim_whitespace()
     type(String) :: s, r
 
-    s = String(TAB//"hi"//LF)
+    s = String(IOFL_TAB//"hi"//IOFL_LF)
     r = s%trim()
     call expect_equal(r%as_str(), "hi", "Trim should remove all leading and trailing whitespace.")
-    s = String(" "//CR//LF//TAB//"a b"//TAB//"c"//CR//LF//" ")
+    s = String(" "//IOFL_CR//IOFL_LF//IOFL_TAB//"a b"//IOFL_TAB//"c"//IOFL_CR//IOFL_LF//" ")
     r = s%trim()
-    call check(r%as_str() == "a b"//TAB//"c", "Whitespace inside should stay.")
+    call check(r%as_str() == "a b"//IOFL_TAB//"c", "Whitespace inside should stay.")
     call s%trim_inplace()
     call check(s == r, "The inplace form should agree.")
-    s = String(TAB//LF//"  ")
+    s = String(IOFL_TAB//IOFL_LF//"  ")
     r = s%trim()
     call expect_equal(r%len(), 0, "All whitespace trims to empty.")
   end subroutine trim_whitespace
@@ -167,7 +167,7 @@ contains
     call expect_equal(st, 0, "A blank line should be accepted.")
     call echo("b", file=file//"_out.log", stat=st, errmsg=msg)
     call s%read_file(file//"_out.log")
-    call check(s%as_str() == "a"//LF//LF//"b"//LF, "The blank line should be in the file.")
+    call check(s%as_str() == "a"//IOFL_LF//IOFL_LF//"b"//IOFL_LF, "The blank line should be in the file.")
   end subroutine echo_blank_line
 
   subroutine echo_unallocated()
@@ -182,7 +182,7 @@ contains
     call s%echo(file//"_out.log", stat=st, errmsg=msg)
     call expect_equal(st, 0, "An unallocated String is an empty line.")
     call r%read_file(file//"_out.log")
-    call check(r%as_str() == LF, "It should write only the terminator.")
+    call check(r%as_str() == IOFL_LF, "It should write only the terminator.")
   end subroutine echo_unallocated
 
   subroutine repeat_negative()

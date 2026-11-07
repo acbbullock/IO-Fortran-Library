@@ -23,7 +23,7 @@ and save it as `hg38.bed` in the directory you run the program from:
 ```fortran
 program main
     use, intrinsic :: iso_fortran_env, only: int64, real64, compiler_version
-    use io_fortran_lib, only: String, str, TAB, operator(+), operator(==)
+    use io_fortran_lib, only: String, str, IOFL_TAB, operator(+), operator(==)
     implicit none (type, external)
 
     type(String) :: hg38, hg38_new
@@ -34,8 +34,8 @@ program main
 
     call system_clock(t1)
 
-    call hg38%read_file("hg38.bed", cell_array=cells, column_separator=TAB)
-    call hg38_new%write_file(cells, "hg38_new.bed", column_separator=TAB)
+    call hg38%read_file("hg38.bed", cell_array=cells, column_separator=IOFL_TAB)
+    call hg38_new%write_file(cells, "hg38_new.bed", column_separator=IOFL_TAB)
 
     call system_clock(t2, count_rate=rate); wall_time = real(t2-t1,real64)/rate
 

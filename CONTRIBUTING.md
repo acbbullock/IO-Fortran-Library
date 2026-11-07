@@ -50,10 +50,10 @@ module's `register_*` subroutine:
     type(String)              :: s
     type(String), allocatable :: cells(:,:)
 
-    call write_raw(scratch()//".txt", '"a'//TAB//'b"'//TAB//"c"//LF)
-    call s%read_file(scratch()//".txt", cell_array=cells, column_separator=TAB)
+    call write_raw(scratch()//".txt", '"a'//IOFL_TAB//'b"'//IOFL_TAB//"c"//IOFL_LF)
+    call s%read_file(scratch()//".txt", cell_array=cells, column_separator=IOFL_TAB)
     call expect_equal(size(cells, dim=2), 2, "A tab inside quotes is not a separator.")
-    call expect_equal(cells(1,1), "a"//TAB//"b", "The quoted cell keeps its tab.")
+    call expect_equal(cells(1,1), "a"//IOFL_TAB//"b", "The quoted cell keeps its tab.")
   end subroutine read_tab_in_quotes
 ```
 
