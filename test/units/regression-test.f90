@@ -961,6 +961,7 @@ contains
         tokens = split(s, ",")
         call check(size(tokens) == 1001, "Split should ignore spare room.")
         call check(str(s) == repeat("ab,", 1000), "str should ignore spare room.")
+        call write_raw(file//"_out.log", "")
         call s%echo(file//"_out.log", stat=st, errmsg=msg)
         call r%read_file(file//"_out.log")
         call check(r%len() == 3001, "A file should hold only the text and the terminator.")

@@ -12,6 +12,7 @@ md_extensions: markdown.extensions.toc
 page_dir: doc_API_design
 externalize: true
 preprocess: true
+preprocessor: cpp -traditional-cpp -E -P
 fpp_extensions: f90
 include: ./include
 macro: IOFL_HAS_R128

@@ -68,14 +68,14 @@ jobs:
           mkdir -p "$HOME/flang-bin"
           ln -sf "$(command -v ${{ steps.setup-fortran.outputs.fc }})" "$HOME/flang-bin/flang-new"
           echo "$HOME/flang-bin" >> "$GITHUB_PATH"
-      - name: Move Git's link aside so that ifx finds the Microsoft linker
+      - name: Move GNU link aside so that ifx finds the Microsoft linker
         if: runner.os == 'Windows' && matrix.compiler == 'intel'
-        shell: bash
+        shell: pwsh
         run: |
-          gnu_link="$(command -v link || true)"
-          case "$gnu_link" in
-            */usr/bin/link) mv "$gnu_link" "${gnu_link}-gnu" ;;
-          esac
+          Get-Command link -All -CommandType Application -ErrorAction SilentlyContinue |
+            Where-Object { $_.Source -notmatch 'Microsoft Visual Studio' } |
+            ForEach-Object { Write-Host "Moving $($_.Source)"; Rename-Item $_.Source "$($_.Source).gnu" }
+          Get-Command link -All -CommandType Application -ErrorAction SilentlyContinue | ForEach-Object { $_.Source }
       - name: Run tests
         run: fpm test --compiler ${{ matrix.compiler == 'flang' && 'flang-new' || steps.setup-fortran.outputs.fc }} --flag "${{ matrix.flags }} -D R8 -D I4"
 
