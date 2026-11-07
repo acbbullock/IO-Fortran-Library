@@ -60,6 +60,8 @@ jobs:
           # Apple Silicon has no REAL(16), so this also tests building without the real128 procedures.
           - { os: macos-15, compiler: gcc, version: "16", flags: "-std=f2018 -O2 -g -fbacktrace" }
           - { os: macos-15, compiler: flang, version: "23", flags: "-O2 -cpp" }
+          # Intel macOS has REAL(16). setup-fpm's macOS binary needs a gfortran 12 runtime, so fpm is built from source.
+          - { os: macos-15-intel, compiler: gcc, version: "16", flags: "-std=f2018 -O2 -g -fbacktrace", fpm: source }
           - { os: windows-2025, compiler: gcc, version: "16", flags: "-std=f2018 -O2 -g -fbacktrace" }
           - { os: windows-2025, compiler: intel, version: "2026.1", flags: "" }
     steps:
@@ -70,8 +72,17 @@ jobs:
           compiler: ${{ matrix.compiler }}
           version: ${{ matrix.version }}
       - uses: fortran-lang/setup-fpm@v10
+        if: matrix.fpm != 'source'
         with:
           fpm-version: v0.12.0
+      - name: Build fpm from its single-file source
+        if: matrix.fpm == 'source'
+        run: |
+          mkdir -p "$HOME/fpm-bin" && cd "$HOME/fpm-bin"
+          curl -fsSLO https://github.com/fortran-lang/fpm/releases/download/v0.12.0/fpm-0.12.0.F90
+          echo "61567ac810d8ea8f8fc91fdb13700d34b91bf36e193b35d744fc6352d21146ad  fpm-0.12.0.F90" | shasum -a 256 -c -
+          ${{ steps.setup-fortran.outputs.fc }} -O2 -J . fpm-0.12.0.F90 -o fpm
+          echo "$HOME/fpm-bin" >> "$GITHUB_PATH"
       - name: Name flang so that fpm uses flang-new options
         if: matrix.compiler == 'flang'
         run: |
@@ -104,9 +115,9 @@ jobs:
       - name: Runtime checks
         run: fpm test --compiler gfortran --flag "-std=f2018 -g -fcheck=all -fbacktrace"
       - name: Address and undefined behavior sanitizers
-        # Leak checks are off because allocatables still allocated at the end of a main program are reported as leaks.
+        # Leak checks are on: every case runs in a subroutine, so nothing is left allocated at the end of the program.
         env:
-          ASAN_OPTIONS: detect_leaks=0:exitcode=99
+          ASAN_OPTIONS: detect_leaks=1:exitcode=99
         run: >-
           fpm test --compiler gfortran
           --flag "-std=f2018 -g -O1 -fsanitize=address,undefined -fno-omit-frame-pointer"
