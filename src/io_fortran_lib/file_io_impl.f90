@@ -1,3 +1,4 @@
+! Generated from fypp/io_fortran_lib/file_io_impl.fypp by fypp/generate.sh. Edit that file, not this one.
 #include "iofl_config.inc"
 submodule (io_fortran_lib) file_io
   !---------------------------------------------------------------------------------------------------------------------
@@ -7,13 +8,13 @@ submodule (io_fortran_lib) file_io
   implicit none (type, external)
 
   ! Definitions and interfaces ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  character(len=0), target :: EMPTY_STRING    = EMPTY_STR
-  character(len=0), target :: EMPTY_HEADER(1) = [ EMPTY_STR ]
-  character(len=1), target :: EXP_FMT         = REAL_FMTS(1)
-  character(len=1), target :: INT_FMT         = INT_FMTS(1)
-  character(len=1), target :: COMMA_DELIMITER = COMMA
-  character(len=1), target :: SEMICOLON_DELIM = SEMICOLON
-  character(len=2), target :: US_LOCALE       = LOCALES(1)
+  character(len=0), parameter :: EMPTY_STRING    = EMPTY_STR
+  character(len=0), parameter :: EMPTY_HEADER(1) = [ EMPTY_STR ]
+  character(len=1), parameter :: EXP_FMT         = REAL_FMTS(1)
+  character(len=1), parameter :: INT_FMT         = INT_FMTS(1)
+  character(len=1), parameter :: COMMA_DELIMITER = COMMA
+  character(len=1), parameter :: SEMICOLON_DELIM = SEMICOLON
+  character(len=2), parameter :: US_LOCALE       = LOCALES(1)
   integer,          target :: MAX_DECIMALS    = 150
   logical,          target :: ABSENT_HEADER   = .false.
 
@@ -42,9 +43,10 @@ submodule (io_fortran_lib) file_io
   module procedure to_file_c128
     character(len=:), allocatable :: ext
 
-    character(len=:), pointer :: header_(:)
-    character(len=:), pointer :: locale_, delim_, fmt_, im_, errmsg_
-    integer,          pointer :: decimals_, stat_
+    character(len=:), allocatable :: locale_, delim_, fmt_, im_
+    character(len=:), pointer :: errmsg_
+    integer :: decimals_
+    integer, pointer :: stat_
 
     character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
@@ -76,9 +78,7 @@ submodule (io_fortran_lib) file_io
           return
       end select
 
-      if ( .not. present(header) ) then
-        header_ => EMPTY_HEADER
-      else
+      if ( present(header) ) then
         if ( size(header) /= 1 ) then
           select rank(x)
             rank(1)
@@ -96,14 +96,13 @@ submodule (io_fortran_lib) file_io
               end if
           end select
         end if
-        header_ => header
       end if
 
       if ( .not. present(locale) ) then
-        locale_ => US_LOCALE
+        locale_ = US_LOCALE
       else
         if ( any(LOCALES == locale) ) then
-          locale_ => locale
+          locale_ = locale
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid locale "'//locale//'" for file "'//file//'". Locale must be one of: '//join(LOCALES)
@@ -114,19 +113,19 @@ submodule (io_fortran_lib) file_io
 
       if ( .not. present(delim) ) then
         if ( locale_ == US_LOCALE ) then
-          delim_ => COMMA_DELIMITER
+          delim_ = COMMA_DELIMITER
         else
-          delim_ => SEMICOLON_DELIM
+          delim_ = SEMICOLON_DELIM
         end if
       else
-        delim_ => delim
+        delim_ = delim
       end if
 
       if ( .not. present(fmt) ) then
-        fmt_ => EXP_FMT
+        fmt_ = EXP_FMT
       else
         if ( any(REAL_FMTS == fmt) ) then
-          fmt_ => fmt
+          fmt_ = fmt
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid format "'//fmt//'" for file "'//file//'". Format must be one of: '//join(REAL_FMTS)
@@ -135,21 +134,13 @@ submodule (io_fortran_lib) file_io
         end if
       end if
 
-      if ( .not. present(decimals) ) then
-        decimals_ => MAX_DECIMALS
-      else
-        decimals_ => decimals
-      end if
+      decimals_ = optval(decimals, MAX_DECIMALS)
 
-      if ( .not. present(im) ) then
-        im_ => EMPTY_STRING
-      else
-        im_ => im
-      end if
+      im_ = optval(im, EMPTY_STRING)
 
       select rank(x)
-        rank(1); call to_text(x, file, header_, locale_, delim_, fmt_, decimals_, im_, stat_, errmsg_)
-        rank(2); call to_text(x, file, header_, locale_, delim_, fmt_, decimals_, im_, stat_, errmsg_)
+        rank(1); call to_text(x, file, header, locale_, delim_, fmt_, decimals_, im_, stat_, errmsg_)
+        rank(2); call to_text(x, file, header, locale_, delim_, fmt_, decimals_, im_, stat_, errmsg_)
       end select
     else if ( any(BINARY_EXT == ext) ) then
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
@@ -160,15 +151,15 @@ submodule (io_fortran_lib) file_io
       if ( present(im      ) ) write(*,"(a)") LF//'WARNING: im not supported for file type "'//ext//'".'
 
       select rank(x)
-        rank(1);  call to_binary(x, file, stat_, errmsg_)
-        rank(2);  call to_binary(x, file, stat_, errmsg_)
-        rank(3);  call to_binary(x, file, stat_, errmsg_)
-        rank(4);  call to_binary(x, file, stat_, errmsg_)
-        rank(5);  call to_binary(x, file, stat_, errmsg_)
-        rank(6);  call to_binary(x, file, stat_, errmsg_)
-        rank(7);  call to_binary(x, file, stat_, errmsg_)
-        rank(8);  call to_binary(x, file, stat_, errmsg_)
-        rank(9);  call to_binary(x, file, stat_, errmsg_)
+        rank(1); call to_binary(x, file, stat_, errmsg_)
+        rank(2); call to_binary(x, file, stat_, errmsg_)
+        rank(3); call to_binary(x, file, stat_, errmsg_)
+        rank(4); call to_binary(x, file, stat_, errmsg_)
+        rank(5); call to_binary(x, file, stat_, errmsg_)
+        rank(6); call to_binary(x, file, stat_, errmsg_)
+        rank(7); call to_binary(x, file, stat_, errmsg_)
+        rank(8); call to_binary(x, file, stat_, errmsg_)
+        rank(9); call to_binary(x, file, stat_, errmsg_)
         rank(10); call to_binary(x, file, stat_, errmsg_)
         rank(11); call to_binary(x, file, stat_, errmsg_)
         rank(12); call to_binary(x, file, stat_, errmsg_)
@@ -190,12 +181,14 @@ submodule (io_fortran_lib) file_io
     call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure to_file_c128
 #endif
+
   module procedure to_file_c64
     character(len=:), allocatable :: ext
 
-    character(len=:), pointer :: header_(:)
-    character(len=:), pointer :: locale_, delim_, fmt_, im_, errmsg_
-    integer,          pointer :: decimals_, stat_
+    character(len=:), allocatable :: locale_, delim_, fmt_, im_
+    character(len=:), pointer :: errmsg_
+    integer :: decimals_
+    integer, pointer :: stat_
 
     character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
@@ -227,9 +220,7 @@ submodule (io_fortran_lib) file_io
           return
       end select
 
-      if ( .not. present(header) ) then
-        header_ => EMPTY_HEADER
-      else
+      if ( present(header) ) then
         if ( size(header) /= 1 ) then
           select rank(x)
             rank(1)
@@ -247,14 +238,13 @@ submodule (io_fortran_lib) file_io
               end if
           end select
         end if
-        header_ => header
       end if
 
       if ( .not. present(locale) ) then
-        locale_ => US_LOCALE
+        locale_ = US_LOCALE
       else
         if ( any(LOCALES == locale) ) then
-          locale_ => locale
+          locale_ = locale
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid locale "'//locale//'" for file "'//file//'". Locale must be one of: '//join(LOCALES)
@@ -265,19 +255,19 @@ submodule (io_fortran_lib) file_io
 
       if ( .not. present(delim) ) then
         if ( locale_ == US_LOCALE ) then
-          delim_ => COMMA_DELIMITER
+          delim_ = COMMA_DELIMITER
         else
-          delim_ => SEMICOLON_DELIM
+          delim_ = SEMICOLON_DELIM
         end if
       else
-        delim_ => delim
+        delim_ = delim
       end if
 
       if ( .not. present(fmt) ) then
-        fmt_ => EXP_FMT
+        fmt_ = EXP_FMT
       else
         if ( any(REAL_FMTS == fmt) ) then
-          fmt_ => fmt
+          fmt_ = fmt
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid format "'//fmt//'" for file "'//file//'". Format must be one of: '//join(REAL_FMTS)
@@ -286,21 +276,13 @@ submodule (io_fortran_lib) file_io
         end if
       end if
 
-      if ( .not. present(decimals) ) then
-        decimals_ => MAX_DECIMALS
-      else
-        decimals_ => decimals
-      end if
+      decimals_ = optval(decimals, MAX_DECIMALS)
 
-      if ( .not. present(im) ) then
-        im_ => EMPTY_STRING
-      else
-        im_ => im
-      end if
+      im_ = optval(im, EMPTY_STRING)
 
       select rank(x)
-        rank(1); call to_text(x, file, header_, locale_, delim_, fmt_, decimals_, im_, stat_, errmsg_)
-        rank(2); call to_text(x, file, header_, locale_, delim_, fmt_, decimals_, im_, stat_, errmsg_)
+        rank(1); call to_text(x, file, header, locale_, delim_, fmt_, decimals_, im_, stat_, errmsg_)
+        rank(2); call to_text(x, file, header, locale_, delim_, fmt_, decimals_, im_, stat_, errmsg_)
       end select
     else if ( any(BINARY_EXT == ext) ) then
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
@@ -311,15 +293,15 @@ submodule (io_fortran_lib) file_io
       if ( present(im      ) ) write(*,"(a)") LF//'WARNING: im not supported for file type "'//ext//'".'
 
       select rank(x)
-        rank(1);  call to_binary(x, file, stat_, errmsg_)
-        rank(2);  call to_binary(x, file, stat_, errmsg_)
-        rank(3);  call to_binary(x, file, stat_, errmsg_)
-        rank(4);  call to_binary(x, file, stat_, errmsg_)
-        rank(5);  call to_binary(x, file, stat_, errmsg_)
-        rank(6);  call to_binary(x, file, stat_, errmsg_)
-        rank(7);  call to_binary(x, file, stat_, errmsg_)
-        rank(8);  call to_binary(x, file, stat_, errmsg_)
-        rank(9);  call to_binary(x, file, stat_, errmsg_)
+        rank(1); call to_binary(x, file, stat_, errmsg_)
+        rank(2); call to_binary(x, file, stat_, errmsg_)
+        rank(3); call to_binary(x, file, stat_, errmsg_)
+        rank(4); call to_binary(x, file, stat_, errmsg_)
+        rank(5); call to_binary(x, file, stat_, errmsg_)
+        rank(6); call to_binary(x, file, stat_, errmsg_)
+        rank(7); call to_binary(x, file, stat_, errmsg_)
+        rank(8); call to_binary(x, file, stat_, errmsg_)
+        rank(9); call to_binary(x, file, stat_, errmsg_)
         rank(10); call to_binary(x, file, stat_, errmsg_)
         rank(11); call to_binary(x, file, stat_, errmsg_)
         rank(12); call to_binary(x, file, stat_, errmsg_)
@@ -340,12 +322,14 @@ submodule (io_fortran_lib) file_io
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure to_file_c64
+
   module procedure to_file_c32
     character(len=:), allocatable :: ext
 
-    character(len=:), pointer :: header_(:)
-    character(len=:), pointer :: locale_, delim_, fmt_, im_, errmsg_
-    integer,          pointer :: decimals_, stat_
+    character(len=:), allocatable :: locale_, delim_, fmt_, im_
+    character(len=:), pointer :: errmsg_
+    integer :: decimals_
+    integer, pointer :: stat_
 
     character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
@@ -377,9 +361,7 @@ submodule (io_fortran_lib) file_io
           return
       end select
 
-      if ( .not. present(header) ) then
-        header_ => EMPTY_HEADER
-      else
+      if ( present(header) ) then
         if ( size(header) /= 1 ) then
           select rank(x)
             rank(1)
@@ -397,14 +379,13 @@ submodule (io_fortran_lib) file_io
               end if
           end select
         end if
-        header_ => header
       end if
 
       if ( .not. present(locale) ) then
-        locale_ => US_LOCALE
+        locale_ = US_LOCALE
       else
         if ( any(LOCALES == locale) ) then
-          locale_ => locale
+          locale_ = locale
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid locale "'//locale//'" for file "'//file//'". Locale must be one of: '//join(LOCALES)
@@ -415,19 +396,19 @@ submodule (io_fortran_lib) file_io
 
       if ( .not. present(delim) ) then
         if ( locale_ == US_LOCALE ) then
-          delim_ => COMMA_DELIMITER
+          delim_ = COMMA_DELIMITER
         else
-          delim_ => SEMICOLON_DELIM
+          delim_ = SEMICOLON_DELIM
         end if
       else
-        delim_ => delim
+        delim_ = delim
       end if
 
       if ( .not. present(fmt) ) then
-        fmt_ => EXP_FMT
+        fmt_ = EXP_FMT
       else
         if ( any(REAL_FMTS == fmt) ) then
-          fmt_ => fmt
+          fmt_ = fmt
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid format "'//fmt//'" for file "'//file//'". Format must be one of: '//join(REAL_FMTS)
@@ -436,21 +417,13 @@ submodule (io_fortran_lib) file_io
         end if
       end if
 
-      if ( .not. present(decimals) ) then
-        decimals_ => MAX_DECIMALS
-      else
-        decimals_ => decimals
-      end if
+      decimals_ = optval(decimals, MAX_DECIMALS)
 
-      if ( .not. present(im) ) then
-        im_ => EMPTY_STRING
-      else
-        im_ => im
-      end if
+      im_ = optval(im, EMPTY_STRING)
 
       select rank(x)
-        rank(1); call to_text(x, file, header_, locale_, delim_, fmt_, decimals_, im_, stat_, errmsg_)
-        rank(2); call to_text(x, file, header_, locale_, delim_, fmt_, decimals_, im_, stat_, errmsg_)
+        rank(1); call to_text(x, file, header, locale_, delim_, fmt_, decimals_, im_, stat_, errmsg_)
+        rank(2); call to_text(x, file, header, locale_, delim_, fmt_, decimals_, im_, stat_, errmsg_)
       end select
     else if ( any(BINARY_EXT == ext) ) then
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
@@ -461,15 +434,15 @@ submodule (io_fortran_lib) file_io
       if ( present(im      ) ) write(*,"(a)") LF//'WARNING: im not supported for file type "'//ext//'".'
 
       select rank(x)
-        rank(1);  call to_binary(x, file, stat_, errmsg_)
-        rank(2);  call to_binary(x, file, stat_, errmsg_)
-        rank(3);  call to_binary(x, file, stat_, errmsg_)
-        rank(4);  call to_binary(x, file, stat_, errmsg_)
-        rank(5);  call to_binary(x, file, stat_, errmsg_)
-        rank(6);  call to_binary(x, file, stat_, errmsg_)
-        rank(7);  call to_binary(x, file, stat_, errmsg_)
-        rank(8);  call to_binary(x, file, stat_, errmsg_)
-        rank(9);  call to_binary(x, file, stat_, errmsg_)
+        rank(1); call to_binary(x, file, stat_, errmsg_)
+        rank(2); call to_binary(x, file, stat_, errmsg_)
+        rank(3); call to_binary(x, file, stat_, errmsg_)
+        rank(4); call to_binary(x, file, stat_, errmsg_)
+        rank(5); call to_binary(x, file, stat_, errmsg_)
+        rank(6); call to_binary(x, file, stat_, errmsg_)
+        rank(7); call to_binary(x, file, stat_, errmsg_)
+        rank(8); call to_binary(x, file, stat_, errmsg_)
+        rank(9); call to_binary(x, file, stat_, errmsg_)
         rank(10); call to_binary(x, file, stat_, errmsg_)
         rank(11); call to_binary(x, file, stat_, errmsg_)
         rank(12); call to_binary(x, file, stat_, errmsg_)
@@ -491,13 +464,15 @@ submodule (io_fortran_lib) file_io
     call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure to_file_c32
 
+
 #ifdef IOFL_HAS_R128
   module procedure to_file_r128
     character(len=:), allocatable :: ext
 
-    character(len=:), pointer :: header_(:)
-    character(len=:), pointer :: locale_, delim_, fmt_, errmsg_
-    integer,          pointer :: decimals_, stat_
+    character(len=:), allocatable :: locale_, delim_, fmt_
+    character(len=:), pointer :: errmsg_
+    integer :: decimals_
+    integer, pointer :: stat_
 
     character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
@@ -529,9 +504,7 @@ submodule (io_fortran_lib) file_io
           return
       end select
 
-      if ( .not. present(header) ) then
-        header_ => EMPTY_HEADER
-      else
+      if ( present(header) ) then
         if ( size(header) /= 1 ) then
           select rank(x)
             rank(1)
@@ -549,14 +522,13 @@ submodule (io_fortran_lib) file_io
               end if
           end select
         end if
-        header_ => header
       end if
 
       if ( .not. present(locale) ) then
-        locale_ => US_LOCALE
+        locale_ = US_LOCALE
       else
         if ( any(LOCALES == locale) ) then
-          locale_ => locale
+          locale_ = locale
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid locale "'//locale//'" for file "'//file//'". Locale must be one of: '//join(LOCALES)
@@ -567,19 +539,19 @@ submodule (io_fortran_lib) file_io
 
       if ( .not. present(delim) ) then
         if ( locale_ == US_LOCALE ) then
-          delim_ => COMMA_DELIMITER
+          delim_ = COMMA_DELIMITER
         else
-          delim_ => SEMICOLON_DELIM
+          delim_ = SEMICOLON_DELIM
         end if
       else
-        delim_ => delim
+        delim_ = delim
       end if
 
       if ( .not. present(fmt) ) then
-        fmt_ => EXP_FMT
+        fmt_ = EXP_FMT
       else
         if ( any(REAL_FMTS == fmt) ) then
-          fmt_ => fmt
+          fmt_ = fmt
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid format "'//fmt//'" for file "'//file//'". Format must be one of: '//join(REAL_FMTS)
@@ -588,15 +560,11 @@ submodule (io_fortran_lib) file_io
         end if
       end if
 
-      if ( .not. present(decimals) ) then
-        decimals_ => MAX_DECIMALS
-      else
-        decimals_ => decimals
-      end if
+      decimals_ = optval(decimals, MAX_DECIMALS)
 
       select rank(x)
-        rank(1); call to_text(x, file, header_, locale_, delim_, fmt_, decimals_, stat_, errmsg_)
-        rank(2); call to_text(x, file, header_, locale_, delim_, fmt_, decimals_, stat_, errmsg_)
+        rank(1); call to_text(x, file, header, locale_, delim_, fmt_, decimals_, stat_, errmsg_)
+        rank(2); call to_text(x, file, header, locale_, delim_, fmt_, decimals_, stat_, errmsg_)
       end select
     else if ( any(BINARY_EXT == ext) ) then
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
@@ -606,15 +574,15 @@ submodule (io_fortran_lib) file_io
       if ( present(decimals) ) write(*,"(a)") LF//'WARNING: decimals not supported for file type "'//ext//'".'
 
       select rank(x)
-        rank(1);  call to_binary(x, file, stat_, errmsg_)
-        rank(2);  call to_binary(x, file, stat_, errmsg_)
-        rank(3);  call to_binary(x, file, stat_, errmsg_)
-        rank(4);  call to_binary(x, file, stat_, errmsg_)
-        rank(5);  call to_binary(x, file, stat_, errmsg_)
-        rank(6);  call to_binary(x, file, stat_, errmsg_)
-        rank(7);  call to_binary(x, file, stat_, errmsg_)
-        rank(8);  call to_binary(x, file, stat_, errmsg_)
-        rank(9);  call to_binary(x, file, stat_, errmsg_)
+        rank(1); call to_binary(x, file, stat_, errmsg_)
+        rank(2); call to_binary(x, file, stat_, errmsg_)
+        rank(3); call to_binary(x, file, stat_, errmsg_)
+        rank(4); call to_binary(x, file, stat_, errmsg_)
+        rank(5); call to_binary(x, file, stat_, errmsg_)
+        rank(6); call to_binary(x, file, stat_, errmsg_)
+        rank(7); call to_binary(x, file, stat_, errmsg_)
+        rank(8); call to_binary(x, file, stat_, errmsg_)
+        rank(9); call to_binary(x, file, stat_, errmsg_)
         rank(10); call to_binary(x, file, stat_, errmsg_)
         rank(11); call to_binary(x, file, stat_, errmsg_)
         rank(12); call to_binary(x, file, stat_, errmsg_)
@@ -636,12 +604,14 @@ submodule (io_fortran_lib) file_io
     call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure to_file_r128
 #endif
+
   module procedure to_file_r64
     character(len=:), allocatable :: ext
 
-    character(len=:), pointer :: header_(:)
-    character(len=:), pointer :: locale_, delim_, fmt_, errmsg_
-    integer,          pointer :: decimals_, stat_
+    character(len=:), allocatable :: locale_, delim_, fmt_
+    character(len=:), pointer :: errmsg_
+    integer :: decimals_
+    integer, pointer :: stat_
 
     character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
@@ -673,9 +643,7 @@ submodule (io_fortran_lib) file_io
           return
       end select
 
-      if ( .not. present(header) ) then
-        header_ => EMPTY_HEADER
-      else
+      if ( present(header) ) then
         if ( size(header) /= 1 ) then
           select rank(x)
             rank(1)
@@ -693,14 +661,13 @@ submodule (io_fortran_lib) file_io
               end if
           end select
         end if
-        header_ => header
       end if
 
       if ( .not. present(locale) ) then
-        locale_ => US_LOCALE
+        locale_ = US_LOCALE
       else
         if ( any(LOCALES == locale) ) then
-          locale_ => locale
+          locale_ = locale
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid locale "'//locale//'" for file "'//file//'". Locale must be one of: '//join(LOCALES)
@@ -711,19 +678,19 @@ submodule (io_fortran_lib) file_io
 
       if ( .not. present(delim) ) then
         if ( locale_ == US_LOCALE ) then
-          delim_ => COMMA_DELIMITER
+          delim_ = COMMA_DELIMITER
         else
-          delim_ => SEMICOLON_DELIM
+          delim_ = SEMICOLON_DELIM
         end if
       else
-        delim_ => delim
+        delim_ = delim
       end if
 
       if ( .not. present(fmt) ) then
-        fmt_ => EXP_FMT
+        fmt_ = EXP_FMT
       else
         if ( any(REAL_FMTS == fmt) ) then
-          fmt_ => fmt
+          fmt_ = fmt
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid format "'//fmt//'" for file "'//file//'". Format must be one of: '//join(REAL_FMTS)
@@ -732,15 +699,11 @@ submodule (io_fortran_lib) file_io
         end if
       end if
 
-      if ( .not. present(decimals) ) then
-        decimals_ => MAX_DECIMALS
-      else
-        decimals_ => decimals
-      end if
+      decimals_ = optval(decimals, MAX_DECIMALS)
 
       select rank(x)
-        rank(1); call to_text(x, file, header_, locale_, delim_, fmt_, decimals_, stat_, errmsg_)
-        rank(2); call to_text(x, file, header_, locale_, delim_, fmt_, decimals_, stat_, errmsg_)
+        rank(1); call to_text(x, file, header, locale_, delim_, fmt_, decimals_, stat_, errmsg_)
+        rank(2); call to_text(x, file, header, locale_, delim_, fmt_, decimals_, stat_, errmsg_)
       end select
     else if ( any(BINARY_EXT == ext) ) then
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
@@ -750,15 +713,15 @@ submodule (io_fortran_lib) file_io
       if ( present(decimals) ) write(*,"(a)") LF//'WARNING: decimals not supported for file type "'//ext//'".'
 
       select rank(x)
-        rank(1);  call to_binary(x, file, stat_, errmsg_)
-        rank(2);  call to_binary(x, file, stat_, errmsg_)
-        rank(3);  call to_binary(x, file, stat_, errmsg_)
-        rank(4);  call to_binary(x, file, stat_, errmsg_)
-        rank(5);  call to_binary(x, file, stat_, errmsg_)
-        rank(6);  call to_binary(x, file, stat_, errmsg_)
-        rank(7);  call to_binary(x, file, stat_, errmsg_)
-        rank(8);  call to_binary(x, file, stat_, errmsg_)
-        rank(9);  call to_binary(x, file, stat_, errmsg_)
+        rank(1); call to_binary(x, file, stat_, errmsg_)
+        rank(2); call to_binary(x, file, stat_, errmsg_)
+        rank(3); call to_binary(x, file, stat_, errmsg_)
+        rank(4); call to_binary(x, file, stat_, errmsg_)
+        rank(5); call to_binary(x, file, stat_, errmsg_)
+        rank(6); call to_binary(x, file, stat_, errmsg_)
+        rank(7); call to_binary(x, file, stat_, errmsg_)
+        rank(8); call to_binary(x, file, stat_, errmsg_)
+        rank(9); call to_binary(x, file, stat_, errmsg_)
         rank(10); call to_binary(x, file, stat_, errmsg_)
         rank(11); call to_binary(x, file, stat_, errmsg_)
         rank(12); call to_binary(x, file, stat_, errmsg_)
@@ -779,12 +742,14 @@ submodule (io_fortran_lib) file_io
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure to_file_r64
+
   module procedure to_file_r32
     character(len=:), allocatable :: ext
 
-    character(len=:), pointer :: header_(:)
-    character(len=:), pointer :: locale_, delim_, fmt_, errmsg_
-    integer,          pointer :: decimals_, stat_
+    character(len=:), allocatable :: locale_, delim_, fmt_
+    character(len=:), pointer :: errmsg_
+    integer :: decimals_
+    integer, pointer :: stat_
 
     character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
@@ -816,9 +781,7 @@ submodule (io_fortran_lib) file_io
           return
       end select
 
-      if ( .not. present(header) ) then
-        header_ => EMPTY_HEADER
-      else
+      if ( present(header) ) then
         if ( size(header) /= 1 ) then
           select rank(x)
             rank(1)
@@ -836,14 +799,13 @@ submodule (io_fortran_lib) file_io
               end if
           end select
         end if
-        header_ => header
       end if
 
       if ( .not. present(locale) ) then
-        locale_ => US_LOCALE
+        locale_ = US_LOCALE
       else
         if ( any(LOCALES == locale) ) then
-          locale_ => locale
+          locale_ = locale
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid locale "'//locale//'" for file "'//file//'". Locale must be one of: '//join(LOCALES)
@@ -854,19 +816,19 @@ submodule (io_fortran_lib) file_io
 
       if ( .not. present(delim) ) then
         if ( locale_ == US_LOCALE ) then
-          delim_ => COMMA_DELIMITER
+          delim_ = COMMA_DELIMITER
         else
-          delim_ => SEMICOLON_DELIM
+          delim_ = SEMICOLON_DELIM
         end if
       else
-        delim_ => delim
+        delim_ = delim
       end if
 
       if ( .not. present(fmt) ) then
-        fmt_ => EXP_FMT
+        fmt_ = EXP_FMT
       else
         if ( any(REAL_FMTS == fmt) ) then
-          fmt_ => fmt
+          fmt_ = fmt
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid format "'//fmt//'" for file "'//file//'". Format must be one of: '//join(REAL_FMTS)
@@ -875,15 +837,11 @@ submodule (io_fortran_lib) file_io
         end if
       end if
 
-      if ( .not. present(decimals) ) then
-        decimals_ => MAX_DECIMALS
-      else
-        decimals_ => decimals
-      end if
+      decimals_ = optval(decimals, MAX_DECIMALS)
 
       select rank(x)
-        rank(1); call to_text(x, file, header_, locale_, delim_, fmt_, decimals_, stat_, errmsg_)
-        rank(2); call to_text(x, file, header_, locale_, delim_, fmt_, decimals_, stat_, errmsg_)
+        rank(1); call to_text(x, file, header, locale_, delim_, fmt_, decimals_, stat_, errmsg_)
+        rank(2); call to_text(x, file, header, locale_, delim_, fmt_, decimals_, stat_, errmsg_)
       end select
     else if ( any(BINARY_EXT == ext) ) then
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
@@ -893,15 +851,15 @@ submodule (io_fortran_lib) file_io
       if ( present(decimals) ) write(*,"(a)") LF//'WARNING: decimals not supported for file type "'//ext//'".'
 
       select rank(x)
-        rank(1);  call to_binary(x, file, stat_, errmsg_)
-        rank(2);  call to_binary(x, file, stat_, errmsg_)
-        rank(3);  call to_binary(x, file, stat_, errmsg_)
-        rank(4);  call to_binary(x, file, stat_, errmsg_)
-        rank(5);  call to_binary(x, file, stat_, errmsg_)
-        rank(6);  call to_binary(x, file, stat_, errmsg_)
-        rank(7);  call to_binary(x, file, stat_, errmsg_)
-        rank(8);  call to_binary(x, file, stat_, errmsg_)
-        rank(9);  call to_binary(x, file, stat_, errmsg_)
+        rank(1); call to_binary(x, file, stat_, errmsg_)
+        rank(2); call to_binary(x, file, stat_, errmsg_)
+        rank(3); call to_binary(x, file, stat_, errmsg_)
+        rank(4); call to_binary(x, file, stat_, errmsg_)
+        rank(5); call to_binary(x, file, stat_, errmsg_)
+        rank(6); call to_binary(x, file, stat_, errmsg_)
+        rank(7); call to_binary(x, file, stat_, errmsg_)
+        rank(8); call to_binary(x, file, stat_, errmsg_)
+        rank(9); call to_binary(x, file, stat_, errmsg_)
         rank(10); call to_binary(x, file, stat_, errmsg_)
         rank(11); call to_binary(x, file, stat_, errmsg_)
         rank(12); call to_binary(x, file, stat_, errmsg_)
@@ -923,12 +881,13 @@ submodule (io_fortran_lib) file_io
     call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure to_file_r32
 
+
   module procedure to_file_i64
     character(len=:), allocatable :: ext
 
-    character(len=:), pointer :: header_(:)
-    character(len=:), pointer :: delim_, fmt_, errmsg_
-    integer,          pointer :: stat_
+    character(len=:), allocatable :: delim_, fmt_
+    character(len=:), pointer :: errmsg_
+    integer, pointer :: stat_
 
     character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
@@ -960,9 +919,7 @@ submodule (io_fortran_lib) file_io
           return
       end select
 
-      if ( .not. present(header) ) then
-        header_ => EMPTY_HEADER
-      else
+      if ( present(header) ) then
         if ( size(header) /= 1 ) then
           select rank(x)
             rank(1)
@@ -980,20 +937,15 @@ submodule (io_fortran_lib) file_io
               end if
           end select
         end if
-        header_ => header
       end if
 
-      if ( .not. present(delim) ) then
-        delim_ => COMMA_DELIMITER
-      else
-        delim_ => delim
-      end if
+      delim_ = optval(delim, COMMA_DELIMITER)
 
       if ( .not. present(fmt) ) then
-        fmt_ => INT_FMT
+        fmt_ = INT_FMT
       else
         if ( any(INT_FMTS == fmt) ) then
-          fmt_ => fmt
+          fmt_ = fmt
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid format "'//fmt//'" for file "'//file//'". Format must be one of: '//join(INT_FMTS)
@@ -1003,8 +955,8 @@ submodule (io_fortran_lib) file_io
       end if
 
       select rank(x)
-        rank(1); call to_text(x, file, header_, delim_, fmt_, stat_, errmsg_)
-        rank(2); call to_text(x, file, header_, delim_, fmt_, stat_, errmsg_)
+        rank(1); call to_text(x, file, header, delim_, fmt_, stat_, errmsg_)
+        rank(2); call to_text(x, file, header, delim_, fmt_, stat_, errmsg_)
       end select
     else if ( any(BINARY_EXT == ext) ) then
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
@@ -1012,15 +964,15 @@ submodule (io_fortran_lib) file_io
       if ( present(fmt     ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
 
       select rank(x)
-        rank(1);  call to_binary(x, file, stat_, errmsg_)
-        rank(2);  call to_binary(x, file, stat_, errmsg_)
-        rank(3);  call to_binary(x, file, stat_, errmsg_)
-        rank(4);  call to_binary(x, file, stat_, errmsg_)
-        rank(5);  call to_binary(x, file, stat_, errmsg_)
-        rank(6);  call to_binary(x, file, stat_, errmsg_)
-        rank(7);  call to_binary(x, file, stat_, errmsg_)
-        rank(8);  call to_binary(x, file, stat_, errmsg_)
-        rank(9);  call to_binary(x, file, stat_, errmsg_)
+        rank(1); call to_binary(x, file, stat_, errmsg_)
+        rank(2); call to_binary(x, file, stat_, errmsg_)
+        rank(3); call to_binary(x, file, stat_, errmsg_)
+        rank(4); call to_binary(x, file, stat_, errmsg_)
+        rank(5); call to_binary(x, file, stat_, errmsg_)
+        rank(6); call to_binary(x, file, stat_, errmsg_)
+        rank(7); call to_binary(x, file, stat_, errmsg_)
+        rank(8); call to_binary(x, file, stat_, errmsg_)
+        rank(9); call to_binary(x, file, stat_, errmsg_)
         rank(10); call to_binary(x, file, stat_, errmsg_)
         rank(11); call to_binary(x, file, stat_, errmsg_)
         rank(12); call to_binary(x, file, stat_, errmsg_)
@@ -1041,12 +993,13 @@ submodule (io_fortran_lib) file_io
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure to_file_i64
+
   module procedure to_file_i32
     character(len=:), allocatable :: ext
 
-    character(len=:), pointer :: header_(:)
-    character(len=:), pointer :: delim_, fmt_, errmsg_
-    integer,          pointer :: stat_
+    character(len=:), allocatable :: delim_, fmt_
+    character(len=:), pointer :: errmsg_
+    integer, pointer :: stat_
 
     character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
@@ -1078,9 +1031,7 @@ submodule (io_fortran_lib) file_io
           return
       end select
 
-      if ( .not. present(header) ) then
-        header_ => EMPTY_HEADER
-      else
+      if ( present(header) ) then
         if ( size(header) /= 1 ) then
           select rank(x)
             rank(1)
@@ -1098,20 +1049,15 @@ submodule (io_fortran_lib) file_io
               end if
           end select
         end if
-        header_ => header
       end if
 
-      if ( .not. present(delim) ) then
-        delim_ => COMMA_DELIMITER
-      else
-        delim_ => delim
-      end if
+      delim_ = optval(delim, COMMA_DELIMITER)
 
       if ( .not. present(fmt) ) then
-        fmt_ => INT_FMT
+        fmt_ = INT_FMT
       else
         if ( any(INT_FMTS == fmt) ) then
-          fmt_ => fmt
+          fmt_ = fmt
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid format "'//fmt//'" for file "'//file//'". Format must be one of: '//join(INT_FMTS)
@@ -1121,8 +1067,8 @@ submodule (io_fortran_lib) file_io
       end if
 
       select rank(x)
-        rank(1); call to_text(x, file, header_, delim_, fmt_, stat_, errmsg_)
-        rank(2); call to_text(x, file, header_, delim_, fmt_, stat_, errmsg_)
+        rank(1); call to_text(x, file, header, delim_, fmt_, stat_, errmsg_)
+        rank(2); call to_text(x, file, header, delim_, fmt_, stat_, errmsg_)
       end select
     else if ( any(BINARY_EXT == ext) ) then
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
@@ -1130,15 +1076,15 @@ submodule (io_fortran_lib) file_io
       if ( present(fmt     ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
 
       select rank(x)
-        rank(1);  call to_binary(x, file, stat_, errmsg_)
-        rank(2);  call to_binary(x, file, stat_, errmsg_)
-        rank(3);  call to_binary(x, file, stat_, errmsg_)
-        rank(4);  call to_binary(x, file, stat_, errmsg_)
-        rank(5);  call to_binary(x, file, stat_, errmsg_)
-        rank(6);  call to_binary(x, file, stat_, errmsg_)
-        rank(7);  call to_binary(x, file, stat_, errmsg_)
-        rank(8);  call to_binary(x, file, stat_, errmsg_)
-        rank(9);  call to_binary(x, file, stat_, errmsg_)
+        rank(1); call to_binary(x, file, stat_, errmsg_)
+        rank(2); call to_binary(x, file, stat_, errmsg_)
+        rank(3); call to_binary(x, file, stat_, errmsg_)
+        rank(4); call to_binary(x, file, stat_, errmsg_)
+        rank(5); call to_binary(x, file, stat_, errmsg_)
+        rank(6); call to_binary(x, file, stat_, errmsg_)
+        rank(7); call to_binary(x, file, stat_, errmsg_)
+        rank(8); call to_binary(x, file, stat_, errmsg_)
+        rank(9); call to_binary(x, file, stat_, errmsg_)
         rank(10); call to_binary(x, file, stat_, errmsg_)
         rank(11); call to_binary(x, file, stat_, errmsg_)
         rank(12); call to_binary(x, file, stat_, errmsg_)
@@ -1159,12 +1105,13 @@ submodule (io_fortran_lib) file_io
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure to_file_i32
+
   module procedure to_file_i16
     character(len=:), allocatable :: ext
 
-    character(len=:), pointer :: header_(:)
-    character(len=:), pointer :: delim_, fmt_, errmsg_
-    integer,          pointer :: stat_
+    character(len=:), allocatable :: delim_, fmt_
+    character(len=:), pointer :: errmsg_
+    integer, pointer :: stat_
 
     character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
@@ -1196,9 +1143,7 @@ submodule (io_fortran_lib) file_io
           return
       end select
 
-      if ( .not. present(header) ) then
-        header_ => EMPTY_HEADER
-      else
+      if ( present(header) ) then
         if ( size(header) /= 1 ) then
           select rank(x)
             rank(1)
@@ -1216,20 +1161,15 @@ submodule (io_fortran_lib) file_io
               end if
           end select
         end if
-        header_ => header
       end if
 
-      if ( .not. present(delim) ) then
-        delim_ => COMMA_DELIMITER
-      else
-        delim_ => delim
-      end if
+      delim_ = optval(delim, COMMA_DELIMITER)
 
       if ( .not. present(fmt) ) then
-        fmt_ => INT_FMT
+        fmt_ = INT_FMT
       else
         if ( any(INT_FMTS == fmt) ) then
-          fmt_ => fmt
+          fmt_ = fmt
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid format "'//fmt//'" for file "'//file//'". Format must be one of: '//join(INT_FMTS)
@@ -1239,8 +1179,8 @@ submodule (io_fortran_lib) file_io
       end if
 
       select rank(x)
-        rank(1); call to_text(x, file, header_, delim_, fmt_, stat_, errmsg_)
-        rank(2); call to_text(x, file, header_, delim_, fmt_, stat_, errmsg_)
+        rank(1); call to_text(x, file, header, delim_, fmt_, stat_, errmsg_)
+        rank(2); call to_text(x, file, header, delim_, fmt_, stat_, errmsg_)
       end select
     else if ( any(BINARY_EXT == ext) ) then
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
@@ -1248,15 +1188,15 @@ submodule (io_fortran_lib) file_io
       if ( present(fmt     ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
 
       select rank(x)
-        rank(1);  call to_binary(x, file, stat_, errmsg_)
-        rank(2);  call to_binary(x, file, stat_, errmsg_)
-        rank(3);  call to_binary(x, file, stat_, errmsg_)
-        rank(4);  call to_binary(x, file, stat_, errmsg_)
-        rank(5);  call to_binary(x, file, stat_, errmsg_)
-        rank(6);  call to_binary(x, file, stat_, errmsg_)
-        rank(7);  call to_binary(x, file, stat_, errmsg_)
-        rank(8);  call to_binary(x, file, stat_, errmsg_)
-        rank(9);  call to_binary(x, file, stat_, errmsg_)
+        rank(1); call to_binary(x, file, stat_, errmsg_)
+        rank(2); call to_binary(x, file, stat_, errmsg_)
+        rank(3); call to_binary(x, file, stat_, errmsg_)
+        rank(4); call to_binary(x, file, stat_, errmsg_)
+        rank(5); call to_binary(x, file, stat_, errmsg_)
+        rank(6); call to_binary(x, file, stat_, errmsg_)
+        rank(7); call to_binary(x, file, stat_, errmsg_)
+        rank(8); call to_binary(x, file, stat_, errmsg_)
+        rank(9); call to_binary(x, file, stat_, errmsg_)
         rank(10); call to_binary(x, file, stat_, errmsg_)
         rank(11); call to_binary(x, file, stat_, errmsg_)
         rank(12); call to_binary(x, file, stat_, errmsg_)
@@ -1277,12 +1217,13 @@ submodule (io_fortran_lib) file_io
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure to_file_i16
+
   module procedure to_file_i8
     character(len=:), allocatable :: ext
 
-    character(len=:), pointer :: header_(:)
-    character(len=:), pointer :: delim_, fmt_, errmsg_
-    integer,          pointer :: stat_
+    character(len=:), allocatable :: delim_, fmt_
+    character(len=:), pointer :: errmsg_
+    integer, pointer :: stat_
 
     character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
@@ -1314,9 +1255,7 @@ submodule (io_fortran_lib) file_io
           return
       end select
 
-      if ( .not. present(header) ) then
-        header_ => EMPTY_HEADER
-      else
+      if ( present(header) ) then
         if ( size(header) /= 1 ) then
           select rank(x)
             rank(1)
@@ -1334,20 +1273,15 @@ submodule (io_fortran_lib) file_io
               end if
           end select
         end if
-        header_ => header
       end if
 
-      if ( .not. present(delim) ) then
-        delim_ => COMMA_DELIMITER
-      else
-        delim_ => delim
-      end if
+      delim_ = optval(delim, COMMA_DELIMITER)
 
       if ( .not. present(fmt) ) then
-        fmt_ => INT_FMT
+        fmt_ = INT_FMT
       else
         if ( any(INT_FMTS == fmt) ) then
-          fmt_ => fmt
+          fmt_ = fmt
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid format "'//fmt//'" for file "'//file//'". Format must be one of: '//join(INT_FMTS)
@@ -1357,8 +1291,8 @@ submodule (io_fortran_lib) file_io
       end if
 
       select rank(x)
-        rank(1); call to_text(x, file, header_, delim_, fmt_, stat_, errmsg_)
-        rank(2); call to_text(x, file, header_, delim_, fmt_, stat_, errmsg_)
+        rank(1); call to_text(x, file, header, delim_, fmt_, stat_, errmsg_)
+        rank(2); call to_text(x, file, header, delim_, fmt_, stat_, errmsg_)
       end select
     else if ( any(BINARY_EXT == ext) ) then
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
@@ -1366,15 +1300,15 @@ submodule (io_fortran_lib) file_io
       if ( present(fmt     ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
 
       select rank(x)
-        rank(1);  call to_binary(x, file, stat_, errmsg_)
-        rank(2);  call to_binary(x, file, stat_, errmsg_)
-        rank(3);  call to_binary(x, file, stat_, errmsg_)
-        rank(4);  call to_binary(x, file, stat_, errmsg_)
-        rank(5);  call to_binary(x, file, stat_, errmsg_)
-        rank(6);  call to_binary(x, file, stat_, errmsg_)
-        rank(7);  call to_binary(x, file, stat_, errmsg_)
-        rank(8);  call to_binary(x, file, stat_, errmsg_)
-        rank(9);  call to_binary(x, file, stat_, errmsg_)
+        rank(1); call to_binary(x, file, stat_, errmsg_)
+        rank(2); call to_binary(x, file, stat_, errmsg_)
+        rank(3); call to_binary(x, file, stat_, errmsg_)
+        rank(4); call to_binary(x, file, stat_, errmsg_)
+        rank(5); call to_binary(x, file, stat_, errmsg_)
+        rank(6); call to_binary(x, file, stat_, errmsg_)
+        rank(7); call to_binary(x, file, stat_, errmsg_)
+        rank(8); call to_binary(x, file, stat_, errmsg_)
+        rank(9); call to_binary(x, file, stat_, errmsg_)
         rank(10); call to_binary(x, file, stat_, errmsg_)
         rank(11); call to_binary(x, file, stat_, errmsg_)
         rank(12); call to_binary(x, file, stat_, errmsg_)
@@ -1396,14 +1330,16 @@ submodule (io_fortran_lib) file_io
     call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure to_file_i8
 
+
   ! Reading Procedures ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #ifdef IOFL_HAS_R128
   module procedure from_textfile_c128
     character(len=:), allocatable :: ext
 
-    character(len=:), pointer :: locale_, delim_, fmt_, im_, errmsg_
-    logical,          pointer :: header_
-    integer,          pointer :: stat_
+    character(len=:), allocatable :: locale_, delim_, fmt_, im_
+    character(len=:), pointer :: errmsg_
+    logical :: header_
+    integer, pointer :: stat_
 
     character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
@@ -1425,17 +1361,13 @@ submodule (io_fortran_lib) file_io
     stat_=0; errmsg_=EMPTY_STR
 
     if ( any(TEXT_EXT == ext) ) then
-      if ( .not. present(header) ) then
-        header_ => ABSENT_HEADER
-      else
-        header_ => header
-      end if
+      header_ = optval(header, ABSENT_HEADER)
 
       if ( .not. present(locale) ) then
-        locale_ => US_LOCALE
+        locale_ = US_LOCALE
       else
         if ( any(LOCALES == locale) ) then
-          locale_ => locale
+          locale_ = locale
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid locale "'//locale//'" for file "'//file//'". Locale must be one of: '//join(LOCALES)
@@ -1446,12 +1378,12 @@ submodule (io_fortran_lib) file_io
 
       if ( .not. present(delim) ) then
         if ( locale_ == US_LOCALE ) then
-          delim_ => COMMA_DELIMITER
+          delim_ = COMMA_DELIMITER
         else
-          delim_ => SEMICOLON_DELIM
+          delim_ = SEMICOLON_DELIM
         end if
       else
-        delim_ => delim
+        delim_ = delim
         if ( locale_ == US_LOCALE ) then
           if ( delim_ == POINT ) then
             stat_   = ARG_ERR
@@ -1470,10 +1402,10 @@ submodule (io_fortran_lib) file_io
       end if
 
       if ( .not. present(fmt) ) then
-        fmt_ => EXP_FMT
+        fmt_ = EXP_FMT
       else
         if ( any(REAL_FMTS == fmt) ) then
-          fmt_ => fmt
+          fmt_ = fmt
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid format "'//fmt//'" for read of file "'//file//'" '// &
@@ -1483,11 +1415,7 @@ submodule (io_fortran_lib) file_io
         end if
       end if
 
-      if ( .not. present(im) ) then
-        im_ => EMPTY_STRING
-      else
-        im_ => im
-      end if
+      im_ = optval(im, EMPTY_STRING)
 
       select rank(into)
         rank(1)
@@ -1509,12 +1437,14 @@ submodule (io_fortran_lib) file_io
     call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure from_textfile_c128
 #endif
+
   module procedure from_textfile_c64
     character(len=:), allocatable :: ext
 
-    character(len=:), pointer :: locale_, delim_, fmt_, im_, errmsg_
-    logical,          pointer :: header_
-    integer,          pointer :: stat_
+    character(len=:), allocatable :: locale_, delim_, fmt_, im_
+    character(len=:), pointer :: errmsg_
+    logical :: header_
+    integer, pointer :: stat_
 
     character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
@@ -1536,17 +1466,13 @@ submodule (io_fortran_lib) file_io
     stat_=0; errmsg_=EMPTY_STR
 
     if ( any(TEXT_EXT == ext) ) then
-      if ( .not. present(header) ) then
-        header_ => ABSENT_HEADER
-      else
-        header_ => header
-      end if
+      header_ = optval(header, ABSENT_HEADER)
 
       if ( .not. present(locale) ) then
-        locale_ => US_LOCALE
+        locale_ = US_LOCALE
       else
         if ( any(LOCALES == locale) ) then
-          locale_ => locale
+          locale_ = locale
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid locale "'//locale//'" for file "'//file//'". Locale must be one of: '//join(LOCALES)
@@ -1557,12 +1483,12 @@ submodule (io_fortran_lib) file_io
 
       if ( .not. present(delim) ) then
         if ( locale_ == US_LOCALE ) then
-          delim_ => COMMA_DELIMITER
+          delim_ = COMMA_DELIMITER
         else
-          delim_ => SEMICOLON_DELIM
+          delim_ = SEMICOLON_DELIM
         end if
       else
-        delim_ => delim
+        delim_ = delim
         if ( locale_ == US_LOCALE ) then
           if ( delim_ == POINT ) then
             stat_   = ARG_ERR
@@ -1581,10 +1507,10 @@ submodule (io_fortran_lib) file_io
       end if
 
       if ( .not. present(fmt) ) then
-        fmt_ => EXP_FMT
+        fmt_ = EXP_FMT
       else
         if ( any(REAL_FMTS == fmt) ) then
-          fmt_ => fmt
+          fmt_ = fmt
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid format "'//fmt//'" for read of file "'//file//'" '// &
@@ -1594,11 +1520,7 @@ submodule (io_fortran_lib) file_io
         end if
       end if
 
-      if ( .not. present(im) ) then
-        im_ => EMPTY_STRING
-      else
-        im_ => im
-      end if
+      im_ = optval(im, EMPTY_STRING)
 
       select rank(into)
         rank(1)
@@ -1619,12 +1541,14 @@ submodule (io_fortran_lib) file_io
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure from_textfile_c64
+
   module procedure from_textfile_c32
     character(len=:), allocatable :: ext
 
-    character(len=:), pointer :: locale_, delim_, fmt_, im_, errmsg_
-    logical,          pointer :: header_
-    integer,          pointer :: stat_
+    character(len=:), allocatable :: locale_, delim_, fmt_, im_
+    character(len=:), pointer :: errmsg_
+    logical :: header_
+    integer, pointer :: stat_
 
     character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
@@ -1646,17 +1570,13 @@ submodule (io_fortran_lib) file_io
     stat_=0; errmsg_=EMPTY_STR
 
     if ( any(TEXT_EXT == ext) ) then
-      if ( .not. present(header) ) then
-        header_ => ABSENT_HEADER
-      else
-        header_ => header
-      end if
+      header_ = optval(header, ABSENT_HEADER)
 
       if ( .not. present(locale) ) then
-        locale_ => US_LOCALE
+        locale_ = US_LOCALE
       else
         if ( any(LOCALES == locale) ) then
-          locale_ => locale
+          locale_ = locale
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid locale "'//locale//'" for file "'//file//'". Locale must be one of: '//join(LOCALES)
@@ -1667,12 +1587,12 @@ submodule (io_fortran_lib) file_io
 
       if ( .not. present(delim) ) then
         if ( locale_ == US_LOCALE ) then
-          delim_ => COMMA_DELIMITER
+          delim_ = COMMA_DELIMITER
         else
-          delim_ => SEMICOLON_DELIM
+          delim_ = SEMICOLON_DELIM
         end if
       else
-        delim_ => delim
+        delim_ = delim
         if ( locale_ == US_LOCALE ) then
           if ( delim_ == POINT ) then
             stat_   = ARG_ERR
@@ -1691,10 +1611,10 @@ submodule (io_fortran_lib) file_io
       end if
 
       if ( .not. present(fmt) ) then
-        fmt_ => EXP_FMT
+        fmt_ = EXP_FMT
       else
         if ( any(REAL_FMTS == fmt) ) then
-          fmt_ => fmt
+          fmt_ = fmt
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid format "'//fmt//'" for read of file "'//file//'" '// &
@@ -1704,11 +1624,7 @@ submodule (io_fortran_lib) file_io
         end if
       end if
 
-      if ( .not. present(im) ) then
-        im_ => EMPTY_STRING
-      else
-        im_ => im
-      end if
+      im_ = optval(im, EMPTY_STRING)
 
       select rank(into)
         rank(1)
@@ -1730,13 +1646,14 @@ submodule (io_fortran_lib) file_io
     call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure from_textfile_c32
 
+
 #ifdef IOFL_HAS_R128
   module procedure from_binaryfile_c128
     character(len=:), allocatable :: ext
     integer                       :: into_rank
 
     character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
+    integer, pointer :: stat_
 
     character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
@@ -1833,12 +1750,13 @@ submodule (io_fortran_lib) file_io
     call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure from_binaryfile_c128
 #endif
+
   module procedure from_binaryfile_c64
     character(len=:), allocatable :: ext
     integer                       :: into_rank
 
     character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
+    integer, pointer :: stat_
 
     character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
@@ -1934,12 +1852,13 @@ submodule (io_fortran_lib) file_io
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure from_binaryfile_c64
+
   module procedure from_binaryfile_c32
     character(len=:), allocatable :: ext
     integer                       :: into_rank
 
     character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
+    integer, pointer :: stat_
 
     character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
@@ -2036,13 +1955,15 @@ submodule (io_fortran_lib) file_io
     call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure from_binaryfile_c32
 
+
 #ifdef IOFL_HAS_R128
   module procedure from_textfile_r128
     character(len=:), allocatable :: ext
 
-    character(len=:), pointer :: locale_, delim_, fmt_, errmsg_
-    logical,          pointer :: header_
-    integer,          pointer :: stat_
+    character(len=:), allocatable :: locale_, delim_, fmt_
+    character(len=:), pointer :: errmsg_
+    logical :: header_
+    integer, pointer :: stat_
 
     character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
@@ -2064,17 +1985,13 @@ submodule (io_fortran_lib) file_io
     stat_=0; errmsg_=EMPTY_STR
 
     if ( any(TEXT_EXT == ext) ) then
-      if ( .not. present(header) ) then
-        header_ => ABSENT_HEADER
-      else
-        header_ => header
-      end if
+      header_ = optval(header, ABSENT_HEADER)
 
       if ( .not. present(locale) ) then
-        locale_ => US_LOCALE
+        locale_ = US_LOCALE
       else
         if ( any(LOCALES == locale) ) then
-          locale_ => locale
+          locale_ = locale
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid locale "'//locale//'" for file "'//file//'". Locale must be one of: '//join(LOCALES)
@@ -2085,12 +2002,12 @@ submodule (io_fortran_lib) file_io
 
       if ( .not. present(delim) ) then
         if ( locale_ == US_LOCALE ) then
-          delim_ => COMMA_DELIMITER
+          delim_ = COMMA_DELIMITER
         else
-          delim_ => SEMICOLON_DELIM
+          delim_ = SEMICOLON_DELIM
         end if
       else
-        delim_ => delim
+        delim_ = delim
         if ( locale_ == US_LOCALE ) then
           if ( delim_ == POINT ) then
             stat_   = ARG_ERR
@@ -2109,10 +2026,10 @@ submodule (io_fortran_lib) file_io
       end if
 
       if ( .not. present(fmt) ) then
-        fmt_ => EXP_FMT
+        fmt_ = EXP_FMT
       else
         if ( any(REAL_FMTS == fmt) ) then
-          fmt_ => fmt
+          fmt_ = fmt
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid format "'//fmt//'" for read of file "'//file//'" '// &
@@ -2142,12 +2059,14 @@ submodule (io_fortran_lib) file_io
     call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure from_textfile_r128
 #endif
+
   module procedure from_textfile_r64
     character(len=:), allocatable :: ext
 
-    character(len=:), pointer :: locale_, delim_, fmt_, errmsg_
-    logical,          pointer :: header_
-    integer,          pointer :: stat_
+    character(len=:), allocatable :: locale_, delim_, fmt_
+    character(len=:), pointer :: errmsg_
+    logical :: header_
+    integer, pointer :: stat_
 
     character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
@@ -2169,17 +2088,13 @@ submodule (io_fortran_lib) file_io
     stat_=0; errmsg_=EMPTY_STR
 
     if ( any(TEXT_EXT == ext) ) then
-      if ( .not. present(header) ) then
-        header_ => ABSENT_HEADER
-      else
-        header_ => header
-      end if
+      header_ = optval(header, ABSENT_HEADER)
 
       if ( .not. present(locale) ) then
-        locale_ => US_LOCALE
+        locale_ = US_LOCALE
       else
         if ( any(LOCALES == locale) ) then
-          locale_ => locale
+          locale_ = locale
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid locale "'//locale//'" for file "'//file//'". Locale must be one of: '//join(LOCALES)
@@ -2190,12 +2105,12 @@ submodule (io_fortran_lib) file_io
 
       if ( .not. present(delim) ) then
         if ( locale_ == US_LOCALE ) then
-          delim_ => COMMA_DELIMITER
+          delim_ = COMMA_DELIMITER
         else
-          delim_ => SEMICOLON_DELIM
+          delim_ = SEMICOLON_DELIM
         end if
       else
-        delim_ => delim
+        delim_ = delim
         if ( locale_ == US_LOCALE ) then
           if ( delim_ == POINT ) then
             stat_   = ARG_ERR
@@ -2214,10 +2129,10 @@ submodule (io_fortran_lib) file_io
       end if
 
       if ( .not. present(fmt) ) then
-        fmt_ => EXP_FMT
+        fmt_ = EXP_FMT
       else
         if ( any(REAL_FMTS == fmt) ) then
-          fmt_ => fmt
+          fmt_ = fmt
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid format "'//fmt//'" for read of file "'//file//'" '// &
@@ -2246,12 +2161,14 @@ submodule (io_fortran_lib) file_io
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure from_textfile_r64
+
   module procedure from_textfile_r32
     character(len=:), allocatable :: ext
 
-    character(len=:), pointer :: locale_, delim_, fmt_, errmsg_
-    logical,          pointer :: header_
-    integer,          pointer :: stat_
+    character(len=:), allocatable :: locale_, delim_, fmt_
+    character(len=:), pointer :: errmsg_
+    logical :: header_
+    integer, pointer :: stat_
 
     character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
@@ -2273,17 +2190,13 @@ submodule (io_fortran_lib) file_io
     stat_=0; errmsg_=EMPTY_STR
 
     if ( any(TEXT_EXT == ext) ) then
-      if ( .not. present(header) ) then
-        header_ => ABSENT_HEADER
-      else
-        header_ => header
-      end if
+      header_ = optval(header, ABSENT_HEADER)
 
       if ( .not. present(locale) ) then
-        locale_ => US_LOCALE
+        locale_ = US_LOCALE
       else
         if ( any(LOCALES == locale) ) then
-          locale_ => locale
+          locale_ = locale
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid locale "'//locale//'" for file "'//file//'". Locale must be one of: '//join(LOCALES)
@@ -2294,12 +2207,12 @@ submodule (io_fortran_lib) file_io
 
       if ( .not. present(delim) ) then
         if ( locale_ == US_LOCALE ) then
-          delim_ => COMMA_DELIMITER
+          delim_ = COMMA_DELIMITER
         else
-          delim_ => SEMICOLON_DELIM
+          delim_ = SEMICOLON_DELIM
         end if
       else
-        delim_ => delim
+        delim_ = delim
         if ( locale_ == US_LOCALE ) then
           if ( delim_ == POINT ) then
             stat_   = ARG_ERR
@@ -2318,10 +2231,10 @@ submodule (io_fortran_lib) file_io
       end if
 
       if ( .not. present(fmt) ) then
-        fmt_ => EXP_FMT
+        fmt_ = EXP_FMT
       else
         if ( any(REAL_FMTS == fmt) ) then
-          fmt_ => fmt
+          fmt_ = fmt
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid format "'//fmt//'" for read of file "'//file//'" '// &
@@ -2351,13 +2264,14 @@ submodule (io_fortran_lib) file_io
     call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure from_textfile_r32
 
+
 #ifdef IOFL_HAS_R128
   module procedure from_binaryfile_r128
     character(len=:), allocatable :: ext
     integer                       :: into_rank
 
     character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
+    integer, pointer :: stat_
 
     character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
@@ -2454,12 +2368,13 @@ submodule (io_fortran_lib) file_io
     call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure from_binaryfile_r128
 #endif
+
   module procedure from_binaryfile_r64
     character(len=:), allocatable :: ext
     integer                       :: into_rank
 
     character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
+    integer, pointer :: stat_
 
     character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
@@ -2555,12 +2470,13 @@ submodule (io_fortran_lib) file_io
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure from_binaryfile_r64
+
   module procedure from_binaryfile_r32
     character(len=:), allocatable :: ext
     integer                       :: into_rank
 
     character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
+    integer, pointer :: stat_
 
     character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
@@ -2657,12 +2573,14 @@ submodule (io_fortran_lib) file_io
     call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure from_binaryfile_r32
 
+
   module procedure from_textfile_i64
     character(len=:), allocatable :: ext
 
-    character(len=:), pointer :: delim_, fmt_, errmsg_
-    logical,          pointer :: header_
-    integer,          pointer :: stat_
+    character(len=:), allocatable :: delim_, fmt_
+    character(len=:), pointer :: errmsg_
+    logical :: header_
+    integer, pointer :: stat_
 
     character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
@@ -2684,23 +2602,15 @@ submodule (io_fortran_lib) file_io
     stat_=0; errmsg_=EMPTY_STR
 
     if ( any(TEXT_EXT == ext) ) then
-      if ( .not. present(header) ) then
-        header_ => ABSENT_HEADER
-      else
-        header_ => header
-      end if
+      header_ = optval(header, ABSENT_HEADER)
 
-      if ( .not. present(delim) ) then
-        delim_ => COMMA_DELIMITER
-      else
-        delim_ => delim
-      end if
+      delim_ = optval(delim, COMMA_DELIMITER)
 
       if ( .not. present(fmt) ) then
-        fmt_ => INT_FMT
+        fmt_ = INT_FMT
       else
         if ( any(INT_FMTS == fmt) ) then
-          fmt_ => fmt
+          fmt_ = fmt
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid format "'//fmt//'" for read of file "'//file//'" '// &
@@ -2729,12 +2639,14 @@ submodule (io_fortran_lib) file_io
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure from_textfile_i64
+
   module procedure from_textfile_i32
     character(len=:), allocatable :: ext
 
-    character(len=:), pointer :: delim_, fmt_, errmsg_
-    logical,          pointer :: header_
-    integer,          pointer :: stat_
+    character(len=:), allocatable :: delim_, fmt_
+    character(len=:), pointer :: errmsg_
+    logical :: header_
+    integer, pointer :: stat_
 
     character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
@@ -2756,23 +2668,15 @@ submodule (io_fortran_lib) file_io
     stat_=0; errmsg_=EMPTY_STR
 
     if ( any(TEXT_EXT == ext) ) then
-      if ( .not. present(header) ) then
-        header_ => ABSENT_HEADER
-      else
-        header_ => header
-      end if
+      header_ = optval(header, ABSENT_HEADER)
 
-      if ( .not. present(delim) ) then
-        delim_ => COMMA_DELIMITER
-      else
-        delim_ => delim
-      end if
+      delim_ = optval(delim, COMMA_DELIMITER)
 
       if ( .not. present(fmt) ) then
-        fmt_ => INT_FMT
+        fmt_ = INT_FMT
       else
         if ( any(INT_FMTS == fmt) ) then
-          fmt_ => fmt
+          fmt_ = fmt
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid format "'//fmt//'" for read of file "'//file//'" '// &
@@ -2801,12 +2705,14 @@ submodule (io_fortran_lib) file_io
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure from_textfile_i32
+
   module procedure from_textfile_i16
     character(len=:), allocatable :: ext
 
-    character(len=:), pointer :: delim_, fmt_, errmsg_
-    logical,          pointer :: header_
-    integer,          pointer :: stat_
+    character(len=:), allocatable :: delim_, fmt_
+    character(len=:), pointer :: errmsg_
+    logical :: header_
+    integer, pointer :: stat_
 
     character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
@@ -2828,23 +2734,15 @@ submodule (io_fortran_lib) file_io
     stat_=0; errmsg_=EMPTY_STR
 
     if ( any(TEXT_EXT == ext) ) then
-      if ( .not. present(header) ) then
-        header_ => ABSENT_HEADER
-      else
-        header_ => header
-      end if
+      header_ = optval(header, ABSENT_HEADER)
 
-      if ( .not. present(delim) ) then
-        delim_ => COMMA_DELIMITER
-      else
-        delim_ => delim
-      end if
+      delim_ = optval(delim, COMMA_DELIMITER)
 
       if ( .not. present(fmt) ) then
-        fmt_ => INT_FMT
+        fmt_ = INT_FMT
       else
         if ( any(INT_FMTS == fmt) ) then
-          fmt_ => fmt
+          fmt_ = fmt
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid format "'//fmt//'" for read of file "'//file//'" '// &
@@ -2873,12 +2771,14 @@ submodule (io_fortran_lib) file_io
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure from_textfile_i16
+
   module procedure from_textfile_i8
     character(len=:), allocatable :: ext
 
-    character(len=:), pointer :: delim_, fmt_, errmsg_
-    logical,          pointer :: header_
-    integer,          pointer :: stat_
+    character(len=:), allocatable :: delim_, fmt_
+    character(len=:), pointer :: errmsg_
+    logical :: header_
+    integer, pointer :: stat_
 
     character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
@@ -2900,23 +2800,15 @@ submodule (io_fortran_lib) file_io
     stat_=0; errmsg_=EMPTY_STR
 
     if ( any(TEXT_EXT == ext) ) then
-      if ( .not. present(header) ) then
-        header_ => ABSENT_HEADER
-      else
-        header_ => header
-      end if
+      header_ = optval(header, ABSENT_HEADER)
 
-      if ( .not. present(delim) ) then
-        delim_ => COMMA_DELIMITER
-      else
-        delim_ => delim
-      end if
+      delim_ = optval(delim, COMMA_DELIMITER)
 
       if ( .not. present(fmt) ) then
-        fmt_ => INT_FMT
+        fmt_ = INT_FMT
       else
         if ( any(INT_FMTS == fmt) ) then
-          fmt_ => fmt
+          fmt_ = fmt
         else
           stat_   = ARG_ERR
           errmsg_ = 'Invalid format "'//fmt//'" for read of file "'//file//'" '// &
@@ -2946,12 +2838,13 @@ submodule (io_fortran_lib) file_io
     call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure from_textfile_i8
 
+
   module procedure from_binaryfile_i64
     character(len=:), allocatable :: ext
     integer                       :: into_rank
 
     character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
+    integer, pointer :: stat_
 
     character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
@@ -3047,12 +2940,13 @@ submodule (io_fortran_lib) file_io
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure from_binaryfile_i64
+
   module procedure from_binaryfile_i32
     character(len=:), allocatable :: ext
     integer                       :: into_rank
 
     character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
+    integer, pointer :: stat_
 
     character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
@@ -3148,12 +3042,13 @@ submodule (io_fortran_lib) file_io
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure from_binaryfile_i32
+
   module procedure from_binaryfile_i16
     character(len=:), allocatable :: ext
     integer                       :: into_rank
 
     character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
+    integer, pointer :: stat_
 
     character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
@@ -3249,12 +3144,13 @@ submodule (io_fortran_lib) file_io
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure from_binaryfile_i16
+
   module procedure from_binaryfile_i8
     character(len=:), allocatable :: ext
     integer                       :: into_rank
 
     character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
+    integer, pointer :: stat_
 
     character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
@@ -3350,4 +3246,5 @@ submodule (io_fortran_lib) file_io
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure from_binaryfile_i8
+
 end submodule file_io

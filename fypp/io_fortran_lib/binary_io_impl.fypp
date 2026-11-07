@@ -1,0 +1,503 @@
+#:include "common.fypp"
+! Generated from fypp/io_fortran_lib/binary_io_impl.fypp by fypp/generate.sh. Edit that file, not this one.
+#include "iofl_config.inc"
+submodule (io_fortran_lib) binary_io
+  !---------------------------------------------------------------------------------------------------------------------
+  !! This submodule provides module procedure implementations for the **private interfaces** `to_binary` and
+  !! `from_binary`.
+  !---------------------------------------------------------------------------------------------------------------------
+  implicit none (type, external)
+
+  contains ! Procedure bodies for module subprograms <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><
+
+  ! Writing Procedures ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#:for k, r in COMPLEX_KINDS
+#:if k in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+  module procedure to_binary_${k}$
+    logical :: exists
+    integer :: file_unit
+
+    exists    = .false.
+    file_unit = 0
+
+    inquire(file=file, exist=exists, iostat=stat, iomsg=errmsg)
+
+    if ( stat /= 0 ) then
+      stat = WRITE_ERR; return
+    end if
+
+    file_unit = output_unit
+
+    if ( .not. exists ) then
+      open( newunit=file_unit, file=file, status="new", form="unformatted", &
+            action="write", access="stream", iostat=stat, iomsg=errmsg )
+    else
+      open( newunit=file_unit, file=file, status="replace", form="unformatted", &
+            action="write", access="stream", iostat=stat, iomsg=errmsg )
+    end if
+
+    if ( stat /= 0 ) then
+      stat = WRITE_ERR; return
+    end if
+
+    select rank(x)
+#:for rank in RANKS
+      rank(${rank}$); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+#:endfor
+    end select
+
+    if ( stat /= 0 ) then
+      stat = WRITE_ERR
+      call close_quietly(file_unit)
+      return
+    end if
+
+    close(unit=file_unit, iostat=stat, iomsg=errmsg)
+
+    if ( stat /= 0 ) then
+      stat = WRITE_ERR; return
+    end if
+
+    stat=0; errmsg=EMPTY_STR
+  end procedure to_binary_${k}$
+#:if k in QUAD_KINDS
+#endif
+#:endif
+
+#:endfor
+
+#:for k in REAL_KINDS
+#:if k in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+  module procedure to_binary_${k}$
+    logical :: exists
+    integer :: file_unit
+
+    exists    = .false.
+    file_unit = 0
+
+    inquire(file=file, exist=exists, iostat=stat, iomsg=errmsg)
+
+    if ( stat /= 0 ) then
+      stat = WRITE_ERR; return
+    end if
+
+    file_unit = output_unit
+
+    if ( .not. exists ) then
+      open( newunit=file_unit, file=file, status="new", form="unformatted", &
+            action="write", access="stream", iostat=stat, iomsg=errmsg )
+    else
+      open( newunit=file_unit, file=file, status="replace", form="unformatted", &
+            action="write", access="stream", iostat=stat, iomsg=errmsg )
+    end if
+
+    if ( stat /= 0 ) then
+      stat = WRITE_ERR; return
+    end if
+
+    select rank(x)
+#:for rank in RANKS
+      rank(${rank}$); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+#:endfor
+    end select
+
+    if ( stat /= 0 ) then
+      stat = WRITE_ERR
+      call close_quietly(file_unit)
+      return
+    end if
+
+    close(unit=file_unit, iostat=stat, iomsg=errmsg)
+
+    if ( stat /= 0 ) then
+      stat = WRITE_ERR; return
+    end if
+
+    stat=0; errmsg=EMPTY_STR
+  end procedure to_binary_${k}$
+#:if k in QUAD_KINDS
+#endif
+#:endif
+
+#:endfor
+
+#:for k in INT_KINDS
+  module procedure to_binary_${k}$
+    logical :: exists
+    integer :: file_unit
+
+    exists    = .false.
+    file_unit = 0
+
+    inquire(file=file, exist=exists, iostat=stat, iomsg=errmsg)
+
+    if ( stat /= 0 ) then
+      stat = WRITE_ERR; return
+    end if
+
+    file_unit = output_unit
+
+    if ( .not. exists ) then
+      open( newunit=file_unit, file=file, status="new", form="unformatted", &
+            action="write", access="stream", iostat=stat, iomsg=errmsg )
+    else
+      open( newunit=file_unit, file=file, status="replace", form="unformatted", &
+            action="write", access="stream", iostat=stat, iomsg=errmsg )
+    end if
+
+    if ( stat /= 0 ) then
+      stat = WRITE_ERR; return
+    end if
+
+    select rank(x)
+#:for rank in RANKS
+      rank(${rank}$); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+#:endfor
+    end select
+
+    if ( stat /= 0 ) then
+      stat = WRITE_ERR
+      call close_quietly(file_unit)
+      return
+    end if
+
+    close(unit=file_unit, iostat=stat, iomsg=errmsg)
+
+    if ( stat /= 0 ) then
+      stat = WRITE_ERR; return
+    end if
+
+    stat=0; errmsg=EMPTY_STR
+  end procedure to_binary_${k}$
+
+#:endfor
+
+  ! Reading Procedures ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#:for k, r in COMPLEX_KINDS
+#:if k in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+  module procedure from_binary_${k}$
+    logical :: exists
+    integer :: file_unit
+
+    exists    = .false.
+    file_unit = 0
+
+    inquire(file=file, exist=exists, iostat=stat, iomsg=errmsg)
+
+    if ( stat /= 0 ) then
+      stat = READ_ERR; return
+    end if
+
+    file_unit = input_unit
+
+    if ( exists ) then
+      open( newunit=file_unit, file=file, status="old", form="unformatted", &
+            action="read", access="stream", position="rewind", iostat=stat, iomsg=errmsg )
+    else
+      stat   = READ_ERR
+      errmsg = 'Error reading file "'//file//'". No such file exists.'
+      return
+    end if
+
+    select rank(into)
+      rank(1)
+        allocate( into(data_shape(1)), stat=stat, errmsg=errmsg )
+      rank(2)
+        allocate( into(data_shape(1), data_shape(2)), stat=stat, errmsg=errmsg )
+      rank(3)
+        allocate( into(data_shape(1), data_shape(2), data_shape(3)), stat=stat, errmsg=errmsg )
+      rank(4)
+        allocate( into(data_shape(1), data_shape(2), data_shape(3), data_shape(4)), stat=stat, errmsg=errmsg )
+      rank(5)
+        allocate( into(data_shape(1), data_shape(2), data_shape(3), data_shape(4), data_shape(5)), stat=stat, &
+                       errmsg=errmsg )
+      rank(6)
+        allocate( into(data_shape(1), data_shape(2), data_shape(3), data_shape(4), data_shape(5), &
+                       data_shape(6)), stat=stat, errmsg=errmsg )
+      rank(7)
+        allocate( into(data_shape(1), data_shape(2), data_shape(3), data_shape(4), data_shape(5), &
+                       data_shape(6), data_shape(7)), stat=stat, errmsg=errmsg )
+      rank(8)
+        allocate( into(data_shape(1), data_shape(2), data_shape(3), data_shape(4), data_shape(5), &
+                       data_shape(6), data_shape(7), data_shape(8)), stat=stat, errmsg=errmsg )
+      rank(9)
+        allocate( into(data_shape(1), data_shape(2), data_shape(3), data_shape(4), data_shape(5), &
+                       data_shape(6), data_shape(7), data_shape(8), data_shape(9)), stat=stat, errmsg=errmsg )
+      rank(10)
+        allocate( into(data_shape(1), data_shape(2), data_shape(3), data_shape(4), data_shape(5), &
+                       data_shape(6), data_shape(7), data_shape(8), data_shape(9), data_shape(10)), stat=stat, &
+                       errmsg=errmsg )
+      rank(11)
+        allocate( into(data_shape(1), data_shape(2), data_shape(3), data_shape(4), data_shape(5), &
+                       data_shape(6), data_shape(7), data_shape(8), data_shape(9), data_shape(10), &
+                       data_shape(11)), stat=stat, errmsg=errmsg )
+      rank(12)
+        allocate( into(data_shape(1), data_shape(2), data_shape(3), data_shape(4), data_shape(5), &
+                       data_shape(6), data_shape(7), data_shape(8), data_shape(9), data_shape(10), &
+                       data_shape(11), data_shape(12)), stat=stat, errmsg=errmsg )
+      rank(13)
+        allocate( into(data_shape(1), data_shape(2), data_shape(3), data_shape(4), data_shape(5), &
+                       data_shape(6), data_shape(7), data_shape(8), data_shape(9), data_shape(10), &
+                       data_shape(11), data_shape(12), data_shape(13)), stat=stat, errmsg=errmsg )
+      rank(14)
+        allocate( into(data_shape(1), data_shape(2), data_shape(3), data_shape(4), data_shape(5), &
+                       data_shape(6), data_shape(7), data_shape(8), data_shape(9), data_shape(10), &
+                       data_shape(11), data_shape(12), data_shape(13), data_shape(14)), stat=stat, &
+                       errmsg=errmsg )
+      rank(15)
+        allocate( into(data_shape(1), data_shape(2), data_shape(3), data_shape(4), data_shape(5), &
+                       data_shape(6), data_shape(7), data_shape(8), data_shape(9), data_shape(10), &
+                       data_shape(11), data_shape(12), data_shape(13), data_shape(14), data_shape(15)), &
+                       stat=stat, errmsg=errmsg )
+    end select
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
+    end if
+
+    select rank(into)
+#:for rank in RANKS
+      rank(${rank}$); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+#:endfor
+    end select
+
+    if ( stat /= 0 ) then
+      stat = READ_ERR
+      call close_quietly(file_unit)
+      return
+    end if
+
+    close(unit=file_unit, iostat=stat, iomsg=errmsg)
+
+    if ( stat /= 0 ) then
+      stat = READ_ERR; return
+    end if
+
+    stat=0; errmsg=EMPTY_STR
+  end procedure from_binary_${k}$
+#:if k in QUAD_KINDS
+#endif
+#:endif
+
+#:endfor
+
+#:for k in REAL_KINDS
+#:if k in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+  module procedure from_binary_${k}$
+    logical :: exists
+    integer :: file_unit
+
+    exists    = .false.
+    file_unit = 0
+
+    inquire(file=file, exist=exists, iostat=stat, iomsg=errmsg)
+
+    if ( stat /= 0 ) then
+      stat = READ_ERR; return
+    end if
+
+    file_unit = input_unit
+
+    if ( exists ) then
+      open( newunit=file_unit, file=file, status="old", form="unformatted", &
+            action="read", access="stream", position="rewind", iostat=stat, iomsg=errmsg )
+    else
+      stat   = READ_ERR
+      errmsg = 'Error reading file "'//file//'". No such file exists.'
+      return
+    end if
+
+    select rank(into)
+      rank(1)
+        allocate( into(data_shape(1)), stat=stat, errmsg=errmsg )
+      rank(2)
+        allocate( into(data_shape(1), data_shape(2)), stat=stat, errmsg=errmsg )
+      rank(3)
+        allocate( into(data_shape(1), data_shape(2), data_shape(3)), stat=stat, errmsg=errmsg )
+      rank(4)
+        allocate( into(data_shape(1), data_shape(2), data_shape(3), data_shape(4)), stat=stat, errmsg=errmsg )
+      rank(5)
+        allocate( into(data_shape(1), data_shape(2), data_shape(3), data_shape(4), data_shape(5)), stat=stat, &
+                       errmsg=errmsg )
+      rank(6)
+        allocate( into(data_shape(1), data_shape(2), data_shape(3), data_shape(4), data_shape(5), &
+                       data_shape(6)), stat=stat, errmsg=errmsg )
+      rank(7)
+        allocate( into(data_shape(1), data_shape(2), data_shape(3), data_shape(4), data_shape(5), &
+                       data_shape(6), data_shape(7)), stat=stat, errmsg=errmsg )
+      rank(8)
+        allocate( into(data_shape(1), data_shape(2), data_shape(3), data_shape(4), data_shape(5), &
+                       data_shape(6), data_shape(7), data_shape(8)), stat=stat, errmsg=errmsg )
+      rank(9)
+        allocate( into(data_shape(1), data_shape(2), data_shape(3), data_shape(4), data_shape(5), &
+                       data_shape(6), data_shape(7), data_shape(8), data_shape(9)), stat=stat, errmsg=errmsg )
+      rank(10)
+        allocate( into(data_shape(1), data_shape(2), data_shape(3), data_shape(4), data_shape(5), &
+                       data_shape(6), data_shape(7), data_shape(8), data_shape(9), data_shape(10)), stat=stat, &
+                       errmsg=errmsg )
+      rank(11)
+        allocate( into(data_shape(1), data_shape(2), data_shape(3), data_shape(4), data_shape(5), &
+                       data_shape(6), data_shape(7), data_shape(8), data_shape(9), data_shape(10), &
+                       data_shape(11)), stat=stat, errmsg=errmsg )
+      rank(12)
+        allocate( into(data_shape(1), data_shape(2), data_shape(3), data_shape(4), data_shape(5), &
+                       data_shape(6), data_shape(7), data_shape(8), data_shape(9), data_shape(10), &
+                       data_shape(11), data_shape(12)), stat=stat, errmsg=errmsg )
+      rank(13)
+        allocate( into(data_shape(1), data_shape(2), data_shape(3), data_shape(4), data_shape(5), &
+                       data_shape(6), data_shape(7), data_shape(8), data_shape(9), data_shape(10), &
+                       data_shape(11), data_shape(12), data_shape(13)), stat=stat, errmsg=errmsg )
+      rank(14)
+        allocate( into(data_shape(1), data_shape(2), data_shape(3), data_shape(4), data_shape(5), &
+                       data_shape(6), data_shape(7), data_shape(8), data_shape(9), data_shape(10), &
+                       data_shape(11), data_shape(12), data_shape(13), data_shape(14)), stat=stat, &
+                       errmsg=errmsg )
+      rank(15)
+        allocate( into(data_shape(1), data_shape(2), data_shape(3), data_shape(4), data_shape(5), &
+                       data_shape(6), data_shape(7), data_shape(8), data_shape(9), data_shape(10), &
+                       data_shape(11), data_shape(12), data_shape(13), data_shape(14), data_shape(15)), &
+                       stat=stat, errmsg=errmsg )
+    end select
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
+    end if
+
+    select rank(into)
+#:for rank in RANKS
+      rank(${rank}$); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+#:endfor
+    end select
+
+    if ( stat /= 0 ) then
+      stat = READ_ERR
+      call close_quietly(file_unit)
+      return
+    end if
+
+    close(unit=file_unit, iostat=stat, iomsg=errmsg)
+
+    if ( stat /= 0 ) then
+      stat = READ_ERR; return
+    end if
+
+    stat=0; errmsg=EMPTY_STR
+  end procedure from_binary_${k}$
+#:if k in QUAD_KINDS
+#endif
+#:endif
+
+#:endfor
+
+#:for k in INT_KINDS
+  module procedure from_binary_${k}$
+    logical :: exists
+    integer :: file_unit
+
+    exists    = .false.
+    file_unit = 0
+
+    inquire(file=file, exist=exists, iostat=stat, iomsg=errmsg)
+
+    if ( stat /= 0 ) then
+      stat = READ_ERR; return
+    end if
+
+    file_unit = input_unit
+
+    if ( exists ) then
+      open( newunit=file_unit, file=file, status="old", form="unformatted", &
+            action="read", access="stream", position="rewind", iostat=stat, iomsg=errmsg )
+    else
+      stat   = READ_ERR
+      errmsg = 'Error reading file "'//file//'". No such file exists.'
+      return
+    end if
+
+    select rank(into)
+      rank(1)
+        allocate( into(data_shape(1)), stat=stat, errmsg=errmsg )
+      rank(2)
+        allocate( into(data_shape(1), data_shape(2)), stat=stat, errmsg=errmsg )
+      rank(3)
+        allocate( into(data_shape(1), data_shape(2), data_shape(3)), stat=stat, errmsg=errmsg )
+      rank(4)
+        allocate( into(data_shape(1), data_shape(2), data_shape(3), data_shape(4)), stat=stat, errmsg=errmsg )
+      rank(5)
+        allocate( into(data_shape(1), data_shape(2), data_shape(3), data_shape(4), data_shape(5)), stat=stat, &
+                       errmsg=errmsg )
+      rank(6)
+        allocate( into(data_shape(1), data_shape(2), data_shape(3), data_shape(4), data_shape(5), &
+                       data_shape(6)), stat=stat, errmsg=errmsg )
+      rank(7)
+        allocate( into(data_shape(1), data_shape(2), data_shape(3), data_shape(4), data_shape(5), &
+                       data_shape(6), data_shape(7)), stat=stat, errmsg=errmsg )
+      rank(8)
+        allocate( into(data_shape(1), data_shape(2), data_shape(3), data_shape(4), data_shape(5), &
+                       data_shape(6), data_shape(7), data_shape(8)), stat=stat, errmsg=errmsg )
+      rank(9)
+        allocate( into(data_shape(1), data_shape(2), data_shape(3), data_shape(4), data_shape(5), &
+                       data_shape(6), data_shape(7), data_shape(8), data_shape(9)), stat=stat, errmsg=errmsg )
+      rank(10)
+        allocate( into(data_shape(1), data_shape(2), data_shape(3), data_shape(4), data_shape(5), &
+                       data_shape(6), data_shape(7), data_shape(8), data_shape(9), data_shape(10)), stat=stat, &
+                       errmsg=errmsg )
+      rank(11)
+        allocate( into(data_shape(1), data_shape(2), data_shape(3), data_shape(4), data_shape(5), &
+                       data_shape(6), data_shape(7), data_shape(8), data_shape(9), data_shape(10), &
+                       data_shape(11)), stat=stat, errmsg=errmsg )
+      rank(12)
+        allocate( into(data_shape(1), data_shape(2), data_shape(3), data_shape(4), data_shape(5), &
+                       data_shape(6), data_shape(7), data_shape(8), data_shape(9), data_shape(10), &
+                       data_shape(11), data_shape(12)), stat=stat, errmsg=errmsg )
+      rank(13)
+        allocate( into(data_shape(1), data_shape(2), data_shape(3), data_shape(4), data_shape(5), &
+                       data_shape(6), data_shape(7), data_shape(8), data_shape(9), data_shape(10), &
+                       data_shape(11), data_shape(12), data_shape(13)), stat=stat, errmsg=errmsg )
+      rank(14)
+        allocate( into(data_shape(1), data_shape(2), data_shape(3), data_shape(4), data_shape(5), &
+                       data_shape(6), data_shape(7), data_shape(8), data_shape(9), data_shape(10), &
+                       data_shape(11), data_shape(12), data_shape(13), data_shape(14)), stat=stat, &
+                       errmsg=errmsg )
+      rank(15)
+        allocate( into(data_shape(1), data_shape(2), data_shape(3), data_shape(4), data_shape(5), &
+                       data_shape(6), data_shape(7), data_shape(8), data_shape(9), data_shape(10), &
+                       data_shape(11), data_shape(12), data_shape(13), data_shape(14), data_shape(15)), &
+                       stat=stat, errmsg=errmsg )
+    end select
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
+    end if
+
+    select rank(into)
+#:for rank in RANKS
+      rank(${rank}$); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+#:endfor
+    end select
+
+    if ( stat /= 0 ) then
+      stat = READ_ERR
+      call close_quietly(file_unit)
+      return
+    end if
+
+    close(unit=file_unit, iostat=stat, iomsg=errmsg)
+
+    if ( stat /= 0 ) then
+      stat = READ_ERR; return
+    end if
+
+    stat=0; errmsg=EMPTY_STR
+  end procedure from_binary_${k}$
+
+#:endfor
+end submodule binary_io

@@ -1,3 +1,4 @@
+! Generated from fypp/randoms/gaussian_sampling_impl.fypp by fypp/generate.sh. Edit that file, not this one.
 #include "iofl_config.inc"
 submodule (randoms) gaussian_sampling
   !---------------------------------------------------------------------------------------------------------------------
@@ -105,6 +106,7 @@ submodule (randoms) gaussian_sampling
     gauss_res = res*sig + mu
   end procedure gauss_r128
 #endif
+
   module procedure gauss_r64
     real(r64) :: rn, x, y, z, res
 
@@ -199,6 +201,7 @@ submodule (randoms) gaussian_sampling
 
     gauss_res = res*sig + mu
   end procedure gauss_r64
+
   module procedure gauss_r32
     real(r32) :: rn, x, y, z, res
 
@@ -294,16 +297,20 @@ submodule (randoms) gaussian_sampling
     gauss_res = res*sig + mu
   end procedure gauss_r32
 
+
   ! Elemental procedures for gauss ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #ifdef IOFL_HAS_R128
   module procedure random_gauss_r128
     x = gauss(mu, sig)
   end procedure random_gauss_r128
 #endif
+
   module procedure random_gauss_r64
     x = gauss(mu, sig)
   end procedure random_gauss_r64
+
   module procedure random_gauss_r32
     x = gauss(mu, sig)
   end procedure random_gauss_r32
+
 end submodule gaussian_sampling

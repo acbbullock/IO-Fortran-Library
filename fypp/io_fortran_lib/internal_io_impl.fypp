@@ -1,0 +1,974 @@
+#:include "common.fypp"
+! Generated from fypp/io_fortran_lib/internal_io_impl.fypp by fypp/generate.sh. Edit that file, not this one.
+#include "iofl_config.inc"
+submodule (io_fortran_lib) internal_io
+  !---------------------------------------------------------------------------------------------------------------------
+  !! This submodule provides module procedure implementations for the **public interfaces** `String`, `str`, and
+  !! `cast`.
+  !---------------------------------------------------------------------------------------------------------------------
+  use, intrinsic :: ieee_arithmetic, only: ieee_is_nan, ieee_is_finite, ieee_is_negative
+  implicit none (type, external)
+
+  integer, parameter :: MAX_F_DECIMALS = 200 ! Most decimals to request from an `f` edit descriptor
+
+  interface real_text
+#ifdef IOFL_HAS_R128
+    module procedure real_text_r128
+#endif
+    module procedure real_text_r64, real_text_r32
+  end interface real_text
+
+  interface complex_text
+#ifdef IOFL_HAS_R128
+    module procedure complex_text_c128
+#endif
+    module procedure complex_text_c64, complex_text_c32
+  end interface complex_text
+
+  ! Definitions and interfaces ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  character(len=1), parameter :: DIGITS_A(0:15) = ["0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f"]
+
+  contains ! Procedure bodies for module subprograms <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><
+
+  ! String ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#:for k, r in COMPLEX_KINDS
+#:if k in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+  module procedure new_string_from_${k}$
+    new%s = complex_text(x, decimal_of(locale), real_fmt_of(fmt), decimals, im)
+  end procedure new_string_from_${k}$
+#:if k in QUAD_KINDS
+#endif
+#:endif
+
+#:endfor
+
+#:for k in REAL_KINDS
+#:if k in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+  module procedure new_string_from_${k}$
+    new%s = real_text(x, decimal_of(locale), real_fmt_of(fmt), decimals)
+  end procedure new_string_from_${k}$
+#:if k in QUAD_KINDS
+#endif
+#:endif
+
+#:endfor
+
+#:for k in INT_KINDS
+  module procedure new_string_from_${k}$
+    new%s = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
+  end procedure new_string_from_${k}$
+
+#:endfor
+
+  module procedure new_string_from_string
+    if ( x%len() < 1 ) then
+      new%s = EMPTY_STR
+    else
+      new%s = x%s
+    end if
+  end procedure new_string_from_string
+  module procedure new_string_from_char
+    new%s = x
+  end procedure new_string_from_char
+  module procedure new_string_from_empty
+    new%s = EMPTY_STR
+  end procedure new_string_from_empty
+
+  ! str ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#:for k, r in COMPLEX_KINDS
+#:if k in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+  module procedure str_from_${k}$
+    x_str = complex_text(x, decimal_of(locale), real_fmt_of(fmt), decimals, im)
+  end procedure str_from_${k}$
+#:if k in QUAD_KINDS
+#endif
+#:endif
+
+#:endfor
+
+#:for k in REAL_KINDS
+#:if k in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+  module procedure str_from_${k}$
+    x_str = real_text(x, decimal_of(locale), real_fmt_of(fmt), decimals)
+  end procedure str_from_${k}$
+#:if k in QUAD_KINDS
+#endif
+#:endif
+
+#:endfor
+
+#:for k in INT_KINDS
+  module procedure str_from_${k}$
+    x_str = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
+  end procedure str_from_${k}$
+
+#:endfor
+
+  module procedure str_from_string
+    if ( x%len() < 1 ) then
+      x_str = EMPTY_STR
+    else
+      x_str = x%s
+    end if
+  end procedure str_from_string
+  module procedure str_from_char
+    x_str = x
+  end procedure str_from_char
+  module procedure str_from_empty
+    x_str = EMPTY_STR
+  end procedure str_from_empty
+
+  ! cast ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#:for k, r in COMPLEX_KINDS
+#:if k in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+  module procedure cast_${k}$_to_string
+    into%s = complex_text(x, decimal_of(locale), real_fmt_of(fmt), decimals, im)
+  end procedure cast_${k}$_to_string
+#:if k in QUAD_KINDS
+#endif
+#:endif
+
+#:endfor
+
+#:for k in REAL_KINDS
+#:if k in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+  module procedure cast_${k}$_to_string
+    into%s = real_text(x, decimal_of(locale), real_fmt_of(fmt), decimals)
+  end procedure cast_${k}$_to_string
+#:if k in QUAD_KINDS
+#endif
+#:endif
+
+#:endfor
+
+#:for k in INT_KINDS
+  module procedure cast_${k}$_to_string
+    into%s = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
+  end procedure cast_${k}$_to_string
+
+#:endfor
+
+#:for k, r in COMPLEX_KINDS
+#:if k in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+  module procedure cast_${k}$_to_char
+    into = complex_text(x, decimal_of(locale), real_fmt_of(fmt), decimals, im)
+  end procedure cast_${k}$_to_char
+#:if k in QUAD_KINDS
+#endif
+#:endif
+
+#:endfor
+
+#:for k in REAL_KINDS
+#:if k in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+  module procedure cast_${k}$_to_char
+    into = real_text(x, decimal_of(locale), real_fmt_of(fmt), decimals)
+  end procedure cast_${k}$_to_char
+#:if k in QUAD_KINDS
+#endif
+#:endif
+
+#:endfor
+
+#:for k in INT_KINDS
+  module procedure cast_${k}$_to_char
+    into = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
+  end procedure cast_${k}$_to_char
+
+#:endfor
+
+#:for k, r in COMPLEX_KINDS
+#:if k in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+  module procedure cast_string_to_${k}$
+    if ( allocated(substring%s) ) then
+      call cast_char_to_${k}$(substring%s, into, locale, fmt, im, stat)
+    else
+      into = (0e0_${r}$,0e0_${r}$)
+      call report_cast(READ_ERR, EMPTY_STR, stat)
+    end if
+  end procedure cast_string_to_${k}$
+#:if k in QUAD_KINDS
+#endif
+#:endif
+
+#:endfor
+
+#:for k in REAL_KINDS
+#:if k in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+  module procedure cast_string_to_${k}$
+    if ( allocated(substring%s) ) then
+      call cast_char_to_${k}$(substring%s, into, locale, fmt, stat)
+    else
+      into = 0e0_${k}$
+      call report_cast(READ_ERR, EMPTY_STR, stat)
+    end if
+  end procedure cast_string_to_${k}$
+#:if k in QUAD_KINDS
+#endif
+#:endif
+
+#:endfor
+
+#:for k in INT_KINDS
+  module procedure cast_string_to_${k}$
+    if ( allocated(substring%s) ) then
+      call cast_char_to_${k}$(substring%s, into, fmt, stat)
+    else
+      into = 0_${k}$
+      call report_cast(READ_ERR, EMPTY_STR, stat)
+    end if
+  end procedure cast_string_to_${k}$
+
+#:endfor
+
+#:for k, r in COMPLEX_KINDS
+#:if k in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+  module procedure cast_char_to_${k}$
+    character(len=1) :: fmt_
+    character(len=5) :: decimal
+    integer          :: status
+
+    into = (0e0_${r}$,0e0_${r}$)
+
+    call cast_args(REAL_FMTS, "e", fmt, locale, fmt_, decimal, status)
+    if ( status == 0 ) call parse_complex_${k}$(substring, decimal, fmt_, im, into, status)
+
+    call report_cast(status, substring, stat)
+  end procedure cast_char_to_${k}$
+#:if k in QUAD_KINDS
+#endif
+#:endif
+
+#:endfor
+
+#:for k in REAL_KINDS
+#:if k in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+  module procedure cast_char_to_${k}$
+    character(len=1) :: fmt_
+    character(len=5) :: decimal
+    integer          :: status
+
+    into = 0e0_${k}$
+
+    call cast_args(REAL_FMTS, "e", fmt, locale, fmt_, decimal, status)
+    if ( status == 0 ) call parse_real_${k}$(substring, decimal, fmt_, into, status)
+
+    call report_cast(status, substring, stat)
+  end procedure cast_char_to_${k}$
+#:if k in QUAD_KINDS
+#endif
+#:endif
+
+#:endfor
+
+#:for k in INT_KINDS
+  module procedure cast_char_to_${k}$
+    character(len=1) :: fmt_
+    character(len=5) :: decimal
+    integer          :: status
+
+    into = 0_${k}$
+
+    call cast_args(INT_FMTS, "i", fmt=fmt, fmt_=fmt_, decimal=decimal, status=status)
+    if ( status == 0 ) call parse_int_${k}$(substring, fmt_, into, status)
+
+    call report_cast(status, substring, stat)
+  end procedure cast_char_to_${k}$
+
+#:endfor
+
+  ! Number formatting, shared by `String`, `str` and `cast` ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  pure function int_fmt_of(fmt) result(fmt_)
+    character(len=*), intent(in), optional :: fmt
+    character(len=1)                       :: fmt_
+
+    fmt_ = "i"
+    if ( .not. present(fmt) ) return
+
+    if ( .not. any(INT_FMTS == fmt) ) error stop 'Invalid fmt "'//fmt//'": must be one of the INT_FMTS.'
+    fmt_ = fmt
+  end function int_fmt_of
+
+  pure function int_text(x, bits, fmt) result(text)
+    !-------------------------------------------------------------------------------------------------------------------
+    !! Returns the text of an integer of `bits` bits. A negative number in `fmt="z"` is its full bit pattern, and digits
+    !! are found from a negative number in `fmt="i"`, since the most negative integer has no positive counterpart.
+    !-------------------------------------------------------------------------------------------------------------------
+    integer(i64),     intent(in)  :: x
+    integer,          intent(in)  :: bits
+    character(len=*), intent(in)  :: fmt
+    character(len=:), allocatable :: text
+
+    character(len=20) :: buffer
+    integer(i64)      :: num
+    integer           :: i, digit, width
+
+    i = len(buffer)
+
+    if ( fmt == "i" ) then
+      num = x
+      if ( x > 0_i64 ) num = -x
+
+      do
+        buffer(i:i) = achar(iachar("0") - int(mod(num, 10_i64)))
+        num = num/10_i64
+        if ( num == 0_i64 ) exit
+        i = i - 1
+      end do
+
+      if ( x < 0_i64 ) then
+        i = i - 1; buffer(i:i) = "-"
+      end if
+    else
+      width = bits/4
+      num   = x
+      if ( bits < 64 ) num = ibits(x, 0, bits)
+
+      do digit = 0, width - 1
+        if ( (x >= 0_i64) .and. (digit > 0) .and. (ishft(num, -4*digit) == 0_i64) ) exit
+        buffer(i-digit:i-digit) = DIGITS_A(ibits(num, 4*digit, 4))
+      end do
+
+      i = i - digit + 1
+      i = i - 2; buffer(i:i+1) = "0x"
+    end if
+
+    text = buffer(i:)
+  end function int_text
+
+  pure function decimal_of(locale) result(decimal)
+    character(len=*), intent(in), optional :: locale
+    character(len=5)                       :: decimal
+
+    decimal = "POINT"
+    if ( .not. present(locale) ) return
+
+    if ( locale == "EU" ) then
+      decimal = "COMMA"
+    else if ( locale /= "US" ) then
+      error stop 'Invalid locale "'//locale//'": must be one of the LOCALES.'
+    end if
+  end function decimal_of
+
+  pure function real_fmt_of(fmt) result(fmt_)
+    character(len=*), intent(in), optional :: fmt
+    character(len=1)                       :: fmt_
+
+    fmt_ = "e"
+    if ( .not. present(fmt) ) return
+
+    if ( .not. any(REAL_FMTS == fmt) ) error stop 'Invalid fmt "'//fmt//'": must be one of the REAL_FMTS.'
+    fmt_ = fmt
+  end function real_fmt_of
+
+  pure function zero_text(decimal, fmt, e_digits) result(text)
+    character(len=*), intent(in)  :: decimal, fmt
+    integer,          intent(in)  :: e_digits
+    character(len=:), allocatable :: text
+
+    character(len=1) :: mark
+
+    mark = POINT
+    if ( decimal == "COMMA" ) mark = COMMA
+
+    text = "0"//mark//"0"
+    if ( fmt == "e" ) text = text//"e+"//repeat("0", e_digits)
+  end function zero_text
+
+  pure function e_edit(width, d, e_digits) result(edit)
+    integer, intent(in) :: width, d, e_digits
+    character(len=32)   :: edit
+
+    write(unit=edit, fmt="(a,i0,a,i0,a,i0,a)") "(es", width, ".", d, "e", e_digits, ")"
+  end function e_edit
+
+  pure function f_edit(width, d) result(edit)
+    integer, intent(in) :: width, d
+    character(len=32)   :: edit
+
+    write(unit=edit, fmt="(a,i0,a,i0,a)") "(f", width, ".", d, ")"
+  end function f_edit
+
+  pure function small_f_text(e_text, d) result(text)
+    !-------------------------------------------------------------------------------------------------------------------
+    !! Returns `e_text`, a number in `es` form with a negative exponent, in `f` form with `d` decimals. Very small
+    !! numbers go through this because ifx writes only zeros past about 255 decimals with an `f` edit descriptor.
+    !-------------------------------------------------------------------------------------------------------------------
+    character(len=*), intent(in)  :: e_text
+    integer,          intent(in)  :: d
+    character(len=:), allocatable :: text
+
+    integer :: first, i_e, power, target_len
+
+    first = 1
+    if ( e_text(1:1) == "-" ) first = 2
+
+    i_e = index(e_text, "E")
+    read(unit=e_text(i_e+1:), fmt=*) power
+
+    text = e_text(:first-1)//"0"//e_text(first+1:first+1)//repeat("0", -power-1)// &
+           e_text(first:first)//e_text(first+2:i_e-1)
+
+    target_len = first + 1 + d
+
+    if ( len(text) < target_len ) then
+      text = text//repeat("0", target_len-len(text))
+    else
+      text = text(:target_len)
+    end if
+  end function small_f_text
+
+  pure function join_complex(re, im_part, negative, decimal, fmt, im) result(text)
+    character(len=*), intent(in)           :: re, im_part, decimal, fmt
+    logical,          intent(in)           :: negative
+    character(len=*), intent(in), optional :: im
+    character(len=:), allocatable          :: text
+
+    character(len=:), allocatable :: im_
+
+    im_ = EMPTY_STR
+    if ( present(im) ) im_ = im
+
+    if ( im_ == EMPTY_STR ) then
+      if ( decimal == "POINT" ) then
+        text = "("//re//COMMA//im_part//")"
+      else
+        text = "("//re//SEMICOLON//im_part//")"
+      end if
+    else if ( negative .and. (fmt /= "z") ) then
+      text = re//im_part//im_
+    else
+      text = re//"+"//im_part//im_
+    end if
+  end function join_complex
+
+#:for k in REAL_KINDS
+#:if k in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+  pure function real_text_${k}$(x, decimal, fmt, decimals) result(text)
+    real(${k}$),        intent(in)           :: x
+    character(len=*), intent(in)           :: decimal, fmt
+    integer,          intent(in), optional :: decimals
+    character(len=:), allocatable          :: text
+
+    integer, parameter :: E_DECIMALS = ${E_DECIMALS[k]}$, E_DIGITS = ${E_DIGITS[k]}$, F_DIGITS = ${F_DIGITS[k]}$
+    integer            :: d, e, i, n
+
+    if ( fmt == "z" ) then
+      if ( (x == 0e0_${k}$) .and. (.not. ieee_is_negative(x)) ) then
+        text = "0x0"; return
+      end if
+
+#:if k == "r128"
+      allocate( character(len=34) :: text )
+      text(1:2) = "0x"
+      write(unit=text(3:), fmt="(z32.32)") x
+
+      do i = 3, 34
+        if ( (text(i:i) >= "A") .and. (text(i:i) <= "F") ) text(i:i) = achar(iachar(text(i:i)) + 32)
+      end do
+
+      return
+#:else
+      call cast(transfer(source=x, mold=1_${SAME_SIZE_INT[k]}$), into=text, fmt="z"); return
+#:endif
+    end if
+
+    if ( ieee_is_nan(x) ) then
+      text = "NaN"; return
+    else if ( .not. ieee_is_finite(x) ) then
+      text = "Inf"
+      if ( x < 0e0_${k}$ ) text = "-Inf"
+      return
+    end if
+
+    if ( x == 0e0_${k}$ ) then
+      text = zero_text(decimal, fmt, E_DIGITS); return
+    end if
+
+    if ( fmt == "e" ) then
+      d = E_DECIMALS
+      if ( present(decimals) ) d = max(min(decimals, E_DECIMALS), 0)
+
+      allocate( character(len=d+E_DIGITS+8) :: text )
+      write(unit=text, fmt=e_edit(len(text), d, E_DIGITS), decimal=decimal) x
+      text = trim(adjustl(text))
+
+      i = index(text, "E"); text(i:i) = "e"
+    else
+      if ( abs(x) >= 1e0_${k}$ ) then
+        e = 1 + floor(log10(abs(x)))
+      else
+        e = int(log10(abs(x)))
+      end if
+
+      d = max(F_DIGITS - e, 0)
+      if ( present(decimals) ) d = max(min(decimals, d), 0)
+
+      if ( d > MAX_F_DECIMALS ) then
+        n = max(d + floor(log10(abs(x))) + 1, 1)
+
+        allocate( character(len=n+E_DIGITS+8) :: text )
+        write(unit=text, fmt=e_edit(len(text), n-1, E_DIGITS), decimal=decimal) x
+        text = small_f_text(trim(adjustl(text)), d); return
+      end if
+
+      allocate( character(len=max(e,1)+d+4) :: text )
+      write(unit=text, fmt=f_edit(len(text), d), decimal=decimal) x
+      text = trim(adjustl(text))
+    end if
+  end function real_text_${k}$
+#:if k in QUAD_KINDS
+#endif
+#:endif
+
+#:endfor
+#:for k, r in COMPLEX_KINDS
+#:if k in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+  pure function complex_text_${k}$(x, decimal, fmt, decimals, im) result(text)
+    complex(${r}$),     intent(in)           :: x
+    character(len=*), intent(in)           :: decimal, fmt
+    integer,          intent(in), optional :: decimals
+    character(len=*), intent(in), optional :: im
+    character(len=:), allocatable          :: text
+
+    text = join_complex( real_text_${r}$(x%re, decimal, fmt, decimals), &
+                         real_text_${r}$(x%im, decimal, fmt, decimals), &
+                         x%im < 0e0_${r}$, decimal, fmt, im )
+  end function complex_text_${k}$
+#:if k in QUAD_KINDS
+#endif
+#:endif
+
+#:endfor
+
+  ! Number parsing, shared by `cast` for `character` and `String` ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  pure subroutine cast_args(fmts, default_fmt, fmt, locale, fmt_, decimal, status)
+    character(len=*), intent(in)           :: fmts(:), default_fmt
+    character(len=*), intent(in), optional :: fmt, locale
+    character(len=1), intent(out)          :: fmt_
+    character(len=5), intent(out)          :: decimal
+    integer,          intent(out)          :: status
+
+    status = 0; fmt_ = default_fmt; decimal = "POINT"
+
+    if ( present(fmt) ) then
+      if ( any(fmts == fmt) ) then
+        fmt_ = fmt
+      else
+        status = ARG_ERR
+      end if
+    end if
+
+    if ( present(locale) ) then
+      if ( locale == "EU" ) then
+        decimal = "COMMA"
+      else if ( locale /= "US" ) then
+        status = ARG_ERR
+      end if
+    end if
+  end subroutine cast_args
+
+  pure subroutine report_cast(status, text, stat)
+    integer,          intent(in)            :: status
+    character(len=*), intent(in)            :: text
+    integer,          intent(out), optional :: stat
+
+    if ( present(stat) ) then
+      stat = status
+    else if ( status == ARG_ERR ) then
+      error stop "Invalid fmt or locale in cast."
+    else if ( status /= 0 ) then
+      error stop 'Invalid number in cast: "'//text(:min(len(text),64))//'"'
+    end if
+  end subroutine report_cast
+
+  pure subroutine trimmed_bounds(text, l, r)
+    character(len=*), intent(in)  :: text
+    integer,          intent(out) :: l, r
+
+    l = 1; r = len(text)
+
+    do while ( l <= r )
+      if ( .not. is_space(text(l:l)) ) exit
+      l = l + 1
+    end do
+
+    do while ( r >= l )
+      if ( .not. is_space(text(r:r)) ) exit
+      r = r - 1
+    end do
+  end subroutine trimmed_bounds
+
+  elemental function is_space(c) result(blank)
+    character(len=1), intent(in) :: c
+    logical                      :: blank
+
+    blank = (c == SPACE) .or. (c == TAB) .or. (c == CR) .or. (c == LF)
+  end function is_space
+
+  elemental function digit_value(c, base) result(digit)
+    character(len=1), intent(in) :: c
+    integer,          intent(in) :: base
+    integer                      :: digit
+
+    digit = -1
+
+    if ( (c >= "0") .and. (c <= "9") ) then
+      digit = iachar(c) - iachar("0")
+    else if ( (base == 16) .and. (c >= "a") .and. (c <= "f") ) then
+      digit = iachar(c) - iachar("a") + 10
+    else if ( (base == 16) .and. (c >= "A") .and. (c <= "F") ) then
+      digit = iachar(c) - iachar("A") + 10
+    end if
+  end function digit_value
+
+  pure subroutine hex_bounds(text, max_digits, l, r, status)
+    !-------------------------------------------------------------------------------------------------------------------
+    !! Finds the hexadecimal digits in `text`, after any "0x". Leading zeros do not count toward `max_digits`.
+    !-------------------------------------------------------------------------------------------------------------------
+    character(len=*), intent(in)  :: text
+    integer,          intent(in)  :: max_digits
+    integer,          intent(out) :: l, r, status
+
+    integer :: i, significant
+
+    status = READ_ERR
+    call trimmed_bounds(text, l, r)
+
+    if ( r - l >= 1 ) then
+      if ( (text(l:l) == "0") .and. ((text(l+1:l+1) == "x") .or. (text(l+1:l+1) == "X")) ) l = l + 2
+    end if
+
+    if ( l > r ) return
+
+    significant = 0
+
+    do i = l, r
+      if ( digit_value(text(i:i), 16) < 0 ) return
+      if ( (significant > 0) .or. (text(i:i) /= "0") ) significant = significant + 1
+    end do
+
+    if ( significant <= max_digits ) status = 0
+  end subroutine hex_bounds
+
+  pure subroutine parse_integer(text, fmt, bits, value, status)
+    !-------------------------------------------------------------------------------------------------------------------
+    !! Parses an integer that fits in `bits` bits. Decimal digits accumulate as a negative number, since the most
+    !! negative integer has no positive counterpart. Hexadecimal digits are the bit pattern, so "0xff" is -1 for 8 bits.
+    !-------------------------------------------------------------------------------------------------------------------
+    character(len=*), intent(in)  :: text, fmt
+    integer,          intent(in)  :: bits
+    integer(i64),     intent(out) :: value
+    integer,          intent(out) :: status
+
+    integer(i64) :: smallest
+    integer      :: i, l, r, digit
+    logical      :: negative
+
+    value = 0_i64
+
+    if ( fmt == "z" ) then
+      call hex_bounds(text, bits/4, l, r, status)
+      if ( status /= 0 ) return
+
+      do i = l, r
+        value = ior(ishft(value, 4), int(digit_value(text(i:i), 16), i64))
+      end do
+
+      if ( bits < 64 ) then
+        if ( btest(value, bits-1) ) value = ior(value, ishft(-1_i64, bits))
+      end if
+
+      return
+    end if
+
+    status = READ_ERR
+    call trimmed_bounds(text, l, r)
+    if ( l > r ) return
+
+    negative = (text(l:l) == "-")
+    if ( negative .or. (text(l:l) == "+") ) l = l + 1
+    if ( l > r ) return
+
+    smallest = ishft(-1_i64, bits-1)
+
+    do i = l, r
+      digit = digit_value(text(i:i), 10)
+
+      if ( digit < 0 ) then
+        value = 0_i64; return
+      end if
+
+      if ( value < (smallest + digit)/10_i64 ) then
+        value = 0_i64; return
+      end if
+
+      value = 10_i64*value - digit
+    end do
+
+    if ( .not. negative ) then
+      if ( value == smallest ) then
+        value = 0_i64; return
+      end if
+
+      value = -value
+    end if
+
+    status = 0
+  end subroutine parse_integer
+
+  pure function lowercase(text) result(lower)
+    character(len=*), intent(in) :: text
+    character(len=len(text))     :: lower
+
+    integer :: i
+
+    do i = 1, len(text)
+      lower(i:i) = text(i:i)
+      if ( (text(i:i) >= "A") .and. (text(i:i) <= "Z") ) lower(i:i) = achar(iachar(text(i:i)) + 32)
+    end do
+  end function lowercase
+
+  pure function is_real_text(text, decimal) result(valid)
+    !-------------------------------------------------------------------------------------------------------------------
+    !! Checks for an optional sign, then NaN, Inf, Infinity, or digits with an optional decimal mark and exponent. This
+    !! comes before list-directed input, which would otherwise accept forms such as "2*3.5", "1 2", "7,junk" and "/".
+    !-------------------------------------------------------------------------------------------------------------------
+    character(len=*), intent(in) :: text, decimal
+    logical                      :: valid
+
+    character(len=1) :: mark
+    integer          :: i, n, digits
+
+    valid = .false.; n = len(text); i = 1
+    if ( n < 1 ) return
+
+    mark = POINT
+    if ( decimal == "COMMA" ) mark = COMMA
+
+    if ( (text(1:1) == "+") .or. (text(1:1) == "-") ) i = 2
+    if ( i > n ) return
+
+    if ( index("nNiI", text(i:i)) > 0 ) then
+      valid = (lowercase(text(i:)) == "nan") .or. (lowercase(text(i:)) == "inf") .or. &
+              (lowercase(text(i:)) == "infinity")
+      return
+    end if
+
+    digits = 0
+
+    do while ( i <= n )
+      if ( digit_value(text(i:i), 10) < 0 ) exit
+      digits = digits + 1; i = i + 1
+    end do
+
+    if ( i <= n ) then
+      if ( text(i:i) == mark ) then
+        i = i + 1
+
+        do while ( i <= n )
+          if ( digit_value(text(i:i), 10) < 0 ) exit
+          digits = digits + 1; i = i + 1
+        end do
+      end if
+    end if
+
+    if ( digits == 0 ) return
+
+    if ( i > n ) then
+      valid = .true.; return
+    end if
+
+    if ( index("eEdDqQ", text(i:i)) == 0 ) return
+    i = i + 1
+    if ( i > n ) return
+
+    if ( (text(i:i) == "+") .or. (text(i:i) == "-") ) i = i + 1
+    if ( i > n ) return
+
+    do while ( i <= n )
+      if ( digit_value(text(i:i), 10) < 0 ) return
+      i = i + 1
+    end do
+
+    valid = .true.
+  end function is_real_text
+
+  pure subroutine split_complex(text, decimal, fmt, im, re_l, re_r, im_l, im_r, status)
+    !-------------------------------------------------------------------------------------------------------------------
+    !! Finds the real and imaginary parts of `text`, either "(re,im)" or "(re;im)" by locale, or "re+imj" with `im` as
+    !! the imaginary unit. Only the bounds of the parts are checked here, as they are parsed as real numbers afterward.
+    !-------------------------------------------------------------------------------------------------------------------
+    character(len=*), intent(in)           :: text, decimal, fmt
+    character(len=*), intent(in), optional :: im
+    integer,          intent(out)          :: re_l, re_r, im_l, im_r, status
+
+    character(len=1) :: separator
+    integer          :: i, l, r, im_len
+
+    re_l = 1; re_r = 0; im_l = 1; im_r = 0
+    status = READ_ERR
+
+    call trimmed_bounds(text, l, r)
+    if ( l > r ) return
+
+    im_len = 0
+    if ( present(im) ) im_len = len(im)
+
+    if ( im_len == 0 ) then
+      if ( (r - l < 2) .or. (text(l:l) /= "(") .or. (text(r:r) /= ")") ) return
+
+      separator = COMMA
+      if ( decimal == "COMMA" ) separator = SEMICOLON
+
+      i = index(text(l+1:r-1), separator)
+      if ( i == 0 ) return
+
+      i = l + i
+      re_l = l + 1; re_r = i - 1; im_l = i + 1; im_r = r - 1
+      status = 0; return
+    end if
+
+    if ( r - l + 1 <= im_len ) return
+    if ( text(r-im_len+1:r) /= im ) return
+
+    r = r - im_len
+
+    do i = l + 1, r
+      if ( (text(i:i) /= "+") .and. ((fmt == "z") .or. (text(i:i) /= "-")) ) cycle
+      if ( (fmt /= "z") .and. (index("eEdDqQ", text(i-1:i-1)) /= 0) ) cycle
+
+      re_l = l; re_r = i - 1; im_r = r
+
+      im_l = i
+      if ( (fmt == "z") .or. (text(i:i) == "+") ) im_l = i + 1
+
+      status = 0; return
+    end do
+  end subroutine split_complex
+
+#:for k in INT_KINDS
+  pure subroutine parse_int_${k}$(text, fmt, value, status)
+    character(len=*), intent(in)  :: text, fmt
+    integer(${k}$),   intent(out) :: value
+    integer,          intent(out) :: status
+
+    integer(i64) :: number
+
+    call parse_integer(text, fmt, int(bit_size(value)), number, status)
+    value = int(number, ${k}$)
+  end subroutine parse_int_${k}$
+
+#:endfor
+
+#:for k in REAL_KINDS
+#:if k in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+  pure subroutine parse_real_${k}$(text, decimal, fmt, value, status)
+    character(len=*), intent(in)  :: text, decimal, fmt
+    real(${k}$),        intent(out) :: value
+    integer,          intent(out) :: status
+
+#:if k != "r128"
+    integer(${SAME_SIZE_INT[k]}$) :: number
+#:endif
+    integer :: l, r
+
+    value = 0e0_${k}$
+
+    if ( fmt == "z" ) then
+#:if k == "r128"
+      call hex_bounds(text, 32, l, r, status)
+      if ( status /= 0 ) return
+
+      read(unit=text(l:r), fmt="(z100)", iostat=status) value
+
+      if ( status /= 0 ) then
+        value = 0e0_r128; status = READ_ERR
+      end if
+
+      return
+#:else
+      call parse_int_${SAME_SIZE_INT[k]}$(text, "z", number, status)
+      if ( status == 0 ) value = transfer(source=number, mold=value)
+
+      return
+#:endif
+    end if
+
+    call trimmed_bounds(text, l, r)
+
+    if ( .not. is_real_text(text(l:r), decimal) ) then
+      status = READ_ERR; return
+    end if
+
+    read(unit=text(l:r), fmt=*, decimal=decimal, iostat=status) value
+
+    if ( status /= 0 ) then
+      value = 0e0_${k}$; status = READ_ERR
+    end if
+  end subroutine parse_real_${k}$
+#:if k in QUAD_KINDS
+#endif
+#:endif
+
+#:endfor
+#:for k, r in COMPLEX_KINDS
+#:if k in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+  pure subroutine parse_complex_${k}$(text, decimal, fmt, im, value, status)
+    character(len=*), intent(in)           :: text, decimal, fmt
+    character(len=*), intent(in), optional :: im
+    complex(${r}$),     intent(out)          :: value
+    integer,          intent(out)          :: status
+
+    real(${r}$) :: re_part, im_part
+    integer   :: re_l, re_r, im_l, im_r
+
+    value = (0e0_${r}$,0e0_${r}$)
+
+    call split_complex(text, decimal, fmt, im, re_l, re_r, im_l, im_r, status)
+    if ( status /= 0 ) return
+
+    call parse_real_${r}$(text(re_l:re_r), decimal, fmt, re_part, status)
+    if ( status /= 0 ) return
+
+    call parse_real_${r}$(text(im_l:im_r), decimal, fmt, im_part, status)
+    if ( status == 0 ) value = cmplx(re_part, im_part, kind=${r}$)
+  end subroutine parse_complex_${k}$
+#:if k in QUAD_KINDS
+#endif
+#:endif
+
+#:endfor
+end submodule internal_io

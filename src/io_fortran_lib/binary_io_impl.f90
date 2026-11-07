@@ -1,3 +1,4 @@
+! Generated from fypp/io_fortran_lib/binary_io_impl.fypp by fypp/generate.sh. Edit that file, not this one.
 #include "iofl_config.inc"
 submodule (io_fortran_lib) binary_io
   !---------------------------------------------------------------------------------------------------------------------
@@ -38,15 +39,15 @@ submodule (io_fortran_lib) binary_io
     end if
 
     select rank(x)
-      rank(1);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(2);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(3);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(4);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(5);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(6);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(7);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(8);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(9);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(1); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(2); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(3); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(4); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(5); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(6); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(7); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(8); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(9); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(10); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(11); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(12); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
@@ -70,6 +71,7 @@ submodule (io_fortran_lib) binary_io
     stat=0; errmsg=EMPTY_STR
   end procedure to_binary_c128
 #endif
+
   module procedure to_binary_c64
     logical :: exists
     integer :: file_unit
@@ -98,15 +100,15 @@ submodule (io_fortran_lib) binary_io
     end if
 
     select rank(x)
-      rank(1);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(2);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(3);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(4);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(5);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(6);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(7);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(8);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(9);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(1); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(2); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(3); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(4); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(5); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(6); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(7); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(8); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(9); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(10); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(11); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(12); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
@@ -129,6 +131,7 @@ submodule (io_fortran_lib) binary_io
 
     stat=0; errmsg=EMPTY_STR
   end procedure to_binary_c64
+
   module procedure to_binary_c32
     logical :: exists
     integer :: file_unit
@@ -157,15 +160,15 @@ submodule (io_fortran_lib) binary_io
     end if
 
     select rank(x)
-      rank(1);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(2);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(3);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(4);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(5);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(6);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(7);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(8);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(9);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(1); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(2); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(3); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(4); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(5); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(6); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(7); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(8); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(9); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(10); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(11); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(12); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
@@ -188,6 +191,7 @@ submodule (io_fortran_lib) binary_io
 
     stat=0; errmsg=EMPTY_STR
   end procedure to_binary_c32
+
 
 #ifdef IOFL_HAS_R128
   module procedure to_binary_r128
@@ -218,15 +222,15 @@ submodule (io_fortran_lib) binary_io
     end if
 
     select rank(x)
-      rank(1);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(2);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(3);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(4);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(5);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(6);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(7);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(8);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(9);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(1); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(2); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(3); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(4); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(5); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(6); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(7); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(8); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(9); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(10); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(11); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(12); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
@@ -250,6 +254,7 @@ submodule (io_fortran_lib) binary_io
     stat=0; errmsg=EMPTY_STR
   end procedure to_binary_r128
 #endif
+
   module procedure to_binary_r64
     logical :: exists
     integer :: file_unit
@@ -278,15 +283,15 @@ submodule (io_fortran_lib) binary_io
     end if
 
     select rank(x)
-      rank(1);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(2);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(3);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(4);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(5);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(6);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(7);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(8);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(9);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(1); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(2); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(3); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(4); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(5); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(6); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(7); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(8); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(9); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(10); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(11); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(12); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
@@ -309,6 +314,7 @@ submodule (io_fortran_lib) binary_io
 
     stat=0; errmsg=EMPTY_STR
   end procedure to_binary_r64
+
   module procedure to_binary_r32
     logical :: exists
     integer :: file_unit
@@ -337,15 +343,15 @@ submodule (io_fortran_lib) binary_io
     end if
 
     select rank(x)
-      rank(1);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(2);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(3);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(4);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(5);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(6);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(7);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(8);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(9);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(1); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(2); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(3); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(4); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(5); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(6); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(7); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(8); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(9); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(10); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(11); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(12); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
@@ -368,6 +374,7 @@ submodule (io_fortran_lib) binary_io
 
     stat=0; errmsg=EMPTY_STR
   end procedure to_binary_r32
+
 
   module procedure to_binary_i64
     logical :: exists
@@ -397,15 +404,15 @@ submodule (io_fortran_lib) binary_io
     end if
 
     select rank(x)
-      rank(1);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(2);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(3);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(4);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(5);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(6);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(7);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(8);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(9);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(1); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(2); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(3); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(4); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(5); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(6); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(7); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(8); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(9); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(10); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(11); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(12); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
@@ -428,6 +435,7 @@ submodule (io_fortran_lib) binary_io
 
     stat=0; errmsg=EMPTY_STR
   end procedure to_binary_i64
+
   module procedure to_binary_i32
     logical :: exists
     integer :: file_unit
@@ -456,15 +464,15 @@ submodule (io_fortran_lib) binary_io
     end if
 
     select rank(x)
-      rank(1);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(2);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(3);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(4);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(5);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(6);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(7);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(8);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(9);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(1); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(2); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(3); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(4); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(5); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(6); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(7); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(8); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(9); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(10); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(11); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(12); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
@@ -487,6 +495,7 @@ submodule (io_fortran_lib) binary_io
 
     stat=0; errmsg=EMPTY_STR
   end procedure to_binary_i32
+
   module procedure to_binary_i16
     logical :: exists
     integer :: file_unit
@@ -515,15 +524,15 @@ submodule (io_fortran_lib) binary_io
     end if
 
     select rank(x)
-      rank(1);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(2);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(3);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(4);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(5);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(6);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(7);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(8);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(9);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(1); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(2); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(3); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(4); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(5); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(6); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(7); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(8); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(9); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(10); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(11); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(12); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
@@ -546,6 +555,7 @@ submodule (io_fortran_lib) binary_io
 
     stat=0; errmsg=EMPTY_STR
   end procedure to_binary_i16
+
   module procedure to_binary_i8
     logical :: exists
     integer :: file_unit
@@ -574,15 +584,15 @@ submodule (io_fortran_lib) binary_io
     end if
 
     select rank(x)
-      rank(1);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(2);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(3);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(4);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(5);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(6);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(7);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(8);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(9);  write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(1); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(2); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(3); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(4); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(5); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(6); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(7); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(8); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      rank(9); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(10); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(11); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
       rank(12); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
@@ -605,6 +615,7 @@ submodule (io_fortran_lib) binary_io
 
     stat=0; errmsg=EMPTY_STR
   end procedure to_binary_i8
+
 
   ! Reading Procedures ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #ifdef IOFL_HAS_R128
@@ -689,15 +700,15 @@ submodule (io_fortran_lib) binary_io
     end if
 
     select rank(into)
-      rank(1);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(2);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(3);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(4);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(5);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(6);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(7);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(8);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(9);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(1); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(2); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(3); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(4); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(5); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(6); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(7); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(8); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(9); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
       rank(10); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
       rank(11); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
       rank(12); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
@@ -721,6 +732,7 @@ submodule (io_fortran_lib) binary_io
     stat=0; errmsg=EMPTY_STR
   end procedure from_binary_c128
 #endif
+
   module procedure from_binary_c64
     logical :: exists
     integer :: file_unit
@@ -802,15 +814,15 @@ submodule (io_fortran_lib) binary_io
     end if
 
     select rank(into)
-      rank(1);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(2);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(3);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(4);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(5);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(6);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(7);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(8);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(9);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(1); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(2); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(3); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(4); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(5); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(6); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(7); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(8); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(9); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
       rank(10); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
       rank(11); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
       rank(12); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
@@ -833,6 +845,7 @@ submodule (io_fortran_lib) binary_io
 
     stat=0; errmsg=EMPTY_STR
   end procedure from_binary_c64
+
   module procedure from_binary_c32
     logical :: exists
     integer :: file_unit
@@ -914,15 +927,15 @@ submodule (io_fortran_lib) binary_io
     end if
 
     select rank(into)
-      rank(1);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(2);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(3);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(4);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(5);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(6);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(7);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(8);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(9);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(1); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(2); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(3); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(4); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(5); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(6); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(7); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(8); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(9); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
       rank(10); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
       rank(11); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
       rank(12); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
@@ -945,6 +958,7 @@ submodule (io_fortran_lib) binary_io
 
     stat=0; errmsg=EMPTY_STR
   end procedure from_binary_c32
+
 
 #ifdef IOFL_HAS_R128
   module procedure from_binary_r128
@@ -1028,15 +1042,15 @@ submodule (io_fortran_lib) binary_io
     end if
 
     select rank(into)
-      rank(1);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(2);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(3);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(4);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(5);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(6);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(7);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(8);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(9);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(1); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(2); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(3); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(4); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(5); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(6); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(7); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(8); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(9); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
       rank(10); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
       rank(11); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
       rank(12); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
@@ -1060,6 +1074,7 @@ submodule (io_fortran_lib) binary_io
     stat=0; errmsg=EMPTY_STR
   end procedure from_binary_r128
 #endif
+
   module procedure from_binary_r64
     logical :: exists
     integer :: file_unit
@@ -1141,15 +1156,15 @@ submodule (io_fortran_lib) binary_io
     end if
 
     select rank(into)
-      rank(1);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(2);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(3);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(4);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(5);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(6);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(7);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(8);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(9);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(1); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(2); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(3); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(4); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(5); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(6); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(7); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(8); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(9); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
       rank(10); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
       rank(11); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
       rank(12); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
@@ -1172,6 +1187,7 @@ submodule (io_fortran_lib) binary_io
 
     stat=0; errmsg=EMPTY_STR
   end procedure from_binary_r64
+
   module procedure from_binary_r32
     logical :: exists
     integer :: file_unit
@@ -1253,15 +1269,15 @@ submodule (io_fortran_lib) binary_io
     end if
 
     select rank(into)
-      rank(1);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(2);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(3);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(4);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(5);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(6);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(7);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(8);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(9);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(1); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(2); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(3); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(4); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(5); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(6); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(7); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(8); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(9); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
       rank(10); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
       rank(11); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
       rank(12); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
@@ -1284,6 +1300,7 @@ submodule (io_fortran_lib) binary_io
 
     stat=0; errmsg=EMPTY_STR
   end procedure from_binary_r32
+
 
   module procedure from_binary_i64
     logical :: exists
@@ -1366,15 +1383,15 @@ submodule (io_fortran_lib) binary_io
     end if
 
     select rank(into)
-      rank(1);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(2);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(3);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(4);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(5);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(6);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(7);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(8);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(9);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(1); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(2); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(3); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(4); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(5); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(6); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(7); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(8); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(9); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
       rank(10); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
       rank(11); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
       rank(12); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
@@ -1397,6 +1414,7 @@ submodule (io_fortran_lib) binary_io
 
     stat=0; errmsg=EMPTY_STR
   end procedure from_binary_i64
+
   module procedure from_binary_i32
     logical :: exists
     integer :: file_unit
@@ -1478,15 +1496,15 @@ submodule (io_fortran_lib) binary_io
     end if
 
     select rank(into)
-      rank(1);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(2);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(3);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(4);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(5);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(6);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(7);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(8);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(9);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(1); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(2); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(3); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(4); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(5); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(6); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(7); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(8); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(9); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
       rank(10); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
       rank(11); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
       rank(12); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
@@ -1509,6 +1527,7 @@ submodule (io_fortran_lib) binary_io
 
     stat=0; errmsg=EMPTY_STR
   end procedure from_binary_i32
+
   module procedure from_binary_i16
     logical :: exists
     integer :: file_unit
@@ -1590,15 +1609,15 @@ submodule (io_fortran_lib) binary_io
     end if
 
     select rank(into)
-      rank(1);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(2);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(3);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(4);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(5);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(6);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(7);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(8);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(9);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(1); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(2); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(3); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(4); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(5); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(6); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(7); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(8); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(9); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
       rank(10); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
       rank(11); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
       rank(12); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
@@ -1621,6 +1640,7 @@ submodule (io_fortran_lib) binary_io
 
     stat=0; errmsg=EMPTY_STR
   end procedure from_binary_i16
+
   module procedure from_binary_i8
     logical :: exists
     integer :: file_unit
@@ -1702,15 +1722,15 @@ submodule (io_fortran_lib) binary_io
     end if
 
     select rank(into)
-      rank(1);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(2);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(3);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(4);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(5);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(6);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(7);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(8);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(9);  read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(1); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(2); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(3); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(4); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(5); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(6); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(7); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(8); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(9); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
       rank(10); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
       rank(11); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
       rank(12); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
@@ -1733,4 +1753,5 @@ submodule (io_fortran_lib) binary_io
 
     stat=0; errmsg=EMPTY_STR
   end procedure from_binary_i8
+
 end submodule binary_io

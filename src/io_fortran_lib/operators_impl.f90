@@ -1,3 +1,4 @@
+! Generated from fypp/io_fortran_lib/operators_impl.fypp by fypp/generate.sh. Edit that file, not this one.
 #include "iofl_config.inc"
 submodule (io_fortran_lib) operators
   !---------------------------------------------------------------------------------------------------------------------
@@ -223,6 +224,7 @@ submodule (io_fortran_lib) operators
   module procedure repeat_chars_15d
     call repeat_into(char_base, ncopies, new)
   end procedure repeat_chars_15d
+
 
   pure elemental subroutine repeat_into(char_base, ncopies, new)
     character(len=*), intent(in)  :: char_base

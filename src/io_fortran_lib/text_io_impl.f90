@@ -1,3 +1,4 @@
+! Generated from fypp/io_fortran_lib/text_io_impl.fypp by fypp/generate.sh. Edit that file, not this one.
 #include "iofl_config.inc"
 submodule (io_fortran_lib) text_io
   !---------------------------------------------------------------------------------------------------------------------
@@ -8,7 +9,7 @@ submodule (io_fortran_lib) text_io
   implicit none (type, external)
 
   ! Definitions and interfaces ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  character(len=1), target :: LINE_FEED = LF
+  character(len=1), parameter :: LINE_FEED = LF
   logical,          target :: APPEND_TO_FILE = .true.
 
   contains ! Procedure bodies for module subprograms <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><
@@ -17,9 +18,10 @@ submodule (io_fortran_lib) text_io
   module procedure echo_chars
     character(len=:), allocatable :: ext
 
-    character(len=:), pointer :: terminator_, errmsg_
-    integer,          pointer :: stat_
-    logical,          pointer :: append_
+    character(len=:), allocatable :: terminator_
+    character(len=:), pointer :: errmsg_
+    integer, pointer :: stat_
+    logical :: append_
 
     character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
@@ -53,17 +55,9 @@ submodule (io_fortran_lib) text_io
       return
     end if
 
-    if ( .not. present(append) ) then
-      append_ => APPEND_TO_FILE
-    else
-      append_ => append
-    end if
+    append_ = optval(append, APPEND_TO_FILE)
 
-    if ( .not. present(terminator) ) then
-      terminator_ => LINE_FEED
-    else
-      terminator_ => terminator
-    end if
+    terminator_ = optval(terminator, LINE_FEED)
 
     inquire(file=file, exist=exists, iostat=stat_, iomsg=errmsg_)
 
@@ -126,9 +120,10 @@ submodule (io_fortran_lib) text_io
   module procedure echo_string
     character(len=:), allocatable :: ext
 
-    character(len=:), pointer :: terminator_, errmsg_
-    integer,          pointer :: stat_
-    logical,          pointer :: append_
+    character(len=:), allocatable :: terminator_
+    character(len=:), pointer :: errmsg_
+    integer, pointer :: stat_
+    logical :: append_
 
     character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
@@ -162,17 +157,9 @@ submodule (io_fortran_lib) text_io
       return
     end if
 
-    if ( .not. present(append) ) then
-      append_ => APPEND_TO_FILE
-    else
-      append_ => append
-    end if
+    append_ = optval(append, APPEND_TO_FILE)
 
-    if ( .not. present(terminator) ) then
-      terminator_ => LINE_FEED
-    else
-      terminator_ => terminator
-    end if
+    terminator_ = optval(terminator, LINE_FEED)
 
     inquire(file=file, exist=exists, iostat=stat_, iomsg=errmsg_)
 
@@ -248,7 +235,7 @@ submodule (io_fortran_lib) text_io
       rank(2); nrows = size(x, dim=1); ncols = size(x, dim=2)
     end select
 
-    if ( len(header) /= 0 ) header_present = .true.
+    if ( present(header) ) header_present = len(header) /= 0
     if ( header_present ) nrows = nrows + 1
 
     allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
@@ -285,6 +272,7 @@ submodule (io_fortran_lib) text_io
     call write_cells(text_file, .true., cells, file, NL, delim, .false., stat, errmsg)
   end procedure to_text_c128
 #endif
+
   module procedure to_text_c64
     type(String)                      :: text_file
     type(String), allocatable, target :: cells(:,:)
@@ -300,7 +288,7 @@ submodule (io_fortran_lib) text_io
       rank(2); nrows = size(x, dim=1); ncols = size(x, dim=2)
     end select
 
-    if ( len(header) /= 0 ) header_present = .true.
+    if ( present(header) ) header_present = len(header) /= 0
     if ( header_present ) nrows = nrows + 1
 
     allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
@@ -336,6 +324,7 @@ submodule (io_fortran_lib) text_io
 
     call write_cells(text_file, .true., cells, file, NL, delim, .false., stat, errmsg)
   end procedure to_text_c64
+
   module procedure to_text_c32
     type(String)                      :: text_file
     type(String), allocatable, target :: cells(:,:)
@@ -351,7 +340,7 @@ submodule (io_fortran_lib) text_io
       rank(2); nrows = size(x, dim=1); ncols = size(x, dim=2)
     end select
 
-    if ( len(header) /= 0 ) header_present = .true.
+    if ( present(header) ) header_present = len(header) /= 0
     if ( header_present ) nrows = nrows + 1
 
     allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
@@ -388,6 +377,7 @@ submodule (io_fortran_lib) text_io
     call write_cells(text_file, .true., cells, file, NL, delim, .false., stat, errmsg)
   end procedure to_text_c32
 
+
 #ifdef IOFL_HAS_R128
   module procedure to_text_r128
     type(String)                      :: text_file
@@ -404,7 +394,7 @@ submodule (io_fortran_lib) text_io
       rank(2); nrows = size(x, dim=1); ncols = size(x, dim=2)
     end select
 
-    if ( len(header) /= 0 ) header_present = .true.
+    if ( present(header) ) header_present = len(header) /= 0
     if ( header_present ) nrows = nrows + 1
 
     allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
@@ -441,6 +431,7 @@ submodule (io_fortran_lib) text_io
     call text_file%write_file(cells, file, NL, delim, .false., stat, errmsg)
   end procedure to_text_r128
 #endif
+
   module procedure to_text_r64
     type(String)                      :: text_file
     type(String), allocatable, target :: cells(:,:)
@@ -456,7 +447,7 @@ submodule (io_fortran_lib) text_io
       rank(2); nrows = size(x, dim=1); ncols = size(x, dim=2)
     end select
 
-    if ( len(header) /= 0 ) header_present = .true.
+    if ( present(header) ) header_present = len(header) /= 0
     if ( header_present ) nrows = nrows + 1
 
     allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
@@ -492,6 +483,7 @@ submodule (io_fortran_lib) text_io
 
     call text_file%write_file(cells, file, NL, delim, .false., stat, errmsg)
   end procedure to_text_r64
+
   module procedure to_text_r32
     type(String)                      :: text_file
     type(String), allocatable, target :: cells(:,:)
@@ -507,7 +499,7 @@ submodule (io_fortran_lib) text_io
       rank(2); nrows = size(x, dim=1); ncols = size(x, dim=2)
     end select
 
-    if ( len(header) /= 0 ) header_present = .true.
+    if ( present(header) ) header_present = len(header) /= 0
     if ( header_present ) nrows = nrows + 1
 
     allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
@@ -544,6 +536,7 @@ submodule (io_fortran_lib) text_io
     call text_file%write_file(cells, file, NL, delim, .false., stat, errmsg)
   end procedure to_text_r32
 
+
   module procedure to_text_i64
     type(String)                      :: text_file
     type(String), allocatable, target :: cells(:,:)
@@ -559,7 +552,7 @@ submodule (io_fortran_lib) text_io
       rank(2); nrows = size(x, dim=1); ncols = size(x, dim=2)
     end select
 
-    if ( len(header) /= 0 ) header_present = .true.
+    if ( present(header) ) header_present = len(header) /= 0
     if ( header_present ) nrows = nrows + 1
 
     allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
@@ -595,6 +588,7 @@ submodule (io_fortran_lib) text_io
 
     call text_file%write_file(cells, file, NL, delim, .false., stat, errmsg)
   end procedure to_text_i64
+
   module procedure to_text_i32
     type(String)                      :: text_file
     type(String), allocatable, target :: cells(:,:)
@@ -610,7 +604,7 @@ submodule (io_fortran_lib) text_io
       rank(2); nrows = size(x, dim=1); ncols = size(x, dim=2)
     end select
 
-    if ( len(header) /= 0 ) header_present = .true.
+    if ( present(header) ) header_present = len(header) /= 0
     if ( header_present ) nrows = nrows + 1
 
     allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
@@ -646,6 +640,7 @@ submodule (io_fortran_lib) text_io
 
     call text_file%write_file(cells, file, NL, delim, .false., stat, errmsg)
   end procedure to_text_i32
+
   module procedure to_text_i16
     type(String)                      :: text_file
     type(String), allocatable, target :: cells(:,:)
@@ -661,7 +656,7 @@ submodule (io_fortran_lib) text_io
       rank(2); nrows = size(x, dim=1); ncols = size(x, dim=2)
     end select
 
-    if ( len(header) /= 0 ) header_present = .true.
+    if ( present(header) ) header_present = len(header) /= 0
     if ( header_present ) nrows = nrows + 1
 
     allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
@@ -697,6 +692,7 @@ submodule (io_fortran_lib) text_io
 
     call text_file%write_file(cells, file, NL, delim, .false., stat, errmsg)
   end procedure to_text_i16
+
   module procedure to_text_i8
     type(String)                      :: text_file
     type(String), allocatable, target :: cells(:,:)
@@ -712,7 +708,7 @@ submodule (io_fortran_lib) text_io
       rank(2); nrows = size(x, dim=1); ncols = size(x, dim=2)
     end select
 
-    if ( len(header) /= 0 ) header_present = .true.
+    if ( present(header) ) header_present = len(header) /= 0
     if ( header_present ) nrows = nrows + 1
 
     allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
@@ -748,6 +744,7 @@ submodule (io_fortran_lib) text_io
 
     call text_file%write_file(cells, file, NL, delim, .false., stat, errmsg)
   end procedure to_text_i8
+
 
   ! Reading Procedures ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #ifdef IOFL_HAS_R128
@@ -847,6 +844,7 @@ submodule (io_fortran_lib) text_io
     call report_cells(file, cells, cell_stat, stat, errmsg)
   end procedure from_text_c128
 #endif
+
   module procedure from_text_c64
     type(String)              :: text_file
     type(String), allocatable :: cells(:,:)
@@ -942,6 +940,7 @@ submodule (io_fortran_lib) text_io
 
     call report_cells(file, cells, cell_stat, stat, errmsg)
   end procedure from_text_c64
+
   module procedure from_text_c32
     type(String)              :: text_file
     type(String), allocatable :: cells(:,:)
@@ -1038,6 +1037,7 @@ submodule (io_fortran_lib) text_io
     call report_cells(file, cells, cell_stat, stat, errmsg)
   end procedure from_text_c32
 
+
 #ifdef IOFL_HAS_R128
   module procedure from_text_r128
     type(String)              :: text_file
@@ -1133,6 +1133,7 @@ submodule (io_fortran_lib) text_io
     call report_cells(file, cells, cell_stat, stat, errmsg)
   end procedure from_text_r128
 #endif
+
   module procedure from_text_r64
     type(String)              :: text_file
     type(String), allocatable :: cells(:,:)
@@ -1226,6 +1227,7 @@ submodule (io_fortran_lib) text_io
 
     call report_cells(file, cells, cell_stat, stat, errmsg)
   end procedure from_text_r64
+
   module procedure from_text_r32
     type(String)              :: text_file
     type(String), allocatable :: cells(:,:)
@@ -1320,6 +1322,7 @@ submodule (io_fortran_lib) text_io
     call report_cells(file, cells, cell_stat, stat, errmsg)
   end procedure from_text_r32
 
+
   module procedure from_text_i64
     type(String)              :: text_file
     type(String), allocatable :: cells(:,:)
@@ -1396,6 +1399,7 @@ submodule (io_fortran_lib) text_io
 
     call report_cells(file, cells, cell_stat, stat, errmsg)
   end procedure from_text_i64
+
   module procedure from_text_i32
     type(String)              :: text_file
     type(String), allocatable :: cells(:,:)
@@ -1472,6 +1476,7 @@ submodule (io_fortran_lib) text_io
 
     call report_cells(file, cells, cell_stat, stat, errmsg)
   end procedure from_text_i32
+
   module procedure from_text_i16
     type(String)              :: text_file
     type(String), allocatable :: cells(:,:)
@@ -1548,6 +1553,7 @@ submodule (io_fortran_lib) text_io
 
     call report_cells(file, cells, cell_stat, stat, errmsg)
   end procedure from_text_i16
+
   module procedure from_text_i8
     type(String)              :: text_file
     type(String), allocatable :: cells(:,:)
@@ -1624,6 +1630,7 @@ submodule (io_fortran_lib) text_io
 
     call report_cells(file, cells, cell_stat, stat, errmsg)
   end procedure from_text_i8
+
 
   pure subroutine report_cells(file, cells, cell_stat, stat, errmsg)
     character(len=*), intent(in)    :: file

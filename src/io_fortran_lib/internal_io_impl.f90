@@ -1,3 +1,4 @@
+! Generated from fypp/io_fortran_lib/internal_io_impl.fypp by fypp/generate.sh. Edit that file, not this one.
 #include "iofl_config.inc"
 submodule (io_fortran_lib) internal_io
   !---------------------------------------------------------------------------------------------------------------------
@@ -24,15 +25,6 @@ submodule (io_fortran_lib) internal_io
   end interface complex_text
 
   ! Definitions and interfaces ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  integer(i64), parameter :: largest_i64  =   huge(1_i64)         ! Largest 64-bit signed integer
-  integer(i32), parameter :: largest_i32  =   huge(1_i32)         ! Largest 32-bit signed integer
-  integer(i16), parameter :: largest_i16  =   huge(1_i16)         ! Largest 16-bit signed integer
-  integer(i8),  parameter :: largest_i8   =   huge(1_i8)          ! Largest 8-bit signed integer
-  integer(i64), parameter :: smallest_i64 = - huge(1_i64) - 1_i64 ! Smallest 64-bit signed integer
-  integer(i32), parameter :: smallest_i32 = - huge(1_i32) - 1_i32 ! Smallest 32-bit signed integer
-  integer(i16), parameter :: smallest_i16 = - huge(1_i16) - 1_i16 ! Smallest 16-bit signed integer
-  integer(i8),  parameter :: smallest_i8  = - huge(1_i8)  - 1_i8  ! Smallest 8-bit signed integer
-
   character(len=1), parameter :: DIGITS_A(0:15) = ["0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f"]
 
   contains ! Procedure bodies for module subprograms <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><
@@ -43,274 +35,47 @@ submodule (io_fortran_lib) internal_io
     new%s = complex_text(x, decimal_of(locale), real_fmt_of(fmt), decimals, im)
   end procedure new_string_from_c128
 #endif
+
   module procedure new_string_from_c64
     new%s = complex_text(x, decimal_of(locale), real_fmt_of(fmt), decimals, im)
   end procedure new_string_from_c64
+
   module procedure new_string_from_c32
     new%s = complex_text(x, decimal_of(locale), real_fmt_of(fmt), decimals, im)
   end procedure new_string_from_c32
+
 
 #ifdef IOFL_HAS_R128
   module procedure new_string_from_r128
     new%s = real_text(x, decimal_of(locale), real_fmt_of(fmt), decimals)
   end procedure new_string_from_r128
 #endif
+
   module procedure new_string_from_r64
     new%s = real_text(x, decimal_of(locale), real_fmt_of(fmt), decimals)
   end procedure new_string_from_r64
+
   module procedure new_string_from_r32
     new%s = real_text(x, decimal_of(locale), real_fmt_of(fmt), decimals)
   end procedure new_string_from_r32
 
+
   module procedure new_string_from_i64
-    character(len=1)  :: fmt_
-    character(len=20) :: buffer
-    integer(i64)      :: num, next
-    integer           :: ascii_code, i
-    logical           :: negative
-
-    num=0_i64; next=0_i64; ascii_code=0; i=0; negative=.false.
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "i"
-    else
-      if ( any(INT_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        error stop 'Invalid fmt "'//fmt//'": must be one of the INT_FMTS.'
-      end if
-    end if
-
-    if ( fmt_ == "i" ) then
-      if ( x < 0_i64 ) then
-        if ( x == smallest_i64 ) then
-          new%s = "-9223372036854775808"; return
-        end if
-        num = -x; negative = .true.
-      else
-        num = x; negative = .false.
-      end if
-
-      i = len(buffer); extract_digits: do
-        next = num/10_i64; buffer(i:i) = achar(num - 10_i64*next + 48_i64); if ( next == 0_i64 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_digits
-
-      if ( negative ) then
-        buffer(i-1:i-1) = "-"; new%s = buffer(i-1:); return
-      else
-        new%s = buffer(i:); return
-      end if
-    else
-      if ( x < 0_i64 ) then
-        num = (x + 1_i64) + largest_i64; negative = .true.; buffer(3:) = "0x0000000000000000"
-      else
-        num = x; negative = .false.
-      end if
-
-      i = len(buffer); extract_hex_digits: do
-        next = num/16_i64; buffer(i:i) = DIGITS_A(num - 16_i64*next); if ( next == 0_i64 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_hex_digits
-
-      if ( negative ) then
-        ascii_code = iachar(buffer(5:5))
-        if ( ascii_code < 50 ) then
-          buffer(5:5) = achar(ascii_code + 8)
-        else
-          buffer(5:5) = achar(ascii_code + 47)
-        end if
-        new%s = buffer(3:); return
-      else
-        buffer(i-2:i-1) = "0x"; new%s = buffer(i-2:); return
-      end if
-    end if
+    new%s = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
   end procedure new_string_from_i64
+
   module procedure new_string_from_i32
-    character(len=1)  :: fmt_
-    character(len=11) :: buffer
-    integer           :: num, next, ascii_code, i
-    logical           :: negative
-
-    num=0; next=0; ascii_code=0; i=0; negative=.false.
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "i"
-    else
-      if ( any(INT_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        error stop 'Invalid fmt "'//fmt//'": must be one of the INT_FMTS.'
-      end if
-    end if
-
-    if ( fmt_ == "i" ) then
-      if ( x < 0 ) then
-        if ( x == smallest_i32 ) then
-          new%s = "-2147483648"; return
-        end if
-        num = -x; negative = .true.
-      else
-        num = x; negative = .false.
-      end if
-
-      i = len(buffer); extract_digits: do
-        next = num/10; buffer(i:i) = achar(num - 10*next + 48); if ( next == 0 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_digits
-
-      if ( negative ) then
-        buffer(i-1:i-1) = "-"; new%s = buffer(i-1:); return
-      else
-        new%s = buffer(i:); return
-      end if
-    else
-      if ( x < 0 ) then
-        num = (x + 1) + largest_i32; negative = .true.; buffer(2:) = "0x00000000"
-      else
-        num = x; negative = .false.
-      end if
-
-      i = len(buffer); extract_hex_digits: do
-        next = num/16; buffer(i:i) = DIGITS_A(num - 16*next); if ( next == 0 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_hex_digits
-
-      if ( negative ) then
-        ascii_code = iachar(buffer(4:4))
-        if ( ascii_code < 50 ) then
-          buffer(4:4) = achar(ascii_code + 8)
-        else
-          buffer(4:4) = achar(ascii_code + 47)
-        end if
-        new%s = buffer(2:); return
-      else
-        buffer(i-2:i-1) = "0x"; new%s = buffer(i-2:); return
-      end if
-    end if
+    new%s = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
   end procedure new_string_from_i32
+
   module procedure new_string_from_i16
-    character(len=1) :: fmt_
-    character(len=6) :: buffer
-    integer          :: num, next, ascii_code, i
-    logical          :: negative
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "i"
-    else
-      if ( any(INT_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        error stop 'Invalid fmt "'//fmt//'": must be one of the INT_FMTS.'
-      end if
-    end if
-
-    if ( fmt_ == "i" ) then
-      if ( x < 0_i16 ) then
-        if ( x == smallest_i16 ) then
-          new%s = "-32768"; return
-        end if
-        num = int(-x); negative = .true.
-      else
-        num = int(x); negative = .false.
-      end if
-
-      i = len(buffer); extract_digits: do
-        next = num/10; buffer(i:i) = achar(num - 10*next + 48); if ( next == 0 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_digits
-
-      if ( negative ) then
-        buffer(i-1:i-1) = "-"; new%s = buffer(i-1:); return
-      else
-        new%s = buffer(i:); return
-      end if
-    else
-      if ( x < 0_i16 ) then
-        num = int((x + 1_i16) + largest_i16); negative = .true.; buffer(1:) = "0x0000"
-      else
-        num = int(x); negative = .false.
-      end if
-
-      i = len(buffer); extract_hex_digits: do
-        next = num/16; buffer(i:i) = DIGITS_A(num - 16*next); if ( next == 0 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_hex_digits
-
-      if ( negative ) then
-        ascii_code = iachar(buffer(3:3))
-        if ( ascii_code < 50 ) then
-          buffer(3:3) = achar(ascii_code + 8)
-        else
-          buffer(3:3) = achar(ascii_code + 47)
-        end if
-        new%s = buffer(1:); return
-      else
-        buffer(i-2:i-1) = "0x"; new%s = buffer(i-2:); return
-      end if
-    end if
+    new%s = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
   end procedure new_string_from_i16
+
   module procedure new_string_from_i8
-    character(len=1) :: fmt_
-    character(len=4) :: buffer
-    integer          :: num, next, ascii_code, i
-    logical          :: negative
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "i"
-    else
-      if ( any(INT_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        error stop 'Invalid fmt "'//fmt//'": must be one of the INT_FMTS.'
-      end if
-    end if
-
-    if ( fmt_ == "i" ) then
-      if ( x < 0_i8 ) then
-        if ( x == smallest_i8 ) then
-          new%s = "-128"; return
-        end if
-        num = int(-x); negative = .true.
-      else
-        num = int(x); negative = .false.
-      end if
-
-      i = len(buffer); extract_digits: do
-        next = num/10; buffer(i:i) = achar(num - 10*next + 48); if ( next == 0 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_digits
-
-      if ( negative ) then
-        buffer(i-1:i-1) = "-"; new%s = buffer(i-1:); return
-      else
-        new%s = buffer(i:); return
-      end if
-    else
-      if ( x < 0_i8 ) then
-        num = int((x + 1_i8) + largest_i8); negative = .true.; buffer(1:) = "0x00"
-      else
-        num = int(x); negative = .false.
-      end if
-
-      i = len(buffer); extract_hex_digits: do
-        next = num/16; buffer(i:i) = DIGITS_A(num - 16*next); if ( next == 0 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_hex_digits
-
-      if ( negative ) then
-        ascii_code = iachar(buffer(3:3))
-        if ( ascii_code < 50 ) then
-          buffer(3:3) = achar(ascii_code + 8)
-        else
-          buffer(3:3) = achar(ascii_code + 47)
-        end if
-        new%s = buffer(1:); return
-      else
-        buffer(i-2:i-1) = "0x"; new%s = buffer(i-2:); return
-      end if
-    end if
+    new%s = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
   end procedure new_string_from_i8
+
 
   module procedure new_string_from_string
     if ( x%len() < 1 ) then
@@ -332,274 +97,47 @@ submodule (io_fortran_lib) internal_io
     x_str = complex_text(x, decimal_of(locale), real_fmt_of(fmt), decimals, im)
   end procedure str_from_c128
 #endif
+
   module procedure str_from_c64
     x_str = complex_text(x, decimal_of(locale), real_fmt_of(fmt), decimals, im)
   end procedure str_from_c64
+
   module procedure str_from_c32
     x_str = complex_text(x, decimal_of(locale), real_fmt_of(fmt), decimals, im)
   end procedure str_from_c32
+
 
 #ifdef IOFL_HAS_R128
   module procedure str_from_r128
     x_str = real_text(x, decimal_of(locale), real_fmt_of(fmt), decimals)
   end procedure str_from_r128
 #endif
+
   module procedure str_from_r64
     x_str = real_text(x, decimal_of(locale), real_fmt_of(fmt), decimals)
   end procedure str_from_r64
+
   module procedure str_from_r32
     x_str = real_text(x, decimal_of(locale), real_fmt_of(fmt), decimals)
   end procedure str_from_r32
 
+
   module procedure str_from_i64
-    character(len=1)  :: fmt_
-    character(len=20) :: buffer
-    integer(i64)      :: num, next
-    integer           :: ascii_code, i
-    logical           :: negative
-
-    num=0_i64; next=0_i64; ascii_code=0; i=0; negative=.false.
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "i"
-    else
-      if ( any(INT_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        error stop 'Invalid fmt "'//fmt//'": must be one of the INT_FMTS.'
-      end if
-    end if
-
-    if ( fmt_ == "i" ) then
-      if ( x < 0_i64 ) then
-        if ( x == smallest_i64 ) then
-          x_str = "-9223372036854775808"; return
-        end if
-        num = -x; negative = .true.
-      else
-        num = x; negative = .false.
-      end if
-
-      i = len(buffer); extract_digits: do
-        next = num/10_i64; buffer(i:i) = achar(num - 10_i64*next + 48_i64); if ( next == 0_i64 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_digits
-
-      if ( negative ) then
-        buffer(i-1:i-1) = "-"; x_str = buffer(i-1:); return
-      else
-        x_str = buffer(i:); return
-      end if
-    else
-      if ( x < 0_i64 ) then
-        num = (x + 1_i64) + largest_i64; negative = .true.; buffer(3:) = "0x0000000000000000"
-      else
-        num = x; negative = .false.
-      end if
-
-      i = len(buffer); extract_hex_digits: do
-        next = num/16_i64; buffer(i:i) = DIGITS_A(num - 16_i64*next); if ( next == 0_i64 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_hex_digits
-
-      if ( negative ) then
-        ascii_code = iachar(buffer(5:5))
-        if ( ascii_code < 50 ) then
-          buffer(5:5) = achar(ascii_code + 8)
-        else
-          buffer(5:5) = achar(ascii_code + 47)
-        end if
-        x_str = buffer(3:); return
-      else
-        buffer(i-2:i-1) = "0x"; x_str = buffer(i-2:); return
-      end if
-    end if
+    x_str = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
   end procedure str_from_i64
+
   module procedure str_from_i32
-    character(len=1)  :: fmt_
-    character(len=11) :: buffer
-    integer           :: num, next, ascii_code, i
-    logical           :: negative
-
-    num=0; next=0; ascii_code=0; i=0; negative=.false.
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "i"
-    else
-      if ( (any(INT_FMTS == fmt)) ) then
-        fmt_ = fmt
-      else
-        error stop 'Invalid fmt "'//fmt//'": must be one of the INT_FMTS.'
-      end if
-    end if
-
-    if ( fmt_ == "i" ) then
-      if ( x < 0 ) then
-        if ( x == smallest_i32 ) then
-          x_str = "-2147483648"; return
-        end if
-        num = -x; negative = .true.
-      else
-        num = x; negative = .false.
-      end if
-
-      i = len(buffer); extract_digits: do
-        next = num/10; buffer(i:i) = achar(num - 10*next + 48); if ( next == 0 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_digits
-
-      if ( negative ) then
-        buffer(i-1:i-1) = "-"; x_str = buffer(i-1:); return
-      else
-        x_str = buffer(i:); return
-      end if
-    else
-      if ( x < 0 ) then
-        num = (x + 1) + largest_i32; negative = .true.; buffer(2:) = "0x00000000"
-      else
-        num = x; negative = .false.
-      end if
-
-      i = len(buffer); extract_hex_digits: do
-        next = num/16; buffer(i:i) = DIGITS_A(num - 16*next); if ( next == 0 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_hex_digits
-
-      if ( negative ) then
-        ascii_code = iachar(buffer(4:4))
-        if ( ascii_code < 50 ) then
-          buffer(4:4) = achar(ascii_code + 8)
-        else
-          buffer(4:4) = achar(ascii_code + 47)
-        end if
-        x_str = buffer(2:); return
-      else
-        buffer(i-2:i-1) = "0x"; x_str = buffer(i-2:); return
-      end if
-    end if
+    x_str = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
   end procedure str_from_i32
+
   module procedure str_from_i16
-    character(len=1) :: fmt_
-    character(len=6) :: buffer
-    integer          :: num, next, ascii_code, i
-    logical          :: negative
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "i"
-    else
-      if ( any(INT_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        error stop 'Invalid fmt "'//fmt//'": must be one of the INT_FMTS.'
-      end if
-    end if
-
-    if ( fmt_ == "i" ) then
-      if ( x < 0_i16 ) then
-        if ( x == smallest_i16 ) then
-          x_str = "-32768"; return
-        end if
-        num = int(-x); negative = .true.
-      else
-        num = int(x); negative = .false.
-      end if
-
-      i = len(buffer); extract_digits: do
-        next = num/10; buffer(i:i) = achar(num - 10*next + 48); if ( next == 0 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_digits
-
-      if ( negative ) then
-        buffer(i-1:i-1) = "-"; x_str = buffer(i-1:); return
-      else
-        x_str = buffer(i:); return
-      end if
-    else
-      if ( x < 0_i16 ) then
-        num = int((x + 1_i16) + largest_i16); negative = .true.; buffer(1:) = "0x0000"
-      else
-        num = int(x); negative = .false.
-      end if
-
-      i = len(buffer); extract_hex_digits: do
-        next = num/16; buffer(i:i) = DIGITS_A(num - 16*next); if ( next == 0 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_hex_digits
-
-      if ( negative ) then
-        ascii_code = iachar(buffer(3:3))
-        if ( ascii_code < 50 ) then
-          buffer(3:3) = achar(ascii_code + 8)
-        else
-          buffer(3:3) = achar(ascii_code + 47)
-        end if
-        x_str = buffer(1:); return
-      else
-        buffer(i-2:i-1) = "0x"; x_str = buffer(i-2:); return
-      end if
-    end if
+    x_str = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
   end procedure str_from_i16
+
   module procedure str_from_i8
-    character(len=1) :: fmt_
-    character(len=4) :: buffer
-    integer          :: num, next, ascii_code, i
-    logical          :: negative
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "i"
-    else
-      if ( any(INT_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        error stop 'Invalid fmt "'//fmt//'": must be one of the INT_FMTS.'
-      end if
-    end if
-
-    if ( fmt_ == "i" ) then
-      if ( x < 0_i8 ) then
-        if ( x == smallest_i8 ) then
-          x_str = "-128"; return
-        end if
-        num = int(-x); negative = .true.
-      else
-        num = int(x); negative = .false.
-      end if
-
-      i = len(buffer); extract_digits: do
-        next = num/10; buffer(i:i) = achar(num - 10*next + 48); if ( next == 0 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_digits
-
-      if ( negative ) then
-        buffer(i-1:i-1) = "-"; x_str = buffer(i-1:); return
-      else
-        x_str = buffer(i:); return
-      end if
-    else
-      if ( x < 0_i8 ) then
-        num = int((x + 1_i8) + largest_i8); negative = .true.; buffer(1:) = "0x00"
-      else
-        num = int(x); negative = .false.
-      end if
-
-      i = len(buffer); extract_hex_digits: do
-        next = num/16; buffer(i:i) = DIGITS_A(num - 16*next); if ( next == 0 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_hex_digits
-
-      if ( negative ) then
-        ascii_code = iachar(buffer(3:3))
-        if ( ascii_code < 50 ) then
-          buffer(3:3) = achar(ascii_code + 8)
-        else
-          buffer(3:3) = achar(ascii_code + 47)
-        end if
-        x_str = buffer(1:); return
-      else
-        buffer(i-2:i-1) = "0x"; x_str = buffer(i-2:); return
-      end if
-    end if
+    x_str = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
   end procedure str_from_i8
+
 
   module procedure str_from_string
     if ( x%len() < 1 ) then
@@ -621,552 +159,94 @@ submodule (io_fortran_lib) internal_io
     into%s = complex_text(x, decimal_of(locale), real_fmt_of(fmt), decimals, im)
   end procedure cast_c128_to_string
 #endif
+
   module procedure cast_c64_to_string
     into%s = complex_text(x, decimal_of(locale), real_fmt_of(fmt), decimals, im)
   end procedure cast_c64_to_string
+
   module procedure cast_c32_to_string
     into%s = complex_text(x, decimal_of(locale), real_fmt_of(fmt), decimals, im)
   end procedure cast_c32_to_string
+
 
 #ifdef IOFL_HAS_R128
   module procedure cast_r128_to_string
     into%s = real_text(x, decimal_of(locale), real_fmt_of(fmt), decimals)
   end procedure cast_r128_to_string
 #endif
+
   module procedure cast_r64_to_string
     into%s = real_text(x, decimal_of(locale), real_fmt_of(fmt), decimals)
   end procedure cast_r64_to_string
+
   module procedure cast_r32_to_string
     into%s = real_text(x, decimal_of(locale), real_fmt_of(fmt), decimals)
   end procedure cast_r32_to_string
 
+
   module procedure cast_i64_to_string
-    character(len=1)  :: fmt_
-    character(len=20) :: buffer
-    integer(i64)      :: num, next
-    integer           :: ascii_code, i
-    logical           :: negative
-
-    num=0_i64; next=0_i64; ascii_code=0; i=0; negative=.false.
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "i"
-    else
-      if ( any(INT_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        error stop 'Invalid fmt "'//fmt//'": must be one of the INT_FMTS.'
-      end if
-    end if
-
-    if ( fmt_ == "i" ) then
-      if ( x < 0_i64 ) then
-        if ( x == smallest_i64 ) then
-          into%s = "-9223372036854775808"; return
-        end if
-        num = -x; negative = .true.
-      else
-        num = x; negative = .false.
-      end if
-
-      i = len(buffer); extract_digits: do
-        next = num/10_i64; buffer(i:i) = achar(num - 10_i64*next + 48_i64); if ( next == 0_i64 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_digits
-
-      if ( negative ) then
-        buffer(i-1:i-1) = "-"; into%s = buffer(i-1:); return
-      else
-        into%s = buffer(i:); return
-      end if
-    else
-      if ( x < 0_i64 ) then
-        num = (x + 1_i64) + largest_i64; negative = .true.; buffer(3:) = "0x0000000000000000"
-      else
-        num = x; negative = .false.
-      end if
-
-      i = len(buffer); extract_hex_digits: do
-        next = num/16_i64; buffer(i:i) = DIGITS_A(num - 16_i64*next); if ( next == 0_i64 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_hex_digits
-
-      if ( negative ) then
-        ascii_code = iachar(buffer(5:5))
-        if ( ascii_code < 50 ) then
-          buffer(5:5) = achar(ascii_code + 8)
-        else
-          buffer(5:5) = achar(ascii_code + 47)
-        end if
-        into%s = buffer(3:); return
-      else
-        buffer(i-2:i-1) = "0x"; into%s = buffer(i-2:); return
-      end if
-    end if
+    into%s = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
   end procedure cast_i64_to_string
+
   module procedure cast_i32_to_string
-    character(len=1)  :: fmt_
-    character(len=11) :: buffer
-    integer           :: num, next, ascii_code, i
-    logical           :: negative
-
-    num=0; next=0; ascii_code=0; i=0; negative=.false.
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "i"
-    else
-      if ( any(INT_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        error stop 'Invalid fmt "'//fmt//'": must be one of the INT_FMTS.'
-      end if
-    end if
-
-    if ( fmt_ == "i" ) then
-      if ( x < 0_i32 ) then
-        if ( x == smallest_i32 ) then
-          into%s = "-2147483648"; return
-        end if
-        num = -x; negative = .true.
-      else
-        num = x; negative = .false.
-      end if
-
-      i = len(buffer); extract_digits: do
-        next = num/10; buffer(i:i) = achar(num - 10*next + 48); if ( next == 0 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_digits
-
-      if ( negative ) then
-        buffer(i-1:i-1) = "-"; into%s = buffer(i-1:); return
-      else
-        into%s = buffer(i:); return
-      end if
-    else
-      if ( x < 0_i32 ) then
-        num = (x + 1) + largest_i32; negative = .true.; buffer(2:) = "0x00000000"
-      else
-        num = x; negative = .false.
-      end if
-
-      i = len(buffer); extract_hex_digits: do
-        next = num/16; buffer(i:i) = DIGITS_A(num - 16*next); if ( next == 0 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_hex_digits
-
-      if ( negative ) then
-        ascii_code = iachar(buffer(4:4))
-        if ( ascii_code < 50 ) then
-          buffer(4:4) = achar(ascii_code + 8)
-        else
-          buffer(4:4) = achar(ascii_code + 47)
-        end if
-        into%s = buffer(2:); return
-      else
-        buffer(i-2:i-1) = "0x"; into%s = buffer(i-2:); return
-      end if
-    end if
+    into%s = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
   end procedure cast_i32_to_string
+
   module procedure cast_i16_to_string
-    character(len=1) :: fmt_
-    character(len=6) :: buffer
-    integer          :: num, next, ascii_code, i
-    logical          :: negative
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "i"
-    else
-      if ( any(INT_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        error stop 'Invalid fmt "'//fmt//'": must be one of the INT_FMTS.'
-      end if
-    end if
-
-    if ( fmt_ == "i" ) then
-      if ( x < 0_i16 ) then
-        if ( x == smallest_i16 ) then
-          into%s = "-32768"; return
-        end if
-        num = int(-x); negative = .true.
-      else
-        num = int(x); negative = .false.
-      end if
-
-      i = len(buffer); extract_digits: do
-        next = num/10; buffer(i:i) = achar(num - 10*next + 48); if ( next == 0 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_digits
-
-      if ( negative ) then
-        buffer(i-1:i-1) = "-"; into%s = buffer(i-1:); return
-      else
-        into%s = buffer(i:); return
-      end if
-    else
-      if ( x < 0_i16 ) then
-        num = int((x + 1_i16) + largest_i16); negative = .true.; buffer(1:) = "0x0000"
-      else
-        num = int(x); negative = .false.
-      end if
-
-      i = len(buffer); extract_hex_digits: do
-        next = num/16; buffer(i:i) = DIGITS_A(num - 16*next); if ( next == 0 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_hex_digits
-
-      if ( negative ) then
-        ascii_code = iachar(buffer(3:3))
-        if ( ascii_code < 50 ) then
-          buffer(3:3) = achar(ascii_code + 8)
-        else
-          buffer(3:3) = achar(ascii_code + 47)
-        end if
-        into%s = buffer(1:); return
-      else
-        buffer(i-2:i-1) = "0x"; into%s = buffer(i-2:); return
-      end if
-    end if
+    into%s = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
   end procedure cast_i16_to_string
+
   module procedure cast_i8_to_string
-    character(len=1) :: fmt_
-    character(len=4) :: buffer
-    integer          :: num, next, ascii_code, i
-    logical          :: negative
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "i"
-    else
-      if ( any(INT_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        error stop 'Invalid fmt "'//fmt//'": must be one of the INT_FMTS.'
-      end if
-    end if
-
-    if ( fmt_ == "i" ) then
-      if ( x < 0_i8 ) then
-        if ( x == smallest_i8 ) then
-          into%s = "-128"; return
-        end if
-        num = int(-x); negative = .true.
-      else
-        num = int(x); negative = .false.
-      end if
-
-      i = len(buffer); extract_digits: do
-        next = num/10; buffer(i:i) = achar(num - 10*next + 48); if ( next == 0 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_digits
-
-      if ( negative ) then
-        buffer(i-1:i-1) = "-"; into%s = buffer(i-1:); return
-      else
-        into%s = buffer(i:); return
-      end if
-    else
-      if ( x < 0_i8 ) then
-        num = int((x + 1_i8) + largest_i8); negative = .true.; buffer(1:) = "0x00"
-      else
-        num = int(x); negative = .false.
-      end if
-
-      i = len(buffer); extract_hex_digits: do
-        next = num/16; buffer(i:i) = DIGITS_A(num - 16*next); if ( next == 0 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_hex_digits
-
-      if ( negative ) then
-        ascii_code = iachar(buffer(3:3))
-        if ( ascii_code < 50 ) then
-          buffer(3:3) = achar(ascii_code + 8)
-        else
-          buffer(3:3) = achar(ascii_code + 47)
-        end if
-        into%s = buffer(1:); return
-      else
-        buffer(i-2:i-1) = "0x"; into%s = buffer(i-2:); return
-      end if
-    end if
+    into%s = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
   end procedure cast_i8_to_string
+
 
 #ifdef IOFL_HAS_R128
   module procedure cast_c128_to_char
     into = complex_text(x, decimal_of(locale), real_fmt_of(fmt), decimals, im)
   end procedure cast_c128_to_char
 #endif
+
   module procedure cast_c64_to_char
     into = complex_text(x, decimal_of(locale), real_fmt_of(fmt), decimals, im)
   end procedure cast_c64_to_char
+
   module procedure cast_c32_to_char
     into = complex_text(x, decimal_of(locale), real_fmt_of(fmt), decimals, im)
   end procedure cast_c32_to_char
+
 
 #ifdef IOFL_HAS_R128
   module procedure cast_r128_to_char
     into = real_text(x, decimal_of(locale), real_fmt_of(fmt), decimals)
   end procedure cast_r128_to_char
 #endif
+
   module procedure cast_r64_to_char
     into = real_text(x, decimal_of(locale), real_fmt_of(fmt), decimals)
   end procedure cast_r64_to_char
+
   module procedure cast_r32_to_char
     into = real_text(x, decimal_of(locale), real_fmt_of(fmt), decimals)
   end procedure cast_r32_to_char
 
+
   module procedure cast_i64_to_char
-    character(len=1)  :: fmt_
-    character(len=20) :: buffer
-    integer(i64)      :: num, next
-    integer           :: ascii_code, i
-    logical           :: negative
-
-    num=0_i64; next=0_i64; ascii_code=0; i=0; negative=.false.
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "i"
-    else
-      if ( any(INT_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        error stop 'Invalid fmt "'//fmt//'": must be one of the INT_FMTS.'
-      end if
-    end if
-
-    if ( fmt_ == "i" ) then
-      if ( x < 0_i64 ) then
-        if ( x == smallest_i64 ) then
-          into = "-9223372036854775808"; return
-        end if
-        num = -x; negative = .true.
-      else
-        num = x; negative = .false.
-      end if
-
-      i = len(buffer); extract_digits: do
-        next = num/10_i64; buffer(i:i) = achar(num - 10_i64*next + 48_i64); if ( next == 0_i64 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_digits
-
-      if ( negative ) then
-        buffer(i-1:i-1) = "-"; into = buffer(i-1:); return
-      else
-        into = buffer(i:); return
-      end if
-    else
-      if ( x < 0_i64 ) then
-        num = (x + 1_i64) + largest_i64; negative = .true.; buffer(3:) = "0x0000000000000000"
-      else
-        num = x; negative = .false.
-      end if
-
-      i = len(buffer); extract_hex_digits: do
-        next = num/16_i64; buffer(i:i) = DIGITS_A(num - 16_i64*next); if ( next == 0_i64 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_hex_digits
-
-      if ( negative ) then
-        ascii_code = iachar(buffer(5:5))
-        if ( ascii_code < 50 ) then
-          buffer(5:5) = achar(ascii_code + 8)
-        else
-          buffer(5:5) = achar(ascii_code + 47)
-        end if
-        into = buffer(3:); return
-      else
-        buffer(i-2:i-1) = "0x"; into = buffer(i-2:); return
-      end if
-    end if
+    into = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
   end procedure cast_i64_to_char
+
   module procedure cast_i32_to_char
-    character(len=1)  :: fmt_
-    character(len=11) :: buffer
-    integer           :: num, next, ascii_code, i
-    logical           :: negative
-
-    num=0; next=0; ascii_code=0; i=0; negative=.false.
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "i"
-    else
-      if ( any(INT_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        error stop 'Invalid fmt "'//fmt//'": must be one of the INT_FMTS.'
-      end if
-    end if
-
-    if ( fmt_ == "i" ) then
-      if ( x < 0_i32 ) then
-        if ( x == smallest_i32 ) then
-          into = "-2147483648"; return
-        end if
-        num = -x; negative = .true.
-      else
-        num = x; negative = .false.
-      end if
-
-      i = len(buffer); extract_digits: do
-        next = num/10; buffer(i:i) = achar(num - 10*next + 48); if ( next == 0 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_digits
-
-      if ( negative ) then
-        buffer(i-1:i-1) = "-"; into = buffer(i-1:); return
-      else
-        into = buffer(i:); return
-      end if
-    else
-      if ( x < 0_i32 ) then
-        num = (x + 1) + largest_i32; negative = .true.; buffer(2:) = "0x00000000"
-      else
-        num = x; negative = .false.
-      end if
-
-      i = len(buffer); extract_hex_digits: do
-        next = num/16; buffer(i:i) = DIGITS_A(num - 16*next); if ( next == 0 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_hex_digits
-
-      if ( negative ) then
-        ascii_code = iachar(buffer(4:4))
-        if ( ascii_code < 50 ) then
-          buffer(4:4) = achar(ascii_code + 8)
-        else
-          buffer(4:4) = achar(ascii_code + 47)
-        end if
-        into = buffer(2:); return
-      else
-        buffer(i-2:i-1) = "0x"; into = buffer(i-2:); return
-      end if
-    end if
+    into = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
   end procedure cast_i32_to_char
+
   module procedure cast_i16_to_char
-    character(len=1) :: fmt_
-    character(len=6) :: buffer
-    integer          :: num, next, ascii_code, i
-    logical          :: negative
-
-    num=0; next=0; ascii_code=0; i=0; negative=.false.
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "i"
-    else
-      if ( any(INT_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        error stop 'Invalid fmt "'//fmt//'": must be one of the INT_FMTS.'
-      end if
-    end if
-
-    if ( fmt_ == "i" ) then
-      if ( x < 0_i16 ) then
-        if ( x == smallest_i16 ) then
-          into = "-32768"; return
-        end if
-        num = int(-x); negative = .true.
-      else
-        num = int(x); negative = .false.
-      end if
-
-      i = len(buffer); extract_digits: do
-        next = num/10; buffer(i:i) = achar(num - 10*next + 48); if ( next == 0 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_digits
-
-      if ( negative ) then
-        buffer(i-1:i-1) = "-"; into = buffer(i-1:); return
-      else
-        into = buffer(i:); return
-      end if
-    else
-      if ( x < 0_i16 ) then
-        num = int((x + 1_i16) + largest_i16); negative = .true.; buffer(1:) = "0x0000"
-      else
-        num = int(x); negative = .false.
-      end if
-
-      i = len(buffer); extract_hex_digits: do
-        next = num/16; buffer(i:i) = DIGITS_A(num - 16*next); if ( next == 0 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_hex_digits
-
-      if ( negative ) then
-        ascii_code = iachar(buffer(3:3))
-        if ( ascii_code < 50 ) then
-          buffer(3:3) = achar(ascii_code + 8)
-        else
-          buffer(3:3) = achar(ascii_code + 47)
-        end if
-        into = buffer(1:); return
-      else
-        buffer(i-2:i-1) = "0x"; into = buffer(i-2:); return
-      end if
-    end if
+    into = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
   end procedure cast_i16_to_char
+
   module procedure cast_i8_to_char
-    character(len=1) :: fmt_
-    character(len=4) :: buffer
-    integer          :: num, next, ascii_code, i
-    logical          :: negative
-
-    num=0; next=0; ascii_code=0; i=0; negative=.false.
-
-    if ( .not. present(fmt) ) then
-      fmt_ = "i"
-    else
-      if ( any(INT_FMTS == fmt) ) then
-        fmt_ = fmt
-      else
-        error stop 'Invalid fmt "'//fmt//'": must be one of the INT_FMTS.'
-      end if
-    end if
-
-    if ( fmt_ == "i" ) then
-      if ( x < 0_i8 ) then
-        if ( x == smallest_i8 ) then
-          into = "-128"; return
-        end if
-        num = int(-x); negative = .true.
-      else
-        num = int(x); negative = .false.
-      end if
-
-      i = len(buffer); extract_digits: do
-        next = num/10; buffer(i:i) = achar(num - 10*next + 48); if ( next == 0 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_digits
-
-      if ( negative ) then
-        buffer(i-1:i-1) = "-"; into = buffer(i-1:); return
-      else
-        into = buffer(i:); return
-      end if
-    else
-      if ( x < 0_i8 ) then
-        num = int((x + 1_i8) + largest_i8); negative = .true.; buffer(1:) = "0x00"
-      else
-        num = int(x); negative = .false.
-      end if
-
-      i = len(buffer); extract_hex_digits: do
-        next = num/16; buffer(i:i) = DIGITS_A(num - 16*next); if ( next == 0 ) exit
-        num = next; i = i - 1; cycle
-      end do extract_hex_digits
-
-      if ( negative ) then
-        ascii_code = iachar(buffer(3:3))
-        if ( ascii_code < 50 ) then
-          buffer(3:3) = achar(ascii_code + 8)
-        else
-          buffer(3:3) = achar(ascii_code + 47)
-        end if
-        into = buffer(1:); return
-      else
-        buffer(i-2:i-1) = "0x"; into = buffer(i-2:); return
-      end if
-    end if
+    into = int_text(int(x, kind=i64), int(bit_size(x)), int_fmt_of(fmt))
   end procedure cast_i8_to_char
+
 
 #ifdef IOFL_HAS_R128
   module procedure cast_string_to_c128
@@ -1178,6 +258,7 @@ submodule (io_fortran_lib) internal_io
     end if
   end procedure cast_string_to_c128
 #endif
+
   module procedure cast_string_to_c64
     if ( allocated(substring%s) ) then
       call cast_char_to_c64(substring%s, into, locale, fmt, im, stat)
@@ -1186,6 +267,7 @@ submodule (io_fortran_lib) internal_io
       call report_cast(READ_ERR, EMPTY_STR, stat)
     end if
   end procedure cast_string_to_c64
+
   module procedure cast_string_to_c32
     if ( allocated(substring%s) ) then
       call cast_char_to_c32(substring%s, into, locale, fmt, im, stat)
@@ -1194,6 +276,7 @@ submodule (io_fortran_lib) internal_io
       call report_cast(READ_ERR, EMPTY_STR, stat)
     end if
   end procedure cast_string_to_c32
+
 
 #ifdef IOFL_HAS_R128
   module procedure cast_string_to_r128
@@ -1205,6 +288,7 @@ submodule (io_fortran_lib) internal_io
     end if
   end procedure cast_string_to_r128
 #endif
+
   module procedure cast_string_to_r64
     if ( allocated(substring%s) ) then
       call cast_char_to_r64(substring%s, into, locale, fmt, stat)
@@ -1213,6 +297,7 @@ submodule (io_fortran_lib) internal_io
       call report_cast(READ_ERR, EMPTY_STR, stat)
     end if
   end procedure cast_string_to_r64
+
   module procedure cast_string_to_r32
     if ( allocated(substring%s) ) then
       call cast_char_to_r32(substring%s, into, locale, fmt, stat)
@@ -1222,6 +307,7 @@ submodule (io_fortran_lib) internal_io
     end if
   end procedure cast_string_to_r32
 
+
   module procedure cast_string_to_i64
     if ( allocated(substring%s) ) then
       call cast_char_to_i64(substring%s, into, fmt, stat)
@@ -1230,6 +316,7 @@ submodule (io_fortran_lib) internal_io
       call report_cast(READ_ERR, EMPTY_STR, stat)
     end if
   end procedure cast_string_to_i64
+
   module procedure cast_string_to_i32
     if ( allocated(substring%s) ) then
       call cast_char_to_i32(substring%s, into, fmt, stat)
@@ -1238,6 +325,7 @@ submodule (io_fortran_lib) internal_io
       call report_cast(READ_ERR, EMPTY_STR, stat)
     end if
   end procedure cast_string_to_i32
+
   module procedure cast_string_to_i16
     if ( allocated(substring%s) ) then
       call cast_char_to_i16(substring%s, into, fmt, stat)
@@ -1246,6 +334,7 @@ submodule (io_fortran_lib) internal_io
       call report_cast(READ_ERR, EMPTY_STR, stat)
     end if
   end procedure cast_string_to_i16
+
   module procedure cast_string_to_i8
     if ( allocated(substring%s) ) then
       call cast_char_to_i8(substring%s, into, fmt, stat)
@@ -1254,6 +343,7 @@ submodule (io_fortran_lib) internal_io
       call report_cast(READ_ERR, EMPTY_STR, stat)
     end if
   end procedure cast_string_to_i8
+
 
 #ifdef IOFL_HAS_R128
   module procedure cast_char_to_c128
@@ -1269,6 +359,7 @@ submodule (io_fortran_lib) internal_io
     call report_cast(status, substring, stat)
   end procedure cast_char_to_c128
 #endif
+
   module procedure cast_char_to_c64
     character(len=1) :: fmt_
     character(len=5) :: decimal
@@ -1281,6 +372,7 @@ submodule (io_fortran_lib) internal_io
 
     call report_cast(status, substring, stat)
   end procedure cast_char_to_c64
+
   module procedure cast_char_to_c32
     character(len=1) :: fmt_
     character(len=5) :: decimal
@@ -1293,6 +385,7 @@ submodule (io_fortran_lib) internal_io
 
     call report_cast(status, substring, stat)
   end procedure cast_char_to_c32
+
 
 #ifdef IOFL_HAS_R128
   module procedure cast_char_to_r128
@@ -1308,6 +401,7 @@ submodule (io_fortran_lib) internal_io
     call report_cast(status, substring, stat)
   end procedure cast_char_to_r128
 #endif
+
   module procedure cast_char_to_r64
     character(len=1) :: fmt_
     character(len=5) :: decimal
@@ -1320,6 +414,7 @@ submodule (io_fortran_lib) internal_io
 
     call report_cast(status, substring, stat)
   end procedure cast_char_to_r64
+
   module procedure cast_char_to_r32
     character(len=1) :: fmt_
     character(len=5) :: decimal
@@ -1333,6 +428,7 @@ submodule (io_fortran_lib) internal_io
     call report_cast(status, substring, stat)
   end procedure cast_char_to_r32
 
+
   module procedure cast_char_to_i64
     character(len=1) :: fmt_
     character(len=5) :: decimal
@@ -1345,6 +441,7 @@ submodule (io_fortran_lib) internal_io
 
     call report_cast(status, substring, stat)
   end procedure cast_char_to_i64
+
   module procedure cast_char_to_i32
     character(len=1) :: fmt_
     character(len=5) :: decimal
@@ -1357,6 +454,7 @@ submodule (io_fortran_lib) internal_io
 
     call report_cast(status, substring, stat)
   end procedure cast_char_to_i32
+
   module procedure cast_char_to_i16
     character(len=1) :: fmt_
     character(len=5) :: decimal
@@ -1369,6 +467,7 @@ submodule (io_fortran_lib) internal_io
 
     call report_cast(status, substring, stat)
   end procedure cast_char_to_i16
+
   module procedure cast_char_to_i8
     character(len=1) :: fmt_
     character(len=5) :: decimal
@@ -1382,7 +481,66 @@ submodule (io_fortran_lib) internal_io
     call report_cast(status, substring, stat)
   end procedure cast_char_to_i8
 
+
   ! Number formatting, shared by `String`, `str` and `cast` ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  pure function int_fmt_of(fmt) result(fmt_)
+    character(len=*), intent(in), optional :: fmt
+    character(len=1)                       :: fmt_
+
+    fmt_ = "i"
+    if ( .not. present(fmt) ) return
+
+    if ( .not. any(INT_FMTS == fmt) ) error stop 'Invalid fmt "'//fmt//'": must be one of the INT_FMTS.'
+    fmt_ = fmt
+  end function int_fmt_of
+
+  pure function int_text(x, bits, fmt) result(text)
+    !-------------------------------------------------------------------------------------------------------------------
+    !! Returns the text of an integer of `bits` bits. A negative number in `fmt="z"` is its full bit pattern, and digits
+    !! are found from a negative number in `fmt="i"`, since the most negative integer has no positive counterpart.
+    !-------------------------------------------------------------------------------------------------------------------
+    integer(i64),     intent(in)  :: x
+    integer,          intent(in)  :: bits
+    character(len=*), intent(in)  :: fmt
+    character(len=:), allocatable :: text
+
+    character(len=20) :: buffer
+    integer(i64)      :: num
+    integer           :: i, digit, width
+
+    i = len(buffer)
+
+    if ( fmt == "i" ) then
+      num = x
+      if ( x > 0_i64 ) num = -x
+
+      do
+        buffer(i:i) = achar(iachar("0") - int(mod(num, 10_i64)))
+        num = num/10_i64
+        if ( num == 0_i64 ) exit
+        i = i - 1
+      end do
+
+      if ( x < 0_i64 ) then
+        i = i - 1; buffer(i:i) = "-"
+      end if
+    else
+      width = bits/4
+      num   = x
+      if ( bits < 64 ) num = ibits(x, 0, bits)
+
+      do digit = 0, width - 1
+        if ( (x >= 0_i64) .and. (digit > 0) .and. (ishft(num, -4*digit) == 0_i64) ) exit
+        buffer(i-digit:i-digit) = DIGITS_A(ibits(num, 4*digit, 4))
+      end do
+
+      i = i - digit + 1
+      i = i - 2; buffer(i:i+1) = "0x"
+    end if
+
+    text = buffer(i:)
+  end function int_text
+
   pure function decimal_of(locale) result(decimal)
     character(len=*), intent(in), optional :: locale
     character(len=5)                       :: decimal
@@ -1559,18 +717,6 @@ submodule (io_fortran_lib) internal_io
       text = trim(adjustl(text))
     end if
   end function real_text_r128
-
-  pure function complex_text_c128(x, decimal, fmt, decimals, im) result(text)
-    complex(r128),     intent(in)           :: x
-    character(len=*), intent(in)           :: decimal, fmt
-    integer,          intent(in), optional :: decimals
-    character(len=*), intent(in), optional :: im
-    character(len=:), allocatable          :: text
-
-    text = join_complex( real_text_r128(x%re, decimal, fmt, decimals), &
-                         real_text_r128(x%im, decimal, fmt, decimals), &
-                         x%im < 0e0_r128, decimal, fmt, im )
-  end function complex_text_c128
 #endif
 
   pure function real_text_r64(x, decimal, fmt, decimals) result(text)
@@ -1635,18 +781,6 @@ submodule (io_fortran_lib) internal_io
     end if
   end function real_text_r64
 
-  pure function complex_text_c64(x, decimal, fmt, decimals, im) result(text)
-    complex(r64),     intent(in)           :: x
-    character(len=*), intent(in)           :: decimal, fmt
-    integer,          intent(in), optional :: decimals
-    character(len=*), intent(in), optional :: im
-    character(len=:), allocatable          :: text
-
-    text = join_complex( real_text_r64(x%re, decimal, fmt, decimals), &
-                         real_text_r64(x%im, decimal, fmt, decimals), &
-                         x%im < 0e0_r64, decimal, fmt, im )
-  end function complex_text_c64
-
   pure function real_text_r32(x, decimal, fmt, decimals) result(text)
     real(r32),        intent(in)           :: x
     character(len=*), intent(in)           :: decimal, fmt
@@ -1709,6 +843,32 @@ submodule (io_fortran_lib) internal_io
     end if
   end function real_text_r32
 
+#ifdef IOFL_HAS_R128
+  pure function complex_text_c128(x, decimal, fmt, decimals, im) result(text)
+    complex(r128),     intent(in)           :: x
+    character(len=*), intent(in)           :: decimal, fmt
+    integer,          intent(in), optional :: decimals
+    character(len=*), intent(in), optional :: im
+    character(len=:), allocatable          :: text
+
+    text = join_complex( real_text_r128(x%re, decimal, fmt, decimals), &
+                         real_text_r128(x%im, decimal, fmt, decimals), &
+                         x%im < 0e0_r128, decimal, fmt, im )
+  end function complex_text_c128
+#endif
+
+  pure function complex_text_c64(x, decimal, fmt, decimals, im) result(text)
+    complex(r64),     intent(in)           :: x
+    character(len=*), intent(in)           :: decimal, fmt
+    integer,          intent(in), optional :: decimals
+    character(len=*), intent(in), optional :: im
+    character(len=:), allocatable          :: text
+
+    text = join_complex( real_text_r64(x%re, decimal, fmt, decimals), &
+                         real_text_r64(x%im, decimal, fmt, decimals), &
+                         x%im < 0e0_r64, decimal, fmt, im )
+  end function complex_text_c64
+
   pure function complex_text_c32(x, decimal, fmt, decimals, im) result(text)
     complex(r32),     intent(in)           :: x
     character(len=*), intent(in)           :: decimal, fmt
@@ -1720,6 +880,8 @@ submodule (io_fortran_lib) internal_io
                          real_text_r32(x%im, decimal, fmt, decimals), &
                          x%im < 0e0_r32, decimal, fmt, im )
   end function complex_text_c32
+
+
   ! Number parsing, shared by `cast` for `character` and `String` ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   pure subroutine cast_args(fmts, default_fmt, fmt, locale, fmt_, decimal, status)
     character(len=*), intent(in)           :: fmts(:), default_fmt
@@ -2028,47 +1190,48 @@ submodule (io_fortran_lib) internal_io
 
   pure subroutine parse_int_i64(text, fmt, value, status)
     character(len=*), intent(in)  :: text, fmt
-    integer(i64),     intent(out) :: value
+    integer(i64),   intent(out) :: value
     integer,          intent(out) :: status
 
     integer(i64) :: number
 
-    call parse_integer(text, fmt, 64, number, status)
+    call parse_integer(text, fmt, int(bit_size(value)), number, status)
     value = int(number, i64)
   end subroutine parse_int_i64
 
   pure subroutine parse_int_i32(text, fmt, value, status)
     character(len=*), intent(in)  :: text, fmt
-    integer(i32),     intent(out) :: value
+    integer(i32),   intent(out) :: value
     integer,          intent(out) :: status
 
     integer(i64) :: number
 
-    call parse_integer(text, fmt, 32, number, status)
+    call parse_integer(text, fmt, int(bit_size(value)), number, status)
     value = int(number, i32)
   end subroutine parse_int_i32
 
   pure subroutine parse_int_i16(text, fmt, value, status)
     character(len=*), intent(in)  :: text, fmt
-    integer(i16),     intent(out) :: value
+    integer(i16),   intent(out) :: value
     integer,          intent(out) :: status
 
     integer(i64) :: number
 
-    call parse_integer(text, fmt, 16, number, status)
+    call parse_integer(text, fmt, int(bit_size(value)), number, status)
     value = int(number, i16)
   end subroutine parse_int_i16
 
   pure subroutine parse_int_i8(text, fmt, value, status)
     character(len=*), intent(in)  :: text, fmt
-    integer(i8),     intent(out) :: value
+    integer(i8),   intent(out) :: value
     integer,          intent(out) :: status
 
     integer(i64) :: number
 
-    call parse_integer(text, fmt, 8, number, status)
+    call parse_integer(text, fmt, int(bit_size(value)), number, status)
     value = int(number, i8)
   end subroutine parse_int_i8
+
 
 #ifdef IOFL_HAS_R128
   pure subroutine parse_real_r128(text, decimal, fmt, value, status)
@@ -2105,27 +1268,6 @@ submodule (io_fortran_lib) internal_io
       value = 0e0_r128; status = READ_ERR
     end if
   end subroutine parse_real_r128
-
-  pure subroutine parse_complex_c128(text, decimal, fmt, im, value, status)
-    character(len=*), intent(in)           :: text, decimal, fmt
-    character(len=*), intent(in), optional :: im
-    complex(r128),     intent(out)          :: value
-    integer,          intent(out)          :: status
-
-    real(r128) :: re_part, im_part
-    integer   :: re_l, re_r, im_l, im_r
-
-    value = (0e0_r128,0e0_r128)
-
-    call split_complex(text, decimal, fmt, im, re_l, re_r, im_l, im_r, status)
-    if ( status /= 0 ) return
-
-    call parse_real_r128(text(re_l:re_r), decimal, fmt, re_part, status)
-    if ( status /= 0 ) return
-
-    call parse_real_r128(text(im_l:im_r), decimal, fmt, im_part, status)
-    if ( status == 0 ) value = cmplx(re_part, im_part, kind=r128)
-  end subroutine parse_complex_c128
 #endif
 
   pure subroutine parse_real_r64(text, decimal, fmt, value, status)
@@ -2134,7 +1276,7 @@ submodule (io_fortran_lib) internal_io
     integer,          intent(out) :: status
 
     integer(i64) :: number
-    integer      :: l, r
+    integer :: l, r
 
     value = 0e0_r64
 
@@ -2158,34 +1300,13 @@ submodule (io_fortran_lib) internal_io
     end if
   end subroutine parse_real_r64
 
-  pure subroutine parse_complex_c64(text, decimal, fmt, im, value, status)
-    character(len=*), intent(in)           :: text, decimal, fmt
-    character(len=*), intent(in), optional :: im
-    complex(r64),     intent(out)          :: value
-    integer,          intent(out)          :: status
-
-    real(r64) :: re_part, im_part
-    integer   :: re_l, re_r, im_l, im_r
-
-    value = (0e0_r64,0e0_r64)
-
-    call split_complex(text, decimal, fmt, im, re_l, re_r, im_l, im_r, status)
-    if ( status /= 0 ) return
-
-    call parse_real_r64(text(re_l:re_r), decimal, fmt, re_part, status)
-    if ( status /= 0 ) return
-
-    call parse_real_r64(text(im_l:im_r), decimal, fmt, im_part, status)
-    if ( status == 0 ) value = cmplx(re_part, im_part, kind=r64)
-  end subroutine parse_complex_c64
-
   pure subroutine parse_real_r32(text, decimal, fmt, value, status)
     character(len=*), intent(in)  :: text, decimal, fmt
     real(r32),        intent(out) :: value
     integer,          intent(out) :: status
 
     integer(i32) :: number
-    integer      :: l, r
+    integer :: l, r
 
     value = 0e0_r32
 
@@ -2209,6 +1330,50 @@ submodule (io_fortran_lib) internal_io
     end if
   end subroutine parse_real_r32
 
+#ifdef IOFL_HAS_R128
+  pure subroutine parse_complex_c128(text, decimal, fmt, im, value, status)
+    character(len=*), intent(in)           :: text, decimal, fmt
+    character(len=*), intent(in), optional :: im
+    complex(r128),     intent(out)          :: value
+    integer,          intent(out)          :: status
+
+    real(r128) :: re_part, im_part
+    integer   :: re_l, re_r, im_l, im_r
+
+    value = (0e0_r128,0e0_r128)
+
+    call split_complex(text, decimal, fmt, im, re_l, re_r, im_l, im_r, status)
+    if ( status /= 0 ) return
+
+    call parse_real_r128(text(re_l:re_r), decimal, fmt, re_part, status)
+    if ( status /= 0 ) return
+
+    call parse_real_r128(text(im_l:im_r), decimal, fmt, im_part, status)
+    if ( status == 0 ) value = cmplx(re_part, im_part, kind=r128)
+  end subroutine parse_complex_c128
+#endif
+
+  pure subroutine parse_complex_c64(text, decimal, fmt, im, value, status)
+    character(len=*), intent(in)           :: text, decimal, fmt
+    character(len=*), intent(in), optional :: im
+    complex(r64),     intent(out)          :: value
+    integer,          intent(out)          :: status
+
+    real(r64) :: re_part, im_part
+    integer   :: re_l, re_r, im_l, im_r
+
+    value = (0e0_r64,0e0_r64)
+
+    call split_complex(text, decimal, fmt, im, re_l, re_r, im_l, im_r, status)
+    if ( status /= 0 ) return
+
+    call parse_real_r64(text(re_l:re_r), decimal, fmt, re_part, status)
+    if ( status /= 0 ) return
+
+    call parse_real_r64(text(im_l:im_r), decimal, fmt, im_part, status)
+    if ( status == 0 ) value = cmplx(re_part, im_part, kind=r64)
+  end subroutine parse_complex_c64
+
   pure subroutine parse_complex_c32(text, decimal, fmt, im, value, status)
     character(len=*), intent(in)           :: text, decimal, fmt
     character(len=*), intent(in), optional :: im
@@ -2229,4 +1394,5 @@ submodule (io_fortran_lib) internal_io
     call parse_real_r32(text(im_l:im_r), decimal, fmt, im_part, status)
     if ( status == 0 ) value = cmplx(re_part, im_part, kind=r32)
   end subroutine parse_complex_c32
+
 end submodule internal_io

@@ -1,0 +1,718 @@
+#:include "common.fypp"
+! Generated from fypp/io_fortran_lib/text_io_impl.fypp by fypp/generate.sh. Edit that file, not this one.
+#include "iofl_config.inc"
+submodule (io_fortran_lib) text_io
+  !---------------------------------------------------------------------------------------------------------------------
+  !! This submodule provides module procedure implementations for the **public interface** `echo` and the **private
+  !! interfaces** `to_text` and `from_text`.
+  !---------------------------------------------------------------------------------------------------------------------
+  use, intrinsic :: ieee_arithmetic, only: ieee_value, ieee_quiet_nan
+  implicit none (type, external)
+
+  ! Definitions and interfaces ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  character(len=1), parameter :: LINE_FEED = LF
+  logical,          target :: APPEND_TO_FILE = .true.
+
+  contains ! Procedure bodies for module subprograms <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><
+
+  ! Writing Procedures ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  module procedure echo_chars
+    character(len=:), allocatable :: ext
+
+    character(len=:), allocatable :: terminator_
+    character(len=:), pointer :: errmsg_
+    integer, pointer :: stat_
+    logical :: append_
+
+    character(len=1024), target :: dummy_msg
+    integer,          target :: dummy_stat
+
+    logical :: exists
+    integer :: file_unit
+
+    exists=.false.; file_unit=0
+
+    ext = ext_of(file)
+
+    if ( .not. present(stat) ) then
+      stat_ => dummy_stat
+    else
+      stat_ => stat
+    end if
+
+    if ( .not. present(errmsg) ) then
+      errmsg_ => dummy_msg
+    else
+      errmsg_ => errmsg
+    end if
+
+    stat_=0; errmsg_=EMPTY_STR
+
+    if ( .not. any(TEXT_EXT == ext) ) then
+      stat_   = ARG_ERR
+      errmsg_ = 'Error writing to file "'//file//'" due to unsupported file extension "'//ext//'". '// &
+                "Supported file extensions: "//join(TEXT_EXT)
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
+      return
+    end if
+
+    append_ = optval(append, APPEND_TO_FILE)
+
+    terminator_ = optval(terminator, LINE_FEED)
+
+    inquire(file=file, exist=exists, iostat=stat_, iomsg=errmsg_)
+
+    if ( stat_ /= 0 ) then
+      stat_ = WRITE_ERR
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
+      return
+    end if
+
+    file_unit = output_unit
+
+    if ( .not. exists ) then
+      open( newunit=file_unit, file=file, status="new", form="unformatted", &
+            action="write", access="stream", iostat=stat_, iomsg=errmsg_ )
+    else
+      if ( .not. append_ ) then
+        open( newunit=file_unit, file=file, status="replace", form="unformatted", &
+              action="write", access="stream", iostat=stat_, iomsg=errmsg_ )
+      else
+        open( newunit=file_unit, file=file, status="old", form="unformatted", &
+              action="write", access="stream", position="append", iostat=stat_, iomsg=errmsg_ )
+      end if
+    end if
+
+    if ( stat_ /= 0 ) then
+      stat_ = WRITE_ERR
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
+      return
+    end if
+
+    write(unit=file_unit, iostat=stat_, iomsg=errmsg_) substring
+
+    if ( stat_ /= 0 ) then
+      stat_ = WRITE_ERR
+      call close_quietly(file_unit)
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
+      return
+    end if
+
+    write(unit=file_unit, iostat=stat_, iomsg=errmsg_) terminator_
+
+    if ( stat_ /= 0 ) then
+      stat_ = WRITE_ERR
+      call close_quietly(file_unit)
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
+      return
+    end if
+
+    close(unit=file_unit, iostat=stat_, iomsg=errmsg_)
+
+    if ( stat_ /= 0 ) then
+      stat_ = WRITE_ERR
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
+      return
+    end if
+
+    call stop_if_unhandled(stat_, errmsg_, present(stat))
+  end procedure echo_chars
+
+  module procedure echo_string
+    character(len=:), allocatable :: ext
+
+    character(len=:), allocatable :: terminator_
+    character(len=:), pointer :: errmsg_
+    integer, pointer :: stat_
+    logical :: append_
+
+    character(len=1024), target :: dummy_msg
+    integer,          target :: dummy_stat
+
+    logical :: exists
+    integer :: file_unit
+
+    exists=.false.; file_unit=0
+
+    ext = ext_of(file)
+
+    if ( .not. present(stat) ) then
+      stat_ => dummy_stat
+    else
+      stat_ => stat
+    end if
+
+    if ( .not. present(errmsg) ) then
+      errmsg_ => dummy_msg
+    else
+      errmsg_ => errmsg
+    end if
+
+    stat_=0; errmsg_=EMPTY_STR
+
+    if ( .not. any(TEXT_EXT == ext) ) then
+      stat_   = ARG_ERR
+      errmsg_ = 'Error writing to file "'//file//'" due to unsupported file extension "'//ext//'". '// &
+                "Supported file extensions: "//join(TEXT_EXT)
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
+      return
+    end if
+
+    append_ = optval(append, APPEND_TO_FILE)
+
+    terminator_ = optval(terminator, LINE_FEED)
+
+    inquire(file=file, exist=exists, iostat=stat_, iomsg=errmsg_)
+
+    if ( stat_ /= 0 ) then
+      stat_ = WRITE_ERR
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
+      return
+    end if
+
+    file_unit = output_unit
+
+    if ( .not. exists ) then
+      open( newunit=file_unit, file=file, status="new", form="unformatted", &
+            action="write", access="stream", iostat=stat_, iomsg=errmsg_ )
+    else
+      if ( .not. append_ ) then
+        open( newunit=file_unit, file=file, status="replace", form="unformatted", &
+              action="write", access="stream", iostat=stat_, iomsg=errmsg_ )
+      else
+        open( newunit=file_unit, file=file, status="old", form="unformatted", &
+              action="write", access="stream", position="append", iostat=stat_, iomsg=errmsg_ )
+      end if
+    end if
+
+    if ( stat_ /= 0 ) then
+      stat_ = WRITE_ERR
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
+      return
+    end if
+
+    if ( allocated(substring%s) ) write(unit=file_unit, iostat=stat_, iomsg=errmsg_) substring%s
+
+    if ( stat_ /= 0 ) then
+      stat_ = WRITE_ERR
+      call close_quietly(file_unit)
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
+      return
+    end if
+
+    write(unit=file_unit, iostat=stat_, iomsg=errmsg_) terminator_
+
+    if ( stat_ /= 0 ) then
+      stat_ = WRITE_ERR
+      call close_quietly(file_unit)
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
+      return
+    end if
+
+    close(unit=file_unit, iostat=stat_, iomsg=errmsg_)
+
+    if ( stat_ /= 0 ) then
+      stat_ = WRITE_ERR
+      call stop_if_unhandled(stat_, errmsg_, present(stat))
+      return
+    end if
+
+    call stop_if_unhandled(stat_, errmsg_, present(stat))
+  end procedure echo_string
+
+#:for k, r in COMPLEX_KINDS
+#:if k in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+  module procedure to_text_${k}$
+    type(String)                      :: text_file
+    type(String), allocatable, target :: cells(:,:)
+    type(String), pointer             :: numerical_data(:,:)
+
+    integer :: nrows, ncols, j
+    logical :: header_present
+
+    j=0; header_present=.false.
+
+    select rank(x)
+      rank(1); nrows = size(x); ncols = 1
+      rank(2); nrows = size(x, dim=1); ncols = size(x, dim=2)
+    end select
+
+    if ( present(header) ) header_present = len(header) /= 0
+    if ( header_present ) nrows = nrows + 1
+
+    allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
+    end if
+
+    if ( header_present ) then
+      select rank(x)
+        rank(1)
+          cells(1,1)%s = trim(header(1))
+        rank(2)
+          if ( size(header) == 1 ) then
+            do j = 1, ncols
+              cells(1,j)%s = trim(header(1))//str(j)
+            end do
+          else
+            do j = 1, ncols
+              cells(1,j)%s = trim(header(j))
+            end do
+          end if
+      end select
+    end if
+
+    numerical_data => cells
+    if ( header_present ) numerical_data => cells(2:,:)
+
+    select rank(x)
+      rank(1); call cast(x, numerical_data(:,1), locale, fmt, decimals, im)
+      rank(2); call cast(x, numerical_data, locale, fmt, decimals, im)
+    end select
+
+    call write_cells(text_file, .true., cells, file, NL, delim, .false., stat, errmsg)
+  end procedure to_text_${k}$
+#:if k in QUAD_KINDS
+#endif
+#:endif
+
+#:endfor
+
+#:for k in REAL_KINDS
+#:if k in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+  module procedure to_text_${k}$
+    type(String)                      :: text_file
+    type(String), allocatable, target :: cells(:,:)
+    type(String), pointer             :: numerical_data(:,:)
+
+    integer :: nrows, ncols, j
+    logical :: header_present
+
+    j=0; header_present=.false.
+
+    select rank(x)
+      rank(1); nrows = size(x); ncols = 1
+      rank(2); nrows = size(x, dim=1); ncols = size(x, dim=2)
+    end select
+
+    if ( present(header) ) header_present = len(header) /= 0
+    if ( header_present ) nrows = nrows + 1
+
+    allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
+    end if
+
+    if ( header_present ) then
+      select rank(x)
+        rank(1)
+          cells(1,1)%s = trim(header(1))
+        rank(2)
+          if ( size(header) == 1 ) then
+            do j = 1, ncols
+              cells(1,j)%s = trim(header(1))//str(j)
+            end do
+          else
+            do j = 1, ncols
+              cells(1,j)%s = trim(header(j))
+            end do
+          end if
+      end select
+    end if
+
+    numerical_data => cells
+    if ( header_present ) numerical_data => cells(2:,:)
+
+    select rank(x)
+      rank(1); call cast(x, numerical_data(:,1), locale, fmt, decimals)
+      rank(2); call cast(x, numerical_data, locale, fmt, decimals)
+    end select
+
+    call text_file%write_file(cells, file, NL, delim, .false., stat, errmsg)
+  end procedure to_text_${k}$
+#:if k in QUAD_KINDS
+#endif
+#:endif
+
+#:endfor
+
+#:for k in INT_KINDS
+  module procedure to_text_${k}$
+    type(String)                      :: text_file
+    type(String), allocatable, target :: cells(:,:)
+    type(String), pointer             :: numerical_data(:,:)
+
+    integer :: nrows, ncols, j
+    logical :: header_present
+
+    j=0; header_present=.false.
+
+    select rank(x)
+      rank(1); nrows = size(x); ncols = 1
+      rank(2); nrows = size(x, dim=1); ncols = size(x, dim=2)
+    end select
+
+    if ( present(header) ) header_present = len(header) /= 0
+    if ( header_present ) nrows = nrows + 1
+
+    allocate( cells(nrows,ncols), stat=stat, errmsg=errmsg )
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
+    end if
+
+    if ( header_present ) then
+      select rank(x)
+        rank(1)
+          cells(1,1)%s = trim(header(1))
+        rank(2)
+          if ( size(header) == 1 ) then
+            do j = 1, ncols
+              cells(1,j)%s = trim(header(1))//str(j)
+            end do
+          else
+            do j = 1, ncols
+              cells(1,j)%s = trim(header(j))
+            end do
+          end if
+      end select
+    end if
+
+    numerical_data => cells
+    if ( header_present ) numerical_data => cells(2:,:)
+
+    select rank(x)
+      rank(1); call cast(x, numerical_data(:,1), fmt)
+      rank(2); call cast(x, numerical_data, fmt)
+    end select
+
+    call text_file%write_file(cells, file, NL, delim, .false., stat, errmsg)
+  end procedure to_text_${k}$
+
+#:endfor
+
+  ! Reading Procedures ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#:for k, r in COMPLEX_KINDS
+#:if k in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+  module procedure from_text_${k}$
+    type(String)              :: text_file
+    type(String), allocatable :: cells(:,:)
+    integer                   :: nrows, ncols
+    integer, allocatable      :: cell_stat(:,:)
+    logical, allocatable      :: blank(:,:)
+    integer                   :: first
+    real(${r}$)                 :: nan_part
+
+    nrows=0; ncols=0
+
+    call read_cells(text_file, file, len(im) == 0, cells, NL, delim, stat, errmsg)
+
+    if ( stat /= 0 ) return
+
+    call text_file%empty()
+
+    nrows = size(cells, dim=1); ncols = size(cells, dim=2)
+
+    if ( (nrows == 1) .and. header ) then
+      stat   = ARG_ERR
+      errmsg = 'Error reading file "'//file//'". File read with one line, but header was specified as present.'
+      return
+    end if
+
+    select rank(into)
+      rank(1)
+        if ( ncols > 1 ) then
+          stat   = ARG_ERR
+          errmsg = 'Error reading file "'//file//'". Data has more than one column but actual argument is a '//&
+                   "one-dimensional array. Try reading into a two-dimensional array instead."
+          return
+        end if
+      rank(2)
+        continue
+    end select
+
+    select rank(into)
+      rank(1)
+        if ( header ) then
+          allocate( into(nrows-1), stat=stat, errmsg=errmsg )
+        else
+          allocate( into(nrows), stat=stat, errmsg=errmsg )
+        end if
+      rank(2)
+        if ( header ) then
+          allocate( into(nrows-1,ncols), stat=stat, errmsg=errmsg )
+        else
+          allocate( into(nrows,ncols), stat=stat, errmsg=errmsg )
+        end if
+    end select
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
+    end if
+
+    allocate( cell_stat(nrows,ncols), source=0, stat=stat, errmsg=errmsg )
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
+    end if
+
+    select rank(into)
+      rank(1)
+        if ( header ) then
+          call cast(cells(2:,1), into, locale=locale, fmt=fmt, im=im, stat=cell_stat(2:,1))
+        else
+          call cast(cells(:,1), into, locale=locale, fmt=fmt, im=im, stat=cell_stat(:,1))
+        end if
+      rank(2)
+        if ( header ) then
+          call cast(cells(2:,:), into, locale=locale, fmt=fmt, im=im, stat=cell_stat(2:,:))
+        else
+          call cast(cells, into, locale=locale, fmt=fmt, im=im, stat=cell_stat)
+        end if
+    end select
+
+    if ( any(cell_stat /= 0) ) then
+      nan_part = ieee_value(0e0_${r}$, ieee_quiet_nan)
+      blank = is_blank(cells)
+      first = 1
+      if ( header ) first = 2
+
+      select rank(into)
+        rank(1)
+          where ( blank(first:,1) ) into = cmplx(nan_part, nan_part, kind=${r}$)
+        rank(2)
+          where ( blank(first:,:) ) into = cmplx(nan_part, nan_part, kind=${r}$)
+      end select
+
+      where ( blank ) cell_stat = 0
+    end if
+
+    call report_cells(file, cells, cell_stat, stat, errmsg)
+  end procedure from_text_${k}$
+#:if k in QUAD_KINDS
+#endif
+#:endif
+
+#:endfor
+
+#:for k in REAL_KINDS
+#:if k in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+  module procedure from_text_${k}$
+    type(String)              :: text_file
+    type(String), allocatable :: cells(:,:)
+    integer                   :: nrows, ncols
+    integer, allocatable      :: cell_stat(:,:)
+    logical, allocatable      :: blank(:,:)
+    integer                   :: first
+
+    nrows=0; ncols=0
+
+    call text_file%read_file(file, cells, NL, delim, stat, errmsg)
+
+    if ( stat /= 0 ) return
+
+    call text_file%empty()
+
+    nrows = size(cells, dim=1); ncols = size(cells, dim=2)
+
+    if ( (nrows == 1) .and. header ) then
+      stat   = ARG_ERR
+      errmsg = 'Error reading file "'//file//'". File read with one line, but header was specified as present.'
+      return
+    end if
+
+    select rank(into)
+      rank(1)
+        if ( ncols > 1 ) then
+          stat   = ARG_ERR
+          errmsg = 'Error reading file "'//file//'". Data has more than one column but actual argument is a '//&
+                   "one-dimensional array. Try reading into a two-dimensional array instead."
+          return
+        end if
+      rank(2)
+        continue
+    end select
+
+    select rank(into)
+      rank(1)
+        if ( header ) then
+          allocate( into(nrows-1), stat=stat, errmsg=errmsg )
+        else
+          allocate( into(nrows), stat=stat, errmsg=errmsg )
+        end if
+      rank(2)
+        if ( header ) then
+          allocate( into(nrows-1,ncols), stat=stat, errmsg=errmsg )
+        else
+          allocate( into(nrows,ncols), stat=stat, errmsg=errmsg )
+        end if
+    end select
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
+    end if
+
+    allocate( cell_stat(nrows,ncols), source=0, stat=stat, errmsg=errmsg )
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
+    end if
+
+    select rank(into)
+      rank(1)
+        if ( header ) then
+          call cast(cells(2:,1), into, locale=locale, fmt=fmt, stat=cell_stat(2:,1))
+        else
+          call cast(cells(:,1), into, locale=locale, fmt=fmt, stat=cell_stat(:,1))
+        end if
+      rank(2)
+        if ( header ) then
+          call cast(cells(2:,:), into, locale=locale, fmt=fmt, stat=cell_stat(2:,:))
+        else
+          call cast(cells, into, locale=locale, fmt=fmt, stat=cell_stat)
+        end if
+    end select
+
+    if ( any(cell_stat /= 0) ) then
+      blank = is_blank(cells)
+      first = 1
+      if ( header ) first = 2
+
+      select rank(into)
+        rank(1)
+          where ( blank(first:,1) ) into = ieee_value(0e0_${k}$, ieee_quiet_nan)
+        rank(2)
+          where ( blank(first:,:) ) into = ieee_value(0e0_${k}$, ieee_quiet_nan)
+      end select
+
+      where ( blank ) cell_stat = 0
+    end if
+
+    call report_cells(file, cells, cell_stat, stat, errmsg)
+  end procedure from_text_${k}$
+#:if k in QUAD_KINDS
+#endif
+#:endif
+
+#:endfor
+
+#:for k in INT_KINDS
+  module procedure from_text_${k}$
+    type(String)              :: text_file
+    type(String), allocatable :: cells(:,:)
+    integer                   :: nrows, ncols
+    integer, allocatable      :: cell_stat(:,:)
+
+    nrows=0; ncols=0
+
+    call text_file%read_file(file, cells, NL, delim, stat, errmsg)
+
+    if ( stat /= 0 ) return
+
+    call text_file%empty()
+
+    nrows = size(cells, dim=1); ncols = size(cells, dim=2)
+
+    if ( (nrows == 1) .and. header ) then
+      stat   = ARG_ERR
+      errmsg = 'Error reading file "'//file//'". File read with one line, but header was specified as present.'
+      return
+    end if
+
+    select rank(into)
+      rank(1)
+        if ( ncols > 1 ) then
+          stat   = ARG_ERR
+          errmsg = 'Error reading file "'//file//'". Data has more than one column but actual argument is a '//&
+                   "one-dimensional array. Try reading into a two-dimensional array instead."
+          return
+        end if
+      rank(2)
+        continue
+    end select
+
+    select rank(into)
+      rank(1)
+        if ( header ) then
+          allocate( into(nrows-1), stat=stat, errmsg=errmsg )
+        else
+          allocate( into(nrows), stat=stat, errmsg=errmsg )
+        end if
+      rank(2)
+        if ( header ) then
+          allocate( into(nrows-1,ncols), stat=stat, errmsg=errmsg )
+        else
+          allocate( into(nrows,ncols), stat=stat, errmsg=errmsg )
+        end if
+    end select
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
+    end if
+
+    allocate( cell_stat(nrows,ncols), source=0, stat=stat, errmsg=errmsg )
+
+    if ( stat /= 0 ) then
+      stat = ALLOC_ERR; return
+    end if
+
+    select rank(into)
+      rank(1)
+        if ( header ) then
+          call cast(cells(2:,1), into, fmt, stat=cell_stat(2:,1))
+        else
+          call cast(cells(:,1), into, fmt, stat=cell_stat(:,1))
+        end if
+      rank(2)
+        if ( header ) then
+          call cast(cells(2:,:), into, fmt, stat=cell_stat(2:,:))
+        else
+          call cast(cells, into, fmt, stat=cell_stat)
+        end if
+    end select
+
+    call report_cells(file, cells, cell_stat, stat, errmsg)
+  end procedure from_text_${k}$
+
+#:endfor
+
+  pure subroutine report_cells(file, cells, cell_stat, stat, errmsg)
+    character(len=*), intent(in)    :: file
+    type(String),     intent(in)    :: cells(:,:)
+    integer,          intent(in)    :: cell_stat(:,:)
+    integer,          intent(inout) :: stat
+    character(len=*), intent(inout) :: errmsg
+
+    integer :: location(2)
+
+    if ( all(cell_stat == 0) ) return
+
+    location = findloc(cell_stat /= 0, .true.)
+    stat     = READ_ERR
+    errmsg   = 'Error reading file "'//file//'". Invalid number "'//cells(location(1),location(2))%s// &
+               '" at row '//str(location(1))//", column "//str(location(2))//"."
+  end subroutine report_cells
+
+  pure function is_blank(cells) result(blank)
+    type(String), intent(in) :: cells(:,:)
+    logical                  :: blank(size(cells,1),size(cells,2))
+
+    integer :: row, col
+
+    do col = 1, size(cells, dim=2)
+      do row = 1, size(cells, dim=1)
+        blank(row,col) = verify(cells(row,col)%s, SPACE//TAB//CR//LF) == 0
+      end do
+    end do
+  end function is_blank
+end submodule text_io

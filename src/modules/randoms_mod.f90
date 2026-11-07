@@ -1,3 +1,4 @@
+! Generated from fypp/modules/randoms_mod.fypp by fypp/generate.sh. Edit that file, not this one.
 #include "iofl_config.inc"
 module randoms
   !---------------------------------------------------------------------------------------------------------------------
@@ -30,12 +31,15 @@ module randoms
       real(r128), intent(in) :: mu, sig
     end function gauss_r128
 #endif
+
     impure real(r64) module function gauss_r64(mu, sig) result(gauss_res)
       real(r64), intent(in) :: mu, sig
     end function gauss_r64
+
     impure real(r32) module function gauss_r32(mu, sig) result(gauss_res)
       real(r32), intent(in) :: mu, sig
     end function gauss_r32
+
   end interface
 
   interface random_gauss                                                                   ! Submodule gaussian_sampling
@@ -48,13 +52,16 @@ module randoms
       real(r128), intent(in)    :: mu, sig
     end subroutine random_gauss_r128
 #endif
+
     impure elemental module subroutine random_gauss_r64(x, mu, sig)
       real(r64), intent(inout) :: x
       real(r64), intent(in)    :: mu, sig
     end subroutine random_gauss_r64
+
     impure elemental module subroutine random_gauss_r32(x, mu, sig)
       real(r32), intent(inout) :: x
       real(r32), intent(in)    :: mu, sig
     end subroutine random_gauss_r32
+
   end interface
 end module randoms

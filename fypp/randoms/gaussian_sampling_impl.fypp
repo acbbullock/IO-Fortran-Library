@@ -1,0 +1,131 @@
+#:include "common.fypp"
+! Generated from fypp/randoms/gaussian_sampling_impl.fypp by fypp/generate.sh. Edit that file, not this one.
+#include "iofl_config.inc"
+submodule (randoms) gaussian_sampling
+  !---------------------------------------------------------------------------------------------------------------------
+  !! This submodule provides module procedure implementations for the **public interface** `random_gauss` and the
+  !! **private interface** `gauss`.
+  !---------------------------------------------------------------------------------------------------------------------
+  implicit none (type, external)
+
+  contains ! Procedure bodies for module subprograms <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><
+
+  ! Gaussian sampling procedures ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#:for k in REAL_KINDS
+#:if k in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+  module procedure gauss_${k}$
+    real(${k}$) :: rn, x, y, z, res
+
+    real(${k}$), parameter :: kC1   = 1.448242853_${k}$
+    real(${k}$), parameter :: kC2   = 3.307147487_${k}$
+    real(${k}$), parameter :: kC3   = 1.46754004_${k}$
+    real(${k}$), parameter :: kD1   = 1.036467755_${k}$
+    real(${k}$), parameter :: kD2   = 5.295844968_${k}$
+    real(${k}$), parameter :: kD3   = 3.631288474_${k}$
+    real(${k}$), parameter :: kHm   = 0.483941449_${k}$
+    real(${k}$), parameter :: kZm   = 0.107981933_${k}$
+    real(${k}$), parameter :: kHp   = 4.132731354_${k}$
+    real(${k}$), parameter :: kZp   = 18.52161694_${k}$
+    real(${k}$), parameter :: kPhln = 0.4515827053_${k}$
+    real(${k}$), parameter :: kHm1  = 0.516058551_${k}$
+    real(${k}$), parameter :: kHp1  = 3.132731354_${k}$
+    real(${k}$), parameter :: kHzm  = 0.375959516_${k}$
+    real(${k}$), parameter :: kHzmp = 0.591923442_${k}$
+
+    real(${k}$), parameter :: kAs = 0.8853395638_${k}$
+    real(${k}$), parameter :: kBs = 0.2452635696_${k}$
+    real(${k}$), parameter :: kCs = 0.2770276848_${k}$
+    real(${k}$), parameter :: kB  = 0.5029324303_${k}$
+    real(${k}$), parameter :: kX0 = 0.4571828819_${k}$
+    real(${k}$), parameter :: kYm = 0.187308492_${k}$
+    real(${k}$), parameter :: kS  = 0.7270572718_${k}$
+    real(${k}$), parameter :: kT  = 0.03895759111_${k}$
+
+    rn=0e0_${k}$; x=0e0_${k}$; y=0e0_${k}$; z=0e0_${k}$; res=0e0_${k}$; gauss_res=0e0_${k}$
+
+    outer: do
+      call random_number(y)
+
+      if ( y > kHm1 ) then
+        res = kHp*y - kHp1; exit outer
+      else if ( y < kZm ) then
+        rn = kZp*y - 1.0_${k}$
+
+        if ( rn > 0.0_${k}$ ) then
+          res = 1.0_${k}$ + rn; exit outer
+        else
+          res = -1.0_${k}$ + rn; exit outer
+        end if
+      else if ( y < kHm ) then
+        call random_number(rn)
+        rn = rn - 1.0_${k}$ + rn
+
+        if ( rn > 0.0_${k}$ ) then
+          z = 2.0_${k}$ - rn
+        else
+          z = -2.0_${k}$ - rn
+        end if
+
+        if ( (kC1-y)*(kC3+abs(z)) < kC2 ) then
+          res = z; exit outer
+        else
+          x = rn*rn
+          if ( (y+kD1)*(kD3+x) < kD2 ) then
+            res = rn; exit outer
+          else if ( kHzmp-y < exp(-(z*z+kPhln)/2.0_${k}$) ) then
+            res = z; exit outer
+          else if ( y+kHzm < exp(-(x+kPhln)/2.0_${k}$) ) then
+            res = rn; exit outer
+          end if
+        end if
+      end if
+
+      inner: do
+        call random_number(x); call random_number(y)
+        y = kYm*y
+        z = kX0 - kS*x - y
+
+        if ( z > 0.0_${k}$ ) then
+          rn = 2.0_${k}$ + y/x
+        else
+          x = 1.0_${k}$ - x
+          y = kYm - y
+          rn = -( 2.0_${k}$ + y/x )
+        end if
+
+        if ( (y-kAs+x)*(kCs+x)+kBs < 0.0_${k}$ ) then
+          res = rn; exit inner
+        else if ( y < x+kT ) then
+          if ( rn*rn < 4.0_${k}$*(kB-log(x)) ) then
+            res = rn; exit inner
+          end if
+        end if
+      end do inner
+
+      exit outer
+    end do outer
+
+    gauss_res = res*sig + mu
+  end procedure gauss_${k}$
+#:if k in QUAD_KINDS
+#endif
+#:endif
+
+#:endfor
+
+  ! Elemental procedures for gauss ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#:for k in REAL_KINDS
+#:if k in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+  module procedure random_gauss_${k}$
+    x = gauss(mu, sig)
+  end procedure random_gauss_${k}$
+#:if k in QUAD_KINDS
+#endif
+#:endif
+
+#:endfor
+end submodule gaussian_sampling

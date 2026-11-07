@@ -13,7 +13,7 @@ submodule (io_fortran_lib) string_methods
   end type cell_bounds
 
   ! Definitions and interfaces ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  character(len=1), target :: LINE_FEED = LF, COMMA_DELIMITER = COMMA
+  character(len=1), parameter :: LINE_FEED = LF, COMMA_DELIMITER = COMMA
   logical,          target :: NO_APPEND = .false.
 
   contains ! Procedure bodies for module subprograms <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><
@@ -285,7 +285,7 @@ submodule (io_fortran_lib) string_methods
     character(len=:), allocatable :: ext
 
     character(len=:), pointer :: errmsg_
-    integer,          pointer :: stat_
+    integer, pointer :: stat_
 
     character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
@@ -427,24 +427,16 @@ submodule (io_fortran_lib) string_methods
     end if
 
     cell_block: block
-      character(len=:), pointer :: row_separator_, column_separator_
+      character(len=:), allocatable :: row_separator_, column_separator_
 
       type(cell_bounds) :: cell
       integer(i64)      :: last, pos
       integer           :: nrows, ncols, row, col
       logical           :: strip_cr
 
-      if ( .not. present(row_separator) ) then
-        row_separator_ => LINE_FEED
-      else
-        row_separator_ => row_separator
-      end if
+      row_separator_ = optval(row_separator, LINE_FEED)
 
-      if ( .not. present(column_separator) ) then
-        column_separator_ => COMMA_DELIMITER
-      else
-        column_separator_ => column_separator
-      end if
+      column_separator_ = optval(column_separator, COMMA_DELIMITER)
 
       strip_cr = (row_separator_ == LF)
       last     = end_of_data(self%s, row_separator_, strip_cr)
@@ -1069,6 +1061,24 @@ submodule (io_fortran_lib) string_methods
     end if
   end procedure trim_inplace
 
+  module procedure optval_chars
+    if ( present(x) ) then
+      value = x
+    else
+      value = default
+    end if
+  end procedure optval_chars
+
+  module procedure optval_int
+    value = default
+    if ( present(x) ) value = x
+  end procedure optval_int
+
+  module procedure optval_logical
+    value = default
+    if ( present(x) ) value = x
+  end procedure optval_logical
+
   module procedure stop_if_unhandled
     if ( (stat /= 0) .and. (.not. handled) ) error stop errmsg(:len_trim(errmsg))
   end procedure stop_if_unhandled
@@ -1086,9 +1096,10 @@ submodule (io_fortran_lib) string_methods
   module procedure write_cells
     character(len=:), allocatable :: ext
 
-    character(len=:), pointer :: row_separator_, column_separator_, errmsg_
-    logical,          pointer :: append_
-    integer,          pointer :: stat_
+    character(len=:), allocatable :: row_separator_, column_separator_
+    character(len=:), pointer :: errmsg_
+    logical :: append_
+    integer, pointer :: stat_
 
     character(len=1024), target :: dummy_msg
     integer,          target :: dummy_stat
@@ -1131,23 +1142,11 @@ submodule (io_fortran_lib) string_methods
       return
     end if
 
-    if ( .not. present(row_separator) ) then
-      row_separator_ => LINE_FEED
-    else
-      row_separator_ => row_separator
-    end if
+    row_separator_ = optval(row_separator, LINE_FEED)
 
-    if ( .not. present(column_separator) ) then
-      column_separator_ => COMMA_DELIMITER
-    else
-      column_separator_ => column_separator
-    end if
+    column_separator_ = optval(column_separator, COMMA_DELIMITER)
 
-    if ( .not. present(append) ) then
-      append_ => NO_APPEND
-    else
-      append_ => append
-    end if
+    append_ = optval(append, NO_APPEND)
 
     nrows = size(cell_array, dim=1)
     ncols = size(cell_array, dim=2)

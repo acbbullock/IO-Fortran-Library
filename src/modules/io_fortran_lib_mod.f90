@@ -1,3 +1,4 @@
+! Generated from fypp/modules/io_fortran_lib_mod.fypp by fypp/generate.sh. Edit that file, not this one.
 #include "iofl_config.inc"
 module io_fortran_lib
   !---------------------------------------------------------------------------------------------------------------------
@@ -228,7 +229,7 @@ module io_fortran_lib
       class(String),    intent(inout)                      :: self
       character(len=*), intent(in)                         :: file
       type(String),     intent(out), optional, allocatable :: cell_array(:,:)
-      character(len=*), intent(in),  optional, target      :: row_separator, column_separator
+      character(len=*), intent(in),  optional      :: row_separator, column_separator
       integer,          intent(out), optional, target      :: stat
       character(len=*), intent(out), optional, target      :: errmsg
     end subroutine read_file
@@ -341,30 +342,32 @@ module io_fortran_lib
       class(String),    intent(inout)                 :: self
       type(String),     intent(in)                    :: cell_array(:,:)
       character(len=*), intent(in)                    :: file
-      character(len=*), intent(in),  optional, target :: row_separator, column_separator
-      logical,          intent(in),  optional, target :: append
+      character(len=*), intent(in),  optional :: row_separator, column_separator
+      logical,          intent(in),  optional :: append
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
     end subroutine write_file
 
-    impure recursive module subroutine read_cells(self, file, pairs, cell_array, row_separator, column_separator, stat, errmsg)
+    impure recursive module subroutine read_cells(self, file, pairs, cell_array, row_separator, column_separator, &
+                                                  stat, errmsg)
       class(String),    intent(inout)                      :: self
       character(len=*), intent(in)                         :: file
       logical,          intent(in)                         :: pairs
       type(String),     intent(out), optional, allocatable :: cell_array(:,:)
-      character(len=*), intent(in),  optional, target      :: row_separator, column_separator
+      character(len=*), intent(in),  optional      :: row_separator, column_separator
       integer,          intent(out), optional, target      :: stat
       character(len=*), intent(out), optional, target      :: errmsg
     end subroutine read_cells
 
-    impure recursive module subroutine write_cells(self, pairs, cell_array, file, row_separator, column_separator, append, &
+    impure recursive module subroutine write_cells(self, pairs, cell_array, file, row_separator, column_separator, &
+                                                   append, &
                                                   stat, errmsg)
       class(String),    intent(inout)                 :: self
       logical,          intent(in)                    :: pairs
       type(String),     intent(in)                    :: cell_array(:,:)
       character(len=*), intent(in)                    :: file
-      character(len=*), intent(in),  optional, target :: row_separator, column_separator
-      logical,          intent(in),  optional, target :: append
+      character(len=*), intent(in),  optional :: row_separator, column_separator
+      logical,          intent(in),  optional :: append
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
     end subroutine write_cells
@@ -399,6 +402,29 @@ module io_fortran_lib
     end subroutine write_string
 
   end interface
+
+  interface optval
+    !-------------------------------------------------------------------------------------------------------------------
+    !! Returns the value of an optional argument, or `default` if it is not present.
+    !-------------------------------------------------------------------------------------------------------------------
+    pure module function optval_chars(x, default) result(value)
+      character(len=*), intent(in), optional :: x
+      character(len=*), intent(in)           :: default
+      character(len=:), allocatable          :: value
+    end function optval_chars
+
+    pure module function optval_int(x, default) result(value)
+      integer, intent(in), optional :: x
+      integer, intent(in)           :: default
+      integer                       :: value
+    end function optval_int
+
+    pure module function optval_logical(x, default) result(value)
+      logical, intent(in), optional :: x
+      logical, intent(in)           :: default
+      logical                       :: value
+    end function optval_logical
+  end interface optval
 
   interface operator(//)                                                                           ! Submodule operators
     !-------------------------------------------------------------------------------------------------------------------
@@ -674,20 +700,23 @@ module io_fortran_lib
       character(len=*), intent(in), optional :: im
     end function new_string_from_c128
 #endif
+
     pure elemental recursive type(String) module function new_string_from_c64(x, locale, fmt, decimals, im) result(new)
-      complex(r64),     intent(in)           :: x
+      complex(r64),    intent(in)           :: x
       character(len=*), intent(in), optional :: locale
       character(len=*), intent(in), optional :: fmt
       integer,          intent(in), optional :: decimals
       character(len=*), intent(in), optional :: im
     end function new_string_from_c64
+
     pure elemental recursive type(String) module function new_string_from_c32(x, locale, fmt, decimals, im) result(new)
-      complex(r32),     intent(in)           :: x
+      complex(r32),    intent(in)           :: x
       character(len=*), intent(in), optional :: locale
       character(len=*), intent(in), optional :: fmt
       integer,          intent(in), optional :: decimals
       character(len=*), intent(in), optional :: im
     end function new_string_from_c32
+
 
 #ifdef IOFL_HAS_R128
     pure elemental recursive type(String) module function new_string_from_r128(x, locale, fmt, decimals) result(new)
@@ -697,35 +726,42 @@ module io_fortran_lib
       integer,          intent(in), optional :: decimals
     end function new_string_from_r128
 #endif
+
     pure elemental recursive type(String) module function new_string_from_r64(x, locale, fmt, decimals) result(new)
-      real(r64),        intent(in)           :: x
+      real(r64),       intent(in)           :: x
       character(len=*), intent(in), optional :: locale
       character(len=*), intent(in), optional :: fmt
       integer,          intent(in), optional :: decimals
     end function new_string_from_r64
+
     pure elemental recursive type(String) module function new_string_from_r32(x, locale, fmt, decimals) result(new)
-      real(r32),        intent(in)           :: x
+      real(r32),       intent(in)           :: x
       character(len=*), intent(in), optional :: locale
       character(len=*), intent(in), optional :: fmt
       integer,          intent(in), optional :: decimals
     end function new_string_from_r32
 
+
     pure elemental recursive type(String) module function new_string_from_i64(x, fmt) result(new)
       integer(i64),     intent(in)           :: x
       character(len=*), intent(in), optional :: fmt
     end function new_string_from_i64
+
     pure elemental recursive type(String) module function new_string_from_i32(x, fmt) result(new)
       integer(i32),     intent(in)           :: x
       character(len=*), intent(in), optional :: fmt
     end function new_string_from_i32
+
     pure elemental recursive type(String) module function new_string_from_i16(x, fmt) result(new)
       integer(i16),     intent(in)           :: x
       character(len=*), intent(in), optional :: fmt
     end function new_string_from_i16
+
     pure elemental recursive type(String) module function new_string_from_i8(x, fmt) result(new)
-      integer(i8),      intent(in)           :: x
+      integer(i8),     intent(in)           :: x
       character(len=*), intent(in), optional :: fmt
     end function new_string_from_i8
+
 
     pure elemental recursive type(String) module function new_string_from_string(x) result(new)
       class(String), intent(in) :: x
@@ -754,22 +790,25 @@ module io_fortran_lib
       character(len=:), allocatable          :: x_str
     end function str_from_c128
 #endif
+
     pure recursive module function str_from_c64(x, locale, fmt, decimals, im) result(x_str)
-      complex(r64),     intent(in)           :: x
+      complex(r64),    intent(in)           :: x
       character(len=*), intent(in), optional :: locale
       character(len=*), intent(in), optional :: fmt
       integer,          intent(in), optional :: decimals
       character(len=*), intent(in), optional :: im
       character(len=:), allocatable          :: x_str
     end function str_from_c64
+
     pure recursive module function str_from_c32(x, locale, fmt, decimals, im) result(x_str)
-      complex(r32),     intent(in)           :: x
+      complex(r32),    intent(in)           :: x
       character(len=*), intent(in), optional :: locale
       character(len=*), intent(in), optional :: fmt
       integer,          intent(in), optional :: decimals
       character(len=*), intent(in), optional :: im
       character(len=:), allocatable          :: x_str
     end function str_from_c32
+
 
 #ifdef IOFL_HAS_R128
     pure recursive module function str_from_r128(x, locale, fmt, decimals) result(x_str)
@@ -780,41 +819,48 @@ module io_fortran_lib
       character(len=:), allocatable          :: x_str
     end function str_from_r128
 #endif
+
     pure recursive module function str_from_r64(x, locale, fmt, decimals) result(x_str)
-      real(r64),        intent(in)           :: x
+      real(r64),       intent(in)           :: x
       character(len=*), intent(in), optional :: locale
       character(len=*), intent(in), optional :: fmt
       integer,          intent(in), optional :: decimals
       character(len=:), allocatable          :: x_str
     end function str_from_r64
+
     pure recursive module function str_from_r32(x, locale, fmt, decimals) result(x_str)
-      real(r32),        intent(in)           :: x
+      real(r32),       intent(in)           :: x
       character(len=*), intent(in), optional :: locale
       character(len=*), intent(in), optional :: fmt
       integer,          intent(in), optional :: decimals
       character(len=:), allocatable          :: x_str
     end function str_from_r32
 
+
     pure recursive module function str_from_i64(x, fmt) result(x_str)
       integer(i64),     intent(in)           :: x
       character(len=*), intent(in), optional :: fmt
       character(len=:), allocatable          :: x_str
     end function str_from_i64
+
     pure recursive module function str_from_i32(x, fmt) result(x_str)
       integer(i32),     intent(in)           :: x
       character(len=*), intent(in), optional :: fmt
       character(len=:), allocatable          :: x_str
     end function str_from_i32
+
     pure recursive module function str_from_i16(x, fmt) result(x_str)
       integer(i16),     intent(in)           :: x
       character(len=*), intent(in), optional :: fmt
       character(len=:), allocatable          :: x_str
     end function str_from_i16
+
     pure recursive module function str_from_i8(x, fmt) result(x_str)
-      integer(i8),      intent(in)           :: x
+      integer(i8),     intent(in)           :: x
       character(len=*), intent(in), optional :: fmt
       character(len=:), allocatable          :: x_str
     end function str_from_i8
+
 
     pure recursive module function str_from_string(x) result(x_str)
       class(String),    intent(in)  :: x
@@ -845,22 +891,25 @@ module io_fortran_lib
       character(len=*), intent(in), optional :: im
     end subroutine cast_c128_to_string
 #endif
+
     pure elemental recursive module subroutine cast_c64_to_string(x, into, locale, fmt, decimals, im)
-      complex(r64),     intent(in)           :: x
+      complex(r64),    intent(in)           :: x
       type(String),     intent(inout)        :: into
       character(len=*), intent(in), optional :: locale
       character(len=*), intent(in), optional :: fmt
       integer,          intent(in), optional :: decimals
       character(len=*), intent(in), optional :: im
     end subroutine cast_c64_to_string
+
     pure elemental recursive module subroutine cast_c32_to_string(x, into, locale, fmt, decimals, im)
-      complex(r32),     intent(in)           :: x
+      complex(r32),    intent(in)           :: x
       type(String),     intent(inout)        :: into
       character(len=*), intent(in), optional :: locale
       character(len=*), intent(in), optional :: fmt
       integer,          intent(in), optional :: decimals
       character(len=*), intent(in), optional :: im
     end subroutine cast_c32_to_string
+
 
 #ifdef IOFL_HAS_R128
     pure elemental recursive module subroutine cast_r128_to_string(x, into, locale, fmt, decimals)
@@ -871,41 +920,48 @@ module io_fortran_lib
       integer,          intent(in), optional :: decimals
     end subroutine cast_r128_to_string
 #endif
+
     pure elemental recursive module subroutine cast_r64_to_string(x, into, locale, fmt, decimals)
-      real(r64),        intent(in)           :: x
+      real(r64),       intent(in)           :: x
       type(String),     intent(inout)        :: into
       character(len=*), intent(in), optional :: locale
       character(len=*), intent(in), optional :: fmt
       integer,          intent(in), optional :: decimals
     end subroutine cast_r64_to_string
+
     pure elemental recursive module subroutine cast_r32_to_string(x, into, locale, fmt, decimals)
-      real(r32),        intent(in)           :: x
+      real(r32),       intent(in)           :: x
       type(String),     intent(inout)        :: into
       character(len=*), intent(in), optional :: locale
       character(len=*), intent(in), optional :: fmt
       integer,          intent(in), optional :: decimals
     end subroutine cast_r32_to_string
 
+
     pure elemental recursive module subroutine cast_i64_to_string(x, into, fmt)
       integer(i64),     intent(in)           :: x
       type(String),     intent(inout)        :: into
       character(len=*), intent(in), optional :: fmt
     end subroutine cast_i64_to_string
+
     pure elemental recursive module subroutine cast_i32_to_string(x, into, fmt)
       integer(i32),     intent(in)           :: x
       type(String),     intent(inout)        :: into
       character(len=*), intent(in), optional :: fmt
     end subroutine cast_i32_to_string
+
     pure elemental recursive module subroutine cast_i16_to_string(x, into, fmt)
       integer(i16),     intent(in)           :: x
       type(String),     intent(inout)        :: into
       character(len=*), intent(in), optional :: fmt
     end subroutine cast_i16_to_string
+
     pure elemental recursive module subroutine cast_i8_to_string(x, into, fmt)
-      integer(i8),      intent(in)           :: x
+      integer(i8),     intent(in)           :: x
       type(String),     intent(inout)        :: into
       character(len=*), intent(in), optional :: fmt
     end subroutine cast_i8_to_string
+
 
 #ifdef IOFL_HAS_R128
     pure recursive module subroutine cast_c128_to_char(x, into, locale, fmt, decimals, im)
@@ -917,22 +973,25 @@ module io_fortran_lib
       character(len=*), intent(in),    optional    :: im
     end subroutine cast_c128_to_char
 #endif
+
     pure recursive module subroutine cast_c64_to_char(x, into, locale, fmt, decimals, im)
-      complex(r64),     intent(in)                 :: x
+      complex(r64),    intent(in)                 :: x
       character(len=:), intent(inout), allocatable :: into
-      character(len=*), intent(in), optional       :: locale
-      character(len=*), intent(in), optional       :: fmt
-      integer,          intent(in), optional       :: decimals
-      character(len=*), intent(in), optional       :: im
+      character(len=*), intent(in),    optional    :: locale
+      character(len=*), intent(in),    optional    :: fmt
+      integer,          intent(in),    optional    :: decimals
+      character(len=*), intent(in),    optional    :: im
     end subroutine cast_c64_to_char
+
     pure recursive module subroutine cast_c32_to_char(x, into, locale, fmt, decimals, im)
-      complex(r32),     intent(in)                 :: x
+      complex(r32),    intent(in)                 :: x
       character(len=:), intent(inout), allocatable :: into
       character(len=*), intent(in),    optional    :: locale
       character(len=*), intent(in),    optional    :: fmt
       integer,          intent(in),    optional    :: decimals
       character(len=*), intent(in),    optional    :: im
     end subroutine cast_c32_to_char
+
 
 #ifdef IOFL_HAS_R128
     pure recursive module subroutine cast_r128_to_char(x, into, locale, fmt, decimals)
@@ -943,41 +1002,48 @@ module io_fortran_lib
       integer,          intent(in),    optional    :: decimals
     end subroutine cast_r128_to_char
 #endif
+
     pure recursive module subroutine cast_r64_to_char(x, into, locale, fmt, decimals)
-      real(r64),        intent(in)                 :: x
+      real(r64),       intent(in)                 :: x
       character(len=:), intent(inout), allocatable :: into
       character(len=*), intent(in),    optional    :: locale
       character(len=*), intent(in),    optional    :: fmt
       integer,          intent(in),    optional    :: decimals
     end subroutine cast_r64_to_char
+
     pure recursive module subroutine cast_r32_to_char(x, into, locale, fmt, decimals)
-      real(r32),        intent(in)                 :: x
+      real(r32),       intent(in)                 :: x
       character(len=:), intent(inout), allocatable :: into
       character(len=*), intent(in),    optional    :: locale
       character(len=*), intent(in),    optional    :: fmt
       integer,          intent(in),    optional    :: decimals
     end subroutine cast_r32_to_char
 
+
     pure recursive module subroutine cast_i64_to_char(x, into, fmt)
       integer(i64),     intent(in)                 :: x
       character(len=:), intent(inout), allocatable :: into
       character(len=*), intent(in),    optional    :: fmt
     end subroutine cast_i64_to_char
+
     pure recursive module subroutine cast_i32_to_char(x, into, fmt)
       integer(i32),     intent(in)                 :: x
       character(len=:), intent(inout), allocatable :: into
       character(len=*), intent(in),    optional    :: fmt
     end subroutine cast_i32_to_char
+
     pure recursive module subroutine cast_i16_to_char(x, into, fmt)
       integer(i16),     intent(in)                 :: x
       character(len=:), intent(inout), allocatable :: into
       character(len=*), intent(in),    optional    :: fmt
     end subroutine cast_i16_to_char
+
     pure recursive module subroutine cast_i8_to_char(x, into, fmt)
-      integer(i8),      intent(in)                 :: x
+      integer(i8),     intent(in)                 :: x
       character(len=:), intent(inout), allocatable :: into
       character(len=*), intent(in),    optional    :: fmt
     end subroutine cast_i8_to_char
+
 
 #ifdef IOFL_HAS_R128
     pure elemental recursive module subroutine cast_string_to_c128(substring, into, locale, fmt, im, stat)
@@ -989,22 +1055,25 @@ module io_fortran_lib
       integer,          intent(out), optional :: stat
     end subroutine cast_string_to_c128
 #endif
+
     pure elemental recursive module subroutine cast_string_to_c64(substring, into, locale, fmt, im, stat)
       class(String),    intent(in)           :: substring
-      complex(r64),     intent(out)          :: into
+      complex(r64),    intent(out)          :: into
       character(len=*), intent(in), optional :: locale
       character(len=*), intent(in), optional :: fmt
       character(len=*), intent(in), optional :: im
       integer,          intent(out), optional :: stat
     end subroutine cast_string_to_c64
+
     pure elemental recursive module subroutine cast_string_to_c32(substring, into, locale, fmt, im, stat)
       class(String),    intent(in)           :: substring
-      complex(r32),     intent(out)          :: into
+      complex(r32),    intent(out)          :: into
       character(len=*), intent(in), optional :: locale
       character(len=*), intent(in), optional :: fmt
       character(len=*), intent(in), optional :: im
       integer,          intent(out), optional :: stat
     end subroutine cast_string_to_c32
+
 
 #ifdef IOFL_HAS_R128
     pure elemental recursive module subroutine cast_string_to_r128(substring, into, locale, fmt, stat)
@@ -1015,20 +1084,23 @@ module io_fortran_lib
       integer,          intent(out), optional :: stat
     end subroutine cast_string_to_r128
 #endif
+
     pure elemental recursive module subroutine cast_string_to_r64(substring, into, locale, fmt, stat)
       class(String),    intent(in)           :: substring
-      real(r64),        intent(out)          :: into
+      real(r64),       intent(out)          :: into
       character(len=*), intent(in), optional :: locale
       character(len=*), intent(in), optional :: fmt
       integer,          intent(out), optional :: stat
     end subroutine cast_string_to_r64
+
     pure elemental recursive module subroutine cast_string_to_r32(substring, into, locale, fmt, stat)
       class(String),    intent(in)           :: substring
-      real(r32),        intent(out)          :: into
+      real(r32),       intent(out)          :: into
       character(len=*), intent(in), optional :: locale
       character(len=*), intent(in), optional :: fmt
       integer,          intent(out), optional :: stat
     end subroutine cast_string_to_r32
+
 
     pure elemental recursive module subroutine cast_string_to_i64(substring, into, fmt, stat)
       class(String),    intent(in)           :: substring
@@ -1036,24 +1108,28 @@ module io_fortran_lib
       character(len=*), intent(in), optional :: fmt
       integer,          intent(out), optional :: stat
     end subroutine cast_string_to_i64
+
     pure elemental recursive module subroutine cast_string_to_i32(substring, into, fmt, stat)
       class(String),    intent(in)           :: substring
       integer(i32),     intent(out)          :: into
       character(len=*), intent(in), optional :: fmt
       integer,          intent(out), optional :: stat
     end subroutine cast_string_to_i32
+
     pure elemental recursive module subroutine cast_string_to_i16(substring, into, fmt, stat)
       class(String),    intent(in)           :: substring
       integer(i16),     intent(out)          :: into
       character(len=*), intent(in), optional :: fmt
       integer,          intent(out), optional :: stat
     end subroutine cast_string_to_i16
+
     pure elemental recursive module subroutine cast_string_to_i8(substring, into, fmt, stat)
       class(String),    intent(in)           :: substring
-      integer(i8),      intent(out)          :: into
+      integer(i8),     intent(out)          :: into
       character(len=*), intent(in), optional :: fmt
       integer,          intent(out), optional :: stat
     end subroutine cast_string_to_i8
+
 
 #ifdef IOFL_HAS_R128
     pure recursive module subroutine cast_char_to_c128(substring, into, locale, fmt, im, stat)
@@ -1065,22 +1141,25 @@ module io_fortran_lib
       integer,          intent(out), optional :: stat
     end subroutine cast_char_to_c128
 #endif
+
     pure recursive module subroutine cast_char_to_c64(substring, into, locale, fmt, im, stat)
       character(len=*), intent(in)           :: substring
-      complex(r64),     intent(out)          :: into
+      complex(r64),    intent(out)          :: into
       character(len=*), intent(in), optional :: locale
       character(len=*), intent(in), optional :: fmt
       character(len=*), intent(in), optional :: im
       integer,          intent(out), optional :: stat
     end subroutine cast_char_to_c64
+
     pure recursive module subroutine cast_char_to_c32(substring, into, locale, fmt, im, stat)
       character(len=*), intent(in)           :: substring
-      complex(r32),     intent(out)          :: into
+      complex(r32),    intent(out)          :: into
       character(len=*), intent(in), optional :: locale
       character(len=*), intent(in), optional :: fmt
       character(len=*), intent(in), optional :: im
       integer,          intent(out), optional :: stat
     end subroutine cast_char_to_c32
+
 
 #ifdef IOFL_HAS_R128
     pure recursive module subroutine cast_char_to_r128(substring, into, locale, fmt, stat)
@@ -1091,20 +1170,23 @@ module io_fortran_lib
       integer,          intent(out), optional :: stat
     end subroutine cast_char_to_r128
 #endif
+
     pure recursive module subroutine cast_char_to_r64(substring, into, locale, fmt, stat)
       character(len=*), intent(in)           :: substring
-      real(r64),        intent(out)          :: into
+      real(r64),       intent(out)          :: into
       character(len=*), intent(in), optional :: locale
       character(len=*), intent(in), optional :: fmt
       integer,          intent(out), optional :: stat
     end subroutine cast_char_to_r64
+
     pure recursive module subroutine cast_char_to_r32(substring, into, locale, fmt, stat)
       character(len=*), intent(in)           :: substring
-      real(r32),        intent(out)          :: into
+      real(r32),       intent(out)          :: into
       character(len=*), intent(in), optional :: locale
       character(len=*), intent(in), optional :: fmt
       integer,          intent(out), optional :: stat
     end subroutine cast_char_to_r32
+
 
     pure recursive module subroutine cast_char_to_i64(substring, into, fmt, stat)
       character(len=*), intent(in)           :: substring
@@ -1112,24 +1194,28 @@ module io_fortran_lib
       character(len=*), intent(in), optional :: fmt
       integer,          intent(out), optional :: stat
     end subroutine cast_char_to_i64
+
     pure recursive module subroutine cast_char_to_i32(substring, into, fmt, stat)
       character(len=*), intent(in)           :: substring
       integer(i32),     intent(out)          :: into
       character(len=*), intent(in), optional :: fmt
       integer,          intent(out), optional :: stat
     end subroutine cast_char_to_i32
+
     pure recursive module subroutine cast_char_to_i16(substring, into, fmt, stat)
       character(len=*), intent(in)           :: substring
       integer(i16),     intent(out)          :: into
       character(len=*), intent(in), optional :: fmt
       integer,          intent(out), optional :: stat
     end subroutine cast_char_to_i16
+
     pure recursive module subroutine cast_char_to_i8(substring, into, fmt, stat)
       character(len=*), intent(in)           :: substring
-      integer(i8),      intent(out)          :: into
+      integer(i8),     intent(out)          :: into
       character(len=*), intent(in), optional :: fmt
       integer,          intent(out), optional :: stat
     end subroutine cast_char_to_i8
+
   end interface cast
 
   interface join                                                                                  ! Submodule join_split
@@ -1189,113 +1275,123 @@ module io_fortran_lib
     impure recursive module subroutine to_file_c128(x, file, header, locale, delim, fmt, decimals, im, stat, errmsg)
       complex(r128),    intent(in)                    :: x(..)
       character(len=*), intent(in)                    :: file
-      character(len=*), intent(in),  optional, target :: header(:)
-      character(len=*), intent(in),  optional, target :: locale
-      character(len=*), intent(in),  optional, target :: delim
-      character(len=*), intent(in),  optional, target :: fmt
-      integer,          intent(in),  optional, target :: decimals
-      character(len=*), intent(in),  optional, target :: im
+      character(len=*), intent(in),  optional :: header(:)
+      character(len=*), intent(in),  optional :: locale
+      character(len=*), intent(in),  optional :: delim
+      character(len=*), intent(in),  optional :: fmt
+      integer,          intent(in),  optional :: decimals
+      character(len=*), intent(in),  optional :: im
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
     end subroutine to_file_c128
 #endif
+
     impure recursive module subroutine to_file_c64(x, file, header, locale, delim, fmt, decimals, im, stat, errmsg)
-      complex(r64),     intent(in)                    :: x(..)
+      complex(r64),    intent(in)                    :: x(..)
       character(len=*), intent(in)                    :: file
-      character(len=*), intent(in),  optional, target :: header(:)
-      character(len=*), intent(in),  optional, target :: locale
-      character(len=*), intent(in),  optional, target :: delim
-      character(len=*), intent(in),  optional, target :: fmt
-      integer,          intent(in),  optional, target :: decimals
-      character(len=*), intent(in),  optional, target :: im
+      character(len=*), intent(in),  optional :: header(:)
+      character(len=*), intent(in),  optional :: locale
+      character(len=*), intent(in),  optional :: delim
+      character(len=*), intent(in),  optional :: fmt
+      integer,          intent(in),  optional :: decimals
+      character(len=*), intent(in),  optional :: im
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
     end subroutine to_file_c64
+
     impure recursive module subroutine to_file_c32(x, file, header, locale, delim, fmt, decimals, im, stat, errmsg)
-      complex(r32),     intent(in)                    :: x(..)
+      complex(r32),    intent(in)                    :: x(..)
       character(len=*), intent(in)                    :: file
-      character(len=*), intent(in),  optional, target :: header(:)
-      character(len=*), intent(in),  optional, target :: locale
-      character(len=*), intent(in),  optional, target :: delim
-      character(len=*), intent(in),  optional, target :: fmt
-      integer,          intent(in),  optional, target :: decimals
-      character(len=*), intent(in),  optional, target :: im
+      character(len=*), intent(in),  optional :: header(:)
+      character(len=*), intent(in),  optional :: locale
+      character(len=*), intent(in),  optional :: delim
+      character(len=*), intent(in),  optional :: fmt
+      integer,          intent(in),  optional :: decimals
+      character(len=*), intent(in),  optional :: im
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
     end subroutine to_file_c32
+
 
 #ifdef IOFL_HAS_R128
     impure recursive module subroutine to_file_r128(x, file, header, locale, delim, fmt, decimals, stat, errmsg)
       real(r128),       intent(in)                    :: x(..)
       character(len=*), intent(in)                    :: file
-      character(len=*), intent(in),  optional, target :: header(:)
-      character(len=*), intent(in),  optional, target :: locale
-      character(len=*), intent(in),  optional, target :: delim
-      character(len=*), intent(in),  optional, target :: fmt
-      integer,          intent(in),  optional, target :: decimals
+      character(len=*), intent(in),  optional :: header(:)
+      character(len=*), intent(in),  optional :: locale
+      character(len=*), intent(in),  optional :: delim
+      character(len=*), intent(in),  optional :: fmt
+      integer,          intent(in),  optional :: decimals
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
     end subroutine to_file_r128
 #endif
+
     impure recursive module subroutine to_file_r64(x, file, header, locale, delim, fmt, decimals, stat, errmsg)
-      real(r64),        intent(in)                    :: x(..)
+      real(r64),       intent(in)                    :: x(..)
       character(len=*), intent(in)                    :: file
-      character(len=*), intent(in),  optional, target :: header(:)
-      character(len=*), intent(in),  optional, target :: locale
-      character(len=*), intent(in),  optional, target :: delim
-      character(len=*), intent(in),  optional, target :: fmt
-      integer,          intent(in),  optional, target :: decimals
+      character(len=*), intent(in),  optional :: header(:)
+      character(len=*), intent(in),  optional :: locale
+      character(len=*), intent(in),  optional :: delim
+      character(len=*), intent(in),  optional :: fmt
+      integer,          intent(in),  optional :: decimals
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
     end subroutine to_file_r64
+
     impure recursive module subroutine to_file_r32(x, file, header, locale, delim, fmt, decimals, stat, errmsg)
-      real(r32),        intent(in)                    :: x(..)
+      real(r32),       intent(in)                    :: x(..)
       character(len=*), intent(in)                    :: file
-      character(len=*), intent(in),  optional, target :: header(:)
-      character(len=*), intent(in),  optional, target :: locale
-      character(len=*), intent(in),  optional, target :: delim
-      character(len=*), intent(in),  optional, target :: fmt
-      integer,          intent(in),  optional, target :: decimals
+      character(len=*), intent(in),  optional :: header(:)
+      character(len=*), intent(in),  optional :: locale
+      character(len=*), intent(in),  optional :: delim
+      character(len=*), intent(in),  optional :: fmt
+      integer,          intent(in),  optional :: decimals
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
     end subroutine to_file_r32
 
+
     impure recursive module subroutine to_file_i64(x, file, header, delim, fmt, stat, errmsg)
       integer(i64),     intent(in)                    :: x(..)
       character(len=*), intent(in)                    :: file
-      character(len=*), intent(in),  optional, target :: header(:)
-      character(len=*), intent(in),  optional, target :: delim
-      character(len=*), intent(in),  optional, target :: fmt
+      character(len=*), intent(in),  optional :: header(:)
+      character(len=*), intent(in),  optional :: delim
+      character(len=*), intent(in),  optional :: fmt
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
     end subroutine to_file_i64
+
     impure recursive module subroutine to_file_i32(x, file, header, delim, fmt, stat, errmsg)
       integer(i32),     intent(in)                    :: x(..)
       character(len=*), intent(in)                    :: file
-      character(len=*), intent(in),  optional, target :: header(:)
-      character(len=*), intent(in),  optional, target :: delim
-      character(len=*), intent(in),  optional, target :: fmt
+      character(len=*), intent(in),  optional :: header(:)
+      character(len=*), intent(in),  optional :: delim
+      character(len=*), intent(in),  optional :: fmt
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
     end subroutine to_file_i32
+
     impure recursive module subroutine to_file_i16(x, file, header, delim, fmt, stat, errmsg)
       integer(i16),     intent(in)                    :: x(..)
       character(len=*), intent(in)                    :: file
-      character(len=*), intent(in),  optional, target :: header(:)
-      character(len=*), intent(in),  optional, target :: delim
-      character(len=*), intent(in),  optional, target :: fmt
+      character(len=*), intent(in),  optional :: header(:)
+      character(len=*), intent(in),  optional :: delim
+      character(len=*), intent(in),  optional :: fmt
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
     end subroutine to_file_i16
+
     impure recursive module subroutine to_file_i8(x, file, header, delim, fmt, stat, errmsg)
-      integer(i8),      intent(in)                    :: x(..)
+      integer(i8),     intent(in)                    :: x(..)
       character(len=*), intent(in)                    :: file
-      character(len=*), intent(in),  optional, target :: header(:)
-      character(len=*), intent(in),  optional, target :: delim
-      character(len=*), intent(in),  optional, target :: fmt
+      character(len=*), intent(in),  optional :: header(:)
+      character(len=*), intent(in),  optional :: delim
+      character(len=*), intent(in),  optional :: fmt
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
     end subroutine to_file_i8
+
   end interface to_file
 
   interface from_file                                                                                ! Submodule file_io
@@ -1308,37 +1404,40 @@ module io_fortran_lib
     impure recursive module subroutine from_textfile_c128(file, into, header, locale, delim, fmt, im, stat, errmsg)
       character(len=*), intent(in)                    :: file
       complex(r128),    intent(out), allocatable      :: into(..)
-      logical,          intent(in),  optional, target :: header
-      character(len=*), intent(in),  optional, target :: locale
-      character(len=*), intent(in),  optional, target :: delim
-      character(len=*), intent(in),  optional, target :: fmt
-      character(len=*), intent(in),  optional, target :: im
+      logical,          intent(in),  optional :: header
+      character(len=*), intent(in),  optional :: locale
+      character(len=*), intent(in),  optional :: delim
+      character(len=*), intent(in),  optional :: fmt
+      character(len=*), intent(in),  optional :: im
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
     end subroutine from_textfile_c128
 #endif
+
     impure recursive module subroutine from_textfile_c64(file, into, header, locale, delim, fmt, im, stat, errmsg)
       character(len=*), intent(in)                    :: file
-      complex(r64),     intent(out), allocatable      :: into(..)
-      logical,          intent(in),  optional, target :: header
-      character(len=*), intent(in),  optional, target :: locale
-      character(len=*), intent(in),  optional, target :: delim
-      character(len=*), intent(in),  optional, target :: fmt
-      character(len=*), intent(in),  optional, target :: im
+      complex(r64),    intent(out), allocatable      :: into(..)
+      logical,          intent(in),  optional :: header
+      character(len=*), intent(in),  optional :: locale
+      character(len=*), intent(in),  optional :: delim
+      character(len=*), intent(in),  optional :: fmt
+      character(len=*), intent(in),  optional :: im
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
     end subroutine from_textfile_c64
+
     impure recursive module subroutine from_textfile_c32(file, into, header, locale, delim, fmt, im, stat, errmsg)
       character(len=*), intent(in)                    :: file
-      complex(r32),     intent(out), allocatable      :: into(..)
-      logical,          intent(in),  optional, target :: header
-      character(len=*), intent(in),  optional, target :: locale
-      character(len=*), intent(in),  optional, target :: delim
-      character(len=*), intent(in),  optional, target :: fmt
-      character(len=*), intent(in),  optional, target :: im
+      complex(r32),    intent(out), allocatable      :: into(..)
+      logical,          intent(in),  optional :: header
+      character(len=*), intent(in),  optional :: locale
+      character(len=*), intent(in),  optional :: delim
+      character(len=*), intent(in),  optional :: fmt
+      character(len=*), intent(in),  optional :: im
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
     end subroutine from_textfile_c32
+
 
 #ifdef IOFL_HAS_R128
     impure recursive module subroutine from_binaryfile_c128(file, into, data_shape, stat, errmsg)
@@ -1349,53 +1448,59 @@ module io_fortran_lib
       character(len=*), intent(out), optional, target :: errmsg
     end subroutine from_binaryfile_c128
 #endif
+
     impure recursive module subroutine from_binaryfile_c64(file, into, data_shape, stat, errmsg)
       character(len=*), intent(in)                    :: file
-      complex(r64),     intent(out), allocatable      :: into(..)
+      complex(r64),    intent(out), allocatable      :: into(..)
       integer,          intent(in)                    :: data_shape(:)
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
     end subroutine from_binaryfile_c64
+
     impure recursive module subroutine from_binaryfile_c32(file, into, data_shape, stat, errmsg)
       character(len=*), intent(in)                    :: file
-      complex(r32),     intent(out), allocatable      :: into(..)
+      complex(r32),    intent(out), allocatable      :: into(..)
       integer,          intent(in)                    :: data_shape(:)
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
     end subroutine from_binaryfile_c32
 
+
 #ifdef IOFL_HAS_R128
     impure recursive module subroutine from_textfile_r128(file, into, header, locale, delim, fmt, stat, errmsg)
       character(len=*), intent(in)                    :: file
       real(r128),       intent(out), allocatable      :: into(..)
-      logical,          intent(in),  optional, target :: header
-      character(len=*), intent(in),  optional, target :: locale
-      character(len=*), intent(in),  optional, target :: delim
-      character(len=*), intent(in),  optional, target :: fmt
+      logical,          intent(in),  optional :: header
+      character(len=*), intent(in),  optional :: locale
+      character(len=*), intent(in),  optional :: delim
+      character(len=*), intent(in),  optional :: fmt
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
     end subroutine from_textfile_r128
 #endif
+
     impure recursive module subroutine from_textfile_r64(file, into, header, locale, delim, fmt, stat, errmsg)
       character(len=*), intent(in)                    :: file
-      real(r64),        intent(out), allocatable      :: into(..)
-      logical,          intent(in),  optional, target :: header
-      character(len=*), intent(in),  optional, target :: locale
-      character(len=*), intent(in),  optional, target :: delim
-      character(len=*), intent(in),  optional, target :: fmt
+      real(r64),       intent(out), allocatable      :: into(..)
+      logical,          intent(in),  optional :: header
+      character(len=*), intent(in),  optional :: locale
+      character(len=*), intent(in),  optional :: delim
+      character(len=*), intent(in),  optional :: fmt
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
     end subroutine from_textfile_r64
+
     impure recursive module subroutine from_textfile_r32(file, into, header, locale, delim, fmt, stat, errmsg)
       character(len=*), intent(in)                    :: file
-      real(r32),        intent(out), allocatable      :: into(..)
-      logical,          intent(in),  optional, target :: header
-      character(len=*), intent(in),  optional, target :: locale
-      character(len=*), intent(in),  optional, target :: delim
-      character(len=*), intent(in),  optional, target :: fmt
+      real(r32),       intent(out), allocatable      :: into(..)
+      logical,          intent(in),  optional :: header
+      character(len=*), intent(in),  optional :: locale
+      character(len=*), intent(in),  optional :: delim
+      character(len=*), intent(in),  optional :: fmt
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
     end subroutine from_textfile_r32
+
 
 #ifdef IOFL_HAS_R128
     impure recursive module subroutine from_binaryfile_r128(file, into, data_shape, stat, errmsg)
@@ -1406,57 +1511,64 @@ module io_fortran_lib
       character(len=*), intent(out), optional, target :: errmsg
     end subroutine from_binaryfile_r128
 #endif
+
     impure recursive module subroutine from_binaryfile_r64(file, into, data_shape, stat, errmsg)
       character(len=*), intent(in)                    :: file
-      real(r64),        intent(out), allocatable      :: into(..)
+      real(r64),       intent(out), allocatable      :: into(..)
       integer,          intent(in)                    :: data_shape(:)
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
     end subroutine from_binaryfile_r64
+
     impure recursive module subroutine from_binaryfile_r32(file, into, data_shape, stat, errmsg)
       character(len=*), intent(in)                    :: file
-      real(r32),        intent(out), allocatable      :: into(..)
+      real(r32),       intent(out), allocatable      :: into(..)
       integer,          intent(in)                    :: data_shape(:)
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
     end subroutine from_binaryfile_r32
 
+
     impure recursive module subroutine from_textfile_i64(file, into, header, delim, fmt, stat, errmsg)
       character(len=*), intent(in)                    :: file
       integer(i64),     intent(out), allocatable      :: into(..)
-      logical,          intent(in),  optional, target :: header
-      character(len=*), intent(in),  optional, target :: delim
-      character(len=*), intent(in),  optional, target :: fmt
+      logical,          intent(in),  optional :: header
+      character(len=*), intent(in),  optional :: delim
+      character(len=*), intent(in),  optional :: fmt
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
     end subroutine from_textfile_i64
+
     impure recursive module subroutine from_textfile_i32(file, into, header, delim, fmt, stat, errmsg)
       character(len=*), intent(in)                    :: file
       integer(i32),     intent(out), allocatable      :: into(..)
-      logical,          intent(in),  optional, target :: header
-      character(len=*), intent(in),  optional, target :: delim
-      character(len=*), intent(in),  optional, target :: fmt
+      logical,          intent(in),  optional :: header
+      character(len=*), intent(in),  optional :: delim
+      character(len=*), intent(in),  optional :: fmt
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
     end subroutine from_textfile_i32
+
     impure recursive module subroutine from_textfile_i16(file, into, header, delim, fmt, stat, errmsg)
       character(len=*), intent(in)                    :: file
       integer(i16),     intent(out), allocatable      :: into(..)
-      logical,          intent(in),  optional, target :: header
-      character(len=*), intent(in),  optional, target :: delim
-      character(len=*), intent(in),  optional, target :: fmt
+      logical,          intent(in),  optional :: header
+      character(len=*), intent(in),  optional :: delim
+      character(len=*), intent(in),  optional :: fmt
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
     end subroutine from_textfile_i16
+
     impure recursive module subroutine from_textfile_i8(file, into, header, delim, fmt, stat, errmsg)
       character(len=*), intent(in)                    :: file
-      integer(i8),      intent(out), allocatable      :: into(..)
-      logical,          intent(in),  optional, target :: header
-      character(len=*), intent(in),  optional, target :: delim
-      character(len=*), intent(in),  optional, target :: fmt
+      integer(i8),     intent(out), allocatable      :: into(..)
+      logical,          intent(in),  optional :: header
+      character(len=*), intent(in),  optional :: delim
+      character(len=*), intent(in),  optional :: fmt
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
     end subroutine from_textfile_i8
+
 
     impure recursive module subroutine from_binaryfile_i64(file, into, data_shape, stat, errmsg)
       character(len=*), intent(in)                    :: file
@@ -1465,6 +1577,7 @@ module io_fortran_lib
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
     end subroutine from_binaryfile_i64
+
     impure recursive module subroutine from_binaryfile_i32(file, into, data_shape, stat, errmsg)
       character(len=*), intent(in)                    :: file
       integer(i32),     intent(out), allocatable      :: into(..)
@@ -1472,6 +1585,7 @@ module io_fortran_lib
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
     end subroutine from_binaryfile_i32
+
     impure recursive module subroutine from_binaryfile_i16(file, into, data_shape, stat, errmsg)
       character(len=*), intent(in)                    :: file
       integer(i16),     intent(out), allocatable      :: into(..)
@@ -1479,13 +1593,15 @@ module io_fortran_lib
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
     end subroutine from_binaryfile_i16
+
     impure recursive module subroutine from_binaryfile_i8(file, into, data_shape, stat, errmsg)
       character(len=*), intent(in)                    :: file
-      integer(i8),      intent(out), allocatable      :: into(..)
+      integer(i8),     intent(out), allocatable      :: into(..)
       integer,          intent(in)                    :: data_shape(:)
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
     end subroutine from_binaryfile_i8
+
   end interface from_file
 
   interface echo                                                                                     ! Submodule text_io
@@ -1497,8 +1613,8 @@ module io_fortran_lib
     impure recursive module subroutine echo_chars(substring, file, append, terminator, stat, errmsg)
       character(len=*), intent(in)                    :: substring
       character(len=*), intent(in)                    :: file
-      logical,          intent(in),  optional, target :: append
-      character(len=*), intent(in),  optional, target :: terminator
+      logical,          intent(in),  optional :: append
+      character(len=*), intent(in),  optional :: terminator
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
     end subroutine echo_chars
@@ -1506,8 +1622,8 @@ module io_fortran_lib
     impure recursive module subroutine echo_string(substring, file, append, terminator, stat, errmsg)
       class(String),    intent(in)                    :: substring
       character(len=*), intent(in)                    :: file
-      logical,          intent(in),  optional, target :: append
-      character(len=*), intent(in),  optional, target :: terminator
+      logical,          intent(in),  optional :: append
+      character(len=*), intent(in),  optional :: terminator
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
     end subroutine echo_string
@@ -1521,7 +1637,7 @@ module io_fortran_lib
     impure recursive module subroutine to_text_c128(x, file, header, locale, delim, fmt, decimals, im, stat, errmsg)
       complex(r128),    intent(in)  :: x(..)
       character(len=*), intent(in)  :: file
-      character(len=*), intent(in)  :: header(:)
+      character(len=*), intent(in), optional  :: header(:)
       character(len=*), intent(in)  :: locale
       character(len=*), intent(in)  :: delim
       character(len=*), intent(in)  :: fmt
@@ -1531,10 +1647,11 @@ module io_fortran_lib
       character(len=*), intent(out) :: errmsg
     end subroutine to_text_c128
 #endif
+
     impure recursive module subroutine to_text_c64(x, file, header, locale, delim, fmt, decimals, im, stat, errmsg)
-      complex(r64),     intent(in)  :: x(..)
+      complex(r64),    intent(in)  :: x(..)
       character(len=*), intent(in)  :: file
-      character(len=*), intent(in)  :: header(:)
+      character(len=*), intent(in), optional  :: header(:)
       character(len=*), intent(in)  :: locale
       character(len=*), intent(in)  :: delim
       character(len=*), intent(in)  :: fmt
@@ -1543,10 +1660,11 @@ module io_fortran_lib
       integer,          intent(out) :: stat
       character(len=*), intent(out) :: errmsg
     end subroutine to_text_c64
+
     impure recursive module subroutine to_text_c32(x, file, header, locale, delim, fmt, decimals, im, stat, errmsg)
-      complex(r32),     intent(in)  :: x(..)
+      complex(r32),    intent(in)  :: x(..)
       character(len=*), intent(in)  :: file
-      character(len=*), intent(in)  :: header(:)
+      character(len=*), intent(in), optional  :: header(:)
       character(len=*), intent(in)  :: locale
       character(len=*), intent(in)  :: delim
       character(len=*), intent(in)  :: fmt
@@ -1556,11 +1674,12 @@ module io_fortran_lib
       character(len=*), intent(out) :: errmsg
     end subroutine to_text_c32
 
+
 #ifdef IOFL_HAS_R128
     impure recursive module subroutine to_text_r128(x, file, header, locale, delim, fmt, decimals, stat, errmsg)
       real(r128),       intent(in)  :: x(..)
       character(len=*), intent(in)  :: file
-      character(len=*), intent(in)  :: header(:)
+      character(len=*), intent(in), optional  :: header(:)
       character(len=*), intent(in)  :: locale
       character(len=*), intent(in)  :: delim
       character(len=*), intent(in)  :: fmt
@@ -1569,10 +1688,11 @@ module io_fortran_lib
       character(len=*), intent(out) :: errmsg
     end subroutine to_text_r128
 #endif
+
     impure recursive module subroutine to_text_r64(x, file, header, locale, delim, fmt, decimals, stat, errmsg)
-      real(r64),        intent(in)  :: x(..)
+      real(r64),       intent(in)  :: x(..)
       character(len=*), intent(in)  :: file
-      character(len=*), intent(in)  :: header(:)
+      character(len=*), intent(in), optional  :: header(:)
       character(len=*), intent(in)  :: locale
       character(len=*), intent(in)  :: delim
       character(len=*), intent(in)  :: fmt
@@ -1580,10 +1700,11 @@ module io_fortran_lib
       integer,          intent(out) :: stat
       character(len=*), intent(out) :: errmsg
     end subroutine to_text_r64
+
     impure recursive module subroutine to_text_r32(x, file, header, locale, delim, fmt, decimals, stat, errmsg)
-      real(r32),        intent(in)  :: x(..)
+      real(r32),       intent(in)  :: x(..)
       character(len=*), intent(in)  :: file
-      character(len=*), intent(in)  :: header(:)
+      character(len=*), intent(in), optional  :: header(:)
       character(len=*), intent(in)  :: locale
       character(len=*), intent(in)  :: delim
       character(len=*), intent(in)  :: fmt
@@ -1592,42 +1713,47 @@ module io_fortran_lib
       character(len=*), intent(out) :: errmsg
     end subroutine to_text_r32
 
+
     impure recursive module subroutine to_text_i64(x, file, header, delim, fmt, stat, errmsg)
       integer(i64),     intent(in)  :: x(..)
       character(len=*), intent(in)  :: file
-      character(len=*), intent(in)  :: header(:)
+      character(len=*), intent(in), optional  :: header(:)
       character(len=*), intent(in)  :: delim
       character(len=*), intent(in)  :: fmt
       integer,          intent(out) :: stat
       character(len=*), intent(out) :: errmsg
     end subroutine to_text_i64
+
     impure recursive module subroutine to_text_i32(x, file, header, delim, fmt, stat, errmsg)
       integer(i32),     intent(in)  :: x(..)
       character(len=*), intent(in)  :: file
-      character(len=*), intent(in)  :: header(:)
+      character(len=*), intent(in), optional  :: header(:)
       character(len=*), intent(in)  :: delim
       character(len=*), intent(in)  :: fmt
       integer,          intent(out) :: stat
       character(len=*), intent(out) :: errmsg
     end subroutine to_text_i32
+
     impure recursive module subroutine to_text_i16(x, file, header, delim, fmt, stat, errmsg)
       integer(i16),     intent(in)  :: x(..)
       character(len=*), intent(in)  :: file
-      character(len=*), intent(in)  :: header(:)
+      character(len=*), intent(in), optional  :: header(:)
       character(len=*), intent(in)  :: delim
       character(len=*), intent(in)  :: fmt
       integer,          intent(out) :: stat
       character(len=*), intent(out) :: errmsg
     end subroutine to_text_i16
+
     impure recursive module subroutine to_text_i8(x, file, header, delim, fmt, stat, errmsg)
-      integer(i8),      intent(in)  :: x(..)
+      integer(i8),     intent(in)  :: x(..)
       character(len=*), intent(in)  :: file
-      character(len=*), intent(in)  :: header(:)
+      character(len=*), intent(in), optional  :: header(:)
       character(len=*), intent(in)  :: delim
       character(len=*), intent(in)  :: fmt
       integer,          intent(out) :: stat
       character(len=*), intent(out) :: errmsg
     end subroutine to_text_i8
+
   end interface to_text
 
   interface from_text                                                                                ! Submodule text_io
@@ -1647,9 +1773,10 @@ module io_fortran_lib
       character(len=*), intent(out)              :: errmsg
     end subroutine from_text_c128
 #endif
+
     impure recursive module subroutine from_text_c64(file, into, header, locale, delim, fmt, im, stat, errmsg)
       character(len=*), intent(in)               :: file
-      complex(r64),     intent(out), allocatable :: into(..)
+      complex(r64),    intent(out), allocatable :: into(..)
       logical,          intent(in)               :: header
       character(len=*), intent(in)               :: locale
       character(len=*), intent(in)               :: delim
@@ -1658,9 +1785,10 @@ module io_fortran_lib
       integer,          intent(out)              :: stat
       character(len=*), intent(out)              :: errmsg
     end subroutine from_text_c64
+
     impure recursive module subroutine from_text_c32(file, into, header, locale, delim, fmt, im, stat, errmsg)
       character(len=*), intent(in)               :: file
-      complex(r32),     intent(out), allocatable :: into(..)
+      complex(r32),    intent(out), allocatable :: into(..)
       logical,          intent(in)               :: header
       character(len=*), intent(in)               :: locale
       character(len=*), intent(in)               :: delim
@@ -1669,6 +1797,7 @@ module io_fortran_lib
       integer,          intent(out)              :: stat
       character(len=*), intent(out)              :: errmsg
     end subroutine from_text_c32
+
 
 #ifdef IOFL_HAS_R128
     impure recursive module subroutine from_text_r128(file, into, header, locale, delim, fmt, stat, errmsg)
@@ -1682,9 +1811,10 @@ module io_fortran_lib
       character(len=*), intent(out)              :: errmsg
     end subroutine from_text_r128
 #endif
+
     impure recursive module subroutine from_text_r64(file, into, header, locale, delim, fmt, stat, errmsg)
       character(len=*), intent(in)               :: file
-      real(r64),        intent(out), allocatable :: into(..)
+      real(r64),       intent(out), allocatable :: into(..)
       logical,          intent(in)               :: header
       character(len=*), intent(in)               :: locale
       character(len=*), intent(in)               :: delim
@@ -1692,9 +1822,10 @@ module io_fortran_lib
       integer,          intent(out)              :: stat
       character(len=*), intent(out)              :: errmsg
     end subroutine from_text_r64
+
     impure recursive module subroutine from_text_r32(file, into, header, locale, delim, fmt, stat, errmsg)
       character(len=*), intent(in)               :: file
-      real(r32),        intent(out), allocatable :: into(..)
+      real(r32),       intent(out), allocatable :: into(..)
       logical,          intent(in)               :: header
       character(len=*), intent(in)               :: locale
       character(len=*), intent(in)               :: delim
@@ -1702,6 +1833,7 @@ module io_fortran_lib
       integer,          intent(out)              :: stat
       character(len=*), intent(out)              :: errmsg
     end subroutine from_text_r32
+
 
     impure recursive module subroutine from_text_i64(file, into, header, delim, fmt, stat, errmsg)
       character(len=*), intent(in)               :: file
@@ -1712,6 +1844,7 @@ module io_fortran_lib
       integer,          intent(out)              :: stat
       character(len=*), intent(out)              :: errmsg
     end subroutine from_text_i64
+
     impure recursive module subroutine from_text_i32(file, into, header, delim, fmt, stat, errmsg)
       character(len=*), intent(in)               :: file
       integer(i32),     intent(out), allocatable :: into(..)
@@ -1721,6 +1854,7 @@ module io_fortran_lib
       integer,          intent(out)              :: stat
       character(len=*), intent(out)              :: errmsg
     end subroutine from_text_i32
+
     impure recursive module subroutine from_text_i16(file, into, header, delim, fmt, stat, errmsg)
       character(len=*), intent(in)               :: file
       integer(i16),     intent(out), allocatable :: into(..)
@@ -1730,15 +1864,17 @@ module io_fortran_lib
       integer,          intent(out)              :: stat
       character(len=*), intent(out)              :: errmsg
     end subroutine from_text_i16
+
     impure recursive module subroutine from_text_i8(file, into, header, delim, fmt, stat, errmsg)
       character(len=*), intent(in)               :: file
-      integer(i8),      intent(out), allocatable :: into(..)
+      integer(i8),     intent(out), allocatable :: into(..)
       logical,          intent(in)               :: header
       character(len=*), intent(in)               :: delim
       character(len=*), intent(in)               :: fmt
       integer,          intent(out)              :: stat
       character(len=*), intent(out)              :: errmsg
     end subroutine from_text_i8
+
   end interface from_text
 
   interface to_binary                                                                              ! Submodule binary_io
@@ -1753,18 +1889,21 @@ module io_fortran_lib
       character(len=*), intent(out) :: errmsg
     end subroutine to_binary_c128
 #endif
+
     impure recursive module subroutine to_binary_c64(x, file, stat, errmsg)
-      complex(r64),     intent(in)  :: x(..)
+      complex(r64),    intent(in)  :: x(..)
       character(len=*), intent(in)  :: file
       integer,          intent(out) :: stat
       character(len=*), intent(out) :: errmsg
     end subroutine to_binary_c64
+
     impure recursive module subroutine to_binary_c32(x, file, stat, errmsg)
-      complex(r32),     intent(in)  :: x(..)
+      complex(r32),    intent(in)  :: x(..)
       character(len=*), intent(in)  :: file
       integer,          intent(out) :: stat
       character(len=*), intent(out) :: errmsg
     end subroutine to_binary_c32
+
 
 #ifdef IOFL_HAS_R128
     impure recursive module subroutine to_binary_r128(x, file, stat, errmsg)
@@ -1774,18 +1913,21 @@ module io_fortran_lib
       character(len=*), intent(out) :: errmsg
     end subroutine to_binary_r128
 #endif
+
     impure recursive module subroutine to_binary_r64(x, file, stat, errmsg)
-      real(r64),        intent(in)  :: x(..)
+      real(r64),       intent(in)  :: x(..)
       character(len=*), intent(in)  :: file
       integer,          intent(out) :: stat
       character(len=*), intent(out) :: errmsg
     end subroutine to_binary_r64
+
     impure recursive module subroutine to_binary_r32(x, file, stat, errmsg)
-      real(r32),        intent(in)  :: x(..)
+      real(r32),       intent(in)  :: x(..)
       character(len=*), intent(in)  :: file
       integer,          intent(out) :: stat
       character(len=*), intent(out) :: errmsg
     end subroutine to_binary_r32
+
 
     impure recursive module subroutine to_binary_i64(x, file, stat, errmsg)
       integer(i64),     intent(in)  :: x(..)
@@ -1793,24 +1935,28 @@ module io_fortran_lib
       integer,          intent(out) :: stat
       character(len=*), intent(out) :: errmsg
     end subroutine to_binary_i64
+
     impure recursive module subroutine to_binary_i32(x, file, stat, errmsg)
       integer(i32),     intent(in)  :: x(..)
       character(len=*), intent(in)  :: file
       integer,          intent(out) :: stat
       character(len=*), intent(out) :: errmsg
     end subroutine to_binary_i32
+
     impure recursive module subroutine to_binary_i16(x, file, stat, errmsg)
       integer(i16),     intent(in)  :: x(..)
       character(len=*), intent(in)  :: file
       integer,          intent(out) :: stat
       character(len=*), intent(out) :: errmsg
     end subroutine to_binary_i16
+
     impure recursive module subroutine to_binary_i8(x, file, stat, errmsg)
-      integer(i8),      intent(in)  :: x(..)
+      integer(i8),     intent(in)  :: x(..)
       character(len=*), intent(in)  :: file
       integer,          intent(out) :: stat
       character(len=*), intent(out) :: errmsg
     end subroutine to_binary_i8
+
   end interface to_binary
 
   interface from_binary                                                                            ! Submodule binary_io
@@ -1826,20 +1972,23 @@ module io_fortran_lib
       character(len=*), intent(out)              :: errmsg
     end subroutine from_binary_c128
 #endif
+
     impure recursive module subroutine from_binary_c64(file, into, data_shape, stat, errmsg)
       character(len=*), intent(in)               :: file
-      complex(r64),     intent(out), allocatable :: into(..)
+      complex(r64),    intent(out), allocatable :: into(..)
       integer,          intent(in)               :: data_shape(:)
       integer,          intent(out)              :: stat
       character(len=*), intent(out)              :: errmsg
     end subroutine from_binary_c64
+
     impure recursive module subroutine from_binary_c32(file, into, data_shape, stat, errmsg)
       character(len=*), intent(in)               :: file
-      complex(r32),     intent(out), allocatable :: into(..)
+      complex(r32),    intent(out), allocatable :: into(..)
       integer,          intent(in)               :: data_shape(:)
       integer,          intent(out)              :: stat
       character(len=*), intent(out)              :: errmsg
     end subroutine from_binary_c32
+
 
 #ifdef IOFL_HAS_R128
     impure recursive module subroutine from_binary_r128(file, into, data_shape, stat, errmsg)
@@ -1850,20 +1999,23 @@ module io_fortran_lib
       character(len=*), intent(out)              :: errmsg
     end subroutine from_binary_r128
 #endif
+
     impure recursive module subroutine from_binary_r64(file, into, data_shape, stat, errmsg)
       character(len=*), intent(in)               :: file
-      real(r64),        intent(out), allocatable :: into(..)
+      real(r64),       intent(out), allocatable :: into(..)
       integer,          intent(in)               :: data_shape(:)
       integer,          intent(out)              :: stat
       character(len=*), intent(out)              :: errmsg
     end subroutine from_binary_r64
+
     impure recursive module subroutine from_binary_r32(file, into, data_shape, stat, errmsg)
       character(len=*), intent(in)               :: file
-      real(r32),        intent(out), allocatable :: into(..)
+      real(r32),       intent(out), allocatable :: into(..)
       integer,          intent(in)               :: data_shape(:)
       integer,          intent(out)              :: stat
       character(len=*), intent(out)              :: errmsg
     end subroutine from_binary_r32
+
 
     impure recursive module subroutine from_binary_i64(file, into, data_shape, stat, errmsg)
       character(len=*), intent(in)               :: file
@@ -1872,6 +2024,7 @@ module io_fortran_lib
       integer,          intent(out)              :: stat
       character(len=*), intent(out)              :: errmsg
     end subroutine from_binary_i64
+
     impure recursive module subroutine from_binary_i32(file, into, data_shape, stat, errmsg)
       character(len=*), intent(in)               :: file
       integer(i32),     intent(out), allocatable :: into(..)
@@ -1879,6 +2032,7 @@ module io_fortran_lib
       integer,          intent(out)              :: stat
       character(len=*), intent(out)              :: errmsg
     end subroutine from_binary_i32
+
     impure recursive module subroutine from_binary_i16(file, into, data_shape, stat, errmsg)
       character(len=*), intent(in)               :: file
       integer(i16),     intent(out), allocatable :: into(..)
@@ -1886,13 +2040,15 @@ module io_fortran_lib
       integer,          intent(out)              :: stat
       character(len=*), intent(out)              :: errmsg
     end subroutine from_binary_i16
+
     impure recursive module subroutine from_binary_i8(file, into, data_shape, stat, errmsg)
       character(len=*), intent(in)               :: file
-      integer(i8),      intent(out), allocatable :: into(..)
+      integer(i8),     intent(out), allocatable :: into(..)
       integer,          intent(in)               :: data_shape(:)
       integer,          intent(out)              :: stat
       character(len=*), intent(out)              :: errmsg
     end subroutine from_binary_i8
+
   end interface from_binary
 
   interface aprint                                                                            ! Submodule array_printing
@@ -1909,18 +2065,21 @@ module io_fortran_lib
       character(len=*), intent(in), optional :: im
     end subroutine aprint_1dc128
 #endif
+
     impure recursive module subroutine aprint_1dc64(x, fmt, decimals, im)
-      complex(r64),     intent(in)           :: x(:)
+      complex(r64),    intent(in)           :: x(:)
       character(len=*), intent(in), optional :: fmt
       integer,          intent(in), optional :: decimals
       character(len=*), intent(in), optional :: im
     end subroutine aprint_1dc64
+
     impure recursive module subroutine aprint_1dc32(x, fmt, decimals, im)
-      complex(r32),     intent(in)           :: x(:)
+      complex(r32),    intent(in)           :: x(:)
       character(len=*), intent(in), optional :: fmt
       integer,          intent(in), optional :: decimals
       character(len=*), intent(in), optional :: im
     end subroutine aprint_1dc32
+
 
 #ifdef IOFL_HAS_R128
     impure recursive module subroutine aprint_2dc128(x, fmt, decimals, im)
@@ -1930,18 +2089,21 @@ module io_fortran_lib
       character(len=*), intent(in), optional :: im
     end subroutine aprint_2dc128
 #endif
+
     impure recursive module subroutine aprint_2dc64(x, fmt, decimals, im)
-      complex(r64),     intent(in)           :: x(:,:)
+      complex(r64),    intent(in)           :: x(:,:)
       character(len=*), intent(in), optional :: fmt
       integer,          intent(in), optional :: decimals
       character(len=*), intent(in), optional :: im
     end subroutine aprint_2dc64
+
     impure recursive module subroutine aprint_2dc32(x, fmt, decimals, im)
-      complex(r32),     intent(in)           :: x(:,:)
+      complex(r32),    intent(in)           :: x(:,:)
       character(len=*), intent(in), optional :: fmt
       integer,          intent(in), optional :: decimals
       character(len=*), intent(in), optional :: im
     end subroutine aprint_2dc32
+
 
 #ifdef IOFL_HAS_R128
     impure recursive module subroutine aprint_1dr128(x, fmt, decimals)
@@ -1950,16 +2112,19 @@ module io_fortran_lib
       integer,          intent(in), optional :: decimals
     end subroutine aprint_1dr128
 #endif
+
     impure recursive module subroutine aprint_1dr64(x, fmt, decimals)
-      real(r64),        intent(in)           :: x(:)
+      real(r64),       intent(in)           :: x(:)
       character(len=*), intent(in), optional :: fmt
       integer,          intent(in), optional :: decimals
     end subroutine aprint_1dr64
+
     impure recursive module subroutine aprint_1dr32(x, fmt, decimals)
-      real(r32),        intent(in)           :: x(:)
+      real(r32),       intent(in)           :: x(:)
       character(len=*), intent(in), optional :: fmt
       integer,          intent(in), optional :: decimals
     end subroutine aprint_1dr32
+
 
 #ifdef IOFL_HAS_R128
     impure recursive module subroutine aprint_2dr128(x, fmt, decimals)
@@ -1968,50 +2133,61 @@ module io_fortran_lib
       integer,          intent(in), optional :: decimals
     end subroutine aprint_2dr128
 #endif
+
     impure recursive module subroutine aprint_2dr64(x, fmt, decimals)
-      real(r64),        intent(in)           :: x(:,:)
+      real(r64),       intent(in)           :: x(:,:)
       character(len=*), intent(in), optional :: fmt
       integer,          intent(in), optional :: decimals
     end subroutine aprint_2dr64
+
     impure recursive module subroutine aprint_2dr32(x, fmt, decimals)
-      real(r32),        intent(in)           :: x(:,:)
+      real(r32),       intent(in)           :: x(:,:)
       character(len=*), intent(in), optional :: fmt
       integer,          intent(in), optional :: decimals
     end subroutine aprint_2dr32
+
 
     impure recursive module subroutine aprint_1di64(x, fmt)
       integer(i64),     intent(in)           :: x(:)
       character(len=*), intent(in), optional :: fmt
     end subroutine aprint_1di64
+
     impure recursive module subroutine aprint_1di32(x, fmt)
       integer(i32),     intent(in)           :: x(:)
       character(len=*), intent(in), optional :: fmt
     end subroutine aprint_1di32
+
     impure recursive module subroutine aprint_1di16(x, fmt)
       integer(i16),     intent(in)           :: x(:)
       character(len=*), intent(in), optional :: fmt
     end subroutine aprint_1di16
+
     impure recursive module subroutine aprint_1di8(x, fmt)
-      integer(i8),      intent(in)           :: x(:)
+      integer(i8),     intent(in)           :: x(:)
       character(len=*), intent(in), optional :: fmt
     end subroutine aprint_1di8
+
 
     impure recursive module subroutine aprint_2di64(x, fmt)
       integer(i64),     intent(in)           :: x(:,:)
       character(len=*), intent(in), optional :: fmt
     end subroutine aprint_2di64
+
     impure recursive module subroutine aprint_2di32(x, fmt)
       integer(i32),     intent(in)           :: x(:,:)
       character(len=*), intent(in), optional :: fmt
     end subroutine aprint_2di32
+
     impure recursive module subroutine aprint_2di16(x, fmt)
       integer(i16),     intent(in)           :: x(:,:)
       character(len=*), intent(in), optional :: fmt
     end subroutine aprint_2di16
+
     impure recursive module subroutine aprint_2di8(x, fmt)
-      integer(i8),      intent(in)           :: x(:,:)
+      integer(i8),     intent(in)           :: x(:,:)
       character(len=*), intent(in), optional :: fmt
     end subroutine aprint_2di8
+
 
     impure recursive module subroutine aprint_1dchar(x)
       character(len=*), intent(in) :: x(:)

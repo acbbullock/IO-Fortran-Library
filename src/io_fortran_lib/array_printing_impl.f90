@@ -1,3 +1,4 @@
+! Generated from fypp/io_fortran_lib/array_printing_impl.fypp by fypp/generate.sh. Edit that file, not this one.
 #include "iofl_config.inc"
 submodule (io_fortran_lib) array_printing
   !---------------------------------------------------------------------------------------------------------------------
@@ -69,6 +70,7 @@ submodule (io_fortran_lib) array_printing
     call aprint(x_str)
   end procedure aprint_1dc128
 #endif
+
   module procedure aprint_1dc64
     character(len=:), allocatable :: x_str(:)
     character(len=:), allocatable :: fmt_, im_, xre_max_str, xre_min_str, xim_max_str, xim_min_str
@@ -129,6 +131,7 @@ submodule (io_fortran_lib) array_printing
 
     call aprint(x_str)
   end procedure aprint_1dc64
+
   module procedure aprint_1dc32
     character(len=:), allocatable :: x_str(:)
     character(len=:), allocatable :: fmt_, im_, xre_max_str, xre_min_str, xim_max_str, xim_min_str
@@ -189,6 +192,7 @@ submodule (io_fortran_lib) array_printing
 
     call aprint(x_str)
   end procedure aprint_1dc32
+
 
 #ifdef IOFL_HAS_R128
   module procedure aprint_2dc128
@@ -254,6 +258,7 @@ submodule (io_fortran_lib) array_printing
     call aprint(x_str)
   end procedure aprint_2dc128
 #endif
+
   module procedure aprint_2dc64
     character(len=:), allocatable :: x_str(:,:)
     character(len=:), allocatable :: fmt_, im_, xre_max_str, xre_min_str, xim_max_str, xim_min_str
@@ -316,6 +321,7 @@ submodule (io_fortran_lib) array_printing
 
     call aprint(x_str)
   end procedure aprint_2dc64
+
   module procedure aprint_2dc32
     character(len=:), allocatable :: x_str(:,:)
     character(len=:), allocatable :: fmt_, im_, xre_max_str, xre_min_str, xim_max_str, xim_min_str
@@ -379,6 +385,7 @@ submodule (io_fortran_lib) array_printing
     call aprint(x_str)
   end procedure aprint_2dc32
 
+
 #ifdef IOFL_HAS_R128
   module procedure aprint_1dr128
     character(len=:), allocatable :: x_str(:)
@@ -424,6 +431,7 @@ submodule (io_fortran_lib) array_printing
     call aprint(x_str)
   end procedure aprint_1dr128
 #endif
+
   module procedure aprint_1dr64
     character(len=:), allocatable :: x_str(:)
     character(len=:), allocatable :: fmt_, x_max_str, x_min_str, x_abs_min_str, source
@@ -467,6 +475,7 @@ submodule (io_fortran_lib) array_printing
 
     call aprint(x_str)
   end procedure aprint_1dr64
+
   module procedure aprint_1dr32
     character(len=:), allocatable :: x_str(:)
     character(len=:), allocatable :: fmt_, x_max_str, x_min_str, x_abs_min_str, source
@@ -510,6 +519,7 @@ submodule (io_fortran_lib) array_printing
 
     call aprint(x_str)
   end procedure aprint_1dr32
+
 
 #ifdef IOFL_HAS_R128
   module procedure aprint_2dr128
@@ -558,6 +568,7 @@ submodule (io_fortran_lib) array_printing
     call aprint(x_str)
   end procedure aprint_2dr128
 #endif
+
   module procedure aprint_2dr64
     character(len=:), allocatable :: x_str(:,:)
     character(len=:), allocatable :: fmt_, x_max_str, x_min_str, x_abs_min_str, source
@@ -603,6 +614,7 @@ submodule (io_fortran_lib) array_printing
 
     call aprint(x_str)
   end procedure aprint_2dr64
+
   module procedure aprint_2dr32
     character(len=:), allocatable :: x_str(:,:)
     character(len=:), allocatable :: fmt_, x_max_str, x_min_str, x_abs_min_str, source
@@ -649,6 +661,7 @@ submodule (io_fortran_lib) array_printing
     call aprint(x_str)
   end procedure aprint_2dr32
 
+
   module procedure aprint_1di64
     character(len=:), allocatable :: x_str(:)
     character(len=:), allocatable :: fmt_, x_max_str, x_min_str, source
@@ -683,6 +696,7 @@ submodule (io_fortran_lib) array_printing
 
     call aprint(x_str)
   end procedure aprint_1di64
+
   module procedure aprint_1di32
     character(len=:), allocatable :: x_str(:)
     character(len=:), allocatable :: fmt_, x_max_str, x_min_str, source
@@ -717,6 +731,7 @@ submodule (io_fortran_lib) array_printing
 
     call aprint(x_str)
   end procedure aprint_1di32
+
   module procedure aprint_1di16
     character(len=:), allocatable :: x_str(:)
     character(len=:), allocatable :: fmt_, x_max_str, x_min_str, source
@@ -751,6 +766,7 @@ submodule (io_fortran_lib) array_printing
 
     call aprint(x_str)
   end procedure aprint_1di16
+
   module procedure aprint_1di8
     character(len=:), allocatable :: x_str(:)
     character(len=:), allocatable :: fmt_, x_max_str, x_min_str, source
@@ -785,6 +801,7 @@ submodule (io_fortran_lib) array_printing
 
     call aprint(x_str)
   end procedure aprint_1di8
+
 
   module procedure aprint_2di64
     character(len=:), allocatable :: x_str(:,:)
@@ -822,6 +839,7 @@ submodule (io_fortran_lib) array_printing
 
     call aprint(x_str)
   end procedure aprint_2di64
+
   module procedure aprint_2di32
     character(len=:), allocatable :: x_str(:,:)
     character(len=:), allocatable :: fmt_, x_max_str, x_min_str, source, str_tmp
@@ -858,6 +876,7 @@ submodule (io_fortran_lib) array_printing
 
     call aprint(x_str)
   end procedure aprint_2di32
+
   module procedure aprint_2di16
     character(len=:), allocatable :: x_str(:,:)
     character(len=:), allocatable :: fmt_, x_max_str, x_min_str, source, str_tmp
@@ -894,6 +913,7 @@ submodule (io_fortran_lib) array_printing
 
     call aprint(x_str)
   end procedure aprint_2di16
+
   module procedure aprint_2di8
     character(len=:), allocatable :: x_str(:,:)
     character(len=:), allocatable :: fmt_, x_max_str, x_min_str, source, str_tmp
@@ -930,6 +950,7 @@ submodule (io_fortran_lib) array_printing
 
     call aprint(x_str)
   end procedure aprint_2di8
+
 
   module procedure aprint_1dchar
     type(String), allocatable :: rows(:)

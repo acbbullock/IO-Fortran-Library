@@ -62,3 +62,15 @@ jobs:
           fpm test --compiler gfortran
           --flag "-std=f2018 -g -O1 -fsanitize=address,undefined -fno-omit-frame-pointer -D R8 -D I4"
           --link-flag "-fsanitize=address,undefined"
+
+  generated:
+    name: generated sources match the fypp templates
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install fypp
+        run: pipx install fypp==3.2
+      - name: Generate
+        run: ./fypp/generate.sh
+      - name: Compare
+        run: git diff --exit-code -- src
