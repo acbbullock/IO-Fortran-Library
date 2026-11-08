@@ -1,6 +1,6 @@
 ---
 project: IO-Fortran-Library
-version: 2.0.0
+version: 2.1.0
 summary: A portable, standard I/O library for Modern Fortran
 author: Austin C Bullock
 github: https://github.com/acbbullock
