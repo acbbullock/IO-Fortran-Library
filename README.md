@@ -47,9 +47,9 @@ add `include` to the include path.
 
 ## Tests
 
-Run `fpm test`. One build tests every kind and rank. With `flang-new`,
-add `--flag -cpp`, since fpm 0.12 does not enable the preprocessor for that
-compiler. A failing test ends with a nonzero exit status. Test output goes
+Run `fpm test`. One build tests every kind and rank. With fpm 0.12 and
+`flang`, use `--compiler flang-new --flag -cpp`, since fpm 0.12 does not
+enable the preprocessor for that compiler; fpm 0.13 does. A failing test ends with a nonzero exit status. Test output goes
 to `test/output`.
 
 The main suite is `test/tests.f90`, with its cases in `test/suite/`. Each
@@ -107,6 +107,7 @@ Version 2.1 is compatible with 2.0: code that compiles against 2.0 compiles unch
 ### Changed
 
 * The `data` directory is gone, so a project that depends on the library no longer downloads 4.4 MB of test data. The tests generate their data, and the tutorials say where to get the files they use.
+* CI uses fpm 0.13, which builds with `flang` under that name and enables its preprocessor, so the tests no longer need `flang-new` or `--flag -cpp`. fpm 0.12 still works.
 
 ### Fixed
 

@@ -8,6 +8,11 @@ on:
 permissions:
   contents: read
 
+# The fpm release used by every job. The Intel macOS job builds it from source, checked against this digest.
+env:
+  IOFL_FPM_VERSION: "0.13.0"
+  IOFL_FPM_SHA256: 001cff6cf1145f215baa0888ba27acc06cea30a89b79d1a8be97db3fffbc8cd2
+
 jobs:
   test:
     name: ${{ matrix.toolchain.compiler }} ${{ matrix.toolchain.version }} ${{ matrix.toolchain.label }}
@@ -25,7 +30,7 @@ jobs:
           - { compiler: intel, version: "2026.1", fpm: ifx, flags: "-stand f18 -O2" }
           - { compiler: intel, version: "2026.1", fpm: ifx, label: "runtime checks",
               flags: "-stand f18 -check all -check nouninit -O0 -g -traceback -assume byterecl" }
-          - { compiler: flang, version: "23", fpm: flang-new, flags: "-O2 -cpp" }
+          - { compiler: flang, version: "23", fpm: flang, flags: "-O2" }
     steps:
       - uses: actions/checkout@v7
       - uses: fortran-lang/setup-fortran@v1
@@ -46,7 +51,7 @@ jobs:
           echo "/usr/lib/llvm-$v/bin" >> "$GITHUB_PATH"
       - uses: fortran-lang/setup-fpm@v10
         with:
-          fpm-version: v0.12.0
+          fpm-version: v${{ env.IOFL_FPM_VERSION }}
       - name: Run tests
         run: fpm test --compiler ${{ matrix.toolchain.fpm }} --flag "${{ matrix.toolchain.flags }}"
 
@@ -59,7 +64,7 @@ jobs:
         include:
           # Apple Silicon has no REAL(16), so this also tests building without the real128 procedures.
           - { os: macos-15, compiler: gcc, version: "16", flags: "-std=f2018 -O2 -g -fbacktrace" }
-          - { os: macos-15, compiler: flang, version: "23", flags: "-O2 -cpp" }
+          - { os: macos-15, compiler: flang, version: "23", flags: "-O2" }
           # Intel macOS has REAL(16), but Homebrew has no gcc 16 for it. setup-fpm's macOS binary needs a gfortran 12
           # runtime, so fpm is built from source.
           - { os: macos-15-intel, compiler: gcc, version: "15", flags: "-std=f2018 -O2 -g -fbacktrace", fpm: source }
@@ -75,21 +80,16 @@ jobs:
       - uses: fortran-lang/setup-fpm@v10
         if: matrix.fpm != 'source'
         with:
-          fpm-version: v0.12.0
+          fpm-version: v${{ env.IOFL_FPM_VERSION }}
       - name: Build fpm from its single-file source
         if: matrix.fpm == 'source'
         run: |
           mkdir -p "$HOME/fpm-bin" && cd "$HOME/fpm-bin"
-          curl -fsSLO https://github.com/fortran-lang/fpm/releases/download/v0.12.0/fpm-0.12.0.F90
-          echo "61567ac810d8ea8f8fc91fdb13700d34b91bf36e193b35d744fc6352d21146ad  fpm-0.12.0.F90" | shasum -a 256 -c -
-          ${{ steps.setup-fortran.outputs.fc }} -O2 -J . fpm-0.12.0.F90 -o fpm
+          src="fpm-$IOFL_FPM_VERSION.F90"
+          curl -fsSLO "https://github.com/fortran-lang/fpm/releases/download/v$IOFL_FPM_VERSION/$src"
+          echo "$IOFL_FPM_SHA256  $src" | shasum -a 256 -c -
+          ${{ steps.setup-fortran.outputs.fc }} -O2 -J . "$src" -o fpm
           echo "$HOME/fpm-bin" >> "$GITHUB_PATH"
-      - name: Name flang so that fpm uses flang-new options
-        if: matrix.compiler == 'flang'
-        run: |
-          mkdir -p "$HOME/flang-bin"
-          ln -sf "$(command -v ${{ steps.setup-fortran.outputs.fc }})" "$HOME/flang-bin/flang-new"
-          echo "$HOME/flang-bin" >> "$GITHUB_PATH"
       - name: Move GNU link aside so that ifx finds the Microsoft linker
         if: runner.os == 'Windows' && matrix.compiler == 'intel'
         shell: pwsh
@@ -99,7 +99,7 @@ jobs:
             ForEach-Object { Write-Host "Moving $($_.Source)"; Rename-Item $_.Source "$($_.Source).gnu" }
           Get-Command link -All -CommandType Application -ErrorAction SilentlyContinue | ForEach-Object { $_.Source }
       - name: Run tests
-        run: fpm test --compiler ${{ matrix.compiler == 'flang' && 'flang-new' || steps.setup-fortran.outputs.fc }} --flag "${{ matrix.flags }}"
+        run: fpm test --compiler ${{ steps.setup-fortran.outputs.fc }} --flag "${{ matrix.flags }}"
 
   checks:
     name: gfortran 16 runtime checks and sanitizers
@@ -112,7 +112,7 @@ jobs:
           version: "16"
       - uses: fortran-lang/setup-fpm@v10
         with:
-          fpm-version: v0.12.0
+          fpm-version: v${{ env.IOFL_FPM_VERSION }}
       - name: Runtime checks
         run: fpm test --compiler gfortran --flag "-std=f2018 -g -fcheck=all -fbacktrace"
       - name: Address and undefined behavior sanitizers

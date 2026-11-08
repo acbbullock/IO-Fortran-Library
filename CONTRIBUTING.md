@@ -5,15 +5,17 @@ every supported compiler.
 
 ## Building and testing
 
-You need a Fortran 2018 compiler and [fpm](https://fpm.fortran-lang.org) 0.12 or later. CI tests `gfortran` 13 to
+You need a Fortran 2018 compiler and [fpm](https://fpm.fortran-lang.org) 0.13 or later. CI tests `gfortran` 13 to
 16, `ifx` 2025.3 and 2026, and `flang` 23 on Linux, with `gfortran` and `flang` on Apple Silicon macOS, `gfortran` on
 Intel macOS, and `gfortran` and `ifx` on Windows.
 
 ```sh
 fpm test                                   # build the library and run the whole suite
 fpm test --compiler ifx                    # with another compiler
-fpm test --compiler flang-new --flag -cpp  # fpm 0.12 doesn't enable the preprocessor for flang
 ```
+
+fpm 0.12 also works, but it doesn't enable the preprocessor for `flang`, so use
+`fpm test --compiler flang-new --flag -cpp` there.
 
 One build tests every kind and rank. A failing case ends `fpm test` with a nonzero exit status, and prints what the
 case wrote. The suite takes well under a minute.
