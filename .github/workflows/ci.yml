@@ -62,11 +62,12 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          # setup-fpm's macOS binaries need Homebrew's gcc@12 runtime, which the runners don't have, so on macOS fpm is
+          # built from source. flang can't compile fpm, so the flang job builds it with Homebrew's gfortran.
           # Apple Silicon has no REAL(16), so this also tests building without the real128 procedures.
-          - { os: macos-15, compiler: gcc, version: "16", flags: "-std=f2018 -O2 -g -fbacktrace" }
-          - { os: macos-15, compiler: flang, version: "23", flags: "-O2" }
-          # Intel macOS has REAL(16), but Homebrew has no gcc 16 for it. setup-fpm's macOS binary needs a gfortran 12
-          # runtime, so fpm is built from source.
+          - { os: macos-15, compiler: gcc, version: "16", flags: "-std=f2018 -O2 -g -fbacktrace", fpm: source }
+          - { os: macos-15, compiler: flang, version: "23", flags: "-O2", fpm: source, fpm_fc: gfortran }
+          # Intel macOS has REAL(16), but Homebrew has no gcc 16 for it.
           - { os: macos-15-intel, compiler: gcc, version: "15", flags: "-std=f2018 -O2 -g -fbacktrace", fpm: source }
           - { os: windows-2025, compiler: gcc, version: "16", flags: "-std=f2018 -O2 -g -fbacktrace" }
           - { os: windows-2025, compiler: intel, version: "2026.1", flags: "" }
@@ -88,7 +89,9 @@ jobs:
           src="fpm-$IOFL_FPM_VERSION.F90"
           curl -fsSLO "https://github.com/fortran-lang/fpm/releases/download/v$IOFL_FPM_VERSION/$src"
           echo "$IOFL_FPM_SHA256  $src" | shasum -a 256 -c -
-          ${{ steps.setup-fortran.outputs.fc }} -O2 -J . "$src" -o fpm
+          fc="${{ matrix.fpm_fc || steps.setup-fortran.outputs.fc }}"
+          if ! command -v "$fc" > /dev/null; then brew install gcc; fi
+          "$fc" -O2 -J . "$src" -o fpm
           echo "$HOME/fpm-bin" >> "$GITHUB_PATH"
       - name: Move GNU link aside so that ifx finds the Microsoft linker
         if: runner.os == 'Windows' && matrix.compiler == 'intel'
