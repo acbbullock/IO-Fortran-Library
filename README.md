@@ -109,6 +109,10 @@ Version 2.1 is compatible with 2.0: code that compiles against 2.0 compiles unch
 * The `data` directory is gone, so a project that depends on the library no longer downloads 4.4 MB of test data. The tests generate their data, and the tutorials say where to get the files they use.
 * CI uses fpm 0.13, which builds with `flang` under that name and enables its preprocessor, so the tests no longer need `flang-new` or `--flag -cpp`. fpm 0.12 still works.
 
+### Known issue
+
+* With `gfortran` on Windows, any program that does a lot of formatted I/O can crash at random inside `setlocale`, because libgfortran restores the numeric locale from a string the C runtime has already freed ([GCC bug 128183](https://gcc.gnu.org/bugzilla/show_bug.cgi?id=128183)). The library's conversions do formatted I/O, so they are affected, but so is any `write` or `read` with a format. The [compiler notes](https://acbbullock.github.io/IO-Fortran-Library/doc/page/UserInfo/compilers.html) give a short C file that avoids it, which the tests now use.
+
 ### Fixed
 
 * `fmt="e"` and `fmt="f"` dropped the sign of negative zero, writing `0.0e+000` for `-0.0`, so it read back as positive zero. Complex values with a negative zero imaginary part were also written as `1.0e+000+-0.0e+000j`. `fmt="z"` was already correct.
