@@ -7,6 +7,30 @@ breaking changes first. The
 [releases page](https://github.com/acbbullock/IO-Fortran-Library/releases)
 has the same notes, along with the pre-releases.
 
+## [2.1.1](https://github.com/acbbullock/IO-Fortran-Library/releases/tag/v2.1.1) - 2026-11-09
+
+The library's code is the same as in 2.1.0. This release fixes and extends the documentation and examples, and is
+the first to be archived on Zenodo, with a DOI for citation.
+
+### Added
+
+* An `example` directory: the tutorial programs, a quick start and a NumPy `.npy` example, run with
+  `fpm run --example <name>`. CI builds and runs them all, and the tutorials include them, so the documented code
+  always compiles.
+* A section on NumPy `.npy` files in the binary-files tutorial.
+* `CITATION.cff`, so GitHub and Zenodo can give a citation for the library.
+* A description, homepage, categories and keywords in `fpm.toml`.
+
+### Changed
+
+* The README is shorter and starts with a quick start and a list of features. The release notes moved to this
+  file.
+
+### Fixed
+
+* Two tutorial programs did not compile with `gfortran` or `ifx`, because each was named like a procedure inside
+  it. The compiler check in the string tutorial tested for compiler versions from 2024.
+
 ## [2.1.0](https://github.com/acbbullock/IO-Fortran-Library/releases/tag/v2.1.0) - 2026-11-09
 
 Version 2.1 is compatible with 2.0: code that compiles against 2.0 compiles unchanged and gives the same results, except where noted under Fixed.
