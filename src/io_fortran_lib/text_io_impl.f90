@@ -1075,7 +1075,7 @@ submodule (io_fortran_lib) io_text
     integer                   :: nrows, ncols
     integer, allocatable      :: cell_stat(:,:)
     logical, allocatable      :: blank(:,:)
-    integer                   :: first
+    integer                   :: first, col
 
     nrows=0; ncols=0
 
@@ -1132,25 +1132,20 @@ submodule (io_fortran_lib) io_text
       stat = ALLOC_ERR; return
     end if
 
+    first = 1
+    if ( header ) first = 2
+
     select rank(into)
       rank(1)
-        if ( header ) then
-          call cast(cells(2:,1), into, locale=locale, fmt=fmt, stat=cell_stat(2:,1))
-        else
-          call cast(cells(:,1), into, locale=locale, fmt=fmt, stat=cell_stat(:,1))
-        end if
+        call cast_cells(cells(first:,1), into, locale, fmt, cell_stat(first:,1))
       rank(2)
-        if ( header ) then
-          call cast(cells(2:,:), into, locale=locale, fmt=fmt, stat=cell_stat(2:,:))
-        else
-          call cast(cells, into, locale=locale, fmt=fmt, stat=cell_stat)
-        end if
+        do col = 1, ncols
+          call cast_cells(cells(first:,col), into(:,col), locale, fmt, cell_stat(first:,col))
+        end do
     end select
 
     if ( any(cell_stat /= 0) ) then
       blank = is_blank(cells)
-      first = 1
-      if ( header ) first = 2
 
       select rank(into)
         rank(1)
@@ -1172,7 +1167,7 @@ submodule (io_fortran_lib) io_text
     integer                   :: nrows, ncols
     integer, allocatable      :: cell_stat(:,:)
     logical, allocatable      :: blank(:,:)
-    integer                   :: first
+    integer                   :: first, col
 
     nrows=0; ncols=0
 
@@ -1229,25 +1224,20 @@ submodule (io_fortran_lib) io_text
       stat = ALLOC_ERR; return
     end if
 
+    first = 1
+    if ( header ) first = 2
+
     select rank(into)
       rank(1)
-        if ( header ) then
-          call cast(cells(2:,1), into, locale=locale, fmt=fmt, stat=cell_stat(2:,1))
-        else
-          call cast(cells(:,1), into, locale=locale, fmt=fmt, stat=cell_stat(:,1))
-        end if
+        call cast_cells(cells(first:,1), into, locale, fmt, cell_stat(first:,1))
       rank(2)
-        if ( header ) then
-          call cast(cells(2:,:), into, locale=locale, fmt=fmt, stat=cell_stat(2:,:))
-        else
-          call cast(cells, into, locale=locale, fmt=fmt, stat=cell_stat)
-        end if
+        do col = 1, ncols
+          call cast_cells(cells(first:,col), into(:,col), locale, fmt, cell_stat(first:,col))
+        end do
     end select
 
     if ( any(cell_stat /= 0) ) then
       blank = is_blank(cells)
-      first = 1
-      if ( header ) first = 2
 
       select rank(into)
         rank(1)
@@ -1268,7 +1258,7 @@ submodule (io_fortran_lib) io_text
     integer                   :: nrows, ncols
     integer, allocatable      :: cell_stat(:,:)
     logical, allocatable      :: blank(:,:)
-    integer                   :: first
+    integer                   :: first, col
 
     nrows=0; ncols=0
 
@@ -1325,25 +1315,20 @@ submodule (io_fortran_lib) io_text
       stat = ALLOC_ERR; return
     end if
 
+    first = 1
+    if ( header ) first = 2
+
     select rank(into)
       rank(1)
-        if ( header ) then
-          call cast(cells(2:,1), into, locale=locale, fmt=fmt, stat=cell_stat(2:,1))
-        else
-          call cast(cells(:,1), into, locale=locale, fmt=fmt, stat=cell_stat(:,1))
-        end if
+        call cast_cells(cells(first:,1), into, locale, fmt, cell_stat(first:,1))
       rank(2)
-        if ( header ) then
-          call cast(cells(2:,:), into, locale=locale, fmt=fmt, stat=cell_stat(2:,:))
-        else
-          call cast(cells, into, locale=locale, fmt=fmt, stat=cell_stat)
-        end if
+        do col = 1, ncols
+          call cast_cells(cells(first:,col), into(:,col), locale, fmt, cell_stat(first:,col))
+        end do
     end select
 
     if ( any(cell_stat /= 0) ) then
       blank = is_blank(cells)
-      first = 1
-      if ( header ) first = 2
 
       select rank(into)
         rank(1)

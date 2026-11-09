@@ -22,6 +22,8 @@ contains
     call suite%add("from_file_bad_number_stat", from_file_bad_number_stat)
     call suite%add("from_file_bad_number", from_file_bad_number, expect=STOPS)
     call suite%add("from_file_bad_number_location", from_file_bad_number_location)
+    call suite%add("from_file_many_cells_match_cast", from_file_many_cells_match_cast)
+    call suite%add("from_file_many_cells_eu", from_file_many_cells_eu)
     call suite%add("from_file_bad_cell_int", from_file_bad_cell_int)
     call suite%add("from_file_quoted_numbers", from_file_quoted_numbers)
     call suite%add("from_file_crlf", from_file_crlf)
@@ -117,6 +119,100 @@ contains
     call check(index(msg, "oops") > 0, "The message should name the text.")
     call check(index(msg, "row 2, column 2") > 0, "The message should name the location.")
   end subroutine from_file_bad_number_location
+
+  subroutine from_file_many_cells_match_cast()
+    !! `from_file` reads many cells of a column in one statement. Each cell should still read as `cast` reads it alone,
+    !! across chunks, with blanks, padding, every accepted form, a number too large for the kind, and a bad cell.
+    integer, parameter            :: NROWS = 700
+    character(len=:), allocatable :: file, content
+    character(len=512)            :: msg
+    type(String)                  :: texts(NROWS,2)
+    real(real64), allocatable     :: m2(:,:)
+    real(real32), allocatable     :: s2(:,:)
+    real(real64)                  :: expected
+    real(real32)                  :: expected32
+    integer                       :: st, row, col, cast_st, bad_row, bad_col
+
+    do row = 1, NROWS
+      texts(row,1) = String(str(row)//".25")
+      texts(row,2) = String("-"//str(row)//"e-3")
+    end do
+
+    texts(3,2) = String("  2.5 "); texts(4,2) = String("+.5");      texts(5,2)   = String("1d3")
+    texts(6,2) = String("-Inf");   texts(7,2) = String("nan");      texts(8,2)   = String("Infinity")
+    texts(9,2) = String("");       texts(10,2) = String(" ");       texts(300,2) = String("1e999")
+    texts(301,1) = String("7.");   texts(302,1) = String("-0.0");   texts(520,2) = String("1.2.3")
+
+    content = "a,b"//IOFL_LF
+    do row = 1, NROWS
+      content = content//texts(row,1)%as_str()//","//texts(row,2)%as_str()//IOFL_LF
+    end do
+
+    file = scratch(); st = 0; msg = ""
+    call write_raw(file//".csv", content)
+
+    call from_file(file//".csv", into=m2, header=.true., stat=st, errmsg=msg)
+    call check(all(shape(m2) == [NROWS,2]), "Every row should be read.")
+
+    bad_row = 0; bad_col = 0
+
+    do col = 1, 2
+      do row = 1, NROWS
+        if ( verify(texts(row,col)%as_str(), " ") == 0 ) then
+          call check(ieee_is_nan(m2(row,col)), "A blank cell should read as NaN.")
+          cycle
+        end if
+
+        call cast(texts(row,col), into=expected, stat=cast_st)
+
+        if ( cast_st /= 0 ) then
+          if ( bad_row == 0 ) then
+            bad_row = row; bad_col = col
+          end if
+          cycle
+        end if
+
+        if ( ieee_is_nan(expected) ) then
+          call check(ieee_is_nan(m2(row,col)), "NaN should read as cast reads it.")
+        else
+          call check(m2(row,col) == expected, "Row "//str(row)//", column "//str(col)//" should read as cast.")
+        end if
+      end do
+    end do
+
+    call check(st /= 0, "The bad cell should be reported through stat.")
+
+    call check(index(msg, "row "//str(bad_row+1)//", column "//str(bad_col)) > 0, &
+               "The message should name the first bad cell, counting the header: "//trim(msg))
+
+    call from_file(file//".csv", into=s2, header=.true., stat=st, errmsg=msg)
+
+    do row = 1, NROWS
+      call cast(texts(row,1), into=expected32, stat=cast_st)
+      call check(s2(row,1) == expected32, "A real32 cell should read as cast reads it.")
+    end do
+  end subroutine from_file_many_cells_match_cast
+
+  subroutine from_file_many_cells_eu()
+    !! In the EU locale, cells read together are separated by semicolons, since the comma is the decimal mark.
+    integer, parameter            :: NROWS = 600
+    character(len=:), allocatable :: file, content
+    real(real64), allocatable     :: m2(:,:)
+    integer                       :: st, row
+
+    content = ""
+    do row = 1, NROWS
+      content = content//str(row)//",5;-"//str(row)//",25"//IOFL_LF
+    end do
+
+    file = scratch(); st = 0
+    call write_raw(file//".csv", content)
+
+    call from_file(file//".csv", into=m2, locale="EU", stat=st)
+    call expect_equal(st, 0, "EU numbers should read without error.")
+    call check(all(m2(:,1) == [(row + 0.5_real64, row = 1, NROWS)]), "The first column should be read.")
+    call check(all(m2(:,2) == [(-row - 0.25_real64, row = 1, NROWS)]), "The second column should be read.")
+  end subroutine from_file_many_cells_eu
 
   subroutine from_file_bad_cell_int()
     character(len=:), allocatable :: file

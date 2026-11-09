@@ -1695,6 +1695,29 @@ module io_fortran_lib
 #:endfor
   end interface from_text
 
+  interface cast_cells                                                                           ! Submodule io_internal
+    !-------------------------------------------------------------------------------------------------------------------
+    !! Private interface for reading a column of cells into numbers, with the same results as the elemental `cast`. It
+    !! reads many cells in one statement, because each internal `read` costs more than the number it reads.
+    !-------------------------------------------------------------------------------------------------------------------
+#:for k in REAL_KINDS
+#:if k in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+    recursive module subroutine cast_cells_${k}$(cells, into, locale, fmt, cell_stat)
+      type(String),     intent(in)  :: cells(:)
+      real(${k}$),       intent(out) :: into(:)
+      character(len=*), intent(in)  :: locale
+      character(len=*), intent(in)  :: fmt
+      integer,          intent(out) :: cell_stat(:)
+    end subroutine cast_cells_${k}$
+#:if k in QUAD_KINDS
+#endif
+#:endif
+
+#:endfor
+  end interface cast_cells
+
   interface to_binary                                                                              ! Submodule io_binary
     !-------------------------------------------------------------------------------------------------------------------
     !! Private interface for writing an array to an external binary file.
