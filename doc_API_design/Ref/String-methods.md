@@ -266,7 +266,7 @@ applying to `back`.
 ### [split](../../type/string.html#boundprocedure-split)
 
 *Description*: A generic binding for the interface
-[split](glue-split.html).
+[split](join-split.html).
 
 ### [starts_with](../../type/string.html#boundprocedure-starts_with)
 
