@@ -101,8 +101,9 @@ crash formatted I/O and how to avoid it.
 
 `nvfortran` (NVIDIA HPC SDK) and AMD's AOCC `flang` are not supported. They
 lack parts of Fortran 2018 that the library relies on, most of all
-`select rank`, as well as arrays above rank 7. CI still runs them, along
-with LFortran, to show when a new release can build the library.
+`select rank`, as well as arrays above rank 7. A separate
+[workflow](.github/workflows/experimental.yml) runs them weekly, along with
+LFortran, to show when a new release can build the library.
 
 The `real128` routines are enabled on `ifx`, and on `gfortran` targets with
 `REAL(16)`. They are left out on other compilers, including `flang`. To

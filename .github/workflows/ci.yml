@@ -17,11 +17,6 @@ jobs:
   test:
     name: ${{ matrix.toolchain.compiler }} ${{ matrix.toolchain.version }} ${{ matrix.toolchain.label }}
     runs-on: ubuntu-24.04
-    # nvfortran (#75), AOCC (#80) and LFortran (#82) can't compile the library, and are not supported. nvfortran 26.1 and
-    # AOCC 5.2, which share the classic Flang front end, lack select rank, arrays above rank 7, implicit none
-    # (type, external) and elemental recursive procedures. LFortran 0.58 crashes on the first file. Their jobs show
-    # when a new release changes that, without failing CI.
-    continue-on-error: ${{ matrix.toolchain.experimental == true }}
     strategy:
       fail-fast: false
       matrix:
@@ -36,14 +31,6 @@ jobs:
           - { compiler: intel, version: "2026.1", fpm: ifx, label: "runtime checks",
               flags: "-stand f18 -check all -check nouninit -O0 -g -traceback -assume byterecl" }
           - { compiler: flang, version: "23", fpm: flang, flags: "-O2" }
-          - { compiler: nvidia-hpc, version: "26.1", fpm: nvfortran, flags: "-O2", experimental: true,
-              label: "(allowed to fail)" }
-          # AOCC's flang is classic Flang, which fpm only recognizes under the name flang-classic. Under the name flang it
-          # gets LLVM flang's options, which it rejects. fpm passes classic Flang no preprocessor flag.
-          - { compiler: aocc, version: "5.2.0", fpm: flang-classic, flags: "-Mpreprocess -O2", experimental: true,
-              label: "(allowed to fail)" }
-          - { compiler: lfortran, version: "0.58.0", fpm: lfortran, flags: "", experimental: true,
-              label: "(allowed to fail)" }
     steps:
       - uses: actions/checkout@v7
       - uses: fortran-lang/setup-fortran@v1
@@ -65,38 +52,8 @@ jobs:
       - uses: fortran-lang/setup-fpm@v10
         with:
           fpm-version: v${{ env.IOFL_FPM_VERSION }}
-      - name: Name AOCC's flang flang-classic for fpm
-        if: matrix.toolchain.compiler == 'aocc'
-        run: |
-          mkdir -p "$RUNNER_TEMP/bin"
-          printf '#!/bin/sh\nexec "%s" "$@"\n' "$(command -v flang)" > "$RUNNER_TEMP/bin/flang-classic"
-          chmod +x "$RUNNER_TEMP/bin/flang-classic"
-          echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
       - name: Run tests
-        run: |
-          set -o pipefail
-          fpm test --compiler ${{ matrix.toolchain.fpm }} --flag "${{ matrix.toolchain.flags }}" \
-            ${{ matrix.toolchain.experimental && '--verbose' || '' }} 2>&1 | tee test.log
-      - name: Summarize the first errors
-        if: failure() && matrix.toolchain.experimental
-        run: |
-          {
-            echo "### First errors from ${{ matrix.toolchain.compiler }} ${{ matrix.toolchain.version }}"
-            echo '```'
-            grep -m 15 -iE 'error|not (yet )?(implemented|supported)|segmentation fault|core dumped|internal compiler|abort' \
-              test.log || true
-            echo '```'
-          } >> "$GITHUB_STEP_SUMMARY"
-      - name: Find the LFortran stage that fails
-        if: failure() && matrix.toolchain.compiler == 'lfortran'
-        run: |
-          for stage in --show-ast --show-asr; do
-            if lfortran --cpp -Iinclude $stage src/modules/io_fortran_lib_mod.f90 > /dev/null 2> stage.log; then
-              echo "$stage: passes" | tee -a "$GITHUB_STEP_SUMMARY"
-            else
-              echo "$stage: fails with status $?" | tee -a "$GITHUB_STEP_SUMMARY"; tail -5 stage.log
-            fi
-          done
+        run: fpm test --compiler ${{ matrix.toolchain.fpm }} --flag "${{ matrix.toolchain.flags }}"
 
   arm64:
     name: ubuntu-24.04-arm ${{ matrix.compiler }}

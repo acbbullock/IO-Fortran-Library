@@ -17,7 +17,7 @@ Work toward 2.2, tracked in the [2.2 milestone](https://github.com/acbbullock/IO
   file written there is checked with NumPy. It also builds the library without fpm, with `gfortran` and `ifx`, as
   the README describes (#78, #79, #81).
 * `nvfortran` and AOCC `flang` lack `select rank` and arrays above rank 7, so they can't compile the library and are
-  not supported. CI runs them, and LFortran, without failing, to show when that changes (#75, #80, #82).
+  not supported. A separate weekly workflow runs them, and LFortran, to show when that changes (#75, #80, #82).
 
 ## [2.1.1](https://github.com/acbbullock/IO-Fortran-Library/releases/tag/v2.1.1) - 2026-11-09
 
