@@ -6,9 +6,11 @@ author: Austin C Bullock
 ## Supported compilers
 
 The library is tested in CI with `gfortran` 13 to 16, `ifx` 2025.3 and
-2026, and `flang` 23 on Linux, with `gfortran` 16 and `flang` 23 on macOS
-(Apple Silicon), `gfortran` 15 on macOS (Intel), and `gfortran` 16 and
-`ifx` 2026 on Windows. It is written to the Fortran 2018 standard.
+2026, and `flang` 23 on Linux (x86-64), with `gfortran` 14 and `flang` 23
+on ARM64 Linux, `gfortran` 13 on big-endian s390x Linux, `gfortran` 16 and
+`flang` 23 on macOS (Apple Silicon), `gfortran` 15 on macOS (Intel), and
+`gfortran` 16 and `ifx` 2026 on Windows. CI also builds the library
+without fpm, as described below. It is written to the Fortran 2018 standard.
 
 The `real128` and `complex(real128)` routines are built on `ifx`, and on
 `gfortran` targets that support `REAL(16)`. They are left out on other
@@ -18,6 +20,21 @@ this, compile with `-DIOFL_HAS_R128` or `-DIOFL_NO_R128`.
 The sources must be preprocessed. `fpm` does this automatically. To
 build by other means, add `-cpp` (`gfortran`, `flang`) or `-fpp` (`ifx`),
 and add the `include` directory to the include path.
+
+## Unsupported compilers
+
+`nvfortran` (NVIDIA HPC SDK 26.1) and AMD's AOCC `flang` 5.2 can't
+compile the library. Both use the classic Flang front end, which lacks
+four Fortran 2018 features that the library uses throughout:
+
+* `select rank`, which every array file routine uses. NVIDIA has said it
+  doesn't plan to implement it.
+* Arrays above rank 7. The library supports up to rank 15.
+* `implicit none (type, external)`.
+* Elemental procedures that are also `recursive`.
+
+LFortran 0.58 crashes while compiling the library. CI runs all three, so
+a release that can build the library will show up there.
 
 ## Known compiler bugs
 

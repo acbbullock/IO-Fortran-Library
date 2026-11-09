@@ -6,8 +6,9 @@ every supported compiler.
 ## Building and testing
 
 You need a Fortran 2018 compiler and [fpm](https://fpm.fortran-lang.org) 0.13 or later. CI tests `gfortran` 13 to
-16, `ifx` 2025.3 and 2026, and `flang` 23 on Linux, with `gfortran` and `flang` on Apple Silicon macOS, `gfortran` on
-Intel macOS, and `gfortran` and `ifx` on Windows.
+16, `ifx` 2025.3 and 2026, and `flang` 23 on Linux, with `gfortran` and `flang` on ARM64 Linux, `gfortran` on
+big-endian s390x Linux, `gfortran` and `flang` on Apple Silicon macOS, `gfortran` on Intel macOS, and `gfortran` and
+`ifx` on Windows. `ci/build-without-fpm.sh` builds and tests the library without fpm.
 
 ```sh
 fpm test                                   # build the library and run the whole suite
