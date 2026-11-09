@@ -38,23 +38,43 @@ submodule (io_fortran_lib) io_binary
       stat = WRITE_ERR; return
     end if
 
-    select rank(x)
-      rank(1); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(2); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(3); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(4); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(5); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(6); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(7); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(8); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(9); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(10); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(11); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(12); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(13); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(14); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(15); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-    end select
+    if ( is_contiguous(x) ) then                   ! One block, as gfortran moves elements one at a time in select rank
+      select rank(x)
+        rank(1); call write_flat_c128(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(2); call write_flat_c128(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(3); call write_flat_c128(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(4); call write_flat_c128(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(5); call write_flat_c128(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(6); call write_flat_c128(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(7); call write_flat_c128(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(8); call write_flat_c128(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(9); call write_flat_c128(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(10); call write_flat_c128(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(11); call write_flat_c128(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(12); call write_flat_c128(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(13); call write_flat_c128(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(14); call write_flat_c128(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(15); call write_flat_c128(file_unit, x, size(x, kind=i64), stat, errmsg)
+      end select
+    else
+      select rank(x)
+        rank(1); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(2); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(3); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(4); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(5); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(6); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(7); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(8); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(9); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(10); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(11); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(12); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(13); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(14); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(15); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      end select
+    end if
 
     if ( stat /= 0 ) then
       stat = WRITE_ERR
@@ -99,23 +119,43 @@ submodule (io_fortran_lib) io_binary
       stat = WRITE_ERR; return
     end if
 
-    select rank(x)
-      rank(1); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(2); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(3); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(4); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(5); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(6); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(7); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(8); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(9); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(10); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(11); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(12); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(13); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(14); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(15); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-    end select
+    if ( is_contiguous(x) ) then                   ! One block, as gfortran moves elements one at a time in select rank
+      select rank(x)
+        rank(1); call write_flat_c64(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(2); call write_flat_c64(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(3); call write_flat_c64(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(4); call write_flat_c64(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(5); call write_flat_c64(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(6); call write_flat_c64(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(7); call write_flat_c64(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(8); call write_flat_c64(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(9); call write_flat_c64(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(10); call write_flat_c64(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(11); call write_flat_c64(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(12); call write_flat_c64(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(13); call write_flat_c64(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(14); call write_flat_c64(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(15); call write_flat_c64(file_unit, x, size(x, kind=i64), stat, errmsg)
+      end select
+    else
+      select rank(x)
+        rank(1); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(2); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(3); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(4); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(5); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(6); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(7); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(8); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(9); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(10); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(11); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(12); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(13); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(14); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(15); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      end select
+    end if
 
     if ( stat /= 0 ) then
       stat = WRITE_ERR
@@ -159,23 +199,43 @@ submodule (io_fortran_lib) io_binary
       stat = WRITE_ERR; return
     end if
 
-    select rank(x)
-      rank(1); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(2); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(3); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(4); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(5); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(6); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(7); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(8); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(9); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(10); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(11); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(12); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(13); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(14); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(15); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-    end select
+    if ( is_contiguous(x) ) then                   ! One block, as gfortran moves elements one at a time in select rank
+      select rank(x)
+        rank(1); call write_flat_c32(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(2); call write_flat_c32(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(3); call write_flat_c32(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(4); call write_flat_c32(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(5); call write_flat_c32(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(6); call write_flat_c32(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(7); call write_flat_c32(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(8); call write_flat_c32(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(9); call write_flat_c32(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(10); call write_flat_c32(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(11); call write_flat_c32(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(12); call write_flat_c32(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(13); call write_flat_c32(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(14); call write_flat_c32(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(15); call write_flat_c32(file_unit, x, size(x, kind=i64), stat, errmsg)
+      end select
+    else
+      select rank(x)
+        rank(1); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(2); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(3); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(4); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(5); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(6); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(7); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(8); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(9); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(10); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(11); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(12); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(13); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(14); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(15); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      end select
+    end if
 
     if ( stat /= 0 ) then
       stat = WRITE_ERR
@@ -221,23 +281,43 @@ submodule (io_fortran_lib) io_binary
       stat = WRITE_ERR; return
     end if
 
-    select rank(x)
-      rank(1); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(2); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(3); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(4); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(5); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(6); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(7); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(8); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(9); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(10); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(11); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(12); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(13); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(14); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(15); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-    end select
+    if ( is_contiguous(x) ) then                   ! One block, as gfortran moves elements one at a time in select rank
+      select rank(x)
+        rank(1); call write_flat_r128(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(2); call write_flat_r128(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(3); call write_flat_r128(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(4); call write_flat_r128(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(5); call write_flat_r128(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(6); call write_flat_r128(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(7); call write_flat_r128(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(8); call write_flat_r128(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(9); call write_flat_r128(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(10); call write_flat_r128(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(11); call write_flat_r128(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(12); call write_flat_r128(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(13); call write_flat_r128(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(14); call write_flat_r128(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(15); call write_flat_r128(file_unit, x, size(x, kind=i64), stat, errmsg)
+      end select
+    else
+      select rank(x)
+        rank(1); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(2); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(3); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(4); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(5); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(6); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(7); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(8); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(9); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(10); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(11); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(12); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(13); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(14); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(15); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      end select
+    end if
 
     if ( stat /= 0 ) then
       stat = WRITE_ERR
@@ -282,23 +362,43 @@ submodule (io_fortran_lib) io_binary
       stat = WRITE_ERR; return
     end if
 
-    select rank(x)
-      rank(1); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(2); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(3); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(4); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(5); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(6); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(7); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(8); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(9); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(10); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(11); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(12); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(13); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(14); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(15); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-    end select
+    if ( is_contiguous(x) ) then                   ! One block, as gfortran moves elements one at a time in select rank
+      select rank(x)
+        rank(1); call write_flat_r64(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(2); call write_flat_r64(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(3); call write_flat_r64(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(4); call write_flat_r64(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(5); call write_flat_r64(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(6); call write_flat_r64(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(7); call write_flat_r64(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(8); call write_flat_r64(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(9); call write_flat_r64(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(10); call write_flat_r64(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(11); call write_flat_r64(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(12); call write_flat_r64(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(13); call write_flat_r64(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(14); call write_flat_r64(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(15); call write_flat_r64(file_unit, x, size(x, kind=i64), stat, errmsg)
+      end select
+    else
+      select rank(x)
+        rank(1); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(2); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(3); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(4); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(5); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(6); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(7); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(8); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(9); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(10); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(11); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(12); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(13); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(14); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(15); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      end select
+    end if
 
     if ( stat /= 0 ) then
       stat = WRITE_ERR
@@ -342,23 +442,43 @@ submodule (io_fortran_lib) io_binary
       stat = WRITE_ERR; return
     end if
 
-    select rank(x)
-      rank(1); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(2); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(3); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(4); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(5); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(6); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(7); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(8); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(9); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(10); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(11); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(12); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(13); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(14); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(15); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-    end select
+    if ( is_contiguous(x) ) then                   ! One block, as gfortran moves elements one at a time in select rank
+      select rank(x)
+        rank(1); call write_flat_r32(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(2); call write_flat_r32(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(3); call write_flat_r32(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(4); call write_flat_r32(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(5); call write_flat_r32(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(6); call write_flat_r32(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(7); call write_flat_r32(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(8); call write_flat_r32(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(9); call write_flat_r32(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(10); call write_flat_r32(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(11); call write_flat_r32(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(12); call write_flat_r32(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(13); call write_flat_r32(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(14); call write_flat_r32(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(15); call write_flat_r32(file_unit, x, size(x, kind=i64), stat, errmsg)
+      end select
+    else
+      select rank(x)
+        rank(1); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(2); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(3); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(4); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(5); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(6); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(7); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(8); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(9); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(10); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(11); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(12); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(13); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(14); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(15); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      end select
+    end if
 
     if ( stat /= 0 ) then
       stat = WRITE_ERR
@@ -403,23 +523,43 @@ submodule (io_fortran_lib) io_binary
       stat = WRITE_ERR; return
     end if
 
-    select rank(x)
-      rank(1); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(2); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(3); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(4); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(5); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(6); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(7); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(8); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(9); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(10); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(11); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(12); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(13); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(14); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(15); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-    end select
+    if ( is_contiguous(x) ) then                   ! One block, as gfortran moves elements one at a time in select rank
+      select rank(x)
+        rank(1); call write_flat_i64(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(2); call write_flat_i64(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(3); call write_flat_i64(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(4); call write_flat_i64(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(5); call write_flat_i64(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(6); call write_flat_i64(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(7); call write_flat_i64(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(8); call write_flat_i64(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(9); call write_flat_i64(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(10); call write_flat_i64(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(11); call write_flat_i64(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(12); call write_flat_i64(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(13); call write_flat_i64(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(14); call write_flat_i64(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(15); call write_flat_i64(file_unit, x, size(x, kind=i64), stat, errmsg)
+      end select
+    else
+      select rank(x)
+        rank(1); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(2); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(3); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(4); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(5); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(6); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(7); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(8); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(9); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(10); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(11); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(12); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(13); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(14); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(15); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      end select
+    end if
 
     if ( stat /= 0 ) then
       stat = WRITE_ERR
@@ -463,23 +603,43 @@ submodule (io_fortran_lib) io_binary
       stat = WRITE_ERR; return
     end if
 
-    select rank(x)
-      rank(1); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(2); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(3); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(4); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(5); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(6); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(7); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(8); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(9); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(10); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(11); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(12); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(13); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(14); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(15); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-    end select
+    if ( is_contiguous(x) ) then                   ! One block, as gfortran moves elements one at a time in select rank
+      select rank(x)
+        rank(1); call write_flat_i32(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(2); call write_flat_i32(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(3); call write_flat_i32(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(4); call write_flat_i32(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(5); call write_flat_i32(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(6); call write_flat_i32(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(7); call write_flat_i32(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(8); call write_flat_i32(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(9); call write_flat_i32(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(10); call write_flat_i32(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(11); call write_flat_i32(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(12); call write_flat_i32(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(13); call write_flat_i32(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(14); call write_flat_i32(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(15); call write_flat_i32(file_unit, x, size(x, kind=i64), stat, errmsg)
+      end select
+    else
+      select rank(x)
+        rank(1); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(2); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(3); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(4); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(5); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(6); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(7); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(8); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(9); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(10); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(11); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(12); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(13); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(14); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(15); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      end select
+    end if
 
     if ( stat /= 0 ) then
       stat = WRITE_ERR
@@ -523,23 +683,43 @@ submodule (io_fortran_lib) io_binary
       stat = WRITE_ERR; return
     end if
 
-    select rank(x)
-      rank(1); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(2); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(3); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(4); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(5); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(6); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(7); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(8); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(9); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(10); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(11); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(12); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(13); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(14); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(15); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-    end select
+    if ( is_contiguous(x) ) then                   ! One block, as gfortran moves elements one at a time in select rank
+      select rank(x)
+        rank(1); call write_flat_i16(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(2); call write_flat_i16(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(3); call write_flat_i16(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(4); call write_flat_i16(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(5); call write_flat_i16(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(6); call write_flat_i16(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(7); call write_flat_i16(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(8); call write_flat_i16(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(9); call write_flat_i16(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(10); call write_flat_i16(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(11); call write_flat_i16(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(12); call write_flat_i16(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(13); call write_flat_i16(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(14); call write_flat_i16(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(15); call write_flat_i16(file_unit, x, size(x, kind=i64), stat, errmsg)
+      end select
+    else
+      select rank(x)
+        rank(1); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(2); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(3); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(4); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(5); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(6); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(7); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(8); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(9); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(10); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(11); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(12); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(13); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(14); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(15); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      end select
+    end if
 
     if ( stat /= 0 ) then
       stat = WRITE_ERR
@@ -583,23 +763,43 @@ submodule (io_fortran_lib) io_binary
       stat = WRITE_ERR; return
     end if
 
-    select rank(x)
-      rank(1); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(2); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(3); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(4); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(5); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(6); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(7); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(8); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(9); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(10); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(11); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(12); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(13); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(14); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      rank(15); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-    end select
+    if ( is_contiguous(x) ) then                   ! One block, as gfortran moves elements one at a time in select rank
+      select rank(x)
+        rank(1); call write_flat_i8(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(2); call write_flat_i8(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(3); call write_flat_i8(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(4); call write_flat_i8(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(5); call write_flat_i8(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(6); call write_flat_i8(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(7); call write_flat_i8(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(8); call write_flat_i8(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(9); call write_flat_i8(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(10); call write_flat_i8(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(11); call write_flat_i8(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(12); call write_flat_i8(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(13); call write_flat_i8(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(14); call write_flat_i8(file_unit, x, size(x, kind=i64), stat, errmsg)
+        rank(15); call write_flat_i8(file_unit, x, size(x, kind=i64), stat, errmsg)
+      end select
+    else
+      select rank(x)
+        rank(1); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(2); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(3); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(4); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(5); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(6); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(7); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(8); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(9); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(10); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(11); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(12); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(13); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(14); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(15); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+      end select
+    end if
 
     if ( stat /= 0 ) then
       stat = WRITE_ERR
@@ -700,21 +900,21 @@ submodule (io_fortran_lib) io_binary
     end if
 
     select rank(into)
-      rank(1); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(2); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(3); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(4); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(5); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(6); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(7); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(8); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(9); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(10); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(11); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(12); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(13); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(14); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(15); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(1); call read_flat_c128(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(2); call read_flat_c128(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(3); call read_flat_c128(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(4); call read_flat_c128(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(5); call read_flat_c128(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(6); call read_flat_c128(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(7); call read_flat_c128(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(8); call read_flat_c128(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(9); call read_flat_c128(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(10); call read_flat_c128(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(11); call read_flat_c128(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(12); call read_flat_c128(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(13); call read_flat_c128(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(14); call read_flat_c128(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(15); call read_flat_c128(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
     end select
 
     if ( stat /= 0 ) then
@@ -814,21 +1014,21 @@ submodule (io_fortran_lib) io_binary
     end if
 
     select rank(into)
-      rank(1); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(2); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(3); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(4); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(5); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(6); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(7); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(8); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(9); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(10); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(11); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(12); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(13); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(14); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(15); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(1); call read_flat_c64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(2); call read_flat_c64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(3); call read_flat_c64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(4); call read_flat_c64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(5); call read_flat_c64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(6); call read_flat_c64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(7); call read_flat_c64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(8); call read_flat_c64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(9); call read_flat_c64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(10); call read_flat_c64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(11); call read_flat_c64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(12); call read_flat_c64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(13); call read_flat_c64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(14); call read_flat_c64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(15); call read_flat_c64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
     end select
 
     if ( stat /= 0 ) then
@@ -927,21 +1127,21 @@ submodule (io_fortran_lib) io_binary
     end if
 
     select rank(into)
-      rank(1); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(2); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(3); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(4); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(5); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(6); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(7); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(8); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(9); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(10); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(11); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(12); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(13); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(14); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(15); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(1); call read_flat_c32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(2); call read_flat_c32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(3); call read_flat_c32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(4); call read_flat_c32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(5); call read_flat_c32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(6); call read_flat_c32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(7); call read_flat_c32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(8); call read_flat_c32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(9); call read_flat_c32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(10); call read_flat_c32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(11); call read_flat_c32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(12); call read_flat_c32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(13); call read_flat_c32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(14); call read_flat_c32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(15); call read_flat_c32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
     end select
 
     if ( stat /= 0 ) then
@@ -1042,21 +1242,21 @@ submodule (io_fortran_lib) io_binary
     end if
 
     select rank(into)
-      rank(1); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(2); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(3); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(4); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(5); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(6); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(7); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(8); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(9); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(10); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(11); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(12); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(13); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(14); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(15); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(1); call read_flat_r128(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(2); call read_flat_r128(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(3); call read_flat_r128(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(4); call read_flat_r128(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(5); call read_flat_r128(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(6); call read_flat_r128(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(7); call read_flat_r128(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(8); call read_flat_r128(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(9); call read_flat_r128(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(10); call read_flat_r128(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(11); call read_flat_r128(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(12); call read_flat_r128(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(13); call read_flat_r128(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(14); call read_flat_r128(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(15); call read_flat_r128(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
     end select
 
     if ( stat /= 0 ) then
@@ -1156,21 +1356,21 @@ submodule (io_fortran_lib) io_binary
     end if
 
     select rank(into)
-      rank(1); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(2); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(3); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(4); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(5); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(6); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(7); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(8); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(9); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(10); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(11); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(12); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(13); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(14); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(15); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(1); call read_flat_r64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(2); call read_flat_r64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(3); call read_flat_r64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(4); call read_flat_r64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(5); call read_flat_r64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(6); call read_flat_r64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(7); call read_flat_r64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(8); call read_flat_r64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(9); call read_flat_r64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(10); call read_flat_r64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(11); call read_flat_r64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(12); call read_flat_r64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(13); call read_flat_r64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(14); call read_flat_r64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(15); call read_flat_r64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
     end select
 
     if ( stat /= 0 ) then
@@ -1269,21 +1469,21 @@ submodule (io_fortran_lib) io_binary
     end if
 
     select rank(into)
-      rank(1); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(2); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(3); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(4); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(5); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(6); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(7); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(8); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(9); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(10); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(11); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(12); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(13); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(14); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(15); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(1); call read_flat_r32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(2); call read_flat_r32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(3); call read_flat_r32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(4); call read_flat_r32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(5); call read_flat_r32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(6); call read_flat_r32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(7); call read_flat_r32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(8); call read_flat_r32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(9); call read_flat_r32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(10); call read_flat_r32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(11); call read_flat_r32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(12); call read_flat_r32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(13); call read_flat_r32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(14); call read_flat_r32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(15); call read_flat_r32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
     end select
 
     if ( stat /= 0 ) then
@@ -1383,21 +1583,21 @@ submodule (io_fortran_lib) io_binary
     end if
 
     select rank(into)
-      rank(1); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(2); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(3); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(4); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(5); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(6); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(7); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(8); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(9); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(10); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(11); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(12); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(13); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(14); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(15); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(1); call read_flat_i64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(2); call read_flat_i64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(3); call read_flat_i64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(4); call read_flat_i64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(5); call read_flat_i64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(6); call read_flat_i64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(7); call read_flat_i64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(8); call read_flat_i64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(9); call read_flat_i64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(10); call read_flat_i64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(11); call read_flat_i64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(12); call read_flat_i64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(13); call read_flat_i64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(14); call read_flat_i64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(15); call read_flat_i64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
     end select
 
     if ( stat /= 0 ) then
@@ -1496,21 +1696,21 @@ submodule (io_fortran_lib) io_binary
     end if
 
     select rank(into)
-      rank(1); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(2); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(3); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(4); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(5); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(6); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(7); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(8); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(9); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(10); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(11); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(12); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(13); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(14); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(15); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(1); call read_flat_i32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(2); call read_flat_i32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(3); call read_flat_i32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(4); call read_flat_i32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(5); call read_flat_i32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(6); call read_flat_i32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(7); call read_flat_i32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(8); call read_flat_i32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(9); call read_flat_i32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(10); call read_flat_i32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(11); call read_flat_i32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(12); call read_flat_i32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(13); call read_flat_i32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(14); call read_flat_i32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(15); call read_flat_i32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
     end select
 
     if ( stat /= 0 ) then
@@ -1609,21 +1809,21 @@ submodule (io_fortran_lib) io_binary
     end if
 
     select rank(into)
-      rank(1); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(2); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(3); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(4); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(5); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(6); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(7); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(8); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(9); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(10); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(11); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(12); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(13); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(14); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(15); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(1); call read_flat_i16(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(2); call read_flat_i16(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(3); call read_flat_i16(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(4); call read_flat_i16(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(5); call read_flat_i16(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(6); call read_flat_i16(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(7); call read_flat_i16(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(8); call read_flat_i16(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(9); call read_flat_i16(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(10); call read_flat_i16(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(11); call read_flat_i16(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(12); call read_flat_i16(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(13); call read_flat_i16(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(14); call read_flat_i16(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(15); call read_flat_i16(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
     end select
 
     if ( stat /= 0 ) then
@@ -1722,21 +1922,21 @@ submodule (io_fortran_lib) io_binary
     end if
 
     select rank(into)
-      rank(1); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(2); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(3); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(4); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(5); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(6); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(7); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(8); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(9); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(10); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(11); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(12); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(13); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(14); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
-      rank(15); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(1); call read_flat_i8(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(2); call read_flat_i8(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(3); call read_flat_i8(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(4); call read_flat_i8(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(5); call read_flat_i8(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(6); call read_flat_i8(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(7); call read_flat_i8(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(8); call read_flat_i8(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(9); call read_flat_i8(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(10); call read_flat_i8(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(11); call read_flat_i8(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(12); call read_flat_i8(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(13); call read_flat_i8(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(14); call read_flat_i8(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
+      rank(15); call read_flat_i8(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
     end select
 
     if ( stat /= 0 ) then
@@ -1753,5 +1953,90 @@ submodule (io_fortran_lib) io_binary
 
     stat=0; errmsg=EMPTY_STR
   end procedure from_binary_i8
+
+  ! Block Transfers ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#ifdef IOFL_HAS_R128
+  module procedure write_flat_c128
+    write(unit=unit, iostat=stat, iomsg=errmsg) x
+  end procedure write_flat_c128
+
+  module procedure read_flat_c128
+    read(unit=unit, iostat=stat, iomsg=errmsg) x
+  end procedure read_flat_c128
+#endif
+
+  module procedure write_flat_c64
+    write(unit=unit, iostat=stat, iomsg=errmsg) x
+  end procedure write_flat_c64
+
+  module procedure read_flat_c64
+    read(unit=unit, iostat=stat, iomsg=errmsg) x
+  end procedure read_flat_c64
+
+  module procedure write_flat_c32
+    write(unit=unit, iostat=stat, iomsg=errmsg) x
+  end procedure write_flat_c32
+
+  module procedure read_flat_c32
+    read(unit=unit, iostat=stat, iomsg=errmsg) x
+  end procedure read_flat_c32
+
+#ifdef IOFL_HAS_R128
+  module procedure write_flat_r128
+    write(unit=unit, iostat=stat, iomsg=errmsg) x
+  end procedure write_flat_r128
+
+  module procedure read_flat_r128
+    read(unit=unit, iostat=stat, iomsg=errmsg) x
+  end procedure read_flat_r128
+#endif
+
+  module procedure write_flat_r64
+    write(unit=unit, iostat=stat, iomsg=errmsg) x
+  end procedure write_flat_r64
+
+  module procedure read_flat_r64
+    read(unit=unit, iostat=stat, iomsg=errmsg) x
+  end procedure read_flat_r64
+
+  module procedure write_flat_r32
+    write(unit=unit, iostat=stat, iomsg=errmsg) x
+  end procedure write_flat_r32
+
+  module procedure read_flat_r32
+    read(unit=unit, iostat=stat, iomsg=errmsg) x
+  end procedure read_flat_r32
+
+  module procedure write_flat_i64
+    write(unit=unit, iostat=stat, iomsg=errmsg) x
+  end procedure write_flat_i64
+
+  module procedure read_flat_i64
+    read(unit=unit, iostat=stat, iomsg=errmsg) x
+  end procedure read_flat_i64
+
+  module procedure write_flat_i32
+    write(unit=unit, iostat=stat, iomsg=errmsg) x
+  end procedure write_flat_i32
+
+  module procedure read_flat_i32
+    read(unit=unit, iostat=stat, iomsg=errmsg) x
+  end procedure read_flat_i32
+
+  module procedure write_flat_i16
+    write(unit=unit, iostat=stat, iomsg=errmsg) x
+  end procedure write_flat_i16
+
+  module procedure read_flat_i16
+    read(unit=unit, iostat=stat, iomsg=errmsg) x
+  end procedure read_flat_i16
+
+  module procedure write_flat_i8
+    write(unit=unit, iostat=stat, iomsg=errmsg) x
+  end procedure write_flat_i8
+
+  module procedure read_flat_i8
+    read(unit=unit, iostat=stat, iomsg=errmsg) x
+  end procedure read_flat_i8
 
 end submodule io_binary

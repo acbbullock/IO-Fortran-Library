@@ -1752,6 +1752,40 @@ module io_fortran_lib
 #:endfor
   end interface from_binary
 
+  interface                                                                                        ! Submodule io_binary
+#:for k, t in FLAT_TYPES
+#:if k in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+    module subroutine write_flat_${k}$(unit, x, n, stat, errmsg)
+      !-----------------------------------------------------------------------------------------------------------------
+      !! Writes a contiguous array to a stream unit as one block. A caller passes each rank of an assumed-rank array
+      !! here, rather than writing it inside `select rank`, where gfortran moves one element at a time (#93).
+      !-----------------------------------------------------------------------------------------------------------------
+      integer,          intent(in)    :: unit
+      integer(i64),     intent(in)    :: n
+      ${t}$, intent(in)    :: x(n)
+      integer,          intent(out)   :: stat
+      character(len=*), intent(inout) :: errmsg
+    end subroutine write_flat_${k}$
+
+    module subroutine read_flat_${k}$(unit, x, n, stat, errmsg)
+      !-----------------------------------------------------------------------------------------------------------------
+      !! Reads a contiguous array from a stream unit as one block, the counterpart of `write_flat_${k}$`.
+      !-----------------------------------------------------------------------------------------------------------------
+      integer,          intent(in)    :: unit
+      integer(i64),     intent(in)    :: n
+      ${t}$, intent(inout) :: x(n)
+      integer,          intent(out)   :: stat
+      character(len=*), intent(inout) :: errmsg
+    end subroutine read_flat_${k}$
+#:if k in QUAD_KINDS
+#endif
+#:endif
+
+#:endfor
+  end interface
+
   interface to_npy                                                                                    ! Submodule io_npy
     !-------------------------------------------------------------------------------------------------------------------
     !! Private interface for writing an array to a NumPy `.npy` file, or to a `.npz` archive under a name.
