@@ -69,7 +69,10 @@ end program quickstart
   text that is not a valid number instead of returning a wrong value.
 * **A `String` type.** Operators for concatenation and for removing or
   repeating text, `split` and `join`, `replace`, `count` and `trim`,
-  ordering comparisons, and reading a file whole or a line at a time.
+  case conversion, `starts_with`, `ends_with` and `find`, ordering
+  comparisons, and reading a file whole or a line at a time. The
+  `io_strings` module provides the same operations for `character`
+  values, with the names used by the Fortran standard library.
 * **Output.** `aprint` prints an array as a table, and `echo` appends
   text to a log file.
 * **Errors that are not silent.** A failing call stops the program with a
@@ -109,9 +112,12 @@ The `real128` routines are enabled on `ifx`, and on `gfortran` targets with
 `REAL(16)`. They are left out on other compilers, including `flang`. To
 override this detection, compile with `-DIOFL_HAS_R128` or `-DIOFL_NO_R128`.
 
-`fpm` handles the preprocessor and include path for you. To compile the
-sources by other means, add `-cpp` (`gfortran`, `flang`) or `-fpp` (`ifx`),
-and add `include` to the include path.
+`fpm` handles the preprocessor, include path and compile order for you.
+To compile the sources by other means, add `-cpp` (`gfortran`, `flang`) or
+`-fpp` (`ifx`), add `include` to the include path, and compile
+`src/modules/io_fortran_lib_mod.f90`, then `src/modules/io_strings_mod.f90`,
+then `src/io_fortran_lib/*.f90`. [`ci/build-without-fpm.sh`](ci/build-without-fpm.sh)
+does exactly this, and CI runs it.
 
 ## Contributing
 

@@ -12,6 +12,7 @@ ordered_subpage: echo.md
 ordered_subpage: aprint.md
 ordered_subpage: String-methods.md
 ordered_subpage: operators.md
+ordered_subpage: io_strings.md
 ---
 
 The following subsections provide user instructions for each of the
@@ -37,3 +38,6 @@ publicly accessible [interfaces](../../lists/procedures.html):
   [String](../../type/string.html).
 * [Operators](operators.html): Extended operators for convenient string
   manipulations.
+* [io_strings](io_strings.html): Case conversion, prefix and suffix
+  tests, `find` and `trim` with given characters, for `character` and
+  `String` values, in a module of their own.

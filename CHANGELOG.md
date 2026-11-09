@@ -17,6 +17,12 @@ Work toward 2.2, tracked in the [2.2 milestone](https://github.com/acbbullock/IO
   `column_separator` for `read_file` and `write_file`) says otherwise (#70).
 * `column_names` for `from_file`, which returns a text file's header row as a `String` array, one name per column,
   and implies `header=.true.` (#71).
+* `String` methods `to_upper`, `to_lower`, `starts_with`, `ends_with` and `find`, and an optional `chars` for
+  `trim` and `trim_inplace`, which removes the given characters instead of whitespace (#72).
+* A module, `io_strings`, with the same operations as functions on `character` and `String` values: `to_upper`,
+  `to_lower`, `starts_with`, `ends_with`, `find` and `trim(string, chars)`, named and called as in the Fortran
+  standard library. They are kept out of `io_fortran_lib`, so that a program using it without an `only` list can
+  still define procedures with these names (#72).
 
 ### Changed
 

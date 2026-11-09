@@ -13,8 +13,9 @@ inc=(-I"$root/include")
 
 rm -rf "$out" && mkdir -p "$out" && cd "$out"
 
-# The library: the module first, then its submodules, which only depend on it.
+# The library: the module first, then io_strings, which uses it, then the submodules, which use both.
 "$fc" "$pp" "${flags[@]}" "${inc[@]}" -c "$root/src/modules/io_fortran_lib_mod.f90"
+"$fc" "$pp" "${flags[@]}" "${inc[@]}" -c "$root/src/modules/io_strings_mod.f90"
 "$fc" "$pp" "${flags[@]}" "${inc[@]}" -c "$root"/src/io_fortran_lib/*.f90
 ar rcs libIO-Fortran-Library.a ./*.o
 

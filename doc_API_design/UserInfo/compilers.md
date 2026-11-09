@@ -18,7 +18,10 @@ compilers, including `flang` and `gfortran` on Apple Silicon. To override
 this, compile with `-DIOFL_HAS_R128` or `-DIOFL_NO_R128`.
 
 The sources must be preprocessed. `fpm` does this automatically. To
-build by other means, add `-cpp` (`gfortran`, `flang`) or `-fpp` (`ifx`),
+build by other means, compile `src/modules/io_fortran_lib_mod.f90`, then
+`src/modules/io_strings_mod.f90`, then the submodules in
+`src/io_fortran_lib/`, as `ci/build-without-fpm.sh` does. Add `-cpp`
+(`gfortran`, `flang`) or `-fpp` (`ifx`),
 and add the `include` directory to the include path.
 
 ## Unsupported compilers
