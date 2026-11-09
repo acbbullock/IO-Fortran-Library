@@ -3,8 +3,11 @@ name: Experimental compilers
 # Compilers that can't build the library yet, run weekly and on demand rather than on every push and pull request, so
 # that CI shows only jobs expected to pass. nvfortran (#75) and AOCC (#80) share the classic Flang front end, which
 # lacks select rank, arrays above rank 7, implicit none (type, external) and elemental recursive procedures. LFortran
-# (#82) can't compile it yet: 0.58 crashed on the first file. To see whether a new release changes that, update its version below and run
-# the workflow from the Actions tab.
+# (#82) can't compile it yet: 0.58 crashed on the first file.
+#
+# nvfortran is the latest NVIDIA HPC SDK, so each run tries the newest release. setup-fortran's "latest" for LFortran
+# is an old version, and it knows AOCC releases only up to 5.2, so those two are pinned: update them below and run the
+# workflow from the Actions tab.
 #
 # The jobs are allowed to fail, so a run succeeds and sends no failure email. Each job writes its first errors to the
 # run's summary page.
@@ -34,7 +37,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { compiler: nvidia-hpc, version: "26.1", fpm: nvfortran, flags: "-O2" }
+          - { compiler: nvidia-hpc, version: latest, fpm: nvfortran, flags: "-O2" }
           # AOCC's flang is classic Flang, which fpm only recognizes under the name flang-classic. Under the name flang
           # it gets LLVM flang's options, which it rejects. fpm passes classic Flang no preprocessor flag.
           - { compiler: aocc, version: "5.2.0", fpm: flang-classic, flags: "-Mpreprocess -O2" }
