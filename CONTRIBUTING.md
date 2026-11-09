@@ -132,7 +132,17 @@ Compilers disagree more often than you'd expect. Before working around something
 [the compiler notes](https://acbbullock.github.io/IO-Fortran-Library/doc/page/UserInfo/compilers.html), and when
 you find a new compiler bug, reduce it to a small program with no library code and add it to #45.
 
+## Examples and documentation
+
+The programs in `example/` run with `fpm run --example <name>`, and CI builds and runs every one. The tutorials in
+`doc_API_design/Examples/` include them with FORD's `{!example/<name>.f90!}` syntax, so edit the file in `example/`
+rather than the page. The quick start in `README.md` is a copy of `example/quickstart.f90`, which CI checks.
+
+To build the documentation, install [FORD](https://github.com/Fortran-FOSS-Programmers/ford) 7 and run
+`ford ford-API-index.md` from the repository root, then open `doc/index.html`.
+
 ## Pull requests
 
-Work happens on the branch for the next release, such as `2.1`, and reaches `main` at release. Reference the issue
-a change addresses, include a test case for a bug fix, and make sure CI passes.
+Work happens on the branch for the next release, such as `2.2`, and reaches `main` at release. Reference the issue
+a change addresses, include a test case for a bug fix, and make sure CI passes. A change users will notice gets a
+line in the next release's section of [CHANGELOG.md](CHANGELOG.md).

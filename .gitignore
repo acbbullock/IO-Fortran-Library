@@ -1,2 +1,8 @@
 build
 doc
+
+# Files the examples write when run from the repository root
+/*.csv
+/*.dat
+/*.npy
+/*.log

@@ -1,7 +1,7 @@
 ---
 project: IO-Fortran-Library
 version: 2.1.0
-summary: A portable, standard I/O library for Modern Fortran
+summary: Text, CSV, binary and NumPy .npy file I/O, number-text conversion, and a String type, in standard Fortran 2018
 author: Austin C Bullock
 github: https://github.com/acbbullock
 project_github: https://github.com/acbbullock/IO-Fortran-Library
