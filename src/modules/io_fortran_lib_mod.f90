@@ -59,14 +59,14 @@ module io_fortran_lib
   character(len=2), parameter :: LOCALES(*)   = [ "US", "EU"    ] ! Allowed locale specifiers
 
   character(len=3), parameter :: BINARY_EXT(*) = [ "dat", "bin"  ] ! Allowed binary extensions
-  character(len=3), parameter :: TEXT_EXT(*)   = [ "csv", "txt", & ! Allowed text extensions
-                                                   "log", "rtf", &
-                                                   "odm", "odt", &
-                                                   "ods", "odf", &
-                                                   "xls", "doc", &
-                                                   "org", "dbf", &
-                                                   "bed", "gff", &
-                                                   "gtf"         ]
+  character(len=3), parameter :: TEXT_EXT(*)   = [ "csv", "tsv", & ! Allowed text extensions
+                                                   "txt", "log", &
+                                                   "rtf", "odm", &
+                                                   "odt", "ods", &
+                                                   "odf", "xls", &
+                                                   "doc", "org", &
+                                                   "dbf", "bed", &
+                                                   "gff", "gtf"  ]
 
   integer, parameter :: IOFL_READ_ERR  = 1 !! `stat` after an error reading, inquiring about or closing a file
   integer, parameter :: IOFL_WRITE_ERR = 2 !! `stat` after an error writing or closing a file
@@ -262,7 +262,8 @@ module io_fortran_lib
                                           errmsg, format)
       !-----------------------------------------------------------------------------------------------------------------
       !! Reads raw text file contents into `self` and optionally populates a cell array using the designated
-      !! `row_separator` and `column_separator` whose default values are `LF` and `COMMA` respectively.
+      !! `row_separator` and `column_separator` whose default values are `LF`, and a tab for a `.tsv` file or `COMMA`
+      !! otherwise.
       !!
       !! For a user reference, see [read_file](../page/Ref/String-methods.html#read_file).
       !-----------------------------------------------------------------------------------------------------------------
@@ -376,7 +377,7 @@ module io_fortran_lib
       !-----------------------------------------------------------------------------------------------------------------
       !! Writes the content of a cell array to a text file. The cell array's entire contents are populated into
       !! `self` and then streamed to an external text file using the designated `row_separator` and
-      !! `column_separator` whose default values are `LF` and `COMMA` respectively.
+      !! `column_separator` whose default values are `LF`, and a tab for a `.tsv` file or `COMMA` otherwise.
       !!
       !! For a user reference, see [write_file](../page/Ref/String-methods.html#write_file).
       !-----------------------------------------------------------------------------------------------------------------
@@ -1421,6 +1422,15 @@ module io_fortran_lib
       character(len=*), intent(in), optional :: format
       character(len=:), allocatable          :: file_format
     end function format_of
+
+    pure recursive module function default_delim(file, locale) result(delim)
+      !-----------------------------------------------------------------------------------------------------------------
+      !! The delimiter for a text file when none is given: a tab for a `.tsv` file, and otherwise a comma, or a
+      !! semicolon for the `"EU"` locale, whose decimal mark is a comma.
+      !-----------------------------------------------------------------------------------------------------------------
+      character(len=*), intent(in)  :: file, locale
+      character(len=:), allocatable :: delim
+    end function default_delim
   end interface
 
   interface to_file                                                                                  ! Submodule file_io
