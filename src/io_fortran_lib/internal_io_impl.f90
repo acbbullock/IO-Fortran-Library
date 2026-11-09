@@ -172,6 +172,7 @@ submodule (io_fortran_lib) io_internal
 
   module procedure cast_column_c128
     type(String), allocatable :: re(:), im_part(:)
+    real(r128),    allocatable :: parts(:,:)
     character(len=5)          :: decimal
     integer                   :: i
 
@@ -181,10 +182,14 @@ submodule (io_fortran_lib) io_internal
       call cast(x, into, locale, fmt, decimals, im); return
     end if
 
-    allocate( re(size(x)), im_part(size(x)) )
+    allocate( re(size(x)), im_part(size(x)), parts(size(x),2) )
 
-    call cast_column(x%re, re, locale, fmt, decimals)
-    call cast_column(x%im, im_part, locale, fmt, decimals)
+    do i = 1, size(x)                    ! Copied, as ifx 2025.3 rejects x%re of an intent(in) x as an argument
+      parts(i,1) = real(x(i), kind=r128); parts(i,2) = aimag(x(i))
+    end do
+
+    call cast_column(parts(:,1), re, locale, fmt, decimals)
+    call cast_column(parts(:,2), im_part, locale, fmt, decimals)
 
     do i = 1, size(x)
       into(i)%buf = join_complex(re(i)%buf, im_part(i)%buf, ieee_is_negative(x(i)%im), decimal, "e", im)
@@ -200,6 +205,7 @@ submodule (io_fortran_lib) io_internal
 
   module procedure cast_column_c64
     type(String), allocatable :: re(:), im_part(:)
+    real(r64),    allocatable :: parts(:,:)
     character(len=5)          :: decimal
     integer                   :: i
 
@@ -209,10 +215,14 @@ submodule (io_fortran_lib) io_internal
       call cast(x, into, locale, fmt, decimals, im); return
     end if
 
-    allocate( re(size(x)), im_part(size(x)) )
+    allocate( re(size(x)), im_part(size(x)), parts(size(x),2) )
 
-    call cast_column(x%re, re, locale, fmt, decimals)
-    call cast_column(x%im, im_part, locale, fmt, decimals)
+    do i = 1, size(x)                    ! Copied, as ifx 2025.3 rejects x%re of an intent(in) x as an argument
+      parts(i,1) = real(x(i), kind=r64); parts(i,2) = aimag(x(i))
+    end do
+
+    call cast_column(parts(:,1), re, locale, fmt, decimals)
+    call cast_column(parts(:,2), im_part, locale, fmt, decimals)
 
     do i = 1, size(x)
       into(i)%buf = join_complex(re(i)%buf, im_part(i)%buf, ieee_is_negative(x(i)%im), decimal, "e", im)
@@ -227,6 +237,7 @@ submodule (io_fortran_lib) io_internal
 
   module procedure cast_column_c32
     type(String), allocatable :: re(:), im_part(:)
+    real(r32),    allocatable :: parts(:,:)
     character(len=5)          :: decimal
     integer                   :: i
 
@@ -236,10 +247,14 @@ submodule (io_fortran_lib) io_internal
       call cast(x, into, locale, fmt, decimals, im); return
     end if
 
-    allocate( re(size(x)), im_part(size(x)) )
+    allocate( re(size(x)), im_part(size(x)), parts(size(x),2) )
 
-    call cast_column(x%re, re, locale, fmt, decimals)
-    call cast_column(x%im, im_part, locale, fmt, decimals)
+    do i = 1, size(x)                    ! Copied, as ifx 2025.3 rejects x%re of an intent(in) x as an argument
+      parts(i,1) = real(x(i), kind=r32); parts(i,2) = aimag(x(i))
+    end do
+
+    call cast_column(parts(:,1), re, locale, fmt, decimals)
+    call cast_column(parts(:,2), im_part, locale, fmt, decimals)
 
     do i = 1, size(x)
       into(i)%buf = join_complex(re(i)%buf, im_part(i)%buf, ieee_is_negative(x(i)%im), decimal, "e", im)
