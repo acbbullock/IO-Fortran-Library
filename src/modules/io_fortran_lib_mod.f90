@@ -2372,6 +2372,39 @@ module io_fortran_lib
 
   end interface from_text
 
+  interface cast_cells                                                                           ! Submodule io_internal
+    !-------------------------------------------------------------------------------------------------------------------
+    !! Private interface for reading a column of cells into numbers, with the same results as the elemental `cast`. It
+    !! reads many cells in one statement, because each internal `read` costs more than the number it reads.
+    !-------------------------------------------------------------------------------------------------------------------
+#ifdef IOFL_HAS_R128
+    recursive module subroutine cast_cells_r128(cells, into, locale, fmt, cell_stat)
+      type(String),     intent(in)  :: cells(:)
+      real(r128),       intent(out) :: into(:)
+      character(len=*), intent(in)  :: locale
+      character(len=*), intent(in)  :: fmt
+      integer,          intent(out) :: cell_stat(:)
+    end subroutine cast_cells_r128
+#endif
+
+    recursive module subroutine cast_cells_r64(cells, into, locale, fmt, cell_stat)
+      type(String),     intent(in)  :: cells(:)
+      real(r64),       intent(out) :: into(:)
+      character(len=*), intent(in)  :: locale
+      character(len=*), intent(in)  :: fmt
+      integer,          intent(out) :: cell_stat(:)
+    end subroutine cast_cells_r64
+
+    recursive module subroutine cast_cells_r32(cells, into, locale, fmt, cell_stat)
+      type(String),     intent(in)  :: cells(:)
+      real(r32),       intent(out) :: into(:)
+      character(len=*), intent(in)  :: locale
+      character(len=*), intent(in)  :: fmt
+      integer,          intent(out) :: cell_stat(:)
+    end subroutine cast_cells_r32
+
+  end interface cast_cells
+
   interface to_binary                                                                              ! Submodule io_binary
     !-------------------------------------------------------------------------------------------------------------------
     !! Private interface for writing an array to an external binary file.

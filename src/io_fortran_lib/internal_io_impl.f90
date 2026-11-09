@@ -697,6 +697,216 @@ submodule (io_fortran_lib) io_internal
   end procedure cast_char_to_i8
 
 
+  ! cast_cells ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#ifdef IOFL_HAS_R128
+  module procedure cast_cells_r128
+    !-------------------------------------------------------------------------------------------------------------------
+    !! Checks each cell as `cast` does, then reads the valid cells of a chunk with one list-directed `read`, separated
+    !! by the locale's value separator. A valid cell is one number with no separators or blanks, so the `read` gives
+    !! the same values as reading each cell alone. If it fails anyway, the chunk is read again a cell at a time.
+    !-------------------------------------------------------------------------------------------------------------------
+    integer, parameter :: CHUNK = 256
+
+    character(len=:), allocatable :: buffer
+    character(len=1)              :: fmt_, separator
+    character(len=5)              :: decimal
+    real(r128)                     :: values(CHUNK)
+    integer                       :: which(CHUNK), lefts(CHUNK), rights(CHUNK)
+    integer                       :: status, first, last, i, j, l, r, m, length, pos
+
+    call cast_args(REAL_FMTS, "e", fmt, locale, fmt_, decimal, status)
+
+    if ( (status /= 0) .or. (fmt_ == "z") ) then
+      call cast(cells, into, locale=locale, fmt=fmt, stat=cell_stat); return
+    end if
+
+    separator = COMMA
+    if ( decimal == "COMMA" ) separator = SEMICOLON
+
+    into = 0e0_r128; cell_stat = READ_ERR
+    allocate( character(len=32*CHUNK) :: buffer )
+
+    do first = 1, size(cells), CHUNK
+      last = min(first + CHUNK - 1, size(cells))
+      m = 0; length = 0
+
+      do i = first, last
+        if ( .not. allocated(cells(i)%buf) ) cycle
+
+        call trimmed_bounds(cells(i)%buf(:cells(i)%n), l, r)
+        if ( .not. is_real_text(cells(i)%buf(l:r), decimal) ) cycle
+
+        m = m + 1; which(m) = i; lefts(m) = l; rights(m) = r
+        length = length + r - l + 2
+      end do
+
+      if ( m == 0 ) cycle
+
+      if ( len(buffer) < length ) then
+        deallocate(buffer); allocate( character(len=length) :: buffer )
+      end if
+
+      pos = 0
+
+      do j = 1, m
+        l = lefts(j); r = rights(j)
+        buffer(pos+1:pos+r-l+1) = cells(which(j))%buf(l:r)
+        pos = pos + r - l + 2
+        buffer(pos:pos) = separator
+      end do
+
+      read(unit=buffer(:pos-1), fmt=*, decimal=decimal, iostat=status) values(:m)
+
+      if ( status == 0 ) then
+        into(which(:m)) = values(:m); cell_stat(which(:m)) = 0
+      else
+        do j = 1, m
+          i = which(j)
+          call parse_real_r128(cells(i)%buf(:cells(i)%n), decimal, fmt_, into(i), cell_stat(i))
+        end do
+      end if
+    end do
+  end procedure cast_cells_r128
+#endif
+
+  module procedure cast_cells_r64
+    !-------------------------------------------------------------------------------------------------------------------
+    !! Checks each cell as `cast` does, then reads the valid cells of a chunk with one list-directed `read`, separated
+    !! by the locale's value separator. A valid cell is one number with no separators or blanks, so the `read` gives
+    !! the same values as reading each cell alone. If it fails anyway, the chunk is read again a cell at a time.
+    !-------------------------------------------------------------------------------------------------------------------
+    integer, parameter :: CHUNK = 256
+
+    character(len=:), allocatable :: buffer
+    character(len=1)              :: fmt_, separator
+    character(len=5)              :: decimal
+    real(r64)                     :: values(CHUNK)
+    integer                       :: which(CHUNK), lefts(CHUNK), rights(CHUNK)
+    integer                       :: status, first, last, i, j, l, r, m, length, pos
+
+    call cast_args(REAL_FMTS, "e", fmt, locale, fmt_, decimal, status)
+
+    if ( (status /= 0) .or. (fmt_ == "z") ) then
+      call cast(cells, into, locale=locale, fmt=fmt, stat=cell_stat); return
+    end if
+
+    separator = COMMA
+    if ( decimal == "COMMA" ) separator = SEMICOLON
+
+    into = 0e0_r64; cell_stat = READ_ERR
+    allocate( character(len=32*CHUNK) :: buffer )
+
+    do first = 1, size(cells), CHUNK
+      last = min(first + CHUNK - 1, size(cells))
+      m = 0; length = 0
+
+      do i = first, last
+        if ( .not. allocated(cells(i)%buf) ) cycle
+
+        call trimmed_bounds(cells(i)%buf(:cells(i)%n), l, r)
+        if ( .not. is_real_text(cells(i)%buf(l:r), decimal) ) cycle
+
+        m = m + 1; which(m) = i; lefts(m) = l; rights(m) = r
+        length = length + r - l + 2
+      end do
+
+      if ( m == 0 ) cycle
+
+      if ( len(buffer) < length ) then
+        deallocate(buffer); allocate( character(len=length) :: buffer )
+      end if
+
+      pos = 0
+
+      do j = 1, m
+        l = lefts(j); r = rights(j)
+        buffer(pos+1:pos+r-l+1) = cells(which(j))%buf(l:r)
+        pos = pos + r - l + 2
+        buffer(pos:pos) = separator
+      end do
+
+      read(unit=buffer(:pos-1), fmt=*, decimal=decimal, iostat=status) values(:m)
+
+      if ( status == 0 ) then
+        into(which(:m)) = values(:m); cell_stat(which(:m)) = 0
+      else
+        do j = 1, m
+          i = which(j)
+          call parse_real_r64(cells(i)%buf(:cells(i)%n), decimal, fmt_, into(i), cell_stat(i))
+        end do
+      end if
+    end do
+  end procedure cast_cells_r64
+
+  module procedure cast_cells_r32
+    !-------------------------------------------------------------------------------------------------------------------
+    !! Checks each cell as `cast` does, then reads the valid cells of a chunk with one list-directed `read`, separated
+    !! by the locale's value separator. A valid cell is one number with no separators or blanks, so the `read` gives
+    !! the same values as reading each cell alone. If it fails anyway, the chunk is read again a cell at a time.
+    !-------------------------------------------------------------------------------------------------------------------
+    integer, parameter :: CHUNK = 256
+
+    character(len=:), allocatable :: buffer
+    character(len=1)              :: fmt_, separator
+    character(len=5)              :: decimal
+    real(r32)                     :: values(CHUNK)
+    integer                       :: which(CHUNK), lefts(CHUNK), rights(CHUNK)
+    integer                       :: status, first, last, i, j, l, r, m, length, pos
+
+    call cast_args(REAL_FMTS, "e", fmt, locale, fmt_, decimal, status)
+
+    if ( (status /= 0) .or. (fmt_ == "z") ) then
+      call cast(cells, into, locale=locale, fmt=fmt, stat=cell_stat); return
+    end if
+
+    separator = COMMA
+    if ( decimal == "COMMA" ) separator = SEMICOLON
+
+    into = 0e0_r32; cell_stat = READ_ERR
+    allocate( character(len=32*CHUNK) :: buffer )
+
+    do first = 1, size(cells), CHUNK
+      last = min(first + CHUNK - 1, size(cells))
+      m = 0; length = 0
+
+      do i = first, last
+        if ( .not. allocated(cells(i)%buf) ) cycle
+
+        call trimmed_bounds(cells(i)%buf(:cells(i)%n), l, r)
+        if ( .not. is_real_text(cells(i)%buf(l:r), decimal) ) cycle
+
+        m = m + 1; which(m) = i; lefts(m) = l; rights(m) = r
+        length = length + r - l + 2
+      end do
+
+      if ( m == 0 ) cycle
+
+      if ( len(buffer) < length ) then
+        deallocate(buffer); allocate( character(len=length) :: buffer )
+      end if
+
+      pos = 0
+
+      do j = 1, m
+        l = lefts(j); r = rights(j)
+        buffer(pos+1:pos+r-l+1) = cells(which(j))%buf(l:r)
+        pos = pos + r - l + 2
+        buffer(pos:pos) = separator
+      end do
+
+      read(unit=buffer(:pos-1), fmt=*, decimal=decimal, iostat=status) values(:m)
+
+      if ( status == 0 ) then
+        into(which(:m)) = values(:m); cell_stat(which(:m)) = 0
+      else
+        do j = 1, m
+          i = which(j)
+          call parse_real_r32(cells(i)%buf(:cells(i)%n), decimal, fmt_, into(i), cell_stat(i))
+        end do
+      end if
+    end do
+  end procedure cast_cells_r32
+
   ! Number formatting, shared by `String`, `str` and `cast` ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   pure function int_fmt_of(fmt) result(fmt_)
     character(len=*), intent(in), optional :: fmt
@@ -1207,11 +1417,18 @@ submodule (io_fortran_lib) io_internal
     end do
   end subroutine trimmed_bounds
 
+  ! The character tests below compare character codes: ifx calls its runtime library for every comparison of characters,
+  ! even of length 1, which made them most of the cost of `cast` from text (#92).
   elemental function is_space(c) result(blank)
     character(len=1), intent(in) :: c
     logical                      :: blank
 
-    blank = (c == SPACE) .or. (c == TAB) .or. (c == CR) .or. (c == LF)
+    integer, parameter :: SPACE_CODE = iachar(SPACE), TAB_CODE = iachar(TAB), CR_CODE = iachar(CR), &
+                          LF_CODE = iachar(LF)
+    integer            :: code
+
+    code  = iachar(c)
+    blank = (code == SPACE_CODE) .or. (code == TAB_CODE) .or. (code == CR_CODE) .or. (code == LF_CODE)
   end function is_space
 
   elemental function digit_value(c, base) result(digit)
@@ -1219,14 +1436,20 @@ submodule (io_fortran_lib) io_internal
     integer,          intent(in) :: base
     integer                      :: digit
 
+    integer, parameter :: ZERO = iachar("0"), LOWER_A = iachar("a"), UPPER_A = iachar("A")
+    integer            :: code
+
+    code  = iachar(c)
     digit = -1
 
-    if ( (c >= "0") .and. (c <= "9") ) then
-      digit = iachar(c) - iachar("0")
-    else if ( (base == 16) .and. (c >= "a") .and. (c <= "f") ) then
-      digit = iachar(c) - iachar("a") + 10
-    else if ( (base == 16) .and. (c >= "A") .and. (c <= "F") ) then
-      digit = iachar(c) - iachar("A") + 10
+    if ( (code >= ZERO) .and. (code <= ZERO+9) ) then
+      digit = code - ZERO
+    else if ( base == 16 ) then
+      if ( (code >= LOWER_A) .and. (code <= LOWER_A+5) ) then
+        digit = code - LOWER_A + 10
+      else if ( (code >= UPPER_A) .and. (code <= UPPER_A+5) ) then
+        digit = code - UPPER_A + 10
+      end if
     end if
   end function digit_value
 
