@@ -63,6 +63,7 @@ contains
     call suite%add("npy_file_i32", npy_file_i32)
     call suite%add("npy_file_i16", npy_file_i16)
     call suite%add("npy_file_i8", npy_file_i8)
+    call suite%add("npy_file_l", npy_file_l)
 #ifdef IOFL_HAS_R128
     call suite%add("text_file_c128", text_file_c128)
     call suite%add("binary_file_c128", binary_file_c128)
@@ -3371,6 +3372,184 @@ contains
     end if
 
   end subroutine npy_file_i8
+
+  subroutine npy_file_l()
+    !! `to_file` then `from_file` on npy files of every rank.
+    logical, allocatable :: values(:), sample(:)
+    logical, allocatable :: a1(:), b1(:)
+    logical, allocatable :: a2(:,:), b2(:,:)
+    logical, allocatable :: a3(:,:,:), b3(:,:,:)
+    logical, allocatable :: a4(:,:,:,:), b4(:,:,:,:)
+    logical, allocatable :: a5(:,:,:,:,:), b5(:,:,:,:,:)
+    logical, allocatable :: a6(:,:,:,:,:,:), b6(:,:,:,:,:,:)
+    logical, allocatable :: a7(:,:,:,:,:,:,:), b7(:,:,:,:,:,:,:)
+    logical, allocatable :: a8(:,:,:,:,:,:,:,:), b8(:,:,:,:,:,:,:,:)
+    logical, allocatable :: a9(:,:,:,:,:,:,:,:,:), b9(:,:,:,:,:,:,:,:,:)
+    logical, allocatable :: a10(:,:,:,:,:,:,:,:,:,:), b10(:,:,:,:,:,:,:,:,:,:)
+    logical, allocatable :: a11(:,:,:,:,:,:,:,:,:,:,:), b11(:,:,:,:,:,:,:,:,:,:,:)
+    logical, allocatable :: a12(:,:,:,:,:,:,:,:,:,:,:,:), b12(:,:,:,:,:,:,:,:,:,:,:,:)
+    logical, allocatable :: a13(:,:,:,:,:,:,:,:,:,:,:,:,:), b13(:,:,:,:,:,:,:,:,:,:,:,:,:)
+    logical, allocatable :: a14(:,:,:,:,:,:,:,:,:,:,:,:,:,:), b14(:,:,:,:,:,:,:,:,:,:,:,:,:,:)
+    logical, allocatable :: a15(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:), b15(:,:,:,:,:,:,:,:,:,:,:,:,:,:,:)
+    character(len=512) :: msg
+    integer            :: st
+
+    call reset_random()
+    values = test_values_of(.true., 12)
+    sample = [ values(1:12), values(size(values)-11:) ]                       ! Twelve edge and twelve random values
+    msg = ""
+
+    a1 = reshape(sample(1:3), [3])
+    call to_file(a1, file=scratch()//"_rank1.npy", stat=st, errmsg=msg)
+    if ( succeeded(st, msg, "to_file (rank 1)") ) then
+      call from_file(scratch()//"_rank1.npy", into=b1, stat=st, errmsg=msg)
+      if ( succeeded(st, msg, "from_file (rank 1)") ) then
+        call expect_equal(shape(b1), shape(a1), "Shape (rank 1)")
+        call expect_equal(pack(b1, .true.), pack(a1, .true.), "Values (rank 1)")
+      end if
+    end if
+
+    a2 = reshape(sample(1:6), [3, 2])
+    call to_file(a2, file=scratch()//"_rank2.npy", stat=st, errmsg=msg)
+    if ( succeeded(st, msg, "to_file (rank 2)") ) then
+      call from_file(scratch()//"_rank2.npy", into=b2, stat=st, errmsg=msg)
+      if ( succeeded(st, msg, "from_file (rank 2)") ) then
+        call expect_equal(shape(b2), shape(a2), "Shape (rank 2)")
+        call expect_equal(pack(b2, .true.), pack(a2, .true.), "Values (rank 2)")
+      end if
+    end if
+
+    a3 = reshape(sample(1:12), [3, 2, 2])
+    call to_file(a3, file=scratch()//"_rank3.npy", stat=st, errmsg=msg)
+    if ( succeeded(st, msg, "to_file (rank 3)") ) then
+      call from_file(scratch()//"_rank3.npy", into=b3, stat=st, errmsg=msg)
+      if ( succeeded(st, msg, "from_file (rank 3)") ) then
+        call expect_equal(shape(b3), shape(a3), "Shape (rank 3)")
+        call expect_equal(pack(b3, .true.), pack(a3, .true.), "Values (rank 3)")
+      end if
+    end if
+
+    a4 = reshape(sample(1:24), [3, 2, 2, 2])
+    call to_file(a4, file=scratch()//"_rank4.npy", stat=st, errmsg=msg)
+    if ( succeeded(st, msg, "to_file (rank 4)") ) then
+      call from_file(scratch()//"_rank4.npy", into=b4, stat=st, errmsg=msg)
+      if ( succeeded(st, msg, "from_file (rank 4)") ) then
+        call expect_equal(shape(b4), shape(a4), "Shape (rank 4)")
+        call expect_equal(pack(b4, .true.), pack(a4, .true.), "Values (rank 4)")
+      end if
+    end if
+
+    a5 = reshape(sample(1:24), [3, 2, 2, 2, 1])
+    call to_file(a5, file=scratch()//"_rank5.npy", stat=st, errmsg=msg)
+    if ( succeeded(st, msg, "to_file (rank 5)") ) then
+      call from_file(scratch()//"_rank5.npy", into=b5, stat=st, errmsg=msg)
+      if ( succeeded(st, msg, "from_file (rank 5)") ) then
+        call expect_equal(shape(b5), shape(a5), "Shape (rank 5)")
+        call expect_equal(pack(b5, .true.), pack(a5, .true.), "Values (rank 5)")
+      end if
+    end if
+
+    a6 = reshape(sample(1:24), [3, 2, 2, 2, 1, 1])
+    call to_file(a6, file=scratch()//"_rank6.npy", stat=st, errmsg=msg)
+    if ( succeeded(st, msg, "to_file (rank 6)") ) then
+      call from_file(scratch()//"_rank6.npy", into=b6, stat=st, errmsg=msg)
+      if ( succeeded(st, msg, "from_file (rank 6)") ) then
+        call expect_equal(shape(b6), shape(a6), "Shape (rank 6)")
+        call expect_equal(pack(b6, .true.), pack(a6, .true.), "Values (rank 6)")
+      end if
+    end if
+
+    a7 = reshape(sample(1:24), [3, 2, 2, 2, 1, 1, 1])
+    call to_file(a7, file=scratch()//"_rank7.npy", stat=st, errmsg=msg)
+    if ( succeeded(st, msg, "to_file (rank 7)") ) then
+      call from_file(scratch()//"_rank7.npy", into=b7, stat=st, errmsg=msg)
+      if ( succeeded(st, msg, "from_file (rank 7)") ) then
+        call expect_equal(shape(b7), shape(a7), "Shape (rank 7)")
+        call expect_equal(pack(b7, .true.), pack(a7, .true.), "Values (rank 7)")
+      end if
+    end if
+
+    a8 = reshape(sample(1:24), [3, 2, 2, 2, 1, 1, 1, 1])
+    call to_file(a8, file=scratch()//"_rank8.npy", stat=st, errmsg=msg)
+    if ( succeeded(st, msg, "to_file (rank 8)") ) then
+      call from_file(scratch()//"_rank8.npy", into=b8, stat=st, errmsg=msg)
+      if ( succeeded(st, msg, "from_file (rank 8)") ) then
+        call expect_equal(shape(b8), shape(a8), "Shape (rank 8)")
+        call expect_equal(pack(b8, .true.), pack(a8, .true.), "Values (rank 8)")
+      end if
+    end if
+
+    a9 = reshape(sample(1:24), [3, 2, 2, 2, 1, 1, 1, 1, 1])
+    call to_file(a9, file=scratch()//"_rank9.npy", stat=st, errmsg=msg)
+    if ( succeeded(st, msg, "to_file (rank 9)") ) then
+      call from_file(scratch()//"_rank9.npy", into=b9, stat=st, errmsg=msg)
+      if ( succeeded(st, msg, "from_file (rank 9)") ) then
+        call expect_equal(shape(b9), shape(a9), "Shape (rank 9)")
+        call expect_equal(pack(b9, .true.), pack(a9, .true.), "Values (rank 9)")
+      end if
+    end if
+
+    a10 = reshape(sample(1:24), [3, 2, 2, 2, 1, 1, 1, 1, 1, 1])
+    call to_file(a10, file=scratch()//"_rank10.npy", stat=st, errmsg=msg)
+    if ( succeeded(st, msg, "to_file (rank 10)") ) then
+      call from_file(scratch()//"_rank10.npy", into=b10, stat=st, errmsg=msg)
+      if ( succeeded(st, msg, "from_file (rank 10)") ) then
+        call expect_equal(shape(b10), shape(a10), "Shape (rank 10)")
+        call expect_equal(pack(b10, .true.), pack(a10, .true.), "Values (rank 10)")
+      end if
+    end if
+
+    a11 = reshape(sample(1:24), [3, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1])
+    call to_file(a11, file=scratch()//"_rank11.npy", stat=st, errmsg=msg)
+    if ( succeeded(st, msg, "to_file (rank 11)") ) then
+      call from_file(scratch()//"_rank11.npy", into=b11, stat=st, errmsg=msg)
+      if ( succeeded(st, msg, "from_file (rank 11)") ) then
+        call expect_equal(shape(b11), shape(a11), "Shape (rank 11)")
+        call expect_equal(pack(b11, .true.), pack(a11, .true.), "Values (rank 11)")
+      end if
+    end if
+
+    a12 = reshape(sample(1:24), [3, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1])
+    call to_file(a12, file=scratch()//"_rank12.npy", stat=st, errmsg=msg)
+    if ( succeeded(st, msg, "to_file (rank 12)") ) then
+      call from_file(scratch()//"_rank12.npy", into=b12, stat=st, errmsg=msg)
+      if ( succeeded(st, msg, "from_file (rank 12)") ) then
+        call expect_equal(shape(b12), shape(a12), "Shape (rank 12)")
+        call expect_equal(pack(b12, .true.), pack(a12, .true.), "Values (rank 12)")
+      end if
+    end if
+
+    a13 = reshape(sample(1:24), [3, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1])
+    call to_file(a13, file=scratch()//"_rank13.npy", stat=st, errmsg=msg)
+    if ( succeeded(st, msg, "to_file (rank 13)") ) then
+      call from_file(scratch()//"_rank13.npy", into=b13, stat=st, errmsg=msg)
+      if ( succeeded(st, msg, "from_file (rank 13)") ) then
+        call expect_equal(shape(b13), shape(a13), "Shape (rank 13)")
+        call expect_equal(pack(b13, .true.), pack(a13, .true.), "Values (rank 13)")
+      end if
+    end if
+
+    a14 = reshape(sample(1:24), [3, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
+    call to_file(a14, file=scratch()//"_rank14.npy", stat=st, errmsg=msg)
+    if ( succeeded(st, msg, "to_file (rank 14)") ) then
+      call from_file(scratch()//"_rank14.npy", into=b14, stat=st, errmsg=msg)
+      if ( succeeded(st, msg, "from_file (rank 14)") ) then
+        call expect_equal(shape(b14), shape(a14), "Shape (rank 14)")
+        call expect_equal(pack(b14, .true.), pack(a14, .true.), "Values (rank 14)")
+      end if
+    end if
+
+    a15 = reshape(sample(1:24), [3, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
+    call to_file(a15, file=scratch()//"_rank15.npy", stat=st, errmsg=msg)
+    if ( succeeded(st, msg, "to_file (rank 15)") ) then
+      call from_file(scratch()//"_rank15.npy", into=b15, stat=st, errmsg=msg)
+      if ( succeeded(st, msg, "from_file (rank 15)") ) then
+        call expect_equal(shape(b15), shape(a15), "Shape (rank 15)")
+        call expect_equal(pack(b15, .true.), pack(a15, .true.), "Values (rank 15)")
+      end if
+    end if
+
+  end subroutine npy_file_l
 
 #ifdef IOFL_HAS_R128
   subroutine text_file_c128()

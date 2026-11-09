@@ -41,7 +41,11 @@ submodule (io_fortran_lib) io_npy
     if ( stat == 0 ) then
       select rank(x)
 #:for rank in RANKS
+#:if code == "b"
+        rank(${rank}$); write(unit=file_unit, iostat=stat, iomsg=errmsg) merge(1_i8, 0_i8, x)   ! NumPy bool: one byte
+#:else
         rank(${rank}$); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+#:endif
 #:endfor
       end select
     end if
@@ -69,7 +73,9 @@ submodule (io_fortran_lib) io_npy
     integer(i64),     allocatable :: shp(:)
     integer(i8),      allocatable :: bytes(:)
     ${decl}$,     allocatable :: flat(:)
+#:if code != "b"
     ${decl}$                      :: mold
+#:endif
     logical                       :: fortran_order, swap
     integer                       :: file_unit, into_rank
 
@@ -107,9 +113,14 @@ submodule (io_fortran_lib) io_npy
           return
         end if
 
+#:if code == "b"
+        ! A NumPy bool is one byte, which is not how a Fortran logical is stored, so it is always converted.
+        block
+#:else
         if ( fortran_order .and. (.not. swap) ) then
           read(unit=file_unit, iostat=stat, iomsg=errmsg) into
         else
+#:endif
           allocate( bytes(${size}$*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
           if ( stat == 0 ) read(unit=file_unit, iostat=stat, iomsg=errmsg) bytes
@@ -117,10 +128,14 @@ submodule (io_fortran_lib) io_npy
           if ( stat == 0 ) then
 #:if code == "c"
             if ( swap ) call swap_bytes(bytes, ${size//2}$)
-#:else
+#:elif code != "b"
             if ( swap ) call swap_bytes(bytes, ${size}$)
 #:endif
+#:if code == "b"
+            flat = (bytes /= 0_i8)
+#:else
             flat = transfer(bytes, mold, size(into))
+#:endif
 #:if rank == 1
             into = flat
 #:else
@@ -131,7 +146,11 @@ submodule (io_fortran_lib) io_npy
             end if
 #:endif
           end if
+#:if code == "b"
+        end block
+#:else
         end if
+#:endif
 #:endfor
     end select
 
@@ -155,7 +174,8 @@ submodule (io_fortran_lib) io_npy
   ! Helpers ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   pure function descr_of(code, size) result(descr)
-    !! Returns the NumPy type string for a type `code` ("f", "c" or "i") of `size` bytes in this machine's byte order.
+    !! Returns the NumPy type string for a type `code` ("f", "c", "i" or "b") of `size` bytes in this machine's byte
+    !! order.
     character(len=*), intent(in)  :: code
     integer,          intent(in)  :: size
     character(len=:), allocatable :: descr

@@ -70,7 +70,8 @@ or C order (NumPy's default) and in either byte order. Element `y(i,j)`
 is `y[i-1, j-1]` in NumPy either way.
 
 The supported types are `integer` of kinds `int8` to `int64`, `real` of
-kinds `real32` and `real64`, and `complex` of the same kinds. NumPy has
+kinds `real32` and `real64`, `complex` of the same kinds, and `logical`,
+which is stored as NumPy's one-byte `bool`. NumPy has
 no type for `real128`: its `float128` is 80-bit extended precision on
 x86, so `real128` and `complex(real128)` data give an `IOFL_ARG_ERR`.
 

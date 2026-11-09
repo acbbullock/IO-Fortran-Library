@@ -11,4 +11,4 @@
 #:set ORDER_OPERATORS = [("<", "lt", "Less than"), ("<=", "le", "Less than or equal"), (">", "gt", "Greater than"), (">=", "ge", "Greater than or equal")]
 #:set ORDER_TESTS = {"lt": "< 0", "le": "<= 0", "gt": "> 0", "ge": ">= 0"}
 #! Types that NumPy .npy files support: (kind, declaration, NumPy type code, bytes). NumPy has no IEEE binary128 type.
-#:set NPY_TYPES = [("c64", "complex(r64)", "c", 16), ("c32", "complex(r32)", "c", 8), ("r64", "real(r64)", "f", 8), ("r32", "real(r32)", "f", 4), ("i64", "integer(i64)", "i", 8), ("i32", "integer(i32)", "i", 4), ("i16", "integer(i16)", "i", 2), ("i8", "integer(i8)", "i", 1)]
+#:set NPY_TYPES = [("c64", "complex(r64)", "c", 16), ("c32", "complex(r32)", "c", 8), ("r64", "real(r64)", "f", 8), ("r32", "real(r32)", "f", 4), ("i64", "integer(i64)", "i", 8), ("i32", "integer(i32)", "i", 4), ("i16", "integer(i16)", "i", 2), ("i8", "integer(i8)", "i", 1), ("l", "logical", "b", 1)]

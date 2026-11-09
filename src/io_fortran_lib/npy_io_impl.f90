@@ -394,6 +394,53 @@ submodule (io_fortran_lib) io_npy
     stat=0; errmsg=EMPTY_STR
   end procedure to_npy_i8
 
+  module procedure to_npy_l
+    integer :: file_unit
+
+    open( newunit=file_unit, file=file, status="replace", form="unformatted", action="write", access="stream", &
+          iostat=stat, iomsg=errmsg )
+
+    if ( stat /= 0 ) then
+      stat = WRITE_ERR; return
+    end if
+
+    write(unit=file_unit, iostat=stat, iomsg=errmsg) npy_header(descr_of("b", 1), shape(x, kind=i64))
+
+    if ( stat == 0 ) then
+      select rank(x)
+        rank(1); write(unit=file_unit, iostat=stat, iomsg=errmsg) merge(1_i8, 0_i8, x)   ! NumPy bool: one byte
+        rank(2); write(unit=file_unit, iostat=stat, iomsg=errmsg) merge(1_i8, 0_i8, x)   ! NumPy bool: one byte
+        rank(3); write(unit=file_unit, iostat=stat, iomsg=errmsg) merge(1_i8, 0_i8, x)   ! NumPy bool: one byte
+        rank(4); write(unit=file_unit, iostat=stat, iomsg=errmsg) merge(1_i8, 0_i8, x)   ! NumPy bool: one byte
+        rank(5); write(unit=file_unit, iostat=stat, iomsg=errmsg) merge(1_i8, 0_i8, x)   ! NumPy bool: one byte
+        rank(6); write(unit=file_unit, iostat=stat, iomsg=errmsg) merge(1_i8, 0_i8, x)   ! NumPy bool: one byte
+        rank(7); write(unit=file_unit, iostat=stat, iomsg=errmsg) merge(1_i8, 0_i8, x)   ! NumPy bool: one byte
+        rank(8); write(unit=file_unit, iostat=stat, iomsg=errmsg) merge(1_i8, 0_i8, x)   ! NumPy bool: one byte
+        rank(9); write(unit=file_unit, iostat=stat, iomsg=errmsg) merge(1_i8, 0_i8, x)   ! NumPy bool: one byte
+        rank(10); write(unit=file_unit, iostat=stat, iomsg=errmsg) merge(1_i8, 0_i8, x)   ! NumPy bool: one byte
+        rank(11); write(unit=file_unit, iostat=stat, iomsg=errmsg) merge(1_i8, 0_i8, x)   ! NumPy bool: one byte
+        rank(12); write(unit=file_unit, iostat=stat, iomsg=errmsg) merge(1_i8, 0_i8, x)   ! NumPy bool: one byte
+        rank(13); write(unit=file_unit, iostat=stat, iomsg=errmsg) merge(1_i8, 0_i8, x)   ! NumPy bool: one byte
+        rank(14); write(unit=file_unit, iostat=stat, iomsg=errmsg) merge(1_i8, 0_i8, x)   ! NumPy bool: one byte
+        rank(15); write(unit=file_unit, iostat=stat, iomsg=errmsg) merge(1_i8, 0_i8, x)   ! NumPy bool: one byte
+      end select
+    end if
+
+    if ( stat /= 0 ) then
+      stat = WRITE_ERR
+      call close_quietly(file_unit)
+      return
+    end if
+
+    close(unit=file_unit, iostat=stat, iomsg=errmsg)
+
+    if ( stat /= 0 ) then
+      stat = WRITE_ERR; return
+    end if
+
+    stat=0; errmsg=EMPTY_STR
+  end procedure to_npy_l
+
   ! Reading Procedures ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   module procedure from_npy_c64
     character(len=:), allocatable :: descr
@@ -4171,10 +4218,452 @@ submodule (io_fortran_lib) io_npy
     stat=0; errmsg=EMPTY_STR
   end procedure from_npy_i8
 
+  module procedure from_npy_l
+    character(len=:), allocatable :: descr
+    integer(i64),     allocatable :: shp(:)
+    integer(i8),      allocatable :: bytes(:)
+    logical,     allocatable :: flat(:)
+    logical                       :: fortran_order, swap
+    integer                       :: file_unit, into_rank
+
+    select rank(into)                              ! Not the rank intrinsic: ifx rejects it on an unallocated array
+      rank(1); into_rank = 1
+      rank(2); into_rank = 2
+      rank(3); into_rank = 3
+      rank(4); into_rank = 4
+      rank(5); into_rank = 5
+      rank(6); into_rank = 6
+      rank(7); into_rank = 7
+      rank(8); into_rank = 8
+      rank(9); into_rank = 9
+      rank(10); into_rank = 10
+      rank(11); into_rank = 11
+      rank(12); into_rank = 12
+      rank(13); into_rank = 13
+      rank(14); into_rank = 14
+      rank(15); into_rank = 15
+      rank default; into_rank = -1
+    end select
+
+    call open_npy(file, file_unit, descr, fortran_order, shp, stat, errmsg)
+    if ( stat /= 0 ) return
+
+    call check_descr(descr, "b", 1, "logical", file, swap, stat, errmsg)
+
+    if ( (stat == 0) .and. (size(shp) /= into_rank) ) then
+      stat   = READ_ERR
+      errmsg = 'Error reading file "'//file//'": it holds an array of rank '//int_str(size(shp, kind=i64))// &
+               ", but the output array has rank "//int_str(int(into_rank, kind=i64))//"."
+    end if
+
+    if ( stat /= 0 ) then
+      call close_quietly(file_unit); return
+    end if
+
+    select rank(into)
+      rank(1)
+        allocate( into(shp(1)), &
+                  stat=stat, errmsg=errmsg )
+
+        if ( stat /= 0 ) then
+          stat = ALLOC_ERR
+          call close_quietly(file_unit)
+          return
+        end if
+
+        ! A NumPy bool is one byte, which is not how a Fortran logical is stored, so it is always converted.
+        block
+          allocate( bytes(1*size(into, kind=i64)), stat=stat, errmsg=errmsg )
+
+          if ( stat == 0 ) read(unit=file_unit, iostat=stat, iomsg=errmsg) bytes
+
+          if ( stat == 0 ) then
+            flat = (bytes /= 0_i8)
+            into = flat
+          end if
+        end block
+      rank(2)
+        allocate( into(shp(1), shp(2)), &
+                  stat=stat, errmsg=errmsg )
+
+        if ( stat /= 0 ) then
+          stat = ALLOC_ERR
+          call close_quietly(file_unit)
+          return
+        end if
+
+        ! A NumPy bool is one byte, which is not how a Fortran logical is stored, so it is always converted.
+        block
+          allocate( bytes(1*size(into, kind=i64)), stat=stat, errmsg=errmsg )
+
+          if ( stat == 0 ) read(unit=file_unit, iostat=stat, iomsg=errmsg) bytes
+
+          if ( stat == 0 ) then
+            flat = (bytes /= 0_i8)
+            if ( fortran_order ) then
+              into = reshape(flat, shape(into))
+            else
+              into = reshape(flat, shape(into), order=[2, 1])
+            end if
+          end if
+        end block
+      rank(3)
+        allocate( into(shp(1), shp(2), shp(3)), &
+                  stat=stat, errmsg=errmsg )
+
+        if ( stat /= 0 ) then
+          stat = ALLOC_ERR
+          call close_quietly(file_unit)
+          return
+        end if
+
+        ! A NumPy bool is one byte, which is not how a Fortran logical is stored, so it is always converted.
+        block
+          allocate( bytes(1*size(into, kind=i64)), stat=stat, errmsg=errmsg )
+
+          if ( stat == 0 ) read(unit=file_unit, iostat=stat, iomsg=errmsg) bytes
+
+          if ( stat == 0 ) then
+            flat = (bytes /= 0_i8)
+            if ( fortran_order ) then
+              into = reshape(flat, shape(into))
+            else
+              into = reshape(flat, shape(into), order=[3, 2, 1])
+            end if
+          end if
+        end block
+      rank(4)
+        allocate( into(shp(1), shp(2), shp(3), shp(4)), &
+                  stat=stat, errmsg=errmsg )
+
+        if ( stat /= 0 ) then
+          stat = ALLOC_ERR
+          call close_quietly(file_unit)
+          return
+        end if
+
+        ! A NumPy bool is one byte, which is not how a Fortran logical is stored, so it is always converted.
+        block
+          allocate( bytes(1*size(into, kind=i64)), stat=stat, errmsg=errmsg )
+
+          if ( stat == 0 ) read(unit=file_unit, iostat=stat, iomsg=errmsg) bytes
+
+          if ( stat == 0 ) then
+            flat = (bytes /= 0_i8)
+            if ( fortran_order ) then
+              into = reshape(flat, shape(into))
+            else
+              into = reshape(flat, shape(into), order=[4, 3, 2, 1])
+            end if
+          end if
+        end block
+      rank(5)
+        allocate( into(shp(1), shp(2), shp(3), shp(4), shp(5)), &
+                  stat=stat, errmsg=errmsg )
+
+        if ( stat /= 0 ) then
+          stat = ALLOC_ERR
+          call close_quietly(file_unit)
+          return
+        end if
+
+        ! A NumPy bool is one byte, which is not how a Fortran logical is stored, so it is always converted.
+        block
+          allocate( bytes(1*size(into, kind=i64)), stat=stat, errmsg=errmsg )
+
+          if ( stat == 0 ) read(unit=file_unit, iostat=stat, iomsg=errmsg) bytes
+
+          if ( stat == 0 ) then
+            flat = (bytes /= 0_i8)
+            if ( fortran_order ) then
+              into = reshape(flat, shape(into))
+            else
+              into = reshape(flat, shape(into), order=[5, 4, 3, 2, 1])
+            end if
+          end if
+        end block
+      rank(6)
+        allocate( into(shp(1), shp(2), shp(3), shp(4), shp(5), shp(6)), &
+                  stat=stat, errmsg=errmsg )
+
+        if ( stat /= 0 ) then
+          stat = ALLOC_ERR
+          call close_quietly(file_unit)
+          return
+        end if
+
+        ! A NumPy bool is one byte, which is not how a Fortran logical is stored, so it is always converted.
+        block
+          allocate( bytes(1*size(into, kind=i64)), stat=stat, errmsg=errmsg )
+
+          if ( stat == 0 ) read(unit=file_unit, iostat=stat, iomsg=errmsg) bytes
+
+          if ( stat == 0 ) then
+            flat = (bytes /= 0_i8)
+            if ( fortran_order ) then
+              into = reshape(flat, shape(into))
+            else
+              into = reshape(flat, shape(into), order=[6, 5, 4, 3, 2, 1])
+            end if
+          end if
+        end block
+      rank(7)
+        allocate( into(shp(1), shp(2), shp(3), shp(4), shp(5), shp(6), shp(7)), &
+                  stat=stat, errmsg=errmsg )
+
+        if ( stat /= 0 ) then
+          stat = ALLOC_ERR
+          call close_quietly(file_unit)
+          return
+        end if
+
+        ! A NumPy bool is one byte, which is not how a Fortran logical is stored, so it is always converted.
+        block
+          allocate( bytes(1*size(into, kind=i64)), stat=stat, errmsg=errmsg )
+
+          if ( stat == 0 ) read(unit=file_unit, iostat=stat, iomsg=errmsg) bytes
+
+          if ( stat == 0 ) then
+            flat = (bytes /= 0_i8)
+            if ( fortran_order ) then
+              into = reshape(flat, shape(into))
+            else
+              into = reshape(flat, shape(into), order=[7, 6, 5, 4, 3, 2, 1])
+            end if
+          end if
+        end block
+      rank(8)
+        allocate( into(shp(1), shp(2), shp(3), shp(4), shp(5), shp(6), shp(7), &
+                       shp(8)), &
+                  stat=stat, errmsg=errmsg )
+
+        if ( stat /= 0 ) then
+          stat = ALLOC_ERR
+          call close_quietly(file_unit)
+          return
+        end if
+
+        ! A NumPy bool is one byte, which is not how a Fortran logical is stored, so it is always converted.
+        block
+          allocate( bytes(1*size(into, kind=i64)), stat=stat, errmsg=errmsg )
+
+          if ( stat == 0 ) read(unit=file_unit, iostat=stat, iomsg=errmsg) bytes
+
+          if ( stat == 0 ) then
+            flat = (bytes /= 0_i8)
+            if ( fortran_order ) then
+              into = reshape(flat, shape(into))
+            else
+              into = reshape(flat, shape(into), order=[8, 7, 6, 5, 4, 3, 2, 1])
+            end if
+          end if
+        end block
+      rank(9)
+        allocate( into(shp(1), shp(2), shp(3), shp(4), shp(5), shp(6), shp(7), &
+                       shp(8), shp(9)), &
+                  stat=stat, errmsg=errmsg )
+
+        if ( stat /= 0 ) then
+          stat = ALLOC_ERR
+          call close_quietly(file_unit)
+          return
+        end if
+
+        ! A NumPy bool is one byte, which is not how a Fortran logical is stored, so it is always converted.
+        block
+          allocate( bytes(1*size(into, kind=i64)), stat=stat, errmsg=errmsg )
+
+          if ( stat == 0 ) read(unit=file_unit, iostat=stat, iomsg=errmsg) bytes
+
+          if ( stat == 0 ) then
+            flat = (bytes /= 0_i8)
+            if ( fortran_order ) then
+              into = reshape(flat, shape(into))
+            else
+              into = reshape(flat, shape(into), order=[9, 8, 7, 6, 5, 4, 3, 2, 1])
+            end if
+          end if
+        end block
+      rank(10)
+        allocate( into(shp(1), shp(2), shp(3), shp(4), shp(5), shp(6), shp(7), &
+                       shp(8), shp(9), shp(10)), &
+                  stat=stat, errmsg=errmsg )
+
+        if ( stat /= 0 ) then
+          stat = ALLOC_ERR
+          call close_quietly(file_unit)
+          return
+        end if
+
+        ! A NumPy bool is one byte, which is not how a Fortran logical is stored, so it is always converted.
+        block
+          allocate( bytes(1*size(into, kind=i64)), stat=stat, errmsg=errmsg )
+
+          if ( stat == 0 ) read(unit=file_unit, iostat=stat, iomsg=errmsg) bytes
+
+          if ( stat == 0 ) then
+            flat = (bytes /= 0_i8)
+            if ( fortran_order ) then
+              into = reshape(flat, shape(into))
+            else
+              into = reshape(flat, shape(into), order=[10, 9, 8, 7, 6, 5, 4, 3, 2, 1])
+            end if
+          end if
+        end block
+      rank(11)
+        allocate( into(shp(1), shp(2), shp(3), shp(4), shp(5), shp(6), shp(7), &
+                       shp(8), shp(9), shp(10), shp(11)), &
+                  stat=stat, errmsg=errmsg )
+
+        if ( stat /= 0 ) then
+          stat = ALLOC_ERR
+          call close_quietly(file_unit)
+          return
+        end if
+
+        ! A NumPy bool is one byte, which is not how a Fortran logical is stored, so it is always converted.
+        block
+          allocate( bytes(1*size(into, kind=i64)), stat=stat, errmsg=errmsg )
+
+          if ( stat == 0 ) read(unit=file_unit, iostat=stat, iomsg=errmsg) bytes
+
+          if ( stat == 0 ) then
+            flat = (bytes /= 0_i8)
+            if ( fortran_order ) then
+              into = reshape(flat, shape(into))
+            else
+              into = reshape(flat, shape(into), order=[11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1])
+            end if
+          end if
+        end block
+      rank(12)
+        allocate( into(shp(1), shp(2), shp(3), shp(4), shp(5), shp(6), shp(7), &
+                       shp(8), shp(9), shp(10), shp(11), shp(12)), &
+                  stat=stat, errmsg=errmsg )
+
+        if ( stat /= 0 ) then
+          stat = ALLOC_ERR
+          call close_quietly(file_unit)
+          return
+        end if
+
+        ! A NumPy bool is one byte, which is not how a Fortran logical is stored, so it is always converted.
+        block
+          allocate( bytes(1*size(into, kind=i64)), stat=stat, errmsg=errmsg )
+
+          if ( stat == 0 ) read(unit=file_unit, iostat=stat, iomsg=errmsg) bytes
+
+          if ( stat == 0 ) then
+            flat = (bytes /= 0_i8)
+            if ( fortran_order ) then
+              into = reshape(flat, shape(into))
+            else
+              into = reshape(flat, shape(into), order=[12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1])
+            end if
+          end if
+        end block
+      rank(13)
+        allocate( into(shp(1), shp(2), shp(3), shp(4), shp(5), shp(6), shp(7), &
+                       shp(8), shp(9), shp(10), shp(11), shp(12), shp(13)), &
+                  stat=stat, errmsg=errmsg )
+
+        if ( stat /= 0 ) then
+          stat = ALLOC_ERR
+          call close_quietly(file_unit)
+          return
+        end if
+
+        ! A NumPy bool is one byte, which is not how a Fortran logical is stored, so it is always converted.
+        block
+          allocate( bytes(1*size(into, kind=i64)), stat=stat, errmsg=errmsg )
+
+          if ( stat == 0 ) read(unit=file_unit, iostat=stat, iomsg=errmsg) bytes
+
+          if ( stat == 0 ) then
+            flat = (bytes /= 0_i8)
+            if ( fortran_order ) then
+              into = reshape(flat, shape(into))
+            else
+              into = reshape(flat, shape(into), order=[13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1])
+            end if
+          end if
+        end block
+      rank(14)
+        allocate( into(shp(1), shp(2), shp(3), shp(4), shp(5), shp(6), shp(7), &
+                       shp(8), shp(9), shp(10), shp(11), shp(12), shp(13), shp(14)), &
+                  stat=stat, errmsg=errmsg )
+
+        if ( stat /= 0 ) then
+          stat = ALLOC_ERR
+          call close_quietly(file_unit)
+          return
+        end if
+
+        ! A NumPy bool is one byte, which is not how a Fortran logical is stored, so it is always converted.
+        block
+          allocate( bytes(1*size(into, kind=i64)), stat=stat, errmsg=errmsg )
+
+          if ( stat == 0 ) read(unit=file_unit, iostat=stat, iomsg=errmsg) bytes
+
+          if ( stat == 0 ) then
+            flat = (bytes /= 0_i8)
+            if ( fortran_order ) then
+              into = reshape(flat, shape(into))
+            else
+              into = reshape(flat, shape(into), order=[14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1])
+            end if
+          end if
+        end block
+      rank(15)
+        allocate( into(shp(1), shp(2), shp(3), shp(4), shp(5), shp(6), shp(7), &
+                       shp(8), shp(9), shp(10), shp(11), shp(12), shp(13), shp(14), &
+                       shp(15)), &
+                  stat=stat, errmsg=errmsg )
+
+        if ( stat /= 0 ) then
+          stat = ALLOC_ERR
+          call close_quietly(file_unit)
+          return
+        end if
+
+        ! A NumPy bool is one byte, which is not how a Fortran logical is stored, so it is always converted.
+        block
+          allocate( bytes(1*size(into, kind=i64)), stat=stat, errmsg=errmsg )
+
+          if ( stat == 0 ) read(unit=file_unit, iostat=stat, iomsg=errmsg) bytes
+
+          if ( stat == 0 ) then
+            flat = (bytes /= 0_i8)
+            if ( fortran_order ) then
+              into = reshape(flat, shape(into))
+            else
+              into = reshape(flat, shape(into), order=[15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1])
+            end if
+          end if
+        end block
+    end select
+
+    if ( stat /= 0 ) then
+      stat   = READ_ERR
+      errmsg = 'Error reading file "'//file//'": the data is shorter than its header says. '//trim(errmsg)
+      call close_quietly(file_unit)
+      return
+    end if
+
+    close(unit=file_unit, iostat=stat, iomsg=errmsg)
+
+    if ( stat /= 0 ) then
+      stat = READ_ERR; return
+    end if
+
+    stat=0; errmsg=EMPTY_STR
+  end procedure from_npy_l
+
   ! Helpers ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   pure function descr_of(code, size) result(descr)
-    !! Returns the NumPy type string for a type `code` ("f", "c" or "i") of `size` bytes in this machine's byte order.
+    !! Returns the NumPy type string for a type `code` ("f", "c", "i" or "b") of `size` bytes in this machine's byte
+    !! order.
     character(len=*), intent(in)  :: code
     integer,          intent(in)  :: size
     character(len=:), allocatable :: descr

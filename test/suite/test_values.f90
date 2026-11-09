@@ -61,6 +61,7 @@ module test_values
 
   interface test_values_of
     !! Returns the edge values of the kind of `mold` followed by `n` random values.
+    module procedure :: values_logical
     module procedure :: values_i64
     module procedure :: values_i32
     module procedure :: values_i16
@@ -86,6 +87,21 @@ contains
     state = DEFAULT_SEED
     if ( present(seed) ) state = mod(abs(int(seed, i64)), MODULUS - 1_i64) + 1_i64
   end subroutine reset_random
+
+  function values_logical(mold, n) result(x)
+    !! `.true.` and `.false.`, then `n` random logical values.
+    logical, intent(in)  :: mold
+    integer, intent(in)  :: n
+    logical, allocatable :: x(:)
+
+    integer :: i
+
+    allocate( x(n) )
+    do i = 1, n
+      x(i) = (next_bits(1) == 1_i64)
+    end do
+    x = [ mold, .not. mold, x ]
+  end function values_logical
 
   integer(i64) function next_bits(n) result(bits)
     !! Returns `n` random bits, at most 30, as a nonnegative integer.

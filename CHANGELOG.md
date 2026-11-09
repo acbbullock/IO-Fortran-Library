@@ -23,6 +23,12 @@ Work toward 2.2, tracked in the [2.2 milestone](https://github.com/acbbullock/IO
   `to_lower`, `starts_with`, `ends_with`, `find` and `trim(string, chars)`, named and called as in the Fortran
   standard library. They are kept out of `io_fortran_lib`, so that a program using it without an `only` list can
   still define procedures with these names (#72).
+* `to_file` and `from_file` for `logical` arrays. Text files hold `T` and `F`, which list-directed input reads, or `1`
+  and `0` with `fmt="bit"`; reading accepts any form list-directed input does, such as `.true.`. `.npy` files store
+  them as NumPy's one-byte `bool`. Raw binary files are refused, since compilers store `logical` values differently
+  (#73).
+* `to_file` for `String` and `character` arrays, and `from_file` into `String` arrays, for text files of rank 1 or
+  2. Cells are quoted and unquoted as `write_file` and `read_file` do (#73).
 
 ### Changed
 

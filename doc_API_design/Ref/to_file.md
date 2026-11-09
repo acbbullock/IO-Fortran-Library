@@ -5,8 +5,8 @@ author: Austin C Bullock
 
 ## [interface to_file](../../interface/to_file.html)
 
-*Description*: Subroutine for writing an array of uniform numeric data
-type to an external file.
+*Description*: Subroutine for writing an array of uniform numeric,
+`logical` or text data to an external file.
 
 For writing textual data from an array `x` of rank `1`, `2` and of type
 `integer`:
@@ -55,9 +55,44 @@ call to_file(x, file [, header, locale, delim, fmt, decimals, im, stat, errmsg, 
 * `stat` is `optional` and of type `integer`
 * `errmsg` is `optional` and of type `character(len=*)`
 
+For writing textual data from an array `x` of rank `1`, `2` and of type
+`logical`:
+
+```fortran
+call to_file(x, file [, header, delim, fmt, stat, errmsg, format])
+```
+
+* `file` is of type `character(len=*)`
+* `header` is `optional` and of type `character(len=*), dimension(:)`
+* `delim` is `optional` and of type `character(len=*)`
+* `fmt` is `optional`, and may be `"tf"` (the default), which writes `T`
+  and `F` as list-directed output does, or `"bit"`, which writes `1` and
+  `0`
+* `stat` is `optional` and of type `integer`
+* `errmsg` is `optional` and of type `character(len=*)`
+
+For writing textual data from an array `x` of rank `1`, `2` and of type
+`String` or `character(len=*)`:
+
+```fortran
+call to_file(x, file [, header, delim, stat, errmsg, format])
+```
+
+* `file` is of type `character(len=*)`
+* `header` is `optional` and of type `character(len=*), dimension(:)`
+* `delim` is `optional` and of type `character(len=*)`
+* `stat` is `optional` and of type `integer`
+* `errmsg` is `optional` and of type `character(len=*)`
+
+Each element is one cell, quoted when it contains the delimiter, a
+quote, `CR` or `LF`, as [write_file](String-methods.html#write_file)
+does. Trailing blanks of `character` elements are removed, as they are
+for `header`. Text data can only be written to a text file.
+
 For writing binary data from an array `x` of any rank `1`-`15` and of
 type `integer`, `real`, `complex`, to a raw binary file or a NumPy
-[.npy file](../UserInfo/file-ext.html#numpy-npy-files):
+[.npy file](../UserInfo/file-ext.html#numpy-npy-files), or of type
+`logical` to a `.npy` file:
 
 ```fortran
 call to_file(x, file [, stat, errmsg, format])
@@ -66,6 +101,11 @@ call to_file(x, file [, stat, errmsg, format])
 * `file` is of type `character(len=*)`
 * `stat` is `optional` and of type `integer`
 * `errmsg` is `optional` and of type `character(len=*)`
+
+@note `logical` data can't be written to a raw binary file (`.dat`,
+`.bin`), because compilers store `logical` values differently, so the
+file couldn't be read back reliably. A `.npy` file stores each value as
+one byte, `0` or `1`, which NumPy reads as `bool`.
 
 @note `file` may be a relative path, but absolute paths are not
 guaranteed to work on every platform.
