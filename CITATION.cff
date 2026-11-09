@@ -10,7 +10,7 @@ authors:
   - given-names: "Austin Chase"
     family-names: "Bullock"
     orcid: "https://orcid.org/0009-0009-5129-5260"
-version: "2.2.0"
+version: "2.3.0"
 doi: 10.5281/zenodo.24068278
 date-released: "2026-11-09"
 license: MIT

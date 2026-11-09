@@ -24,7 +24,7 @@ Add the library to your [fpm](https://fpm.fortran-lang.org) project's
 
 ```toml
 [dependencies]
-IO-Fortran-Library = { git="https://github.com/acbbullock/IO-Fortran-Library", tag="v2.2.0" }
+IO-Fortran-Library = { git="https://github.com/acbbullock/IO-Fortran-Library", tag="v2.3.0" }
 ```
 
 Then `use io_fortran_lib`. This program writes an array to a CSV file and
@@ -136,11 +136,13 @@ for bugs, open an
 
 ## Changelog
 
-[CHANGELOG.md](CHANGELOG.md) has the notes for every release. Version 2.2
-added `.tsv` files, NumPy `.npz` archives, `logical`, `String` and
-`character` arrays in `to_file` and `from_file`, column names from a
-header, and new string operations, with the `io_strings` module for
-`character` values.
+[CHANGELOG.md](CHANGELOG.md) has the notes for every release. Version 2.3
+made the library faster, with no change to its interface or output.
+Writing a CSV file now takes 1.2–2 times as long as plain formatted
+output, not 4–6 times. Binary and NumPy files match plain stream I/O on
+every compiler. The
+[benchmarks](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Examples/benchmark.html)
+compare it with plain Fortran.
 
 ## Citing
 

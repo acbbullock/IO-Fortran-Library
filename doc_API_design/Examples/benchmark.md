@@ -45,59 +45,71 @@ of each operation, not the disk's speed.
 The compilers were gfortran 16.2.1, ifx 2026.2.0 and flang 23.1.5, each
 with `-O2` through fpm 0.13 (`fpm run benchmark-compare --flag -O2`).
 
-The ratio of the library's time to plain Fortran's (lower is better,
-and 1.0 is the same speed):
+The ratio of the library's time to plain Fortran's, in version 2.2 and
+in 2.3 (lower is better, and 1.0 is the same speed):
+
+| Operation | gfortran 2.2 | 2.3 | ifx 2.2 | 2.3 | flang 2.2 | 2.3 |
+|---|--:|--:|--:|--:|--:|--:|
+| Write a CSV file | 5.1 | **1.2** | 5.7 | **2.0** | 4.4 | **1.7** |
+| Read a CSV file | 2.8 | **1.9** | 3.6 | **1.5** | 2.1 | **1.3** |
+| Write a raw binary file | 5.1 | **1.0** | 1.0 | 1.0 | 1.2 | 0.8 |
+| Read a raw binary file | 2.9 | **1.0** | 1.0 | 1.0 | 1.0 | 1.0 |
+| Write a `.npy` file | 5.6 | **1.0** | 1.0 | 1.2 | 0.9 | 0.8 |
+| Read a `.npy` file | 2.7 | **0.6** | 0.7 | 0.7 | 0.8 | 0.8 |
+| Write a `.npz` file | 12.2 | **2.0** | 7.8 | **3.0** | 3.8 | **1.6** |
+| Read a `.npz` file | 2.6 | **0.6** | 0.7 | 0.7 | 0.8 | 0.8 |
+| Numbers to text | 2.4 | **1.2** | 3.4 | **1.6** | 3.4 | **1.7** |
+| Text to numbers | 1.2 | 1.2 | 2.6 | **1.7** | 1.2 | 1.2 |
+| Split a CSV file into cells | 1.2 | 1.0 | 4.3 | 4.4 | 7.3 | **4.7** |
+| Build a string | 0.8 | 0.8 | 0.9 | 1.0 | 0.9 | 0.6 |
+
+The 2.3 times, in milliseconds, as library / plain:
 
 | Operation | gfortran | ifx | flang |
 |---|--:|--:|--:|
-| Write a CSV file | 4.9 | 5.6 | 4.2 |
-| Read a CSV file | 2.8 | 3.5 | 2.1 |
-| Write a raw binary file | 4.9 | 0.9 | 1.0 |
-| Read a raw binary file | 3.1 | 1.0 | 1.0 |
-| Write a `.npy` file | 5.1 | 1.2 | 1.0 |
-| Read a `.npy` file | 2.7 | 0.7 | 0.8 |
-| Write a `.npz` file | 11.6 | 7.6 | 3.8 |
-| Read a `.npz` file | 3.0 | 0.7 | 0.8 |
-| Numbers to text | 2.4 | 3.3 | 3.4 |
-| Text to numbers | 1.2 | 2.5 | 1.2 |
-| Split a CSV file into cells | 1.2 | 4.6 | 6.6 |
-| Build a string | 0.8 | 0.9 | 0.9 |
+| Write a CSV file | 370 / 302 | 386 / 197 | 413 / 244 |
+| Read a CSV file | 485 / 255 | 413 / 272 | 440 / 342 |
+| Write a raw binary file | 107 / 103 | 83 / 84 | 208 / 259 |
+| Read a raw binary file | 154 / 152 | 143 / 141 | 288 / 278 |
+| Write a `.npy` file | 106 / 103 | 100 / 84 | 213 / 259 |
+| Read a `.npy` file | 94 / 152 | 100 / 141 | 224 / 278 |
+| Write a `.npz` file | 208 / 103 | 249 / 84 | 403 / 259 |
+| Read a `.npz` file | 98 / 152 | 100 / 141 | 223 / 278 |
+| Numbers to text | 721 / 612 | 505 / 315 | 478 / 279 |
+| Text to numbers | 596 / 497 | 501 / 304 | 531 / 451 |
+| Split a CSV file into cells | 65 / 64 | 106 / 24 | 78 / 17 |
+| Build a string | 14 / 18 | 17 / 18 | 9 / 16 |
 
-The times, in milliseconds, as library / plain:
-
-| Operation | gfortran | ifx | flang |
-|---|--:|--:|--:|
-| Write a CSV file | 1606 / 326 | 1163 / 208 | 1075 / 256 |
-| Read a CSV file | 764 / 269 | 967 / 275 | 761 / 368 |
-| Write a raw binary file | 439 / 90 | 82 / 88 | 228 / 235 |
-| Read a raw binary file | 485 / 158 | 150 / 144 | 297 / 297 |
-| Write a `.npy` file | 458 / 90 | 107 / 88 | 230 / 235 |
-| Read a `.npy` file | 433 / 158 | 107 / 144 | 246 / 297 |
-| Write a `.npz` file | 1044 / 90 | 670 / 88 | 897 / 235 |
-| Read a `.npz` file | 466 / 158 | 105 / 144 | 241 / 297 |
-| Numbers to text | 1555 / 644 | 1016 / 310 | 1018 / 299 |
-| Text to numbers | 627 / 529 | 785 / 309 | 578 / 488 |
-| Split a CSV file into cells | 79 / 67 | 115 / 25 | 118 / 18 |
-| Build a string | 14 / 18 | 17 / 18 | 10 / 10 |
+The two versions were timed one after the other on the same machine,
+with nothing else running. Times vary by about 10% from run to run, so
+ratios within 0.1–0.2 of each other are the same.
 
 What the numbers say:
-- **Binary files are as fast as plain stream I/O with ifx and flang.**
-  With gfortran, `.dat` and `.npy` files take 3–5× as long
+- **Binary and NumPy files are as fast as plain stream I/O** on all
+  three compilers. In 2.2, gfortran took 3–5× as long, because it moves
+  an array inside `select rank` one element at a time
   ([#93](https://github.com/acbbullock/IO-Fortran-Library/issues/93)).
-- **Writing numbers as text costs 2.4–5.6× plain formatted output**, for
+  Reading is sometimes faster than the plain version, which reads into
+  an array it allocated beforehand.
+- **`.npz` writes cost 1.6–3× a plain write**, for the CRC-32 that a ZIP
+  archive needs, which is now computed eight bytes at a time
+  ([#94](https://github.com/acbbullock/IO-Fortran-Library/issues/94)).
+  Reading an array from an archive is as fast as reading a `.npy` file,
+  because the CRC isn't checked on read.
+- **Writing numbers as text costs 1.2–2× plain formatted output**, for
   `to_file` and for `cast`
   ([#91](https://github.com/acbbullock/IO-Fortran-Library/issues/91)).
-  Reading a CSV file costs 2–3.5× a list-directed read, which reports
-  neither where a bad value is nor reads empty cells as NaN
+  Each number still goes to its own `String`, which plain Fortran doesn't
+  need.
+- **Reading a CSV file costs 1.3–1.9× a list-directed read**, which
+  reports neither where a bad value is nor reads empty cells as NaN
   ([#92](https://github.com/acbbullock/IO-Fortran-Library/issues/92)).
-- **`.npz` writes compute a CRC-32 a byte at a time**, which is most of
-  their time
-  ([#94](https://github.com/acbbullock/IO-Fortran-Library/issues/94)).
-  Reading an array from an archive is as fast as reading a `.npy` file.
-- **`read_file` is close to splitting lines by hand with gfortran**, and
-  4.6–6.6× slower with ifx and flang
+- **`read_file` matches splitting lines by hand with gfortran**, and takes
+  about 4.5× as long with ifx and flang. Most of that is allocating a
+  `String` for each cell, against the plain version's fixed-length
+  `character` array
   ([#95](https://github.com/acbbullock/IO-Fortran-Library/issues/95)).
-  It also handles quoted cells, `CR LF` line endings and rows of
+  `read_file` also handles quoted cells, `CR LF` line endings and rows of
   different lengths, which the plain version doesn't.
 - **`String%push` matches a buffer you grow yourself.**
 
