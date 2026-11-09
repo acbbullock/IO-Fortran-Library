@@ -70,7 +70,9 @@ jobs:
           # Intel macOS has REAL(16), but Homebrew has no gcc 16 for it.
           - { os: macos-15-intel, compiler: gcc, version: "15", flags: "-std=f2018 -O2 -g -fbacktrace", fpm: source }
           - { os: windows-2025, compiler: gcc, version: "16", flags: "-std=f2018 -O2 -g -fbacktrace" }
-          - { os: windows-2025, compiler: intel, version: "2026.1", flags: "" }
+          # setup-fortran sets cl as the C compiler, which ignores the -o that fpm passes, so the tests' C file
+          # is compiled with LLVM's clang.
+          - { os: windows-2025, compiler: intel, version: "2026.1", flags: "", cc: clang }
     steps:
       - uses: actions/checkout@v7
       - uses: fortran-lang/setup-fortran@v1
@@ -102,7 +104,9 @@ jobs:
             ForEach-Object { Write-Host "Moving $($_.Source)"; Rename-Item $_.Source "$($_.Source).gnu" }
           Get-Command link -All -CommandType Application -ErrorAction SilentlyContinue | ForEach-Object { $_.Source }
       - name: Run tests
-        run: fpm test --compiler ${{ steps.setup-fortran.outputs.fc }} --flag "${{ matrix.flags }}"
+        run: >-
+          fpm test --compiler ${{ steps.setup-fortran.outputs.fc }} --flag "${{ matrix.flags }}"
+          ${{ matrix.cc && format('--c-compiler {0}', matrix.cc) || '' }}
 
   checks:
     name: gfortran 16 runtime checks and sanitizers

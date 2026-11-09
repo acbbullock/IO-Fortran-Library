@@ -19,7 +19,8 @@ fpm 0.12 also works, but it doesn't enable the preprocessor for `flang`, so use
 
 The tests also need the C compiler that fpm pairs with your Fortran compiler (`gcc`, `icx` or `clang`), for
 `test/suite/mingw_locale.c`. It works around a libgfortran bug on Windows that crashes formatted I/O at random
-(GCC bug 128183), and compiles to nothing elsewhere. The library itself is Fortran only.
+(GCC bug 128183), and compiles to nothing elsewhere. The library itself is Fortran only. With `ifx` on Windows, add
+`--c-compiler clang`: fpm can't drive `cl`, and the oneAPI environment there has `icx-cl` but no `icx`.
 
 One build tests every kind and rank. A failing case ends `fpm test` with a nonzero exit status, and prints what the
 case wrote. The suite takes well under a minute.
