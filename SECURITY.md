@@ -2,8 +2,8 @@
 
 ## Supported versions
 
-Fixes are made to the latest release. Version 2.1 is supported; 2.0 and 1.x are not, since 2.1 is compatible
-with 2.0 and replaces it.
+Fixes are made to the latest release. Version 2.2 is supported; 2.1, 2.0 and 1.x are not, since 2.2 is
+compatible with 2.0 and 2.1 and replaces them.
 
 ## Reporting a vulnerability
 

@@ -9,8 +9,10 @@
 
 A Fortran library for reading and writing text, CSV, binary and NumPy
 `.npy` and `.npz` files, converting between numbers and text, and working with
-strings through a `String` type. It is a single module, `io_fortran_lib`,
-written in standard Fortran 2018 with no dependencies. The routines
+strings through a `String` type. Everything is in one module,
+`io_fortran_lib`, apart from string functions for `character` values in
+a second, `io_strings`. It is written in standard Fortran 2018 with no
+dependencies. The routines
 accept all intrinsic numeric types and kinds (`int8` to `int64`, and
 `real32` to `real128` for `real` and `complex` where the compiler has
 them), and arrays up to rank 15.
@@ -22,7 +24,7 @@ Add the library to your [fpm](https://fpm.fortran-lang.org) project's
 
 ```toml
 [dependencies]
-IO-Fortran-Library = { git="https://github.com/acbbullock/IO-Fortran-Library", tag="v2.1.1" }
+IO-Fortran-Library = { git="https://github.com/acbbullock/IO-Fortran-Library", tag="v2.2.0" }
 ```
 
 Then `use io_fortran_lib`. This program writes an array to a CSV file and
@@ -134,10 +136,11 @@ for bugs, open an
 
 ## Changelog
 
-[CHANGELOG.md](CHANGELOG.md) has the notes for every release. Version 2.1
-added NumPy `.npy` files, `IOFL_`-prefixed names for the exported
-constants and error codes, and two fixes for values written with
-`fmt="e"` and `fmt="f"`.
+[CHANGELOG.md](CHANGELOG.md) has the notes for every release. Version 2.2
+added `.tsv` files, NumPy `.npz` archives, `logical`, `String` and
+`character` arrays in `to_file` and `from_file`, column names from a
+header, and new string operations, with the `io_strings` module for
+`character` values.
 
 ## Citing
 

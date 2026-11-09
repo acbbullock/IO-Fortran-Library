@@ -7,9 +7,13 @@ breaking changes first. The
 [releases page](https://github.com/acbbullock/IO-Fortran-Library/releases)
 has the same notes, along with the pre-releases.
 
-## Unreleased
+## [2.2.0](https://github.com/acbbullock/IO-Fortran-Library/releases/tag/v2.2.0) - 2026-11-09
 
-Work toward 2.2, tracked in the [2.2 milestone](https://github.com/acbbullock/IO-Fortran-Library/milestone/3).
+New file formats and types: `.tsv` files, NumPy `.npz` archives, and `logical`, `String` and `character` arrays.
+`from_file` returns a header's column names, and there are new string operations, also as functions on
+`character` values in a new module, `io_strings`. CI adds ARM64, big-endian s390x, a build without fpm, test
+coverage and benchmarks. Code written for 2.1 works unchanged. The work is tracked in the
+[2.2 milestone](https://github.com/acbbullock/IO-Fortran-Library/milestone/3).
 
 ### Added
 
@@ -45,11 +49,18 @@ Work toward 2.2, tracked in the [2.2 milestone](https://github.com/acbbullock/IO
   `module-naming = "io"`, which the fpm package registry requires. Programs only `use io_fortran_lib`, so nothing
   changes for them (#66).
 
+### Fixed
+
+* Reading a `.npy` file checks that its data fits in the file before allocating the array, so a damaged header gives
+  an error instead of asking for a huge allocation (#74).
+* The `to_file` reference said a rank 1 array's header could have `size(x)` names, and mentioned a `dim` argument
+  that no longer exists. A rank 1 array is written as one column, with one name (#76).
+
 ### Tested platforms
 
 * CI now runs the tests on ARM64 Linux, with `gfortran` and `flang`, and on big-endian s390x Linux, where a `.npy`
-  file and a `.npz` archive written there are checked with NumPy. It also builds the library without fpm, with `gfortran` and `ifx`, as
-  the README describes (#78, #79, #81).
+  file and a `.npz` archive written there are checked with NumPy. It also builds the library without fpm, with
+  `gfortran` and `ifx`, as the README describes (#78, #79, #81).
 * CI measures test coverage with `gfortran --coverage` and `gcovr`, and lists the error checks that no test reaches.
   Cases were added for the ones that can be reached: invalid ranks, locales, formats, delimiters and header sizes,
   a header with no data, and files that can't be opened (#76).
