@@ -17,6 +17,8 @@ jobs:
   test:
     name: ${{ matrix.toolchain.compiler }} ${{ matrix.toolchain.version }} ${{ matrix.toolchain.label }}
     runs-on: ubuntu-24.04
+    # LFortran can't compile the library yet (#82). Its job shows how far it gets, without failing the workflow.
+    continue-on-error: ${{ matrix.toolchain.experimental == true }}
     strategy:
       fail-fast: false
       matrix:
@@ -31,6 +33,10 @@ jobs:
           - { compiler: intel, version: "2026.1", fpm: ifx, label: "runtime checks",
               flags: "-stand f18 -check all -check nouninit -O0 -g -traceback -assume byterecl" }
           - { compiler: flang, version: "23", fpm: flang, flags: "-O2" }
+          - { compiler: nvidia-hpc, version: "26.1", fpm: nvfortran, flags: "-O2" }
+          - { compiler: aocc, version: "5.2.0", fpm: flang, flags: "-O2" }
+          - { compiler: lfortran, version: "0.58.0", fpm: lfortran, flags: "", experimental: true,
+              label: "(allowed to fail)" }
     steps:
       - uses: actions/checkout@v7
       - uses: fortran-lang/setup-fortran@v1
@@ -53,7 +59,100 @@ jobs:
         with:
           fpm-version: v${{ env.IOFL_FPM_VERSION }}
       - name: Run tests
-        run: fpm test --compiler ${{ matrix.toolchain.fpm }} --flag "${{ matrix.toolchain.flags }}"
+        run: |
+          set -o pipefail
+          fpm test --compiler ${{ matrix.toolchain.fpm }} --flag "${{ matrix.toolchain.flags }}" 2>&1 | tee test.log
+      - name: Summarize the first errors
+        if: failure() && matrix.toolchain.experimental
+        run: |
+          echo "### First errors from ${{ matrix.toolchain.compiler }} ${{ matrix.toolchain.version }}" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          grep -m 15 -iE 'error|not (yet )?(implemented|supported)' test.log >> "$GITHUB_STEP_SUMMARY" || true
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+  arm64:
+    name: ubuntu-24.04-arm ${{ matrix.compiler }}
+    runs-on: ubuntu-24.04-arm
+    strategy:
+      fail-fast: false
+      matrix:
+        # setup-fortran has no ARM Linux runners, so the compilers come from apt. gfortran has REAL(16) here, as IEEE
+        # quad precision in software, so this tests real128 on a target other than x86-64.
+        include:
+          - { compiler: gfortran, fc: gfortran-14, flags: "-std=f2018 -O2 -g -fbacktrace" }
+          - { compiler: flang, fc: flang, flags: "-O2" }
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install gfortran
+        run: sudo apt-get update -q && sudo apt-get install -y -q gfortran-14
+      - name: Install LLVM Flang from apt.llvm.org
+        if: matrix.compiler == 'flang'
+        run: |
+          curl -fsSL https://apt.llvm.org/llvm-snapshot.gpg.key | sudo tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc > /dev/null
+          echo "deb http://apt.llvm.org/noble/ llvm-toolchain-noble-23 main" | sudo tee /etc/apt/sources.list.d/llvm-toolchain-23.list
+          sudo apt-get update -q
+          sudo apt-get install -y -q flang-23 clang-23 libomp-23-dev libclang-rt-23-dev
+          echo "/usr/lib/llvm-23/bin" >> "$GITHUB_PATH"
+      - name: Build fpm from its single-file source
+        run: |
+          mkdir -p "$HOME/fpm-bin" && cd "$HOME/fpm-bin"
+          src="fpm-$IOFL_FPM_VERSION.F90"
+          curl -fsSLO "https://github.com/fortran-lang/fpm/releases/download/v$IOFL_FPM_VERSION/$src"
+          echo "$IOFL_FPM_SHA256  $src" | sha256sum -c -
+          gfortran-14 -O2 -J . "$src" -o fpm
+          echo "$HOME/fpm-bin" >> "$GITHUB_PATH"
+      - name: Run tests
+        run: fpm test --compiler ${{ matrix.fc }} --flag "${{ matrix.flags }}"
+
+  big-endian:
+    name: s390x gfortran (big-endian, under QEMU)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v7
+      - uses: docker/setup-qemu-action@v3
+        with:
+          platforms: s390x
+      - name: Build and test on s390x
+        # Emulation is slow, so this builds with the script rather than building fpm first, and at -O1.
+        run: |
+          docker run --rm --platform linux/s390x -v "$PWD:/src" -w /src ubuntu:24.04 bash -c '
+            set -euo pipefail
+            apt-get update -q > /dev/null && apt-get install -y -q gfortran > /dev/null
+            gfortran --version | head -1
+            ci/build-without-fpm.sh gfortran -cpp build/s390x -O1
+            gfortran -cpp -O1 -I build/s390x example/quickstart.f90 build/s390x/libIO-Fortran-Library.a -o build/quickstart
+            build/quickstart
+          '
+      - name: NumPy reads the .npy file written on s390x
+        run: |
+          python3 -m pip install -q numpy
+          python3 - <<'PY'
+          import numpy as np
+          x = np.load("x.npy")
+          expected = np.array([1.0, 2.5, -3.0, 4.0, 5.5, 6.25], dtype=np.float32).reshape((3, 2), order="F")
+          print(x.dtype.str, x.shape, x.tolist())
+          assert x.dtype.str == ">f4", f"expected a big-endian float32 file, got {x.dtype.str}"
+          assert x.shape == (3, 2) and np.array_equal(x, expected), "values differ"
+          PY
+
+  no-fpm:
+    name: build without fpm, ${{ matrix.compiler }}
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { compiler: gcc, version: "16", fc: gfortran, pp: "-cpp", flags: "-std=f2018 -O2" }
+          - { compiler: intel, version: "2026.1", fc: ifx, pp: "-fpp", flags: "-stand f18 -O2" }
+    steps:
+      - uses: actions/checkout@v7
+      - uses: fortran-lang/setup-fortran@v1
+        with:
+          compiler: ${{ matrix.compiler }}
+          version: ${{ matrix.version }}
+      - name: Build as README.md describes, and run the tests
+        run: ci/build-without-fpm.sh ${{ matrix.fc }} ${{ matrix.pp }} build/nofpm ${{ matrix.flags }}
 
   platforms:
     name: ${{ matrix.os }} ${{ matrix.compiler }} ${{ matrix.version }}
