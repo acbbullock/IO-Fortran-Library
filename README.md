@@ -56,14 +56,16 @@ end program quickstart
 ## Features
 
 * **Delimited text files.** `to_file` and `from_file` write and read
-  numeric arrays as CSV or any other delimiter, with an optional header.
+  numeric, `logical` and text arrays as CSV or any other delimiter, with
+  an optional header.
   Values are written in scientific (`e`), fixed (`f`) or hexadecimal (`z`)
   form, all of which read back exactly, with a `.` or `,` decimal mark.
   For tables of mixed types, `read_file` and `write_file` read and write
   a whole file as an array of `String` cells, handling quoted cells.
 * **Binary and NumPy files.** Raw binary `.dat` and `.bin` files, and
-  NumPy `.npy` files that `numpy.load` reads and `numpy.save` writes. A
-  `.npy` file carries its own shape, kind and byte order.
+  NumPy `.npy` files, including `logical` arrays as `bool`, that
+  `numpy.load` reads and `numpy.save` writes. A `.npy` file carries its
+  own shape, kind and byte order.
 * **Numbers and text.** `str`, `String` and `cast` convert between numbers
   and text in either direction, in any of the formats above, and report
   text that is not a valid number instead of returning a wrong value.

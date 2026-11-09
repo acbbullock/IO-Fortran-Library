@@ -4,8 +4,8 @@ module array_files_cases
   !---------------------------------------------------------------------------------------------------------------------
   use, intrinsic :: iso_fortran_env, only: int64, real32, real64
   use, intrinsic :: ieee_arithmetic, only: ieee_value, ieee_quiet_nan, ieee_is_nan
-  use io_fortran_lib, only: String, str, to_file, from_file, IOFL_LF, IOFL_CR, IOFL_TAB, IOFL_ARG_ERR, operator(==), &
-                            operator(/=), operator(>)
+  use io_fortran_lib, only: String, str, to_file, from_file, IOFL_LF, IOFL_CR, IOFL_TAB, IOFL_ARG_ERR, IOFL_READ_ERR, &
+                            operator(==), operator(/=), operator(>)
   use test_support, only: test_suite, STOPS, check, expect_equal, scratch, write_raw, read_raw
   implicit none (type, external)
   private
@@ -55,6 +55,17 @@ contains
     call suite%add("column_names_header_true", column_names_header_true)
     call suite%add("column_names_header_false_stat", column_names_header_false_stat)
     call suite%add("column_names_npy_stat", column_names_npy_stat)
+    call suite%add("logical_csv_round_trip", logical_csv_round_trip)
+    call suite%add("logical_bit_format", logical_bit_format)
+    call suite%add("logical_list_directed_forms", logical_list_directed_forms)
+    call suite%add("logical_invalid_value_stat", logical_invalid_value_stat)
+    call suite%add("logical_bit_rejects_tf_stat", logical_bit_rejects_tf_stat)
+    call suite%add("logical_invalid_fmt_stat", logical_invalid_fmt_stat)
+    call suite%add("logical_dat_stat", logical_dat_stat)
+    call suite%add("string_csv_round_trip", string_csv_round_trip)
+    call suite%add("string_rank1_round_trip", string_rank1_round_trip)
+    call suite%add("chars_to_file", chars_to_file)
+    call suite%add("string_npy_stat", string_npy_stat)
   end subroutine register_array_files
 
   subroutine from_file_missing()
@@ -560,4 +571,132 @@ contains
     call from_file(scratch()//".npy", into=y, column_names=names, stat=st, errmsg=msg)
     call expect_equal(st, IOFL_ARG_ERR, "column_names for a .npy file should be an argument error.")
   end subroutine column_names_npy_stat
+  subroutine logical_csv_round_trip()
+    !! Logical data is written as T and F, which list-directed input reads, and reads back (#73).
+    logical              :: x(2,3) = reshape([.true., .false., .false., .true., .true., .true.], [2,3])
+    logical, allocatable :: y(:,:)
+    type(String), allocatable :: names(:)
+    character(len=:), allocatable :: file
+
+    file = scratch()//".csv"
+    call to_file(x, file=file, header=["flag"])
+    call check(read_raw(file) == "flag1,flag2,flag3"//IOFL_LF//"T,F,T"//IOFL_LF//"F,T,T"//IOFL_LF, &
+               "Logical data should be written as T and F.")
+    call from_file(file, into=y, column_names=names)
+    call check(all(y .eqv. x), "The logical values should read back.")
+    call check(size(names) == 3 .and. names(2) == "flag2", "the column names of logical data")
+  end subroutine logical_csv_round_trip
+
+  subroutine logical_bit_format()
+    logical              :: x(3) = [.true., .false., .true.]
+    logical, allocatable :: y(:)
+    character(len=:), allocatable :: file
+
+    file = scratch()//".csv"
+    call to_file(x, file=file, fmt="bit")
+    call check(read_raw(file) == "1"//IOFL_LF//"0"//IOFL_LF//"1"//IOFL_LF, 'fmt="bit" should write 1 and 0.')
+    call from_file(file, into=y, fmt="bit")
+    call check(all(y .eqv. x), 'fmt="bit" should read 1 and 0.')
+  end subroutine logical_bit_format
+
+  subroutine logical_list_directed_forms()
+    !! Any form list-directed input accepts: the first letter after blanks and an optional period.
+    logical, allocatable :: y(:,:)
+
+    call write_raw(scratch()//".csv", ".true.,F,t,.F., TRUE ,false"//IOFL_LF)
+    call from_file(scratch()//".csv", into=y)
+    call check(all(y(1,:) .eqv. [.true., .false., .true., .false., .true., .false.]), &
+               "T, F, .true., .F., TRUE and false should all read.")
+  end subroutine logical_list_directed_forms
+
+  subroutine logical_invalid_value_stat()
+    logical, allocatable :: y(:,:)
+    integer              :: st
+    character(len=256)   :: msg
+
+    call write_raw(scratch()//".csv", "a,b"//IOFL_LF//"T,maybe"//IOFL_LF)
+    call from_file(scratch()//".csv", into=y, header=.true., stat=st, errmsg=msg)
+    call expect_equal(st, IOFL_READ_ERR, "An invalid logical value should be a read error.")
+    call check(index(msg, '"maybe" at row 2, column 2') > 0, "The message should give the value and its place.")
+  end subroutine logical_invalid_value_stat
+
+  subroutine logical_bit_rejects_tf_stat()
+    logical, allocatable :: y(:)
+    integer              :: st
+
+    call write_raw(scratch()//".csv", "T"//IOFL_LF)
+    call from_file(scratch()//".csv", into=y, fmt="bit", stat=st)
+    call expect_equal(st, IOFL_READ_ERR, 'fmt="bit" should not accept T.')
+  end subroutine logical_bit_rejects_tf_stat
+
+  subroutine logical_invalid_fmt_stat()
+    integer :: st
+
+    call to_file([.true.], file=scratch()//".csv", fmt="l", stat=st)
+    call expect_equal(st, IOFL_ARG_ERR, "fmt must be tf or bit for logical data.")
+  end subroutine logical_invalid_fmt_stat
+
+  subroutine logical_dat_stat()
+    !! Compilers store logical values differently, so raw binary files are refused; .npy files are portable.
+    logical, allocatable :: y(:)
+    integer              :: st
+
+    call to_file([.true., .false.], file=scratch()//".dat", stat=st)
+    call expect_equal(st, IOFL_ARG_ERR, "Writing logical data to a .dat file should be an argument error.")
+    call write_raw(scratch()//"_in.dat", "x")
+    call from_file(scratch()//"_in.dat", into=y, stat=st)
+    call expect_equal(st, IOFL_ARG_ERR, "Reading logical data from a .dat file should be an argument error.")
+  end subroutine logical_dat_stat
+
+  subroutine string_csv_round_trip()
+    !! String data is written as cells, quoted when needed, and reads back into String (#73).
+    type(String)              :: x(2,2)
+    type(String), allocatable :: y(:,:)
+    character(len=:), allocatable :: file
+
+    x(1,1) = String("plain"); x(2,1) = String("a, b")
+    x(1,2) = String("");      x(2,2) = String('say "hi"')
+    file = scratch()//".csv"
+    call to_file(x, file=file, header=["name ", "quote"])
+    call check(read_raw(file) == "name,quote"//IOFL_LF//"plain,"//IOFL_LF//'"a, b","say ""hi"""'//IOFL_LF, &
+               "String cells should be quoted when they contain the delimiter or a quote.")
+    call from_file(file, into=y, header=.true.)
+    call check(size(y, dim=1) == 2 .and. size(y, dim=2) == 2, "the shape of the String data")
+    call check(all(y == x), "String data should read back exactly, including the empty cell.")
+  end subroutine string_csv_round_trip
+
+  subroutine string_rank1_round_trip()
+    type(String)              :: x(3)
+    type(String), allocatable :: y(:)
+
+    x = [String("one"), String("two"), String("three")]
+    call to_file(x, file=scratch()//".txt")
+    call from_file(scratch()//".txt", into=y)
+    call check(size(y) == 3 .and. all(y == x), "A rank-1 String array should read back.")
+  end subroutine string_rank1_round_trip
+
+  subroutine chars_to_file()
+    !! Character arrays are written with their trailing blanks removed, and read back as String.
+    character(len=6)          :: x(2) = ["ab    ", "c,d   "]
+    type(String), allocatable :: y(:)
+
+    call to_file(x, file=scratch()//".csv")
+    call check(read_raw(scratch()//".csv") == "ab"//IOFL_LF//'"c,d"'//IOFL_LF, &
+               "character data should be written without trailing blanks, and quoted when needed")
+    call from_file(scratch()//".csv", into=y)
+    call check(y(1) == "ab" .and. y(2) == "c,d", "character data should read back as String")
+  end subroutine chars_to_file
+
+  subroutine string_npy_stat()
+    type(String)              :: x(1)
+    type(String), allocatable :: y(:)
+    integer                   :: st
+
+    x(1) = String("a")
+    call to_file(x, file=scratch()//".npy", stat=st)
+    call expect_equal(st, IOFL_ARG_ERR, "String data cannot be written to a .npy file.")
+    call to_file([1.0_real64], file=scratch()//"_numbers.npy")
+    call from_file(scratch()//"_numbers.npy", into=y, stat=st)
+    call expect_equal(st, IOFL_ARG_ERR, "A .npy file cannot be read into String data.")
+  end subroutine string_npy_stat
 end module array_files_cases

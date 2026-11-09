@@ -57,6 +57,7 @@ module io_fortran_lib
   character(len=1), parameter :: INT_FMTS(*)  = [ "i", "z"      ] ! Allowed formats for integers
   character(len=1), parameter :: REAL_FMTS(*) = [ "e", "f", "z" ] ! Allowed formats for floats
   character(len=2), parameter :: LOCALES(*)   = [ "US", "EU"    ] ! Allowed locale specifiers
+  character(len=3), parameter :: LOGICAL_FMTS(*) = [ "tf ", "bit" ] ! Allowed formats for logicals: T/F or 1/0
 
   character(len=3), parameter :: BINARY_EXT(*) = [ "dat", "bin"  ] ! Allowed binary extensions
   character(len=3), parameter :: TEXT_EXT(*)   = [ "csv", "tsv", & ! Allowed text extensions
@@ -97,7 +98,7 @@ module io_fortran_lib
     contains
       private
 
-      ! Generics ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      ! Generics ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #ifdef IOFL_HAS_R128
       generic, public :: cast             => cast_string_to_c128, cast_string_to_r128
 #endif
@@ -154,7 +155,7 @@ module io_fortran_lib
       procedure, pass(self), public :: read_line
   end type String
 
-  interface                                                                                   ! Submodule io_string_methods
+  interface                                                                                ! Submodule io_string_methods
     !-------------------------------------------------------------------------------------------------------------------
     !! Methods for the `String` type.
     !-------------------------------------------------------------------------------------------------------------------
@@ -567,7 +568,7 @@ module io_fortran_lib
     end function optval_logical
   end interface optval
 
-  interface operator(//)                                                                           ! Submodule io_operators
+  interface operator(//)                                                                        ! Submodule io_operators
     !-------------------------------------------------------------------------------------------------------------------
     !! Concatenation operator for `character` and `String`, lifted from `character`. Mixed type concatenation of
     !! `character` and `String` is explicitly defined.
@@ -677,7 +678,7 @@ module io_fortran_lib
     end function char_string_ge
   end interface operator(>=)
 
-  interface operator(+)                                                                            ! Submodule io_operators
+  interface operator(+)                                                                         ! Submodule io_operators
     !-------------------------------------------------------------------------------------------------------------------
     !! Concatenation operator for `character` and `String` (as addition). Mixed type concatenation of
     !! `character` and `String` is explicitly defined.
@@ -701,7 +702,7 @@ module io_fortran_lib
     end function char_string_concat_plus
   end interface operator(+)
 
-  interface operator(-)                                                                            ! Submodule io_operators
+  interface operator(-)                                                                         ! Submodule io_operators
     !-------------------------------------------------------------------------------------------------------------------
     !! Excision operator for `character` and `String` (as subtraction). Mixed type excision of `character` and
     !! `String` is explicitly defined.
@@ -727,7 +728,7 @@ module io_fortran_lib
     end function char_string_excision
   end interface operator(-)
 
-  interface operator(**)                                                                           ! Submodule io_operators
+  interface operator(**)                                                                        ! Submodule io_operators
     !-------------------------------------------------------------------------------------------------------------------
     !! Repetition operator for `character` and `String` (as exponentiation).
     !!
@@ -865,7 +866,7 @@ module io_fortran_lib
     end function repeat_String
   end interface operator(**)
 
-  interface operator(==)                                                                           ! Submodule io_operators
+  interface operator(==)                                                                        ! Submodule io_operators
     !-------------------------------------------------------------------------------------------------------------------
     !! Equivalence operator for `character` and `String`. Mixed type equivalence of `character` and `String` is
     !! explicitly defined.
@@ -889,7 +890,7 @@ module io_fortran_lib
     end function char_string_equivalence
   end interface operator(==)
 
-  interface operator(/=)                                                                           ! Submodule io_operators
+  interface operator(/=)                                                                        ! Submodule io_operators
     !-------------------------------------------------------------------------------------------------------------------
     !! Non-equivalence operator for `character` and `String`. Mixed type non-equivalence of `character` and
     !! `String` is explicitly defined.
@@ -1447,7 +1448,7 @@ module io_fortran_lib
 
   end interface cast
 
-  interface join                                                                                  ! Submodule io_join_split
+  interface join                                                                               ! Submodule io_join_split
     !-------------------------------------------------------------------------------------------------------------------
     !! Function for joining a vector of `tokens` into a scalar `character` or `String`.
     !!
@@ -1465,7 +1466,7 @@ module io_fortran_lib
     end function join_string
   end interface join
 
-  interface split                                                                                 ! Submodule io_join_split
+  interface split                                                                              ! Submodule io_join_split
     !-------------------------------------------------------------------------------------------------------------------
     !! Function for splitting a scalar `character` or `String` into a vector of `tokens`.
     !!
@@ -1653,6 +1654,37 @@ module io_fortran_lib
       character(len=*), intent(in), optional :: format
     end subroutine to_file_i8
 
+
+    recursive module subroutine to_file_logical(x, file, header, delim, fmt, stat, errmsg, format)
+      logical,          intent(in)                    :: x(..)
+      character(len=*), intent(in)                    :: file
+      character(len=*), intent(in),  optional         :: header(:)
+      character(len=*), intent(in),  optional         :: delim
+      character(len=*), intent(in),  optional         :: fmt
+      integer,          intent(out), optional, target :: stat
+      character(len=*), intent(out), optional, target :: errmsg
+      character(len=*), intent(in),  optional         :: format
+    end subroutine to_file_logical
+
+    recursive module subroutine to_file_string(x, file, header, delim, stat, errmsg, format)
+      type(String),     intent(in)                    :: x(..)
+      character(len=*), intent(in)                    :: file
+      character(len=*), intent(in),  optional         :: header(:)
+      character(len=*), intent(in),  optional         :: delim
+      integer,          intent(out), optional, target :: stat
+      character(len=*), intent(out), optional, target :: errmsg
+      character(len=*), intent(in),  optional         :: format
+    end subroutine to_file_string
+
+    recursive module subroutine to_file_chars(x, file, header, delim, stat, errmsg, format)
+      character(len=*), intent(in)                    :: x(..)
+      character(len=*), intent(in)                    :: file
+      character(len=*), intent(in),  optional         :: header(:)
+      character(len=*), intent(in),  optional         :: delim
+      integer,          intent(out), optional, target :: stat
+      character(len=*), intent(out), optional, target :: errmsg
+      character(len=*), intent(in),  optional         :: format
+    end subroutine to_file_chars
   end interface to_file
 
   interface from_file                                                                                ! Submodule io_file
@@ -1903,6 +1935,45 @@ module io_fortran_lib
       character(len=*), intent(in), optional :: format
     end subroutine from_binaryfile_i8
 
+
+    recursive module subroutine from_textfile_logical(file, into, header, delim, fmt, stat, errmsg, format, &
+                                                      column_names)
+      character(len=*), intent(in)                    :: file
+      logical,          intent(out), allocatable      :: into(..)
+      logical,          intent(in),  optional         :: header
+      character(len=*), intent(in),  optional         :: delim
+      character(len=*), intent(in),  optional         :: fmt
+      integer,          intent(out), optional, target :: stat
+      character(len=*), intent(out), optional, target :: errmsg
+      character(len=*), intent(in),  optional         :: format
+      type(String),     intent(out), optional, allocatable :: column_names(:)
+    end subroutine from_textfile_logical
+
+    recursive module subroutine from_textfile_string_1(file, into, header, delim, stat, errmsg, format, &
+                                                       column_names)
+      !! Rank 1 rather than assumed rank: ifx 2026 mishandles allocating an assumed-rank String array in select rank.
+      character(len=*), intent(in)                    :: file
+      type(String),     intent(out), allocatable      :: into(:)
+      logical,          intent(in),  optional         :: header
+      character(len=*), intent(in),  optional         :: delim
+      integer,          intent(out), optional, target :: stat
+      character(len=*), intent(out), optional, target :: errmsg
+      character(len=*), intent(in),  optional         :: format
+      type(String),     intent(out), optional, allocatable :: column_names(:)
+    end subroutine from_textfile_string_1
+
+    recursive module subroutine from_textfile_string_2(file, into, header, delim, stat, errmsg, format, &
+                                                       column_names)
+      !! Rank 2 rather than assumed rank: ifx 2026 mishandles allocating an assumed-rank String array in select rank.
+      character(len=*), intent(in)                    :: file
+      type(String),     intent(out), allocatable      :: into(:,:)
+      logical,          intent(in),  optional         :: header
+      character(len=*), intent(in),  optional         :: delim
+      integer,          intent(out), optional, target :: stat
+      character(len=*), intent(out), optional, target :: errmsg
+      character(len=*), intent(in),  optional         :: format
+      type(String),     intent(out), optional, allocatable :: column_names(:)
+    end subroutine from_textfile_string_2
   end interface from_file
 
   interface echo                                                                                     ! Submodule io_text
@@ -2424,6 +2495,13 @@ module io_fortran_lib
       character(len=*), intent(out) :: errmsg
     end subroutine to_npy_i8
 
+    recursive module subroutine to_npy_l(x, file, stat, errmsg)
+      logical, intent(in)  :: x(..)
+      character(len=*), intent(in)  :: file
+      integer,          intent(out) :: stat
+      character(len=*), intent(out) :: errmsg
+    end subroutine to_npy_l
+
   end interface to_npy
 
   interface from_npy                                                                                  ! Submodule io_npy
@@ -2486,9 +2564,16 @@ module io_fortran_lib
       character(len=*), intent(out)              :: errmsg
     end subroutine from_npy_i8
 
+    recursive module subroutine from_npy_l(file, into, stat, errmsg)
+      character(len=*), intent(in)               :: file
+      logical, intent(out), allocatable :: into(..)
+      integer,          intent(out)              :: stat
+      character(len=*), intent(out)              :: errmsg
+    end subroutine from_npy_l
+
   end interface from_npy
 
-  interface aprint                                                                            ! Submodule io_array_printing
+  interface aprint                                                                         ! Submodule io_array_printing
     !-------------------------------------------------------------------------------------------------------------------
     !! Subroutine for printing arrays and array sections to stdout.
     !!

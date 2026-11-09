@@ -258,6 +258,8 @@ $:binary_file_case(k, "real(" + k + ")", "0.0_" + k, "expect_identical")
 $:binary_file_case(k, decl, "0_" + k, "expect_equal", ext="npy", prefix="npy")
 #:elif code == "f"
 $:binary_file_case(k, decl, "0.0_" + k, "expect_identical", ext="npy", prefix="npy")
+#:elif code == "b"
+$:binary_file_case(k, decl, ".true.", "expect_equal", ext="npy", prefix="npy")
 #:else
 $:binary_file_case(k, decl, "(0.0_" + decl[8:11] + ",0.0_" + decl[8:11] + ")", "expect_identical", ext="npy", prefix="npy")
 #:endif

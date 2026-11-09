@@ -85,7 +85,7 @@ module test_support
     !! Checks that `actual` equals `expected`, and prints both if not. Reals and complex values compare exactly unless
     !! `rel_tol` is given; two NaNs count as equal, and so do the two zeros.
     module procedure :: equal_logical, equal_char, equal_string_char, equal_string, equal_string_1, &
-                        equal_string_char_1, equal_char_1
+                        equal_string_char_1, equal_char_1, equal_logical_1
     module procedure :: equal_i64, equal_i64_1
     module procedure :: equal_i32, equal_i32_1
     module procedure :: equal_i16, equal_i16_1
@@ -515,6 +515,19 @@ contains
     character(len=*), intent(in) :: message
     if ( actual .neqv. expected ) call fail(message, merge("true ", "false", actual), merge("true ", "false", expected))
   end subroutine equal_logical
+
+  subroutine equal_logical_1(actual, expected, message)
+    logical,          intent(in) :: actual(:), expected(:)
+    character(len=*), intent(in) :: message
+    integer :: i
+    if ( .not. same_size(size(actual), size(expected), message) ) return
+    do i = 1, size(actual)
+      if ( actual(i) .neqv. expected(i) ) then
+        call fail(message//at(i), merge("true ", "false", actual(i)), merge("true ", "false", expected(i)))
+        return
+      end if
+    end do
+  end subroutine equal_logical_1
 
   subroutine equal_char(actual, expected, message)
     character(len=*), intent(in) :: actual, expected
