@@ -1448,6 +1448,68 @@ module io_fortran_lib
 
   end interface cast
 
+  interface cast_column                                                                          ! Submodule io_internal
+    !-------------------------------------------------------------------------------------------------------------------
+    !! Private interface for casting a column of numbers into `String` cells, with the same text as `cast`. With
+    !! `fmt="e"`, one internal `write` formats a chunk of numbers, which is much faster than a `write` for each one.
+    !-------------------------------------------------------------------------------------------------------------------
+#ifdef IOFL_HAS_R128
+    recursive module subroutine cast_column_c128(x, into, locale, fmt, decimals, im)
+      complex(r128),    intent(in)           :: x(:)
+      type(String),     intent(inout)        :: into(:)
+      character(len=*), intent(in)           :: locale
+      character(len=*), intent(in)           :: fmt
+      integer,          intent(in), optional :: decimals
+      character(len=*), intent(in)           :: im
+    end subroutine cast_column_c128
+#endif
+
+    recursive module subroutine cast_column_c64(x, into, locale, fmt, decimals, im)
+      complex(r64),    intent(in)           :: x(:)
+      type(String),     intent(inout)        :: into(:)
+      character(len=*), intent(in)           :: locale
+      character(len=*), intent(in)           :: fmt
+      integer,          intent(in), optional :: decimals
+      character(len=*), intent(in)           :: im
+    end subroutine cast_column_c64
+
+    recursive module subroutine cast_column_c32(x, into, locale, fmt, decimals, im)
+      complex(r32),    intent(in)           :: x(:)
+      type(String),     intent(inout)        :: into(:)
+      character(len=*), intent(in)           :: locale
+      character(len=*), intent(in)           :: fmt
+      integer,          intent(in), optional :: decimals
+      character(len=*), intent(in)           :: im
+    end subroutine cast_column_c32
+
+#ifdef IOFL_HAS_R128
+    recursive module subroutine cast_column_r128(x, into, locale, fmt, decimals)
+      real(r128),       intent(in)           :: x(:)
+      type(String),     intent(inout)        :: into(:)
+      character(len=*), intent(in)           :: locale
+      character(len=*), intent(in)           :: fmt
+      integer,          intent(in), optional :: decimals
+    end subroutine cast_column_r128
+#endif
+
+    recursive module subroutine cast_column_r64(x, into, locale, fmt, decimals)
+      real(r64),       intent(in)           :: x(:)
+      type(String),     intent(inout)        :: into(:)
+      character(len=*), intent(in)           :: locale
+      character(len=*), intent(in)           :: fmt
+      integer,          intent(in), optional :: decimals
+    end subroutine cast_column_r64
+
+    recursive module subroutine cast_column_r32(x, into, locale, fmt, decimals)
+      real(r32),       intent(in)           :: x(:)
+      type(String),     intent(inout)        :: into(:)
+      character(len=*), intent(in)           :: locale
+      character(len=*), intent(in)           :: fmt
+      integer,          intent(in), optional :: decimals
+    end subroutine cast_column_r32
+
+  end interface cast_column
+
   interface join                                                                               ! Submodule io_join_split
     !-------------------------------------------------------------------------------------------------------------------
     !! Function for joining a vector of `tokens` into a scalar `character` or `String`.
