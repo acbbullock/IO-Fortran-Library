@@ -140,8 +140,8 @@ files (which on most systems equates to `LF`).
 
 Header (default is none): `header` is a
 [character array literal](../UserInfo/compilers.html). For `x` of rank
-`1`, `header` may be of size `1` or `size(x)`. For `x` of rank `2`,
-`header` may be of size `1` or `size(x, dim=2)`.
+`1`, which is written as one column, `header` must be of size `1`. For
+`x` of rank `2`, `header` may be of size `1` or `size(x, dim=2)`.
 
 Locales (default is `"US"`):
 
@@ -154,8 +154,8 @@ other files, it is `","` for `integer` data and for `real`/`complex`
 data with `"US"` locale, and `";"` for `real`/`complex` data with
 `"EU"` locale. It is always recommended to
 omit the delimiter argument for default unless a custom delimiter is
-really necessary. If `x` has rank `1` and `dim=1`, then the `delim`
-argument is ignored.
+really necessary. If `x` has rank `1`, it is written as one column, so
+the `delim` argument is not used.
 
 Integer formats (default is `"i"`):
 

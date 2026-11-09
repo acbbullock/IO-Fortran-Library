@@ -266,6 +266,37 @@ jobs:
           assert d["counts"].tolist() == [i * i for i in range(1, 11)], "counts differ"
           PY
 
+  coverage:
+    name: test coverage, gcc 16
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: fortran-lang/setup-fortran@v1
+        with:
+          compiler: gcc
+          version: "16"
+      - uses: fortran-lang/setup-fpm@v10
+        with:
+          fpm-version: v${{ env.IOFL_FPM_VERSION }}
+      - name: Run the tests with coverage
+        run: fpm test --flag "-std=f2018 -O0 -g --coverage" --link-flag "--coverage"
+      - name: Report coverage
+        # Coverage of the generated sources in src/, where each kind is a copy of the same template code, so a
+        # check tested for one kind shows as missed for the others. The list of error checks that no test reaches
+        # counts a check as reached when any copy is: that list is what to add cases for.
+        run: |
+          pipx install gcovr==8.8
+          mkdir coverage
+          gcovr --root . --filter src/ --gcov-executable gcov-16 --json coverage.json \
+                --markdown coverage.md --html-details coverage/index.html build
+          cat coverage.md >> "$GITHUB_STEP_SUMMARY"
+          python3 ci/untested-errors.py coverage.json | tee -a "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 14
+
   generated:
     name: generated sources match the fypp templates
     runs-on: ubuntu-24.04
