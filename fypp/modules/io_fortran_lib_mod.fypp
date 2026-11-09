@@ -16,7 +16,7 @@ module io_fortran_lib
   private                                                                                  ! Default private access
 
   ! Public API list ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  public :: aprint, to_file, from_file                                                       ! Array I/O
+  public :: aprint, to_file, from_file, npz_names                                            ! Array I/O
   public :: String, str, cast, join, split, echo                                             ! String I/O
   public :: IOFL_NL, IOFL_SPACE, IOFL_CR, IOFL_LF, IOFL_TAB, IOFL_FF, IOFL_VT, IOFL_BELL, IOFL_NUL ! Constants
   public :: IOFL_READ_ERR, IOFL_WRITE_ERR, IOFL_ALLOC_ERR, IOFL_ARG_ERR                     ! Error codes
@@ -1206,8 +1206,8 @@ module io_fortran_lib
 
     pure recursive module function format_of(file, format) result(file_format)
       !-----------------------------------------------------------------------------------------------------------------
-      !! Returns "text", "binary" or "npy" from `format` if present, or else from the extension of `file`, or "" if
-      !! neither is valid.
+      !! Returns "text", "binary", "npy" or "npz" from `format` if present, or else from the extension of `file`, or ""
+      !! if neither is valid.
       !-----------------------------------------------------------------------------------------------------------------
       character(len=*), intent(in)           :: file
       character(len=*), intent(in), optional :: format
@@ -1235,7 +1235,7 @@ module io_fortran_lib
 #ifdef IOFL_HAS_R128
 #:endif
     recursive module subroutine to_file_${k}$(x, file, header, locale, delim, fmt, decimals, im, stat, errmsg, &
-                                              format)
+                                              format, name)
       complex(${r}$),    intent(in)                    :: x(..)
       character(len=*), intent(in)                    :: file
       character(len=*), intent(in),  optional :: header(:)
@@ -1247,6 +1247,7 @@ module io_fortran_lib
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      character(len=*), intent(in), optional :: name
     end subroutine to_file_${k}$
 #:if k in QUAD_KINDS
 #endif
@@ -1258,7 +1259,8 @@ module io_fortran_lib
 #:if k in QUAD_KINDS
 #ifdef IOFL_HAS_R128
 #:endif
-    recursive module subroutine to_file_${k}$(x, file, header, locale, delim, fmt, decimals, stat, errmsg, format)
+    recursive module subroutine to_file_${k}$(x, file, header, locale, delim, fmt, decimals, stat, errmsg, format, &
+                                              name)
       real(${k}$),       intent(in)                    :: x(..)
       character(len=*), intent(in)                    :: file
       character(len=*), intent(in),  optional :: header(:)
@@ -1269,6 +1271,7 @@ module io_fortran_lib
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      character(len=*), intent(in), optional :: name
     end subroutine to_file_${k}$
 #:if k in QUAD_KINDS
 #endif
@@ -1277,7 +1280,7 @@ module io_fortran_lib
 #:endfor
 
 #:for k in INT_KINDS
-    recursive module subroutine to_file_${k}$(x, file, header, delim, fmt, stat, errmsg, format)
+    recursive module subroutine to_file_${k}$(x, file, header, delim, fmt, stat, errmsg, format, name)
       integer(${k}$),     intent(in)                    :: x(..)
       character(len=*), intent(in)                    :: file
       character(len=*), intent(in),  optional :: header(:)
@@ -1286,11 +1289,12 @@ module io_fortran_lib
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      character(len=*), intent(in), optional :: name
     end subroutine to_file_${k}$
 
 #:endfor
 
-    recursive module subroutine to_file_logical(x, file, header, delim, fmt, stat, errmsg, format)
+    recursive module subroutine to_file_logical(x, file, header, delim, fmt, stat, errmsg, format, name)
       logical,          intent(in)                    :: x(..)
       character(len=*), intent(in)                    :: file
       character(len=*), intent(in),  optional         :: header(:)
@@ -1299,6 +1303,7 @@ module io_fortran_lib
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in),  optional         :: format
+      character(len=*), intent(in),  optional         :: name
     end subroutine to_file_logical
 
     recursive module subroutine to_file_string(x, file, header, delim, stat, errmsg, format)
@@ -1333,7 +1338,7 @@ module io_fortran_lib
 #ifdef IOFL_HAS_R128
 #:endif
     recursive module subroutine from_textfile_${k}$(file, into, header, locale, delim, fmt, im, stat, errmsg, &
-                                              format, column_names)
+                                              format, column_names, name)
       character(len=*), intent(in)                    :: file
       complex(${r}$),    intent(out), allocatable      :: into(..)
       logical,          intent(in),  optional :: header
@@ -1344,6 +1349,7 @@ module io_fortran_lib
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      character(len=*), intent(in), optional :: name
       type(String),     intent(out), optional, allocatable :: column_names(:)
     end subroutine from_textfile_${k}$
 #:if k in QUAD_KINDS
@@ -1356,13 +1362,14 @@ module io_fortran_lib
 #:if k in QUAD_KINDS
 #ifdef IOFL_HAS_R128
 #:endif
-    recursive module subroutine from_binaryfile_${k}$(file, into, data_shape, stat, errmsg, format)
+    recursive module subroutine from_binaryfile_${k}$(file, into, data_shape, stat, errmsg, format, name)
       character(len=*), intent(in)                    :: file
       complex(${r}$),    intent(out), allocatable      :: into(..)
       integer,          intent(in)                    :: data_shape(:)
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      character(len=*), intent(in), optional :: name
     end subroutine from_binaryfile_${k}$
 #:if k in QUAD_KINDS
 #endif
@@ -1375,7 +1382,7 @@ module io_fortran_lib
 #ifdef IOFL_HAS_R128
 #:endif
     recursive module subroutine from_textfile_${k}$(file, into, header, locale, delim, fmt, stat, errmsg, format, &
-                                              column_names)
+                                              column_names, name)
       character(len=*), intent(in)                    :: file
       real(${k}$),       intent(out), allocatable      :: into(..)
       logical,          intent(in),  optional :: header
@@ -1385,6 +1392,7 @@ module io_fortran_lib
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      character(len=*), intent(in), optional :: name
       type(String),     intent(out), optional, allocatable :: column_names(:)
     end subroutine from_textfile_${k}$
 #:if k in QUAD_KINDS
@@ -1397,13 +1405,14 @@ module io_fortran_lib
 #:if k in QUAD_KINDS
 #ifdef IOFL_HAS_R128
 #:endif
-    recursive module subroutine from_binaryfile_${k}$(file, into, data_shape, stat, errmsg, format)
+    recursive module subroutine from_binaryfile_${k}$(file, into, data_shape, stat, errmsg, format, name)
       character(len=*), intent(in)                    :: file
       real(${k}$),       intent(out), allocatable      :: into(..)
       integer,          intent(in)                    :: data_shape(:)
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      character(len=*), intent(in), optional :: name
     end subroutine from_binaryfile_${k}$
 #:if k in QUAD_KINDS
 #endif
@@ -1413,7 +1422,7 @@ module io_fortran_lib
 
 #:for k in INT_KINDS
     recursive module subroutine from_textfile_${k}$(file, into, header, delim, fmt, stat, errmsg, format, &
-                                              column_names)
+                                              column_names, name)
       character(len=*), intent(in)                    :: file
       integer(${k}$),     intent(out), allocatable      :: into(..)
       logical,          intent(in),  optional :: header
@@ -1422,25 +1431,27 @@ module io_fortran_lib
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      character(len=*), intent(in), optional :: name
       type(String),     intent(out), optional, allocatable :: column_names(:)
     end subroutine from_textfile_${k}$
 
 #:endfor
 
 #:for k in INT_KINDS
-    recursive module subroutine from_binaryfile_${k}$(file, into, data_shape, stat, errmsg, format)
+    recursive module subroutine from_binaryfile_${k}$(file, into, data_shape, stat, errmsg, format, name)
       character(len=*), intent(in)                    :: file
       integer(${k}$),     intent(out), allocatable      :: into(..)
       integer,          intent(in)                    :: data_shape(:)
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      character(len=*), intent(in), optional :: name
     end subroutine from_binaryfile_${k}$
 
 #:endfor
 
     recursive module subroutine from_textfile_logical(file, into, header, delim, fmt, stat, errmsg, format, &
-                                                      column_names)
+                                                      column_names, name)
       character(len=*), intent(in)                    :: file
       logical,          intent(out), allocatable      :: into(..)
       logical,          intent(in),  optional         :: header
@@ -1449,6 +1460,7 @@ module io_fortran_lib
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in),  optional         :: format
+      character(len=*), intent(in),  optional         :: name
       type(String),     intent(out), optional, allocatable :: column_names(:)
     end subroutine from_textfile_logical
 
@@ -1478,6 +1490,20 @@ module io_fortran_lib
       type(String),     intent(out), optional, allocatable :: column_names(:)
     end subroutine from_textfile_string_2
   end interface from_file
+
+  interface                                                                                           ! Submodule io_npy
+    recursive module subroutine npz_names(file, names, stat, errmsg)
+      !-----------------------------------------------------------------------------------------------------------------
+      !! Subroutine for listing the names of the arrays in a NumPy `.npz` archive, in the order they are stored.
+      !!
+      !! For a user reference, see [npz_names](../page/Ref/npz_names.html).
+      !-----------------------------------------------------------------------------------------------------------------
+      character(len=*), intent(in)                    :: file
+      type(String),     intent(out), allocatable      :: names(:)
+      integer,          intent(out), optional, target :: stat
+      character(len=*), intent(out), optional, target :: errmsg
+    end subroutine npz_names
+  end interface
 
   interface echo                                                                                     ! Submodule io_text
     !-------------------------------------------------------------------------------------------------------------------
@@ -1728,14 +1754,16 @@ module io_fortran_lib
 
   interface to_npy                                                                                    ! Submodule io_npy
     !-------------------------------------------------------------------------------------------------------------------
-    !! Private interface for writing an array to a NumPy `.npy` file.
+    !! Private interface for writing an array to a NumPy `.npy` file, or to a `.npz` archive under a name.
     !-------------------------------------------------------------------------------------------------------------------
 #:for k, decl, code, size in NPY_TYPES
-    recursive module subroutine to_npy_${k}$(x, file, stat, errmsg)
-      ${decl}$, intent(in)  :: x(..)
-      character(len=*), intent(in)  :: file
-      integer,          intent(out) :: stat
-      character(len=*), intent(out) :: errmsg
+    recursive module subroutine to_npy_${k}$(x, file, stat, errmsg, npz, name)
+      ${decl}$, intent(in)           :: x(..)
+      character(len=*), intent(in)           :: file
+      integer,          intent(out)          :: stat
+      character(len=*), intent(out)          :: errmsg
+      logical,          intent(in)           :: npz                          ! Add x to the archive file as name
+      character(len=*), intent(in), optional :: name
     end subroutine to_npy_${k}$
 
 #:endfor
@@ -1743,14 +1771,17 @@ module io_fortran_lib
 
   interface from_npy                                                                                  ! Submodule io_npy
     !-------------------------------------------------------------------------------------------------------------------
-    !! Private interface for reading a NumPy `.npy` file into an array, which takes its shape from the file.
+    !! Private interface for reading a NumPy `.npy` file, or an array in a `.npz` archive, into an array, which takes
+    !! its shape from the file.
     !-------------------------------------------------------------------------------------------------------------------
 #:for k, decl, code, size in NPY_TYPES
-    recursive module subroutine from_npy_${k}$(file, into, stat, errmsg)
+    recursive module subroutine from_npy_${k}$(file, into, stat, errmsg, npz, name)
       character(len=*), intent(in)               :: file
       ${decl}$, intent(out), allocatable :: into(..)
       integer,          intent(out)              :: stat
       character(len=*), intent(out)              :: errmsg
+      logical,          intent(in)               :: npz                      ! Read the array name from the archive
+      character(len=*), intent(in),  optional    :: name
     end subroutine from_npy_${k}$
 
 #:endfor

@@ -108,8 +108,10 @@ jobs:
             ci/build-without-fpm.sh gfortran -cpp build/s390x -O1
             gfortran -cpp -O1 -I build/s390x example/quickstart.f90 build/s390x/libIO-Fortran-Library.a -o build/quickstart
             build/quickstart
+            gfortran -cpp -O1 -I build/s390x example/binary_npz.f90 build/s390x/libIO-Fortran-Library.a -o build/binary_npz
+            build/binary_npz
           '
-      - name: NumPy reads the .npy file written on s390x
+      - name: NumPy reads the .npy and .npz files written on s390x
         run: |
           python3 -m pip install -q numpy
           python3 - <<'PY'
@@ -119,6 +121,11 @@ jobs:
           print(x.dtype.str, x.shape, x.tolist())
           assert x.dtype.str == ">f4", f"expected a big-endian float32 file, got {x.dtype.str}"
           assert x.shape == (3, 2) and np.array_equal(x, expected), "values differ"
+          d = np.load("arrays.npz")
+          print(d.files, d["x"].dtype.str, d["counts"].dtype.str, d["counts"].tolist())
+          assert d.files == ["x", "counts"], d.files
+          assert d["x"].dtype.str == ">f4" and d["x"].shape == (30, 40), "x differs"
+          assert d["counts"].dtype.str == ">i4" and d["counts"].tolist() == [i * i for i in range(1, 11)], "counts differ"
           PY
 
   no-fpm:
@@ -246,6 +253,18 @@ jobs:
             echo 0 | fpm run --example "$e" --flag "-std=f2018 -O2 -g -fbacktrace"
             echo "::endgroup::"
           done
+      - name: NumPy reads the .npz archive the example wrote
+        # numpy.load checks each array's CRC-32 as it reads it.
+        run: |
+          python3 -m pip install -q numpy
+          python3 - <<'PY'
+          import numpy as np
+          d = np.load("arrays.npz")
+          print(d.files, d["x"].dtype.str, d["x"].shape, d["counts"].tolist())
+          assert d.files == ["x", "counts"], d.files
+          assert d["x"].dtype == np.float32 and d["x"].shape == (30, 40), "x differs"
+          assert d["counts"].tolist() == [i * i for i in range(1, 11)], "counts differ"
+          PY
 
   generated:
     name: generated sources match the fypp templates

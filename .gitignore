@@ -5,4 +5,5 @@ doc
 /*.csv
 /*.dat
 /*.npy
+/*.npz
 /*.log

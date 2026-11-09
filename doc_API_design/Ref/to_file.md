@@ -98,14 +98,37 @@ type `integer`, `real`, `complex`, to a raw binary file or a NumPy
 call to_file(x, file [, stat, errmsg, format])
 ```
 
+For adding an array `x` of the same types and ranks to a NumPy
+[.npz archive](../UserInfo/file-ext.html#numpy-npz-archives) under the
+name `name`:
+
+```fortran
+call to_file(x, file, name [, stat, errmsg, format])
+```
+
 * `file` is of type `character(len=*)`
+* `name` is of type `character(len=*)`
 * `stat` is `optional` and of type `integer`
 * `errmsg` is `optional` and of type `character(len=*)`
 
+`name` is the name NumPy gives the array: `numpy.load(file)[name]`.
+Trailing blanks in it are ignored. If `file` doesn't exist it is
+created, and if it does, `x` is added to the arrays already in it. An
+array already there under `name` is replaced, and the new one is listed
+last by [npz_names](npz_names.html). `name` is required for a `.npz`
+file, and is an `IOFL_ARG_ERR` for any other file:
+
+```fortran
+call to_file(x, file="data.npz", name="x")      ! Creates data.npz, or adds x to it
+call to_file(y, file="data.npz", name="y")      ! Now data.npz holds x and y
+```
+
+To start a new archive, delete the old file first.
+
 @note `logical` data can't be written to a raw binary file (`.dat`,
 `.bin`), because compilers store `logical` values differently, so the
-file couldn't be read back reliably. A `.npy` file stores each value as
-one byte, `0` or `1`, which NumPy reads as `bool`.
+file couldn't be read back reliably. A `.npy` or `.npz` file stores each
+value as one byte, `0` or `1`, which NumPy reads as `bool`.
 
 @note `file` may be a relative path, but absolute paths are not
 guaranteed to work on every platform.
@@ -157,5 +180,5 @@ default, `complex` numbers will be written as ordered pairs, e.g.
 a sum with the specified imaginary unit, e.g. `2.45+3.45j` for `im="j"`
 or `2.45+3.45*1i` for `im="*1i"`.
 
-Format: `format` is `optional`, and may be `"text"`, `"binary"` or `"npy"`. If it is
-not present, the format comes from the [file extension](../UserInfo/file-ext.html).
+Format: `format` is `optional`, and may be `"text"`, `"binary"`, `"npy"` or `"npz"`. If
+it is not present, the format comes from the [file extension](../UserInfo/file-ext.html).
