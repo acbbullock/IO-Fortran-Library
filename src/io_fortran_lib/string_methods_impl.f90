@@ -7,6 +7,7 @@ submodule (io_fortran_lib) io_string_methods
   implicit none (type, external)
 
   integer, parameter :: ENDS_COLUMN = 1, ENDS_ROW = 2, ENDS_FILE = 3 ! What ended a cell
+  integer, parameter :: ROW_BLOCK = 128                               ! Rows read_cells fills at a time
 
   type :: cell_bounds
     integer(i64) :: l = 1_i64, r = 0_i64, tail_l = 1_i64, tail_r = 0_i64
@@ -307,10 +308,11 @@ submodule (io_fortran_lib) io_string_methods
     cell_block: block
       character(len=:), allocatable :: row_separator_, column_separator_
 
-      type(cell_bounds) :: cell
-      integer(i64)      :: last, pos
-      integer           :: nrows, ncols, row, col
-      logical           :: strip_cr
+      type(cell_bounds)         :: cell
+      integer(i64), allocatable :: first(:), final(:)
+      integer(i64)              :: last, pos, start, k
+      integer                   :: nrows, ncols, row, col, block_start
+      logical                   :: strip_cr
 
       row_separator_ = optval(row_separator, LINE_FEED)
 
@@ -326,9 +328,12 @@ submodule (io_fortran_lib) io_string_methods
         return
       end if
 
-      nrows = 1; ncols = 0; row = 1; col = 1; pos = 1_i64
+      ! One pass over the text finds every cell. Cell k, in row-major order, is self%buf(first(k):final(k)), or, if
+      ! it is quoted, starts at -first(k) and is scanned again. A short row is padded with empty cells.
+      nrows = 1; ncols = 0; row = 1; col = 1; pos = 1_i64; k = 0_i64
 
-      count_cells: do
+      find_cells: do
+        start = pos
         call scan_cell(self%buf(:self%n), last, pos, row_separator_, column_separator_, strip_cr, pairs, cell, stat_)
 
         if ( stat_ /= 0 ) then
@@ -338,8 +343,26 @@ submodule (io_fortran_lib) io_string_methods
           return
         end if
 
+        if ( (row == 1) .or. (col <= ncols) ) then
+          call reserve(first, final, k + 1_i64 + max(ncols - col, 0), stat_, errmsg_)   ! The rest of the row, too
+
+          if ( stat_ /= 0 ) then
+            stat_ = ALLOC_ERR
+            call stop_if_unhandled(stat_, errmsg_, present(stat))
+            return
+          end if
+
+          k = k + 1_i64
+
+          if ( cell%quoted ) then
+            first(k) = -start; final(k) = 0_i64
+          else
+            first(k) = cell%l; final(k) = cell%r
+          end if
+        end if
+
         if ( cell%ends == ENDS_COLUMN ) then
-          col = col + 1; cycle count_cells
+          col = col + 1; cycle find_cells
         end if
 
         if ( row == 1 ) ncols = col
@@ -352,10 +375,13 @@ submodule (io_fortran_lib) io_string_methods
           return
         end if
 
-        if ( cell%ends == ENDS_FILE ) exit count_cells
+        first(k+1_i64:k+ncols-col) = 1_i64; final(k+1_i64:k+ncols-col) = 0_i64   ! Empty cells
+        k = k + (ncols - col)
+
+        if ( cell%ends == ENDS_FILE ) exit find_cells
 
         row = row + 1; col = 1
-      end do count_cells
+      end do find_cells
 
       nrows = row
 
@@ -367,32 +393,33 @@ submodule (io_fortran_lib) io_string_methods
         return
       end if
 
-      row = 1; col = 1; pos = 1_i64
+      ! Filled a block of rows at a time, by column in each block, so that the text being copied stays in cache and
+      ! the cells lie in memory close to array element order, which makes deallocating them faster
+      do block_start = 1, nrows, ROW_BLOCK
+        do col = 1, ncols
+          do row = block_start, min(block_start + ROW_BLOCK - 1, nrows)
+            k = int(row - 1, i64)*int(ncols, i64) + int(col, i64)
 
-      transfer_cells: do
-        call scan_cell(self%buf(:self%n), last, pos, row_separator_, column_separator_, strip_cr, pairs, cell, stat_)
+            if ( first(k) > 0_i64 ) then   ! Faster with flang than assigning to the unallocated cell
+              allocate( character(len=max(final(k) - first(k) + 1_i64, 0_i64)) :: cell_array(row,col)%buf )
+              cell_array(row,col)%buf(:) = self%buf(first(k):final(k))
+            else
+              pos = -first(k)
+              call scan_cell(self%buf(:self%n), last, pos, row_separator_, column_separator_, strip_cr, pairs, &
+                             cell, stat_)
 
-        if ( cell%escaped ) then
-          cell_array(row,col)%buf = without_escapes(self%buf(cell%l:cell%r))//self%buf(cell%tail_l:cell%tail_r)
-          cell_array(row,col)%n = len(cell_array(row,col)%buf, kind=i64)
-        else if ( cell%quoted ) then
-          cell_array(row,col)%buf = self%buf(cell%l:cell%r)//self%buf(cell%tail_l:cell%tail_r)
-          cell_array(row,col)%n = len(cell_array(row,col)%buf, kind=i64)
-        else
-          cell_array(row,col)%buf = self%buf(cell%l:cell%r)
-          cell_array(row,col)%n = len(cell_array(row,col)%buf, kind=i64)
-        end if
+              if ( cell%escaped ) then
+                cell_array(row,col)%buf = without_escapes(self%buf(cell%l:cell%r))// &
+                                          self%buf(cell%tail_l:cell%tail_r)
+              else
+                cell_array(row,col)%buf = self%buf(cell%l:cell%r)//self%buf(cell%tail_l:cell%tail_r)
+              end if
+            end if
 
-        if ( cell%ends == ENDS_COLUMN ) then
-          col = col + 1; cycle transfer_cells
-        end if
-
-        cell_array(row,col+1:ncols) = String(EMPTY_STR)
-
-        if ( cell%ends == ENDS_FILE ) exit transfer_cells
-
-        row = row + 1; col = 1
-      end do transfer_cells
+            cell_array(row,col)%n = len(cell_array(row,col)%buf, kind=i64)
+          end do
+        end do
+      end do
     end block cell_block
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -918,6 +945,36 @@ submodule (io_fortran_lib) io_string_methods
       cell%l = start; cell%r = finish
     end if
   end subroutine scan_cell
+
+  pure subroutine reserve(first, final, needed, status, message)
+    !-------------------------------------------------------------------------------------------------------------------
+    !! Makes `first` and `final` hold at least `needed` elements, keeping their contents. They start at 1024 elements
+    !! and at least double when they grow.
+    !-------------------------------------------------------------------------------------------------------------------
+    integer(i64), allocatable, intent(inout) :: first(:), final(:)
+    integer(i64),              intent(in)    :: needed
+    integer,                   intent(out)   :: status
+    character(len=*),          intent(inout) :: message
+
+    integer(i64), allocatable :: grown(:)
+    integer(i64)              :: n, new_size
+
+    status = 0; n = 0_i64
+    if ( allocated(first) ) n = size(first, kind=i64)
+    if ( needed <= n ) return
+
+    new_size = max(needed, 2_i64*n, 1024_i64)
+
+    allocate( grown(new_size), stat=status, errmsg=message )
+    if ( status /= 0 ) return
+    if ( n > 0_i64 ) grown(:n) = first
+    call move_alloc(grown, first)
+
+    allocate( grown(new_size), stat=status, errmsg=message )
+    if ( status /= 0 ) return
+    if ( n > 0_i64 ) grown(:n) = final
+    call move_alloc(grown, final)
+  end subroutine reserve
 
   pure function without_escapes(text) result(plain)
     character(len=*), intent(in)  :: text

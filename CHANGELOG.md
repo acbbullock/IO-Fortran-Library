@@ -23,6 +23,9 @@ Work toward 2.3, tracked in the [2.3 milestone](https://github.com/acbbullock/IO
   second internal `write`, which roughly halves the time of `cast`. The text is unchanged (#91).
 * `from_file` reads numbers from text files up to twice as fast, by reading many cells in one statement, and `cast`
   from text into real numbers is about a third faster with ifx (#92).
+* `read_file` into a cell array scans the text once instead of twice, and fills the cells in an order that keeps them
+  close together in memory, which also makes freeing the cell array 3–4 times as fast. Against splitting lines by
+  hand, `read_file` goes from 6.7 to 4.8 times as long with flang. `from_file` on text files gains too (#95).
 
 ## [2.2.0](https://github.com/acbbullock/IO-Fortran-Library/releases/tag/v2.2.0) - 2026-11-09
 
