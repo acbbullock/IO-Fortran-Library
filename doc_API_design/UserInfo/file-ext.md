@@ -11,7 +11,7 @@ The `format` argument may be `"text"`, `"binary"` or `"npy"`, and allows
 a file to have any name, as in:
 
 ```fortran
-call to_file(x, file="data.tsv", delim=IOFL_TAB, format="text")
+call to_file(x, file="data.out", format="text")
 ```
 
 Without `format`, a valid file extension must be present.
@@ -19,14 +19,14 @@ Without `format`, a valid file extension must be present.
 The following are valid text file extensions:
 
 ```fortran
-character(len=3), parameter :: TEXT_EXT(*) = [ "csv", "txt", & ! Allowed text extensions
-                                               "log", "rtf", &
-                                               "odm", "odt", &
-                                               "ods", "odf", &
-                                               "xls", "doc", &
-                                               "org", "dbf", &
-                                               "bed", "gff", &
-                                               "gtf"         ]
+character(len=3), parameter :: TEXT_EXT(*) = [ "csv", "tsv", & ! Allowed text extensions
+                                               "txt", "log", &
+                                               "rtf", "odm", &
+                                               "odt", "ods", &
+                                               "odf", "xls", &
+                                               "doc", "org", &
+                                               "dbf", "bed", &
+                                               "gff", "gtf"  ]
 ```
 
 The following are valid binary file extensions:
@@ -36,6 +36,20 @@ character(len=3), parameter :: BINARY_EXT(*) = [ "dat", "bin" ] ! Allowed binary
 ```
 
 The `npy` extension, or `format="npy"`, selects a NumPy `.npy` file.
+
+### Delimiters
+
+Without `delim` (or `column_separator` for `read_file` and `write_file`),
+a `.tsv` file is separated by tabs. Other text files are separated by
+commas, or by semicolons in the `"EU"` locale, whose decimal mark is a
+comma. An explicit delimiter always wins:
+
+```fortran
+call to_file(x, file="x.tsv")                ! Tab-separated
+call to_file(x, file="x.csv")                ! Comma-separated
+call to_file(x, file="x.csv", locale="EU")   ! Semicolon-separated, with decimal commas
+call to_file(x, file="x.tsv", delim=";")     ! Semicolon-separated
+```
 
 ### NumPy `.npy` files
 

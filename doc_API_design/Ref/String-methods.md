@@ -128,13 +128,14 @@ For `self` a scalar variable of type `String`:
 * `row_separator` is `optional` and of type `character(len=*)`
   (default is `IOFL_LF`)
 * `column_separator` is `optional` and of type `character(len=*)`
-  (default is `","`)
+  (default is a tab for a `.tsv` file, and `","` otherwise)
 * `stat` is `optional` and of type `integer`
 * `errmsg` is `optional` and of type `character(len=*)`
 
 *Description*: Reads raw text file contents into `self` and optionally
 populates a cell array using the designated `row_separator` and
-`column_separator` whose default values are `IOFL_LF` and `","` respectively.
+`column_separator`. Their defaults are `IOFL_LF`, and a tab for a `.tsv`
+file or `","` otherwise.
 
 @note `file` may be a relative path, but absolute paths are not
 guaranteed to work on every platform.
@@ -268,15 +269,15 @@ For `self` a scalar variable of type `String`:
 * `row_separator` is `optional` and of type `character(len=*)`
   (default is `IOFL_LF`)
 * `column_separator` is `optional` and of type `character(len=*)`
-  (default is `","`)
+  (default is a tab for a `.tsv` file, and `","` otherwise)
 * `append` is `optional` and of type `logical` (default is `.false.`)
 * `stat` is `optional` and of type `integer`
 * `errmsg` is `optional` and of type `character(len=*)`
 
 *Description*: Writes the content of a cell array to a text file. The
 cell array's entire contents are populated into `self` using the
-designated `row_separator` and `column_separator` whose default values
-are `IOFL_LF` and `","` respectively, and then streamed to an external text
+designated `row_separator` and `column_separator`, whose defaults are
+`IOFL_LF`, and a tab for a `.tsv` file or `","` otherwise, and then streamed to an external text
 file. The file will be created if it does not exist, and will be
 appended to if `append` is `.true.`.
 

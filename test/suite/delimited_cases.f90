@@ -4,7 +4,7 @@ module delimited_cases
   !---------------------------------------------------------------------------------------------------------------------
   use io_fortran_lib, only: String, str, IOFL_LF, IOFL_CR, IOFL_TAB, operator(==), operator(/=), operator(+), &
                             operator(>), operator(>=)
-  use test_support, only: test_suite, STOPS, check, expect_equal, scratch, write_raw
+  use test_support, only: test_suite, STOPS, check, expect_equal, scratch, write_raw, read_raw
   use test_values, only: reset_random, random_values
   implicit none (type, external)
   private
@@ -51,6 +51,8 @@ contains
     call suite%add("tsv_large_round_trip", tsv_large_round_trip)
     call suite%add("read_tab_in_quotes", read_tab_in_quotes)
     call suite%add("write_file_quotes_text_pairs", write_file_quotes_text_pairs)
+    call suite%add("read_file_tsv_default", read_file_tsv_default)
+    call suite%add("write_file_tsv_default", write_file_tsv_default)
   end subroutine register_delimited
 
   subroutine read_file_missing()
@@ -541,4 +543,25 @@ contains
     call s%write_file(one_row, file=file//".csv")
     call check(s%as_str() == '"(a,b)",c'//IOFL_LF, "write_file should quote text that looks like a pair.")
   end subroutine write_file_quotes_text_pairs
+  subroutine read_file_tsv_default()
+    !! read_file separates a .tsv file at tabs when no column_separator is given (#70).
+    type(String)              :: s
+    type(String), allocatable :: cells(:,:)
+
+    call write_raw(scratch()//".tsv", "a"//IOFL_TAB//"b,c"//IOFL_LF//"d"//IOFL_TAB//"e"//IOFL_LF)
+    call s%read_file(scratch()//".tsv", cell_array=cells)
+    call expect_equal(size(cells, dim=2), 2, "A .tsv file should split at tabs, not commas.")
+    call expect_equal(cells(1,2), "b,c", "A comma is ordinary text in a .tsv file.")
+    call expect_equal(cells(2,1), "d", "second row")
+  end subroutine read_file_tsv_default
+
+  subroutine write_file_tsv_default()
+    !! write_file separates cells with tabs in a .tsv file, and quotes a cell that contains a tab.
+    type(String) :: s, cells(1,3)
+
+    cells(1,1) = String("a,b"); cells(1,2) = String("c"//IOFL_TAB//"d"); cells(1,3) = String("e")
+    call s%write_file(cells, file=scratch()//".tsv")
+    call check(read_raw(scratch()//".tsv") == "a,b"//IOFL_TAB//'"c'//IOFL_TAB//'d"'//IOFL_TAB//"e"//IOFL_LF, &
+               "write_file should use tabs in a .tsv file and quote a cell containing one.")
+  end subroutine write_file_tsv_default
 end module delimited_cases

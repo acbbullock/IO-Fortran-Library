@@ -13,7 +13,7 @@ submodule (io_fortran_lib) string_methods
   end type cell_bounds
 
   ! Definitions and interfaces ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  character(len=1), parameter :: LINE_FEED = LF, COMMA_DELIMITER = COMMA
+  character(len=1), parameter :: LINE_FEED = LF
   logical,          target :: NO_APPEND = .false.
 
   contains ! Procedure bodies for module subprograms <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><
@@ -312,7 +312,7 @@ submodule (io_fortran_lib) string_methods
 
       row_separator_ = optval(row_separator, LINE_FEED)
 
-      column_separator_ = optval(column_separator, COMMA_DELIMITER)
+      column_separator_ = optval(column_separator, default_delim(file, LOCALES(1)))
 
       strip_cr = (row_separator_ == LF)
       last     = end_of_data(self%buf(:self%n), row_separator_, strip_cr)
@@ -567,7 +567,7 @@ submodule (io_fortran_lib) string_methods
 
     row_separator_ = optval(row_separator, LINE_FEED)
 
-    column_separator_ = optval(column_separator, COMMA_DELIMITER)
+    column_separator_ = optval(column_separator, default_delim(file, LOCALES(1)))
 
     append_ = optval(append, NO_APPEND)
 

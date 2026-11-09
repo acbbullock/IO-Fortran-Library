@@ -4,8 +4,9 @@ module array_files_cases
   !---------------------------------------------------------------------------------------------------------------------
   use, intrinsic :: iso_fortran_env, only: real32, real64
   use, intrinsic :: ieee_arithmetic, only: ieee_value, ieee_quiet_nan, ieee_is_nan
-  use io_fortran_lib, only: String, str, to_file, from_file, IOFL_LF, IOFL_CR, operator(==), operator(/=), operator(>)
-  use test_support, only: test_suite, STOPS, check, expect_equal, scratch, write_raw
+  use io_fortran_lib, only: String, str, to_file, from_file, IOFL_LF, IOFL_CR, IOFL_TAB, operator(==), operator(/=), &
+                            operator(>)
+  use test_support, only: test_suite, STOPS, check, expect_equal, scratch, write_raw, read_raw
   implicit none (type, external)
   private
 
@@ -40,6 +41,11 @@ contains
     call suite%add("eu_zero_file_round_trip", eu_zero_file_round_trip)
     call suite%add("us_zero_file_round_trip", us_zero_file_round_trip)
     call suite%add("nan_file_round_trip", nan_file_round_trip)
+    call suite%add("tsv_real_round_trip", tsv_real_round_trip)
+    call suite%add("tsv_integer_round_trip", tsv_integer_round_trip)
+    call suite%add("tsv_eu_locale", tsv_eu_locale)
+    call suite%add("tsv_explicit_delim", tsv_explicit_delim)
+    call suite%add("tsv_upper_case_extension", tsv_upper_case_extension)
   end subroutine register_array_files
 
   subroutine from_file_missing()
@@ -368,4 +374,67 @@ contains
     call expect_equal(st, 0, "The read should succeed.")
     call check((v(1) == 1.0_real64) .and. ieee_is_nan(v(2)), "NaN should survive a round trip.")
   end subroutine nan_file_round_trip
+  subroutine tsv_real_round_trip()
+    !! A .tsv file is tab-separated without `delim`, and reads back with the same default (#70).
+    real(real64)              :: x(2,2) = reshape([1.5_real64, -2.0_real64, 3.25_real64, 0.5_real64], [2,2])
+    real(real64), allocatable :: y(:,:)
+    character(len=:), allocatable :: file, text
+
+    file = scratch()//".tsv"
+    call to_file(x, file=file, header=["x"], fmt="f", decimals=2)
+    text = read_raw(file)
+    call check(text(1:6) == "x1"//IOFL_TAB//"x2"//IOFL_LF, "The header of a .tsv file should be tab-separated.")
+    call check(index(text, ",") == 0, "A .tsv file should have no commas.")
+
+    call from_file(file, into=y, header=.true., fmt="f")
+    call expect_equal(y(:,1), x(:,1), "column 1 of the .tsv round trip")
+    call expect_equal(y(:,2), x(:,2), "column 2 of the .tsv round trip")
+  end subroutine tsv_real_round_trip
+
+  subroutine tsv_integer_round_trip()
+    integer              :: x(2,3) = reshape([1, 2, 3, 4, 5, 6], [2,3])
+    integer, allocatable :: y(:,:)
+    character(len=:), allocatable :: file
+
+    file = scratch()//".tsv"
+    call to_file(x, file=file)
+    call check(read_raw(file) == "1"//IOFL_TAB//"3"//IOFL_TAB//"5"//IOFL_LF// &
+                                 "2"//IOFL_TAB//"4"//IOFL_TAB//"6"//IOFL_LF, &
+               "Integers in a .tsv file should be tab-separated.")
+    call from_file(file, into=y)
+    call check(all(y == x), "Integers should read back from a .tsv file.")
+  end subroutine tsv_integer_round_trip
+
+  subroutine tsv_eu_locale()
+    !! The tab also suits the EU locale, whose decimal mark is a comma.
+    real(real64)              :: x(1,2) = reshape([1.5_real64, -2.25_real64], [1,2])
+    real(real64), allocatable :: y(:,:)
+    character(len=:), allocatable :: file
+
+    file = scratch()//".tsv"
+    call to_file(x, file=file, locale="EU", fmt="f", decimals=2)
+    call check(read_raw(file) == "1,50"//IOFL_TAB//"-2,25"//IOFL_LF, &
+               "EU numbers in a .tsv file should keep their decimal comma, separated by a tab.")
+    call from_file(file, into=y, locale="EU", fmt="f")
+    call expect_equal(y(1,:), x(1,:), "the EU .tsv round trip")
+  end subroutine tsv_eu_locale
+
+  subroutine tsv_explicit_delim()
+    !! An explicit `delim` still wins over the .tsv default.
+    integer :: x(1,2) = reshape([7, 8], [1,2])
+    character(len=:), allocatable :: file
+
+    file = scratch()//".tsv"
+    call to_file(x, file=file, delim=";")
+    call check(read_raw(file) == "7;8"//IOFL_LF, "delim should override the tab of a .tsv file.")
+  end subroutine tsv_explicit_delim
+
+  subroutine tsv_upper_case_extension()
+    integer :: x(1,2) = reshape([7, 8], [1,2])
+    character(len=:), allocatable :: file
+
+    file = scratch()//".TSV"
+    call to_file(x, file=file)
+    call check(read_raw(file) == "7"//IOFL_TAB//"8"//IOFL_LF, "A .TSV file should be tab-separated too.")
+  end subroutine tsv_upper_case_extension
 end module array_files_cases

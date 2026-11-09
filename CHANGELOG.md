@@ -11,6 +11,11 @@ has the same notes, along with the pre-releases.
 
 Work toward 2.2, tracked in the [2.2 milestone](https://github.com/acbbullock/IO-Fortran-Library/milestone/3).
 
+### Added
+
+* `.tsv` files. `tsv` is a text file extension, and a `.tsv` file is separated by tabs unless `delim` (or
+  `column_separator` for `read_file` and `write_file`) says otherwise (#70).
+
 ### Tested platforms
 
 * CI now runs the tests on ARM64 Linux, with `gfortran` and `flang`, and on big-endian s390x Linux, where a `.npy`

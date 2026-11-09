@@ -41,6 +41,16 @@ submodule (io_fortran_lib) file_io
     end do
   end procedure ext_of
 
+  module procedure default_delim
+    if ( ext_of(file) == "tsv" ) then
+      delim = TAB
+    else if ( locale == US_LOCALE ) then
+      delim = COMMA_DELIMITER
+    else
+      delim = SEMICOLON_DELIM
+    end if
+  end procedure default_delim
+
   module procedure format_of
     character(len=:), allocatable :: ext
 
@@ -135,11 +145,7 @@ submodule (io_fortran_lib) file_io
       end if
 
       if ( .not. present(delim) ) then
-        if ( locale_ == US_LOCALE ) then
-          delim_ = COMMA_DELIMITER
-        else
-          delim_ = SEMICOLON_DELIM
-        end if
+        delim_ = default_delim(file, locale_)
       else
         delim_ = delim
       end if
@@ -297,11 +303,7 @@ submodule (io_fortran_lib) file_io
       end if
 
       if ( .not. present(delim) ) then
-        if ( locale_ == US_LOCALE ) then
-          delim_ = COMMA_DELIMITER
-        else
-          delim_ = SEMICOLON_DELIM
-        end if
+        delim_ = default_delim(file, locale_)
       else
         delim_ = delim
       end if
@@ -511,11 +513,7 @@ submodule (io_fortran_lib) file_io
       end if
 
       if ( .not. present(delim) ) then
-        if ( locale_ == US_LOCALE ) then
-          delim_ = COMMA_DELIMITER
-        else
-          delim_ = SEMICOLON_DELIM
-        end if
+        delim_ = default_delim(file, locale_)
       else
         delim_ = delim
       end if
@@ -727,11 +725,7 @@ submodule (io_fortran_lib) file_io
       end if
 
       if ( .not. present(delim) ) then
-        if ( locale_ == US_LOCALE ) then
-          delim_ = COMMA_DELIMITER
-        else
-          delim_ = SEMICOLON_DELIM
-        end if
+        delim_ = default_delim(file, locale_)
       else
         delim_ = delim
       end if
@@ -886,11 +880,7 @@ submodule (io_fortran_lib) file_io
       end if
 
       if ( .not. present(delim) ) then
-        if ( locale_ == US_LOCALE ) then
-          delim_ = COMMA_DELIMITER
-        else
-          delim_ = SEMICOLON_DELIM
-        end if
+        delim_ = default_delim(file, locale_)
       else
         delim_ = delim
       end if
@@ -1097,11 +1087,7 @@ submodule (io_fortran_lib) file_io
       end if
 
       if ( .not. present(delim) ) then
-        if ( locale_ == US_LOCALE ) then
-          delim_ = COMMA_DELIMITER
-        else
-          delim_ = SEMICOLON_DELIM
-        end if
+        delim_ = default_delim(file, locale_)
       else
         delim_ = delim
       end if
@@ -1295,7 +1281,7 @@ submodule (io_fortran_lib) file_io
         end if
       end if
 
-      delim_ = optval(delim, COMMA_DELIMITER)
+      delim_ = optval(delim, default_delim(file, US_LOCALE))
 
       if ( .not. present(fmt) ) then
         fmt_ = INT_FMT
@@ -1483,7 +1469,7 @@ submodule (io_fortran_lib) file_io
         end if
       end if
 
-      delim_ = optval(delim, COMMA_DELIMITER)
+      delim_ = optval(delim, default_delim(file, US_LOCALE))
 
       if ( .not. present(fmt) ) then
         fmt_ = INT_FMT
@@ -1671,7 +1657,7 @@ submodule (io_fortran_lib) file_io
         end if
       end if
 
-      delim_ = optval(delim, COMMA_DELIMITER)
+      delim_ = optval(delim, default_delim(file, US_LOCALE))
 
       if ( .not. present(fmt) ) then
         fmt_ = INT_FMT
@@ -1859,7 +1845,7 @@ submodule (io_fortran_lib) file_io
         end if
       end if
 
-      delim_ = optval(delim, COMMA_DELIMITER)
+      delim_ = optval(delim, default_delim(file, US_LOCALE))
 
       if ( .not. present(fmt) ) then
         fmt_ = INT_FMT
@@ -2037,11 +2023,7 @@ submodule (io_fortran_lib) file_io
       end if
 
       if ( .not. present(delim) ) then
-        if ( locale_ == US_LOCALE ) then
-          delim_ = COMMA_DELIMITER
-        else
-          delim_ = SEMICOLON_DELIM
-        end if
+        delim_ = default_delim(file, locale_)
       else
         delim_ = delim
         if ( locale_ == US_LOCALE ) then
@@ -2147,11 +2129,7 @@ submodule (io_fortran_lib) file_io
       end if
 
       if ( .not. present(delim) ) then
-        if ( locale_ == US_LOCALE ) then
-          delim_ = COMMA_DELIMITER
-        else
-          delim_ = SEMICOLON_DELIM
-        end if
+        delim_ = default_delim(file, locale_)
       else
         delim_ = delim
         if ( locale_ == US_LOCALE ) then
@@ -2278,11 +2256,7 @@ submodule (io_fortran_lib) file_io
       end if
 
       if ( .not. present(delim) ) then
-        if ( locale_ == US_LOCALE ) then
-          delim_ = COMMA_DELIMITER
-        else
-          delim_ = SEMICOLON_DELIM
-        end if
+        delim_ = default_delim(file, locale_)
       else
         delim_ = delim
         if ( locale_ == US_LOCALE ) then
@@ -2971,11 +2945,7 @@ submodule (io_fortran_lib) file_io
       end if
 
       if ( .not. present(delim) ) then
-        if ( locale_ == US_LOCALE ) then
-          delim_ = COMMA_DELIMITER
-        else
-          delim_ = SEMICOLON_DELIM
-        end if
+        delim_ = default_delim(file, locale_)
       else
         delim_ = delim
         if ( locale_ == US_LOCALE ) then
@@ -3079,11 +3049,7 @@ submodule (io_fortran_lib) file_io
       end if
 
       if ( .not. present(delim) ) then
-        if ( locale_ == US_LOCALE ) then
-          delim_ = COMMA_DELIMITER
-        else
-          delim_ = SEMICOLON_DELIM
-        end if
+        delim_ = default_delim(file, locale_)
       else
         delim_ = delim
         if ( locale_ == US_LOCALE ) then
@@ -3207,11 +3173,7 @@ submodule (io_fortran_lib) file_io
       end if
 
       if ( .not. present(delim) ) then
-        if ( locale_ == US_LOCALE ) then
-          delim_ = COMMA_DELIMITER
-        else
-          delim_ = SEMICOLON_DELIM
-        end if
+        delim_ = default_delim(file, locale_)
       else
         delim_ = delim
         if ( locale_ == US_LOCALE ) then
@@ -3882,7 +3844,7 @@ submodule (io_fortran_lib) file_io
     if ( format_of(file, format) == "text" ) then
       header_ = optval(header, ABSENT_HEADER)
 
-      delim_ = optval(delim, COMMA_DELIMITER)
+      delim_ = optval(delim, default_delim(file, US_LOCALE))
 
       if ( .not. present(fmt) ) then
         fmt_ = INT_FMT
@@ -3973,7 +3935,7 @@ submodule (io_fortran_lib) file_io
     if ( format_of(file, format) == "text" ) then
       header_ = optval(header, ABSENT_HEADER)
 
-      delim_ = optval(delim, COMMA_DELIMITER)
+      delim_ = optval(delim, default_delim(file, US_LOCALE))
 
       if ( .not. present(fmt) ) then
         fmt_ = INT_FMT
@@ -4064,7 +4026,7 @@ submodule (io_fortran_lib) file_io
     if ( format_of(file, format) == "text" ) then
       header_ = optval(header, ABSENT_HEADER)
 
-      delim_ = optval(delim, COMMA_DELIMITER)
+      delim_ = optval(delim, default_delim(file, US_LOCALE))
 
       if ( .not. present(fmt) ) then
         fmt_ = INT_FMT
@@ -4155,7 +4117,7 @@ submodule (io_fortran_lib) file_io
     if ( format_of(file, format) == "text" ) then
       header_ = optval(header, ABSENT_HEADER)
 
-      delim_ = optval(delim, COMMA_DELIMITER)
+      delim_ = optval(delim, default_delim(file, US_LOCALE))
 
       if ( .not. present(fmt) ) then
         fmt_ = INT_FMT
