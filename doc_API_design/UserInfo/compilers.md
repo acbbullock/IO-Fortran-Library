@@ -33,10 +33,9 @@ four Fortran 2018 features that the library uses throughout:
 * `implicit none (type, external)`.
 * Elemental procedures that are also `recursive`.
 
-LFortran can't compile the library yet: version 0.58 crashed on the first
-file. A separate workflow
-runs all three weekly, so a release that can build the library will show
-up there.
+LFortran can't compile the library yet. Versions 0.58 and 0.68 crash on
+the first file. A separate workflow runs all three weekly, so a release
+that can build the library will show up there.
 
 ## Known compiler bugs
 
