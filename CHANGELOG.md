@@ -7,6 +7,33 @@ breaking changes first. The
 [releases page](https://github.com/acbbullock/IO-Fortran-Library/releases)
 has the same notes, along with the pre-releases.
 
+## [2.3.0](https://github.com/acbbullock/IO-Fortran-Library/releases/tag/v2.3.0) - 2026-11-09
+
+A performance release. The benchmarks added in 2.2 found where the library was slower than plain Fortran, and 2.3
+closes most of those gaps. Writing a CSV file is 2.5–4 times as fast. Reading one is 1.5–2.3 times as fast. Raw
+binary and NumPy files match plain stream I/O on gfortran, ifx and flang. The interface and the text written are
+unchanged, so code written for 2.0 to 2.2 works as before. The work is tracked in the
+[2.3 milestone](https://github.com/acbbullock/IO-Fortran-Library/milestone/4), and the
+[benchmarks page](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Examples/benchmark.html) has the numbers.
+
+### Changed
+
+* With gfortran, writing and reading raw binary (`.dat`) and NumPy (`.npy`, `.npz`) files is 3–5 times as fast, and
+  now matches plain unformatted stream I/O. A contiguous array is transferred as one block. gfortran is slow to
+  transfer an array inside `select rank`, whatever its rank (#93).
+* Writing an array to a `.npz` archive computes the archive's CRC-32 eight bytes at a time instead of one, which
+  makes the checksum about four times as fast. With the change for #93, a `.npz` write takes 1.6–3 times as long as
+  plain stream output, not 4–12 times (#94).
+* Writing numbers as text is 2.5–4 times as fast. `to_file` formats a column of real or complex numbers a chunk at
+  a time instead of one number per `write`, and `cast`, `str` and `String` no longer build each number's format with
+  a second internal `write`, which halves the time of `cast`. The text is unchanged (#91).
+* `from_file` reads numbers from text files 1.5–2.3 times as fast, by reading many cells in one statement, and
+  `cast` from text into real numbers is about a third faster with ifx (#92).
+* `read_file` into a cell array scans the text once instead of twice, and fills the cells in an order that keeps them
+  close together in memory, which makes freeing the cell array 3–4 times as fast. Against splitting lines by hand,
+  `read_file` goes from 7.3 to 4.7 times as long with flang, and from 1.2 to 1.0 with gfortran. ifx is unchanged
+  (#95).
+
 ## [2.2.0](https://github.com/acbbullock/IO-Fortran-Library/releases/tag/v2.2.0) - 2026-11-09
 
 New file formats and types: `.tsv` files, NumPy `.npz` archives, and `logical`, `String` and `character` arrays.

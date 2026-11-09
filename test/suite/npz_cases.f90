@@ -4,7 +4,7 @@ module npz_cases
   !! NumPy `.npz` archives: arrays written and read by name, replacing an array, archives written by NumPy (including
   !! a compressed one, which is refused), and the errors for names and files that don't fit.
   !---------------------------------------------------------------------------------------------------------------------
-  use, intrinsic :: iso_fortran_env, only: real64, int32
+  use, intrinsic :: iso_fortran_env, only: real64, int64, int32, int8
   use io_fortran_lib, only: String, to_file, from_file, npz_names, IOFL_READ_ERR, IOFL_WRITE_ERR, IOFL_ARG_ERR
   use test_support, only: test_suite, STOPS, check, expect_equal, expect_identical, scratch, write_raw, read_raw
   implicit none (type, external)
@@ -48,6 +48,7 @@ contains
     call suite%group("npz")
     call suite%add("npz_round_trip", npz_round_trip)
     call suite%add("npz_replace", npz_replace)
+    call suite%add("npz_crc", npz_crc)
     call suite%add("npz_read_numpy", npz_read_numpy)
     call suite%add("npz_only_array", npz_only_array)
     call suite%add("npz_name_args_stat", npz_name_args_stat)
@@ -61,6 +62,42 @@ contains
     call suite%add("npz_no_name_stops", npz_no_name_stops, expect=STOPS)
     call suite%add("npz_names_missing_stops", npz_names_missing_stops, expect=STOPS)
   end subroutine register_npz
+
+  pure function crc32_bitwise(bytes) result(crc)
+    !! Returns the CRC-32 of `bytes`, computed a bit at a time, to check the library's table-driven one against.
+    character(len=*), intent(in) :: bytes
+    integer(int64)               :: crc
+
+    integer :: i, j
+
+    crc = 4294967295_int64
+
+    do i = 1, len(bytes)
+      crc = ieor(crc, int(ichar(bytes(i:i)), kind=int64))
+      do j = 1, 8
+        if ( btest(crc, 0) ) then
+          crc = ieor(shiftr(crc, 1), 3988292384_int64)
+        else
+          crc = shiftr(crc, 1)
+        end if
+      end do
+    end do
+
+    crc = ieor(crc, 4294967295_int64)
+  end function crc32_bitwise
+
+  pure function stored_crc(archive) result(crc)
+    !! Returns the CRC-32 in the local header of the first file in `archive`.
+    character(len=*), intent(in) :: archive
+    integer(int64)               :: crc
+
+    integer :: k
+
+    crc = 0_int64
+    do k = 4, 1, -1
+      crc = 256_int64*crc + int(ichar(archive(14+k:14+k)), kind=int64)
+    end do
+  end function stored_crc
 
   function from_hex(hex) result(bytes)
     !! Returns the bytes that `hex` spells out, two hexadecimal digits each.
@@ -161,6 +198,29 @@ contains
     call expect_identical(b, [(real(k, real64), k=1,50)], "The new b.")
     call expect_identical(c, [30.0_real64], "c is unchanged.")
   end subroutine npz_replace
+
+  subroutine npz_crc()
+    !! The CRC-32 stored for an array is that of the same array as a .npy file, for sizes that fill whole 8-byte steps
+    !! and sizes that leave some bytes over.
+    character(len=:), allocatable :: file
+    integer(int8)                 :: b(13)
+    real(real64)                  :: x(1000)
+    integer                       :: i
+
+    file = scratch()
+    b = [(int(i, kind=int8), i = -6, 6)]
+    x = [(sqrt(real(i, kind=real64)) - 10.0_real64, i = 1, size(x))]
+
+    call to_file(b, file=file//".npy")
+    call to_file(b, file=file//".npz", name="b")
+    call check(stored_crc(read_raw(file//".npz")) == crc32_bitwise(read_raw(file//".npy")), &
+               "The CRC-32 of 13 int8 values should match one computed a bit at a time.")
+
+    call to_file(x, file=file//"x.npy")
+    call to_file(x, file=file//"x.npz", name="x")
+    call check(stored_crc(read_raw(file//"x.npz")) == crc32_bitwise(read_raw(file//"x.npy")), &
+               "The CRC-32 of 1000 real64 values should match one computed a bit at a time.")
+  end subroutine npz_crc
 
   subroutine npz_read_numpy()
     !! An archive as numpy.savez writes it: arrays in C order, with ZIP64 fields in each local header.

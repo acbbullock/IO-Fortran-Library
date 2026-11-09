@@ -42,11 +42,19 @@ submodule (io_fortran_lib) io_binary
       stat = WRITE_ERR; return
     end if
 
-    select rank(x)
+    if ( is_contiguous(x) ) then                   ! One block, as gfortran moves elements one at a time in select rank
+      select rank(x)
 #:for rank in RANKS
-      rank(${rank}$); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(${rank}$); call write_flat_${k}$(file_unit, x, size(x, kind=i64), stat, errmsg)
 #:endfor
-    end select
+      end select
+    else
+      select rank(x)
+#:for rank in RANKS
+        rank(${rank}$); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+#:endfor
+      end select
+    end if
 
     if ( stat /= 0 ) then
       stat = WRITE_ERR
@@ -99,11 +107,19 @@ submodule (io_fortran_lib) io_binary
       stat = WRITE_ERR; return
     end if
 
-    select rank(x)
+    if ( is_contiguous(x) ) then                   ! One block, as gfortran moves elements one at a time in select rank
+      select rank(x)
 #:for rank in RANKS
-      rank(${rank}$); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(${rank}$); call write_flat_${k}$(file_unit, x, size(x, kind=i64), stat, errmsg)
 #:endfor
-    end select
+      end select
+    else
+      select rank(x)
+#:for rank in RANKS
+        rank(${rank}$); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+#:endfor
+      end select
+    end if
 
     if ( stat /= 0 ) then
       stat = WRITE_ERR
@@ -153,11 +169,19 @@ submodule (io_fortran_lib) io_binary
       stat = WRITE_ERR; return
     end if
 
-    select rank(x)
+    if ( is_contiguous(x) ) then                   ! One block, as gfortran moves elements one at a time in select rank
+      select rank(x)
 #:for rank in RANKS
-      rank(${rank}$); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        rank(${rank}$); call write_flat_${k}$(file_unit, x, size(x, kind=i64), stat, errmsg)
 #:endfor
-    end select
+      end select
+    else
+      select rank(x)
+#:for rank in RANKS
+        rank(${rank}$); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+#:endfor
+      end select
+    end if
 
     if ( stat /= 0 ) then
       stat = WRITE_ERR
@@ -263,7 +287,7 @@ submodule (io_fortran_lib) io_binary
 
     select rank(into)
 #:for rank in RANKS
-      rank(${rank}$); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(${rank}$); call read_flat_${k}$(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
 #:endfor
     end select
 
@@ -373,7 +397,7 @@ submodule (io_fortran_lib) io_binary
 
     select rank(into)
 #:for rank in RANKS
-      rank(${rank}$); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(${rank}$); call read_flat_${k}$(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
 #:endfor
     end select
 
@@ -480,7 +504,7 @@ submodule (io_fortran_lib) io_binary
 
     select rank(into)
 #:for rank in RANKS
-      rank(${rank}$); read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+      rank(${rank}$); call read_flat_${k}$(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
 #:endfor
     end select
 
@@ -498,6 +522,23 @@ submodule (io_fortran_lib) io_binary
 
     stat=0; errmsg=EMPTY_STR
   end procedure from_binary_${k}$
+
+#:endfor
+  ! Block Transfers ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#:for k, t in FLAT_TYPES
+#:if k in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+  module procedure write_flat_${k}$
+    write(unit=unit, iostat=stat, iomsg=errmsg) x
+  end procedure write_flat_${k}$
+
+  module procedure read_flat_${k}$
+    read(unit=unit, iostat=stat, iomsg=errmsg) x
+  end procedure read_flat_${k}$
+#:if k in QUAD_KINDS
+#endif
+#:endif
 
 #:endfor
 end submodule io_binary

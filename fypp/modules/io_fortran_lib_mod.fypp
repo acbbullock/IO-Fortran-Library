@@ -1158,6 +1158,46 @@ module io_fortran_lib
 #:endfor
   end interface cast
 
+  interface cast_column                                                                          ! Submodule io_internal
+    !-------------------------------------------------------------------------------------------------------------------
+    !! Private interface for casting a column of numbers into `String` cells, with the same text as `cast`. With
+    !! `fmt="e"`, one internal `write` formats a chunk of numbers, which is much faster than a `write` for each one.
+    !-------------------------------------------------------------------------------------------------------------------
+#:for k, r in COMPLEX_KINDS
+#:if k in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+    recursive module subroutine cast_column_${k}$(x, into, locale, fmt, decimals, im)
+      complex(${r}$),    intent(in)           :: x(:)
+      type(String),     intent(inout)        :: into(:)
+      character(len=*), intent(in)           :: locale
+      character(len=*), intent(in)           :: fmt
+      integer,          intent(in), optional :: decimals
+      character(len=*), intent(in)           :: im
+    end subroutine cast_column_${k}$
+#:if k in QUAD_KINDS
+#endif
+#:endif
+
+#:endfor
+#:for k in REAL_KINDS
+#:if k in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+    recursive module subroutine cast_column_${k}$(x, into, locale, fmt, decimals)
+      real(${k}$),       intent(in)           :: x(:)
+      type(String),     intent(inout)        :: into(:)
+      character(len=*), intent(in)           :: locale
+      character(len=*), intent(in)           :: fmt
+      integer,          intent(in), optional :: decimals
+    end subroutine cast_column_${k}$
+#:if k in QUAD_KINDS
+#endif
+#:endif
+
+#:endfor
+  end interface cast_column
+
   interface join                                                                               ! Submodule io_join_split
     !-------------------------------------------------------------------------------------------------------------------
     !! Function for joining a vector of `tokens` into a scalar `character` or `String`.
@@ -1655,6 +1695,29 @@ module io_fortran_lib
 #:endfor
   end interface from_text
 
+  interface cast_cells                                                                           ! Submodule io_internal
+    !-------------------------------------------------------------------------------------------------------------------
+    !! Private interface for reading a column of cells into numbers, with the same results as the elemental `cast`. It
+    !! reads many cells in one statement, because each internal `read` costs more than the number it reads.
+    !-------------------------------------------------------------------------------------------------------------------
+#:for k in REAL_KINDS
+#:if k in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+    recursive module subroutine cast_cells_${k}$(cells, into, locale, fmt, cell_stat)
+      type(String),     intent(in)  :: cells(:)
+      real(${k}$),       intent(out) :: into(:)
+      character(len=*), intent(in)  :: locale
+      character(len=*), intent(in)  :: fmt
+      integer,          intent(out) :: cell_stat(:)
+    end subroutine cast_cells_${k}$
+#:if k in QUAD_KINDS
+#endif
+#:endif
+
+#:endfor
+  end interface cast_cells
+
   interface to_binary                                                                              ! Submodule io_binary
     !-------------------------------------------------------------------------------------------------------------------
     !! Private interface for writing an array to an external binary file.
@@ -1751,6 +1814,40 @@ module io_fortran_lib
 
 #:endfor
   end interface from_binary
+
+  interface                                                                                        ! Submodule io_binary
+#:for k, t in FLAT_TYPES
+#:if k in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+    module subroutine write_flat_${k}$(unit, x, n, stat, errmsg)
+      !-----------------------------------------------------------------------------------------------------------------
+      !! Writes a contiguous array to a stream unit as one block. A caller passes each rank of an assumed-rank array
+      !! here, rather than writing it inside `select rank`, where gfortran moves one element at a time (#93).
+      !-----------------------------------------------------------------------------------------------------------------
+      integer,          intent(in)    :: unit
+      integer(i64),     intent(in)    :: n
+      ${t}$, intent(in)    :: x(n)
+      integer,          intent(out)   :: stat
+      character(len=*), intent(inout) :: errmsg
+    end subroutine write_flat_${k}$
+
+    module subroutine read_flat_${k}$(unit, x, n, stat, errmsg)
+      !-----------------------------------------------------------------------------------------------------------------
+      !! Reads a contiguous array from a stream unit as one block, the counterpart of `write_flat_${k}$`.
+      !-----------------------------------------------------------------------------------------------------------------
+      integer,          intent(in)    :: unit
+      integer(i64),     intent(in)    :: n
+      ${t}$, intent(inout) :: x(n)
+      integer,          intent(out)   :: stat
+      character(len=*), intent(inout) :: errmsg
+    end subroutine read_flat_${k}$
+#:if k in QUAD_KINDS
+#endif
+#:endif
+
+#:endfor
+  end interface
 
   interface to_npy                                                                                    ! Submodule io_npy
     !-------------------------------------------------------------------------------------------------------------------

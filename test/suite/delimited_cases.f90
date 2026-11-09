@@ -49,6 +49,7 @@ contains
     call suite%add("round_trip_custom_separators", round_trip_custom_separators)
     call suite%add("csv_quoted_crlf_round_trip", csv_quoted_crlf_round_trip)
     call suite%add("tsv_large_round_trip", tsv_large_round_trip)
+    call suite%add("read_many_rows_mixed_cells", read_many_rows_mixed_cells)
     call suite%add("read_tab_in_quotes", read_tab_in_quotes)
     call suite%add("write_file_quotes_text_pairs", write_file_quotes_text_pairs)
     call suite%add("read_file_tsv_default", read_file_tsv_default)
@@ -506,6 +507,55 @@ contains
     call r%write_file(cells, file=scratch()//"_out.bed", column_separator=IOFL_TAB)
     call check(r == s, "The file should be reproduced exactly.")
   end subroutine tsv_large_round_trip
+
+  subroutine read_many_rows_mixed_cells()
+    !! Enough rows and cells that read_file grows its record of cells and fills several blocks of rows, with quoted,
+    !! escaped, short and CRLF rows throughout, read twice into the same array.
+    integer, parameter :: rows = 1000
+
+    character(len=:), allocatable :: file
+    type(String)                  :: text, s
+    type(String), allocatable     :: cells(:,:)
+    integer                       :: i, pass
+    logical                       :: ok
+
+    file = scratch()
+
+    call write_raw(file//"_small.csv", "a,b"//IOFL_LF//"c,d"//IOFL_LF)
+    call s%read_file(file//"_small.csv", cell_array=cells)
+
+    do i = 1, rows
+      if ( mod(i, 7) == 0 ) then
+        call text%push(str(i)//',"q,'//str(i)//'"'//IOFL_LF)
+      else if ( mod(i, 50) == 0 ) then
+        call text%push(str(i)//',"q,'//str(i)//'","say ""'//str(i)//'""",x'//IOFL_CR//IOFL_LF)
+      else
+        call text%push(str(i)//',"q,'//str(i)//'","say ""'//str(i)//'""",x'//IOFL_LF)
+      end if
+    end do
+    call write_raw(file//".csv", text%as_str())
+
+    do pass = 1, 2
+      call s%read_file(file//".csv", cell_array=cells)
+      call check(all(shape(cells) == [rows,4]), "Every row should be read, four cells wide.")
+
+      ok = .true.
+      do i = 1, rows
+        ok = ok .and. (cells(i,1)%as_str() == str(i)) .and. (cells(i,1)%len() == len(str(i)))
+        ok = ok .and. (cells(i,2)%as_str() == "q,"//str(i)) .and. (cells(i,2)%len() == len(str(i)) + 2)
+
+        if ( mod(i, 7) == 0 ) then
+          ok = ok .and. (cells(i,3)%len() == 0) .and. (cells(i,4)%len() == 0)
+        else
+          ok = ok .and. (cells(i,3)%as_str() == 'say "'//str(i)//'"') .and. (cells(i,3)%len() == len(str(i)) + 6)
+          ok = ok .and. (cells(i,4)%len() == 1)
+          ok = ok .and. (cells(i,4)%as_str() == "x")
+        end if
+      end do
+
+      call check(ok, "Every cell should hold its text, wherever it is in the file.")
+    end do
+  end subroutine read_many_rows_mixed_cells
 
   function chromosome(n) result(name)
     !! Returns a chromosome name, chr1 to chr22, chrX or chrY, chosen by `n`.

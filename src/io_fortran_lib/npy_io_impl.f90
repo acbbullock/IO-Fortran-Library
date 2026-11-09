@@ -73,23 +73,43 @@ submodule (io_fortran_lib) io_npy
     write(unit=file_unit, iostat=stat, iomsg=errmsg) header
 
     if ( stat == 0 ) then
-      select rank(x)
-        rank(1); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(2); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(3); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(4); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(5); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(6); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(7); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(8); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(9); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(10); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(11); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(12); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(13); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(14); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(15); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      end select
+      if ( is_contiguous(x) ) then                 ! One block, as gfortran moves elements one at a time in select rank
+        select rank(x)
+          rank(1); call write_flat_c64(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(2); call write_flat_c64(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(3); call write_flat_c64(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(4); call write_flat_c64(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(5); call write_flat_c64(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(6); call write_flat_c64(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(7); call write_flat_c64(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(8); call write_flat_c64(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(9); call write_flat_c64(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(10); call write_flat_c64(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(11); call write_flat_c64(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(12); call write_flat_c64(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(13); call write_flat_c64(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(14); call write_flat_c64(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(15); call write_flat_c64(file_unit, x, size(x, kind=i64), stat, errmsg)
+        end select
+      else
+        select rank(x)
+          rank(1); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(2); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(3); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(4); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(5); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(6); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(7); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(8); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(9); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(10); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(11); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(12); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(13); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(14); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(15); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        end select
+      end if
     end if
 
     if ( stat /= 0 ) then
@@ -141,23 +161,43 @@ submodule (io_fortran_lib) io_npy
     write(unit=file_unit, iostat=stat, iomsg=errmsg) header
 
     if ( stat == 0 ) then
-      select rank(x)
-        rank(1); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(2); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(3); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(4); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(5); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(6); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(7); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(8); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(9); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(10); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(11); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(12); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(13); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(14); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(15); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      end select
+      if ( is_contiguous(x) ) then                 ! One block, as gfortran moves elements one at a time in select rank
+        select rank(x)
+          rank(1); call write_flat_c32(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(2); call write_flat_c32(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(3); call write_flat_c32(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(4); call write_flat_c32(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(5); call write_flat_c32(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(6); call write_flat_c32(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(7); call write_flat_c32(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(8); call write_flat_c32(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(9); call write_flat_c32(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(10); call write_flat_c32(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(11); call write_flat_c32(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(12); call write_flat_c32(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(13); call write_flat_c32(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(14); call write_flat_c32(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(15); call write_flat_c32(file_unit, x, size(x, kind=i64), stat, errmsg)
+        end select
+      else
+        select rank(x)
+          rank(1); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(2); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(3); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(4); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(5); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(6); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(7); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(8); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(9); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(10); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(11); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(12); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(13); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(14); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(15); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        end select
+      end if
     end if
 
     if ( stat /= 0 ) then
@@ -209,23 +249,43 @@ submodule (io_fortran_lib) io_npy
     write(unit=file_unit, iostat=stat, iomsg=errmsg) header
 
     if ( stat == 0 ) then
-      select rank(x)
-        rank(1); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(2); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(3); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(4); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(5); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(6); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(7); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(8); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(9); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(10); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(11); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(12); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(13); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(14); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(15); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      end select
+      if ( is_contiguous(x) ) then                 ! One block, as gfortran moves elements one at a time in select rank
+        select rank(x)
+          rank(1); call write_flat_r64(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(2); call write_flat_r64(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(3); call write_flat_r64(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(4); call write_flat_r64(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(5); call write_flat_r64(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(6); call write_flat_r64(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(7); call write_flat_r64(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(8); call write_flat_r64(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(9); call write_flat_r64(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(10); call write_flat_r64(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(11); call write_flat_r64(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(12); call write_flat_r64(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(13); call write_flat_r64(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(14); call write_flat_r64(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(15); call write_flat_r64(file_unit, x, size(x, kind=i64), stat, errmsg)
+        end select
+      else
+        select rank(x)
+          rank(1); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(2); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(3); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(4); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(5); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(6); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(7); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(8); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(9); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(10); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(11); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(12); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(13); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(14); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(15); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        end select
+      end if
     end if
 
     if ( stat /= 0 ) then
@@ -277,23 +337,43 @@ submodule (io_fortran_lib) io_npy
     write(unit=file_unit, iostat=stat, iomsg=errmsg) header
 
     if ( stat == 0 ) then
-      select rank(x)
-        rank(1); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(2); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(3); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(4); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(5); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(6); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(7); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(8); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(9); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(10); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(11); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(12); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(13); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(14); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(15); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      end select
+      if ( is_contiguous(x) ) then                 ! One block, as gfortran moves elements one at a time in select rank
+        select rank(x)
+          rank(1); call write_flat_r32(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(2); call write_flat_r32(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(3); call write_flat_r32(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(4); call write_flat_r32(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(5); call write_flat_r32(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(6); call write_flat_r32(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(7); call write_flat_r32(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(8); call write_flat_r32(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(9); call write_flat_r32(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(10); call write_flat_r32(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(11); call write_flat_r32(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(12); call write_flat_r32(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(13); call write_flat_r32(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(14); call write_flat_r32(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(15); call write_flat_r32(file_unit, x, size(x, kind=i64), stat, errmsg)
+        end select
+      else
+        select rank(x)
+          rank(1); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(2); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(3); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(4); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(5); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(6); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(7); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(8); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(9); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(10); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(11); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(12); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(13); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(14); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(15); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        end select
+      end if
     end if
 
     if ( stat /= 0 ) then
@@ -345,23 +425,43 @@ submodule (io_fortran_lib) io_npy
     write(unit=file_unit, iostat=stat, iomsg=errmsg) header
 
     if ( stat == 0 ) then
-      select rank(x)
-        rank(1); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(2); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(3); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(4); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(5); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(6); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(7); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(8); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(9); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(10); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(11); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(12); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(13); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(14); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(15); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      end select
+      if ( is_contiguous(x) ) then                 ! One block, as gfortran moves elements one at a time in select rank
+        select rank(x)
+          rank(1); call write_flat_i64(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(2); call write_flat_i64(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(3); call write_flat_i64(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(4); call write_flat_i64(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(5); call write_flat_i64(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(6); call write_flat_i64(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(7); call write_flat_i64(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(8); call write_flat_i64(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(9); call write_flat_i64(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(10); call write_flat_i64(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(11); call write_flat_i64(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(12); call write_flat_i64(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(13); call write_flat_i64(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(14); call write_flat_i64(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(15); call write_flat_i64(file_unit, x, size(x, kind=i64), stat, errmsg)
+        end select
+      else
+        select rank(x)
+          rank(1); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(2); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(3); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(4); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(5); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(6); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(7); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(8); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(9); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(10); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(11); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(12); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(13); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(14); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(15); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        end select
+      end if
     end if
 
     if ( stat /= 0 ) then
@@ -413,23 +513,43 @@ submodule (io_fortran_lib) io_npy
     write(unit=file_unit, iostat=stat, iomsg=errmsg) header
 
     if ( stat == 0 ) then
-      select rank(x)
-        rank(1); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(2); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(3); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(4); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(5); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(6); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(7); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(8); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(9); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(10); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(11); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(12); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(13); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(14); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(15); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      end select
+      if ( is_contiguous(x) ) then                 ! One block, as gfortran moves elements one at a time in select rank
+        select rank(x)
+          rank(1); call write_flat_i32(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(2); call write_flat_i32(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(3); call write_flat_i32(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(4); call write_flat_i32(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(5); call write_flat_i32(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(6); call write_flat_i32(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(7); call write_flat_i32(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(8); call write_flat_i32(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(9); call write_flat_i32(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(10); call write_flat_i32(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(11); call write_flat_i32(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(12); call write_flat_i32(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(13); call write_flat_i32(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(14); call write_flat_i32(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(15); call write_flat_i32(file_unit, x, size(x, kind=i64), stat, errmsg)
+        end select
+      else
+        select rank(x)
+          rank(1); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(2); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(3); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(4); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(5); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(6); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(7); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(8); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(9); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(10); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(11); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(12); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(13); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(14); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(15); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        end select
+      end if
     end if
 
     if ( stat /= 0 ) then
@@ -481,23 +601,43 @@ submodule (io_fortran_lib) io_npy
     write(unit=file_unit, iostat=stat, iomsg=errmsg) header
 
     if ( stat == 0 ) then
-      select rank(x)
-        rank(1); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(2); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(3); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(4); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(5); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(6); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(7); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(8); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(9); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(10); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(11); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(12); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(13); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(14); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(15); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      end select
+      if ( is_contiguous(x) ) then                 ! One block, as gfortran moves elements one at a time in select rank
+        select rank(x)
+          rank(1); call write_flat_i16(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(2); call write_flat_i16(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(3); call write_flat_i16(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(4); call write_flat_i16(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(5); call write_flat_i16(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(6); call write_flat_i16(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(7); call write_flat_i16(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(8); call write_flat_i16(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(9); call write_flat_i16(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(10); call write_flat_i16(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(11); call write_flat_i16(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(12); call write_flat_i16(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(13); call write_flat_i16(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(14); call write_flat_i16(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(15); call write_flat_i16(file_unit, x, size(x, kind=i64), stat, errmsg)
+        end select
+      else
+        select rank(x)
+          rank(1); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(2); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(3); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(4); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(5); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(6); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(7); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(8); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(9); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(10); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(11); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(12); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(13); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(14); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(15); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        end select
+      end if
     end if
 
     if ( stat /= 0 ) then
@@ -549,23 +689,43 @@ submodule (io_fortran_lib) io_npy
     write(unit=file_unit, iostat=stat, iomsg=errmsg) header
 
     if ( stat == 0 ) then
-      select rank(x)
-        rank(1); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(2); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(3); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(4); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(5); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(6); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(7); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(8); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(9); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(10); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(11); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(12); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(13); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(14); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-        rank(15); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-      end select
+      if ( is_contiguous(x) ) then                 ! One block, as gfortran moves elements one at a time in select rank
+        select rank(x)
+          rank(1); call write_flat_i8(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(2); call write_flat_i8(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(3); call write_flat_i8(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(4); call write_flat_i8(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(5); call write_flat_i8(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(6); call write_flat_i8(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(7); call write_flat_i8(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(8); call write_flat_i8(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(9); call write_flat_i8(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(10); call write_flat_i8(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(11); call write_flat_i8(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(12); call write_flat_i8(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(13); call write_flat_i8(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(14); call write_flat_i8(file_unit, x, size(x, kind=i64), stat, errmsg)
+          rank(15); call write_flat_i8(file_unit, x, size(x, kind=i64), stat, errmsg)
+        end select
+      else
+        select rank(x)
+          rank(1); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(2); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(3); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(4); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(5); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(6); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(7); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(8); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(9); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(10); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(11); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(12); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(13); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(14); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+          rank(15); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+        end select
+      end if
     end if
 
     if ( stat /= 0 ) then
@@ -725,7 +885,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_c64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(16*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -748,7 +908,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_c64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(16*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -775,7 +935,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_c64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(16*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -802,7 +962,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_c64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(16*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -829,7 +989,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_c64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(16*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -856,7 +1016,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_c64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(16*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -883,7 +1043,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_c64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(16*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -911,7 +1071,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_c64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(16*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -939,7 +1099,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_c64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(16*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -967,7 +1127,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_c64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(16*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -995,7 +1155,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_c64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(16*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -1023,7 +1183,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_c64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(16*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -1051,7 +1211,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_c64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(16*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -1079,7 +1239,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_c64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(16*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -1108,7 +1268,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_c64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(16*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -1211,7 +1371,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_c32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(8*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -1234,7 +1394,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_c32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(8*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -1261,7 +1421,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_c32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(8*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -1288,7 +1448,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_c32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(8*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -1315,7 +1475,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_c32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(8*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -1342,7 +1502,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_c32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(8*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -1369,7 +1529,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_c32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(8*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -1397,7 +1557,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_c32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(8*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -1425,7 +1585,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_c32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(8*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -1453,7 +1613,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_c32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(8*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -1481,7 +1641,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_c32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(8*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -1509,7 +1669,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_c32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(8*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -1537,7 +1697,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_c32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(8*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -1565,7 +1725,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_c32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(8*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -1594,7 +1754,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_c32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(8*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -1697,7 +1857,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_r64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(8*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -1720,7 +1880,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_r64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(8*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -1747,7 +1907,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_r64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(8*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -1774,7 +1934,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_r64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(8*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -1801,7 +1961,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_r64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(8*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -1828,7 +1988,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_r64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(8*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -1855,7 +2015,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_r64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(8*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -1883,7 +2043,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_r64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(8*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -1911,7 +2071,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_r64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(8*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -1939,7 +2099,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_r64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(8*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -1967,7 +2127,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_r64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(8*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -1995,7 +2155,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_r64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(8*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -2023,7 +2183,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_r64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(8*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -2051,7 +2211,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_r64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(8*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -2080,7 +2240,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_r64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(8*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -2183,7 +2343,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_r32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(4*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -2206,7 +2366,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_r32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(4*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -2233,7 +2393,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_r32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(4*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -2260,7 +2420,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_r32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(4*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -2287,7 +2447,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_r32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(4*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -2314,7 +2474,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_r32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(4*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -2341,7 +2501,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_r32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(4*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -2369,7 +2529,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_r32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(4*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -2397,7 +2557,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_r32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(4*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -2425,7 +2585,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_r32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(4*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -2453,7 +2613,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_r32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(4*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -2481,7 +2641,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_r32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(4*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -2509,7 +2669,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_r32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(4*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -2537,7 +2697,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_r32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(4*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -2566,7 +2726,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_r32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(4*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -2669,7 +2829,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(8*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -2692,7 +2852,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(8*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -2719,7 +2879,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(8*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -2746,7 +2906,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(8*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -2773,7 +2933,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(8*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -2800,7 +2960,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(8*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -2827,7 +2987,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(8*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -2855,7 +3015,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(8*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -2883,7 +3043,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(8*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -2911,7 +3071,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(8*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -2939,7 +3099,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(8*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -2967,7 +3127,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(8*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -2995,7 +3155,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(8*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -3023,7 +3183,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(8*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -3052,7 +3212,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i64(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(8*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -3155,7 +3315,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(4*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -3178,7 +3338,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(4*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -3205,7 +3365,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(4*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -3232,7 +3392,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(4*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -3259,7 +3419,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(4*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -3286,7 +3446,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(4*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -3313,7 +3473,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(4*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -3341,7 +3501,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(4*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -3369,7 +3529,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(4*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -3397,7 +3557,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(4*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -3425,7 +3585,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(4*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -3453,7 +3613,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(4*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -3481,7 +3641,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(4*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -3509,7 +3669,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(4*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -3538,7 +3698,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i32(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(4*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -3641,7 +3801,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i16(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(2*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -3664,7 +3824,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i16(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(2*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -3691,7 +3851,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i16(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(2*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -3718,7 +3878,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i16(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(2*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -3745,7 +3905,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i16(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(2*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -3772,7 +3932,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i16(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(2*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -3799,7 +3959,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i16(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(2*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -3827,7 +3987,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i16(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(2*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -3855,7 +4015,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i16(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(2*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -3883,7 +4043,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i16(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(2*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -3911,7 +4071,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i16(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(2*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -3939,7 +4099,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i16(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(2*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -3967,7 +4127,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i16(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(2*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -3995,7 +4155,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i16(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(2*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -4024,7 +4184,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i16(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(2*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -4127,7 +4287,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i8(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(1*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -4150,7 +4310,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i8(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(1*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -4177,7 +4337,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i8(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(1*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -4204,7 +4364,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i8(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(1*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -4231,7 +4391,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i8(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(1*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -4258,7 +4418,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i8(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(1*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -4285,7 +4445,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i8(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(1*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -4313,7 +4473,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i8(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(1*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -4341,7 +4501,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i8(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(1*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -4369,7 +4529,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i8(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(1*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -4397,7 +4557,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i8(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(1*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -4425,7 +4585,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i8(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(1*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -4453,7 +4613,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i8(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(1*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -4481,7 +4641,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i8(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(1*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -4510,7 +4670,7 @@ submodule (io_fortran_lib) io_npy
         end if
 
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_i8(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
           allocate( bytes(1*size(into, kind=i64)), stat=stat, errmsg=errmsg )
 
@@ -5661,7 +5821,7 @@ submodule (io_fortran_lib) io_npy
     character(len=*),             intent(out)   :: errmsg
 
     character(len=:), allocatable :: buffer, cd, ending
-    integer(i64)                  :: table(0:255), crc, pos, left, n, cd_start, cd_size, count
+    integer(i64)                  :: table(0:255,0:7), crc, pos, left, n, cd_start, cd_size, count
     integer                       :: i
 
     table = crc_table()
@@ -5774,11 +5934,12 @@ submodule (io_fortran_lib) io_npy
   end function central_record
 
   pure function crc_table() result(table)
-    !! Returns the table for computing the CRC-32 that ZIP uses, a byte at a time.
-    integer(i64) :: table(0:255)
+    !! Returns the tables for computing the CRC-32 that ZIP uses eight bytes at a time ("slicing by 8"). Column 0 is
+    !! the usual table for one byte. Column `k` gives the effect of a byte followed by `k` zero bytes.
+    integer(i64) :: table(0:255,0:7)
 
     integer(i64) :: c
-    integer      :: i, j
+    integer      :: i, j, k
 
     do i = 0, 255
       c = int(i, kind=i64)
@@ -5789,20 +5950,42 @@ submodule (io_fortran_lib) io_npy
           c = shiftr(c, 1)
         end if
       end do
-      table(i) = c
+      table(i,0) = c
+    end do
+
+    do k = 1, 7
+      table(:,k) = ieor(shiftr(table(:,k-1), 8), table(iand(table(:,k-1), 255_i64),0))
     end do
   end function crc_table
 
   pure subroutine crc_update(crc, bytes, table)
-    !! Updates `crc`, which starts at `MAX_U32`, with `bytes`.
+    !! Updates `crc`, which starts at `MAX_U32`, with `bytes`, eight at a time and then any left over one at a time.
+    !! This is about four times as fast as a byte at a time (#94).
     integer(i64),     intent(inout) :: crc
     character(len=*), intent(in)    :: bytes
-    integer(i64),     intent(in)    :: table(0:255)
+    integer(i64),     intent(in)    :: table(0:255,0:7)
 
-    integer(i64) :: i
+    integer(i64) :: i, n, b(0:7)
+    integer      :: k
 
-    do i = 1_i64, len(bytes, kind=i64)
-      crc = ieor(table(iand(ieor(crc, int(iachar(bytes(i:i)), kind=i64)), 255_i64)), shiftr(crc, 8))
+    n = len(bytes, kind=i64)
+    i = 1_i64
+
+    do while ( i + 7_i64 <= n )
+      do k = 0, 7
+        b(k) = int(ichar(bytes(i+k:i+k)), kind=i64)
+      end do
+
+      crc = ieor(crc, ior(ior(b(0), shiftl(b(1), 8)), ior(shiftl(b(2), 16), shiftl(b(3), 24))))
+      crc = ieor(ieor(ieor(table(iand(crc, 255_i64),7), table(iand(shiftr(crc, 8), 255_i64),6)),   &
+                      ieor(table(iand(shiftr(crc, 16), 255_i64),5), table(shiftr(crc, 24),4))),     &
+                 ieor(ieor(table(b(4),3), table(b(5),2)), ieor(table(b(6),1), table(b(7),0))))
+      i = i + 8_i64
+    end do
+
+    do while ( i <= n )
+      crc = ieor(table(iand(ieor(crc, int(ichar(bytes(i:i)), kind=i64)), 255_i64),0), shiftr(crc, 8))
+      i = i + 1_i64
     end do
   end subroutine crc_update
 

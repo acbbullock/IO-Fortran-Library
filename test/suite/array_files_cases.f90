@@ -3,9 +3,9 @@ module array_files_cases
   !! `to_file` and `from_file` with text files: errors, empty cells, quoting, and round trips.
   !---------------------------------------------------------------------------------------------------------------------
   use, intrinsic :: iso_fortran_env, only: int64, real32, real64
-  use, intrinsic :: ieee_arithmetic, only: ieee_value, ieee_quiet_nan, ieee_is_nan
-  use io_fortran_lib, only: String, str, to_file, from_file, IOFL_LF, IOFL_CR, IOFL_TAB, IOFL_ARG_ERR, IOFL_READ_ERR, &
-                            operator(==), operator(/=), operator(>)
+  use, intrinsic :: ieee_arithmetic, only: ieee_value, ieee_quiet_nan, ieee_is_nan, ieee_positive_inf, ieee_negative_inf
+  use io_fortran_lib, only: String, str, cast, to_file, from_file, IOFL_LF, IOFL_CR, IOFL_TAB, IOFL_ARG_ERR, &
+                            IOFL_READ_ERR, operator(==), operator(/=), operator(>)
   use test_support, only: test_suite, STOPS, check, expect_equal, scratch, write_raw, read_raw
   implicit none (type, external)
   private
@@ -22,6 +22,8 @@ contains
     call suite%add("from_file_bad_number_stat", from_file_bad_number_stat)
     call suite%add("from_file_bad_number", from_file_bad_number, expect=STOPS)
     call suite%add("from_file_bad_number_location", from_file_bad_number_location)
+    call suite%add("from_file_many_cells_match_cast", from_file_many_cells_match_cast)
+    call suite%add("from_file_many_cells_eu", from_file_many_cells_eu)
     call suite%add("from_file_bad_cell_int", from_file_bad_cell_int)
     call suite%add("from_file_quoted_numbers", from_file_quoted_numbers)
     call suite%add("from_file_crlf", from_file_crlf)
@@ -66,6 +68,9 @@ contains
     call suite%add("string_rank1_round_trip", string_rank1_round_trip)
     call suite%add("chars_to_file", chars_to_file)
     call suite%add("string_npy_stat", string_npy_stat)
+    call suite%add("to_file_matches_cast", to_file_matches_cast)
+    call suite%add("to_file_matches_cast_rank1", to_file_matches_cast_rank1)
+    call suite%add("to_file_matches_cast_complex", to_file_matches_cast_complex)
   end subroutine register_array_files
 
   subroutine from_file_missing()
@@ -114,6 +119,100 @@ contains
     call check(index(msg, "oops") > 0, "The message should name the text.")
     call check(index(msg, "row 2, column 2") > 0, "The message should name the location.")
   end subroutine from_file_bad_number_location
+
+  subroutine from_file_many_cells_match_cast()
+    !! `from_file` reads many cells of a column in one statement. Each cell should still read as `cast` reads it alone,
+    !! across chunks, with blanks, padding, every accepted form, a number too large for the kind, and a bad cell.
+    integer, parameter            :: NROWS = 700
+    character(len=:), allocatable :: file, content
+    character(len=512)            :: msg
+    type(String)                  :: texts(NROWS,2)
+    real(real64), allocatable     :: m2(:,:)
+    real(real32), allocatable     :: s2(:,:)
+    real(real64)                  :: expected
+    real(real32)                  :: expected32
+    integer                       :: st, row, col, cast_st, bad_row, bad_col
+
+    do row = 1, NROWS
+      texts(row,1) = String(str(row)//".25")
+      texts(row,2) = String("-"//str(row)//"e-3")
+    end do
+
+    texts(3,2) = String("  2.5 "); texts(4,2) = String("+.5");      texts(5,2)   = String("1d3")
+    texts(6,2) = String("-Inf");   texts(7,2) = String("nan");      texts(8,2)   = String("Infinity")
+    texts(9,2) = String("");       texts(10,2) = String(" ");       texts(300,2) = String("1e999")
+    texts(301,1) = String("7.");   texts(302,1) = String("-0.0");   texts(520,2) = String("1.2.3")
+
+    content = "a,b"//IOFL_LF
+    do row = 1, NROWS
+      content = content//texts(row,1)%as_str()//","//texts(row,2)%as_str()//IOFL_LF
+    end do
+
+    file = scratch(); st = 0; msg = ""
+    call write_raw(file//".csv", content)
+
+    call from_file(file//".csv", into=m2, header=.true., stat=st, errmsg=msg)
+    call check(all(shape(m2) == [NROWS,2]), "Every row should be read.")
+
+    bad_row = 0; bad_col = 0
+
+    do col = 1, 2
+      do row = 1, NROWS
+        if ( verify(texts(row,col)%as_str(), " ") == 0 ) then
+          call check(ieee_is_nan(m2(row,col)), "A blank cell should read as NaN.")
+          cycle
+        end if
+
+        call cast(texts(row,col), into=expected, stat=cast_st)
+
+        if ( cast_st /= 0 ) then
+          if ( bad_row == 0 ) then
+            bad_row = row; bad_col = col
+          end if
+          cycle
+        end if
+
+        if ( ieee_is_nan(expected) ) then
+          call check(ieee_is_nan(m2(row,col)), "NaN should read as cast reads it.")
+        else
+          call check(m2(row,col) == expected, "Row "//str(row)//", column "//str(col)//" should read as cast.")
+        end if
+      end do
+    end do
+
+    call check(st /= 0, "The bad cell should be reported through stat.")
+
+    call check(index(msg, "row "//str(bad_row+1)//", column "//str(bad_col)) > 0, &
+               "The message should name the first bad cell, counting the header: "//trim(msg))
+
+    call from_file(file//".csv", into=s2, header=.true., stat=st, errmsg=msg)
+
+    do row = 1, NROWS
+      call cast(texts(row,1), into=expected32, stat=cast_st)
+      call check(s2(row,1) == expected32, "A real32 cell should read as cast reads it.")
+    end do
+  end subroutine from_file_many_cells_match_cast
+
+  subroutine from_file_many_cells_eu()
+    !! In the EU locale, cells read together are separated by semicolons, since the comma is the decimal mark.
+    integer, parameter            :: NROWS = 600
+    character(len=:), allocatable :: file, content
+    real(real64), allocatable     :: m2(:,:)
+    integer                       :: st, row
+
+    content = ""
+    do row = 1, NROWS
+      content = content//str(row)//",5;-"//str(row)//",25"//IOFL_LF
+    end do
+
+    file = scratch(); st = 0
+    call write_raw(file//".csv", content)
+
+    call from_file(file//".csv", into=m2, locale="EU", stat=st)
+    call expect_equal(st, 0, "EU numbers should read without error.")
+    call check(all(m2(:,1) == [(row + 0.5_real64, row = 1, NROWS)]), "The first column should be read.")
+    call check(all(m2(:,2) == [(-row - 0.25_real64, row = 1, NROWS)]), "The second column should be read.")
+  end subroutine from_file_many_cells_eu
 
   subroutine from_file_bad_cell_int()
     character(len=:), allocatable :: file
@@ -699,4 +798,140 @@ contains
     call from_file(scratch()//"_numbers.npy", into=y, stat=st)
     call expect_equal(st, IOFL_ARG_ERR, "A .npy file cannot be read into String data.")
   end subroutine string_npy_stat
+
+  subroutine to_file_matches_cast()
+    !! `to_file` formats `fmt="e"` numbers in chunks of 1024 (#91). The text must match `cast` of each number, across
+    !! chunk boundaries, with special values, in both locales, and with any `decimals`.
+    real(real64), allocatable :: x(:,:)
+    integer                   :: i, j
+
+    allocate( x(2100,3) )
+    call random_number(x)
+
+    do j = 1, size(x, dim=2)
+      do i = 1, size(x, dim=1)
+        x(i,j) = (x(i,j) - 0.5_real64)*10.0_real64**(mod(7*i + 13*j, 601) - 300)
+      end do
+    end do
+
+    x(1,1) = ieee_value(x(1,1), ieee_quiet_nan)
+    x(2,1) = ieee_value(x(2,1), ieee_positive_inf)
+    x(3,1) = ieee_value(x(3,1), ieee_negative_inf)
+    x(4,1) = 0.0_real64
+    x(5,1) = -0.0_real64
+    x(6,1) = tiny(1.0_real64)
+    x(7,1) = -huge(1.0_real64)
+    x(8,1) = tiny(1.0_real64)/2.0_real64**40                                                         ! Subnormal
+    x(1024,2) = 0.0_real64
+    x(1025,2) = ieee_value(x(1,1), ieee_quiet_nan)
+    x(2048,3) = -0.0_real64
+    x(2049,3) = 1.0_real64
+
+    call expect_text_of_cast(x, "US")
+    call expect_text_of_cast(x, "EU")
+    call expect_text_of_cast(x, "US", 0)
+    call expect_text_of_cast(x, "EU", 5)
+    call expect_text_of_cast(x, "US", 40)
+    call expect_text_of_cast(x, "US", -3)
+  end subroutine to_file_matches_cast
+
+  subroutine to_file_matches_cast_rank1()
+    !! The same for a rank-1 `real32` array with a header, which `to_file` writes as one column.
+    real(real32), allocatable     :: x(:)
+    character(len=:), allocatable :: file, expected, cell
+    integer                       :: i
+
+    allocate( x(1500) )
+    call random_number(x)
+    x = (x - 0.5)*1.0e6
+    x(1) = 0.0; x(2) = -0.0; x(1024) = ieee_value(x(1), ieee_negative_inf)
+
+    file = scratch()//".csv"
+    call to_file(x, file=file, header=["s"], decimals=4)
+
+    expected = "s"//IOFL_LF
+    do i = 1, size(x)
+      call cast(x(i), into=cell, fmt="e", decimals=4)
+      expected = expected//cell//IOFL_LF
+    end do
+
+    call check(read_raw(file) == expected, "A rank-1 file should hold the text of cast for each number.")
+  end subroutine to_file_matches_cast_rank1
+
+  subroutine to_file_matches_cast_complex()
+    !! The same for complex numbers, whose parts `to_file` formats in chunks too, in both forms of `im`.
+    complex(real64), allocatable  :: z(:,:)
+    real(real64),    allocatable  :: re(:,:), im(:,:)
+    character(len=:), allocatable :: file, text, expected, cell
+    integer                       :: i, j, k, m
+    character(len=2)              :: locales(2) = ["US", "EU"]
+    character(len=1)              :: ims(2) = [" ", "j"]
+
+    allocate( re(1100,2), im(1100,2) )
+    call random_number(re); call random_number(im)
+    re = (re - 0.5_real64)*1.0e8_real64; im = (im - 0.5_real64)*1.0e-8_real64
+    z = cmplx(re, im, kind=real64)
+
+    z(1,1) = cmplx(ieee_value(1.0_real64, ieee_quiet_nan), -0.0_real64, kind=real64)
+    z(2,1) = cmplx(0.0_real64, ieee_value(1.0_real64, ieee_negative_inf), kind=real64)
+    z(1025,2) = cmplx(-0.0_real64, 0.0_real64, kind=real64)
+
+    do k = 1, size(locales)
+      do m = 1, size(ims)
+        file = scratch()//".csv"
+        call to_file(z, file=file, locale=locales(k), im=trim(ims(m)), decimals=6)
+        text = read_raw(file)
+
+        expected = ""
+        do i = 1, size(z, dim=1)
+          do j = 1, size(z, dim=2)
+            call cast(z(i,j), into=cell, locale=locales(k), fmt="e", decimals=6, im=trim(ims(m)))
+            expected = expected//cell
+            if ( j < size(z, dim=2) ) expected = expected//merge(",", ";", locales(k) == "US")
+          end do
+          expected = expected//IOFL_LF
+        end do
+
+        call check(text == expected, "A complex file should hold the text of cast for each number, locale "// &
+                                     locales(k)//", im "//trim(ims(m))//".")
+      end do
+    end do
+  end subroutine to_file_matches_cast_complex
+
+  subroutine expect_text_of_cast(x, locale, decimals)
+    real(real64),     intent(in)           :: x(:,:)
+    character(len=*), intent(in)           :: locale
+    integer,          intent(in), optional :: decimals
+
+    character(len=:), allocatable :: file, text, expected, cell, delim
+    integer                       :: i, j, pos
+
+    file  = scratch()//".csv"
+    delim = ","
+    if ( locale == "EU" ) delim = ";"
+
+    call to_file(x, file=file, locale=locale, decimals=decimals)
+    text = read_raw(file)
+
+    allocate( character(len=len(text)) :: expected )
+    pos = 0
+
+    do i = 1, size(x, dim=1)
+      do j = 1, size(x, dim=2)
+        call cast(x(i,j), into=cell, locale=locale, fmt="e", decimals=decimals)
+        if ( j < size(x, dim=2) ) cell = cell//delim
+        if ( j == size(x, dim=2) ) cell = cell//IOFL_LF
+
+        if ( pos + len(cell) > len(expected) ) then
+          call check(.false., "The file is shorter than the text of cast, locale "//locale//"."); return
+        end if
+
+        expected(pos+1:pos+len(cell)) = cell
+        pos = pos + len(cell)
+      end do
+    end do
+
+    call expect_equal(pos, len(text), "the length of the file, locale "//locale)
+    call check(text == expected, "The file should hold the text of cast for each number, locale "//locale//".")
+  end subroutine expect_text_of_cast
 end module array_files_cases
