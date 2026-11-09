@@ -16,6 +16,8 @@ Work toward 2.3, tracked in the [2.3 milestone](https://github.com/acbbullock/IO
 * With gfortran, writing and reading raw binary (`.dat`) and NumPy (`.npy`, `.npz`) files is 3–5 times as fast, and
   now matches plain unformatted stream I/O. A contiguous array is transferred as one block, which gfortran didn't do
   for an array of any rank (#93).
+* Writing an array to a `.npz` archive computes the archive's CRC-32 eight bytes at a time instead of one, which
+  makes the checksum about four times as fast (#94).
 
 ## [2.2.0](https://github.com/acbbullock/IO-Fortran-Library/releases/tag/v2.2.0) - 2026-11-09
 
