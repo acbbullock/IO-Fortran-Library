@@ -4,6 +4,7 @@
 #:set INT_KINDS = ["i64", "i32", "i16", "i8"]
 #:set QUAD_KINDS = ["c128", "r128"]
 #:set RANKS = list(range(1, 16))
+#:set FLAT_TYPES = [("c128", "complex(r128)"), ("c64", "complex(r64)"), ("c32", "complex(r32)"), ("r128", "real(r128)"), ("r64", "real(r64)"), ("r32", "real(r32)"), ("i64", "integer(i64)"), ("i32", "integer(i32)"), ("i16", "integer(i16)"), ("i8", "integer(i8)")]
 #:set E_DECIMALS = {"r128": 35, "r64": 17, "r32": 8}
 #:set E_DIGITS = {"r128": 4, "r64": 3, "r32": 2}
 #:set F_DIGITS = {"r128": 36, "r64": 18, "r32": 9}

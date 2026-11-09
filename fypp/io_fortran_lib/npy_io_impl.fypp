@@ -81,15 +81,27 @@ submodule (io_fortran_lib) io_npy
     write(unit=file_unit, iostat=stat, iomsg=errmsg) header
 
     if ( stat == 0 ) then
+#:if code == "b"
       select rank(x)
 #:for rank in RANKS
-#:if code == "b"
         rank(${rank}$); write(unit=file_unit, iostat=stat, iomsg=errmsg) merge(1_i8, 0_i8, x)   ! NumPy bool: one byte
-#:else
-        rank(${rank}$); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
-#:endif
 #:endfor
       end select
+#:else
+      if ( is_contiguous(x) ) then                 ! One block, as gfortran moves elements one at a time in select rank
+        select rank(x)
+#:for rank in RANKS
+          rank(${rank}$); call write_flat_${k}$(file_unit, x, size(x, kind=i64), stat, errmsg)
+#:endfor
+        end select
+      else
+        select rank(x)
+#:for rank in RANKS
+          rank(${rank}$); write(unit=file_unit, iostat=stat, iomsg=errmsg) x
+#:endfor
+        end select
+      end if
+#:endif
     end if
 
     if ( stat /= 0 ) then
@@ -178,7 +190,7 @@ submodule (io_fortran_lib) io_npy
         block
 #:else
         if ( fortran_order .and. (.not. swap) ) then
-          read(unit=file_unit, iostat=stat, iomsg=errmsg) into
+          call read_flat_${k}$(file_unit, into, size(into, kind=i64), stat, errmsg)   ! As one block
         else
 #:endif
           allocate( bytes(${size}$*size(into, kind=i64)), stat=stat, errmsg=errmsg )

@@ -11,6 +11,12 @@ has the same notes, along with the pre-releases.
 
 Work toward 2.3, tracked in the [2.3 milestone](https://github.com/acbbullock/IO-Fortran-Library/milestone/4).
 
+### Changed
+
+* With gfortran, writing and reading raw binary (`.dat`) and NumPy (`.npy`, `.npz`) files is 3–5 times as fast, and
+  now matches plain unformatted stream I/O. A contiguous array is transferred as one block, which gfortran didn't do
+  for an array of any rank (#93).
+
 ## [2.2.0](https://github.com/acbbullock/IO-Fortran-Library/releases/tag/v2.2.0) - 2026-11-09
 
 New file formats and types: `.tsv` files, NumPy `.npz` archives, and `logical`, `String` and `character` arrays.
