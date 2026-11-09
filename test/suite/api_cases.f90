@@ -8,7 +8,7 @@ module api_cases
                             IOFL_READ_ERR, IOFL_WRITE_ERR, IOFL_ALLOC_ERR, IOFL_ARG_ERR, &
                             NL, SPACE, CR, FF, VT, LF, TAB, HT, BELL, NUL, CNUL, to_file, from_file, cast
   use test_support, only: test_suite, expect_equal, scratch
-  implicit none
+  implicit none (type, external)
   private
 
   public :: register_api

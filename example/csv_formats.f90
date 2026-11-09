@@ -1,6 +1,6 @@
 program csv_formats
     use io_fortran_lib, only: to_file, from_file
-    implicit none
+    implicit none (type, external)
 
     real :: x(1000,20)
     real, allocatable :: x_e(:,:), x_f(:,:), x_z(:,:)

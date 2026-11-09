@@ -3,12 +3,10 @@ title: Thread safety
 author: Austin C Bullock
 ---
 
-The IO-Fortran-Library promotes thread-safety by declaring its module
-procedures `recursive`, which keeps their local arrays off static
-memory, and it has no module variables that change while a program
-runs: its defaults are constants. Elemental procedures are not
-`recursive`, because some compilers don't allow it, but they have no
-local arrays of fixed size, so nothing in them is static either.
+The IO-Fortran-Library promotes thread-safety by explicitly enforcing
+recursion with the `recursive` keyword on all module procedures, and it
+has no module variables that change while a program runs: its defaults
+are constants.
 However, performing I/O in parallel regions has the tendency to result
 in unexpected behavior. For instance, inspect the output of the
 following program with multiple coarray images:
@@ -16,7 +14,7 @@ following program with multiple coarray images:
 ```fortran
 program main
     use io_fortran_lib
-    implicit none
+    implicit none (type, external)
 
     call echo("Hello from image "//str(this_image()), file="hello.txt")
 end program main
@@ -30,7 +28,7 @@ strict thread-safety in the region:
 ```fortran
 program main
     use io_fortran_lib
-    implicit none
+    implicit none (type, external)
 
     critical
         call echo("Hello from image "//str(this_image()), file="hello.txt")
@@ -44,7 +42,7 @@ which is thread-safe:
 ```fortran
 program main
     use io_fortran_lib
-    implicit none
+    implicit none (type, external)
 
     if ( this_image() == 1 ) then
         call echo("Hello from image "//str(this_image()), file="hello.txt")

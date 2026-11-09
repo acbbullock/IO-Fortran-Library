@@ -1,6 +1,6 @@
 program split_join
     use io_fortran_lib, only: String, join, split, IOFL_LF, operator(+), operator(-)
-    implicit none
+    implicit none (type, external)
 
     type(String) :: time_stamp, new_time_stamp
     type(String), allocatable :: tokens(:)

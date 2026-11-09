@@ -1,6 +1,6 @@
 program quickstart
     use io_fortran_lib, only: String, str, to_file, from_file, aprint
-    implicit none
+    implicit none (type, external)
 
     real              :: x(3,2) = reshape([1.0, 2.5, -3.0, 4.0, 5.5, 6.25], [3,2])
     real, allocatable :: y(:,:), z(:,:)

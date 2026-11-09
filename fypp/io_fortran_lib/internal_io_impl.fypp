@@ -7,7 +7,7 @@ submodule (io_fortran_lib) internal_io
   !! `cast`.
   !---------------------------------------------------------------------------------------------------------------------
   use, intrinsic :: ieee_arithmetic, only: ieee_is_nan, ieee_is_finite, ieee_is_negative
-  implicit none
+  implicit none (type, external)
 
   integer, parameter :: MAX_F_DECIMALS = 200 ! Most decimals to request from an `f` edit descriptor
 

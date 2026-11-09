@@ -2,7 +2,7 @@ submodule (io_fortran_lib) join_split
   !---------------------------------------------------------------------------------------------------------------------
   !! This submodule provides module procedure implementations for the **public interfaces** `join` and `split`.
   !---------------------------------------------------------------------------------------------------------------------
-  implicit none
+  implicit none (type, external)
 
   contains ! Procedure bodies for module subprograms <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><
 

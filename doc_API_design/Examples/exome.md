@@ -24,7 +24,7 @@ and save it as `hg38.bed` in the directory you run the program from:
 program main
     use, intrinsic :: iso_fortran_env, only: int64, real64, compiler_version
     use io_fortran_lib, only: String, str, IOFL_TAB, operator(+), operator(==)
-    implicit none
+    implicit none (type, external)
 
     type(String) :: hg38, hg38_new
     type(String), allocatable :: cells(:,:)

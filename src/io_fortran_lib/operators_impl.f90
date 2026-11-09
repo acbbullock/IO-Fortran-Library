@@ -5,7 +5,7 @@ submodule (io_fortran_lib) operators
   !! This submodule provides module procedure implementations for the **public interfaces** `operator(//)`,
   !! `operator(+)`, `operator(-)`, `operator(**)`, `operator(==)`, and `operator(/=)`.
   !---------------------------------------------------------------------------------------------------------------------
-  implicit none
+  implicit none (type, external)
 
   contains ! Procedure bodies for module subprograms <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><
 

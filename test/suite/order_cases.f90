@@ -4,7 +4,7 @@ module order_cases
   !---------------------------------------------------------------------------------------------------------------------
   use io_fortran_lib, only: String, operator(==), operator(/=), operator(<), operator(<=), operator(>), operator(>=)
   use test_support, only: test_suite, check
-  implicit none
+  implicit none (type, external)
   private
 
   public :: register_order

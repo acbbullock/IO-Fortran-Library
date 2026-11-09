@@ -36,7 +36,7 @@ module test_support
                                            i64=>int64, i32=>int32, i16=>int16, i8=>int8, output_unit
   use, intrinsic :: ieee_arithmetic, only: ieee_is_nan, ieee_is_negative
   use io_fortran_lib,                only: String, str, operator(==)
-  implicit none
+  implicit none (type, external)
   private
 
   public :: test_suite, RETURNS, STOPS, FIXED, KNOWN_BUG, UNDEFINED

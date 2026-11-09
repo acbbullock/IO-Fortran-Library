@@ -6,7 +6,7 @@ module array_files_cases
   use, intrinsic :: ieee_arithmetic, only: ieee_value, ieee_quiet_nan, ieee_is_nan
   use io_fortran_lib, only: String, str, to_file, from_file, IOFL_LF, IOFL_CR, operator(==), operator(/=), operator(>)
   use test_support, only: test_suite, STOPS, check, expect_equal, scratch, write_raw
-  implicit none
+  implicit none (type, external)
   private
 
   public :: register_array_files

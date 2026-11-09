@@ -8,7 +8,7 @@ module npy_cases
   use, intrinsic :: iso_fortran_env, only: real64, int8, int16, int32
   use io_fortran_lib, only: to_file, from_file, IOFL_LF, IOFL_READ_ERR, IOFL_ARG_ERR
   use test_support, only: test_suite, STOPS, check, expect_equal, expect_identical, scratch, write_raw, read_raw
-  implicit none
+  implicit none (type, external)
   private
 
   public :: register_npy

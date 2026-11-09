@@ -1,6 +1,6 @@
 program fizz_buzz
     use io_fortran_lib, only: String, aprint
-    implicit none
+    implicit none (type, external)
 
     integer, allocatable :: nums(:)
     integer :: i

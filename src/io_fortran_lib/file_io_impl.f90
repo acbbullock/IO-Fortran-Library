@@ -5,7 +5,7 @@ submodule (io_fortran_lib) file_io
   !! This submodule provides module procedure implementations for the **public interfaces** `to_file` and
   !! `from_file`.
   !---------------------------------------------------------------------------------------------------------------------
-  implicit none
+  implicit none (type, external)
 
   ! Definitions and interfaces ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   character(len=0), parameter :: EMPTY_STRING    = EMPTY_STR

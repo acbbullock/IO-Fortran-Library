@@ -11,7 +11,7 @@ module io_fortran_lib
                                            input_unit, output_unit,                      & ! I/O units
                                            compiler_version                                ! Compiler inquiry function
   use, intrinsic :: iso_c_binding,   only: c_null_char                                     ! C null character
-  implicit none                                                           ! Nothing implicit
+  implicit none (type, external)                                                           ! Nothing implicit
   private                                                                                  ! Default private access
 
   ! Public API list ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -160,7 +160,7 @@ module io_fortran_lib
       character(len=:), allocatable :: string_slice
     end function as_str
 
-    elemental integer(i64) module function count64_chars(self, match) result(occurrences)
+    elemental recursive integer(i64) module function count64_chars(self, match) result(occurrences)
       !-----------------------------------------------------------------------------------------------------------------
       !! Returns number of non-overlapping occurrences of a substring elementally, as a 64-bit integer.
       !-----------------------------------------------------------------------------------------------------------------
@@ -168,7 +168,7 @@ module io_fortran_lib
       character(len=*), intent(in) :: match
     end function count64_chars
 
-    elemental integer(i64) module function count64_string(self, match) result(occurrences)
+    elemental recursive integer(i64) module function count64_string(self, match) result(occurrences)
       !-----------------------------------------------------------------------------------------------------------------
       !! Returns number of non-overlapping occurrences of a substring elementally, as a 64-bit integer.
       !-----------------------------------------------------------------------------------------------------------------
@@ -176,7 +176,7 @@ module io_fortran_lib
       type(String),  intent(in) :: match
     end function count64_string
 
-    elemental integer module function count_substring_chars(self, match) result(occurrences)
+    elemental recursive integer module function count_substring_chars(self, match) result(occurrences)
       !-----------------------------------------------------------------------------------------------------------------
       !! Returns number of non-overlapping occurrences of a substring elementally.
       !-----------------------------------------------------------------------------------------------------------------
@@ -184,7 +184,7 @@ module io_fortran_lib
       character(len=*), intent(in) :: match
     end function count_substring_chars
 
-    elemental integer module function count_substring_string(self, match) result(occurrences)
+    elemental recursive integer module function count_substring_string(self, match) result(occurrences)
       !-----------------------------------------------------------------------------------------------------------------
       !! Returns number of non-overlapping occurrences of a substring elementally.
       !-----------------------------------------------------------------------------------------------------------------
@@ -192,7 +192,7 @@ module io_fortran_lib
       type(String),  intent(in) :: match
     end function count_substring_string
 
-    elemental module subroutine empty(self)
+    elemental recursive module subroutine empty(self)
       !-----------------------------------------------------------------------------------------------------------------
       !! Sets the string slice component to the empty string elementally. This procedure is identical in function
       !! to the assignment `self = String()`.
@@ -223,7 +223,7 @@ module io_fortran_lib
       character(len=*), intent(in)    :: separator
     end subroutine join_base
 
-    elemental integer module function length(self) result(self_len)
+    elemental recursive integer module function length(self) result(self_len)
       !-----------------------------------------------------------------------------------------------------------------
       !! Returns the length of the string slice component elementally. Unallocated components return `-1`.
       !!
@@ -232,7 +232,7 @@ module io_fortran_lib
       class(String), intent(in) :: self
     end function length
 
-    elemental integer(i64) module function length64(self) result(self_len)
+    elemental recursive integer(i64) module function length64(self) result(self_len)
       !-----------------------------------------------------------------------------------------------------------------
       !! Returns the length of the string slice component elementally. Unallocated components return `-1`. This
       !! function is identical to `len` for strings of 2,147,483,647 bytes or smaller.
@@ -242,7 +242,7 @@ module io_fortran_lib
       class(String), intent(in) :: self
     end function length64
 
-    elemental module subroutine push_chars(self, substring)
+    elemental recursive module subroutine push_chars(self, substring)
       !-----------------------------------------------------------------------------------------------------------------
       !! Appends characters to the string slice component elementally in place.
       !-----------------------------------------------------------------------------------------------------------------
@@ -250,7 +250,7 @@ module io_fortran_lib
       character(len=*), intent(in)    :: substring
     end subroutine push_chars
 
-    elemental module subroutine push_string(self, substring)
+    elemental recursive module subroutine push_string(self, substring)
       !-----------------------------------------------------------------------------------------------------------------
       !! Appends string to the string slice component elementally in place.
       !-----------------------------------------------------------------------------------------------------------------
@@ -275,7 +275,7 @@ module io_fortran_lib
       character(len=*), intent(in), optional :: format
     end subroutine read_file
 
-    elemental type(String) module function replace_ch_copy(self, match, substring, back) result(new)
+    elemental recursive type(String) module function replace_ch_copy(self, match, substring, back) result(new)
       !-----------------------------------------------------------------------------------------------------------------
       !! Matches and replaces all occurrences of a substring elementally.
       !-----------------------------------------------------------------------------------------------------------------
@@ -284,7 +284,7 @@ module io_fortran_lib
       logical,          intent(in), optional :: back
     end function replace_ch_copy
 
-    elemental type(String) module function replace_st_copy(self, match, substring, back) result(new)
+    elemental recursive type(String) module function replace_st_copy(self, match, substring, back) result(new)
       !-----------------------------------------------------------------------------------------------------------------
       !! Matches and replaces all occurrences of a substring elementally.
       !-----------------------------------------------------------------------------------------------------------------
@@ -293,7 +293,7 @@ module io_fortran_lib
       logical,       intent(in), optional :: back
     end function replace_st_copy
 
-    elemental type(String) module function replace_chst_copy(self, match, substring, back) result(new)
+    elemental recursive type(String) module function replace_chst_copy(self, match, substring, back) result(new)
       !-----------------------------------------------------------------------------------------------------------------
       !! Matches and replaces all occurrences of a substring elementally.
       !-----------------------------------------------------------------------------------------------------------------
@@ -303,7 +303,7 @@ module io_fortran_lib
       logical,          intent(in), optional :: back
     end function replace_chst_copy
 
-    elemental type(String) module function replace_stch_copy(self, match, substring, back) result(new)
+    elemental recursive type(String) module function replace_stch_copy(self, match, substring, back) result(new)
       !-----------------------------------------------------------------------------------------------------------------
       !! Matches and replaces all occurrences of a substring elementally.
       !-----------------------------------------------------------------------------------------------------------------
@@ -313,7 +313,7 @@ module io_fortran_lib
       logical,          intent(in), optional :: back
     end function replace_stch_copy
 
-    elemental module subroutine replace_ch_inplace(self, match, substring, back)
+    elemental recursive module subroutine replace_ch_inplace(self, match, substring, back)
       !-----------------------------------------------------------------------------------------------------------------
       !! Matches and replaces all occurrences of a substring elementally in place.
       !-----------------------------------------------------------------------------------------------------------------
@@ -322,7 +322,7 @@ module io_fortran_lib
       logical,          intent(in), optional :: back
     end subroutine replace_ch_inplace
 
-    elemental module subroutine replace_st_inplace(self, match, substring, back)
+    elemental recursive module subroutine replace_st_inplace(self, match, substring, back)
       !-----------------------------------------------------------------------------------------------------------------
       !! Matches and replaces all occurrences of a substring elementally in place.
       !-----------------------------------------------------------------------------------------------------------------
@@ -331,7 +331,7 @@ module io_fortran_lib
       logical,       intent(in), optional :: back
     end subroutine replace_st_inplace
 
-    elemental module subroutine replace_chst_inplace(self, match, substring, back)
+    elemental recursive module subroutine replace_chst_inplace(self, match, substring, back)
       !-----------------------------------------------------------------------------------------------------------------
       !! Matches and replaces all occurrences of a substring elementally in place.
       !-----------------------------------------------------------------------------------------------------------------
@@ -341,7 +341,7 @@ module io_fortran_lib
       logical,          intent(in), optional :: back
     end subroutine replace_chst_inplace
 
-    elemental module subroutine replace_stch_inplace(self, match, substring, back)
+    elemental recursive module subroutine replace_stch_inplace(self, match, substring, back)
       !-----------------------------------------------------------------------------------------------------------------
       !! Matches and replaces all occurrences of a substring elementally in place.
       !-----------------------------------------------------------------------------------------------------------------
@@ -351,7 +351,7 @@ module io_fortran_lib
       logical,          intent(in), optional :: back
     end subroutine replace_stch_inplace
 
-    elemental type(String) module function trim_copy(self) result(new)
+    elemental recursive type(String) module function trim_copy(self) result(new)
       !-----------------------------------------------------------------------------------------------------------------
       !! Returns a copy of a `String` elementally in which each string slice component has been trimmed of any
       !! leading or trailing whitespace.
@@ -361,7 +361,7 @@ module io_fortran_lib
       class(String), intent(in) :: self
     end function trim_copy
 
-    elemental module subroutine trim_inplace(self)
+    elemental recursive module subroutine trim_inplace(self)
       !-----------------------------------------------------------------------------------------------------------------
       !! Removes any leading or trailing whitespace of the string slice component of a `String` elementally and
       !! in place.
@@ -493,16 +493,16 @@ module io_fortran_lib
     !!
     !! For a user reference, see [Concatenation](../page/Ref/operators.html#concatenation).
     !-------------------------------------------------------------------------------------------------------------------
-    elemental type(String) module function string_concatenation(Stringl, Stringr) result(new)
+    elemental recursive type(String) module function string_concatenation(Stringl, Stringr) result(new)
       class(String), intent(in) :: Stringl, Stringr
     end function string_concatenation
 
-    elemental type(String) module function string_char_concatenation(Stringl, charsr) result(new)
+    elemental recursive type(String) module function string_char_concatenation(Stringl, charsr) result(new)
       class(String),    intent(in) :: Stringl
       character(len=*), intent(in) :: charsr
     end function string_char_concatenation
 
-    elemental type(String) module function char_string_concatenation(charsl, Stringr) result(new)
+    elemental recursive type(String) module function char_string_concatenation(charsl, Stringr) result(new)
       character(len=*), intent(in) :: charsl
       class(String),    intent(in) :: Stringr
     end function char_string_concatenation
@@ -515,16 +515,16 @@ module io_fortran_lib
     !!
     !! For a user reference, see [Ordering](../page/Ref/operators.html#ordering).
     !-------------------------------------------------------------------------------------------------------------------
-    elemental logical module function string_lt(Stringl, Stringr) result(res)
+    elemental recursive logical module function string_lt(Stringl, Stringr) result(res)
       class(String), intent(in) :: Stringl, Stringr
     end function string_lt
 
-    elemental logical module function string_char_lt(Stringl, charsr) result(res)
+    elemental recursive logical module function string_char_lt(Stringl, charsr) result(res)
       class(String),    intent(in) :: Stringl
       character(len=*), intent(in) :: charsr
     end function string_char_lt
 
-    elemental logical module function char_string_lt(charsl, Stringr) result(res)
+    elemental recursive logical module function char_string_lt(charsl, Stringr) result(res)
       character(len=*), intent(in) :: charsl
       class(String),    intent(in) :: Stringr
     end function char_string_lt
@@ -537,16 +537,16 @@ module io_fortran_lib
     !!
     !! For a user reference, see [Ordering](../page/Ref/operators.html#ordering).
     !-------------------------------------------------------------------------------------------------------------------
-    elemental logical module function string_le(Stringl, Stringr) result(res)
+    elemental recursive logical module function string_le(Stringl, Stringr) result(res)
       class(String), intent(in) :: Stringl, Stringr
     end function string_le
 
-    elemental logical module function string_char_le(Stringl, charsr) result(res)
+    elemental recursive logical module function string_char_le(Stringl, charsr) result(res)
       class(String),    intent(in) :: Stringl
       character(len=*), intent(in) :: charsr
     end function string_char_le
 
-    elemental logical module function char_string_le(charsl, Stringr) result(res)
+    elemental recursive logical module function char_string_le(charsl, Stringr) result(res)
       character(len=*), intent(in) :: charsl
       class(String),    intent(in) :: Stringr
     end function char_string_le
@@ -559,16 +559,16 @@ module io_fortran_lib
     !!
     !! For a user reference, see [Ordering](../page/Ref/operators.html#ordering).
     !-------------------------------------------------------------------------------------------------------------------
-    elemental logical module function string_gt(Stringl, Stringr) result(res)
+    elemental recursive logical module function string_gt(Stringl, Stringr) result(res)
       class(String), intent(in) :: Stringl, Stringr
     end function string_gt
 
-    elemental logical module function string_char_gt(Stringl, charsr) result(res)
+    elemental recursive logical module function string_char_gt(Stringl, charsr) result(res)
       class(String),    intent(in) :: Stringl
       character(len=*), intent(in) :: charsr
     end function string_char_gt
 
-    elemental logical module function char_string_gt(charsl, Stringr) result(res)
+    elemental recursive logical module function char_string_gt(charsl, Stringr) result(res)
       character(len=*), intent(in) :: charsl
       class(String),    intent(in) :: Stringr
     end function char_string_gt
@@ -581,16 +581,16 @@ module io_fortran_lib
     !!
     !! For a user reference, see [Ordering](../page/Ref/operators.html#ordering).
     !-------------------------------------------------------------------------------------------------------------------
-    elemental logical module function string_ge(Stringl, Stringr) result(res)
+    elemental recursive logical module function string_ge(Stringl, Stringr) result(res)
       class(String), intent(in) :: Stringl, Stringr
     end function string_ge
 
-    elemental logical module function string_char_ge(Stringl, charsr) result(res)
+    elemental recursive logical module function string_char_ge(Stringl, charsr) result(res)
       class(String),    intent(in) :: Stringl
       character(len=*), intent(in) :: charsr
     end function string_char_ge
 
-    elemental logical module function char_string_ge(charsl, Stringr) result(res)
+    elemental recursive logical module function char_string_ge(charsl, Stringr) result(res)
       character(len=*), intent(in) :: charsl
       class(String),    intent(in) :: Stringr
     end function char_string_ge
@@ -605,16 +605,16 @@ module io_fortran_lib
     !-------------------------------------------------------------------------------------------------------------------
     module procedure char_concat_plus
 
-    elemental type(String) module function string_concat_plus(Stringl, Stringr) result(new)
+    elemental recursive type(String) module function string_concat_plus(Stringl, Stringr) result(new)
       class(String), intent(in) :: Stringl, Stringr
     end function string_concat_plus
 
-    elemental type(String) module function string_char_concat_plus(Stringl, charsr) result(new)
+    elemental recursive type(String) module function string_char_concat_plus(Stringl, charsr) result(new)
       class(String),    intent(in) :: Stringl
       character(len=*), intent(in) :: charsr
     end function string_char_concat_plus
 
-    elemental type(String) module function char_string_concat_plus(charsl, Stringr) result(new)
+    elemental recursive type(String) module function char_string_concat_plus(charsl, Stringr) result(new)
       character(len=*), intent(in) :: charsl
       class(String),    intent(in) :: Stringr
     end function char_string_concat_plus
@@ -627,20 +627,20 @@ module io_fortran_lib
     !!
     !! For a user reference, see [Excision](../page/Ref/operators.html#excision).
     !-------------------------------------------------------------------------------------------------------------------
-    elemental type(String) module function char_excision(charsl, charsr) result(new)
+    elemental recursive type(String) module function char_excision(charsl, charsr) result(new)
       character(len=*), intent(in) :: charsl, charsr
     end function char_excision
 
-    elemental type(String) module function string_excision(Stringl, Stringr) result(new)
+    elemental recursive type(String) module function string_excision(Stringl, Stringr) result(new)
       class(String), intent(in) :: Stringl, Stringr
     end function string_excision
 
-    elemental type(String) module function string_char_excision(Stringl, charsr) result(new)
+    elemental recursive type(String) module function string_char_excision(Stringl, charsr) result(new)
       class(String),    intent(in) :: Stringl
       character(len=*), intent(in) :: charsr
     end function string_char_excision
 
-    elemental type(String) module function char_string_excision(charsl, Stringr) result(new)
+    elemental recursive type(String) module function char_string_excision(charsl, Stringr) result(new)
       character(len=*), intent(in) :: charsl
       class(String),    intent(in) :: Stringr
     end function char_string_excision
@@ -778,7 +778,7 @@ module io_fortran_lib
                                                    size(char_base,13),size(char_base,14),size(char_base,15))
     end function repeat_chars_15d
 
-    elemental type(String) module function repeat_String(String_base, ncopies) result(new)
+    elemental recursive type(String) module function repeat_String(String_base, ncopies) result(new)
       class(String), intent(in) :: String_base
       integer,       intent(in) :: ncopies
     end function repeat_String
@@ -793,16 +793,16 @@ module io_fortran_lib
     !!
     !! @note The equivalence operator `==` is interchangeable with `.eq.`.
     !-------------------------------------------------------------------------------------------------------------------
-    elemental logical module function string_equivalence(Stringl, Stringr) result(equal)
+    elemental recursive logical module function string_equivalence(Stringl, Stringr) result(equal)
       class(String), intent(in) :: Stringl, Stringr
     end function string_equivalence
 
-    elemental logical module function string_char_equivalence(Stringl, charsr) result(equal)
+    elemental recursive logical module function string_char_equivalence(Stringl, charsr) result(equal)
       class(String),    intent(in) :: Stringl
       character(len=*), intent(in) :: charsr
     end function string_char_equivalence
 
-    elemental logical module function char_string_equivalence(charsl, Stringr) result(equal)
+    elemental recursive logical module function char_string_equivalence(charsl, Stringr) result(equal)
       character(len=*), intent(in) :: charsl
       class(String),    intent(in) :: Stringr
     end function char_string_equivalence
@@ -817,16 +817,16 @@ module io_fortran_lib
     !!
     !! @note The non-equivalence operator `/=` is interchangeable with `.ne.`.
     !-------------------------------------------------------------------------------------------------------------------
-    elemental logical module function string_nonequivalence(Stringl, Stringr) result(unequal)
+    elemental recursive logical module function string_nonequivalence(Stringl, Stringr) result(unequal)
       class(String), intent(in) :: Stringl, Stringr
     end function string_nonequivalence
 
-    elemental logical module function string_char_nonequivalence(Stringl, charsr) result(unequal)
+    elemental recursive logical module function string_char_nonequivalence(Stringl, charsr) result(unequal)
       class(String),    intent(in) :: Stringl
       character(len=*), intent(in) :: charsr
     end function string_char_nonequivalence
 
-    elemental logical module function char_string_nonequivalence(charsl, Stringr) result(unequal)
+    elemental recursive logical module function char_string_nonequivalence(charsl, Stringr) result(unequal)
       character(len=*), intent(in) :: charsl
       class(String),    intent(in) :: Stringr
     end function char_string_nonequivalence
@@ -840,7 +840,7 @@ module io_fortran_lib
     !! [String methods](../page/Ref/String-methods.html), and [Operators](../page/Ref/operators.html).
     !-------------------------------------------------------------------------------------------------------------------
 #ifdef IOFL_HAS_R128
-    elemental type(String) module function new_string_from_c128(x, locale, fmt, decimals, im) result(new)
+    elemental recursive type(String) module function new_string_from_c128(x, locale, fmt, decimals, im) result(new)
       complex(r128),    intent(in)           :: x
       character(len=*), intent(in), optional :: locale
       character(len=*), intent(in), optional :: fmt
@@ -849,7 +849,7 @@ module io_fortran_lib
     end function new_string_from_c128
 #endif
 
-    elemental type(String) module function new_string_from_c64(x, locale, fmt, decimals, im) result(new)
+    elemental recursive type(String) module function new_string_from_c64(x, locale, fmt, decimals, im) result(new)
       complex(r64),    intent(in)           :: x
       character(len=*), intent(in), optional :: locale
       character(len=*), intent(in), optional :: fmt
@@ -857,7 +857,7 @@ module io_fortran_lib
       character(len=*), intent(in), optional :: im
     end function new_string_from_c64
 
-    elemental type(String) module function new_string_from_c32(x, locale, fmt, decimals, im) result(new)
+    elemental recursive type(String) module function new_string_from_c32(x, locale, fmt, decimals, im) result(new)
       complex(r32),    intent(in)           :: x
       character(len=*), intent(in), optional :: locale
       character(len=*), intent(in), optional :: fmt
@@ -867,7 +867,7 @@ module io_fortran_lib
 
 
 #ifdef IOFL_HAS_R128
-    elemental type(String) module function new_string_from_r128(x, locale, fmt, decimals) result(new)
+    elemental recursive type(String) module function new_string_from_r128(x, locale, fmt, decimals) result(new)
       real(r128),       intent(in)           :: x
       character(len=*), intent(in), optional :: locale
       character(len=*), intent(in), optional :: fmt
@@ -875,14 +875,14 @@ module io_fortran_lib
     end function new_string_from_r128
 #endif
 
-    elemental type(String) module function new_string_from_r64(x, locale, fmt, decimals) result(new)
+    elemental recursive type(String) module function new_string_from_r64(x, locale, fmt, decimals) result(new)
       real(r64),       intent(in)           :: x
       character(len=*), intent(in), optional :: locale
       character(len=*), intent(in), optional :: fmt
       integer,          intent(in), optional :: decimals
     end function new_string_from_r64
 
-    elemental type(String) module function new_string_from_r32(x, locale, fmt, decimals) result(new)
+    elemental recursive type(String) module function new_string_from_r32(x, locale, fmt, decimals) result(new)
       real(r32),       intent(in)           :: x
       character(len=*), intent(in), optional :: locale
       character(len=*), intent(in), optional :: fmt
@@ -890,34 +890,34 @@ module io_fortran_lib
     end function new_string_from_r32
 
 
-    elemental type(String) module function new_string_from_i64(x, fmt) result(new)
+    elemental recursive type(String) module function new_string_from_i64(x, fmt) result(new)
       integer(i64),     intent(in)           :: x
       character(len=*), intent(in), optional :: fmt
     end function new_string_from_i64
 
-    elemental type(String) module function new_string_from_i32(x, fmt) result(new)
+    elemental recursive type(String) module function new_string_from_i32(x, fmt) result(new)
       integer(i32),     intent(in)           :: x
       character(len=*), intent(in), optional :: fmt
     end function new_string_from_i32
 
-    elemental type(String) module function new_string_from_i16(x, fmt) result(new)
+    elemental recursive type(String) module function new_string_from_i16(x, fmt) result(new)
       integer(i16),     intent(in)           :: x
       character(len=*), intent(in), optional :: fmt
     end function new_string_from_i16
 
-    elemental type(String) module function new_string_from_i8(x, fmt) result(new)
+    elemental recursive type(String) module function new_string_from_i8(x, fmt) result(new)
       integer(i8),     intent(in)           :: x
       character(len=*), intent(in), optional :: fmt
     end function new_string_from_i8
 
 
-    elemental type(String) module function new_string_from_string(x) result(new)
+    elemental recursive type(String) module function new_string_from_string(x) result(new)
       class(String), intent(in) :: x
     end function new_string_from_string
-    elemental type(String) module function new_string_from_char(x) result(new)
+    elemental recursive type(String) module function new_string_from_char(x) result(new)
       character(len=*), intent(in) :: x
     end function new_string_from_char
-    elemental type(String) module function new_string_from_empty() result(new)
+    elemental recursive type(String) module function new_string_from_empty() result(new)
       ! No arguments
     end function new_string_from_empty
   end interface String
@@ -1030,7 +1030,7 @@ module io_fortran_lib
     !! For a user reference, see [cast](../page/Ref/cast.html).
     !-------------------------------------------------------------------------------------------------------------------
 #ifdef IOFL_HAS_R128
-    elemental module subroutine cast_c128_to_string(x, into, locale, fmt, decimals, im)
+    elemental recursive module subroutine cast_c128_to_string(x, into, locale, fmt, decimals, im)
       complex(r128),    intent(in)           :: x
       type(String),     intent(inout)        :: into
       character(len=*), intent(in), optional :: locale
@@ -1040,7 +1040,7 @@ module io_fortran_lib
     end subroutine cast_c128_to_string
 #endif
 
-    elemental module subroutine cast_c64_to_string(x, into, locale, fmt, decimals, im)
+    elemental recursive module subroutine cast_c64_to_string(x, into, locale, fmt, decimals, im)
       complex(r64),    intent(in)           :: x
       type(String),     intent(inout)        :: into
       character(len=*), intent(in), optional :: locale
@@ -1049,7 +1049,7 @@ module io_fortran_lib
       character(len=*), intent(in), optional :: im
     end subroutine cast_c64_to_string
 
-    elemental module subroutine cast_c32_to_string(x, into, locale, fmt, decimals, im)
+    elemental recursive module subroutine cast_c32_to_string(x, into, locale, fmt, decimals, im)
       complex(r32),    intent(in)           :: x
       type(String),     intent(inout)        :: into
       character(len=*), intent(in), optional :: locale
@@ -1060,7 +1060,7 @@ module io_fortran_lib
 
 
 #ifdef IOFL_HAS_R128
-    elemental module subroutine cast_r128_to_string(x, into, locale, fmt, decimals)
+    elemental recursive module subroutine cast_r128_to_string(x, into, locale, fmt, decimals)
       real(r128),       intent(in)           :: x
       type(String),     intent(inout)        :: into
       character(len=*), intent(in), optional :: locale
@@ -1069,7 +1069,7 @@ module io_fortran_lib
     end subroutine cast_r128_to_string
 #endif
 
-    elemental module subroutine cast_r64_to_string(x, into, locale, fmt, decimals)
+    elemental recursive module subroutine cast_r64_to_string(x, into, locale, fmt, decimals)
       real(r64),       intent(in)           :: x
       type(String),     intent(inout)        :: into
       character(len=*), intent(in), optional :: locale
@@ -1077,7 +1077,7 @@ module io_fortran_lib
       integer,          intent(in), optional :: decimals
     end subroutine cast_r64_to_string
 
-    elemental module subroutine cast_r32_to_string(x, into, locale, fmt, decimals)
+    elemental recursive module subroutine cast_r32_to_string(x, into, locale, fmt, decimals)
       real(r32),       intent(in)           :: x
       type(String),     intent(inout)        :: into
       character(len=*), intent(in), optional :: locale
@@ -1086,25 +1086,25 @@ module io_fortran_lib
     end subroutine cast_r32_to_string
 
 
-    elemental module subroutine cast_i64_to_string(x, into, fmt)
+    elemental recursive module subroutine cast_i64_to_string(x, into, fmt)
       integer(i64),     intent(in)           :: x
       type(String),     intent(inout)        :: into
       character(len=*), intent(in), optional :: fmt
     end subroutine cast_i64_to_string
 
-    elemental module subroutine cast_i32_to_string(x, into, fmt)
+    elemental recursive module subroutine cast_i32_to_string(x, into, fmt)
       integer(i32),     intent(in)           :: x
       type(String),     intent(inout)        :: into
       character(len=*), intent(in), optional :: fmt
     end subroutine cast_i32_to_string
 
-    elemental module subroutine cast_i16_to_string(x, into, fmt)
+    elemental recursive module subroutine cast_i16_to_string(x, into, fmt)
       integer(i16),     intent(in)           :: x
       type(String),     intent(inout)        :: into
       character(len=*), intent(in), optional :: fmt
     end subroutine cast_i16_to_string
 
-    elemental module subroutine cast_i8_to_string(x, into, fmt)
+    elemental recursive module subroutine cast_i8_to_string(x, into, fmt)
       integer(i8),     intent(in)           :: x
       type(String),     intent(inout)        :: into
       character(len=*), intent(in), optional :: fmt
@@ -1194,7 +1194,7 @@ module io_fortran_lib
 
 
 #ifdef IOFL_HAS_R128
-    elemental module subroutine cast_string_to_c128(substring, into, locale, fmt, im, stat)
+    elemental recursive module subroutine cast_string_to_c128(substring, into, locale, fmt, im, stat)
       class(String),    intent(in)           :: substring
       complex(r128),    intent(out)          :: into
       character(len=*), intent(in), optional :: locale
@@ -1204,7 +1204,7 @@ module io_fortran_lib
     end subroutine cast_string_to_c128
 #endif
 
-    elemental module subroutine cast_string_to_c64(substring, into, locale, fmt, im, stat)
+    elemental recursive module subroutine cast_string_to_c64(substring, into, locale, fmt, im, stat)
       class(String),    intent(in)           :: substring
       complex(r64),    intent(out)          :: into
       character(len=*), intent(in), optional :: locale
@@ -1213,7 +1213,7 @@ module io_fortran_lib
       integer,          intent(out), optional :: stat
     end subroutine cast_string_to_c64
 
-    elemental module subroutine cast_string_to_c32(substring, into, locale, fmt, im, stat)
+    elemental recursive module subroutine cast_string_to_c32(substring, into, locale, fmt, im, stat)
       class(String),    intent(in)           :: substring
       complex(r32),    intent(out)          :: into
       character(len=*), intent(in), optional :: locale
@@ -1224,7 +1224,7 @@ module io_fortran_lib
 
 
 #ifdef IOFL_HAS_R128
-    elemental module subroutine cast_string_to_r128(substring, into, locale, fmt, stat)
+    elemental recursive module subroutine cast_string_to_r128(substring, into, locale, fmt, stat)
       class(String),    intent(in)           :: substring
       real(r128),       intent(out)          :: into
       character(len=*), intent(in), optional :: locale
@@ -1233,7 +1233,7 @@ module io_fortran_lib
     end subroutine cast_string_to_r128
 #endif
 
-    elemental module subroutine cast_string_to_r64(substring, into, locale, fmt, stat)
+    elemental recursive module subroutine cast_string_to_r64(substring, into, locale, fmt, stat)
       class(String),    intent(in)           :: substring
       real(r64),       intent(out)          :: into
       character(len=*), intent(in), optional :: locale
@@ -1241,7 +1241,7 @@ module io_fortran_lib
       integer,          intent(out), optional :: stat
     end subroutine cast_string_to_r64
 
-    elemental module subroutine cast_string_to_r32(substring, into, locale, fmt, stat)
+    elemental recursive module subroutine cast_string_to_r32(substring, into, locale, fmt, stat)
       class(String),    intent(in)           :: substring
       real(r32),       intent(out)          :: into
       character(len=*), intent(in), optional :: locale
@@ -1250,28 +1250,28 @@ module io_fortran_lib
     end subroutine cast_string_to_r32
 
 
-    elemental module subroutine cast_string_to_i64(substring, into, fmt, stat)
+    elemental recursive module subroutine cast_string_to_i64(substring, into, fmt, stat)
       class(String),    intent(in)           :: substring
       integer(i64),     intent(out)          :: into
       character(len=*), intent(in), optional :: fmt
       integer,          intent(out), optional :: stat
     end subroutine cast_string_to_i64
 
-    elemental module subroutine cast_string_to_i32(substring, into, fmt, stat)
+    elemental recursive module subroutine cast_string_to_i32(substring, into, fmt, stat)
       class(String),    intent(in)           :: substring
       integer(i32),     intent(out)          :: into
       character(len=*), intent(in), optional :: fmt
       integer,          intent(out), optional :: stat
     end subroutine cast_string_to_i32
 
-    elemental module subroutine cast_string_to_i16(substring, into, fmt, stat)
+    elemental recursive module subroutine cast_string_to_i16(substring, into, fmt, stat)
       class(String),    intent(in)           :: substring
       integer(i16),     intent(out)          :: into
       character(len=*), intent(in), optional :: fmt
       integer,          intent(out), optional :: stat
     end subroutine cast_string_to_i16
 
-    elemental module subroutine cast_string_to_i8(substring, into, fmt, stat)
+    elemental recursive module subroutine cast_string_to_i8(substring, into, fmt, stat)
       class(String),    intent(in)           :: substring
       integer(i8),     intent(out)          :: into
       character(len=*), intent(in), optional :: fmt

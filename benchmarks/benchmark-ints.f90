@@ -1,7 +1,7 @@
 program main
   use, intrinsic :: iso_fortran_env, only: i64=>int64, dp=>real64
   use io_fortran_lib, only: String, str, operator(+)
-  implicit none
+  implicit none (type, external)
 
   integer, parameter :: largest = huge(0), smallest = -largest - 1, nsteps = 128
   integer, parameter :: step_size = int( (int(largest,i64) - int(smallest,i64) )/int(nsteps,i64))

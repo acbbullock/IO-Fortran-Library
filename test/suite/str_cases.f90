@@ -6,7 +6,7 @@ module str_cases
   use, intrinsic :: ieee_arithmetic, only: ieee_value, ieee_quiet_nan, ieee_positive_inf, ieee_is_negative
   use io_fortran_lib, only: cast, str, operator(==), operator(+), operator(<), operator(>)
   use test_support, only: test_suite, STOPS, check, expect_equal
-  implicit none
+  implicit none (type, external)
   private
 
   public :: register_str

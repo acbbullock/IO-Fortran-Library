@@ -6,7 +6,7 @@ module delimited_cases
                             operator(>), operator(>=)
   use test_support, only: test_suite, STOPS, check, expect_equal, scratch, write_raw
   use test_values, only: reset_random, random_values
-  implicit none
+  implicit none (type, external)
   private
 
   public :: register_delimited

@@ -1,6 +1,6 @@
 program logging_string
     use io_fortran_lib, only: String, str, IOFL_LF, operator(+), operator(**)
-    implicit none
+    implicit none (type, external)
 
     type(String) :: logmsg
     character(len=:), allocatable :: logfile

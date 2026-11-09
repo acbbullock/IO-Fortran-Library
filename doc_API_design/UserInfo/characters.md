@@ -26,7 +26,7 @@ following program:
 ```fortran
 program main
     use io_fortran_lib
-    implicit none
+    implicit none (type, external)
 
     type(String) :: emojis
 

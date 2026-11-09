@@ -10,7 +10,7 @@ submodule (io_fortran_lib) npy_io
   !! spaces and ended with a newline so that the data starts at a multiple of 64 bytes. This library writes version 1.0
   !! in Fortran order and native byte order, and reads versions 1 to 3 in either order and either byte order.
   !---------------------------------------------------------------------------------------------------------------------
-  implicit none
+  implicit none (type, external)
 
   character(len=*), parameter :: NPY_MAGIC = char(147)//"NUMPY"
   logical,          parameter :: LITTLE_ENDIAN = (iachar(transfer(1_i16, "a")) == 1)   ! Byte order of this machine

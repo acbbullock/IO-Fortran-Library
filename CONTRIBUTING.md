@@ -122,13 +122,7 @@ compiler has that kind. Do the same in tests that use it.
 
 ## Conventions
 
-- Standard Fortran 2018, with no compiler extensions, and `implicit none` in every scope. Not
-  `implicit none (type, external)`: nvfortran and AOCC don't accept that form yet. gfortran builds through fpm still
-  fail on a call to a procedure with no explicit interface, which is the mistake the `external` part catches.
-- Module procedures are `recursive`, so that gfortran keeps their large local arrays off static memory, which keeps
-  them thread-safe. Elemental procedures are the exception, because nvfortran and AOCC don't allow an elemental
-  procedure to be recursive. Keep elemental procedures free of fixed-size local arrays, as they are now, so they don't
-  need it.
+- Standard Fortran 2018, with no compiler extensions, and `implicit none (type, external)` in every scope.
 - Lines of at most 120 characters.
 - An error is reported through `stat` and `errmsg` when they are present, and ends the program with `error stop`
   when they are not.

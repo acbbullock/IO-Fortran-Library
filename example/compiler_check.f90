@@ -1,7 +1,7 @@
 program compiler_check
   use, intrinsic :: iso_fortran_env, only: compiler_version
   use io_fortran_lib, only: String
-  implicit none
+  implicit none (type, external)
 
   type(String) :: compiler
   logical :: GCC, GCC_SUPPORTED, INTEL, INTEL_SUPPORTED
