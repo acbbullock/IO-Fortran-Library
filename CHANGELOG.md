@@ -7,6 +7,10 @@ breaking changes first. The
 [releases page](https://github.com/acbbullock/IO-Fortran-Library/releases)
 has the same notes, along with the pre-releases.
 
+## Unreleased
+
+Work toward 2.3, tracked in the [2.3 milestone](https://github.com/acbbullock/IO-Fortran-Library/milestone/4).
+
 ## [2.2.0](https://github.com/acbbullock/IO-Fortran-Library/releases/tag/v2.2.0) - 2026-11-09
 
 New file formats and types: `.tsv` files, NumPy `.npz` archives, and `logical`, `String` and `character` arrays.

@@ -19,7 +19,7 @@ on:
   # Scheduled and manual runs use the workflow on the default branch, so a change to this file also runs it where it
   # was pushed.
   push:
-    branches: [main, "2.2"]
+    branches: [main, "2.3"]
     paths: [.github/workflows/experimental.yml]
 
 permissions:
