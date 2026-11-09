@@ -8,7 +8,7 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24068278.svg)](https://doi.org/10.5281/zenodo.24068278)
 
 A Fortran library for reading and writing text, CSV, binary and NumPy
-`.npy` files, converting between numbers and text, and working with
+`.npy` and `.npz` files, converting between numbers and text, and working with
 strings through a `String` type. It is a single module, `io_fortran_lib`,
 written in standard Fortran 2018 with no dependencies. The routines
 accept all intrinsic numeric types and kinds (`int8` to `int64`, and
@@ -65,7 +65,8 @@ end program quickstart
 * **Binary and NumPy files.** Raw binary `.dat` and `.bin` files, and
   NumPy `.npy` files, including `logical` arrays as `bool`, that
   `numpy.load` reads and `numpy.save` writes. A `.npy` file carries its
-  own shape, kind and byte order.
+  own shape, kind and byte order. A `.npz` archive holds several arrays
+  by name, as `numpy.savez` writes them.
 * **Numbers and text.** `str`, `String` and `cast` convert between numbers
   and text in either direction, in any of the formats above, and report
   text that is not a valid number instead of returning a wrong value.

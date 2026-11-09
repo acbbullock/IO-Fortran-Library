@@ -57,7 +57,7 @@ submodule (io_fortran_lib) io_file
     file_format = EMPTY_STR
 
     if ( present(format) ) then
-      if ( (format == "text") .or. (format == "binary") .or. (format == "npy") ) file_format = format
+      if ( any([ "text  ", "binary", "npy   ", "npz   " ] == format) ) file_format = format
       return
     end if
 
@@ -69,6 +69,8 @@ submodule (io_fortran_lib) io_file
       file_format = "binary"
     else if ( ext == "npy" ) then
       file_format = "npy"
+    else if ( ext == "npz" ) then
+      file_format = "npz"
     end if
   end procedure format_of
 
@@ -99,6 +101,11 @@ submodule (io_fortran_lib) io_file
     end if
 
     stat_=0; errmsg_=EMPTY_STR
+
+    call check_name(file, format, name, .true., stat_, errmsg_)
+    if ( stat_ /= 0 ) then
+      call stop_if_unhandled(stat_, errmsg_, present(stat)); return
+    end if
 
     if ( format_of(file, format) == "text" ) then
       select rank(x)
@@ -169,10 +176,10 @@ submodule (io_fortran_lib) io_file
         rank(1); call to_text(x, file, header, locale_, delim_, fmt_, decimals, im_, stat_, errmsg_)
         rank(2); call to_text(x, file, header, locale_, delim_, fmt_, decimals, im_, stat_, errmsg_)
       end select
-    else if ( (format_of(file, format) == "binary") .or. (format_of(file, format) == "npy") ) then
-      if ( format_of(file, format) == "npy" ) then
+    else if ( (format_of(file, format) == "binary") .or. is_numpy(file, format) ) then
+      if ( is_numpy(file, format) ) then
         stat_   = ARG_ERR
-        errmsg_ = 'NumPy has no type for real128 data, so "'//file//'" cannot be a .npy file.'
+        errmsg_ = 'NumPy has no type for real128 data, so "'//file//'" cannot be a NumPy file.'
         call stop_if_unhandled(stat_, errmsg_, present(stat))
         return
       end if
@@ -224,8 +231,8 @@ submodule (io_fortran_lib) io_file
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//' npy. '// &
-                'Or pass format="text", format="binary" or format="npy".'
+                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//' npy npz. '// &
+                'Or pass format="text", format="binary", format="npy" or format="npz".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -258,6 +265,11 @@ submodule (io_fortran_lib) io_file
 
     stat_=0; errmsg_=EMPTY_STR
 
+    call check_name(file, format, name, .true., stat_, errmsg_)
+    if ( stat_ /= 0 ) then
+      call stop_if_unhandled(stat_, errmsg_, present(stat)); return
+    end if
+
     if ( format_of(file, format) == "text" ) then
       select rank(x)
         rank(1); continue
@@ -327,7 +339,7 @@ submodule (io_fortran_lib) io_file
         rank(1); call to_text(x, file, header, locale_, delim_, fmt_, decimals, im_, stat_, errmsg_)
         rank(2); call to_text(x, file, header, locale_, delim_, fmt_, decimals, im_, stat_, errmsg_)
       end select
-    else if ( (format_of(file, format) == "binary") .or. (format_of(file, format) == "npy") ) then
+    else if ( (format_of(file, format) == "binary") .or. is_numpy(file, format) ) then
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
       if ( present(locale  ) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
       if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
@@ -337,92 +349,92 @@ submodule (io_fortran_lib) io_file
 
       select rank(x)
         rank(1)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(2)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(3)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(4)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(5)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(6)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(7)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(8)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(9)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(10)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(11)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(12)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(13)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(14)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(15)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
@@ -435,8 +447,8 @@ submodule (io_fortran_lib) io_file
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//' npy. '// &
-                'Or pass format="text", format="binary" or format="npy".'
+                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//' npy npz. '// &
+                'Or pass format="text", format="binary", format="npy" or format="npz".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -468,6 +480,11 @@ submodule (io_fortran_lib) io_file
 
     stat_=0; errmsg_=EMPTY_STR
 
+    call check_name(file, format, name, .true., stat_, errmsg_)
+    if ( stat_ /= 0 ) then
+      call stop_if_unhandled(stat_, errmsg_, present(stat)); return
+    end if
+
     if ( format_of(file, format) == "text" ) then
       select rank(x)
         rank(1); continue
@@ -537,7 +554,7 @@ submodule (io_fortran_lib) io_file
         rank(1); call to_text(x, file, header, locale_, delim_, fmt_, decimals, im_, stat_, errmsg_)
         rank(2); call to_text(x, file, header, locale_, delim_, fmt_, decimals, im_, stat_, errmsg_)
       end select
-    else if ( (format_of(file, format) == "binary") .or. (format_of(file, format) == "npy") ) then
+    else if ( (format_of(file, format) == "binary") .or. is_numpy(file, format) ) then
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
       if ( present(locale  ) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
       if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
@@ -547,92 +564,92 @@ submodule (io_fortran_lib) io_file
 
       select rank(x)
         rank(1)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(2)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(3)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(4)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(5)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(6)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(7)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(8)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(9)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(10)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(11)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(12)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(13)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(14)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(15)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
@@ -645,8 +662,8 @@ submodule (io_fortran_lib) io_file
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//' npy. '// &
-                'Or pass format="text", format="binary" or format="npy".'
+                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//' npy npz. '// &
+                'Or pass format="text", format="binary", format="npy" or format="npz".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -680,6 +697,11 @@ submodule (io_fortran_lib) io_file
 
     stat_=0; errmsg_=EMPTY_STR
 
+    call check_name(file, format, name, .true., stat_, errmsg_)
+    if ( stat_ /= 0 ) then
+      call stop_if_unhandled(stat_, errmsg_, present(stat)); return
+    end if
+
     if ( format_of(file, format) == "text" ) then
       select rank(x)
         rank(1); continue
@@ -747,10 +769,10 @@ submodule (io_fortran_lib) io_file
         rank(1); call to_text(x, file, header, locale_, delim_, fmt_, decimals, stat_, errmsg_)
         rank(2); call to_text(x, file, header, locale_, delim_, fmt_, decimals, stat_, errmsg_)
       end select
-    else if ( (format_of(file, format) == "binary") .or. (format_of(file, format) == "npy") ) then
-      if ( format_of(file, format) == "npy" ) then
+    else if ( (format_of(file, format) == "binary") .or. is_numpy(file, format) ) then
+      if ( is_numpy(file, format) ) then
         stat_   = ARG_ERR
-        errmsg_ = 'NumPy has no type for real128 data, so "'//file//'" cannot be a .npy file.'
+        errmsg_ = 'NumPy has no type for real128 data, so "'//file//'" cannot be a NumPy file.'
         call stop_if_unhandled(stat_, errmsg_, present(stat))
         return
       end if
@@ -801,8 +823,8 @@ submodule (io_fortran_lib) io_file
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//' npy. '// &
-                'Or pass format="text", format="binary" or format="npy".'
+                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//' npy npz. '// &
+                'Or pass format="text", format="binary", format="npy" or format="npz".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -835,6 +857,11 @@ submodule (io_fortran_lib) io_file
 
     stat_=0; errmsg_=EMPTY_STR
 
+    call check_name(file, format, name, .true., stat_, errmsg_)
+    if ( stat_ /= 0 ) then
+      call stop_if_unhandled(stat_, errmsg_, present(stat)); return
+    end if
+
     if ( format_of(file, format) == "text" ) then
       select rank(x)
         rank(1); continue
@@ -902,7 +929,7 @@ submodule (io_fortran_lib) io_file
         rank(1); call to_text(x, file, header, locale_, delim_, fmt_, decimals, stat_, errmsg_)
         rank(2); call to_text(x, file, header, locale_, delim_, fmt_, decimals, stat_, errmsg_)
       end select
-    else if ( (format_of(file, format) == "binary") .or. (format_of(file, format) == "npy") ) then
+    else if ( (format_of(file, format) == "binary") .or. is_numpy(file, format) ) then
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
       if ( present(locale  ) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
       if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
@@ -911,92 +938,92 @@ submodule (io_fortran_lib) io_file
 
       select rank(x)
         rank(1)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(2)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(3)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(4)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(5)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(6)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(7)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(8)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(9)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(10)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(11)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(12)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(13)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(14)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(15)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
@@ -1009,8 +1036,8 @@ submodule (io_fortran_lib) io_file
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//' npy. '// &
-                'Or pass format="text", format="binary" or format="npy".'
+                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//' npy npz. '// &
+                'Or pass format="text", format="binary", format="npy" or format="npz".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -1042,6 +1069,11 @@ submodule (io_fortran_lib) io_file
 
     stat_=0; errmsg_=EMPTY_STR
 
+    call check_name(file, format, name, .true., stat_, errmsg_)
+    if ( stat_ /= 0 ) then
+      call stop_if_unhandled(stat_, errmsg_, present(stat)); return
+    end if
+
     if ( format_of(file, format) == "text" ) then
       select rank(x)
         rank(1); continue
@@ -1109,7 +1141,7 @@ submodule (io_fortran_lib) io_file
         rank(1); call to_text(x, file, header, locale_, delim_, fmt_, decimals, stat_, errmsg_)
         rank(2); call to_text(x, file, header, locale_, delim_, fmt_, decimals, stat_, errmsg_)
       end select
-    else if ( (format_of(file, format) == "binary") .or. (format_of(file, format) == "npy") ) then
+    else if ( (format_of(file, format) == "binary") .or. is_numpy(file, format) ) then
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
       if ( present(locale  ) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
       if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
@@ -1118,92 +1150,92 @@ submodule (io_fortran_lib) io_file
 
       select rank(x)
         rank(1)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(2)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(3)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(4)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(5)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(6)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(7)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(8)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(9)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(10)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(11)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(12)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(13)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(14)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(15)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
@@ -1216,8 +1248,8 @@ submodule (io_fortran_lib) io_file
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//' npy. '// &
-                'Or pass format="text", format="binary" or format="npy".'
+                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//' npy npz. '// &
+                'Or pass format="text", format="binary", format="npy" or format="npz".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -1250,6 +1282,11 @@ submodule (io_fortran_lib) io_file
 
     stat_=0; errmsg_=EMPTY_STR
 
+    call check_name(file, format, name, .true., stat_, errmsg_)
+    if ( stat_ /= 0 ) then
+      call stop_if_unhandled(stat_, errmsg_, present(stat)); return
+    end if
+
     if ( format_of(file, format) == "text" ) then
       select rank(x)
         rank(1); continue
@@ -1300,99 +1337,99 @@ submodule (io_fortran_lib) io_file
         rank(1); call to_text(x, file, header, delim_, fmt_, stat_, errmsg_)
         rank(2); call to_text(x, file, header, delim_, fmt_, stat_, errmsg_)
       end select
-    else if ( (format_of(file, format) == "binary") .or. (format_of(file, format) == "npy") ) then
+    else if ( (format_of(file, format) == "binary") .or. is_numpy(file, format) ) then
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
       if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
       if ( present(fmt     ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
 
       select rank(x)
         rank(1)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(2)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(3)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(4)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(5)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(6)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(7)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(8)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(9)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(10)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(11)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(12)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(13)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(14)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(15)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
@@ -1405,8 +1442,8 @@ submodule (io_fortran_lib) io_file
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//' npy. '// &
-                'Or pass format="text", format="binary" or format="npy".'
+                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//' npy npz. '// &
+                'Or pass format="text", format="binary", format="npy" or format="npz".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -1438,6 +1475,11 @@ submodule (io_fortran_lib) io_file
 
     stat_=0; errmsg_=EMPTY_STR
 
+    call check_name(file, format, name, .true., stat_, errmsg_)
+    if ( stat_ /= 0 ) then
+      call stop_if_unhandled(stat_, errmsg_, present(stat)); return
+    end if
+
     if ( format_of(file, format) == "text" ) then
       select rank(x)
         rank(1); continue
@@ -1488,99 +1530,99 @@ submodule (io_fortran_lib) io_file
         rank(1); call to_text(x, file, header, delim_, fmt_, stat_, errmsg_)
         rank(2); call to_text(x, file, header, delim_, fmt_, stat_, errmsg_)
       end select
-    else if ( (format_of(file, format) == "binary") .or. (format_of(file, format) == "npy") ) then
+    else if ( (format_of(file, format) == "binary") .or. is_numpy(file, format) ) then
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
       if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
       if ( present(fmt     ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
 
       select rank(x)
         rank(1)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(2)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(3)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(4)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(5)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(6)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(7)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(8)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(9)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(10)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(11)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(12)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(13)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(14)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(15)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
@@ -1593,8 +1635,8 @@ submodule (io_fortran_lib) io_file
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//' npy. '// &
-                'Or pass format="text", format="binary" or format="npy".'
+                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//' npy npz. '// &
+                'Or pass format="text", format="binary", format="npy" or format="npz".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -1626,6 +1668,11 @@ submodule (io_fortran_lib) io_file
 
     stat_=0; errmsg_=EMPTY_STR
 
+    call check_name(file, format, name, .true., stat_, errmsg_)
+    if ( stat_ /= 0 ) then
+      call stop_if_unhandled(stat_, errmsg_, present(stat)); return
+    end if
+
     if ( format_of(file, format) == "text" ) then
       select rank(x)
         rank(1); continue
@@ -1676,99 +1723,99 @@ submodule (io_fortran_lib) io_file
         rank(1); call to_text(x, file, header, delim_, fmt_, stat_, errmsg_)
         rank(2); call to_text(x, file, header, delim_, fmt_, stat_, errmsg_)
       end select
-    else if ( (format_of(file, format) == "binary") .or. (format_of(file, format) == "npy") ) then
+    else if ( (format_of(file, format) == "binary") .or. is_numpy(file, format) ) then
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
       if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
       if ( present(fmt     ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
 
       select rank(x)
         rank(1)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(2)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(3)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(4)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(5)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(6)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(7)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(8)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(9)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(10)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(11)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(12)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(13)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(14)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(15)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
@@ -1781,8 +1828,8 @@ submodule (io_fortran_lib) io_file
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//' npy. '// &
-                'Or pass format="text", format="binary" or format="npy".'
+                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//' npy npz. '// &
+                'Or pass format="text", format="binary", format="npy" or format="npz".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -1814,6 +1861,11 @@ submodule (io_fortran_lib) io_file
 
     stat_=0; errmsg_=EMPTY_STR
 
+    call check_name(file, format, name, .true., stat_, errmsg_)
+    if ( stat_ /= 0 ) then
+      call stop_if_unhandled(stat_, errmsg_, present(stat)); return
+    end if
+
     if ( format_of(file, format) == "text" ) then
       select rank(x)
         rank(1); continue
@@ -1864,99 +1916,99 @@ submodule (io_fortran_lib) io_file
         rank(1); call to_text(x, file, header, delim_, fmt_, stat_, errmsg_)
         rank(2); call to_text(x, file, header, delim_, fmt_, stat_, errmsg_)
       end select
-    else if ( (format_of(file, format) == "binary") .or. (format_of(file, format) == "npy") ) then
+    else if ( (format_of(file, format) == "binary") .or. is_numpy(file, format) ) then
       if ( present(header  ) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
       if ( present(delim   ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
       if ( present(fmt     ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
 
       select rank(x)
         rank(1)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(2)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(3)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(4)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(5)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(6)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(7)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(8)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(9)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(10)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(11)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(12)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(13)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(14)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
         rank(15)
-          if ( format_of(file, format) == "npy" ) then
-            call to_npy(x, file, stat_, errmsg_)
+          if ( is_numpy(file, format) ) then
+            call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
           else
             call to_binary(x, file, stat_, errmsg_)
           end if
@@ -1969,8 +2021,8 @@ submodule (io_fortran_lib) io_file
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//' npy. '// &
-                'Or pass format="text", format="binary" or format="npy".'
+                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//' npy npz. '// &
+                'Or pass format="text", format="binary", format="npy" or format="npz".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -2006,6 +2058,11 @@ submodule (io_fortran_lib) io_file
 
     stat_=0; errmsg_=EMPTY_STR
 
+    call check_name(file, format, name, .false., stat_, errmsg_)
+    if ( stat_ /= 0 ) then
+      call stop_if_unhandled(stat_, errmsg_, present(stat)); return
+    end if
+
     if ( format_of(file, format) == "text" ) then
       header_ = optval(header, ABSENT_HEADER)
 
@@ -2081,22 +2138,22 @@ submodule (io_fortran_lib) io_file
           call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
-    else if ( format_of(file, format) == "npy" ) then
+    else if ( is_numpy(file, format) ) then
       if ( present(column_names) ) then
         stat_   = ARG_ERR
-        errmsg_ = 'column_names was given for file "'//file//'", but a .npy file has no header row.'
+        errmsg_ = 'column_names was given for file "'//file//'", but a NumPy file has no header row.'
         call stop_if_unhandled(stat_, errmsg_, present(stat))
         return
       end if
 
       stat_   = ARG_ERR
-      errmsg_ = 'NumPy has no type for real128 data, so "'//file//'" cannot be a .npy file.'
+      errmsg_ = 'NumPy has no type for real128 data, so "'//file//'" cannot be a NumPy file.'
       call stop_if_unhandled(stat_, errmsg_, present(stat))
       return
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//' npy. Or pass format="text" or format="npy".'
+                join(TEXT_EXT)//' npy npz. Or pass format="text", format="npy" or format="npz".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -2130,6 +2187,11 @@ submodule (io_fortran_lib) io_file
 
     stat_=0; errmsg_=EMPTY_STR
 
+    call check_name(file, format, name, .false., stat_, errmsg_)
+    if ( stat_ /= 0 ) then
+      call stop_if_unhandled(stat_, errmsg_, present(stat)); return
+    end if
+
     if ( format_of(file, format) == "text" ) then
       header_ = optval(header, ABSENT_HEADER)
 
@@ -2205,36 +2267,36 @@ submodule (io_fortran_lib) io_file
           call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
-    else if ( format_of(file, format) == "npy" ) then
+    else if ( is_numpy(file, format) ) then
       if ( present(column_names) ) then
         stat_   = ARG_ERR
-        errmsg_ = 'column_names was given for file "'//file//'", but a .npy file has no header row.'
+        errmsg_ = 'column_names was given for file "'//file//'", but a NumPy file has no header row.'
         call stop_if_unhandled(stat_, errmsg_, present(stat))
         return
       end if
 
-      if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "npy".'
-      if ( present(locale) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "npy".'
-      if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "npy".'
-      if ( present(fmt   ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "npy".'
-      if ( present(im    ) ) write(*,"(a)") LF//'WARNING: im not supported for file type "npy".'
+      if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
+      if ( present(locale) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
+      if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
+      if ( present(fmt   ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
+      if ( present(im    ) ) write(*,"(a)") LF//'WARNING: im not supported for file type "'//ext//'".'
 
       select rank(into)
-        rank(1); call from_npy(file, into, stat_, errmsg_)
-        rank(2); call from_npy(file, into, stat_, errmsg_)
-        rank(3); call from_npy(file, into, stat_, errmsg_)
-        rank(4); call from_npy(file, into, stat_, errmsg_)
-        rank(5); call from_npy(file, into, stat_, errmsg_)
-        rank(6); call from_npy(file, into, stat_, errmsg_)
-        rank(7); call from_npy(file, into, stat_, errmsg_)
-        rank(8); call from_npy(file, into, stat_, errmsg_)
-        rank(9); call from_npy(file, into, stat_, errmsg_)
-        rank(10); call from_npy(file, into, stat_, errmsg_)
-        rank(11); call from_npy(file, into, stat_, errmsg_)
-        rank(12); call from_npy(file, into, stat_, errmsg_)
-        rank(13); call from_npy(file, into, stat_, errmsg_)
-        rank(14); call from_npy(file, into, stat_, errmsg_)
-        rank(15); call from_npy(file, into, stat_, errmsg_)
+        rank(1); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(2); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(3); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(4); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(5); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(6); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(7); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(8); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(9); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(10); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(11); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(12); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(13); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(14); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(15); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
         rank default
           stat_   = ARG_ERR
           errmsg_ = "Array has invalid rank. Supported ranks: 1-15."
@@ -2242,7 +2304,7 @@ submodule (io_fortran_lib) io_file
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//' npy. Or pass format="text" or format="npy".'
+                join(TEXT_EXT)//' npy npz. Or pass format="text", format="npy" or format="npz".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -2275,6 +2337,11 @@ submodule (io_fortran_lib) io_file
 
     stat_=0; errmsg_=EMPTY_STR
 
+    call check_name(file, format, name, .false., stat_, errmsg_)
+    if ( stat_ /= 0 ) then
+      call stop_if_unhandled(stat_, errmsg_, present(stat)); return
+    end if
+
     if ( format_of(file, format) == "text" ) then
       header_ = optval(header, ABSENT_HEADER)
 
@@ -2350,36 +2417,36 @@ submodule (io_fortran_lib) io_file
           call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
-    else if ( format_of(file, format) == "npy" ) then
+    else if ( is_numpy(file, format) ) then
       if ( present(column_names) ) then
         stat_   = ARG_ERR
-        errmsg_ = 'column_names was given for file "'//file//'", but a .npy file has no header row.'
+        errmsg_ = 'column_names was given for file "'//file//'", but a NumPy file has no header row.'
         call stop_if_unhandled(stat_, errmsg_, present(stat))
         return
       end if
 
-      if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "npy".'
-      if ( present(locale) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "npy".'
-      if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "npy".'
-      if ( present(fmt   ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "npy".'
-      if ( present(im    ) ) write(*,"(a)") LF//'WARNING: im not supported for file type "npy".'
+      if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
+      if ( present(locale) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
+      if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
+      if ( present(fmt   ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
+      if ( present(im    ) ) write(*,"(a)") LF//'WARNING: im not supported for file type "'//ext//'".'
 
       select rank(into)
-        rank(1); call from_npy(file, into, stat_, errmsg_)
-        rank(2); call from_npy(file, into, stat_, errmsg_)
-        rank(3); call from_npy(file, into, stat_, errmsg_)
-        rank(4); call from_npy(file, into, stat_, errmsg_)
-        rank(5); call from_npy(file, into, stat_, errmsg_)
-        rank(6); call from_npy(file, into, stat_, errmsg_)
-        rank(7); call from_npy(file, into, stat_, errmsg_)
-        rank(8); call from_npy(file, into, stat_, errmsg_)
-        rank(9); call from_npy(file, into, stat_, errmsg_)
-        rank(10); call from_npy(file, into, stat_, errmsg_)
-        rank(11); call from_npy(file, into, stat_, errmsg_)
-        rank(12); call from_npy(file, into, stat_, errmsg_)
-        rank(13); call from_npy(file, into, stat_, errmsg_)
-        rank(14); call from_npy(file, into, stat_, errmsg_)
-        rank(15); call from_npy(file, into, stat_, errmsg_)
+        rank(1); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(2); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(3); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(4); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(5); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(6); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(7); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(8); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(9); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(10); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(11); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(12); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(13); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(14); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(15); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
         rank default
           stat_   = ARG_ERR
           errmsg_ = "Array has invalid rank. Supported ranks: 1-15."
@@ -2387,7 +2454,7 @@ submodule (io_fortran_lib) io_file
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//' npy. Or pass format="text" or format="npy".'
+                join(TEXT_EXT)//' npy npz. Or pass format="text", format="npy" or format="npz".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -2421,6 +2488,11 @@ submodule (io_fortran_lib) io_file
 
     stat_=0; errmsg_=EMPTY_STR
 
+    call check_name(file, format, name, .false., stat_, errmsg_)
+    if ( stat_ /= 0 ) then
+      call stop_if_unhandled(stat_, errmsg_, present(stat)); return
+    end if
+
     select rank(into)
       rank(1); into_rank = 1
       rank(2); into_rank = 2
@@ -2447,9 +2519,9 @@ submodule (io_fortran_lib) io_file
       return
     end if
 
-    if ( format_of(file, format) == "npy" ) then
+    if ( is_numpy(file, format) ) then
       stat_   = ARG_ERR
-      errmsg_ = 'NumPy has no type for real128 data, so "'//file//'" cannot be a .npy file.'
+      errmsg_ = 'NumPy has no type for real128 data, so "'//file//'" cannot be a NumPy file.'
       call stop_if_unhandled(stat_, errmsg_, present(stat))
       return
     else if ( format_of(file, format) == "binary" ) then
@@ -2529,6 +2601,11 @@ submodule (io_fortran_lib) io_file
 
     stat_=0; errmsg_=EMPTY_STR
 
+    call check_name(file, format, name, .false., stat_, errmsg_)
+    if ( stat_ /= 0 ) then
+      call stop_if_unhandled(stat_, errmsg_, present(stat)); return
+    end if
+
     select rank(into)
       rank(1); into_rank = 1
       rank(2); into_rank = 2
@@ -2555,10 +2632,10 @@ submodule (io_fortran_lib) io_file
       return
     end if
 
-    if ( format_of(file, format) == "npy" ) then
+    if ( is_numpy(file, format) ) then
       select rank(into)
         rank(1)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -2566,7 +2643,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(2)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -2574,7 +2651,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(3)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -2582,7 +2659,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(4)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -2590,7 +2667,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(5)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -2598,7 +2675,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(6)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -2606,7 +2683,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(7)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -2614,7 +2691,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(8)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -2622,7 +2699,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(9)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -2630,7 +2707,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(10)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -2638,7 +2715,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(11)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -2646,7 +2723,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(12)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -2654,7 +2731,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(13)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -2662,7 +2739,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(14)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -2670,7 +2747,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(15)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -2754,6 +2831,11 @@ submodule (io_fortran_lib) io_file
 
     stat_=0; errmsg_=EMPTY_STR
 
+    call check_name(file, format, name, .false., stat_, errmsg_)
+    if ( stat_ /= 0 ) then
+      call stop_if_unhandled(stat_, errmsg_, present(stat)); return
+    end if
+
     select rank(into)
       rank(1); into_rank = 1
       rank(2); into_rank = 2
@@ -2780,10 +2862,10 @@ submodule (io_fortran_lib) io_file
       return
     end if
 
-    if ( format_of(file, format) == "npy" ) then
+    if ( is_numpy(file, format) ) then
       select rank(into)
         rank(1)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -2791,7 +2873,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(2)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -2799,7 +2881,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(3)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -2807,7 +2889,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(4)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -2815,7 +2897,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(5)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -2823,7 +2905,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(6)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -2831,7 +2913,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(7)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -2839,7 +2921,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(8)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -2847,7 +2929,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(9)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -2855,7 +2937,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(10)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -2863,7 +2945,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(11)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -2871,7 +2953,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(12)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -2879,7 +2961,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(13)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -2887,7 +2969,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(14)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -2895,7 +2977,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(15)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -2982,6 +3064,11 @@ submodule (io_fortran_lib) io_file
 
     stat_=0; errmsg_=EMPTY_STR
 
+    call check_name(file, format, name, .false., stat_, errmsg_)
+    if ( stat_ /= 0 ) then
+      call stop_if_unhandled(stat_, errmsg_, present(stat)); return
+    end if
+
     if ( format_of(file, format) == "text" ) then
       header_ = optval(header, ABSENT_HEADER)
 
@@ -3055,22 +3142,22 @@ submodule (io_fortran_lib) io_file
           call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
-    else if ( format_of(file, format) == "npy" ) then
+    else if ( is_numpy(file, format) ) then
       if ( present(column_names) ) then
         stat_   = ARG_ERR
-        errmsg_ = 'column_names was given for file "'//file//'", but a .npy file has no header row.'
+        errmsg_ = 'column_names was given for file "'//file//'", but a NumPy file has no header row.'
         call stop_if_unhandled(stat_, errmsg_, present(stat))
         return
       end if
 
       stat_   = ARG_ERR
-      errmsg_ = 'NumPy has no type for real128 data, so "'//file//'" cannot be a .npy file.'
+      errmsg_ = 'NumPy has no type for real128 data, so "'//file//'" cannot be a NumPy file.'
       call stop_if_unhandled(stat_, errmsg_, present(stat))
       return
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//' npy. Or pass format="text" or format="npy".'
+                join(TEXT_EXT)//' npy npz. Or pass format="text", format="npy" or format="npz".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -3104,6 +3191,11 @@ submodule (io_fortran_lib) io_file
 
     stat_=0; errmsg_=EMPTY_STR
 
+    call check_name(file, format, name, .false., stat_, errmsg_)
+    if ( stat_ /= 0 ) then
+      call stop_if_unhandled(stat_, errmsg_, present(stat)); return
+    end if
+
     if ( format_of(file, format) == "text" ) then
       header_ = optval(header, ABSENT_HEADER)
 
@@ -3177,35 +3269,35 @@ submodule (io_fortran_lib) io_file
           call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
-    else if ( format_of(file, format) == "npy" ) then
+    else if ( is_numpy(file, format) ) then
       if ( present(column_names) ) then
         stat_   = ARG_ERR
-        errmsg_ = 'column_names was given for file "'//file//'", but a .npy file has no header row.'
+        errmsg_ = 'column_names was given for file "'//file//'", but a NumPy file has no header row.'
         call stop_if_unhandled(stat_, errmsg_, present(stat))
         return
       end if
 
-      if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "npy".'
-      if ( present(locale) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "npy".'
-      if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "npy".'
-      if ( present(fmt   ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "npy".'
+      if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
+      if ( present(locale) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
+      if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
+      if ( present(fmt   ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
 
       select rank(into)
-        rank(1); call from_npy(file, into, stat_, errmsg_)
-        rank(2); call from_npy(file, into, stat_, errmsg_)
-        rank(3); call from_npy(file, into, stat_, errmsg_)
-        rank(4); call from_npy(file, into, stat_, errmsg_)
-        rank(5); call from_npy(file, into, stat_, errmsg_)
-        rank(6); call from_npy(file, into, stat_, errmsg_)
-        rank(7); call from_npy(file, into, stat_, errmsg_)
-        rank(8); call from_npy(file, into, stat_, errmsg_)
-        rank(9); call from_npy(file, into, stat_, errmsg_)
-        rank(10); call from_npy(file, into, stat_, errmsg_)
-        rank(11); call from_npy(file, into, stat_, errmsg_)
-        rank(12); call from_npy(file, into, stat_, errmsg_)
-        rank(13); call from_npy(file, into, stat_, errmsg_)
-        rank(14); call from_npy(file, into, stat_, errmsg_)
-        rank(15); call from_npy(file, into, stat_, errmsg_)
+        rank(1); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(2); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(3); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(4); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(5); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(6); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(7); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(8); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(9); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(10); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(11); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(12); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(13); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(14); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(15); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
         rank default
           stat_   = ARG_ERR
           errmsg_ = "Array has invalid rank. Supported ranks: 1-15."
@@ -3213,7 +3305,7 @@ submodule (io_fortran_lib) io_file
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//' npy. Or pass format="text" or format="npy".'
+                join(TEXT_EXT)//' npy npz. Or pass format="text", format="npy" or format="npz".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -3246,6 +3338,11 @@ submodule (io_fortran_lib) io_file
 
     stat_=0; errmsg_=EMPTY_STR
 
+    call check_name(file, format, name, .false., stat_, errmsg_)
+    if ( stat_ /= 0 ) then
+      call stop_if_unhandled(stat_, errmsg_, present(stat)); return
+    end if
+
     if ( format_of(file, format) == "text" ) then
       header_ = optval(header, ABSENT_HEADER)
 
@@ -3319,35 +3416,35 @@ submodule (io_fortran_lib) io_file
           call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
-    else if ( format_of(file, format) == "npy" ) then
+    else if ( is_numpy(file, format) ) then
       if ( present(column_names) ) then
         stat_   = ARG_ERR
-        errmsg_ = 'column_names was given for file "'//file//'", but a .npy file has no header row.'
+        errmsg_ = 'column_names was given for file "'//file//'", but a NumPy file has no header row.'
         call stop_if_unhandled(stat_, errmsg_, present(stat))
         return
       end if
 
-      if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "npy".'
-      if ( present(locale) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "npy".'
-      if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "npy".'
-      if ( present(fmt   ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "npy".'
+      if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
+      if ( present(locale) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "'//ext//'".'
+      if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
+      if ( present(fmt   ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
 
       select rank(into)
-        rank(1); call from_npy(file, into, stat_, errmsg_)
-        rank(2); call from_npy(file, into, stat_, errmsg_)
-        rank(3); call from_npy(file, into, stat_, errmsg_)
-        rank(4); call from_npy(file, into, stat_, errmsg_)
-        rank(5); call from_npy(file, into, stat_, errmsg_)
-        rank(6); call from_npy(file, into, stat_, errmsg_)
-        rank(7); call from_npy(file, into, stat_, errmsg_)
-        rank(8); call from_npy(file, into, stat_, errmsg_)
-        rank(9); call from_npy(file, into, stat_, errmsg_)
-        rank(10); call from_npy(file, into, stat_, errmsg_)
-        rank(11); call from_npy(file, into, stat_, errmsg_)
-        rank(12); call from_npy(file, into, stat_, errmsg_)
-        rank(13); call from_npy(file, into, stat_, errmsg_)
-        rank(14); call from_npy(file, into, stat_, errmsg_)
-        rank(15); call from_npy(file, into, stat_, errmsg_)
+        rank(1); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(2); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(3); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(4); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(5); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(6); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(7); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(8); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(9); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(10); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(11); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(12); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(13); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(14); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(15); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
         rank default
           stat_   = ARG_ERR
           errmsg_ = "Array has invalid rank. Supported ranks: 1-15."
@@ -3355,7 +3452,7 @@ submodule (io_fortran_lib) io_file
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//' npy. Or pass format="text" or format="npy".'
+                join(TEXT_EXT)//' npy npz. Or pass format="text", format="npy" or format="npz".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -3389,6 +3486,11 @@ submodule (io_fortran_lib) io_file
 
     stat_=0; errmsg_=EMPTY_STR
 
+    call check_name(file, format, name, .false., stat_, errmsg_)
+    if ( stat_ /= 0 ) then
+      call stop_if_unhandled(stat_, errmsg_, present(stat)); return
+    end if
+
     select rank(into)
       rank(1); into_rank = 1
       rank(2); into_rank = 2
@@ -3415,9 +3517,9 @@ submodule (io_fortran_lib) io_file
       return
     end if
 
-    if ( format_of(file, format) == "npy" ) then
+    if ( is_numpy(file, format) ) then
       stat_   = ARG_ERR
-      errmsg_ = 'NumPy has no type for real128 data, so "'//file//'" cannot be a .npy file.'
+      errmsg_ = 'NumPy has no type for real128 data, so "'//file//'" cannot be a NumPy file.'
       call stop_if_unhandled(stat_, errmsg_, present(stat))
       return
     else if ( format_of(file, format) == "binary" ) then
@@ -3497,6 +3599,11 @@ submodule (io_fortran_lib) io_file
 
     stat_=0; errmsg_=EMPTY_STR
 
+    call check_name(file, format, name, .false., stat_, errmsg_)
+    if ( stat_ /= 0 ) then
+      call stop_if_unhandled(stat_, errmsg_, present(stat)); return
+    end if
+
     select rank(into)
       rank(1); into_rank = 1
       rank(2); into_rank = 2
@@ -3523,10 +3630,10 @@ submodule (io_fortran_lib) io_file
       return
     end if
 
-    if ( format_of(file, format) == "npy" ) then
+    if ( is_numpy(file, format) ) then
       select rank(into)
         rank(1)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -3534,7 +3641,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(2)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -3542,7 +3649,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(3)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -3550,7 +3657,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(4)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -3558,7 +3665,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(5)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -3566,7 +3673,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(6)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -3574,7 +3681,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(7)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -3582,7 +3689,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(8)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -3590,7 +3697,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(9)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -3598,7 +3705,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(10)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -3606,7 +3713,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(11)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -3614,7 +3721,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(12)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -3622,7 +3729,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(13)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -3630,7 +3737,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(14)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -3638,7 +3745,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(15)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -3722,6 +3829,11 @@ submodule (io_fortran_lib) io_file
 
     stat_=0; errmsg_=EMPTY_STR
 
+    call check_name(file, format, name, .false., stat_, errmsg_)
+    if ( stat_ /= 0 ) then
+      call stop_if_unhandled(stat_, errmsg_, present(stat)); return
+    end if
+
     select rank(into)
       rank(1); into_rank = 1
       rank(2); into_rank = 2
@@ -3748,10 +3860,10 @@ submodule (io_fortran_lib) io_file
       return
     end if
 
-    if ( format_of(file, format) == "npy" ) then
+    if ( is_numpy(file, format) ) then
       select rank(into)
         rank(1)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -3759,7 +3871,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(2)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -3767,7 +3879,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(3)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -3775,7 +3887,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(4)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -3783,7 +3895,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(5)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -3791,7 +3903,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(6)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -3799,7 +3911,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(7)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -3807,7 +3919,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(8)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -3815,7 +3927,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(9)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -3823,7 +3935,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(10)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -3831,7 +3943,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(11)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -3839,7 +3951,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(12)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -3847,7 +3959,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(13)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -3855,7 +3967,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(14)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -3863,7 +3975,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(15)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -3949,6 +4061,11 @@ submodule (io_fortran_lib) io_file
 
     stat_=0; errmsg_=EMPTY_STR
 
+    call check_name(file, format, name, .false., stat_, errmsg_)
+    if ( stat_ /= 0 ) then
+      call stop_if_unhandled(stat_, errmsg_, present(stat)); return
+    end if
+
     if ( format_of(file, format) == "text" ) then
       header_ = optval(header, ABSENT_HEADER)
 
@@ -3990,34 +4107,34 @@ submodule (io_fortran_lib) io_file
           call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
-    else if ( format_of(file, format) == "npy" ) then
+    else if ( is_numpy(file, format) ) then
       if ( present(column_names) ) then
         stat_   = ARG_ERR
-        errmsg_ = 'column_names was given for file "'//file//'", but a .npy file has no header row.'
+        errmsg_ = 'column_names was given for file "'//file//'", but a NumPy file has no header row.'
         call stop_if_unhandled(stat_, errmsg_, present(stat))
         return
       end if
 
-      if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "npy".'
-      if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "npy".'
-      if ( present(fmt   ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "npy".'
+      if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
+      if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
+      if ( present(fmt   ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
 
       select rank(into)
-        rank(1); call from_npy(file, into, stat_, errmsg_)
-        rank(2); call from_npy(file, into, stat_, errmsg_)
-        rank(3); call from_npy(file, into, stat_, errmsg_)
-        rank(4); call from_npy(file, into, stat_, errmsg_)
-        rank(5); call from_npy(file, into, stat_, errmsg_)
-        rank(6); call from_npy(file, into, stat_, errmsg_)
-        rank(7); call from_npy(file, into, stat_, errmsg_)
-        rank(8); call from_npy(file, into, stat_, errmsg_)
-        rank(9); call from_npy(file, into, stat_, errmsg_)
-        rank(10); call from_npy(file, into, stat_, errmsg_)
-        rank(11); call from_npy(file, into, stat_, errmsg_)
-        rank(12); call from_npy(file, into, stat_, errmsg_)
-        rank(13); call from_npy(file, into, stat_, errmsg_)
-        rank(14); call from_npy(file, into, stat_, errmsg_)
-        rank(15); call from_npy(file, into, stat_, errmsg_)
+        rank(1); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(2); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(3); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(4); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(5); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(6); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(7); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(8); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(9); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(10); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(11); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(12); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(13); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(14); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(15); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
         rank default
           stat_   = ARG_ERR
           errmsg_ = "Array has invalid rank. Supported ranks: 1-15."
@@ -4025,7 +4142,7 @@ submodule (io_fortran_lib) io_file
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//' npy. Or pass format="text" or format="npy".'
+                join(TEXT_EXT)//' npy npz. Or pass format="text", format="npy" or format="npz".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -4058,6 +4175,11 @@ submodule (io_fortran_lib) io_file
 
     stat_=0; errmsg_=EMPTY_STR
 
+    call check_name(file, format, name, .false., stat_, errmsg_)
+    if ( stat_ /= 0 ) then
+      call stop_if_unhandled(stat_, errmsg_, present(stat)); return
+    end if
+
     if ( format_of(file, format) == "text" ) then
       header_ = optval(header, ABSENT_HEADER)
 
@@ -4099,34 +4221,34 @@ submodule (io_fortran_lib) io_file
           call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
-    else if ( format_of(file, format) == "npy" ) then
+    else if ( is_numpy(file, format) ) then
       if ( present(column_names) ) then
         stat_   = ARG_ERR
-        errmsg_ = 'column_names was given for file "'//file//'", but a .npy file has no header row.'
+        errmsg_ = 'column_names was given for file "'//file//'", but a NumPy file has no header row.'
         call stop_if_unhandled(stat_, errmsg_, present(stat))
         return
       end if
 
-      if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "npy".'
-      if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "npy".'
-      if ( present(fmt   ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "npy".'
+      if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
+      if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
+      if ( present(fmt   ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
 
       select rank(into)
-        rank(1); call from_npy(file, into, stat_, errmsg_)
-        rank(2); call from_npy(file, into, stat_, errmsg_)
-        rank(3); call from_npy(file, into, stat_, errmsg_)
-        rank(4); call from_npy(file, into, stat_, errmsg_)
-        rank(5); call from_npy(file, into, stat_, errmsg_)
-        rank(6); call from_npy(file, into, stat_, errmsg_)
-        rank(7); call from_npy(file, into, stat_, errmsg_)
-        rank(8); call from_npy(file, into, stat_, errmsg_)
-        rank(9); call from_npy(file, into, stat_, errmsg_)
-        rank(10); call from_npy(file, into, stat_, errmsg_)
-        rank(11); call from_npy(file, into, stat_, errmsg_)
-        rank(12); call from_npy(file, into, stat_, errmsg_)
-        rank(13); call from_npy(file, into, stat_, errmsg_)
-        rank(14); call from_npy(file, into, stat_, errmsg_)
-        rank(15); call from_npy(file, into, stat_, errmsg_)
+        rank(1); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(2); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(3); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(4); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(5); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(6); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(7); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(8); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(9); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(10); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(11); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(12); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(13); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(14); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(15); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
         rank default
           stat_   = ARG_ERR
           errmsg_ = "Array has invalid rank. Supported ranks: 1-15."
@@ -4134,7 +4256,7 @@ submodule (io_fortran_lib) io_file
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//' npy. Or pass format="text" or format="npy".'
+                join(TEXT_EXT)//' npy npz. Or pass format="text", format="npy" or format="npz".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -4167,6 +4289,11 @@ submodule (io_fortran_lib) io_file
 
     stat_=0; errmsg_=EMPTY_STR
 
+    call check_name(file, format, name, .false., stat_, errmsg_)
+    if ( stat_ /= 0 ) then
+      call stop_if_unhandled(stat_, errmsg_, present(stat)); return
+    end if
+
     if ( format_of(file, format) == "text" ) then
       header_ = optval(header, ABSENT_HEADER)
 
@@ -4208,34 +4335,34 @@ submodule (io_fortran_lib) io_file
           call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
-    else if ( format_of(file, format) == "npy" ) then
+    else if ( is_numpy(file, format) ) then
       if ( present(column_names) ) then
         stat_   = ARG_ERR
-        errmsg_ = 'column_names was given for file "'//file//'", but a .npy file has no header row.'
+        errmsg_ = 'column_names was given for file "'//file//'", but a NumPy file has no header row.'
         call stop_if_unhandled(stat_, errmsg_, present(stat))
         return
       end if
 
-      if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "npy".'
-      if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "npy".'
-      if ( present(fmt   ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "npy".'
+      if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
+      if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
+      if ( present(fmt   ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
 
       select rank(into)
-        rank(1); call from_npy(file, into, stat_, errmsg_)
-        rank(2); call from_npy(file, into, stat_, errmsg_)
-        rank(3); call from_npy(file, into, stat_, errmsg_)
-        rank(4); call from_npy(file, into, stat_, errmsg_)
-        rank(5); call from_npy(file, into, stat_, errmsg_)
-        rank(6); call from_npy(file, into, stat_, errmsg_)
-        rank(7); call from_npy(file, into, stat_, errmsg_)
-        rank(8); call from_npy(file, into, stat_, errmsg_)
-        rank(9); call from_npy(file, into, stat_, errmsg_)
-        rank(10); call from_npy(file, into, stat_, errmsg_)
-        rank(11); call from_npy(file, into, stat_, errmsg_)
-        rank(12); call from_npy(file, into, stat_, errmsg_)
-        rank(13); call from_npy(file, into, stat_, errmsg_)
-        rank(14); call from_npy(file, into, stat_, errmsg_)
-        rank(15); call from_npy(file, into, stat_, errmsg_)
+        rank(1); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(2); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(3); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(4); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(5); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(6); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(7); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(8); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(9); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(10); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(11); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(12); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(13); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(14); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(15); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
         rank default
           stat_   = ARG_ERR
           errmsg_ = "Array has invalid rank. Supported ranks: 1-15."
@@ -4243,7 +4370,7 @@ submodule (io_fortran_lib) io_file
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//' npy. Or pass format="text" or format="npy".'
+                join(TEXT_EXT)//' npy npz. Or pass format="text", format="npy" or format="npz".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -4276,6 +4403,11 @@ submodule (io_fortran_lib) io_file
 
     stat_=0; errmsg_=EMPTY_STR
 
+    call check_name(file, format, name, .false., stat_, errmsg_)
+    if ( stat_ /= 0 ) then
+      call stop_if_unhandled(stat_, errmsg_, present(stat)); return
+    end if
+
     if ( format_of(file, format) == "text" ) then
       header_ = optval(header, ABSENT_HEADER)
 
@@ -4317,34 +4449,34 @@ submodule (io_fortran_lib) io_file
           call stop_if_unhandled(stat_, errmsg_, present(stat))
           return
       end select
-    else if ( format_of(file, format) == "npy" ) then
+    else if ( is_numpy(file, format) ) then
       if ( present(column_names) ) then
         stat_   = ARG_ERR
-        errmsg_ = 'column_names was given for file "'//file//'", but a .npy file has no header row.'
+        errmsg_ = 'column_names was given for file "'//file//'", but a NumPy file has no header row.'
         call stop_if_unhandled(stat_, errmsg_, present(stat))
         return
       end if
 
-      if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "npy".'
-      if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "npy".'
-      if ( present(fmt   ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "npy".'
+      if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
+      if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
+      if ( present(fmt   ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
 
       select rank(into)
-        rank(1); call from_npy(file, into, stat_, errmsg_)
-        rank(2); call from_npy(file, into, stat_, errmsg_)
-        rank(3); call from_npy(file, into, stat_, errmsg_)
-        rank(4); call from_npy(file, into, stat_, errmsg_)
-        rank(5); call from_npy(file, into, stat_, errmsg_)
-        rank(6); call from_npy(file, into, stat_, errmsg_)
-        rank(7); call from_npy(file, into, stat_, errmsg_)
-        rank(8); call from_npy(file, into, stat_, errmsg_)
-        rank(9); call from_npy(file, into, stat_, errmsg_)
-        rank(10); call from_npy(file, into, stat_, errmsg_)
-        rank(11); call from_npy(file, into, stat_, errmsg_)
-        rank(12); call from_npy(file, into, stat_, errmsg_)
-        rank(13); call from_npy(file, into, stat_, errmsg_)
-        rank(14); call from_npy(file, into, stat_, errmsg_)
-        rank(15); call from_npy(file, into, stat_, errmsg_)
+        rank(1); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(2); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(3); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(4); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(5); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(6); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(7); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(8); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(9); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(10); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(11); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(12); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(13); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(14); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(15); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
         rank default
           stat_   = ARG_ERR
           errmsg_ = "Array has invalid rank. Supported ranks: 1-15."
@@ -4352,7 +4484,7 @@ submodule (io_fortran_lib) io_file
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//' npy. Or pass format="text" or format="npy".'
+                join(TEXT_EXT)//' npy npz. Or pass format="text", format="npy" or format="npz".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -4385,6 +4517,11 @@ submodule (io_fortran_lib) io_file
 
     stat_=0; errmsg_=EMPTY_STR
 
+    call check_name(file, format, name, .false., stat_, errmsg_)
+    if ( stat_ /= 0 ) then
+      call stop_if_unhandled(stat_, errmsg_, present(stat)); return
+    end if
+
     select rank(into)
       rank(1); into_rank = 1
       rank(2); into_rank = 2
@@ -4411,10 +4548,10 @@ submodule (io_fortran_lib) io_file
       return
     end if
 
-    if ( format_of(file, format) == "npy" ) then
+    if ( is_numpy(file, format) ) then
       select rank(into)
         rank(1)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -4422,7 +4559,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(2)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -4430,7 +4567,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(3)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -4438,7 +4575,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(4)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -4446,7 +4583,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(5)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -4454,7 +4591,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(6)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -4462,7 +4599,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(7)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -4470,7 +4607,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(8)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -4478,7 +4615,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(9)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -4486,7 +4623,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(10)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -4494,7 +4631,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(11)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -4502,7 +4639,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(12)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -4510,7 +4647,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(13)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -4518,7 +4655,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(14)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -4526,7 +4663,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(15)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -4610,6 +4747,11 @@ submodule (io_fortran_lib) io_file
 
     stat_=0; errmsg_=EMPTY_STR
 
+    call check_name(file, format, name, .false., stat_, errmsg_)
+    if ( stat_ /= 0 ) then
+      call stop_if_unhandled(stat_, errmsg_, present(stat)); return
+    end if
+
     select rank(into)
       rank(1); into_rank = 1
       rank(2); into_rank = 2
@@ -4636,10 +4778,10 @@ submodule (io_fortran_lib) io_file
       return
     end if
 
-    if ( format_of(file, format) == "npy" ) then
+    if ( is_numpy(file, format) ) then
       select rank(into)
         rank(1)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -4647,7 +4789,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(2)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -4655,7 +4797,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(3)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -4663,7 +4805,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(4)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -4671,7 +4813,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(5)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -4679,7 +4821,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(6)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -4687,7 +4829,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(7)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -4695,7 +4837,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(8)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -4703,7 +4845,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(9)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -4711,7 +4853,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(10)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -4719,7 +4861,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(11)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -4727,7 +4869,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(12)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -4735,7 +4877,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(13)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -4743,7 +4885,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(14)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -4751,7 +4893,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(15)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -4835,6 +4977,11 @@ submodule (io_fortran_lib) io_file
 
     stat_=0; errmsg_=EMPTY_STR
 
+    call check_name(file, format, name, .false., stat_, errmsg_)
+    if ( stat_ /= 0 ) then
+      call stop_if_unhandled(stat_, errmsg_, present(stat)); return
+    end if
+
     select rank(into)
       rank(1); into_rank = 1
       rank(2); into_rank = 2
@@ -4861,10 +5008,10 @@ submodule (io_fortran_lib) io_file
       return
     end if
 
-    if ( format_of(file, format) == "npy" ) then
+    if ( is_numpy(file, format) ) then
       select rank(into)
         rank(1)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -4872,7 +5019,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(2)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -4880,7 +5027,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(3)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -4888,7 +5035,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(4)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -4896,7 +5043,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(5)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -4904,7 +5051,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(6)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -4912,7 +5059,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(7)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -4920,7 +5067,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(8)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -4928,7 +5075,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(9)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -4936,7 +5083,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(10)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -4944,7 +5091,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(11)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -4952,7 +5099,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(12)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -4960,7 +5107,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(13)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -4968,7 +5115,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(14)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -4976,7 +5123,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(15)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -5060,6 +5207,11 @@ submodule (io_fortran_lib) io_file
 
     stat_=0; errmsg_=EMPTY_STR
 
+    call check_name(file, format, name, .false., stat_, errmsg_)
+    if ( stat_ /= 0 ) then
+      call stop_if_unhandled(stat_, errmsg_, present(stat)); return
+    end if
+
     select rank(into)
       rank(1); into_rank = 1
       rank(2); into_rank = 2
@@ -5086,10 +5238,10 @@ submodule (io_fortran_lib) io_file
       return
     end if
 
-    if ( format_of(file, format) == "npy" ) then
+    if ( is_numpy(file, format) ) then
       select rank(into)
         rank(1)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -5097,7 +5249,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(2)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -5105,7 +5257,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(3)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -5113,7 +5265,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(4)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -5121,7 +5273,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(5)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -5129,7 +5281,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(6)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -5137,7 +5289,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(7)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -5145,7 +5297,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(8)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -5153,7 +5305,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(9)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -5161,7 +5313,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(10)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -5169,7 +5321,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(11)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -5177,7 +5329,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(12)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -5185,7 +5337,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(13)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -5193,7 +5345,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(14)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -5201,7 +5353,7 @@ submodule (io_fortran_lib) io_file
             end if
           end if
         rank(15)
-          call from_npy(file, into, stat_, errmsg_)
+          call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
           if ( stat_ == 0 ) then
             if ( any(shape(into) /= data_shape) ) then
               stat_   = READ_ERR
@@ -5287,6 +5439,10 @@ submodule (io_fortran_lib) io_file
     end if
 
     stat_=0; errmsg_=EMPTY_STR; nrows=0; ncols=0
+    call check_name(file, format, name, .true., stat_, errmsg_)
+    if ( stat_ /= 0 ) then
+      call stop_if_unhandled(stat_, errmsg_, present(stat)); return
+    end if
 
     if ( format_of(file, format) == "text" ) then
       select rank(x)
@@ -5350,27 +5506,27 @@ submodule (io_fortran_lib) io_file
 
         call write_cells(text_file, .false., cells, file, NL, delim_, .false., stat_, errmsg_, "text")
       end if
-    else if ( format_of(file, format) == "npy" ) then
+    else if ( is_numpy(file, format) ) then
       if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
       if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
       if ( present(fmt   ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
 
       select rank(x)
-        rank(1); call to_npy(x, file, stat_, errmsg_)
-        rank(2); call to_npy(x, file, stat_, errmsg_)
-        rank(3); call to_npy(x, file, stat_, errmsg_)
-        rank(4); call to_npy(x, file, stat_, errmsg_)
-        rank(5); call to_npy(x, file, stat_, errmsg_)
-        rank(6); call to_npy(x, file, stat_, errmsg_)
-        rank(7); call to_npy(x, file, stat_, errmsg_)
-        rank(8); call to_npy(x, file, stat_, errmsg_)
-        rank(9); call to_npy(x, file, stat_, errmsg_)
-        rank(10); call to_npy(x, file, stat_, errmsg_)
-        rank(11); call to_npy(x, file, stat_, errmsg_)
-        rank(12); call to_npy(x, file, stat_, errmsg_)
-        rank(13); call to_npy(x, file, stat_, errmsg_)
-        rank(14); call to_npy(x, file, stat_, errmsg_)
-        rank(15); call to_npy(x, file, stat_, errmsg_)
+        rank(1); call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(2); call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(3); call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(4); call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(5); call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(6); call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(7); call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(8); call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(9); call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(10); call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(11); call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(12); call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(13); call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(14); call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(15); call to_npy(x, file, stat_, errmsg_, format_of(file, format) == "npz", name)
         rank default
           stat_   = ARG_ERR
           errmsg_ = "Array has invalid rank. Supported ranks: 1-15."
@@ -5378,12 +5534,12 @@ submodule (io_fortran_lib) io_file
     else if ( format_of(file, format) == "binary" ) then
       stat_   = ARG_ERR
       errmsg_ = 'Cannot write logical data to the raw binary file "'//file//'": compilers store logical values '// &
-                "differently, so the file could not be read back reliably. Use a .npy file or a text file."
+                "differently, so the file could not be read back reliably. Use a NumPy file or a text file."
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//' npy. '// &
-                'Or pass format="text", format="binary" or format="npy".'
+                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//' npy npz. '// &
+                'Or pass format="text", format="binary", format="npy" or format="npz".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -5460,14 +5616,14 @@ submodule (io_fortran_lib) io_file
 
         call write_cells(text_file, .false., cells, file, NL, delim_, .false., stat_, errmsg_, "text")
       end if
-    else if ( (format_of(file, format) == "binary") .or. (format_of(file, format) == "npy") ) then
+    else if ( (format_of(file, format) == "binary") .or. is_numpy(file, format) ) then
       stat_   = ARG_ERR
       errmsg_ = 'Cannot write text data to the file "'//file//'": it can only be written to a text file.'
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//' npy. '// &
-                'Or pass format="text", format="binary" or format="npy".'
+                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//' npy npz. '// &
+                'Or pass format="text", format="binary", format="npy" or format="npz".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -5550,14 +5706,14 @@ submodule (io_fortran_lib) io_file
 
         call write_cells(text_file, .false., cells, file, NL, delim_, .false., stat_, errmsg_, "text")
       end if
-    else if ( (format_of(file, format) == "binary") .or. (format_of(file, format) == "npy") ) then
+    else if ( (format_of(file, format) == "binary") .or. is_numpy(file, format) ) then
       stat_   = ARG_ERR
       errmsg_ = 'Cannot write text data to the file "'//file//'": it can only be written to a text file.'
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//' npy. '// &
-                'Or pass format="text", format="binary" or format="npy".'
+                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//' npy npz. '// &
+                'Or pass format="text", format="binary", format="npy" or format="npz".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -5591,6 +5747,11 @@ submodule (io_fortran_lib) io_file
     end if
 
     stat_=0; errmsg_=EMPTY_STR
+
+    call check_name(file, format, name, .false., stat_, errmsg_)
+    if ( stat_ /= 0 ) then
+      call stop_if_unhandled(stat_, errmsg_, present(stat)); return
+    end if
 
     if ( format_of(file, format) == "text" ) then
       header_ = optval(header, ABSENT_HEADER)
@@ -5660,34 +5821,34 @@ submodule (io_fortran_lib) io_file
             if ( stat_ == 0 ) call cells_to_logical(cells(first:,:), fmt_, file, first, into, stat_, errmsg_)
         end select
       end if
-    else if ( format_of(file, format) == "npy" ) then
+    else if ( is_numpy(file, format) ) then
       if ( present(column_names) ) then
         stat_   = ARG_ERR
-        errmsg_ = 'column_names was given for file "'//file//'", but a .npy file has no header row.'
+        errmsg_ = 'column_names was given for file "'//file//'", but a NumPy file has no header row.'
         call stop_if_unhandled(stat_, errmsg_, present(stat))
         return
       end if
 
-      if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "npy".'
-      if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "npy".'
-      if ( present(fmt   ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "npy".'
+      if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "'//ext//'".'
+      if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "'//ext//'".'
+      if ( present(fmt   ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "'//ext//'".'
 
       select rank(into)
-        rank(1); call from_npy(file, into, stat_, errmsg_)
-        rank(2); call from_npy(file, into, stat_, errmsg_)
-        rank(3); call from_npy(file, into, stat_, errmsg_)
-        rank(4); call from_npy(file, into, stat_, errmsg_)
-        rank(5); call from_npy(file, into, stat_, errmsg_)
-        rank(6); call from_npy(file, into, stat_, errmsg_)
-        rank(7); call from_npy(file, into, stat_, errmsg_)
-        rank(8); call from_npy(file, into, stat_, errmsg_)
-        rank(9); call from_npy(file, into, stat_, errmsg_)
-        rank(10); call from_npy(file, into, stat_, errmsg_)
-        rank(11); call from_npy(file, into, stat_, errmsg_)
-        rank(12); call from_npy(file, into, stat_, errmsg_)
-        rank(13); call from_npy(file, into, stat_, errmsg_)
-        rank(14); call from_npy(file, into, stat_, errmsg_)
-        rank(15); call from_npy(file, into, stat_, errmsg_)
+        rank(1); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(2); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(3); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(4); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(5); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(6); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(7); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(8); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(9); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(10); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(11); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(12); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(13); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(14); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
+        rank(15); call from_npy(file, into, stat_, errmsg_, format_of(file, format) == "npz", name)
         rank default
           stat_   = ARG_ERR
           errmsg_ = "Array has invalid rank. Supported ranks: 1-15."
@@ -5695,12 +5856,12 @@ submodule (io_fortran_lib) io_file
     else if ( format_of(file, format) == "binary" ) then
       stat_   = ARG_ERR
       errmsg_ = 'Cannot read logical data from the raw binary file "'//file//'": compilers store logical values '// &
-                "differently. Use a .npy file or a text file."
+                "differently. Use a NumPy file or a text file."
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//' npy. '// &
-                'Or pass format="text", format="binary" or format="npy".'
+                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//' npy npz. '// &
+                'Or pass format="text", format="binary", format="npy" or format="npz".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -5780,14 +5941,14 @@ submodule (io_fortran_lib) io_file
         end if
         if ( stat_ /= 0 ) stat_ = ALLOC_ERR
       end if
-    else if ( (format_of(file, format) == "binary") .or. (format_of(file, format) == "npy") ) then
+    else if ( (format_of(file, format) == "binary") .or. is_numpy(file, format) ) then
       stat_   = ARG_ERR
       errmsg_ = 'Cannot read the file "'//file//'" into String data, which can only be read from a text file.'
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//' npy. '// &
-                'Or pass format="text", format="binary" or format="npy".'
+                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//' npy npz. '// &
+                'Or pass format="text", format="binary", format="npy" or format="npz".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -5864,18 +6025,51 @@ submodule (io_fortran_lib) io_file
         end if
         if ( stat_ /= 0 ) stat_ = ALLOC_ERR
       end if
-    else if ( (format_of(file, format) == "binary") .or. (format_of(file, format) == "npy") ) then
+    else if ( (format_of(file, format) == "binary") .or. is_numpy(file, format) ) then
       stat_   = ARG_ERR
       errmsg_ = 'Cannot read the file "'//file//'" into String data, which can only be read from a text file.'
     else
       stat_   = ARG_ERR
       errmsg_ = 'Unsupported file extension "'//ext//'" for file "'//file//'". Extension must be one of: '// &
-                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//' npy. '// &
-                'Or pass format="text", format="binary" or format="npy".'
+                join(TEXT_EXT)//SPACE//join(BINARY_EXT)//' npy npz. '// &
+                'Or pass format="text", format="binary", format="npy" or format="npz".'
     end if
 
     call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure from_textfile_string_2
+
+  pure logical function is_numpy(file, format)
+    !! Whether `file` is a NumPy `.npy` file or `.npz` archive.
+    character(len=*), intent(in)           :: file
+    character(len=*), intent(in), optional :: format
+
+    is_numpy = any([ "npy", "npz" ] == format_of(file, format))
+  end function is_numpy
+
+  subroutine check_name(file, format, name, writing, stat, errmsg)
+    !! Checks `name`, which names an array in a `.npz` archive: it is only for an archive, it can't be blank, and
+    !! writing to an archive needs it.
+    character(len=*), intent(in)           :: file
+    character(len=*), intent(in), optional :: format, name
+    logical,          intent(in)           :: writing
+    integer,          intent(out)          :: stat
+    character(len=*), intent(out)          :: errmsg
+
+    stat = 0
+
+    if ( present(name) ) then
+      if ( format_of(file, format) /= "npz" ) then
+        stat   = ARG_ERR
+        errmsg = 'name was given for file "'//file//'", but only a .npz file holds arrays by name.'
+      else if ( len_trim(name) == 0 ) then
+        stat   = ARG_ERR
+        errmsg = 'A blank name was given for file "'//file//'". An array in a .npz file needs a name.'
+      end if
+    else if ( writing .and. (format_of(file, format) == "npz") ) then
+      stat   = ARG_ERR
+      errmsg = 'No name was given for file "'//file//'". Pass name to say what to call the array in the .npz file.'
+    end if
+  end subroutine check_name
 
   subroutine header_cells(nrows, ncols, numbered, header, cells, first, stat, errmsg)
     !! Allocates `cells` for `nrows` rows of data under the header row, if `header` gives one, and fills that row the

@@ -112,11 +112,20 @@ and of type `integer`, `real`, `complex` or `logical`:
 call from_file(file, into [, stat, errmsg, format])
 ```
 
-`data_shape` may also be passed for a `.npy` file, and must then match
-the file.
+For reading the array `name` in a NumPy
+[.npz archive](../UserInfo/file-ext.html#numpy-npz-archives) into an
+array `into` of the same types and ranks:
+
+```fortran
+call from_file(file, into [, name, stat, errmsg, format])
+```
+
+`data_shape` may also be passed for a `.npy` or `.npz` file, and must
+then match the array.
 
 * `file` is of type `character(len=*)`
 * `data_shape` is of type `integer, dimension(:)`
+* `name` is `optional` and of type `character(len=*)`
 * `stat` is `optional` and of type `integer`
 * `errmsg` is `optional` and of type `character(len=*)`
 
@@ -136,11 +145,25 @@ size must equal the rank of `into`.
 Header (default is `.false.`): specifies whether a header line is
 present.
 
+Name: the name of the array to read from a `.npz` archive, as NumPy
+gives it: `numpy.savez("data.npz", x=x)` stores `x` under `"x"`. A name
+ending in `.npy` also matches, as with `numpy.load`, and trailing blanks
+are ignored. It may be left out when the archive holds one array. It is
+an `IOFL_ARG_ERR` for any other file, or when the archive holds several
+arrays and `name` is absent. [npz_names](npz_names.html) lists the
+names in an archive:
+
+```fortran
+real, allocatable :: x(:,:)
+
+call from_file("data.npz", into=x, name="x")
+```
+
 Column names: returns the header line's cells, one per column, with any
 quotes around a cell removed, as `read_file` does. It implies
 `header=.true.`, so it may be given without `header`. Giving it with
-`header=.false.`, or for a `.npy` file, which has no header, is an
-`IOFL_ARG_ERR`:
+`header=.false.`, or for a `.npy` or `.npz` file, which has no header,
+is an `IOFL_ARG_ERR`:
 
 ```fortran
 type(String), allocatable :: names(:)
@@ -184,5 +207,5 @@ NaN, including a cell missing from a short row. For `integer` data, which
 has no NaN, it is an error. Any other text that is not a valid number is
 an error, and `errmsg` gives the text with its row and column.
 
-Format: `format` is `optional`, and may be `"text"`, `"binary"` or `"npy"`. If it is
-not present, the format comes from the [file extension](../UserInfo/file-ext.html).
+Format: `format` is `optional`, and may be `"text"`, `"binary"`, `"npy"` or `"npz"`. If
+it is not present, the format comes from the [file extension](../UserInfo/file-ext.html).

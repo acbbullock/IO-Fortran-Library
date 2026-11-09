@@ -15,7 +15,7 @@ module io_fortran_lib
   private                                                                                  ! Default private access
 
   ! Public API list ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  public :: aprint, to_file, from_file                                                       ! Array I/O
+  public :: aprint, to_file, from_file, npz_names                                            ! Array I/O
   public :: String, str, cast, join, split, echo                                             ! String I/O
   public :: IOFL_NL, IOFL_SPACE, IOFL_CR, IOFL_LF, IOFL_TAB, IOFL_FF, IOFL_VT, IOFL_BELL, IOFL_NUL ! Constants
   public :: IOFL_READ_ERR, IOFL_WRITE_ERR, IOFL_ALLOC_ERR, IOFL_ARG_ERR                     ! Error codes
@@ -1496,8 +1496,8 @@ module io_fortran_lib
 
     pure recursive module function format_of(file, format) result(file_format)
       !-----------------------------------------------------------------------------------------------------------------
-      !! Returns "text", "binary" or "npy" from `format` if present, or else from the extension of `file`, or "" if
-      !! neither is valid.
+      !! Returns "text", "binary", "npy" or "npz" from `format` if present, or else from the extension of `file`, or ""
+      !! if neither is valid.
       !-----------------------------------------------------------------------------------------------------------------
       character(len=*), intent(in)           :: file
       character(len=*), intent(in), optional :: format
@@ -1522,7 +1522,7 @@ module io_fortran_lib
     !-------------------------------------------------------------------------------------------------------------------
 #ifdef IOFL_HAS_R128
     recursive module subroutine to_file_c128(x, file, header, locale, delim, fmt, decimals, im, stat, errmsg, &
-                                              format)
+                                              format, name)
       complex(r128),    intent(in)                    :: x(..)
       character(len=*), intent(in)                    :: file
       character(len=*), intent(in),  optional :: header(:)
@@ -1534,11 +1534,12 @@ module io_fortran_lib
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      character(len=*), intent(in), optional :: name
     end subroutine to_file_c128
 #endif
 
     recursive module subroutine to_file_c64(x, file, header, locale, delim, fmt, decimals, im, stat, errmsg, &
-                                              format)
+                                              format, name)
       complex(r64),    intent(in)                    :: x(..)
       character(len=*), intent(in)                    :: file
       character(len=*), intent(in),  optional :: header(:)
@@ -1550,10 +1551,11 @@ module io_fortran_lib
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      character(len=*), intent(in), optional :: name
     end subroutine to_file_c64
 
     recursive module subroutine to_file_c32(x, file, header, locale, delim, fmt, decimals, im, stat, errmsg, &
-                                              format)
+                                              format, name)
       complex(r32),    intent(in)                    :: x(..)
       character(len=*), intent(in)                    :: file
       character(len=*), intent(in),  optional :: header(:)
@@ -1565,11 +1567,13 @@ module io_fortran_lib
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      character(len=*), intent(in), optional :: name
     end subroutine to_file_c32
 
 
 #ifdef IOFL_HAS_R128
-    recursive module subroutine to_file_r128(x, file, header, locale, delim, fmt, decimals, stat, errmsg, format)
+    recursive module subroutine to_file_r128(x, file, header, locale, delim, fmt, decimals, stat, errmsg, format, &
+                                              name)
       real(r128),       intent(in)                    :: x(..)
       character(len=*), intent(in)                    :: file
       character(len=*), intent(in),  optional :: header(:)
@@ -1580,10 +1584,12 @@ module io_fortran_lib
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      character(len=*), intent(in), optional :: name
     end subroutine to_file_r128
 #endif
 
-    recursive module subroutine to_file_r64(x, file, header, locale, delim, fmt, decimals, stat, errmsg, format)
+    recursive module subroutine to_file_r64(x, file, header, locale, delim, fmt, decimals, stat, errmsg, format, &
+                                              name)
       real(r64),       intent(in)                    :: x(..)
       character(len=*), intent(in)                    :: file
       character(len=*), intent(in),  optional :: header(:)
@@ -1594,9 +1600,11 @@ module io_fortran_lib
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      character(len=*), intent(in), optional :: name
     end subroutine to_file_r64
 
-    recursive module subroutine to_file_r32(x, file, header, locale, delim, fmt, decimals, stat, errmsg, format)
+    recursive module subroutine to_file_r32(x, file, header, locale, delim, fmt, decimals, stat, errmsg, format, &
+                                              name)
       real(r32),       intent(in)                    :: x(..)
       character(len=*), intent(in)                    :: file
       character(len=*), intent(in),  optional :: header(:)
@@ -1607,10 +1615,11 @@ module io_fortran_lib
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      character(len=*), intent(in), optional :: name
     end subroutine to_file_r32
 
 
-    recursive module subroutine to_file_i64(x, file, header, delim, fmt, stat, errmsg, format)
+    recursive module subroutine to_file_i64(x, file, header, delim, fmt, stat, errmsg, format, name)
       integer(i64),     intent(in)                    :: x(..)
       character(len=*), intent(in)                    :: file
       character(len=*), intent(in),  optional :: header(:)
@@ -1619,9 +1628,10 @@ module io_fortran_lib
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      character(len=*), intent(in), optional :: name
     end subroutine to_file_i64
 
-    recursive module subroutine to_file_i32(x, file, header, delim, fmt, stat, errmsg, format)
+    recursive module subroutine to_file_i32(x, file, header, delim, fmt, stat, errmsg, format, name)
       integer(i32),     intent(in)                    :: x(..)
       character(len=*), intent(in)                    :: file
       character(len=*), intent(in),  optional :: header(:)
@@ -1630,9 +1640,10 @@ module io_fortran_lib
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      character(len=*), intent(in), optional :: name
     end subroutine to_file_i32
 
-    recursive module subroutine to_file_i16(x, file, header, delim, fmt, stat, errmsg, format)
+    recursive module subroutine to_file_i16(x, file, header, delim, fmt, stat, errmsg, format, name)
       integer(i16),     intent(in)                    :: x(..)
       character(len=*), intent(in)                    :: file
       character(len=*), intent(in),  optional :: header(:)
@@ -1641,9 +1652,10 @@ module io_fortran_lib
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      character(len=*), intent(in), optional :: name
     end subroutine to_file_i16
 
-    recursive module subroutine to_file_i8(x, file, header, delim, fmt, stat, errmsg, format)
+    recursive module subroutine to_file_i8(x, file, header, delim, fmt, stat, errmsg, format, name)
       integer(i8),     intent(in)                    :: x(..)
       character(len=*), intent(in)                    :: file
       character(len=*), intent(in),  optional :: header(:)
@@ -1652,10 +1664,11 @@ module io_fortran_lib
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      character(len=*), intent(in), optional :: name
     end subroutine to_file_i8
 
 
-    recursive module subroutine to_file_logical(x, file, header, delim, fmt, stat, errmsg, format)
+    recursive module subroutine to_file_logical(x, file, header, delim, fmt, stat, errmsg, format, name)
       logical,          intent(in)                    :: x(..)
       character(len=*), intent(in)                    :: file
       character(len=*), intent(in),  optional         :: header(:)
@@ -1664,6 +1677,7 @@ module io_fortran_lib
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in),  optional         :: format
+      character(len=*), intent(in),  optional         :: name
     end subroutine to_file_logical
 
     recursive module subroutine to_file_string(x, file, header, delim, stat, errmsg, format)
@@ -1695,7 +1709,7 @@ module io_fortran_lib
     !-------------------------------------------------------------------------------------------------------------------
 #ifdef IOFL_HAS_R128
     recursive module subroutine from_textfile_c128(file, into, header, locale, delim, fmt, im, stat, errmsg, &
-                                              format, column_names)
+                                              format, column_names, name)
       character(len=*), intent(in)                    :: file
       complex(r128),    intent(out), allocatable      :: into(..)
       logical,          intent(in),  optional :: header
@@ -1706,12 +1720,13 @@ module io_fortran_lib
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      character(len=*), intent(in), optional :: name
       type(String),     intent(out), optional, allocatable :: column_names(:)
     end subroutine from_textfile_c128
 #endif
 
     recursive module subroutine from_textfile_c64(file, into, header, locale, delim, fmt, im, stat, errmsg, &
-                                              format, column_names)
+                                              format, column_names, name)
       character(len=*), intent(in)                    :: file
       complex(r64),    intent(out), allocatable      :: into(..)
       logical,          intent(in),  optional :: header
@@ -1722,11 +1737,12 @@ module io_fortran_lib
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      character(len=*), intent(in), optional :: name
       type(String),     intent(out), optional, allocatable :: column_names(:)
     end subroutine from_textfile_c64
 
     recursive module subroutine from_textfile_c32(file, into, header, locale, delim, fmt, im, stat, errmsg, &
-                                              format, column_names)
+                                              format, column_names, name)
       character(len=*), intent(in)                    :: file
       complex(r32),    intent(out), allocatable      :: into(..)
       logical,          intent(in),  optional :: header
@@ -1737,43 +1753,47 @@ module io_fortran_lib
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      character(len=*), intent(in), optional :: name
       type(String),     intent(out), optional, allocatable :: column_names(:)
     end subroutine from_textfile_c32
 
 
 #ifdef IOFL_HAS_R128
-    recursive module subroutine from_binaryfile_c128(file, into, data_shape, stat, errmsg, format)
+    recursive module subroutine from_binaryfile_c128(file, into, data_shape, stat, errmsg, format, name)
       character(len=*), intent(in)                    :: file
       complex(r128),    intent(out), allocatable      :: into(..)
       integer,          intent(in)                    :: data_shape(:)
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      character(len=*), intent(in), optional :: name
     end subroutine from_binaryfile_c128
 #endif
 
-    recursive module subroutine from_binaryfile_c64(file, into, data_shape, stat, errmsg, format)
+    recursive module subroutine from_binaryfile_c64(file, into, data_shape, stat, errmsg, format, name)
       character(len=*), intent(in)                    :: file
       complex(r64),    intent(out), allocatable      :: into(..)
       integer,          intent(in)                    :: data_shape(:)
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      character(len=*), intent(in), optional :: name
     end subroutine from_binaryfile_c64
 
-    recursive module subroutine from_binaryfile_c32(file, into, data_shape, stat, errmsg, format)
+    recursive module subroutine from_binaryfile_c32(file, into, data_shape, stat, errmsg, format, name)
       character(len=*), intent(in)                    :: file
       complex(r32),    intent(out), allocatable      :: into(..)
       integer,          intent(in)                    :: data_shape(:)
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      character(len=*), intent(in), optional :: name
     end subroutine from_binaryfile_c32
 
 
 #ifdef IOFL_HAS_R128
     recursive module subroutine from_textfile_r128(file, into, header, locale, delim, fmt, stat, errmsg, format, &
-                                              column_names)
+                                              column_names, name)
       character(len=*), intent(in)                    :: file
       real(r128),       intent(out), allocatable      :: into(..)
       logical,          intent(in),  optional :: header
@@ -1783,12 +1803,13 @@ module io_fortran_lib
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      character(len=*), intent(in), optional :: name
       type(String),     intent(out), optional, allocatable :: column_names(:)
     end subroutine from_textfile_r128
 #endif
 
     recursive module subroutine from_textfile_r64(file, into, header, locale, delim, fmt, stat, errmsg, format, &
-                                              column_names)
+                                              column_names, name)
       character(len=*), intent(in)                    :: file
       real(r64),       intent(out), allocatable      :: into(..)
       logical,          intent(in),  optional :: header
@@ -1798,11 +1819,12 @@ module io_fortran_lib
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      character(len=*), intent(in), optional :: name
       type(String),     intent(out), optional, allocatable :: column_names(:)
     end subroutine from_textfile_r64
 
     recursive module subroutine from_textfile_r32(file, into, header, locale, delim, fmt, stat, errmsg, format, &
-                                              column_names)
+                                              column_names, name)
       character(len=*), intent(in)                    :: file
       real(r32),       intent(out), allocatable      :: into(..)
       logical,          intent(in),  optional :: header
@@ -1812,42 +1834,46 @@ module io_fortran_lib
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      character(len=*), intent(in), optional :: name
       type(String),     intent(out), optional, allocatable :: column_names(:)
     end subroutine from_textfile_r32
 
 
 #ifdef IOFL_HAS_R128
-    recursive module subroutine from_binaryfile_r128(file, into, data_shape, stat, errmsg, format)
+    recursive module subroutine from_binaryfile_r128(file, into, data_shape, stat, errmsg, format, name)
       character(len=*), intent(in)                    :: file
       real(r128),       intent(out), allocatable      :: into(..)
       integer,          intent(in)                    :: data_shape(:)
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      character(len=*), intent(in), optional :: name
     end subroutine from_binaryfile_r128
 #endif
 
-    recursive module subroutine from_binaryfile_r64(file, into, data_shape, stat, errmsg, format)
+    recursive module subroutine from_binaryfile_r64(file, into, data_shape, stat, errmsg, format, name)
       character(len=*), intent(in)                    :: file
       real(r64),       intent(out), allocatable      :: into(..)
       integer,          intent(in)                    :: data_shape(:)
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      character(len=*), intent(in), optional :: name
     end subroutine from_binaryfile_r64
 
-    recursive module subroutine from_binaryfile_r32(file, into, data_shape, stat, errmsg, format)
+    recursive module subroutine from_binaryfile_r32(file, into, data_shape, stat, errmsg, format, name)
       character(len=*), intent(in)                    :: file
       real(r32),       intent(out), allocatable      :: into(..)
       integer,          intent(in)                    :: data_shape(:)
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      character(len=*), intent(in), optional :: name
     end subroutine from_binaryfile_r32
 
 
     recursive module subroutine from_textfile_i64(file, into, header, delim, fmt, stat, errmsg, format, &
-                                              column_names)
+                                              column_names, name)
       character(len=*), intent(in)                    :: file
       integer(i64),     intent(out), allocatable      :: into(..)
       logical,          intent(in),  optional :: header
@@ -1856,11 +1882,12 @@ module io_fortran_lib
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      character(len=*), intent(in), optional :: name
       type(String),     intent(out), optional, allocatable :: column_names(:)
     end subroutine from_textfile_i64
 
     recursive module subroutine from_textfile_i32(file, into, header, delim, fmt, stat, errmsg, format, &
-                                              column_names)
+                                              column_names, name)
       character(len=*), intent(in)                    :: file
       integer(i32),     intent(out), allocatable      :: into(..)
       logical,          intent(in),  optional :: header
@@ -1869,11 +1896,12 @@ module io_fortran_lib
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      character(len=*), intent(in), optional :: name
       type(String),     intent(out), optional, allocatable :: column_names(:)
     end subroutine from_textfile_i32
 
     recursive module subroutine from_textfile_i16(file, into, header, delim, fmt, stat, errmsg, format, &
-                                              column_names)
+                                              column_names, name)
       character(len=*), intent(in)                    :: file
       integer(i16),     intent(out), allocatable      :: into(..)
       logical,          intent(in),  optional :: header
@@ -1882,11 +1910,12 @@ module io_fortran_lib
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      character(len=*), intent(in), optional :: name
       type(String),     intent(out), optional, allocatable :: column_names(:)
     end subroutine from_textfile_i16
 
     recursive module subroutine from_textfile_i8(file, into, header, delim, fmt, stat, errmsg, format, &
-                                              column_names)
+                                              column_names, name)
       character(len=*), intent(in)                    :: file
       integer(i8),     intent(out), allocatable      :: into(..)
       logical,          intent(in),  optional :: header
@@ -1895,49 +1924,54 @@ module io_fortran_lib
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      character(len=*), intent(in), optional :: name
       type(String),     intent(out), optional, allocatable :: column_names(:)
     end subroutine from_textfile_i8
 
 
-    recursive module subroutine from_binaryfile_i64(file, into, data_shape, stat, errmsg, format)
+    recursive module subroutine from_binaryfile_i64(file, into, data_shape, stat, errmsg, format, name)
       character(len=*), intent(in)                    :: file
       integer(i64),     intent(out), allocatable      :: into(..)
       integer,          intent(in)                    :: data_shape(:)
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      character(len=*), intent(in), optional :: name
     end subroutine from_binaryfile_i64
 
-    recursive module subroutine from_binaryfile_i32(file, into, data_shape, stat, errmsg, format)
+    recursive module subroutine from_binaryfile_i32(file, into, data_shape, stat, errmsg, format, name)
       character(len=*), intent(in)                    :: file
       integer(i32),     intent(out), allocatable      :: into(..)
       integer,          intent(in)                    :: data_shape(:)
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      character(len=*), intent(in), optional :: name
     end subroutine from_binaryfile_i32
 
-    recursive module subroutine from_binaryfile_i16(file, into, data_shape, stat, errmsg, format)
+    recursive module subroutine from_binaryfile_i16(file, into, data_shape, stat, errmsg, format, name)
       character(len=*), intent(in)                    :: file
       integer(i16),     intent(out), allocatable      :: into(..)
       integer,          intent(in)                    :: data_shape(:)
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      character(len=*), intent(in), optional :: name
     end subroutine from_binaryfile_i16
 
-    recursive module subroutine from_binaryfile_i8(file, into, data_shape, stat, errmsg, format)
+    recursive module subroutine from_binaryfile_i8(file, into, data_shape, stat, errmsg, format, name)
       character(len=*), intent(in)                    :: file
       integer(i8),     intent(out), allocatable      :: into(..)
       integer,          intent(in)                    :: data_shape(:)
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      character(len=*), intent(in), optional :: name
     end subroutine from_binaryfile_i8
 
 
     recursive module subroutine from_textfile_logical(file, into, header, delim, fmt, stat, errmsg, format, &
-                                                      column_names)
+                                                      column_names, name)
       character(len=*), intent(in)                    :: file
       logical,          intent(out), allocatable      :: into(..)
       logical,          intent(in),  optional         :: header
@@ -1946,6 +1980,7 @@ module io_fortran_lib
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in),  optional         :: format
+      character(len=*), intent(in),  optional         :: name
       type(String),     intent(out), optional, allocatable :: column_names(:)
     end subroutine from_textfile_logical
 
@@ -1975,6 +2010,20 @@ module io_fortran_lib
       type(String),     intent(out), optional, allocatable :: column_names(:)
     end subroutine from_textfile_string_2
   end interface from_file
+
+  interface                                                                                           ! Submodule io_npy
+    recursive module subroutine npz_names(file, names, stat, errmsg)
+      !-----------------------------------------------------------------------------------------------------------------
+      !! Subroutine for listing the names of the arrays in a NumPy `.npz` archive, in the order they are stored.
+      !!
+      !! For a user reference, see [npz_names](../page/Ref/npz_names.html).
+      !-----------------------------------------------------------------------------------------------------------------
+      character(len=*), intent(in)                    :: file
+      type(String),     intent(out), allocatable      :: names(:)
+      integer,          intent(out), optional, target :: stat
+      character(len=*), intent(out), optional, target :: errmsg
+    end subroutine npz_names
+  end interface
 
   interface echo                                                                                     ! Submodule io_text
     !-------------------------------------------------------------------------------------------------------------------
@@ -2437,138 +2486,175 @@ module io_fortran_lib
 
   interface to_npy                                                                                    ! Submodule io_npy
     !-------------------------------------------------------------------------------------------------------------------
-    !! Private interface for writing an array to a NumPy `.npy` file.
+    !! Private interface for writing an array to a NumPy `.npy` file, or to a `.npz` archive under a name.
     !-------------------------------------------------------------------------------------------------------------------
-    recursive module subroutine to_npy_c64(x, file, stat, errmsg)
-      complex(r64), intent(in)  :: x(..)
-      character(len=*), intent(in)  :: file
-      integer,          intent(out) :: stat
-      character(len=*), intent(out) :: errmsg
+    recursive module subroutine to_npy_c64(x, file, stat, errmsg, npz, name)
+      complex(r64), intent(in)           :: x(..)
+      character(len=*), intent(in)           :: file
+      integer,          intent(out)          :: stat
+      character(len=*), intent(out)          :: errmsg
+      logical,          intent(in)           :: npz                          ! Add x to the archive file as name
+      character(len=*), intent(in), optional :: name
     end subroutine to_npy_c64
 
-    recursive module subroutine to_npy_c32(x, file, stat, errmsg)
-      complex(r32), intent(in)  :: x(..)
-      character(len=*), intent(in)  :: file
-      integer,          intent(out) :: stat
-      character(len=*), intent(out) :: errmsg
+    recursive module subroutine to_npy_c32(x, file, stat, errmsg, npz, name)
+      complex(r32), intent(in)           :: x(..)
+      character(len=*), intent(in)           :: file
+      integer,          intent(out)          :: stat
+      character(len=*), intent(out)          :: errmsg
+      logical,          intent(in)           :: npz                          ! Add x to the archive file as name
+      character(len=*), intent(in), optional :: name
     end subroutine to_npy_c32
 
-    recursive module subroutine to_npy_r64(x, file, stat, errmsg)
-      real(r64), intent(in)  :: x(..)
-      character(len=*), intent(in)  :: file
-      integer,          intent(out) :: stat
-      character(len=*), intent(out) :: errmsg
+    recursive module subroutine to_npy_r64(x, file, stat, errmsg, npz, name)
+      real(r64), intent(in)           :: x(..)
+      character(len=*), intent(in)           :: file
+      integer,          intent(out)          :: stat
+      character(len=*), intent(out)          :: errmsg
+      logical,          intent(in)           :: npz                          ! Add x to the archive file as name
+      character(len=*), intent(in), optional :: name
     end subroutine to_npy_r64
 
-    recursive module subroutine to_npy_r32(x, file, stat, errmsg)
-      real(r32), intent(in)  :: x(..)
-      character(len=*), intent(in)  :: file
-      integer,          intent(out) :: stat
-      character(len=*), intent(out) :: errmsg
+    recursive module subroutine to_npy_r32(x, file, stat, errmsg, npz, name)
+      real(r32), intent(in)           :: x(..)
+      character(len=*), intent(in)           :: file
+      integer,          intent(out)          :: stat
+      character(len=*), intent(out)          :: errmsg
+      logical,          intent(in)           :: npz                          ! Add x to the archive file as name
+      character(len=*), intent(in), optional :: name
     end subroutine to_npy_r32
 
-    recursive module subroutine to_npy_i64(x, file, stat, errmsg)
-      integer(i64), intent(in)  :: x(..)
-      character(len=*), intent(in)  :: file
-      integer,          intent(out) :: stat
-      character(len=*), intent(out) :: errmsg
+    recursive module subroutine to_npy_i64(x, file, stat, errmsg, npz, name)
+      integer(i64), intent(in)           :: x(..)
+      character(len=*), intent(in)           :: file
+      integer,          intent(out)          :: stat
+      character(len=*), intent(out)          :: errmsg
+      logical,          intent(in)           :: npz                          ! Add x to the archive file as name
+      character(len=*), intent(in), optional :: name
     end subroutine to_npy_i64
 
-    recursive module subroutine to_npy_i32(x, file, stat, errmsg)
-      integer(i32), intent(in)  :: x(..)
-      character(len=*), intent(in)  :: file
-      integer,          intent(out) :: stat
-      character(len=*), intent(out) :: errmsg
+    recursive module subroutine to_npy_i32(x, file, stat, errmsg, npz, name)
+      integer(i32), intent(in)           :: x(..)
+      character(len=*), intent(in)           :: file
+      integer,          intent(out)          :: stat
+      character(len=*), intent(out)          :: errmsg
+      logical,          intent(in)           :: npz                          ! Add x to the archive file as name
+      character(len=*), intent(in), optional :: name
     end subroutine to_npy_i32
 
-    recursive module subroutine to_npy_i16(x, file, stat, errmsg)
-      integer(i16), intent(in)  :: x(..)
-      character(len=*), intent(in)  :: file
-      integer,          intent(out) :: stat
-      character(len=*), intent(out) :: errmsg
+    recursive module subroutine to_npy_i16(x, file, stat, errmsg, npz, name)
+      integer(i16), intent(in)           :: x(..)
+      character(len=*), intent(in)           :: file
+      integer,          intent(out)          :: stat
+      character(len=*), intent(out)          :: errmsg
+      logical,          intent(in)           :: npz                          ! Add x to the archive file as name
+      character(len=*), intent(in), optional :: name
     end subroutine to_npy_i16
 
-    recursive module subroutine to_npy_i8(x, file, stat, errmsg)
-      integer(i8), intent(in)  :: x(..)
-      character(len=*), intent(in)  :: file
-      integer,          intent(out) :: stat
-      character(len=*), intent(out) :: errmsg
+    recursive module subroutine to_npy_i8(x, file, stat, errmsg, npz, name)
+      integer(i8), intent(in)           :: x(..)
+      character(len=*), intent(in)           :: file
+      integer,          intent(out)          :: stat
+      character(len=*), intent(out)          :: errmsg
+      logical,          intent(in)           :: npz                          ! Add x to the archive file as name
+      character(len=*), intent(in), optional :: name
     end subroutine to_npy_i8
 
-    recursive module subroutine to_npy_l(x, file, stat, errmsg)
-      logical, intent(in)  :: x(..)
-      character(len=*), intent(in)  :: file
-      integer,          intent(out) :: stat
-      character(len=*), intent(out) :: errmsg
+    recursive module subroutine to_npy_l(x, file, stat, errmsg, npz, name)
+      logical, intent(in)           :: x(..)
+      character(len=*), intent(in)           :: file
+      integer,          intent(out)          :: stat
+      character(len=*), intent(out)          :: errmsg
+      logical,          intent(in)           :: npz                          ! Add x to the archive file as name
+      character(len=*), intent(in), optional :: name
     end subroutine to_npy_l
 
   end interface to_npy
 
   interface from_npy                                                                                  ! Submodule io_npy
     !-------------------------------------------------------------------------------------------------------------------
-    !! Private interface for reading a NumPy `.npy` file into an array, which takes its shape from the file.
+    !! Private interface for reading a NumPy `.npy` file, or an array in a `.npz` archive, into an array, which takes
+    !! its shape from the file.
     !-------------------------------------------------------------------------------------------------------------------
-    recursive module subroutine from_npy_c64(file, into, stat, errmsg)
+    recursive module subroutine from_npy_c64(file, into, stat, errmsg, npz, name)
       character(len=*), intent(in)               :: file
       complex(r64), intent(out), allocatable :: into(..)
       integer,          intent(out)              :: stat
       character(len=*), intent(out)              :: errmsg
+      logical,          intent(in)               :: npz                      ! Read the array name from the archive
+      character(len=*), intent(in),  optional    :: name
     end subroutine from_npy_c64
 
-    recursive module subroutine from_npy_c32(file, into, stat, errmsg)
+    recursive module subroutine from_npy_c32(file, into, stat, errmsg, npz, name)
       character(len=*), intent(in)               :: file
       complex(r32), intent(out), allocatable :: into(..)
       integer,          intent(out)              :: stat
       character(len=*), intent(out)              :: errmsg
+      logical,          intent(in)               :: npz                      ! Read the array name from the archive
+      character(len=*), intent(in),  optional    :: name
     end subroutine from_npy_c32
 
-    recursive module subroutine from_npy_r64(file, into, stat, errmsg)
+    recursive module subroutine from_npy_r64(file, into, stat, errmsg, npz, name)
       character(len=*), intent(in)               :: file
       real(r64), intent(out), allocatable :: into(..)
       integer,          intent(out)              :: stat
       character(len=*), intent(out)              :: errmsg
+      logical,          intent(in)               :: npz                      ! Read the array name from the archive
+      character(len=*), intent(in),  optional    :: name
     end subroutine from_npy_r64
 
-    recursive module subroutine from_npy_r32(file, into, stat, errmsg)
+    recursive module subroutine from_npy_r32(file, into, stat, errmsg, npz, name)
       character(len=*), intent(in)               :: file
       real(r32), intent(out), allocatable :: into(..)
       integer,          intent(out)              :: stat
       character(len=*), intent(out)              :: errmsg
+      logical,          intent(in)               :: npz                      ! Read the array name from the archive
+      character(len=*), intent(in),  optional    :: name
     end subroutine from_npy_r32
 
-    recursive module subroutine from_npy_i64(file, into, stat, errmsg)
+    recursive module subroutine from_npy_i64(file, into, stat, errmsg, npz, name)
       character(len=*), intent(in)               :: file
       integer(i64), intent(out), allocatable :: into(..)
       integer,          intent(out)              :: stat
       character(len=*), intent(out)              :: errmsg
+      logical,          intent(in)               :: npz                      ! Read the array name from the archive
+      character(len=*), intent(in),  optional    :: name
     end subroutine from_npy_i64
 
-    recursive module subroutine from_npy_i32(file, into, stat, errmsg)
+    recursive module subroutine from_npy_i32(file, into, stat, errmsg, npz, name)
       character(len=*), intent(in)               :: file
       integer(i32), intent(out), allocatable :: into(..)
       integer,          intent(out)              :: stat
       character(len=*), intent(out)              :: errmsg
+      logical,          intent(in)               :: npz                      ! Read the array name from the archive
+      character(len=*), intent(in),  optional    :: name
     end subroutine from_npy_i32
 
-    recursive module subroutine from_npy_i16(file, into, stat, errmsg)
+    recursive module subroutine from_npy_i16(file, into, stat, errmsg, npz, name)
       character(len=*), intent(in)               :: file
       integer(i16), intent(out), allocatable :: into(..)
       integer,          intent(out)              :: stat
       character(len=*), intent(out)              :: errmsg
+      logical,          intent(in)               :: npz                      ! Read the array name from the archive
+      character(len=*), intent(in),  optional    :: name
     end subroutine from_npy_i16
 
-    recursive module subroutine from_npy_i8(file, into, stat, errmsg)
+    recursive module subroutine from_npy_i8(file, into, stat, errmsg, npz, name)
       character(len=*), intent(in)               :: file
       integer(i8), intent(out), allocatable :: into(..)
       integer,          intent(out)              :: stat
       character(len=*), intent(out)              :: errmsg
+      logical,          intent(in)               :: npz                      ! Read the array name from the archive
+      character(len=*), intent(in),  optional    :: name
     end subroutine from_npy_i8
 
-    recursive module subroutine from_npy_l(file, into, stat, errmsg)
+    recursive module subroutine from_npy_l(file, into, stat, errmsg, npz, name)
       character(len=*), intent(in)               :: file
       logical, intent(out), allocatable :: into(..)
       integer,          intent(out)              :: stat
       character(len=*), intent(out)              :: errmsg
+      logical,          intent(in)               :: npz                      ! Read the array name from the archive
+      character(len=*), intent(in),  optional    :: name
     end subroutine from_npy_l
 
   end interface from_npy

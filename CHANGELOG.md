@@ -29,6 +29,11 @@ Work toward 2.2, tracked in the [2.2 milestone](https://github.com/acbbullock/IO
   (#73).
 * `to_file` for `String` and `character` arrays, and `from_file` into `String` arrays, for text files of rank 1 or
   2. Cells are quoted and unquoted as `write_file` and `read_file` do (#73).
+* NumPy `.npz` archives, as `numpy.savez` writes them. `to_file` and `from_file` take the array's name in a new
+  `name` argument: `call to_file(x, file="data.npz", name="x")` adds `x` to the archive, or replaces the array of
+  that name, and `call from_file("data.npz", into=x, name="x")` reads it. A new subroutine, `npz_names`, lists the
+  arrays in an archive. Archives of 4 GiB and more use ZIP64 records. Compressed archives, from
+  `numpy.savez_compressed`, can't be read, and give an error that says so (#74).
 
 ### Changed
 
@@ -39,7 +44,7 @@ Work toward 2.2, tracked in the [2.2 milestone](https://github.com/acbbullock/IO
 ### Tested platforms
 
 * CI now runs the tests on ARM64 Linux, with `gfortran` and `flang`, and on big-endian s390x Linux, where a `.npy`
-  file written there is checked with NumPy. It also builds the library without fpm, with `gfortran` and `ifx`, as
+  file and a `.npz` archive written there are checked with NumPy. It also builds the library without fpm, with `gfortran` and `ifx`, as
   the README describes (#78, #79, #81).
 * `nvfortran` and AOCC `flang` lack `select rank` and arrays above rank 7, so they can't compile the library and are
   not supported. A separate weekly workflow runs them, and LFortran, to show when that changes (#75, #80, #82).
