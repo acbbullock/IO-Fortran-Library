@@ -1,6 +1,6 @@
 ! Generated from fypp/io_fortran_lib/file_io_impl.fypp by fypp/generate.sh. Edit that file, not this one.
 #include "iofl_config.inc"
-submodule (io_fortran_lib) file_io
+submodule (io_fortran_lib) io_file
   !---------------------------------------------------------------------------------------------------------------------
   !! This submodule provides module procedure implementations for the **public interfaces** `to_file` and
   !! `from_file`.
@@ -5259,4 +5259,4 @@ submodule (io_fortran_lib) file_io
     call stop_if_unhandled(stat_, errmsg_, present(stat))
   end procedure from_binaryfile_i8
 
-end submodule file_io
+end submodule io_file

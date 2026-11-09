@@ -1,6 +1,6 @@
 ! Generated from fypp/io_fortran_lib/npy_io_impl.fypp by fypp/generate.sh. Edit that file, not this one.
 #include "iofl_config.inc"
-submodule (io_fortran_lib) npy_io
+submodule (io_fortran_lib) io_npy
   !---------------------------------------------------------------------------------------------------------------------
   !! This submodule provides module procedure implementations for the **private interfaces** `to_npy` and `from_npy`,
   !! which write and read NumPy `.npy` files.
@@ -4421,4 +4421,4 @@ submodule (io_fortran_lib) npy_io
     write(unit=buffer, fmt="(i0)") n
     text = trim(buffer)
   end function int_str
-end submodule npy_io
+end submodule io_npy

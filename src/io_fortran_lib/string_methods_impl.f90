@@ -1,4 +1,4 @@
-submodule (io_fortran_lib) string_methods
+submodule (io_fortran_lib) io_string_methods
   !---------------------------------------------------------------------------------------------------------------------
   !! This submodule provides module procedure implementations for the **type-bound procedures** of type `String`.
   !---------------------------------------------------------------------------------------------------------------------
@@ -1089,4 +1089,4 @@ submodule (io_fortran_lib) string_methods
       i = i + 1_i64
     end do
   end function count_of
-end submodule string_methods
+end submodule io_string_methods

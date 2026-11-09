@@ -18,6 +18,12 @@ Work toward 2.2, tracked in the [2.2 milestone](https://github.com/acbbullock/IO
 * `column_names` for `from_file`, which returns a text file's header row as a `String` array, one name per column,
   and implies `header=.true.` (#71).
 
+### Changed
+
+* The submodules are renamed with an `io_` prefix (`io_file`, `io_text`, `io_npy` and so on), and `fpm.toml` sets
+  `module-naming = "io"`, which the fpm package registry requires. Programs only `use io_fortran_lib`, so nothing
+  changes for them (#66).
+
 ### Tested platforms
 
 * CI now runs the tests on ARM64 Linux, with `gfortran` and `flang`, and on big-endian s390x Linux, where a `.npy`

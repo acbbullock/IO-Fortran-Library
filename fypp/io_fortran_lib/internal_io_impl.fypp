@@ -1,7 +1,7 @@
 #:include "common.fypp"
 ! Generated from fypp/io_fortran_lib/internal_io_impl.fypp by fypp/generate.sh. Edit that file, not this one.
 #include "iofl_config.inc"
-submodule (io_fortran_lib) internal_io
+submodule (io_fortran_lib) io_internal
   !---------------------------------------------------------------------------------------------------------------------
   !! This submodule provides module procedure implementations for the **public interfaces** `String`, `str`, and
   !! `cast`.
@@ -979,4 +979,4 @@ submodule (io_fortran_lib) internal_io
 #:endif
 
 #:endfor
-end submodule internal_io
+end submodule io_internal
