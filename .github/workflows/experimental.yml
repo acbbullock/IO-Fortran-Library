@@ -3,7 +3,7 @@ name: Experimental compilers
 # Compilers that can't build the library yet, run weekly and on demand rather than on every push and pull request, so
 # that CI shows only jobs expected to pass. nvfortran (#75) and AOCC (#80) share the classic Flang front end, which
 # lacks select rank, arrays above rank 7, implicit none (type, external) and elemental recursive procedures. LFortran
-# (#82) can't compile it yet: 0.58 crashed on the first file.
+# (#82) can't compile it yet: 0.58 and 0.68 crash on the first file.
 #
 # nvfortran is the latest NVIDIA HPC SDK, so each run tries the newest release. setup-fortran's "latest" for LFortran
 # is an old version, and it knows AOCC releases only up to 5.2, so those two are pinned: update them below and run the

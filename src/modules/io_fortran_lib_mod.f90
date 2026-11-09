@@ -1583,7 +1583,7 @@ module io_fortran_lib
     !-------------------------------------------------------------------------------------------------------------------
 #ifdef IOFL_HAS_R128
     recursive module subroutine from_textfile_c128(file, into, header, locale, delim, fmt, im, stat, errmsg, &
-                                              format)
+                                              format, column_names)
       character(len=*), intent(in)                    :: file
       complex(r128),    intent(out), allocatable      :: into(..)
       logical,          intent(in),  optional :: header
@@ -1594,11 +1594,12 @@ module io_fortran_lib
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      type(String),     intent(out), optional, allocatable :: column_names(:)
     end subroutine from_textfile_c128
 #endif
 
     recursive module subroutine from_textfile_c64(file, into, header, locale, delim, fmt, im, stat, errmsg, &
-                                              format)
+                                              format, column_names)
       character(len=*), intent(in)                    :: file
       complex(r64),    intent(out), allocatable      :: into(..)
       logical,          intent(in),  optional :: header
@@ -1609,10 +1610,11 @@ module io_fortran_lib
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      type(String),     intent(out), optional, allocatable :: column_names(:)
     end subroutine from_textfile_c64
 
     recursive module subroutine from_textfile_c32(file, into, header, locale, delim, fmt, im, stat, errmsg, &
-                                              format)
+                                              format, column_names)
       character(len=*), intent(in)                    :: file
       complex(r32),    intent(out), allocatable      :: into(..)
       logical,          intent(in),  optional :: header
@@ -1623,6 +1625,7 @@ module io_fortran_lib
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      type(String),     intent(out), optional, allocatable :: column_names(:)
     end subroutine from_textfile_c32
 
 
@@ -1657,7 +1660,8 @@ module io_fortran_lib
 
 
 #ifdef IOFL_HAS_R128
-    recursive module subroutine from_textfile_r128(file, into, header, locale, delim, fmt, stat, errmsg, format)
+    recursive module subroutine from_textfile_r128(file, into, header, locale, delim, fmt, stat, errmsg, format, &
+                                              column_names)
       character(len=*), intent(in)                    :: file
       real(r128),       intent(out), allocatable      :: into(..)
       logical,          intent(in),  optional :: header
@@ -1667,10 +1671,12 @@ module io_fortran_lib
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      type(String),     intent(out), optional, allocatable :: column_names(:)
     end subroutine from_textfile_r128
 #endif
 
-    recursive module subroutine from_textfile_r64(file, into, header, locale, delim, fmt, stat, errmsg, format)
+    recursive module subroutine from_textfile_r64(file, into, header, locale, delim, fmt, stat, errmsg, format, &
+                                              column_names)
       character(len=*), intent(in)                    :: file
       real(r64),       intent(out), allocatable      :: into(..)
       logical,          intent(in),  optional :: header
@@ -1680,9 +1686,11 @@ module io_fortran_lib
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      type(String),     intent(out), optional, allocatable :: column_names(:)
     end subroutine from_textfile_r64
 
-    recursive module subroutine from_textfile_r32(file, into, header, locale, delim, fmt, stat, errmsg, format)
+    recursive module subroutine from_textfile_r32(file, into, header, locale, delim, fmt, stat, errmsg, format, &
+                                              column_names)
       character(len=*), intent(in)                    :: file
       real(r32),       intent(out), allocatable      :: into(..)
       logical,          intent(in),  optional :: header
@@ -1692,6 +1700,7 @@ module io_fortran_lib
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      type(String),     intent(out), optional, allocatable :: column_names(:)
     end subroutine from_textfile_r32
 
 
@@ -1725,7 +1734,8 @@ module io_fortran_lib
     end subroutine from_binaryfile_r32
 
 
-    recursive module subroutine from_textfile_i64(file, into, header, delim, fmt, stat, errmsg, format)
+    recursive module subroutine from_textfile_i64(file, into, header, delim, fmt, stat, errmsg, format, &
+                                              column_names)
       character(len=*), intent(in)                    :: file
       integer(i64),     intent(out), allocatable      :: into(..)
       logical,          intent(in),  optional :: header
@@ -1734,9 +1744,11 @@ module io_fortran_lib
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      type(String),     intent(out), optional, allocatable :: column_names(:)
     end subroutine from_textfile_i64
 
-    recursive module subroutine from_textfile_i32(file, into, header, delim, fmt, stat, errmsg, format)
+    recursive module subroutine from_textfile_i32(file, into, header, delim, fmt, stat, errmsg, format, &
+                                              column_names)
       character(len=*), intent(in)                    :: file
       integer(i32),     intent(out), allocatable      :: into(..)
       logical,          intent(in),  optional :: header
@@ -1745,9 +1757,11 @@ module io_fortran_lib
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      type(String),     intent(out), optional, allocatable :: column_names(:)
     end subroutine from_textfile_i32
 
-    recursive module subroutine from_textfile_i16(file, into, header, delim, fmt, stat, errmsg, format)
+    recursive module subroutine from_textfile_i16(file, into, header, delim, fmt, stat, errmsg, format, &
+                                              column_names)
       character(len=*), intent(in)                    :: file
       integer(i16),     intent(out), allocatable      :: into(..)
       logical,          intent(in),  optional :: header
@@ -1756,9 +1770,11 @@ module io_fortran_lib
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      type(String),     intent(out), optional, allocatable :: column_names(:)
     end subroutine from_textfile_i16
 
-    recursive module subroutine from_textfile_i8(file, into, header, delim, fmt, stat, errmsg, format)
+    recursive module subroutine from_textfile_i8(file, into, header, delim, fmt, stat, errmsg, format, &
+                                              column_names)
       character(len=*), intent(in)                    :: file
       integer(i8),     intent(out), allocatable      :: into(..)
       logical,          intent(in),  optional :: header
@@ -1767,6 +1783,7 @@ module io_fortran_lib
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      type(String),     intent(out), optional, allocatable :: column_names(:)
     end subroutine from_textfile_i8
 
 
@@ -1967,7 +1984,7 @@ module io_fortran_lib
     !! Private interface for reading an external text file into an array.
     !-------------------------------------------------------------------------------------------------------------------
 #ifdef IOFL_HAS_R128
-    recursive module subroutine from_text_c128(file, into, header, locale, delim, fmt, im, stat, errmsg)
+    recursive module subroutine from_text_c128(file, into, header, locale, delim, fmt, im, stat, errmsg, column_names)
       character(len=*), intent(in)               :: file
       complex(r128),    intent(out), allocatable :: into(..)
       logical,          intent(in)               :: header
@@ -1977,10 +1994,11 @@ module io_fortran_lib
       character(len=*), intent(in)               :: im
       integer,          intent(out)              :: stat
       character(len=*), intent(out)              :: errmsg
+      type(String),     intent(out), optional, allocatable :: column_names(:)
     end subroutine from_text_c128
 #endif
 
-    recursive module subroutine from_text_c64(file, into, header, locale, delim, fmt, im, stat, errmsg)
+    recursive module subroutine from_text_c64(file, into, header, locale, delim, fmt, im, stat, errmsg, column_names)
       character(len=*), intent(in)               :: file
       complex(r64),    intent(out), allocatable :: into(..)
       logical,          intent(in)               :: header
@@ -1990,9 +2008,10 @@ module io_fortran_lib
       character(len=*), intent(in)               :: im
       integer,          intent(out)              :: stat
       character(len=*), intent(out)              :: errmsg
+      type(String),     intent(out), optional, allocatable :: column_names(:)
     end subroutine from_text_c64
 
-    recursive module subroutine from_text_c32(file, into, header, locale, delim, fmt, im, stat, errmsg)
+    recursive module subroutine from_text_c32(file, into, header, locale, delim, fmt, im, stat, errmsg, column_names)
       character(len=*), intent(in)               :: file
       complex(r32),    intent(out), allocatable :: into(..)
       logical,          intent(in)               :: header
@@ -2002,11 +2021,12 @@ module io_fortran_lib
       character(len=*), intent(in)               :: im
       integer,          intent(out)              :: stat
       character(len=*), intent(out)              :: errmsg
+      type(String),     intent(out), optional, allocatable :: column_names(:)
     end subroutine from_text_c32
 
 
 #ifdef IOFL_HAS_R128
-    recursive module subroutine from_text_r128(file, into, header, locale, delim, fmt, stat, errmsg)
+    recursive module subroutine from_text_r128(file, into, header, locale, delim, fmt, stat, errmsg, column_names)
       character(len=*), intent(in)               :: file
       real(r128),       intent(out), allocatable :: into(..)
       logical,          intent(in)               :: header
@@ -2015,10 +2035,11 @@ module io_fortran_lib
       character(len=*), intent(in)               :: fmt
       integer,          intent(out)              :: stat
       character(len=*), intent(out)              :: errmsg
+      type(String),     intent(out), optional, allocatable :: column_names(:)
     end subroutine from_text_r128
 #endif
 
-    recursive module subroutine from_text_r64(file, into, header, locale, delim, fmt, stat, errmsg)
+    recursive module subroutine from_text_r64(file, into, header, locale, delim, fmt, stat, errmsg, column_names)
       character(len=*), intent(in)               :: file
       real(r64),       intent(out), allocatable :: into(..)
       logical,          intent(in)               :: header
@@ -2027,9 +2048,10 @@ module io_fortran_lib
       character(len=*), intent(in)               :: fmt
       integer,          intent(out)              :: stat
       character(len=*), intent(out)              :: errmsg
+      type(String),     intent(out), optional, allocatable :: column_names(:)
     end subroutine from_text_r64
 
-    recursive module subroutine from_text_r32(file, into, header, locale, delim, fmt, stat, errmsg)
+    recursive module subroutine from_text_r32(file, into, header, locale, delim, fmt, stat, errmsg, column_names)
       character(len=*), intent(in)               :: file
       real(r32),       intent(out), allocatable :: into(..)
       logical,          intent(in)               :: header
@@ -2038,10 +2060,11 @@ module io_fortran_lib
       character(len=*), intent(in)               :: fmt
       integer,          intent(out)              :: stat
       character(len=*), intent(out)              :: errmsg
+      type(String),     intent(out), optional, allocatable :: column_names(:)
     end subroutine from_text_r32
 
 
-    recursive module subroutine from_text_i64(file, into, header, delim, fmt, stat, errmsg)
+    recursive module subroutine from_text_i64(file, into, header, delim, fmt, stat, errmsg, column_names)
       character(len=*), intent(in)               :: file
       integer(i64),     intent(out), allocatable :: into(..)
       logical,          intent(in)               :: header
@@ -2049,9 +2072,10 @@ module io_fortran_lib
       character(len=*), intent(in)               :: fmt
       integer,          intent(out)              :: stat
       character(len=*), intent(out)              :: errmsg
+      type(String),     intent(out), optional, allocatable :: column_names(:)
     end subroutine from_text_i64
 
-    recursive module subroutine from_text_i32(file, into, header, delim, fmt, stat, errmsg)
+    recursive module subroutine from_text_i32(file, into, header, delim, fmt, stat, errmsg, column_names)
       character(len=*), intent(in)               :: file
       integer(i32),     intent(out), allocatable :: into(..)
       logical,          intent(in)               :: header
@@ -2059,9 +2083,10 @@ module io_fortran_lib
       character(len=*), intent(in)               :: fmt
       integer,          intent(out)              :: stat
       character(len=*), intent(out)              :: errmsg
+      type(String),     intent(out), optional, allocatable :: column_names(:)
     end subroutine from_text_i32
 
-    recursive module subroutine from_text_i16(file, into, header, delim, fmt, stat, errmsg)
+    recursive module subroutine from_text_i16(file, into, header, delim, fmt, stat, errmsg, column_names)
       character(len=*), intent(in)               :: file
       integer(i16),     intent(out), allocatable :: into(..)
       logical,          intent(in)               :: header
@@ -2069,9 +2094,10 @@ module io_fortran_lib
       character(len=*), intent(in)               :: fmt
       integer,          intent(out)              :: stat
       character(len=*), intent(out)              :: errmsg
+      type(String),     intent(out), optional, allocatable :: column_names(:)
     end subroutine from_text_i16
 
-    recursive module subroutine from_text_i8(file, into, header, delim, fmt, stat, errmsg)
+    recursive module subroutine from_text_i8(file, into, header, delim, fmt, stat, errmsg, column_names)
       character(len=*), intent(in)               :: file
       integer(i8),     intent(out), allocatable :: into(..)
       logical,          intent(in)               :: header
@@ -2079,6 +2105,7 @@ module io_fortran_lib
       character(len=*), intent(in)               :: fmt
       integer,          intent(out)              :: stat
       character(len=*), intent(out)              :: errmsg
+      type(String),     intent(out), optional, allocatable :: column_names(:)
     end subroutine from_text_i8
 
   end interface from_text

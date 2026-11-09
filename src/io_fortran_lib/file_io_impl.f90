@@ -2009,6 +2009,17 @@ submodule (io_fortran_lib) file_io
     if ( format_of(file, format) == "text" ) then
       header_ = optval(header, ABSENT_HEADER)
 
+      if ( present(column_names) ) then
+        if ( present(header) .and. (.not. header_) ) then
+          stat_   = ARG_ERR
+          errmsg_ = 'column_names was given for file "'//file//'" with header=.false.. column_names reads the '// &
+                    "header row, so leave header out or set it to .true.."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
+          return
+        end if
+        header_ = .true.
+      end if
+
       if ( .not. present(locale) ) then
         locale_ = US_LOCALE
       else
@@ -2061,9 +2072,9 @@ submodule (io_fortran_lib) file_io
 
       select rank(into)
         rank(1)
-          call from_text(file, into, header_, locale_, delim_, fmt_, im_, stat_, errmsg_)
+          call from_text(file, into, header_, locale_, delim_, fmt_, im_, stat_, errmsg_, column_names=column_names)
         rank(2)
-          call from_text(file, into, header_, locale_, delim_, fmt_, im_, stat_, errmsg_)
+          call from_text(file, into, header_, locale_, delim_, fmt_, im_, stat_, errmsg_, column_names=column_names)
         rank default
           stat_   = ARG_ERR
           errmsg_ = "Array has invalid rank. Supported ranks: 1-2."
@@ -2071,6 +2082,13 @@ submodule (io_fortran_lib) file_io
           return
       end select
     else if ( format_of(file, format) == "npy" ) then
+      if ( present(column_names) ) then
+        stat_   = ARG_ERR
+        errmsg_ = 'column_names was given for file "'//file//'", but a .npy file has no header row.'
+        call stop_if_unhandled(stat_, errmsg_, present(stat))
+        return
+      end if
+
       stat_   = ARG_ERR
       errmsg_ = 'NumPy has no type for real128 data, so "'//file//'" cannot be a .npy file.'
       call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -2115,6 +2133,17 @@ submodule (io_fortran_lib) file_io
     if ( format_of(file, format) == "text" ) then
       header_ = optval(header, ABSENT_HEADER)
 
+      if ( present(column_names) ) then
+        if ( present(header) .and. (.not. header_) ) then
+          stat_   = ARG_ERR
+          errmsg_ = 'column_names was given for file "'//file//'" with header=.false.. column_names reads the '// &
+                    "header row, so leave header out or set it to .true.."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
+          return
+        end if
+        header_ = .true.
+      end if
+
       if ( .not. present(locale) ) then
         locale_ = US_LOCALE
       else
@@ -2167,9 +2196,9 @@ submodule (io_fortran_lib) file_io
 
       select rank(into)
         rank(1)
-          call from_text(file, into, header_, locale_, delim_, fmt_, im_, stat_, errmsg_)
+          call from_text(file, into, header_, locale_, delim_, fmt_, im_, stat_, errmsg_, column_names=column_names)
         rank(2)
-          call from_text(file, into, header_, locale_, delim_, fmt_, im_, stat_, errmsg_)
+          call from_text(file, into, header_, locale_, delim_, fmt_, im_, stat_, errmsg_, column_names=column_names)
         rank default
           stat_   = ARG_ERR
           errmsg_ = "Array has invalid rank. Supported ranks: 1-2."
@@ -2177,6 +2206,13 @@ submodule (io_fortran_lib) file_io
           return
       end select
     else if ( format_of(file, format) == "npy" ) then
+      if ( present(column_names) ) then
+        stat_   = ARG_ERR
+        errmsg_ = 'column_names was given for file "'//file//'", but a .npy file has no header row.'
+        call stop_if_unhandled(stat_, errmsg_, present(stat))
+        return
+      end if
+
       if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "npy".'
       if ( present(locale) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "npy".'
       if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "npy".'
@@ -2242,6 +2278,17 @@ submodule (io_fortran_lib) file_io
     if ( format_of(file, format) == "text" ) then
       header_ = optval(header, ABSENT_HEADER)
 
+      if ( present(column_names) ) then
+        if ( present(header) .and. (.not. header_) ) then
+          stat_   = ARG_ERR
+          errmsg_ = 'column_names was given for file "'//file//'" with header=.false.. column_names reads the '// &
+                    "header row, so leave header out or set it to .true.."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
+          return
+        end if
+        header_ = .true.
+      end if
+
       if ( .not. present(locale) ) then
         locale_ = US_LOCALE
       else
@@ -2294,9 +2341,9 @@ submodule (io_fortran_lib) file_io
 
       select rank(into)
         rank(1)
-          call from_text(file, into, header_, locale_, delim_, fmt_, im_, stat_, errmsg_)
+          call from_text(file, into, header_, locale_, delim_, fmt_, im_, stat_, errmsg_, column_names=column_names)
         rank(2)
-          call from_text(file, into, header_, locale_, delim_, fmt_, im_, stat_, errmsg_)
+          call from_text(file, into, header_, locale_, delim_, fmt_, im_, stat_, errmsg_, column_names=column_names)
         rank default
           stat_   = ARG_ERR
           errmsg_ = "Array has invalid rank. Supported ranks: 1-2."
@@ -2304,6 +2351,13 @@ submodule (io_fortran_lib) file_io
           return
       end select
     else if ( format_of(file, format) == "npy" ) then
+      if ( present(column_names) ) then
+        stat_   = ARG_ERR
+        errmsg_ = 'column_names was given for file "'//file//'", but a .npy file has no header row.'
+        call stop_if_unhandled(stat_, errmsg_, present(stat))
+        return
+      end if
+
       if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "npy".'
       if ( present(locale) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "npy".'
       if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "npy".'
@@ -2931,6 +2985,17 @@ submodule (io_fortran_lib) file_io
     if ( format_of(file, format) == "text" ) then
       header_ = optval(header, ABSENT_HEADER)
 
+      if ( present(column_names) ) then
+        if ( present(header) .and. (.not. header_) ) then
+          stat_   = ARG_ERR
+          errmsg_ = 'column_names was given for file "'//file//'" with header=.false.. column_names reads the '// &
+                    "header row, so leave header out or set it to .true.."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
+          return
+        end if
+        header_ = .true.
+      end if
+
       if ( .not. present(locale) ) then
         locale_ = US_LOCALE
       else
@@ -2981,9 +3046,9 @@ submodule (io_fortran_lib) file_io
 
       select rank(into)
         rank(1)
-          call from_text(file, into, header_, locale_, delim_, fmt_, stat_, errmsg_)
+          call from_text(file, into, header_, locale_, delim_, fmt_, stat_, errmsg_, column_names=column_names)
         rank(2)
-          call from_text(file, into, header_, locale_, delim_, fmt_, stat_, errmsg_)
+          call from_text(file, into, header_, locale_, delim_, fmt_, stat_, errmsg_, column_names=column_names)
         rank default
           stat_   = ARG_ERR
           errmsg_ = "Array has invalid rank. Supported ranks: 1-2."
@@ -2991,6 +3056,13 @@ submodule (io_fortran_lib) file_io
           return
       end select
     else if ( format_of(file, format) == "npy" ) then
+      if ( present(column_names) ) then
+        stat_   = ARG_ERR
+        errmsg_ = 'column_names was given for file "'//file//'", but a .npy file has no header row.'
+        call stop_if_unhandled(stat_, errmsg_, present(stat))
+        return
+      end if
+
       stat_   = ARG_ERR
       errmsg_ = 'NumPy has no type for real128 data, so "'//file//'" cannot be a .npy file.'
       call stop_if_unhandled(stat_, errmsg_, present(stat))
@@ -3035,6 +3107,17 @@ submodule (io_fortran_lib) file_io
     if ( format_of(file, format) == "text" ) then
       header_ = optval(header, ABSENT_HEADER)
 
+      if ( present(column_names) ) then
+        if ( present(header) .and. (.not. header_) ) then
+          stat_   = ARG_ERR
+          errmsg_ = 'column_names was given for file "'//file//'" with header=.false.. column_names reads the '// &
+                    "header row, so leave header out or set it to .true.."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
+          return
+        end if
+        header_ = .true.
+      end if
+
       if ( .not. present(locale) ) then
         locale_ = US_LOCALE
       else
@@ -3085,9 +3168,9 @@ submodule (io_fortran_lib) file_io
 
       select rank(into)
         rank(1)
-          call from_text(file, into, header_, locale_, delim_, fmt_, stat_, errmsg_)
+          call from_text(file, into, header_, locale_, delim_, fmt_, stat_, errmsg_, column_names=column_names)
         rank(2)
-          call from_text(file, into, header_, locale_, delim_, fmt_, stat_, errmsg_)
+          call from_text(file, into, header_, locale_, delim_, fmt_, stat_, errmsg_, column_names=column_names)
         rank default
           stat_   = ARG_ERR
           errmsg_ = "Array has invalid rank. Supported ranks: 1-2."
@@ -3095,6 +3178,13 @@ submodule (io_fortran_lib) file_io
           return
       end select
     else if ( format_of(file, format) == "npy" ) then
+      if ( present(column_names) ) then
+        stat_   = ARG_ERR
+        errmsg_ = 'column_names was given for file "'//file//'", but a .npy file has no header row.'
+        call stop_if_unhandled(stat_, errmsg_, present(stat))
+        return
+      end if
+
       if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "npy".'
       if ( present(locale) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "npy".'
       if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "npy".'
@@ -3159,6 +3249,17 @@ submodule (io_fortran_lib) file_io
     if ( format_of(file, format) == "text" ) then
       header_ = optval(header, ABSENT_HEADER)
 
+      if ( present(column_names) ) then
+        if ( present(header) .and. (.not. header_) ) then
+          stat_   = ARG_ERR
+          errmsg_ = 'column_names was given for file "'//file//'" with header=.false.. column_names reads the '// &
+                    "header row, so leave header out or set it to .true.."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
+          return
+        end if
+        header_ = .true.
+      end if
+
       if ( .not. present(locale) ) then
         locale_ = US_LOCALE
       else
@@ -3209,9 +3310,9 @@ submodule (io_fortran_lib) file_io
 
       select rank(into)
         rank(1)
-          call from_text(file, into, header_, locale_, delim_, fmt_, stat_, errmsg_)
+          call from_text(file, into, header_, locale_, delim_, fmt_, stat_, errmsg_, column_names=column_names)
         rank(2)
-          call from_text(file, into, header_, locale_, delim_, fmt_, stat_, errmsg_)
+          call from_text(file, into, header_, locale_, delim_, fmt_, stat_, errmsg_, column_names=column_names)
         rank default
           stat_   = ARG_ERR
           errmsg_ = "Array has invalid rank. Supported ranks: 1-2."
@@ -3219,6 +3320,13 @@ submodule (io_fortran_lib) file_io
           return
       end select
     else if ( format_of(file, format) == "npy" ) then
+      if ( present(column_names) ) then
+        stat_   = ARG_ERR
+        errmsg_ = 'column_names was given for file "'//file//'", but a .npy file has no header row.'
+        call stop_if_unhandled(stat_, errmsg_, present(stat))
+        return
+      end if
+
       if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "npy".'
       if ( present(locale) ) write(*,"(a)") LF//'WARNING: locale not supported for file type "npy".'
       if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "npy".'
@@ -3844,6 +3952,17 @@ submodule (io_fortran_lib) file_io
     if ( format_of(file, format) == "text" ) then
       header_ = optval(header, ABSENT_HEADER)
 
+      if ( present(column_names) ) then
+        if ( present(header) .and. (.not. header_) ) then
+          stat_   = ARG_ERR
+          errmsg_ = 'column_names was given for file "'//file//'" with header=.false.. column_names reads the '// &
+                    "header row, so leave header out or set it to .true.."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
+          return
+        end if
+        header_ = .true.
+      end if
+
       delim_ = optval(delim, default_delim(file, US_LOCALE))
 
       if ( .not. present(fmt) ) then
@@ -3862,9 +3981,9 @@ submodule (io_fortran_lib) file_io
 
       select rank(into)
         rank(1)
-          call from_text(file, into, header_, delim_, fmt_, stat_, errmsg_)
+          call from_text(file, into, header_, delim_, fmt_, stat_, errmsg_, column_names=column_names)
         rank(2)
-          call from_text(file, into, header_, delim_, fmt_, stat_, errmsg_)
+          call from_text(file, into, header_, delim_, fmt_, stat_, errmsg_, column_names=column_names)
         rank default
           stat_   = ARG_ERR
           errmsg_ = "Array has invalid rank. Supported ranks: 1-2."
@@ -3872,6 +3991,13 @@ submodule (io_fortran_lib) file_io
           return
       end select
     else if ( format_of(file, format) == "npy" ) then
+      if ( present(column_names) ) then
+        stat_   = ARG_ERR
+        errmsg_ = 'column_names was given for file "'//file//'", but a .npy file has no header row.'
+        call stop_if_unhandled(stat_, errmsg_, present(stat))
+        return
+      end if
+
       if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "npy".'
       if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "npy".'
       if ( present(fmt   ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "npy".'
@@ -3935,6 +4061,17 @@ submodule (io_fortran_lib) file_io
     if ( format_of(file, format) == "text" ) then
       header_ = optval(header, ABSENT_HEADER)
 
+      if ( present(column_names) ) then
+        if ( present(header) .and. (.not. header_) ) then
+          stat_   = ARG_ERR
+          errmsg_ = 'column_names was given for file "'//file//'" with header=.false.. column_names reads the '// &
+                    "header row, so leave header out or set it to .true.."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
+          return
+        end if
+        header_ = .true.
+      end if
+
       delim_ = optval(delim, default_delim(file, US_LOCALE))
 
       if ( .not. present(fmt) ) then
@@ -3953,9 +4090,9 @@ submodule (io_fortran_lib) file_io
 
       select rank(into)
         rank(1)
-          call from_text(file, into, header_, delim_, fmt_, stat_, errmsg_)
+          call from_text(file, into, header_, delim_, fmt_, stat_, errmsg_, column_names=column_names)
         rank(2)
-          call from_text(file, into, header_, delim_, fmt_, stat_, errmsg_)
+          call from_text(file, into, header_, delim_, fmt_, stat_, errmsg_, column_names=column_names)
         rank default
           stat_   = ARG_ERR
           errmsg_ = "Array has invalid rank. Supported ranks: 1-2."
@@ -3963,6 +4100,13 @@ submodule (io_fortran_lib) file_io
           return
       end select
     else if ( format_of(file, format) == "npy" ) then
+      if ( present(column_names) ) then
+        stat_   = ARG_ERR
+        errmsg_ = 'column_names was given for file "'//file//'", but a .npy file has no header row.'
+        call stop_if_unhandled(stat_, errmsg_, present(stat))
+        return
+      end if
+
       if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "npy".'
       if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "npy".'
       if ( present(fmt   ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "npy".'
@@ -4026,6 +4170,17 @@ submodule (io_fortran_lib) file_io
     if ( format_of(file, format) == "text" ) then
       header_ = optval(header, ABSENT_HEADER)
 
+      if ( present(column_names) ) then
+        if ( present(header) .and. (.not. header_) ) then
+          stat_   = ARG_ERR
+          errmsg_ = 'column_names was given for file "'//file//'" with header=.false.. column_names reads the '// &
+                    "header row, so leave header out or set it to .true.."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
+          return
+        end if
+        header_ = .true.
+      end if
+
       delim_ = optval(delim, default_delim(file, US_LOCALE))
 
       if ( .not. present(fmt) ) then
@@ -4044,9 +4199,9 @@ submodule (io_fortran_lib) file_io
 
       select rank(into)
         rank(1)
-          call from_text(file, into, header_, delim_, fmt_, stat_, errmsg_)
+          call from_text(file, into, header_, delim_, fmt_, stat_, errmsg_, column_names=column_names)
         rank(2)
-          call from_text(file, into, header_, delim_, fmt_, stat_, errmsg_)
+          call from_text(file, into, header_, delim_, fmt_, stat_, errmsg_, column_names=column_names)
         rank default
           stat_   = ARG_ERR
           errmsg_ = "Array has invalid rank. Supported ranks: 1-2."
@@ -4054,6 +4209,13 @@ submodule (io_fortran_lib) file_io
           return
       end select
     else if ( format_of(file, format) == "npy" ) then
+      if ( present(column_names) ) then
+        stat_   = ARG_ERR
+        errmsg_ = 'column_names was given for file "'//file//'", but a .npy file has no header row.'
+        call stop_if_unhandled(stat_, errmsg_, present(stat))
+        return
+      end if
+
       if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "npy".'
       if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "npy".'
       if ( present(fmt   ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "npy".'
@@ -4117,6 +4279,17 @@ submodule (io_fortran_lib) file_io
     if ( format_of(file, format) == "text" ) then
       header_ = optval(header, ABSENT_HEADER)
 
+      if ( present(column_names) ) then
+        if ( present(header) .and. (.not. header_) ) then
+          stat_   = ARG_ERR
+          errmsg_ = 'column_names was given for file "'//file//'" with header=.false.. column_names reads the '// &
+                    "header row, so leave header out or set it to .true.."
+          call stop_if_unhandled(stat_, errmsg_, present(stat))
+          return
+        end if
+        header_ = .true.
+      end if
+
       delim_ = optval(delim, default_delim(file, US_LOCALE))
 
       if ( .not. present(fmt) ) then
@@ -4135,9 +4308,9 @@ submodule (io_fortran_lib) file_io
 
       select rank(into)
         rank(1)
-          call from_text(file, into, header_, delim_, fmt_, stat_, errmsg_)
+          call from_text(file, into, header_, delim_, fmt_, stat_, errmsg_, column_names=column_names)
         rank(2)
-          call from_text(file, into, header_, delim_, fmt_, stat_, errmsg_)
+          call from_text(file, into, header_, delim_, fmt_, stat_, errmsg_, column_names=column_names)
         rank default
           stat_   = ARG_ERR
           errmsg_ = "Array has invalid rank. Supported ranks: 1-2."
@@ -4145,6 +4318,13 @@ submodule (io_fortran_lib) file_io
           return
       end select
     else if ( format_of(file, format) == "npy" ) then
+      if ( present(column_names) ) then
+        stat_   = ARG_ERR
+        errmsg_ = 'column_names was given for file "'//file//'", but a .npy file has no header row.'
+        call stop_if_unhandled(stat_, errmsg_, present(stat))
+        return
+      end if
+
       if ( present(header) ) write(*,"(a)") LF//'WARNING: header not supported for file type "npy".'
       if ( present(delim ) ) write(*,"(a)") LF//'WARNING: delim not supported for file type "npy".'
       if ( present(fmt   ) ) write(*,"(a)") LF//'WARNING: fmt not supported for file type "npy".'

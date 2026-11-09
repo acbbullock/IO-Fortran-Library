@@ -12,7 +12,7 @@ For reading textual data into an array `into` of rank `1` or `2` and of
 type `integer`:
 
 ```fortran
-call from_file(file, into [, header, delim, fmt, stat, errmsg, format])
+call from_file(file, into [, header, delim, fmt, stat, errmsg, format, column_names])
 ```
 
 * `file` is of type `character(len=*)`
@@ -21,12 +21,13 @@ call from_file(file, into [, header, delim, fmt, stat, errmsg, format])
 * `fmt` is `optional`, may be one of `INT_FMTS`
 * `stat` is `optional` and of type `integer`
 * `errmsg` is `optional` and of type `character(len=*)`
+* `column_names` is `optional` and of type `type(String), allocatable, dimension(:)`
 
 For reading textual data into an array `into` of rank `1` or `2` and of
 type `real`:
 
 ```fortran
-call from_file(file, into [, header, locale, delim, fmt, stat, errmsg, format])
+call from_file(file, into [, header, locale, delim, fmt, stat, errmsg, format, column_names])
 ```
 
 * `file` is of type `character(len=*)`
@@ -36,12 +37,14 @@ call from_file(file, into [, header, locale, delim, fmt, stat, errmsg, format])
 * `fmt` is `optional`, may be one of `REAL_FMTS`
 * `stat` is `optional` and of type `integer`
 * `errmsg` is `optional` and of type `character(len=*)`
+* `column_names` is `optional` and of type `type(String), allocatable, dimension(:)`
 
 For reading textual data into an array `into` of rank `1` or `2` and of
 type `complex`:
 
 ```fortran
-call from_file(file, into [, header, locale, delim, fmt, im, stat, errmsg, format])
+call from_file(file, into [, header, locale, delim, fmt, im, stat, errmsg, format, &
+                           column_names])
 ```
 
 * `file` is of type `character(len=*)`
@@ -52,6 +55,7 @@ call from_file(file, into [, header, locale, delim, fmt, im, stat, errmsg, forma
 * `im` is `optional` and of type `character(len=*)`
 * `stat` is `optional` and of type `integer`
 * `errmsg` is `optional` and of type `character(len=*)`
+* `column_names` is `optional` and of type `type(String), allocatable, dimension(:)`
 
 For reading binary data into an array `into` of any rank `1`-`15` and
 of type `integer`, `real`, `complex`:
@@ -91,6 +95,19 @@ size must equal the rank of `into`.
 
 Header (default is `.false.`): specifies whether a header line is
 present.
+
+Column names: returns the header line's cells, one per column, with any
+quotes around a cell removed, as `read_file` does. It implies
+`header=.true.`, so it may be given without `header`. Giving it with
+`header=.false.`, or for a `.npy` file, which has no header, is an
+`IOFL_ARG_ERR`:
+
+```fortran
+type(String), allocatable :: names(:)
+real, allocatable :: x(:,:)
+
+call from_file("data.csv", into=x, column_names=names)   ! names(j) is the name of column j
+```
 
 Locales (default is `"US"`):
 
