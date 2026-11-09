@@ -90,13 +90,20 @@ in [`example`](example), where CI builds and runs them.
 ## Compilers
 
 The library is tested with `gfortran` 13 to 16, `ifx` 2025.3 and 2026, and
-`flang` 23 on Linux, with `gfortran` 16 and `flang` 23 on macOS (Apple
-Silicon), `gfortran` 15 on macOS (Intel), and `gfortran` 16 and `ifx` 2026
-on Windows. See the [CI workflow](.github/workflows/ci.yml) for details,
+`flang` 23 on Linux (x86-64), with `gfortran` 14 and `flang` 23 on ARM64
+Linux, `gfortran` 13 on big-endian s390x Linux, `gfortran` 16 and `flang` 23
+on macOS (Apple Silicon), `gfortran` 15 on macOS (Intel), and `gfortran` 16
+and `ifx` 2026 on Windows. See the [CI workflow](.github/workflows/ci.yml) for details,
 and the
 [compiler notes](https://acbbullock.github.io/IO-Fortran-Library/doc/page/UserInfo/compilers.html)
 for known compiler bugs, including one in `gfortran` on Windows that can
 crash formatted I/O and how to avoid it.
+
+`nvfortran` (NVIDIA HPC SDK) and AMD's AOCC `flang` are not supported. They
+lack parts of Fortran 2018 that the library relies on, most of all
+`select rank`, as well as arrays above rank 7. A separate
+[workflow](.github/workflows/experimental.yml) runs them weekly, along with
+LFortran, to show when a new release can build the library.
 
 The `real128` routines are enabled on `ifx`, and on `gfortran` targets with
 `REAL(16)`. They are left out on other compilers, including `flang`. To

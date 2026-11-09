@@ -1,0 +1,85 @@
+name: Experimental compilers
+
+# Compilers that can't build the library yet, run weekly and on demand rather than on every push and pull request, so
+# that CI shows only jobs expected to pass. nvfortran (#75) and AOCC (#80) share the classic Flang front end, which
+# lacks select rank, arrays above rank 7, implicit none (type, external) and elemental recursive procedures. LFortran
+# (#82) can't compile it yet: 0.58 crashed on the first file.
+#
+# nvfortran is the latest NVIDIA HPC SDK, so each run tries the newest release. setup-fortran's "latest" for LFortran
+# is an old version, and it knows AOCC releases only up to 5.2, so those two are pinned: update them below and run the
+# workflow from the Actions tab.
+#
+# The jobs are allowed to fail, so a run succeeds and sends no failure email. Each job writes its first errors to the
+# run's summary page.
+
+on:
+  schedule:
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+  # Scheduled and manual runs use the workflow on the default branch, so a change to this file also runs it where it
+  # was pushed.
+  push:
+    branches: [main, "2.2"]
+    paths: [.github/workflows/experimental.yml]
+
+permissions:
+  contents: read
+
+env:
+  IOFL_FPM_VERSION: "0.13.0"
+
+jobs:
+  test:
+    name: ${{ matrix.compiler }} ${{ matrix.version }}
+    runs-on: ubuntu-24.04
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { compiler: nvidia-hpc, version: latest, fpm: nvfortran, flags: "-O2" }
+          # AOCC's flang is classic Flang, which fpm only recognizes under the name flang-classic. Under the name flang
+          # it gets LLVM flang's options, which it rejects. fpm passes classic Flang no preprocessor flag.
+          - { compiler: aocc, version: "5.2.0", fpm: flang-classic, flags: "-Mpreprocess -O2" }
+          # setup-fortran lists LFortran up to 0.58, but installs any version conda-forge has.
+          - { compiler: lfortran, version: "0.68.0", fpm: lfortran, flags: "" }
+    steps:
+      - uses: actions/checkout@v7
+      - uses: fortran-lang/setup-fortran@v1
+        with:
+          compiler: ${{ matrix.compiler }}
+          version: ${{ matrix.version }}
+      - uses: fortran-lang/setup-fpm@v10
+        with:
+          fpm-version: v${{ env.IOFL_FPM_VERSION }}
+      - name: Name AOCC's flang flang-classic for fpm
+        if: matrix.compiler == 'aocc'
+        run: |
+          mkdir -p "$RUNNER_TEMP/bin"
+          printf '#!/bin/sh\nexec "%s" "$@"\n' "$(command -v flang)" > "$RUNNER_TEMP/bin/flang-classic"
+          chmod +x "$RUNNER_TEMP/bin/flang-classic"
+          echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
+      - name: Run tests
+        run: |
+          set -o pipefail
+          fpm test --compiler ${{ matrix.fpm }} --flag "${{ matrix.flags }}" --verbose 2>&1 | tee test.log
+      - name: Summarize the first errors
+        if: failure()
+        run: |
+          {
+            echo "### First errors from ${{ matrix.compiler }} ${{ matrix.version }}"
+            echo '```'
+            grep -m 15 -iE 'error|not (yet )?(implemented|supported)|segmentation fault|core dumped|internal compiler|abort' \
+              test.log || true
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Find the LFortran stage that fails
+        if: failure() && matrix.compiler == 'lfortran'
+        run: |
+          for stage in --show-ast --show-asr; do
+            if lfortran --cpp -Iinclude $stage src/modules/io_fortran_lib_mod.f90 > /dev/null 2> stage.log; then
+              echo "$stage: passes" | tee -a "$GITHUB_STEP_SUMMARY"
+            else
+              echo "$stage: fails with status $?" | tee -a "$GITHUB_STEP_SUMMARY"; tail -5 stage.log
+            fi
+          done
