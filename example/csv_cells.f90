@@ -1,6 +1,6 @@
 program csv_cells
     use io_fortran_lib, only: String, str, cast
-    implicit none (type, external)
+    implicit none
 
     type(String) :: csv
     type(String), allocatable :: cells(:,:)

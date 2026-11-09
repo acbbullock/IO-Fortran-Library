@@ -6,7 +6,7 @@ module string_cases
   use io_fortran_lib, only: String, str, join, split, echo, IOFL_LF, IOFL_CR, IOFL_TAB, operator(==), operator(/=), &
                             operator(**), operator(+)
   use test_support, only: test_suite, check, expect_equal, scratch, write_raw
-  implicit none (type, external)
+  implicit none
   private
 
   public :: register_string

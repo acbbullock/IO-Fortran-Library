@@ -11,7 +11,7 @@ module file_round_trip_cases
   use io_fortran_lib, only: str, to_file, from_file
   use test_support,   only: test_suite, fail, failure_count, expect_equal, expect_identical, scratch
   use test_values,    only: reset_random, test_values_of
-  implicit none (type, external)
+  implicit none
   private
 
   public :: register_file_round_trip

@@ -13,7 +13,7 @@ module test_values
                                            i64=>int64, i32=>int32, i16=>int16, i8=>int8
   use, intrinsic :: ieee_arithmetic, only: ieee_value, ieee_quiet_nan, ieee_positive_inf, ieee_negative_inf, &
                                            ieee_copy_sign
-  implicit none (type, external)
+  implicit none
   private
 
   public :: reset_random, random_values, edge_values, test_values_of

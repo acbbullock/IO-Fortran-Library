@@ -15,7 +15,7 @@ internal and external text I/O routines of the IO-Fortran-Library:
 program main
     use, intrinsic :: iso_fortran_env, only: int64, rk=>real32, dp=>real64, compiler_version, compiler_options
     use io_fortran_lib, only: String, cast, str, IOFL_LF, operator(+)
-    implicit none (type, external)
+    implicit none
 
     type(String)              :: csv
     type(String), allocatable :: cells(:,:)
@@ -82,7 +82,7 @@ every 32-bit integer as a hexadecimal string to a text file `int32.txt`:
 program main
     use, intrinsic :: iso_fortran_env, only: i64=>int64, dp=>real64
     use io_fortran_lib, only: String, str, operator(+)
-    implicit none (type, external)
+    implicit none
 
     integer, parameter :: largest = huge(0), smallest = -largest - 1, nsteps = 128
     integer, parameter :: step_size = int( (int(largest,i64) - int(smallest,i64) )/int(nsteps,i64))

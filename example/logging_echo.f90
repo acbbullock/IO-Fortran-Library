@@ -1,6 +1,6 @@
 program logging_echo
     use io_fortran_lib, only: echo, str, IOFL_LF
-    implicit none (type, external)
+    implicit none
 
     character(len=:), allocatable :: logfile, logmsg
     character(len=10) :: date, time

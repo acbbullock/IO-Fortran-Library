@@ -6,7 +6,7 @@ submodule (io_fortran_lib) binary_io
   !! This submodule provides module procedure implementations for the **private interfaces** `to_binary` and
   !! `from_binary`.
   !---------------------------------------------------------------------------------------------------------------------
-  implicit none (type, external)
+  implicit none
 
   contains ! Procedure bodies for module subprograms <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><
 

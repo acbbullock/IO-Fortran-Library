@@ -2,7 +2,7 @@ submodule (io_fortran_lib) string_methods
   !---------------------------------------------------------------------------------------------------------------------
   !! This submodule provides module procedure implementations for the **type-bound procedures** of type `String`.
   !---------------------------------------------------------------------------------------------------------------------
-  implicit none (type, external)
+  implicit none
 
   integer, parameter :: ENDS_COLUMN = 1, ENDS_ROW = 2, ENDS_FILE = 3 ! What ended a cell
 

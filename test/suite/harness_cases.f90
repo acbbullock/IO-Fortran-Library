@@ -3,7 +3,7 @@ module harness_cases
   !! Self checks of the harness: these confirm that the exit status logic works on the current compiler.
   !---------------------------------------------------------------------------------------------------------------------
   use test_support, only: test_suite, STOPS, KNOWN_BUG, check
-  implicit none (type, external)
+  implicit none
   private
 
   public :: register_harness

@@ -5,7 +5,7 @@ module aprint_cases
   use, intrinsic :: iso_fortran_env, only: real32, real64
   use io_fortran_lib, only: String, aprint, operator(==), operator(>=)
   use test_support, only: test_suite, check, expect_equal, scratch
-  implicit none (type, external)
+  implicit none
   private
 
   public :: register_aprint

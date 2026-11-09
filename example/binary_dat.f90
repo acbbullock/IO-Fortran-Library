@@ -1,6 +1,6 @@
 program binary_dat
     use io_fortran_lib, only: to_file, from_file
-    implicit none (type, external)
+    implicit none
 
     real :: x(20,20,20,20,20)
     real, allocatable :: x_dat(:,:,:,:,:)

@@ -17,9 +17,8 @@ jobs:
   test:
     name: ${{ matrix.toolchain.compiler }} ${{ matrix.toolchain.version }} ${{ matrix.toolchain.label }}
     runs-on: ubuntu-24.04
-    # LFortran (#82), nvfortran (#75) and AOCC (#80) can't compile the library yet. nvfortran 26.1 rejects two Fortran
-    # 2018 features used throughout, implicit none (type, external) and elemental recursive procedures, and AOCC shares
-    # its front end. LFortran 0.58 crashes on the first file. Their jobs show how far they get, without failing CI.
+    # LFortran (#82), nvfortran (#75) and AOCC (#80) can't compile the library yet. LFortran 0.58 crashes on the first
+    # file. Their jobs show how far they get, without failing CI.
     continue-on-error: ${{ matrix.toolchain.experimental == true }}
     strategy:
       fail-fast: false

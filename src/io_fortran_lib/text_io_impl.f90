@@ -6,7 +6,7 @@ submodule (io_fortran_lib) text_io
   !! interfaces** `to_text` and `from_text`.
   !---------------------------------------------------------------------------------------------------------------------
   use, intrinsic :: ieee_arithmetic, only: ieee_value, ieee_quiet_nan
-  implicit none (type, external)
+  implicit none
 
   ! Definitions and interfaces ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   character(len=1), parameter :: LINE_FEED = LF

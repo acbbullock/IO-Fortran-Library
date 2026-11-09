@@ -5,7 +5,7 @@ module format_cases
   use, intrinsic :: iso_fortran_env, only: real64
   use io_fortran_lib, only: String, echo, to_file, from_file, IOFL_TAB, operator(==), operator(/=)
   use test_support, only: test_suite, STOPS, check, expect_equal, scratch
-  implicit none (type, external)
+  implicit none
   private
 
   public :: register_format

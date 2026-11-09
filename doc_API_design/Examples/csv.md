@@ -98,7 +98,7 @@ The following program reads it in and casts each column:
 program main
     use, intrinsic :: iso_fortran_env, only: int8, int64
     use io_fortran_lib, only: String, cast, IOFL_CR, IOFL_LF, operator(+), operator(-)
-    implicit none (type, external)
+    implicit none
 
     type(String) :: csv
     type(String), allocatable :: cells(:,:)

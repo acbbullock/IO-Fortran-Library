@@ -18,7 +18,7 @@ program tests
   use text_round_trip_cases, only: register_text_round_trip
   use file_round_trip_cases, only: register_file_round_trip
   use npy_cases, only: register_npy
-  implicit none (type, external)
+  implicit none
 
   type(test_suite) :: suite
 

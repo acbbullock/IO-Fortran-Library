@@ -4,7 +4,7 @@ module read_line_cases
   !---------------------------------------------------------------------------------------------------------------------
   use io_fortran_lib, only: String, IOFL_LF, operator(==), operator(/=)
   use test_support, only: test_suite, STOPS, check, expect_equal, scratch, write_raw
-  implicit none (type, external)
+  implicit none
   private
 
   public :: register_read_line

@@ -7,7 +7,7 @@ module cast_cases
   use io_fortran_lib, only: String, cast, str, IOFL_CR, operator(==), operator(/=), operator(<), operator(<=), &
                             operator(>)
   use test_support, only: test_suite, STOPS, check
-  implicit none (type, external)
+  implicit none
   private
 
   public :: register_cast

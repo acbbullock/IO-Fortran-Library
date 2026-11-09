@@ -4,7 +4,7 @@ submodule (io_fortran_lib) array_printing
   !---------------------------------------------------------------------------------------------------------------------
   !! This submodule provides module procedure implementations for the **public interface** `aprint`.
   !---------------------------------------------------------------------------------------------------------------------
-  implicit none (type, external)
+  implicit none
 
   contains ! Procedure bodies for module subprograms <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><
 
