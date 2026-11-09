@@ -1,5 +1,5 @@
 ---
-title: Handling dat files
+title: Handling binary files
 author: Austin C Bullock
 ---
 
@@ -15,21 +15,7 @@ back into the program, and testing for exact equality to ensure that
 there has been no loss in precision:
 
 ```fortran
-program main
-    use io_fortran_lib, only: to_file, from_file
-    implicit none (type, external)
-
-    real :: x(20,20,20,20,20)
-    real, allocatable :: x_dat(:,:,:,:,:)
-
-    call random_number(x)
-
-    call to_file(x, file="x.dat")
-
-    call from_file("x.dat", into=x_dat, data_shape=shape(x))
-
-    write(*,*) "x == x_dat : ", all(x == x_dat)
-end program main
+{!example/binary_dat.f90!}
 ```
 
 @warning Reading into arrays of a different `kind` than the array that
@@ -42,22 +28,20 @@ the main array with the corresponding value. The following program
 demonstrates the above tip:
 
 ```fortran
-program main
-    use io_fortran_lib, only: to_file, from_file
-    implicit none (type, external)
-
-    real :: x(20,20,20,20,20)
-    real, allocatable :: x_dat(:,:,:,:,:)
-    integer, allocatable :: x_shape(:)
-
-    call random_number(x)
-
-    call to_file(x, file="x.dat")
-    call to_file(shape(x), file="x_shape.csv")
-
-    call from_file("x_shape.csv", into=x_shape)
-    call from_file("x.dat", into=x_dat, data_shape=x_shape)
-
-    write(*,*) "x == x_dat : ", all(x == x_dat)
-end program main
+{!example/binary_shape_file.f90!}
 ```
+
+## NumPy `.npy` files
+
+A `.npy` file records the type, shape and memory order of its array, so
+reading it needs no `data_shape`, and reading it into an array of the
+wrong kind or rank is an error rather than garbage. The same program
+with a `.npy` file:
+
+```fortran
+{!example/binary_npy.f90!}
+```
+
+In Python, `numpy.load("x.npy")` gives the same array, with element
+`x(i,j,k,l,m)` at `x[i-1, j-1, k-1, l-1, m-1]`. See
+[File extensions](../UserInfo/file-ext.html) for the details.

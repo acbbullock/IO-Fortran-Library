@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Questions and ideas
+    url: https://github.com/acbbullock/IO-Fortran-Library/discussions
+    about: Ask how to do something, or discuss an idea before opening an issue.
+  - name: Documentation
+    url: https://acbbullock.github.io/IO-Fortran-Library/
+    about: The reference for every routine, tutorials, and notes on file formats and compilers.

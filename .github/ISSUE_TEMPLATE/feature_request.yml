@@ -1,0 +1,22 @@
+name: Feature request
+description: Suggest a new routine, option or file format.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What you want to do
+      description: The task you are trying to do, and what is hard about it with the library as it is.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What you propose
+      description: How you would like to call it. A sketch of the call is enough.
+      render: fortran
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives
+      description: Other ways you have considered, including other libraries.

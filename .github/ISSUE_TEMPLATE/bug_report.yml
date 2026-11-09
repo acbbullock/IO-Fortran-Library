@@ -1,0 +1,59 @@
+name: Bug report
+description: A call gives a wrong result, a crash, or an error it shouldn't.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: >-
+        Thank you for reporting a problem. A short program that shows it is the most useful thing you can give.
+        If the bug occurs without any library code, it may be a compiler bug: the
+        [compiler notes](https://acbbullock.github.io/IO-Fortran-Library/doc/page/UserInfo/compilers.html)
+        list the known ones.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you expected, and what happened instead. Include any error message in full.
+    validations:
+      required: true
+  - type: textarea
+    id: program
+    attributes:
+      label: A program that shows it
+      description: As short as you can make it. Include any input file it needs, or how to make one.
+      render: fortran
+    validations:
+      required: true
+  - type: input
+    id: library-version
+    attributes:
+      label: Library version
+      description: The tag or commit in your fpm.toml, such as v2.1.0.
+      placeholder: v2.1.0
+    validations:
+      required: true
+  - type: input
+    id: compiler
+    attributes:
+      label: Compiler and version
+      description: The output of `gfortran --version`, `ifx --version` or `flang --version`, and any flags you build with.
+      placeholder: gfortran 16.2.1, -O2
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - Linux
+        - macOS (Apple Silicon)
+        - macOS (Intel)
+        - Windows
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: fpm
+    attributes:
+      label: fpm version
+      description: The output of `fpm --version`, if you build with fpm.

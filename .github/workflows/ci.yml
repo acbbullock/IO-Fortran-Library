@@ -131,6 +131,38 @@ jobs:
           --flag "-std=f2018 -g -O1 -fsanitize=address,undefined -fno-omit-frame-pointer"
           --link-flag "-fsanitize=address,undefined"
 
+  examples:
+    name: examples build and run
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: fortran-lang/setup-fortran@v1
+        with:
+          compiler: gcc
+          version: "16"
+      - uses: fortran-lang/setup-fpm@v10
+        with:
+          fpm-version: v${{ env.IOFL_FPM_VERSION }}
+      - name: The README's quick start matches example/quickstart.f90
+        shell: python
+        run: |
+          import re, sys
+          readme = open("README.md").read()
+          marker = "<!-- This block must match example/quickstart.f90; CI checks it. -->"
+          block = re.search(r"```fortran\n(.*?)```", readme[readme.index(marker):], re.S).group(1)
+          if block != open("example/quickstart.f90").read():
+              sys.exit("README.md's quick start differs from example/quickstart.f90")
+      - name: Run every example
+        # The tutorials include these files, so this keeps the documented programs working. The logging examples
+        # read an exit status, so they are given 0.
+        run: |
+          for f in example/*.f90; do
+            e=$(basename "$f" .f90)
+            echo "::group::$e"
+            echo 0 | fpm run --example "$e" --flag "-std=f2018 -O2 -g -fbacktrace"
+            echo "::endgroup::"
+          done
+
   generated:
     name: generated sources match the fypp templates
     runs-on: ubuntu-24.04

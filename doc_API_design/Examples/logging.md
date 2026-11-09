@@ -12,36 +12,7 @@ The following program demonstrates a simple use of `echo` for writing
 messages to a log file:
 
 ```fortran
-program main
-    use io_fortran_lib, only: echo, str, IOFL_LF
-    implicit none (type, external)
-
-    character(len=:), allocatable :: logfile, logmsg
-    character(len=10) :: date, time
-    integer :: errstat
-
-    call date_and_time(date=date, time=time)
-    logfile = "logfile_main_"//trim(adjustl(date))//"_"//time//".log"
-
-    logmsg = "PROGRAM MAIN - BEGINNING EXECUTION"
-    call echo(logmsg//IOFL_LF//repeat("-", ncopies=len(logmsg)), file=logfile)
-
-    ! ...
-
-    logmsg = "All is good so far..."
-    call echo(logmsg, logfile)
-
-    read(*,*) errstat
-
-    if ( errstat /= 0 ) then
-        logmsg = "Process has non-zero exit status: "//str(errstat)//IOFL_LF//"Stopping..."
-        call echo(logmsg, logfile)
-        error stop logmsg
-    end if
-
-    logmsg = "All processes have executed successfully."
-    call echo(logmsg, logfile)
-end program main
+{!example/logging_echo.f90!}
 ```
 
 Depending on style, one may wish to accumulate log messages into a
@@ -49,36 +20,7 @@ Depending on style, one may wish to accumulate log messages into a
 [echo](../Ref/String-methods.html#echo) conditionally:
 
 ```fortran
-program main
-    use io_fortran_lib, only: String, str, IOFL_LF, operator(+), operator(**)
-    implicit none (type, external)
-
-    type(String) :: logmsg
-    character(len=:), allocatable :: logfile
-    character(len=10) :: date, time
-    integer :: errstat
-
-    call date_and_time(date=date, time=time)
-    logfile = "logfile_main_" + trim(adjustl(date)) + "_" + time + ".log"
-
-    logmsg = String("PROGRAM MAIN - BEGINNING EXECUTION")
-    call logmsg%push(IOFL_LF + "-"**logmsg%len() + IOFL_LF)
-
-    ! ...
-
-    call logmsg%push("All is good so far..." + IOFL_LF)
-
-    read(*,*) errstat
-
-    if ( errstat /= 0 ) then
-        call logmsg%push("Process has non-zero exit status: " + str(errstat) + IOFL_LF + "Stopping...")
-        call logmsg%echo(logfile)
-        error stop logmsg%as_str()
-    end if
-
-    call logmsg%push("All processes have executed successfully.")
-    call logmsg%echo(logfile)
-end program main
+{!example/logging_string.f90!}
 ```
 
 Here, the `error stop` will dump the entire contents of `logmsg` to
