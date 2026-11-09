@@ -5,6 +5,7 @@
 [![Latest release](https://img.shields.io/github/v/release/acbbullock/IO-Fortran-Library)](https://github.com/acbbullock/IO-Fortran-Library/releases/latest)
 [![License: MIT](https://img.shields.io/github/license/acbbullock/IO-Fortran-Library)](LICENCE)
 [![Fortran 2018](https://img.shields.io/badge/Fortran-2018-734f96)](https://fortran-lang.org)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24068278.svg)](https://doi.org/10.5281/zenodo.24068278)
 
 A Fortran library for reading and writing text, CSV, binary and NumPy
 `.npy` files, converting between numbers and text, and working with
@@ -124,9 +125,12 @@ constants and error codes, and two fixes for values written with
 
 ## Citing
 
-If you use the library in published work, please cite it. GitHub's
-"Cite this repository" button, from [CITATION.cff](CITATION.cff), gives
-the reference in APA and BibTeX form.
+If you use the library in published work, please cite it. Each release
+is archived on Zenodo, and
+[10.5281/zenodo.24068278](https://doi.org/10.5281/zenodo.24068278) always
+refers to the latest version; Zenodo lists a DOI for each version too.
+GitHub's "Cite this repository" button, from [CITATION.cff](CITATION.cff),
+gives the reference in APA and BibTeX form.
 
 ## License
 
