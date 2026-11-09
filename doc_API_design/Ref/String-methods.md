@@ -78,10 +78,10 @@ For `self` a scalar variable of type `String`:
 
 * `tokens` is of type `type(String), dimension(:)`
 * `separator` is `optional` and of type `character(len=*)` (default is
-  `SPACE`)
+  `IOFL_SPACE`)
 
 *Description*: Joins a `String` vector `tokens` into `self` with given
-separator. Default separator is `SPACE`. The string slice component
+separator. Default separator is `IOFL_SPACE`. The string slice component
 will be replaced if already allocated.
 
 For a functional version of `join`, see [join](join-split.html).
@@ -126,7 +126,7 @@ For `self` a scalar variable of type `String`:
 * `file` is of type `character(len=*)`
 * `cell_array` is `optional` and of type `type(String), allocatable, dimension(:,:)`
 * `row_separator` is `optional` and of type `character(len=*)`
-  (default is `LF`)
+  (default is `IOFL_LF`)
 * `column_separator` is `optional` and of type `character(len=*)`
   (default is `","`)
 * `stat` is `optional` and of type `integer`
@@ -134,7 +134,7 @@ For `self` a scalar variable of type `String`:
 
 *Description*: Reads raw text file contents into `self` and optionally
 populates a cell array using the designated `row_separator` and
-`column_separator` whose default values are `LF` and `","` respectively.
+`column_separator` whose default values are `IOFL_LF` and `","` respectively.
 
 @note `file` may be a relative path, but absolute paths are not
 guaranteed to work on every platform.
@@ -266,7 +266,7 @@ For `self` a scalar variable of type `String`:
 * `cell_array` is of type `type(String), dimension(:,:)`
 * `file` is of type `character(len=*)`
 * `row_separator` is `optional` and of type `character(len=*)`
-  (default is `LF`)
+  (default is `IOFL_LF`)
 * `column_separator` is `optional` and of type `character(len=*)`
   (default is `","`)
 * `append` is `optional` and of type `logical` (default is `.false.`)
@@ -276,7 +276,7 @@ For `self` a scalar variable of type `String`:
 *Description*: Writes the content of a cell array to a text file. The
 cell array's entire contents are populated into `self` using the
 designated `row_separator` and `column_separator` whose default values
-are `LF` and `","` respectively, and then streamed to an external text
+are `IOFL_LF` and `","` respectively, and then streamed to an external text
 file. The file will be created if it does not exist, and will be
 appended to if `append` is `.true.`.
 

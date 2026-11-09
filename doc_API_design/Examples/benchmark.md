@@ -14,7 +14,7 @@ internal and external text I/O routines of the IO-Fortran-Library:
 ```fortran
 program main
     use, intrinsic :: iso_fortran_env, only: int64, rk=>real32, dp=>real64, compiler_version, compiler_options
-    use io_fortran_lib, only: String, cast, str, LF, operator(+)
+    use io_fortran_lib, only: String, cast, str, IOFL_LF, operator(+)
     implicit none (type, external)
 
     type(String)              :: csv
@@ -28,27 +28,27 @@ program main
 
     allocate( x(n,n), cells(n,n) ); call random_number(x); x = x - 0.5_rk
     write(*,"(a)")  "Compiler version: " + compiler_version()
-    write(*,"(a)")  "Compiler options: " + compiler_options() + LF
+    write(*,"(a)")  "Compiler options: " + compiler_options() + IOFL_LF
 
     call system_clock(t1)
     call cast(x, into=cells, fmt="z")
     call system_clock(t2, count_rate=rate); wall_time = real(t2-t1,dp)/rate
 
     write(*,"(a)")  "Wall time for cast: " + str(wall_time, fmt="f", decimals=3) + " s"
-    write(*,"(a)")  "Number of string conversions/second: " + str(nint(size(x)/wall_time)) + LF
+    write(*,"(a)")  "Number of string conversions/second: " + str(nint(size(x)/wall_time)) + IOFL_LF
 
     call system_clock(t1)
     call csv%write_file(cells, file="bigx.csv")
     call system_clock(t2, count_rate=rate); wall_time = real(t2-t1,dp)/rate
 
     write(*,"(a)")  "Wall time for write_file: " + str(wall_time, fmt="f", decimals=3) + " s"
-    write(*,"(a)")  "Estimated file size: " + str(csv%len64()/1e9, fmt="f", decimals=6) + " GB" + LF
+    write(*,"(a)")  "Estimated file size: " + str(csv%len64()/1e9, fmt="f", decimals=6) + " GB" + IOFL_LF
 
     call system_clock(t1)
     call csv%read_file("bigx.csv", cell_array=cells)
     call system_clock(t2, count_rate=rate); wall_time = real(t2-t1,dp)/rate
 
-    write(*,"(a)")  "Wall time for read_file: " + str(wall_time, fmt="f", decimals=3) + " s" + LF
+    write(*,"(a)")  "Wall time for read_file: " + str(wall_time, fmt="f", decimals=3) + " s" + IOFL_LF
 
     call csv%empty(); allocate( y(n,n) )
 

@@ -1,4 +1,4 @@
-#! Definitions shared by the templates. Run fypp/generate.sh after changing any template, and commit the result in src.
+#! Definitions shared by the templates. Run fypp/generate.sh after changing any template, and commit the result in src and test.
 #:set COMPLEX_KINDS = [("c128", "r128"), ("c64", "r64"), ("c32", "r32")]
 #:set REAL_KINDS = ["r128", "r64", "r32"]
 #:set INT_KINDS = ["i64", "i32", "i16", "i8"]
@@ -10,3 +10,5 @@
 #:set SAME_SIZE_INT = {"r64": "i64", "r32": "i32"}
 #:set ORDER_OPERATORS = [("<", "lt", "Less than"), ("<=", "le", "Less than or equal"), (">", "gt", "Greater than"), (">=", "ge", "Greater than or equal")]
 #:set ORDER_TESTS = {"lt": "< 0", "le": "<= 0", "gt": "> 0", "ge": ">= 0"}
+#! Types that NumPy .npy files support: (kind, declaration, NumPy type code, bytes). NumPy has no IEEE binary128 type.
+#:set NPY_TYPES = [("c64", "complex(r64)", "c", 16), ("c32", "complex(r32)", "c", 8), ("r64", "real(r64)", "f", 8), ("r32", "real(r32)", "f", 4), ("i64", "integer(i64)", "i", 8), ("i32", "integer(i32)", "i", 4), ("i16", "integer(i16)", "i", 2), ("i8", "integer(i8)", "i", 1)]

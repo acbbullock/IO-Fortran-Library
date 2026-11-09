@@ -1,0 +1,283 @@
+#:include "common.fypp"
+! Generated from fypp/test/suite/test_values.fypp by fypp/generate.sh. Edit that file, not this one.
+#include "iofl_config.inc"
+module test_values
+  !---------------------------------------------------------------------------------------------------------------------
+  !! Test data for every kind: edge values, and random values from a small portable generator, so that a case sees the
+  !! same values on every compiler. Call `reset_random` at the start of a case to make it independent of the others.
+  !!
+  !! Random reals cover the whole exponent range of their kind, subnormals included, with both signs. Every fourth one
+  !! is of ordinary size, between about 1e-3 and 2e3. Random integers cover the whole range of their kind, and every
+  !! fourth one is between -1000 and 1000 (-128 and 127 for `int8`).
+  !---------------------------------------------------------------------------------------------------------------------
+  use, intrinsic :: iso_fortran_env, only: r128=>real128, r64=>real64, r32=>real32, &
+                                           i64=>int64, i32=>int32, i16=>int16, i8=>int8
+  use, intrinsic :: ieee_arithmetic, only: ieee_value, ieee_quiet_nan, ieee_positive_inf, ieee_negative_inf, &
+                                           ieee_copy_sign
+  implicit none (type, external)
+  private
+
+  public :: reset_random, random_values, edge_values, test_values_of
+
+  integer(i64), parameter :: MODULUS = 2147483647_i64, MULTIPLIER = 48271_i64     ! Park-Miller "minimal standard"
+  integer(i64), parameter :: DEFAULT_SEED = 20221_i64
+
+  integer(i64) :: state = DEFAULT_SEED
+
+  interface random_values
+    !! Fills an array with random values of its kind.
+#:for k in INT_KINDS
+    module procedure :: random_${k}$
+#:endfor
+#:for k in REAL_KINDS
+#:if k in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+    module procedure :: random_${k}$
+#:if k in QUAD_KINDS
+#endif
+#:endif
+#:endfor
+#:for c, r in COMPLEX_KINDS
+#:if c in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+    module procedure :: random_${c}$
+#:if c in QUAD_KINDS
+#endif
+#:endif
+#:endfor
+  end interface random_values
+
+  interface edge_values
+    !! Returns the edge values of the kind of `mold`.
+#:for k in INT_KINDS
+    module procedure :: edges_${k}$
+#:endfor
+#:for k in REAL_KINDS
+#:if k in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+    module procedure :: edges_${k}$
+#:if k in QUAD_KINDS
+#endif
+#:endif
+#:endfor
+#:for c, r in COMPLEX_KINDS
+#:if c in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+    module procedure :: edges_${c}$
+#:if c in QUAD_KINDS
+#endif
+#:endif
+#:endfor
+  end interface edge_values
+
+  interface test_values_of
+    !! Returns the edge values of the kind of `mold` followed by `n` random values.
+#:for k in INT_KINDS
+    module procedure :: values_${k}$
+#:endfor
+#:for k in REAL_KINDS
+#:if k in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+    module procedure :: values_${k}$
+#:if k in QUAD_KINDS
+#endif
+#:endif
+#:endfor
+#:for c, r in COMPLEX_KINDS
+#:if c in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+    module procedure :: values_${c}$
+#:if c in QUAD_KINDS
+#endif
+#:endif
+#:endfor
+  end interface test_values_of
+
+contains
+
+  subroutine reset_random(seed)
+    !! Restarts the generator, from `seed` if present.
+    integer, intent(in), optional :: seed
+
+    state = DEFAULT_SEED
+    if ( present(seed) ) state = mod(abs(int(seed, i64)), MODULUS - 1_i64) + 1_i64
+  end subroutine reset_random
+
+  integer(i64) function next_bits(n) result(bits)
+    !! Returns `n` random bits, at most 30, as a nonnegative integer.
+    integer, intent(in) :: n
+
+    state = mod(MULTIPLIER*state, MODULUS)                                     ! Never overflows: both are below 2**31
+    bits = ibits(state, 0, n)
+  end function next_bits
+
+  integer(i64) function random_bit_pattern(n) result(bits)
+    !! Returns `n` random bits, at most 64, filling `bits` from the lowest bit up.
+    integer, intent(in) :: n
+
+    integer :: done, chunk
+
+    bits = 0_i64; done = 0
+    do while ( done < n )
+      chunk = min(16, n - done)
+      bits = ior(bits, shiftl(next_bits(chunk), done))
+      done = done + chunk
+    end do
+  end function random_bit_pattern
+
+#:for k in INT_KINDS
+  subroutine random_${k}$(x)
+    integer(${k}$), intent(out) :: x(:)
+
+    integer, parameter :: BITS = bit_size(0_${k}$)
+    integer            :: i
+
+    do i = 1, size(x)
+      if ( mod(i, 4) == 0 ) then
+#:if k == "i8"
+        x(i) = int(next_bits(8) - 128_i64, ${k}$)
+#:else
+        x(i) = int(mod(next_bits(30), 2001_i64) - 1000_i64, ${k}$)
+#:endif
+#:if k == "i64"
+      else
+        x(i) = random_bit_pattern(BITS)
+#:else
+      else
+        x(i) = int(random_bit_pattern(BITS) - 2_i64**(BITS-1), ${k}$)
+#:endif
+      end if
+    end do
+  end subroutine random_${k}$
+
+  function edges_${k}$(mold) result(x)
+    integer(${k}$), intent(in)     :: mold
+    integer(${k}$), allocatable    :: x(:)
+
+    x = [ 0_${k}$, 1_${k}$, -1_${k}$, 2_${k}$, -2_${k}$, 10_${k}$, -10_${k}$, huge(mold), huge(mold) - 1_${k}$, -huge(mold), &
+          -huge(mold) - 1_${k}$ ]
+  end function edges_${k}$
+
+  function values_${k}$(mold, n) result(x)
+    integer(${k}$), intent(in)     :: mold
+    integer,      intent(in)     :: n
+    integer(${k}$), allocatable    :: x(:), random(:)
+
+    allocate( random(n) )
+    call random_values(random)
+    x = [ edges_${k}$(mold), random ]
+  end function values_${k}$
+
+#:endfor
+#:for k in REAL_KINDS
+#:if k in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+  subroutine random_${k}$(x)
+    real(${k}$), intent(out) :: x(:)
+
+    integer, parameter :: LOW  = minexponent(1.0_${k}$) - digits(1.0_${k}$)       ! Down to the smallest subnormal
+    integer, parameter :: HIGH = maxexponent(1.0_${k}$) - 1
+    integer, parameter :: DRAWS = (digits(1.0_${k}$) + 29)/30
+
+    real(${k}$) :: m
+    integer   :: i, j, e
+
+    do i = 1, size(x)
+      m = 0.0_${k}$
+      do j = 1, DRAWS
+        m = (m + real(next_bits(30), ${k}$))/2.0_${k}$**30
+      end do
+      m = 1.0_${k}$ + m
+      if ( m >= 2.0_${k}$ ) m = 1.0_${k}$                                          ! Rounded up to 2: keep in [1,2)
+
+      if ( mod(i, 4) == 0 ) then
+        e = int(mod(next_bits(30), 21_i64)) - 10
+      else
+        e = LOW + int(mod(random_bit_pattern(30), int(HIGH - LOW + 1, i64)))
+      end if
+
+      x(i) = scale(m, e)
+      if ( next_bits(1) == 1_i64 ) x(i) = -x(i)
+    end do
+  end subroutine random_${k}$
+
+  function edges_${k}$(mold) result(x)
+    real(${k}$), intent(in)     :: mold
+    real(${k}$), allocatable    :: x(:)
+
+    x = [ 0.0_${k}$, ieee_copy_sign(0.0_${k}$, -1.0_${k}$), 1.0_${k}$, -1.0_${k}$, 0.1_${k}$, -2.5_${k}$, 1.0_${k}$/3.0_${k}$, &
+          huge(mold), -huge(mold), tiny(mold), -tiny(mold), nearest(0.0_${k}$, 1.0_${k}$), nearest(0.0_${k}$, -1.0_${k}$), &
+          nearest(tiny(mold), -1.0_${k}$), epsilon(mold), nearest(1.0_${k}$, 2.0_${k}$), &
+          ieee_value(mold, ieee_quiet_nan), ieee_value(mold, ieee_positive_inf), ieee_value(mold, ieee_negative_inf) ]
+  end function edges_${k}$
+
+  function values_${k}$(mold, n) result(x)
+    real(${k}$), intent(in)     :: mold
+    integer,   intent(in)     :: n
+    real(${k}$), allocatable    :: x(:), random(:)
+
+    allocate( random(n) )
+    call random_values(random)
+    x = [ edges_${k}$(mold), random ]
+  end function values_${k}$
+#:if k in QUAD_KINDS
+#endif
+#:endif
+
+#:endfor
+#:for c, r in COMPLEX_KINDS
+#:if c in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+  subroutine random_${c}$(z)
+    complex(${r}$), intent(out) :: z(:)
+
+    real(${r}$), allocatable :: re(:), im(:)
+
+    allocate( re(size(z)), im(size(z)) )
+    call random_values(re)
+    call random_values(im)
+    z = cmplx(re, im, kind=${r}$)
+  end subroutine random_${c}$
+
+  function edges_${c}$(mold) result(z)
+    !! Every pair of real edge values.
+    complex(${r}$), intent(in)     :: mold
+    complex(${r}$), allocatable    :: z(:)
+
+    real(${r}$), allocatable :: parts(:)
+    integer                :: i, j, n
+
+    parts = edges_${r}$(real(mold))
+    n = size(parts)
+
+    allocate( z(n*n) )
+    do j = 1, n
+      do i = 1, n
+        z(i + (j-1)*n) = cmplx(parts(i), parts(j), kind=${r}$)
+      end do
+    end do
+  end function edges_${c}$
+
+  function values_${c}$(mold, n) result(z)
+    complex(${r}$), intent(in)     :: mold
+    integer,      intent(in)     :: n
+    complex(${r}$), allocatable    :: z(:), random(:)
+
+    allocate( random(n) )
+    call random_values(random)
+    z = [ edges_${c}$(mold), random ]
+  end function values_${c}$
+#:if c in QUAD_KINDS
+#endif
+#:endif
+
+#:endfor
+end module test_values

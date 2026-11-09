@@ -13,7 +13,7 @@ messages to a log file:
 
 ```fortran
 program main
-    use io_fortran_lib, only: echo, str, LF
+    use io_fortran_lib, only: echo, str, IOFL_LF
     implicit none (type, external)
 
     character(len=:), allocatable :: logfile, logmsg
@@ -24,7 +24,7 @@ program main
     logfile = "logfile_main_"//trim(adjustl(date))//"_"//time//".log"
 
     logmsg = "PROGRAM MAIN - BEGINNING EXECUTION"
-    call echo(logmsg//LF//repeat("-", ncopies=len(logmsg)), file=logfile)
+    call echo(logmsg//IOFL_LF//repeat("-", ncopies=len(logmsg)), file=logfile)
 
     ! ...
 
@@ -34,7 +34,7 @@ program main
     read(*,*) errstat
 
     if ( errstat /= 0 ) then
-        logmsg = "Process has non-zero exit status: "//str(errstat)//LF//"Stopping..."
+        logmsg = "Process has non-zero exit status: "//str(errstat)//IOFL_LF//"Stopping..."
         call echo(logmsg, logfile)
         error stop logmsg
     end if
@@ -50,7 +50,7 @@ Depending on style, one may wish to accumulate log messages into a
 
 ```fortran
 program main
-    use io_fortran_lib, only: String, str, LF, operator(+), operator(**)
+    use io_fortran_lib, only: String, str, IOFL_LF, operator(+), operator(**)
     implicit none (type, external)
 
     type(String) :: logmsg
@@ -62,16 +62,16 @@ program main
     logfile = "logfile_main_" + trim(adjustl(date)) + "_" + time + ".log"
 
     logmsg = String("PROGRAM MAIN - BEGINNING EXECUTION")
-    call logmsg%push(LF + "-"**logmsg%len() + LF)
+    call logmsg%push(IOFL_LF + "-"**logmsg%len() + IOFL_LF)
 
     ! ...
 
-    call logmsg%push("All is good so far..." + LF)
+    call logmsg%push("All is good so far..." + IOFL_LF)
 
     read(*,*) errstat
 
     if ( errstat /= 0 ) then
-        call logmsg%push("Process has non-zero exit status: " + str(errstat) + LF + "Stopping...")
+        call logmsg%push("Process has non-zero exit status: " + str(errstat) + IOFL_LF + "Stopping...")
         call logmsg%echo(logfile)
         error stop logmsg%as_str()
     end if

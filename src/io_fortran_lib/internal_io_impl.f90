@@ -702,7 +702,9 @@ submodule (io_fortran_lib) internal_io
     end if
 
     if ( x == 0e0_r128 ) then
-      text = zero_text(decimal, fmt, E_DIGITS); return
+      text = zero_text(decimal, fmt, E_DIGITS)
+      if ( ieee_is_negative(x) ) text = "-"//text
+      return
     end if
 
     if ( fmt == "e" ) then
@@ -765,7 +767,9 @@ submodule (io_fortran_lib) internal_io
     end if
 
     if ( x == 0e0_r64 ) then
-      text = zero_text(decimal, fmt, E_DIGITS); return
+      text = zero_text(decimal, fmt, E_DIGITS)
+      if ( ieee_is_negative(x) ) text = "-"//text
+      return
     end if
 
     if ( fmt == "e" ) then
@@ -827,7 +831,9 @@ submodule (io_fortran_lib) internal_io
     end if
 
     if ( x == 0e0_r32 ) then
-      text = zero_text(decimal, fmt, E_DIGITS); return
+      text = zero_text(decimal, fmt, E_DIGITS)
+      if ( ieee_is_negative(x) ) text = "-"//text
+      return
     end if
 
     if ( fmt == "e" ) then
@@ -873,7 +879,7 @@ submodule (io_fortran_lib) internal_io
 
     text = join_complex( real_text_r128(x%re, decimal, fmt, decimals), &
                          real_text_r128(x%im, decimal, fmt, decimals), &
-                         x%im < 0e0_r128, decimal, fmt, im )
+                         ieee_is_negative(x%im), decimal, fmt, im )
   end function complex_text_c128
 #endif
 
@@ -886,7 +892,7 @@ submodule (io_fortran_lib) internal_io
 
     text = join_complex( real_text_r64(x%re, decimal, fmt, decimals), &
                          real_text_r64(x%im, decimal, fmt, decimals), &
-                         x%im < 0e0_r64, decimal, fmt, im )
+                         ieee_is_negative(x%im), decimal, fmt, im )
   end function complex_text_c64
 
   pure function complex_text_c32(x, decimal, fmt, decimals, im) result(text)
@@ -898,7 +904,7 @@ submodule (io_fortran_lib) internal_io
 
     text = join_complex( real_text_r32(x%re, decimal, fmt, decimals), &
                          real_text_r32(x%im, decimal, fmt, decimals), &
-                         x%im < 0e0_r32, decimal, fmt, im )
+                         ieee_is_negative(x%im), decimal, fmt, im )
   end function complex_text_c32
 
 

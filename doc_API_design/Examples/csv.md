@@ -120,19 +120,29 @@ of `elemental` procedures.
 `column_separator` when writing and reading text files with
 [write_file](../Ref/String-methods.html#write_file) and
 [read_file](../Ref/String-methods.html#read_file). The default
-`row_separator` is `LF`, and the default `column_separator` is `","`.
+`row_separator` is `IOFL_LF`, and the default `column_separator` is `","`.
 
 @note Files with `CRLF` line endings are read correctly with the
 default `row_separator`.
 
-For a slightly more advanced example, consider the following program
-to read in and cast the data of mixed type contained in the example
-data `/data/ancestry_comp.csv`:
+For a slightly more advanced example, consider a file `segments.csv`
+of mixed data, with `CRLF` line endings and a quoted first column that
+contains commas:
+
+```text
+Group,Copy,Chromosome,Start Point,End Point
+"North, Coastal & Island",1,chr3,43161545,168717618
+"North, Coastal & Island",2,chr6,18091973,93456038
+"South, Inland",1,chr8,34845054,128939702
+"South, Inland",2,chrX,2781479,155701383
+```
+
+The following program reads it in and casts each column:
 
 ```fortran
 program main
     use, intrinsic :: iso_fortran_env, only: int8, int64
-    use io_fortran_lib, only: String, cast, CR, LF, operator(+), operator(-)
+    use io_fortran_lib, only: String, cast, IOFL_CR, IOFL_LF, operator(+), operator(-)
     implicit none (type, external)
 
     type(String) :: csv
@@ -142,7 +152,7 @@ program main
     integer(int64), allocatable :: start_point(:), end_point(:)
     integer :: nrows
 
-    call csv%read_file("./data/ancestry_comp.csv", cell_array=cells, row_separator=CR+LF)
+    call csv%read_file("segments.csv", cell_array=cells, row_separator=IOFL_CR+IOFL_LF)
     write(*,*) csv
 
     nrows = size(cells, dim=1) - 1
@@ -158,7 +168,7 @@ end program main
 
 Here, `file` is a relative path, and we use the extended operator `+`
 for [concatenation](../Ref/operators.html#concatenation) in the
-`character` expression `CR+LF`. We then allocate data arrays and cast
+`character` expression `IOFL_CR+IOFL_LF`. We then allocate data arrays and cast
 each column into respective arrays. Note that we must use
 [cast](../Ref/cast.html) as a standalone subroutine to accept the
 `String`-valued expression
@@ -178,5 +188,5 @@ contains numeric characters only, which are then casted to the array
 @note In general, for other
 [text file extensions](../UserInfo/file-ext.html), one would specify
 the `column_separator` associated with the given file. For instance,
-one would specify `column_separator=TAB` for the file formats `.bed`,
+one would specify `column_separator=IOFL_TAB` for the file formats `.bed`,
 `.gff`, and `.gtf`.

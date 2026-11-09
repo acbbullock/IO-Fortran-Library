@@ -1,6 +1,6 @@
 ---
 project: IO-Fortran-Library
-version: 2.0.0
+version: 2.1.0
 summary: A portable, standard I/O library for Modern Fortran
 author: Austin C Bullock
 github: https://github.com/acbbullock
@@ -65,7 +65,7 @@ units to access the routines:
 
 ```toml
 [dependencies]
-IO-Fortran-Library = { git="https://github.com/acbbullock/IO-Fortran-Library", tag="v2.0.0" }
+IO-Fortran-Library = { git="https://github.com/acbbullock/IO-Fortran-Library", tag="v2.1.0" }
 ```
 
 See the [important user information](page/UserInfo/index.html) and

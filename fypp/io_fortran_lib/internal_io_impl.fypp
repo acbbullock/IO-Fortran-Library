@@ -514,7 +514,9 @@ submodule (io_fortran_lib) internal_io
     end if
 
     if ( x == 0e0_${k}$ ) then
-      text = zero_text(decimal, fmt, E_DIGITS); return
+      text = zero_text(decimal, fmt, E_DIGITS)
+      if ( ieee_is_negative(x) ) text = "-"//text
+      return
     end if
 
     if ( fmt == "e" ) then
@@ -567,7 +569,7 @@ submodule (io_fortran_lib) internal_io
 
     text = join_complex( real_text_${r}$(x%re, decimal, fmt, decimals), &
                          real_text_${r}$(x%im, decimal, fmt, decimals), &
-                         x%im < 0e0_${r}$, decimal, fmt, im )
+                         ieee_is_negative(x%im), decimal, fmt, im )
   end function complex_text_${k}$
 #:if k in QUAD_KINDS
 #endif

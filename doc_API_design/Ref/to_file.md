@@ -56,7 +56,8 @@ call to_file(x, file [, header, locale, delim, fmt, decimals, im, stat, errmsg, 
 * `errmsg` is `optional` and of type `character(len=*)`
 
 For writing binary data from an array `x` of any rank `1`-`15` and of
-type `integer`, `real`, `complex`:
+type `integer`, `real`, `complex`, to a raw binary file or a NumPy
+[.npy file](../UserInfo/file-ext.html#numpy-npy-files):
 
 ```fortran
 call to_file(x, file [, stat, errmsg, format])
@@ -69,7 +70,7 @@ call to_file(x, file [, stat, errmsg, format])
 @note `file` may be a relative path, but absolute paths are not
 guaranteed to work on every platform.
 
-@note `to_file` will always use the `NL` line ending when writing text
+@note `to_file` will always use the `IOFL_NL` line ending when writing text
 files (which on most systems equates to `LF`).
 
 ### Optional Arguments
@@ -115,5 +116,5 @@ default, `complex` numbers will be written as ordered pairs, e.g.
 a sum with the specified imaginary unit, e.g. `2.45+3.45j` for `im="j"`
 or `2.45+3.45*1i` for `im="*1i"`.
 
-Format: `format` is `optional`, and may be `"text"` or `"binary"`. If it is
+Format: `format` is `optional`, and may be `"text"`, `"binary"` or `"npy"`. If it is
 not present, the format comes from the [file extension](../UserInfo/file-ext.html).

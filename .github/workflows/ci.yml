@@ -2,20 +2,25 @@ name: CI
 
 on:
   push:
-    branches: [main, "2.0"]
+    branches: [main, "2.1"]
   pull_request:
 
 permissions:
   contents: read
 
+# The fpm release used by every job. The Intel macOS job builds it from source, checked against this digest.
+env:
+  IOFL_FPM_VERSION: "0.13.0"
+  IOFL_FPM_SHA256: 001cff6cf1145f215baa0888ba27acc06cea30a89b79d1a8be97db3fffbc8cd2
+
 jobs:
   test:
-    name: ${{ matrix.toolchain.compiler }} ${{ matrix.toolchain.version }} ${{ matrix.kinds }}
+    name: ${{ matrix.toolchain.compiler }} ${{ matrix.toolchain.version }} ${{ matrix.toolchain.label }}
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
-        kinds: ["-D R4 -D I1", "-D R8 -D I4", "-D R16 -D I8"]
+        # The tests cover every kind in one build. flang has no real128, so it builds without those procedures.
         toolchain:
           - { compiler: gcc, version: "13", fpm: gfortran, flags: "-std=f2018 -O2 -g -fbacktrace" }
           - { compiler: gcc, version: "14", fpm: gfortran, flags: "-std=f2018 -O2 -g -fbacktrace" }
@@ -23,11 +28,9 @@ jobs:
           - { compiler: gcc, version: "16", fpm: gfortran, flags: "-std=f2018 -O2 -g -fbacktrace" }
           - { compiler: intel, version: "2025.3", fpm: ifx, flags: "-stand f18 -O2" }
           - { compiler: intel, version: "2026.1", fpm: ifx, flags: "-stand f18 -O2" }
-          - { compiler: flang, version: "23", fpm: flang-new, flags: "-O2 -cpp" }
-        exclude:
-          # flang has no real128 kind in the builds tested so far, so the library compiles without those procedures.
-          - kinds: "-D R16 -D I8"
-            toolchain: { compiler: flang, version: "23", fpm: flang-new, flags: "-O2 -cpp" }
+          - { compiler: intel, version: "2026.1", fpm: ifx, label: "runtime checks",
+              flags: "-stand f18 -check all -check nouninit -O0 -g -traceback -assume byterecl" }
+          - { compiler: flang, version: "23", fpm: flang, flags: "-O2" }
     steps:
       - uses: actions/checkout@v7
       - uses: fortran-lang/setup-fortran@v1
@@ -48,9 +51,9 @@ jobs:
           echo "/usr/lib/llvm-$v/bin" >> "$GITHUB_PATH"
       - uses: fortran-lang/setup-fpm@v10
         with:
-          fpm-version: v0.12.0
+          fpm-version: v${{ env.IOFL_FPM_VERSION }}
       - name: Run tests
-        run: fpm test --compiler ${{ matrix.toolchain.fpm }} --flag "${{ matrix.toolchain.flags }} ${{ matrix.kinds }}"
+        run: fpm test --compiler ${{ matrix.toolchain.fpm }} --flag "${{ matrix.toolchain.flags }}"
 
   platforms:
     name: ${{ matrix.os }} ${{ matrix.compiler }} ${{ matrix.version }}
@@ -59,11 +62,17 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          # setup-fpm's macOS binaries need Homebrew's gcc@12 runtime, which the runners don't have, so on macOS fpm is
+          # built from source. flang can't compile fpm, so the flang job builds it with Homebrew's gfortran.
           # Apple Silicon has no REAL(16), so this also tests building without the real128 procedures.
-          - { os: macos-15, compiler: gcc, version: "16", flags: "-std=f2018 -O2 -g -fbacktrace" }
-          - { os: macos-15, compiler: flang, version: "23", flags: "-O2 -cpp" }
+          - { os: macos-15, compiler: gcc, version: "16", flags: "-std=f2018 -O2 -g -fbacktrace", fpm: source }
+          - { os: macos-15, compiler: flang, version: "23", flags: "-O2", fpm: source, fpm_fc: gfortran }
+          # Intel macOS has REAL(16), but Homebrew has no gcc 16 for it.
+          - { os: macos-15-intel, compiler: gcc, version: "15", flags: "-std=f2018 -O2 -g -fbacktrace", fpm: source }
           - { os: windows-2025, compiler: gcc, version: "16", flags: "-std=f2018 -O2 -g -fbacktrace" }
-          - { os: windows-2025, compiler: intel, version: "2026.1", flags: "" }
+          # setup-fortran sets cl as the C compiler, which ignores the -o that fpm passes, so the tests' C file
+          # is compiled with LLVM's clang.
+          - { os: windows-2025, compiler: intel, version: "2026.1", flags: "", cc: clang }
     steps:
       - uses: actions/checkout@v7
       - uses: fortran-lang/setup-fortran@v1
@@ -72,14 +81,20 @@ jobs:
           compiler: ${{ matrix.compiler }}
           version: ${{ matrix.version }}
       - uses: fortran-lang/setup-fpm@v10
+        if: matrix.fpm != 'source'
         with:
-          fpm-version: v0.12.0
-      - name: Name flang so that fpm uses flang-new options
-        if: matrix.compiler == 'flang'
+          fpm-version: v${{ env.IOFL_FPM_VERSION }}
+      - name: Build fpm from its single-file source
+        if: matrix.fpm == 'source'
         run: |
-          mkdir -p "$HOME/flang-bin"
-          ln -sf "$(command -v ${{ steps.setup-fortran.outputs.fc }})" "$HOME/flang-bin/flang-new"
-          echo "$HOME/flang-bin" >> "$GITHUB_PATH"
+          mkdir -p "$HOME/fpm-bin" && cd "$HOME/fpm-bin"
+          src="fpm-$IOFL_FPM_VERSION.F90"
+          curl -fsSLO "https://github.com/fortran-lang/fpm/releases/download/v$IOFL_FPM_VERSION/$src"
+          echo "$IOFL_FPM_SHA256  $src" | shasum -a 256 -c -
+          fc="${{ matrix.fpm_fc || steps.setup-fortran.outputs.fc }}"
+          if ! command -v "$fc" > /dev/null; then brew install gcc; fi
+          "$fc" -O2 -J . "$src" -o fpm
+          echo "$HOME/fpm-bin" >> "$GITHUB_PATH"
       - name: Move GNU link aside so that ifx finds the Microsoft linker
         if: runner.os == 'Windows' && matrix.compiler == 'intel'
         shell: pwsh
@@ -89,7 +104,9 @@ jobs:
             ForEach-Object { Write-Host "Moving $($_.Source)"; Rename-Item $_.Source "$($_.Source).gnu" }
           Get-Command link -All -CommandType Application -ErrorAction SilentlyContinue | ForEach-Object { $_.Source }
       - name: Run tests
-        run: fpm test --compiler ${{ matrix.compiler == 'flang' && 'flang-new' || steps.setup-fortran.outputs.fc }} --flag "${{ matrix.flags }} -D R8 -D I4"
+        run: >-
+          fpm test --compiler ${{ steps.setup-fortran.outputs.fc }} --flag "${{ matrix.flags }}"
+          ${{ matrix.cc && format('--c-compiler {0}', matrix.cc) || '' }}
 
   checks:
     name: gfortran 16 runtime checks and sanitizers
@@ -102,16 +119,16 @@ jobs:
           version: "16"
       - uses: fortran-lang/setup-fpm@v10
         with:
-          fpm-version: v0.12.0
+          fpm-version: v${{ env.IOFL_FPM_VERSION }}
       - name: Runtime checks
-        run: fpm test --compiler gfortran --flag "-std=f2018 -g -fcheck=all -fbacktrace -D R8 -D I4"
+        run: fpm test --compiler gfortran --flag "-std=f2018 -g -fcheck=all -fbacktrace"
       - name: Address and undefined behavior sanitizers
-        # Leak checks are off because allocatables still allocated at the end of a main program are reported as leaks.
+        # Leak checks are on: every case runs in a subroutine, so nothing is left allocated at the end of the program.
         env:
-          ASAN_OPTIONS: detect_leaks=0:exitcode=99
+          ASAN_OPTIONS: detect_leaks=1:exitcode=99
         run: >-
           fpm test --compiler gfortran
-          --flag "-std=f2018 -g -O1 -fsanitize=address,undefined -fno-omit-frame-pointer -D R8 -D I4"
+          --flag "-std=f2018 -g -O1 -fsanitize=address,undefined -fno-omit-frame-pointer"
           --link-flag "-fsanitize=address,undefined"
 
   generated:
@@ -124,4 +141,6 @@ jobs:
       - name: Generate
         run: ./fypp/generate.sh
       - name: Compare
-        run: git diff --exit-code -- src
+        run: |
+          git diff --exit-code -- src test
+          test -z "$(git status --porcelain -- src test)" || { git status --porcelain -- src test; exit 1; }

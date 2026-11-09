@@ -46,5 +46,5 @@ Append (default is `.true.`): `append` specifies whether to append or
 to replace the file `file`. Either way, the file will be created if it
 does not exist.
 
-Terminator (default is `LF`): `terminator` is a string terminator
+Terminator (default is `IOFL_LF`): `terminator` is a string terminator
 inserted at the end of the input string.

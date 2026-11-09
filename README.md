@@ -18,7 +18,7 @@ module in your program units to access the routines:
 
 ```toml
 [dependencies]
-IO-Fortran-Library = { git="https://github.com/acbbullock/IO-Fortran-Library", tag="v2.0.0" }
+IO-Fortran-Library = { git="https://github.com/acbbullock/IO-Fortran-Library", tag="v2.1.0" }
 ```
 
 The module is fully self-contained, with no external dependencies, and
@@ -33,7 +33,8 @@ All array-based routines additionally support up to rank 15.
 
 The library is tested with `gfortran` 13 to 16, `ifx` 2025.3 and 2026, and
 `flang` 23 on Linux, with `gfortran` 16 and `flang` 23 on macOS (Apple
-Silicon), and with `gfortran` 16 and `ifx` 2026 on Windows. See the
+Silicon), `gfortran` 15 on macOS (Intel), and `gfortran` 16 and `ifx` 2026
+on Windows. See the
 [CI workflow](.github/workflows/ci.yml) for details.
 
 The `real128` routines are enabled on `ifx`, and on `gfortran` targets with
@@ -46,19 +47,31 @@ add `include` to the include path.
 
 ## Tests
 
-Run `fpm test`, adding for instance `--flag "-D R8 -D I4"` to select the
-`real` and `integer` kinds under test. With `flang-new`, also add `-cpp`,
-since the test programs use `__LINE__` and `__FILE__`, and `fpm` does not
-enable the preprocessor for that compiler. A failing test ends with a nonzero
-exit status. Test output goes to `test/output`.
+Run `fpm test`. One build tests every kind and rank. With fpm 0.12 and
+`flang`, use `--compiler flang-new --flag -cpp`, since fpm 0.12 does not
+enable the preprocessor for that compiler; fpm 0.13 does. A failing test ends with a nonzero exit status. Test output goes
+to `test/output`.
 
-`test/units/regression-test.f90` records known bugs as expected failures. If
-you fix one, the test fails until you update its marker to `FIXED`.
+The main suite is `test/tests.f90`, with its cases in `test/suite/`. Each
+case runs in its own process, so a case can check that a call ends the
+program with `error stop`, and a crash in one case doesn't stop the others.
+To run part of the suite, pass a pattern that matches `group/name`:
+
+```
+fpm test tests -- cast/                       # the cases in one group
+fpm test tests -- crlf                        # every case with "crlf" in its name
+fpm test tests -- --list                      # list the cases
+fpm test tests -- --in-process read_crlf      # run in one process, for a debugger
+```
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for how to add a case, what the
+`KNOWN_BUG` and `STOPS` markers mean, and how the generated sources work.
 
 ## Generated sources
 
-Most sources in `src` are generated from the templates in `fypp`, one per
-kind or rank, and are committed so that using the library does not need
+Most sources in `src`, and part of the test suite in `test/suite`, are
+generated from the templates in `fypp`, one per kind or rank, and are
+committed so that using the library does not need
 [fypp](https://github.com/aradi/fypp). A generated file says so on its first
 line. To change one, edit its template, run `fypp/generate.sh`, and commit
 both. CI fails if they do not match.
@@ -80,6 +93,30 @@ For further information, see the
 and the
 [tutorials](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Examples/index.html)
 for complete example programs.
+
+## Release Notes v2.1.0
+
+Version 2.1 is compatible with 2.0: code that compiles against 2.0 compiles unchanged and gives the same results, except where noted under Fixed.
+
+### Added
+
+* `IOFL_`-prefixed names for the character constants: `IOFL_NL`, `IOFL_SPACE`, `IOFL_CR`, `IOFL_LF`, `IOFL_TAB`, `IOFL_FF`, `IOFL_VT`, `IOFL_BELL` and `IOFL_NUL`. The old names such as `CR`, `LF` and `TAB` stay, but they clash with variable names in a program that uses the module without an `only` list, so the documentation now uses the new names.
+* NumPy `.npy` files, selected by the `npy` extension or `format="npy"`. `to_file` writes them and `from_file` reads them, taking the shape from the file, so `data_shape` is not needed and the wrong kind or rank is an error rather than garbage. Files from `numpy.save`, in C order or either byte order, read correctly. `real128` is not supported, since NumPy has no IEEE quad type.
+* The error codes are exported as `IOFL_READ_ERR`, `IOFL_WRITE_ERR`, `IOFL_ALLOC_ERR` and `IOFL_ARG_ERR`, with the same values as before, so `stat` can be tested by name.
+
+### Changed
+
+* The `data` directory is gone, so a project that depends on the library no longer downloads 4.4 MB of test data. The tests generate their data, and the tutorials say where to get the files they use.
+* CI uses fpm 0.13, which builds with `flang` under that name and enables its preprocessor, so the tests no longer need `flang-new` or `--flag -cpp`. fpm 0.12 still works.
+
+### Known issue
+
+* With `gfortran` on Windows, any program that does a lot of formatted I/O can crash at random inside `setlocale`, because libgfortran restores the numeric locale from a string the C runtime has already freed ([GCC bug 128183](https://gcc.gnu.org/bugzilla/show_bug.cgi?id=128183)). The library's conversions do formatted I/O, so they are affected, but so is any `write` or `read` with a format. The [compiler notes](https://acbbullock.github.io/IO-Fortran-Library/doc/page/UserInfo/compilers.html) give a short C file that avoids it, which the tests now use.
+
+### Fixed
+
+* `fmt="e"` and `fmt="f"` dropped the sign of negative zero, writing `0.0e+000` for `-0.0`, so it read back as positive zero. Complex values with a negative zero imaginary part were also written as `1.0e+000+-0.0e+000j`. `fmt="z"` was already correct.
+* `to_file` without `decimals` wrote text with at most 150 decimals, so with `fmt="f"` values below 1e-150 were written as zero, and `real64` values below about 1e-133 lost digits. It now uses the same default as `str`, which reads back exactly.
 
 ## Release Notes v2.0.0
 
