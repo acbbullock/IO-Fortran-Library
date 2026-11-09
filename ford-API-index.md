@@ -65,7 +65,7 @@ units to access the routines:
 
 ```toml
 [dependencies]
-IO-Fortran-Library = { git="https://github.com/acbbullock/IO-Fortran-Library", tag="v2.0.0" }
+IO-Fortran-Library = { git="https://github.com/acbbullock/IO-Fortran-Library", tag="v2.1.0" }
 ```
 
 See the [important user information](page/UserInfo/index.html) and

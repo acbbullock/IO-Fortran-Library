@@ -18,7 +18,7 @@ module in your program units to access the routines:
 
 ```toml
 [dependencies]
-IO-Fortran-Library = { git="https://github.com/acbbullock/IO-Fortran-Library", tag="v2.0.0" }
+IO-Fortran-Library = { git="https://github.com/acbbullock/IO-Fortran-Library", tag="v2.1.0" }
 ```
 
 The module is fully self-contained, with no external dependencies, and
@@ -94,7 +94,7 @@ and the
 [tutorials](https://acbbullock.github.io/IO-Fortran-Library/doc/page/Examples/index.html)
 for complete example programs.
 
-## Release Notes v2.1.0 (in development)
+## Release Notes v2.1.0
 
 Version 2.1 is compatible with 2.0: code that compiles against 2.0 compiles unchanged and gives the same results, except where noted under Fixed.
 
