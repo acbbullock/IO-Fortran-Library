@@ -1,7 +1,7 @@
 ---
 project: IO-Fortran-Library
-version: 2.1.1
-summary: Text, CSV, binary and NumPy .npy file I/O, number-text conversion, and a String type, in standard Fortran 2018
+version: 2.2.0
+summary: Text, CSV, binary and NumPy .npy and .npz file I/O, number-text conversion, and a String type, in standard Fortran 2018
 author: Austin C Bullock
 github: https://github.com/acbbullock
 project_github: https://github.com/acbbullock/IO-Fortran-Library
@@ -65,7 +65,7 @@ units to access the routines:
 
 ```toml
 [dependencies]
-IO-Fortran-Library = { git="https://github.com/acbbullock/IO-Fortran-Library", tag="v2.1.1" }
+IO-Fortran-Library = { git="https://github.com/acbbullock/IO-Fortran-Library", tag="v2.2.0" }
 ```
 
 See the [important user information](page/UserInfo/index.html) and

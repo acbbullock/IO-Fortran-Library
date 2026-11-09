@@ -33,7 +33,7 @@ contains
 
     file = scratch()
 
-    call to_file([1.0_real64], file=file//".tsv")
+    call to_file([1.0_real64], file=file//".dta")
   end subroutine to_file_bad_extension
 
   subroutine write_file_bad_extension()
@@ -43,7 +43,7 @@ contains
     file = scratch()
 
     cell = String("a")
-    call s%write_file(cell, file=file//".tsv")
+    call s%write_file(cell, file=file//".dta")
   end subroutine write_file_bad_extension
 
   subroutine echo_bad_extension()
@@ -51,7 +51,7 @@ contains
 
     file = scratch()
 
-    call echo("text", file=file//".tsv")
+    call echo("text", file=file//".dta")
   end subroutine echo_bad_extension
 
   subroutine format_text_any_extension()
@@ -62,9 +62,9 @@ contains
 
     file = scratch(); st = 0; msg = ""
 
-    call to_file([1.5_real64,2.5_real64], file=file//".tsv", format="text", stat=st, errmsg=msg)
+    call to_file([1.5_real64,2.5_real64], file=file//".dta", format="text", stat=st, errmsg=msg)
     call expect_equal(st, 0, "The write should succeed.")
-    call from_file(file//".tsv", into=v, format="text", stat=st, errmsg=msg)
+    call from_file(file//".dta", into=v, format="text", stat=st, errmsg=msg)
     call check((st == 0) .and. all(v == [1.5_real64,2.5_real64]), "The data should survive a round trip.")
     call to_file([1.5_real64], file=file//"_no_extension", format="text", stat=st, errmsg=msg)
     call expect_equal(st, 0, "No extension is needed with format.")
@@ -120,8 +120,8 @@ contains
     file = scratch(); st = 0; msg = ""
 
     one_row(1,1) = String("a"); one_row(1,2) = String("b")
-    call s%write_file(one_row, file=file//".tsv", column_separator=IOFL_TAB, format="text")
-    call s%read_file(file//".tsv", cell_array=cells, column_separator=IOFL_TAB, format="text")
+    call s%write_file(one_row, file=file//".dta", column_separator=IOFL_TAB, format="text")
+    call s%read_file(file//".dta", cell_array=cells, column_separator=IOFL_TAB, format="text")
     call expect_equal(cells(1,2), "b", "read_file and write_file should accept format.")
     call echo("line", file=file//".json", format="text", stat=st, errmsg=msg)
     call expect_equal(st, 0, "echo should accept format.")

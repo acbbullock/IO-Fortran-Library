@@ -1,6 +1,6 @@
 ! Generated from fypp/io_fortran_lib/internal_io_impl.fypp by fypp/generate.sh. Edit that file, not this one.
 #include "iofl_config.inc"
-submodule (io_fortran_lib) internal_io
+submodule (io_fortran_lib) io_internal
   !---------------------------------------------------------------------------------------------------------------------
   !! This submodule provides module procedure implementations for the **public interfaces** `String`, `str`, and
   !! `cast`.
@@ -1421,4 +1421,4 @@ submodule (io_fortran_lib) internal_io
     if ( status == 0 ) value = cmplx(re_part, im_part, kind=r32)
   end subroutine parse_complex_c32
 
-end submodule internal_io
+end submodule io_internal

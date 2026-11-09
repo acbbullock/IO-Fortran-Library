@@ -1,23 +1,26 @@
 name = "IO-Fortran-Library"
-version = "2.1.1"
+version = "2.2.0"
 license = "MIT"
 author = "Austin C Bullock"
 maintainer = "acb.bullock@gmail.com"
 copyright = "© 2022, Austin C Bullock"
-description = "Text, CSV, binary and NumPy .npy file I/O, number-text conversion, and a String type, in standard Fortran 2018"
+description = "Text, CSV, binary and NumPy .npy and .npz file I/O, number-text conversion, and a String type, in standard Fortran 2018"
 homepage = "https://acbbullock.github.io/IO-Fortran-Library/"
 categories = ["io", "strings"]
 keywords = ["csv", "file-io", "numpy", "npy", "binary", "string", "text", "fortran2018"]
 
 executable = [
   { name = "benchmark-array", source-dir = "benchmarks", main = "benchmark-array.f90" },
-  { name = "benchmark-ints", source-dir = "benchmarks", main = "benchmark-ints.f90" }
+  { name = "benchmark-ints", source-dir = "benchmarks", main = "benchmark-ints.f90" },
+  { name = "benchmark-compare", source-dir = "benchmarks", main = "benchmark-compare.f90" }
 ]
 
 [build]
 auto-executables = false
 auto-tests = true
 auto-examples = true
+# Every module and submodule name starts with io_, as the fpm registry requires (#66).
+module-naming = "io"
 
 [install]
 library = true

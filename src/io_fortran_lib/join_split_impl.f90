@@ -1,4 +1,4 @@
-submodule (io_fortran_lib) join_split
+submodule (io_fortran_lib) io_join_split
   !---------------------------------------------------------------------------------------------------------------------
   !! This submodule provides module procedure implementations for the **public interfaces** `join` and `split`.
   !---------------------------------------------------------------------------------------------------------------------
@@ -136,4 +136,4 @@ submodule (io_fortran_lib) join_split
       end if
     end do positional_transfers
   end procedure split_string
-end submodule join_split
+end submodule io_join_split

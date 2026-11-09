@@ -8,9 +8,11 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24068278.svg)](https://doi.org/10.5281/zenodo.24068278)
 
 A Fortran library for reading and writing text, CSV, binary and NumPy
-`.npy` files, converting between numbers and text, and working with
-strings through a `String` type. It is a single module, `io_fortran_lib`,
-written in standard Fortran 2018 with no dependencies. The routines
+`.npy` and `.npz` files, converting between numbers and text, and working with
+strings through a `String` type. Everything is in one module,
+`io_fortran_lib`, apart from string functions for `character` values in
+a second, `io_strings`. It is written in standard Fortran 2018 with no
+dependencies. The routines
 accept all intrinsic numeric types and kinds (`int8` to `int64`, and
 `real32` to `real128` for `real` and `complex` where the compiler has
 them), and arrays up to rank 15.
@@ -22,7 +24,7 @@ Add the library to your [fpm](https://fpm.fortran-lang.org) project's
 
 ```toml
 [dependencies]
-IO-Fortran-Library = { git="https://github.com/acbbullock/IO-Fortran-Library", tag="v2.1.1" }
+IO-Fortran-Library = { git="https://github.com/acbbullock/IO-Fortran-Library", tag="v2.2.0" }
 ```
 
 Then `use io_fortran_lib`. This program writes an array to a CSV file and
@@ -56,20 +58,26 @@ end program quickstart
 ## Features
 
 * **Delimited text files.** `to_file` and `from_file` write and read
-  numeric arrays as CSV or any other delimiter, with an optional header.
+  numeric, `logical` and text arrays as CSV or any other delimiter, with
+  an optional header.
   Values are written in scientific (`e`), fixed (`f`) or hexadecimal (`z`)
   form, all of which read back exactly, with a `.` or `,` decimal mark.
   For tables of mixed types, `read_file` and `write_file` read and write
   a whole file as an array of `String` cells, handling quoted cells.
 * **Binary and NumPy files.** Raw binary `.dat` and `.bin` files, and
-  NumPy `.npy` files that `numpy.load` reads and `numpy.save` writes. A
-  `.npy` file carries its own shape, kind and byte order.
+  NumPy `.npy` files, including `logical` arrays as `bool`, that
+  `numpy.load` reads and `numpy.save` writes. A `.npy` file carries its
+  own shape, kind and byte order. A `.npz` archive holds several arrays
+  by name, as `numpy.savez` writes them.
 * **Numbers and text.** `str`, `String` and `cast` convert between numbers
   and text in either direction, in any of the formats above, and report
   text that is not a valid number instead of returning a wrong value.
 * **A `String` type.** Operators for concatenation and for removing or
   repeating text, `split` and `join`, `replace`, `count` and `trim`,
-  ordering comparisons, and reading a file whole or a line at a time.
+  case conversion, `starts_with`, `ends_with` and `find`, ordering
+  comparisons, and reading a file whole or a line at a time. The
+  `io_strings` module provides the same operations for `character`
+  values, with the names used by the Fortran standard library.
 * **Output.** `aprint` prints an array as a table, and `echo` appends
   text to a log file.
 * **Errors that are not silent.** A failing call stops the program with a
@@ -90,21 +98,31 @@ in [`example`](example), where CI builds and runs them.
 ## Compilers
 
 The library is tested with `gfortran` 13 to 16, `ifx` 2025.3 and 2026, and
-`flang` 23 on Linux, with `gfortran` 16 and `flang` 23 on macOS (Apple
-Silicon), `gfortran` 15 on macOS (Intel), and `gfortran` 16 and `ifx` 2026
-on Windows. See the [CI workflow](.github/workflows/ci.yml) for details,
+`flang` 23 on Linux (x86-64), with `gfortran` 14 and `flang` 23 on ARM64
+Linux, `gfortran` 13 on big-endian s390x Linux, `gfortran` 16 and `flang` 23
+on macOS (Apple Silicon), `gfortran` 15 on macOS (Intel), and `gfortran` 16
+and `ifx` 2026 on Windows. See the [CI workflow](.github/workflows/ci.yml) for details,
 and the
 [compiler notes](https://acbbullock.github.io/IO-Fortran-Library/doc/page/UserInfo/compilers.html)
 for known compiler bugs, including one in `gfortran` on Windows that can
 crash formatted I/O and how to avoid it.
 
+`nvfortran` (NVIDIA HPC SDK) and AMD's AOCC `flang` are not supported. They
+lack parts of Fortran 2018 that the library relies on, most of all
+`select rank`, as well as arrays above rank 7. A separate
+[workflow](.github/workflows/experimental.yml) runs them weekly, along with
+LFortran, to show when a new release can build the library.
+
 The `real128` routines are enabled on `ifx`, and on `gfortran` targets with
 `REAL(16)`. They are left out on other compilers, including `flang`. To
 override this detection, compile with `-DIOFL_HAS_R128` or `-DIOFL_NO_R128`.
 
-`fpm` handles the preprocessor and include path for you. To compile the
-sources by other means, add `-cpp` (`gfortran`, `flang`) or `-fpp` (`ifx`),
-and add `include` to the include path.
+`fpm` handles the preprocessor, include path and compile order for you.
+To compile the sources by other means, add `-cpp` (`gfortran`, `flang`) or
+`-fpp` (`ifx`), add `include` to the include path, and compile
+`src/modules/io_fortran_lib_mod.f90`, then `src/modules/io_strings_mod.f90`,
+then `src/io_fortran_lib/*.f90`. [`ci/build-without-fpm.sh`](ci/build-without-fpm.sh)
+does exactly this, and CI runs it.
 
 ## Contributing
 
@@ -118,10 +136,11 @@ for bugs, open an
 
 ## Changelog
 
-[CHANGELOG.md](CHANGELOG.md) has the notes for every release. Version 2.1
-added NumPy `.npy` files, `IOFL_`-prefixed names for the exported
-constants and error codes, and two fixes for values written with
-`fmt="e"` and `fmt="f"`.
+[CHANGELOG.md](CHANGELOG.md) has the notes for every release. Version 2.2
+added `.tsv` files, NumPy `.npz` archives, `logical`, `String` and
+`character` arrays in `to_file` and `from_file`, column names from a
+header, and new string operations, with the `io_strings` module for
+`character` values.
 
 ## Citing
 

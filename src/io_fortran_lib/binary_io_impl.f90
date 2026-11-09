@@ -1,6 +1,6 @@
 ! Generated from fypp/io_fortran_lib/binary_io_impl.fypp by fypp/generate.sh. Edit that file, not this one.
 #include "iofl_config.inc"
-submodule (io_fortran_lib) binary_io
+submodule (io_fortran_lib) io_binary
   !---------------------------------------------------------------------------------------------------------------------
   !! This submodule provides module procedure implementations for the **private interfaces** `to_binary` and
   !! `from_binary`.
@@ -1754,4 +1754,4 @@ submodule (io_fortran_lib) binary_io
     stat=0; errmsg=EMPTY_STR
   end procedure from_binary_i8
 
-end submodule binary_io
+end submodule io_binary

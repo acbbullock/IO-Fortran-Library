@@ -28,8 +28,8 @@ body:
     id: library-version
     attributes:
       label: Library version
-      description: The tag or commit in your fpm.toml, such as v2.1.0.
-      placeholder: v2.1.0
+      description: The tag or commit in your fpm.toml, such as v2.2.0.
+      placeholder: v2.2.0
     validations:
       required: true
   - type: input

@@ -7,6 +7,66 @@ breaking changes first. The
 [releases page](https://github.com/acbbullock/IO-Fortran-Library/releases)
 has the same notes, along with the pre-releases.
 
+## [2.2.0](https://github.com/acbbullock/IO-Fortran-Library/releases/tag/v2.2.0) - 2026-11-09
+
+New file formats and types: `.tsv` files, NumPy `.npz` archives, and `logical`, `String` and `character` arrays.
+`from_file` returns a header's column names, and there are new string operations, also as functions on
+`character` values in a new module, `io_strings`. CI adds ARM64, big-endian s390x, a build without fpm, test
+coverage and benchmarks. Code written for 2.1 works unchanged. The work is tracked in the
+[2.2 milestone](https://github.com/acbbullock/IO-Fortran-Library/milestone/3).
+
+### Added
+
+* `.tsv` files. `tsv` is a text file extension, and a `.tsv` file is separated by tabs unless `delim` (or
+  `column_separator` for `read_file` and `write_file`) says otherwise (#70).
+* `column_names` for `from_file`, which returns a text file's header row as a `String` array, one name per column,
+  and implies `header=.true.` (#71).
+* `String` methods `to_upper`, `to_lower`, `starts_with`, `ends_with` and `find`, and an optional `chars` for
+  `trim` and `trim_inplace`, which removes the given characters instead of whitespace (#72).
+* A module, `io_strings`, with the same operations as functions on `character` and `String` values: `to_upper`,
+  `to_lower`, `starts_with`, `ends_with`, `find` and `trim(string, chars)`, named and called as in the Fortran
+  standard library. They are kept out of `io_fortran_lib`, so that a program using it without an `only` list can
+  still define procedures with these names (#72).
+* `to_file` and `from_file` for `logical` arrays. Text files hold `T` and `F`, which list-directed input reads, or `1`
+  and `0` with `fmt="bit"`; reading accepts any form list-directed input does, such as `.true.`. `.npy` files store
+  them as NumPy's one-byte `bool`. Raw binary files are refused, since compilers store `logical` values differently
+  (#73).
+* `to_file` for `String` and `character` arrays, and `from_file` into `String` arrays, for text files of rank 1 or
+  2. Cells are quoted and unquoted as `write_file` and `read_file` do (#73).
+* NumPy `.npz` archives, as `numpy.savez` writes them. `to_file` and `from_file` take the array's name in a new
+  `name` argument: `call to_file(x, file="data.npz", name="x")` adds `x` to the archive, or replaces the array of
+  that name, and `call from_file("data.npz", into=x, name="x")` reads it. A new subroutine, `npz_names`, lists the
+  arrays in an archive. Archives of 4 GiB and more use ZIP64 records. Compressed archives, from
+  `numpy.savez_compressed`, can't be read, and give an error that says so (#74).
+* Benchmarks against plain Fortran: `benchmarks/benchmark-compare.f90` times writing and reading CSV, raw binary,
+  `.npy` and `.npz` files, converting numbers to and from text, splitting a CSV file into cells, and building a
+  string, each against plain Fortran that does the same work. The Benchmarking page gives the results with gfortran,
+  ifx and flang, and CI runs it at a quarter of the size. The slower cases are filed as #91 to #95 (#77).
+
+### Changed
+
+* The submodules are renamed with an `io_` prefix (`io_file`, `io_text`, `io_npy` and so on), and `fpm.toml` sets
+  `module-naming = "io"`, which the fpm package registry requires. Programs only `use io_fortran_lib`, so nothing
+  changes for them (#66).
+
+### Fixed
+
+* Reading a `.npy` file checks that its data fits in the file before allocating the array, so a damaged header gives
+  an error instead of asking for a huge allocation (#74).
+* The `to_file` reference said a rank 1 array's header could have `size(x)` names, and mentioned a `dim` argument
+  that no longer exists. A rank 1 array is written as one column, with one name (#76).
+
+### Tested platforms
+
+* CI now runs the tests on ARM64 Linux, with `gfortran` and `flang`, and on big-endian s390x Linux, where a `.npy`
+  file and a `.npz` archive written there are checked with NumPy. It also builds the library without fpm, with
+  `gfortran` and `ifx`, as the README describes (#78, #79, #81).
+* CI measures test coverage with `gfortran --coverage` and `gcovr`, and lists the error checks that no test reaches.
+  Cases were added for the ones that can be reached: invalid ranks, locales, formats, delimiters and header sizes,
+  a header with no data, and files that can't be opened (#76).
+* `nvfortran` and AOCC `flang` lack `select rank` and arrays above rank 7, so they can't compile the library and are
+  not supported. A separate weekly workflow runs them, and LFortran, to show when that changes (#75, #80, #82).
+
 ## [2.1.1](https://github.com/acbbullock/IO-Fortran-Library/releases/tag/v2.1.1) - 2026-11-09
 
 The library's code is the same as in 2.1.0. This release fixes and extends the documentation and examples, and is

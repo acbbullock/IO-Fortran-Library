@@ -1,6 +1,6 @@
 ! Generated from fypp/io_fortran_lib/text_io_impl.fypp by fypp/generate.sh. Edit that file, not this one.
 #include "iofl_config.inc"
-submodule (io_fortran_lib) text_io
+submodule (io_fortran_lib) io_text
   !---------------------------------------------------------------------------------------------------------------------
   !! This submodule provides module procedure implementations for the **public interface** `echo` and the **private
   !! interfaces** `to_text` and `from_text`.
@@ -773,6 +773,8 @@ submodule (io_fortran_lib) text_io
       return
     end if
 
+    if ( present(column_names) ) column_names = cells(1,:)
+
     select rank(into)
       rank(1)
         if ( ncols > 1 ) then
@@ -870,6 +872,8 @@ submodule (io_fortran_lib) text_io
       return
     end if
 
+    if ( present(column_names) ) column_names = cells(1,:)
+
     select rank(into)
       rank(1)
         if ( ncols > 1 ) then
@@ -965,6 +969,8 @@ submodule (io_fortran_lib) text_io
       errmsg = 'Error reading file "'//file//'". File read with one line, but header was specified as present.'
       return
     end if
+
+    if ( present(column_names) ) column_names = cells(1,:)
 
     select rank(into)
       rank(1)
@@ -1063,6 +1069,8 @@ submodule (io_fortran_lib) text_io
       return
     end if
 
+    if ( present(column_names) ) column_names = cells(1,:)
+
     select rank(into)
       rank(1)
         if ( ncols > 1 ) then
@@ -1158,6 +1166,8 @@ submodule (io_fortran_lib) text_io
       return
     end if
 
+    if ( present(column_names) ) column_names = cells(1,:)
+
     select rank(into)
       rank(1)
         if ( ncols > 1 ) then
@@ -1252,6 +1262,8 @@ submodule (io_fortran_lib) text_io
       return
     end if
 
+    if ( present(column_names) ) column_names = cells(1,:)
+
     select rank(into)
       rank(1)
         if ( ncols > 1 ) then
@@ -1345,6 +1357,8 @@ submodule (io_fortran_lib) text_io
       return
     end if
 
+    if ( present(column_names) ) column_names = cells(1,:)
+
     select rank(into)
       rank(1)
         if ( ncols > 1 ) then
@@ -1421,6 +1435,8 @@ submodule (io_fortran_lib) text_io
       errmsg = 'Error reading file "'//file//'". File read with one line, but header was specified as present.'
       return
     end if
+
+    if ( present(column_names) ) column_names = cells(1,:)
 
     select rank(into)
       rank(1)
@@ -1499,6 +1515,8 @@ submodule (io_fortran_lib) text_io
       return
     end if
 
+    if ( present(column_names) ) column_names = cells(1,:)
+
     select rank(into)
       rank(1)
         if ( ncols > 1 ) then
@@ -1575,6 +1593,8 @@ submodule (io_fortran_lib) text_io
       errmsg = 'Error reading file "'//file//'". File read with one line, but header was specified as present.'
       return
     end if
+
+    if ( present(column_names) ) column_names = cells(1,:)
 
     select rank(into)
       rank(1)
@@ -1663,4 +1683,4 @@ submodule (io_fortran_lib) text_io
       end do
     end do
   end function is_blank
-end submodule text_io
+end submodule io_text

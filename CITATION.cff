@@ -2,7 +2,7 @@ cff-version: 1.2.0
 message: "If you use this library in published work, please cite it as below."
 title: "IO-Fortran-Library"
 abstract: >-
-  A Fortran library for reading and writing text, CSV, binary and NumPy .npy files,
+  A Fortran library for reading and writing text, CSV, binary and NumPy .npy and .npz files,
   converting between numbers and text, and working with strings through a String type,
   written in standard Fortran 2018 with no dependencies.
 type: software
@@ -10,7 +10,7 @@ authors:
   - given-names: "Austin Chase"
     family-names: "Bullock"
     orcid: "https://orcid.org/0009-0009-5129-5260"
-version: "2.1.1"
+version: "2.2.0"
 doi: 10.5281/zenodo.24068278
 date-released: "2026-11-09"
 license: MIT
@@ -23,4 +23,5 @@ keywords:
   - csv
   - numpy
   - npy
+  - npz
   - strings

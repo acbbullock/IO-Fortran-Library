@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main, "2.1"]
+    branches: [main, "2.2"]
   pull_request:
 
 permissions:
@@ -54,6 +54,97 @@ jobs:
           fpm-version: v${{ env.IOFL_FPM_VERSION }}
       - name: Run tests
         run: fpm test --compiler ${{ matrix.toolchain.fpm }} --flag "${{ matrix.toolchain.flags }}"
+
+  arm64:
+    name: ubuntu-24.04-arm ${{ matrix.compiler }}
+    runs-on: ubuntu-24.04-arm
+    strategy:
+      fail-fast: false
+      matrix:
+        # setup-fortran has no ARM Linux runners, so the compilers come from apt. gfortran has REAL(16) here, as IEEE
+        # quad precision in software, so this tests real128 on a target other than x86-64.
+        include:
+          - { compiler: gfortran, fc: gfortran-14, flags: "-std=f2018 -O2 -g -fbacktrace" }
+          - { compiler: flang, fc: flang, flags: "-O2" }
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install gfortran
+        run: sudo apt-get update -q && sudo apt-get install -y -q gfortran-14
+      - name: Install LLVM Flang from apt.llvm.org
+        if: matrix.compiler == 'flang'
+        run: |
+          curl -fsSL https://apt.llvm.org/llvm-snapshot.gpg.key | sudo tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc > /dev/null
+          echo "deb http://apt.llvm.org/noble/ llvm-toolchain-noble-23 main" | sudo tee /etc/apt/sources.list.d/llvm-toolchain-23.list
+          sudo apt-get update -q
+          sudo apt-get install -y -q flang-23 clang-23 libomp-23-dev libclang-rt-23-dev
+          echo "/usr/lib/llvm-23/bin" >> "$GITHUB_PATH"
+      - name: Build fpm from its single-file source
+        run: |
+          mkdir -p "$HOME/fpm-bin" && cd "$HOME/fpm-bin"
+          src="fpm-$IOFL_FPM_VERSION.F90"
+          curl -fsSLO "https://github.com/fortran-lang/fpm/releases/download/v$IOFL_FPM_VERSION/$src"
+          echo "$IOFL_FPM_SHA256  $src" | sha256sum -c -
+          gfortran-14 -O2 -J . "$src" -o fpm
+          echo "$HOME/fpm-bin" >> "$GITHUB_PATH"
+      - name: Run tests
+        run: fpm test --compiler ${{ matrix.fc }} --flag "${{ matrix.flags }}"
+
+  big-endian:
+    name: s390x gfortran (big-endian, under QEMU)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v7
+      - uses: docker/setup-qemu-action@v3
+        with:
+          platforms: s390x
+      - name: Build and test on s390x
+        # Emulation is slow, so this builds with the script rather than building fpm first, and at -O1.
+        run: |
+          docker run --rm --platform linux/s390x -v "$PWD:/src" -w /src ubuntu:24.04 bash -c '
+            set -euo pipefail
+            apt-get update -q > /dev/null && apt-get install -y -q gfortran > /dev/null
+            gfortran --version | head -1
+            ci/build-without-fpm.sh gfortran -cpp build/s390x -O1
+            gfortran -cpp -O1 -I build/s390x example/quickstart.f90 build/s390x/libIO-Fortran-Library.a -o build/quickstart
+            build/quickstart
+            gfortran -cpp -O1 -I build/s390x example/binary_npz.f90 build/s390x/libIO-Fortran-Library.a -o build/binary_npz
+            build/binary_npz
+          '
+      - name: NumPy reads the .npy and .npz files written on s390x
+        run: |
+          python3 -m pip install -q numpy
+          python3 - <<'PY'
+          import numpy as np
+          x = np.load("x.npy")
+          expected = np.array([1.0, 2.5, -3.0, 4.0, 5.5, 6.25], dtype=np.float32).reshape((3, 2), order="F")
+          print(x.dtype.str, x.shape, x.tolist())
+          assert x.dtype.str == ">f4", f"expected a big-endian float32 file, got {x.dtype.str}"
+          assert x.shape == (3, 2) and np.array_equal(x, expected), "values differ"
+          d = np.load("arrays.npz")
+          print(d.files, d["x"].dtype.str, d["counts"].dtype.str, d["counts"].tolist())
+          assert d.files == ["x", "counts"], d.files
+          assert d["x"].dtype.str == ">f4" and d["x"].shape == (30, 40), "x differs"
+          assert d["counts"].dtype.str == ">i4" and d["counts"].tolist() == [i * i for i in range(1, 11)], "counts differ"
+          PY
+
+  no-fpm:
+    name: build without fpm, ${{ matrix.compiler }}
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { compiler: gcc, version: "16", fc: gfortran, pp: "-cpp", flags: "-std=f2018 -O2" }
+          - { compiler: intel, version: "2026.1", fc: ifx, pp: "-fpp", flags: "-stand f18 -O2" }
+    steps:
+      - uses: actions/checkout@v7
+      - uses: fortran-lang/setup-fortran@v1
+        with:
+          compiler: ${{ matrix.compiler }}
+          version: ${{ matrix.version }}
+      - name: Build as README.md describes, and run the tests
+        run: ci/build-without-fpm.sh ${{ matrix.fc }} ${{ matrix.pp }} build/nofpm ${{ matrix.flags }}
 
   platforms:
     name: ${{ matrix.os }} ${{ matrix.compiler }} ${{ matrix.version }}
@@ -162,6 +253,68 @@ jobs:
             echo 0 | fpm run --example "$e" --flag "-std=f2018 -O2 -g -fbacktrace"
             echo "::endgroup::"
           done
+      - name: NumPy reads the .npz archive the example wrote
+        # numpy.load checks each array's CRC-32 as it reads it.
+        run: |
+          python3 -m pip install -q numpy
+          python3 - <<'PY'
+          import numpy as np
+          d = np.load("arrays.npz")
+          print(d.files, d["x"].dtype.str, d["x"].shape, d["counts"].tolist())
+          assert d.files == ["x", "counts"], d.files
+          assert d["x"].dtype == np.float32 and d["x"].shape == (30, 40), "x differs"
+          assert d["counts"].tolist() == [i * i for i in range(1, 11)], "counts differ"
+          PY
+
+  coverage:
+    name: test coverage, gcc 16
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: fortran-lang/setup-fortran@v1
+        with:
+          compiler: gcc
+          version: "16"
+      - uses: fortran-lang/setup-fpm@v10
+        with:
+          fpm-version: v${{ env.IOFL_FPM_VERSION }}
+      - name: Run the tests with coverage
+        run: fpm test --flag "-std=f2018 -O0 -g --coverage" --link-flag "--coverage"
+      - name: Report coverage
+        # Coverage of the generated sources in src/, where each kind is a copy of the same template code, so a
+        # check tested for one kind shows as missed for the others. The list of error checks that no test reaches
+        # counts a check as reached when any copy is: that list is what to add cases for.
+        run: |
+          pipx install gcovr==8.8
+          mkdir coverage
+          gcovr --root . --filter src/ --gcov-executable gcov-16 --json coverage.json \
+                --markdown coverage.md --html-details coverage/index.html build
+          cat coverage.md >> "$GITHUB_STEP_SUMMARY"
+          python3 ci/untested-errors.py coverage.json | tee -a "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 14
+
+  benchmarks:
+    name: benchmarks, gcc 16 (timings not checked)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: fortran-lang/setup-fortran@v1
+        with:
+          compiler: gcc
+          version: "16"
+      - uses: fortran-lang/setup-fpm@v10
+        with:
+          fpm-version: v${{ env.IOFL_FPM_VERSION }}
+      - name: Compare the library with plain Fortran
+        # Hosted runners vary too much to fail on a time, so this only fails if a result is wrong. The tables go in
+        # the job summary, at a quarter of the size the documented results use.
+        run: |
+          fpm run benchmark-compare --flag "-O2" -- 0.25 | tee benchmark.md
+          sed -n '/^Compiler/,$p' benchmark.md >> "$GITHUB_STEP_SUMMARY"
 
   generated:
     name: generated sources match the fypp templates

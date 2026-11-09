@@ -1,7 +1,9 @@
-submodule (io_fortran_lib) string_methods
+submodule (io_fortran_lib) io_string_methods
   !---------------------------------------------------------------------------------------------------------------------
   !! This submodule provides module procedure implementations for the **type-bound procedures** of type `String`.
   !---------------------------------------------------------------------------------------------------------------------
+  use io_strings, only: upper => to_upper, lower => to_lower, starts => starts_with, ends => ends_with, &
+                        find_in => find
   implicit none (type, external)
 
   integer, parameter :: ENDS_COLUMN = 1, ENDS_ROW = 2, ENDS_FILE = 3 ! What ended a cell
@@ -13,7 +15,7 @@ submodule (io_fortran_lib) string_methods
   end type cell_bounds
 
   ! Definitions and interfaces ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  character(len=1), parameter :: LINE_FEED = LF, COMMA_DELIMITER = COMMA
+  character(len=1), parameter :: LINE_FEED = LF
   logical,          target :: NO_APPEND = .false.
 
   contains ! Procedure bodies for module subprograms <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><
@@ -312,7 +314,7 @@ submodule (io_fortran_lib) string_methods
 
       row_separator_ = optval(row_separator, LINE_FEED)
 
-      column_separator_ = optval(column_separator, COMMA_DELIMITER)
+      column_separator_ = optval(column_separator, default_delim(file, LOCALES(1)))
 
       strip_cr = (row_separator_ == LF)
       last     = end_of_data(self%buf(:self%n), row_separator_, strip_cr)
@@ -471,6 +473,8 @@ submodule (io_fortran_lib) string_methods
   module procedure trim_copy
     if ( self%len64() < 1_i64 ) then
       new%buf = EMPTY_STR; new%n = len(new%buf, kind=i64)
+    else if ( present(chars) ) then
+      new%buf = without_chars(self%buf(:self%n), chars); new%n = len(new%buf, kind=i64)
     else
       new%buf = without_whitespace(self%buf(:self%n)); new%n = len(new%buf, kind=i64)
     end if
@@ -479,10 +483,66 @@ submodule (io_fortran_lib) string_methods
   module procedure trim_inplace
     if ( self%len64() < 1_i64 ) then
       self%buf = EMPTY_STR; self%n = len(self%buf, kind=i64)
+    else if ( present(chars) ) then
+      self%buf = without_chars(self%buf(:self%n), chars); self%n = len(self%buf, kind=i64)
     else
       self%buf = without_whitespace(self%buf(:self%n)); self%n = len(self%buf, kind=i64)
     end if
   end procedure trim_inplace
+
+  module procedure starts_with_chars
+    if ( allocated(self%buf) ) then
+      res = starts(self%buf(:self%n), substring)
+    else
+      res = starts(EMPTY_STR, substring)
+    end if
+  end procedure starts_with_chars
+
+  module procedure starts_with_string
+    res = self%starts_with(substring%as_str())
+  end procedure starts_with_string
+
+  module procedure ends_with_chars
+    if ( allocated(self%buf) ) then
+      res = ends(self%buf(:self%n), substring)
+    else
+      res = ends(EMPTY_STR, substring)
+    end if
+  end procedure ends_with_chars
+
+  module procedure ends_with_string
+    res = self%ends_with(substring%as_str())
+  end procedure ends_with_string
+
+  module procedure find_chars
+    if ( allocated(self%buf) ) then
+      position = find_in(self%buf(:self%n), pattern, occurrence, consider_overlapping)
+    else
+      position = find_in(EMPTY_STR, pattern, occurrence, consider_overlapping)
+    end if
+  end procedure find_chars
+
+  module procedure find_string
+    position = self%find(pattern%as_str(), occurrence, consider_overlapping)
+  end procedure find_string
+
+  module procedure to_upper_copy
+    if ( self%len64() < 1_i64 ) then
+      new%buf = EMPTY_STR
+    else
+      new%buf = upper(self%buf(:self%n))
+    end if
+    new%n = len(new%buf, kind=i64)
+  end procedure to_upper_copy
+
+  module procedure to_lower_copy
+    if ( self%len64() < 1_i64 ) then
+      new%buf = EMPTY_STR
+    else
+      new%buf = lower(self%buf(:self%n))
+    end if
+    new%n = len(new%buf, kind=i64)
+  end procedure to_lower_copy
 
   module procedure optval_chars
     if ( present(x) ) then
@@ -567,7 +627,7 @@ submodule (io_fortran_lib) string_methods
 
     row_separator_ = optval(row_separator, LINE_FEED)
 
-    column_separator_ = optval(column_separator, COMMA_DELIMITER)
+    column_separator_ = optval(column_separator, default_delim(file, LOCALES(1)))
 
     append_ = optval(append, NO_APPEND)
 
@@ -937,16 +997,25 @@ submodule (io_fortran_lib) string_methods
     character(len=:), allocatable :: trimmed
 
     character(len=*), parameter :: WHITESPACE = SPACE//TAB//CR//LF//achar(11)//achar(12)
-    integer(i64)                :: first
 
-    first = verify(text, WHITESPACE, kind=i64)
+    trimmed = without_chars(text, WHITESPACE)
+  end function without_whitespace
+
+  pure function without_chars(text, set) result(trimmed)
+    !! `text` without any of the characters in `set` at either end.
+    character(len=*), intent(in)  :: text, set
+    character(len=:), allocatable :: trimmed
+
+    integer(i64) :: first
+
+    first = verify(text, set, kind=i64)
 
     if ( first == 0_i64 ) then
       trimmed = EMPTY_STR
     else
-      trimmed = text(first:verify(text, WHITESPACE, back=.true., kind=i64))
+      trimmed = text(first:verify(text, set, back=.true., kind=i64))
     end if
-  end function without_whitespace
+  end function without_chars
 
   pure function replaced(text, match, substring, back) result(new)
     !-------------------------------------------------------------------------------------------------------------------
@@ -1089,4 +1158,4 @@ submodule (io_fortran_lib) string_methods
       i = i + 1_i64
     end do
   end function count_of
-end submodule string_methods
+end submodule io_string_methods

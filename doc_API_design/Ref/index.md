@@ -8,10 +8,12 @@ ordered_subpage: cast.md
 ordered_subpage: join-split.md
 ordered_subpage: to_file.md
 ordered_subpage: from_file.md
+ordered_subpage: npz_names.md
 ordered_subpage: echo.md
 ordered_subpage: aprint.md
 ordered_subpage: String-methods.md
 ordered_subpage: operators.md
+ordered_subpage: io_strings.md
 ---
 
 The following subsections provide user instructions for each of the
@@ -29,6 +31,8 @@ publicly accessible [interfaces](../../lists/procedures.html):
   numeric data type to an external file.
 * [from_file](from_file.html): Subroutine for reading an external file
   of uniform numeric data type and format into an array.
+* [npz_names](npz_names.html): Subroutine for listing the arrays in a
+  NumPy `.npz` archive.
 * [echo](echo.html): Subroutine for writing a scalar `character` or
   `String` to an external text file.
 * [aprint](aprint.html): Subroutine for printing arrays and array
@@ -37,3 +41,6 @@ publicly accessible [interfaces](../../lists/procedures.html):
   [String](../../type/string.html).
 * [Operators](operators.html): Extended operators for convenient string
   manipulations.
+* [io_strings](io_strings.html): Case conversion, prefix and suffix
+  tests, `find` and `trim` with given characters, for `character` and
+  `String` values, in a module of their own.

@@ -1,6 +1,6 @@
 ! Generated from fypp/io_fortran_lib/operators_impl.fypp by fypp/generate.sh. Edit that file, not this one.
 #include "iofl_config.inc"
-submodule (io_fortran_lib) operators
+submodule (io_fortran_lib) io_operators
   !---------------------------------------------------------------------------------------------------------------------
   !! This submodule provides module procedure implementations for the **public interfaces** `operator(//)`,
   !! `operator(+)`, `operator(-)`, `operator(**)`, `operator(==)`, and `operator(/=)`.
@@ -476,4 +476,4 @@ submodule (io_fortran_lib) operators
     if ( len(a, kind=i64) < len(b, kind=i64) ) order = -1
     if ( len(a, kind=i64) > len(b, kind=i64) ) order = 1
   end function text_order
-end submodule operators
+end submodule io_operators

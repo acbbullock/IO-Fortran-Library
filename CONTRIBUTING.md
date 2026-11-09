@@ -6,8 +6,9 @@ every supported compiler.
 ## Building and testing
 
 You need a Fortran 2018 compiler and [fpm](https://fpm.fortran-lang.org) 0.13 or later. CI tests `gfortran` 13 to
-16, `ifx` 2025.3 and 2026, and `flang` 23 on Linux, with `gfortran` and `flang` on Apple Silicon macOS, `gfortran` on
-Intel macOS, and `gfortran` and `ifx` on Windows.
+16, `ifx` 2025.3 and 2026, and `flang` 23 on Linux, with `gfortran` and `flang` on ARM64 Linux, `gfortran` on
+big-endian s390x Linux, `gfortran` and `flang` on Apple Silicon macOS, `gfortran` on Intel macOS, and `gfortran` and
+`ifx` on Windows. `ci/build-without-fpm.sh` builds and tests the library without fpm.
 
 ```sh
 fpm test                                   # build the library and run the whole suite
@@ -104,6 +105,22 @@ Add a module `test/suite/<group>_cases.f90` with a public `register_<group>` sub
 `test/tests.f90`. Keep test modules in `test/suite/` itself: fpm only finds a module used by another module in the
 same directory or below it.
 
+### Coverage
+
+CI's `test coverage` job runs the suite with `gfortran --coverage` and reports which lines of `src` it runs, in the
+job's summary, with a browsable report as the `coverage-report` artifact. To do the same locally:
+
+```sh
+fpm test --flag "--coverage" --link-flag "--coverage"
+gcovr --root . --filter src/ --json coverage.json build     # pipx install gcovr
+python3 ci/untested-errors.py coverage.json
+```
+
+The figures are low because each kind is a copy of the same template code, and a check tested for one kind shows
+as missed for the others. The useful part is the last command's list of error checks that no test reaches for any
+kind: add a case for each one that can be reached, in a group such as `argument_errors`. A few can't be, such as a
+failed allocation.
+
 ## Generated sources
 
 Most of `src`, and `test_support`, `test_values` and the round-trip groups in `test/suite`, are generated from
@@ -124,6 +141,8 @@ compiler has that kind. Do the same in tests that use it.
 
 - Standard Fortran 2018, with no compiler extensions, and `implicit none (type, external)` in every scope.
 - Lines of at most 120 characters.
+- Every module and submodule name starts with `io_`. `fpm.toml` sets `module-naming = "io"`, which the fpm package
+  registry requires, so fpm rejects any other name.
 - An error is reported through `stat` and `errmsg` when they are present, and ends the program with `error stop`
   when they are not.
 - Fortran 2023 features wait until every supported compiler has them (#54).

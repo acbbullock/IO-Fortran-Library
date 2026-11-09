@@ -45,3 +45,17 @@ with a `.npy` file:
 In Python, `numpy.load("x.npy")` gives the same array, with element
 `x(i,j,k,l,m)` at `x[i-1, j-1, k-1, l-1, m-1]`. See
 [File extensions](../UserInfo/file-ext.html) for the details.
+
+## NumPy `.npz` archives
+
+A `.npz` archive holds several arrays, each under a name. Writing an
+array adds it to the archive, and `npz_names` lists what is there:
+
+```fortran
+{!example/binary_npz.f90!}
+```
+
+In Python, `numpy.load("arrays.npz")` gives a dictionary-like object
+with `d["x"]` and `d["counts"]`, and running the program again replaces
+both arrays. See [File extensions](../UserInfo/file-ext.html#numpy-npz-archives)
+for the details.
