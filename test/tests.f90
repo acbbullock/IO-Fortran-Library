@@ -19,6 +19,7 @@ program tests
   use file_round_trip_cases, only: register_file_round_trip
   use npy_cases, only: register_npy
   use npz_cases, only: register_npz
+  use argument_errors_cases, only: register_argument_errors
   use strings_cases, only: register_strings
   implicit none (type, external)
 
@@ -40,6 +41,7 @@ program tests
   call register_file_round_trip(suite)
   call register_npy(suite)
   call register_npz(suite)
+  call register_argument_errors(suite)
   call register_strings(suite)
 
   call suite%run("tests")

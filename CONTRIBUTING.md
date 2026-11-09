@@ -105,6 +105,22 @@ Add a module `test/suite/<group>_cases.f90` with a public `register_<group>` sub
 `test/tests.f90`. Keep test modules in `test/suite/` itself: fpm only finds a module used by another module in the
 same directory or below it.
 
+### Coverage
+
+CI's `test coverage` job runs the suite with `gfortran --coverage` and reports which lines of `src` it runs, in the
+job's summary, with a browsable report as the `coverage-report` artifact. To do the same locally:
+
+```sh
+fpm test --flag "--coverage" --link-flag "--coverage"
+gcovr --root . --filter src/ --json coverage.json build     # pipx install gcovr
+python3 ci/untested-errors.py coverage.json
+```
+
+The figures are low because each kind is a copy of the same template code, and a check tested for one kind shows
+as missed for the others. The useful part is the last command's list of error checks that no test reaches for any
+kind: add a case for each one that can be reached, in a group such as `argument_errors`. A few can't be, such as a
+failed allocation.
+
 ## Generated sources
 
 Most of `src`, and `test_support`, `test_values` and the round-trip groups in `test/suite`, are generated from

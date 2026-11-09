@@ -46,6 +46,9 @@ Work toward 2.2, tracked in the [2.2 milestone](https://github.com/acbbullock/IO
 * CI now runs the tests on ARM64 Linux, with `gfortran` and `flang`, and on big-endian s390x Linux, where a `.npy`
   file and a `.npz` archive written there are checked with NumPy. It also builds the library without fpm, with `gfortran` and `ifx`, as
   the README describes (#78, #79, #81).
+* CI measures test coverage with `gfortran --coverage` and `gcovr`, and lists the error checks that no test reaches.
+  Cases were added for the ones that can be reached: invalid ranks, locales, formats, delimiters and header sizes,
+  a header with no data, and files that can't be opened (#76).
 * `nvfortran` and AOCC `flang` lack `select rank` and arrays above rank 7, so they can't compile the library and are
   not supported. A separate weekly workflow runs them, and LFortran, to show when that changes (#75, #80, #82).
 
