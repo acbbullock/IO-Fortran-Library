@@ -125,6 +125,8 @@ compiler has that kind. Do the same in tests that use it.
 
 - Standard Fortran 2018, with no compiler extensions, and `implicit none (type, external)` in every scope.
 - Lines of at most 120 characters.
+- Every module and submodule name starts with `io_`. `fpm.toml` sets `module-naming = "io"`, which the fpm package
+  registry requires, so fpm rejects any other name.
 - An error is reported through `stat` and `errmsg` when they are present, and ends the program with `error stop`
   when they are not.
 - Fortran 2023 features wait until every supported compiler has them (#54).

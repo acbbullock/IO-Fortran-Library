@@ -146,7 +146,7 @@ module io_fortran_lib
       procedure, pass(self), public :: read_line
   end type String
 
-  interface                                                                                   ! Submodule string_methods
+  interface                                                                                   ! Submodule io_string_methods
     !-------------------------------------------------------------------------------------------------------------------
     !! Methods for the `String` type.
     !-------------------------------------------------------------------------------------------------------------------
@@ -487,7 +487,7 @@ module io_fortran_lib
     end function optval_logical
   end interface optval
 
-  interface operator(//)                                                                           ! Submodule operators
+  interface operator(//)                                                                           ! Submodule io_operators
     !-------------------------------------------------------------------------------------------------------------------
     !! Concatenation operator for `character` and `String`, lifted from `character`. Mixed type concatenation of
     !! `character` and `String` is explicitly defined.
@@ -509,7 +509,7 @@ module io_fortran_lib
     end function char_string_concatenation
   end interface operator(//)
 
-  interface operator(<) ! Submodule operators
+  interface operator(<) ! Submodule io_operators
     !-------------------------------------------------------------------------------------------------------------------
     !! Less than for `String`, and mixed `character` and `String`, by comparing bytes. A shorter string that
     !! matches the start of a longer one comes first, and an unallocated `String` acts as empty, in agreement with `==`.
@@ -531,7 +531,7 @@ module io_fortran_lib
     end function char_string_lt
   end interface operator(<)
 
-  interface operator(<=) ! Submodule operators
+  interface operator(<=) ! Submodule io_operators
     !-------------------------------------------------------------------------------------------------------------------
     !! Less than or equal for `String`, and mixed `character` and `String`, by comparing bytes. A shorter string that
     !! matches the start of a longer one comes first, and an unallocated `String` acts as empty, in agreement with `==`.
@@ -553,7 +553,7 @@ module io_fortran_lib
     end function char_string_le
   end interface operator(<=)
 
-  interface operator(>) ! Submodule operators
+  interface operator(>) ! Submodule io_operators
     !-------------------------------------------------------------------------------------------------------------------
     !! Greater than for `String`, and mixed `character` and `String`, by comparing bytes. A shorter string that
     !! matches the start of a longer one comes first, and an unallocated `String` acts as empty, in agreement with `==`.
@@ -575,7 +575,7 @@ module io_fortran_lib
     end function char_string_gt
   end interface operator(>)
 
-  interface operator(>=) ! Submodule operators
+  interface operator(>=) ! Submodule io_operators
     !-------------------------------------------------------------------------------------------------------------------
     !! Greater than or equal for `String`, and mixed `character` and `String`, by comparing bytes. A shorter string that
     !! matches the start of a longer one comes first, and an unallocated `String` acts as empty, in agreement with `==`.
@@ -597,7 +597,7 @@ module io_fortran_lib
     end function char_string_ge
   end interface operator(>=)
 
-  interface operator(+)                                                                            ! Submodule operators
+  interface operator(+)                                                                            ! Submodule io_operators
     !-------------------------------------------------------------------------------------------------------------------
     !! Concatenation operator for `character` and `String` (as addition). Mixed type concatenation of
     !! `character` and `String` is explicitly defined.
@@ -621,7 +621,7 @@ module io_fortran_lib
     end function char_string_concat_plus
   end interface operator(+)
 
-  interface operator(-)                                                                            ! Submodule operators
+  interface operator(-)                                                                            ! Submodule io_operators
     !-------------------------------------------------------------------------------------------------------------------
     !! Excision operator for `character` and `String` (as subtraction). Mixed type excision of `character` and
     !! `String` is explicitly defined.
@@ -647,7 +647,7 @@ module io_fortran_lib
     end function char_string_excision
   end interface operator(-)
 
-  interface operator(**)                                                                           ! Submodule operators
+  interface operator(**)                                                                           ! Submodule io_operators
     !-------------------------------------------------------------------------------------------------------------------
     !! Repetition operator for `character` and `String` (as exponentiation).
     !!
@@ -785,7 +785,7 @@ module io_fortran_lib
     end function repeat_String
   end interface operator(**)
 
-  interface operator(==)                                                                           ! Submodule operators
+  interface operator(==)                                                                           ! Submodule io_operators
     !-------------------------------------------------------------------------------------------------------------------
     !! Equivalence operator for `character` and `String`. Mixed type equivalence of `character` and `String` is
     !! explicitly defined.
@@ -809,7 +809,7 @@ module io_fortran_lib
     end function char_string_equivalence
   end interface operator(==)
 
-  interface operator(/=)                                                                           ! Submodule operators
+  interface operator(/=)                                                                           ! Submodule io_operators
     !-------------------------------------------------------------------------------------------------------------------
     !! Non-equivalence operator for `character` and `String`. Mixed type non-equivalence of `character` and
     !! `String` is explicitly defined.
@@ -833,7 +833,7 @@ module io_fortran_lib
     end function char_string_nonequivalence
   end interface operator(/=)
 
-  interface String                                                                               ! Submodule internal_io
+  interface String                                                                               ! Submodule io_internal
     !-------------------------------------------------------------------------------------------------------------------
     !! Function for returning a [String](../type/string.html) representation of numbers.
     !!
@@ -923,7 +923,7 @@ module io_fortran_lib
     end function new_string_from_empty
   end interface String
 
-  interface str                                                                                  ! Submodule internal_io
+  interface str                                                                                  ! Submodule io_internal
     !-------------------------------------------------------------------------------------------------------------------
     !! Function for returning a `character` representation of a number.
     !!
@@ -1024,7 +1024,7 @@ module io_fortran_lib
     end function str_from_empty
   end interface str
 
-  interface cast                                                                                 ! Submodule internal_io
+  interface cast                                                                                 ! Submodule io_internal
     !-------------------------------------------------------------------------------------------------------------------
     !! Subroutine for casting between numeric and string data.
     !!
@@ -1367,7 +1367,7 @@ module io_fortran_lib
 
   end interface cast
 
-  interface join                                                                                  ! Submodule join_split
+  interface join                                                                                  ! Submodule io_join_split
     !-------------------------------------------------------------------------------------------------------------------
     !! Function for joining a vector of `tokens` into a scalar `character` or `String`.
     !!
@@ -1385,7 +1385,7 @@ module io_fortran_lib
     end function join_string
   end interface join
 
-  interface split                                                                                 ! Submodule join_split
+  interface split                                                                                 ! Submodule io_join_split
     !-------------------------------------------------------------------------------------------------------------------
     !! Function for splitting a scalar `character` or `String` into a vector of `tokens`.
     !!
@@ -1404,7 +1404,7 @@ module io_fortran_lib
     end function split_string
   end interface split
 
-  interface                                                                                          ! Submodule file_io
+  interface                                                                                          ! Submodule io_file
     !-------------------------------------------------------------------------------------------------------------------
     ! Function for parsing a file name for an extension
     !-------------------------------------------------------------------------------------------------------------------
@@ -1433,7 +1433,7 @@ module io_fortran_lib
     end function default_delim
   end interface
 
-  interface to_file                                                                                  ! Submodule file_io
+  interface to_file                                                                                  ! Submodule io_file
     !-------------------------------------------------------------------------------------------------------------------
     !! Subroutine for writing an array of uniform numeric data type to an external file.
     !!
@@ -1575,7 +1575,7 @@ module io_fortran_lib
 
   end interface to_file
 
-  interface from_file                                                                                ! Submodule file_io
+  interface from_file                                                                                ! Submodule io_file
     !-------------------------------------------------------------------------------------------------------------------
     !! Subroutine for reading an external file of uniform numeric data type and format into an array.
     !!
@@ -1808,7 +1808,7 @@ module io_fortran_lib
 
   end interface from_file
 
-  interface echo                                                                                     ! Submodule text_io
+  interface echo                                                                                     ! Submodule io_text
     !-------------------------------------------------------------------------------------------------------------------
     !! Subroutine for writing a scalar `character` or `String` to an external text file.
     !!
@@ -1835,7 +1835,7 @@ module io_fortran_lib
     end subroutine echo_string
   end interface echo
 
-  interface to_text                                                                                  ! Submodule text_io
+  interface to_text                                                                                  ! Submodule io_text
     !-------------------------------------------------------------------------------------------------------------------
     !! Private interface for writing an array to an external text file.
     !-------------------------------------------------------------------------------------------------------------------
@@ -1962,7 +1962,7 @@ module io_fortran_lib
 
   end interface to_text
 
-  interface from_text                                                                                ! Submodule text_io
+  interface from_text                                                                                ! Submodule io_text
     !-------------------------------------------------------------------------------------------------------------------
     !! Private interface for reading an external text file into an array.
     !-------------------------------------------------------------------------------------------------------------------
@@ -2083,7 +2083,7 @@ module io_fortran_lib
 
   end interface from_text
 
-  interface to_binary                                                                              ! Submodule binary_io
+  interface to_binary                                                                              ! Submodule io_binary
     !-------------------------------------------------------------------------------------------------------------------
     !! Private interface for writing an array to an external binary file.
     !-------------------------------------------------------------------------------------------------------------------
@@ -2165,7 +2165,7 @@ module io_fortran_lib
 
   end interface to_binary
 
-  interface from_binary                                                                            ! Submodule binary_io
+  interface from_binary                                                                            ! Submodule io_binary
     !-------------------------------------------------------------------------------------------------------------------
     !! Private interface for reading an external binary file into an array.
     !-------------------------------------------------------------------------------------------------------------------
@@ -2257,7 +2257,7 @@ module io_fortran_lib
 
   end interface from_binary
 
-  interface to_npy                                                                                    ! Submodule npy_io
+  interface to_npy                                                                                    ! Submodule io_npy
     !-------------------------------------------------------------------------------------------------------------------
     !! Private interface for writing an array to a NumPy `.npy` file.
     !-------------------------------------------------------------------------------------------------------------------
@@ -2319,7 +2319,7 @@ module io_fortran_lib
 
   end interface to_npy
 
-  interface from_npy                                                                                  ! Submodule npy_io
+  interface from_npy                                                                                  ! Submodule io_npy
     !-------------------------------------------------------------------------------------------------------------------
     !! Private interface for reading a NumPy `.npy` file into an array, which takes its shape from the file.
     !-------------------------------------------------------------------------------------------------------------------
@@ -2381,7 +2381,7 @@ module io_fortran_lib
 
   end interface from_npy
 
-  interface aprint                                                                            ! Submodule array_printing
+  interface aprint                                                                            ! Submodule io_array_printing
     !-------------------------------------------------------------------------------------------------------------------
     !! Subroutine for printing arrays and array sections to stdout.
     !!

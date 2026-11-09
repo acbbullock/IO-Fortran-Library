@@ -1,6 +1,6 @@
 ! Generated from fypp/io_fortran_lib/text_io_impl.fypp by fypp/generate.sh. Edit that file, not this one.
 #include "iofl_config.inc"
-submodule (io_fortran_lib) text_io
+submodule (io_fortran_lib) io_text
   !---------------------------------------------------------------------------------------------------------------------
   !! This submodule provides module procedure implementations for the **public interface** `echo` and the **private
   !! interfaces** `to_text` and `from_text`.
@@ -1663,4 +1663,4 @@ submodule (io_fortran_lib) text_io
       end do
     end do
   end function is_blank
-end submodule text_io
+end submodule io_text

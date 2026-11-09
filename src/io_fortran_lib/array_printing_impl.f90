@@ -1,6 +1,6 @@
 ! Generated from fypp/io_fortran_lib/array_printing_impl.fypp by fypp/generate.sh. Edit that file, not this one.
 #include "iofl_config.inc"
-submodule (io_fortran_lib) array_printing
+submodule (io_fortran_lib) io_array_printing
   !---------------------------------------------------------------------------------------------------------------------
   !! This submodule provides module procedure implementations for the **public interface** `aprint`.
   !---------------------------------------------------------------------------------------------------------------------
@@ -1083,4 +1083,4 @@ submodule (io_fortran_lib) array_printing
 
     call aprint(char_arr, unit=unit)
   end procedure aprint_2dString
-end submodule array_printing
+end submodule io_array_printing

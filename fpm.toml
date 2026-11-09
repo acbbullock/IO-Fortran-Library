@@ -18,6 +18,8 @@ executable = [
 auto-executables = false
 auto-tests = true
 auto-examples = true
+# Every module and submodule name starts with io_, as the fpm registry requires (#66).
+module-naming = "io"
 
 [install]
 library = true
