@@ -7,6 +7,10 @@ breaking changes first. The
 [releases page](https://github.com/acbbullock/IO-Fortran-Library/releases)
 has the same notes, along with the pre-releases.
 
+## Unreleased
+
+Work toward 2.2, tracked in the [2.2 milestone](https://github.com/acbbullock/IO-Fortran-Library/milestone/3).
+
 ## [2.1.1](https://github.com/acbbullock/IO-Fortran-Library/releases/tag/v2.1.1) - 2026-11-09
 
 The library's code is the same as in 2.1.0. This release fixes and extends the documentation and examples, and is
