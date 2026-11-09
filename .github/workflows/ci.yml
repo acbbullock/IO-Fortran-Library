@@ -297,6 +297,25 @@ jobs:
           path: coverage/
           retention-days: 14
 
+  benchmarks:
+    name: benchmarks, gcc 16 (timings not checked)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: fortran-lang/setup-fortran@v1
+        with:
+          compiler: gcc
+          version: "16"
+      - uses: fortran-lang/setup-fpm@v10
+        with:
+          fpm-version: v${{ env.IOFL_FPM_VERSION }}
+      - name: Compare the library with plain Fortran
+        # Hosted runners vary too much to fail on a time, so this only fails if a result is wrong. The tables go in
+        # the job summary, at a quarter of the size the documented results use.
+        run: |
+          fpm run benchmark-compare --flag "-O2" -- 0.25 | tee benchmark.md
+          sed -n '/^Compiler/,$p' benchmark.md >> "$GITHUB_STEP_SUMMARY"
+
   generated:
     name: generated sources match the fypp templates
     runs-on: ubuntu-24.04

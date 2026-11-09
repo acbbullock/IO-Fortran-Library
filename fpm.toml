@@ -11,7 +11,8 @@ keywords = ["csv", "file-io", "numpy", "npy", "binary", "string", "text", "fortr
 
 executable = [
   { name = "benchmark-array", source-dir = "benchmarks", main = "benchmark-array.f90" },
-  { name = "benchmark-ints", source-dir = "benchmarks", main = "benchmark-ints.f90" }
+  { name = "benchmark-ints", source-dir = "benchmarks", main = "benchmark-ints.f90" },
+  { name = "benchmark-compare", source-dir = "benchmarks", main = "benchmark-compare.f90" }
 ]
 
 [build]

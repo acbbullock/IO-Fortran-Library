@@ -34,6 +34,10 @@ Work toward 2.2, tracked in the [2.2 milestone](https://github.com/acbbullock/IO
   that name, and `call from_file("data.npz", into=x, name="x")` reads it. A new subroutine, `npz_names`, lists the
   arrays in an archive. Archives of 4 GiB and more use ZIP64 records. Compressed archives, from
   `numpy.savez_compressed`, can't be read, and give an error that says so (#74).
+* Benchmarks against plain Fortran: `benchmarks/benchmark-compare.f90` times writing and reading CSV, raw binary,
+  `.npy` and `.npz` files, converting numbers to and from text, splitting a CSV file into cells, and building a
+  string, each against plain Fortran that does the same work. The Benchmarking page gives the results with gfortran,
+  ifx and flang, and CI runs it at a quarter of the size. The slower cases are filed as #91 to #95 (#77).
 
 ### Changed
 
