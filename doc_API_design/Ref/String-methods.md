@@ -68,6 +68,42 @@ For `self` a scalar or array variable of any rank and of type `String`:
 elementally. This procedure is identical in function to the assignment
 `self = String()`.
 
+### [ends_with](../../type/string.html#boundprocedure-ends_with)
+
+For `self` a scalar or array variable of any rank and of type `String`:
+
+```fortran
+    result = self%ends_with(substring)
+```
+
+* `substring` is of type `character(len=*)` or `String`
+
+*Description*: Returns `.true.` where `self` ends with `substring`,
+elementally. Every string ends with the empty string, and trailing
+blanks count. The same test for `character` values is
+[ends_with](io_strings.html#ends_with) in `io_strings`.
+
+### [find](../../type/string.html#boundprocedure-find)
+
+For `self` a scalar or array variable of any rank and of type `String`:
+
+```fortran
+    result = self%find(pattern [, occurrence, consider_overlapping])
+```
+
+* `pattern` is of type `character(len=*)` or `String`
+* `occurrence` is `optional` and of type `integer` (default is `1`)
+* `consider_overlapping` is `optional` and of type `logical` (default
+  is `.true.`)
+
+*Description*: Returns the position where the `occurrence`th occurrence
+of `pattern` starts in `self`, elementally, or `0` if there is none.
+Occurrences may overlap unless `consider_overlapping` is `.false.`, so
+`String("aaaa")%find("aa", occurrence=2)` is `2`, and `3` without
+overlap. An empty `pattern` gives `0`. This follows `find` in the
+Fortran standard library; the same function for `character` values is
+[find](io_strings.html#find) in `io_strings`.
+
 ### [join](../../type/string.html#boundprocedure-join)
 
 For `self` a scalar variable of type `String`:
@@ -232,29 +268,72 @@ applying to `back`.
 *Description*: A generic binding for the interface
 [split](glue-split.html).
 
+### [starts_with](../../type/string.html#boundprocedure-starts_with)
+
+For `self` a scalar or array variable of any rank and of type `String`:
+
+```fortran
+    result = self%starts_with(substring)
+```
+
+* `substring` is of type `character(len=*)` or `String`
+
+*Description*: Returns `.true.` where `self` starts with `substring`,
+elementally. Every string starts with the empty string, and trailing
+blanks count. The same test for `character` values is
+[starts_with](io_strings.html#starts_with) in `io_strings`.
+
+### [to_lower](../../type/string.html#boundprocedure-to_lower)
+
+For `self` a scalar or array variable of any rank and of type `String`:
+
+```fortran
+    result = self%to_lower()
+```
+
+*Description*: Returns a copy of `self` elementally with the ASCII
+letters `A` to `Z` in lower case. Other characters are unchanged.
+
+### [to_upper](../../type/string.html#boundprocedure-to_upper)
+
+For `self` a scalar or array variable of any rank and of type `String`:
+
+```fortran
+    result = self%to_upper()
+```
+
+*Description*: Returns a copy of `self` elementally with the ASCII
+letters `a` to `z` in upper case. Other characters are unchanged.
+
 ### [trim](../../type/string.html#boundprocedure-trim)
 
 For `self` a scalar or array variable of any rank and of type `String`:
 
 ```fortran
-    result = self%trim()
+    result = self%trim([chars])
 ```
+
+* `chars` is `optional` and of type `character(len=*)`
 
 *Description*: Returns a copy of a `String` elementally in which each
 string slice component has been trimmed of any leading or trailing
-whitespace. Whitespace means a space, `TAB`, `CR`, `LF`, vertical
-tab or form feed.
+characters in `chars`. Without `chars`, it trims whitespace, which
+means a space, `TAB`, `CR`, `LF`, vertical tab or form feed.
+`String("--name--")%trim("-")` is `"name"`.
 
 ### [trim_inplace](../../type/string.html#boundprocedure-trim_inplace)
 
 For `self` a scalar or array variable of any rank and of type `String`:
 
 ```fortran
-    call self%trim_inplace()
+    call self%trim_inplace([chars])
 ```
 
-*Description*: Removes any leading or trailing whitespace of the string
-slice component of a `String` elementally and in place.
+* `chars` is `optional` and of type `character(len=*)`
+
+*Description*: Removes any leading or trailing characters in `chars`,
+or whitespace if `chars` is absent, from the string slice component of
+a `String` elementally and in place.
 
 ### [write_file](../../type/string.html#boundprocedure-write_file)
 

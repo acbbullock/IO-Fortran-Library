@@ -108,12 +108,15 @@ module io_fortran_lib
       generic, public :: count            => count_substring_chars, count_substring_string
       generic, public :: count64          => count64_chars, count64_string
       generic, public :: echo             => echo_string
+      generic, public :: ends_with        => ends_with_chars, ends_with_string
+      generic, public :: find             => find_chars, find_string
       generic, public :: push             => push_chars, push_string
       generic, public :: replace          => replace_ch_copy, replace_st_copy, replace_chst_copy, &
                                              replace_stch_copy
       generic, public :: replace_inplace  => replace_ch_inplace, replace_st_inplace, replace_chst_inplace, &
                                              replace_stch_inplace
       generic, public :: split            => split_string
+      generic, public :: starts_with      => starts_with_chars, starts_with_string
       generic, public :: write(formatted) => write_string
 
       ! Specifics ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -129,6 +132,8 @@ module io_fortran_lib
       procedure, pass(self)         :: count64_chars, count64_string
       procedure, pass(substring)    :: echo_string
       procedure, pass(self), public :: empty
+      procedure, pass(self)         :: ends_with_chars, ends_with_string
+      procedure, pass(self)         :: find_chars, find_string
       procedure, pass(self), public :: join => join_into_self
       procedure, pass(self)         :: join_base
       procedure, pass(self), public :: len => length
@@ -139,6 +144,9 @@ module io_fortran_lib
                                        replace_stch_copy, replace_ch_inplace, replace_st_inplace, &
                                        replace_chst_inplace, replace_stch_inplace
       procedure, pass(substring)    :: split_string
+      procedure, pass(self)         :: starts_with_chars, starts_with_string
+      procedure, pass(self), public :: to_lower => to_lower_copy
+      procedure, pass(self), public :: to_upper => to_upper_copy
       procedure, pass(self), public :: trim => trim_copy
       procedure, pass(self), public :: trim_inplace
       procedure, pass(self), public :: write_file
@@ -352,24 +360,96 @@ module io_fortran_lib
       logical,          intent(in), optional :: back
     end subroutine replace_stch_inplace
 
-    elemental recursive type(String) module function trim_copy(self) result(new)
+    elemental recursive logical module function starts_with_chars(self, substring) result(res)
+      !-----------------------------------------------------------------------------------------------------------------
+      !! Whether a `String` starts with `substring`, elementally.
+      !!
+      !! For a user reference, see [starts_with](../page/Ref/String-methods.html#starts_with).
+      !-----------------------------------------------------------------------------------------------------------------
+      class(String),    intent(in) :: self
+      character(len=*), intent(in) :: substring
+    end function starts_with_chars
+
+    elemental recursive logical module function starts_with_string(self, substring) result(res)
+      class(String), intent(in) :: self
+      type(String),  intent(in) :: substring
+    end function starts_with_string
+
+    elemental recursive logical module function ends_with_chars(self, substring) result(res)
+      !-----------------------------------------------------------------------------------------------------------------
+      !! Whether a `String` ends with `substring`, elementally.
+      !!
+      !! For a user reference, see [ends_with](../page/Ref/String-methods.html#ends_with).
+      !-----------------------------------------------------------------------------------------------------------------
+      class(String),    intent(in) :: self
+      character(len=*), intent(in) :: substring
+    end function ends_with_chars
+
+    elemental recursive logical module function ends_with_string(self, substring) result(res)
+      class(String), intent(in) :: self
+      type(String),  intent(in) :: substring
+    end function ends_with_string
+
+    elemental recursive integer module function find_chars(self, pattern, occurrence, consider_overlapping) &
+                                                          result(position)
+      !-----------------------------------------------------------------------------------------------------------------
+      !! The position where the `occurrence`th occurrence (default 1) of `pattern` starts in a `String`, or 0 if there
+      !! is none, elementally. Occurrences may overlap unless `consider_overlapping` is `.false.`.
+      !!
+      !! For a user reference, see [find](../page/Ref/String-methods.html#find).
+      !-----------------------------------------------------------------------------------------------------------------
+      class(String),    intent(in)           :: self
+      character(len=*), intent(in)           :: pattern
+      integer,          intent(in), optional :: occurrence
+      logical,          intent(in), optional :: consider_overlapping
+    end function find_chars
+
+    elemental recursive integer module function find_string(self, pattern, occurrence, consider_overlapping) &
+                                                           result(position)
+      class(String), intent(in)           :: self
+      type(String),  intent(in)           :: pattern
+      integer,       intent(in), optional :: occurrence
+      logical,       intent(in), optional :: consider_overlapping
+    end function find_string
+
+    elemental recursive type(String) module function to_upper_copy(self) result(new)
+      !-----------------------------------------------------------------------------------------------------------------
+      !! Returns a copy of a `String` elementally with the ASCII letters `a` to `z` in upper case.
+      !!
+      !! For a user reference, see [to_upper](../page/Ref/String-methods.html#to_upper).
+      !-----------------------------------------------------------------------------------------------------------------
+      class(String), intent(in) :: self
+    end function to_upper_copy
+
+    elemental recursive type(String) module function to_lower_copy(self) result(new)
+      !-----------------------------------------------------------------------------------------------------------------
+      !! Returns a copy of a `String` elementally with the ASCII letters `A` to `Z` in lower case.
+      !!
+      !! For a user reference, see [to_lower](../page/Ref/String-methods.html#to_lower).
+      !-----------------------------------------------------------------------------------------------------------------
+      class(String), intent(in) :: self
+    end function to_lower_copy
+
+    elemental recursive type(String) module function trim_copy(self, chars) result(new)
       !-----------------------------------------------------------------------------------------------------------------
       !! Returns a copy of a `String` elementally in which each string slice component has been trimmed of any
-      !! leading or trailing whitespace.
+      !! leading or trailing characters in `chars`, or of whitespace if `chars` is absent.
       !!
       !! For a user reference, see [trim](../page/Ref/String-methods.html#trim).
       !-----------------------------------------------------------------------------------------------------------------
-      class(String), intent(in) :: self
+      class(String),    intent(in)           :: self
+      character(len=*), intent(in), optional :: chars
     end function trim_copy
 
-    elemental recursive module subroutine trim_inplace(self)
+    elemental recursive module subroutine trim_inplace(self, chars)
       !-----------------------------------------------------------------------------------------------------------------
-      !! Removes any leading or trailing whitespace of the string slice component of a `String` elementally and
-      !! in place.
+      !! Removes any leading or trailing characters in `chars`, or whitespace if `chars` is absent, from the string
+      !! slice component of a `String` elementally and in place.
       !!
       !! For a user reference, see [trim_inplace](../page/Ref/String-methods.html#trim_inplace).
       !-----------------------------------------------------------------------------------------------------------------
-      class(String), intent(inout) :: self
+      class(String),    intent(inout)        :: self
+      character(len=*), intent(in), optional :: chars
     end subroutine trim_inplace
 
     recursive module subroutine write_file(self, cell_array, file, row_separator, column_separator, append, &

@@ -7,7 +7,7 @@ module api_cases
   use io_fortran_lib, only: IOFL_NL, IOFL_SPACE, IOFL_CR, IOFL_LF, IOFL_TAB, IOFL_FF, IOFL_VT, IOFL_BELL, IOFL_NUL, &
                             IOFL_READ_ERR, IOFL_WRITE_ERR, IOFL_ALLOC_ERR, IOFL_ARG_ERR, &
                             NL, SPACE, CR, FF, VT, LF, TAB, HT, BELL, NUL, CNUL, to_file, from_file, cast
-  use test_support, only: test_suite, expect_equal, scratch
+  use test_support, only: test_suite, check, expect_equal, scratch
   implicit none (type, external)
   private
 
@@ -23,6 +23,7 @@ contains
     call suite%add("old_constant_names", old_constant_names)
     call suite%add("error_code_values", error_code_values)
     call suite%add("stat_uses_error_codes", stat_uses_error_codes)
+    call suite%add("string_function_names_free", string_function_names_free)
   end subroutine register_api
 
   subroutine constant_values()
@@ -74,4 +75,33 @@ contains
     call cast("abc", into=i, stat=st)
     call expect_equal(st, IOFL_READ_ERR, "Invalid text for cast is a read error.")
   end subroutine stat_uses_error_codes
+  subroutine string_function_names_free()
+    !! io_fortran_lib exports no to_upper, to_lower, starts_with, ends_with, find or trim; they are in io_strings. So
+    !! a program that uses io_fortran_lib without an only list can still define its own, as it could with 2.1 (#72).
+    !! If io_fortran_lib ever exports one of these names, this case stops compiling.
+    use io_fortran_lib
+    implicit none (type, external)
+
+    call check(to_upper() == 1 .and. to_lower() == 2 .and. starts_with() == 3 .and. ends_with() == 4 .and. &
+               find() == 5 .and. trim() == 6, "A program's own procedures with these names are the ones called.")
+  contains
+    integer function to_upper()
+      to_upper = 1
+    end function to_upper
+    integer function to_lower()
+      to_lower = 2
+    end function to_lower
+    integer function starts_with()
+      starts_with = 3
+    end function starts_with
+    integer function ends_with()
+      ends_with = 4
+    end function ends_with
+    integer function find()
+      find = 5
+    end function find
+    integer function trim()
+      trim = 6
+    end function trim
+  end subroutine string_function_names_free
 end module api_cases

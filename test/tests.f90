@@ -18,6 +18,7 @@ program tests
   use text_round_trip_cases, only: register_text_round_trip
   use file_round_trip_cases, only: register_file_round_trip
   use npy_cases, only: register_npy
+  use strings_cases, only: register_strings
   implicit none (type, external)
 
   type(test_suite) :: suite
@@ -37,6 +38,7 @@ program tests
   call register_text_round_trip(suite)
   call register_file_round_trip(suite)
   call register_npy(suite)
+  call register_strings(suite)
 
   call suite%run("tests")
 end program tests
