@@ -21,7 +21,7 @@ Add the library to your [fpm](https://fpm.fortran-lang.org) project's
 
 ```toml
 [dependencies]
-IO-Fortran-Library = { git="https://github.com/acbbullock/IO-Fortran-Library", tag="v2.1.0" }
+IO-Fortran-Library = { git="https://github.com/acbbullock/IO-Fortran-Library", tag="v2.1.1" }
 ```
 
 Then `use io_fortran_lib`. This program writes an array to a CSV file and
