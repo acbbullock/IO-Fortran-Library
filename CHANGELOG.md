@@ -15,6 +15,8 @@ Work toward 2.2, tracked in the [2.2 milestone](https://github.com/acbbullock/IO
 
 * `.tsv` files. `tsv` is a text file extension, and a `.tsv` file is separated by tabs unless `delim` (or
   `column_separator` for `read_file` and `write_file`) says otherwise (#70).
+* `column_names` for `from_file`, which returns a text file's header row as a `String` array, one name per column,
+  and implies `header=.true.` (#71).
 
 ### Tested platforms
 

@@ -2,10 +2,10 @@ module array_files_cases
   !---------------------------------------------------------------------------------------------------------------------
   !! `to_file` and `from_file` with text files: errors, empty cells, quoting, and round trips.
   !---------------------------------------------------------------------------------------------------------------------
-  use, intrinsic :: iso_fortran_env, only: real32, real64
+  use, intrinsic :: iso_fortran_env, only: int64, real32, real64
   use, intrinsic :: ieee_arithmetic, only: ieee_value, ieee_quiet_nan, ieee_is_nan
-  use io_fortran_lib, only: String, str, to_file, from_file, IOFL_LF, IOFL_CR, IOFL_TAB, operator(==), operator(/=), &
-                            operator(>)
+  use io_fortran_lib, only: String, str, to_file, from_file, IOFL_LF, IOFL_CR, IOFL_TAB, IOFL_ARG_ERR, operator(==), &
+                            operator(/=), operator(>)
   use test_support, only: test_suite, STOPS, check, expect_equal, scratch, write_raw, read_raw
   implicit none (type, external)
   private
@@ -46,6 +46,15 @@ contains
     call suite%add("tsv_eu_locale", tsv_eu_locale)
     call suite%add("tsv_explicit_delim", tsv_explicit_delim)
     call suite%add("tsv_upper_case_extension", tsv_upper_case_extension)
+    call suite%add("column_names_real", column_names_real)
+    call suite%add("column_names_quoted", column_names_quoted)
+    call suite%add("column_names_rank1", column_names_rank1)
+    call suite%add("column_names_integer", column_names_integer)
+    call suite%add("column_names_complex", column_names_complex)
+    call suite%add("column_names_tsv", column_names_tsv)
+    call suite%add("column_names_header_true", column_names_header_true)
+    call suite%add("column_names_header_false_stat", column_names_header_false_stat)
+    call suite%add("column_names_npy_stat", column_names_npy_stat)
   end subroutine register_array_files
 
   subroutine from_file_missing()
@@ -437,4 +446,118 @@ contains
     call to_file(x, file=file)
     call check(read_raw(file) == "7"//IOFL_TAB//"8"//IOFL_LF, "A .TSV file should be tab-separated too.")
   end subroutine tsv_upper_case_extension
+  subroutine column_names_real()
+    !! column_names returns the header row and implies header=.true. (#71).
+    real(real64)              :: x(2,3) = reshape([1.0_real64, 2.0_real64, 3.0_real64, 4.0_real64, 5.0_real64, &
+                                                   6.0_real64], [2,3])
+    real(real64), allocatable :: y(:,:)
+    type(String), allocatable :: names(:)
+    character(len=:), allocatable :: file
+
+    file = scratch()//".csv"
+    call to_file(x, file=file, header=["time ", "speed", "angle"])
+    call from_file(file, into=y, column_names=names)
+    call expect_equal(size(names), 3, "one name per column")
+    call check(names(1) == "time" .and. names(2) == "speed" .and. names(3) == "angle", "the names in the header")
+    call expect_equal(size(y, dim=1), 2, "The header row should not be read as data.")
+    call check(all(y == x), "The data should read back below the header.")
+  end subroutine column_names_real
+
+  subroutine column_names_quoted()
+    !! A quoted header cell is unquoted, as read_file does, and may contain the delimiter.
+    real(real64), allocatable :: y(:,:)
+    type(String), allocatable :: names(:)
+
+    call write_raw(scratch()//".csv", '"x, in m",y'//IOFL_LF//"1.0,2.0"//IOFL_LF)
+    call from_file(scratch()//".csv", into=y, fmt="f", column_names=names)
+    call expect_equal(size(names), 2, "The delimiter inside quotes does not split the name.")
+    call expect_equal(names(1), "x, in m", "the quoted name, without its quotes")
+    call expect_equal(names(2), "y", "the second name")
+  end subroutine column_names_quoted
+
+  subroutine column_names_rank1()
+    real(real32)              :: x(3) = [1.5, 2.5, 3.5]
+    real(real32), allocatable :: y(:)
+    type(String), allocatable :: names(:)
+    character(len=:), allocatable :: file
+
+    file = scratch()//".csv"
+    call to_file(x, file=file, header=["v"])
+    call from_file(file, into=y, column_names=names)
+    call expect_equal(size(names), 1, "A one-column file has one name.")
+    call expect_equal(names(1), "v", "the name")
+    call check(all(y == x), "the data")
+  end subroutine column_names_rank1
+
+  subroutine column_names_integer()
+    integer(int64)              :: x(1,2) = reshape([7_int64, -8_int64], [1,2])
+    integer(int64), allocatable :: y(:,:)
+    type(String), allocatable   :: names(:)
+    character(len=:), allocatable :: file
+
+    file = scratch()//".csv"
+    call to_file(x, file=file, header=["n"])
+    call from_file(file, into=y, column_names=names)
+    call check(size(names) == 2 .and. names(1) == "n1" .and. names(2) == "n2", "integer data: the names")
+    call check(all(y == x), "integer data: the values")
+  end subroutine column_names_integer
+
+  subroutine column_names_complex()
+    complex(real64)              :: x(2) = [(1.0_real64, -1.0_real64), (0.5_real64, 2.0_real64)]
+    complex(real64), allocatable :: y(:)
+    type(String), allocatable    :: names(:)
+    character(len=:), allocatable :: file
+
+    file = scratch()//".csv"
+    call to_file(x, file=file, header=["z"])
+    call from_file(file, into=y, column_names=names)
+    call check(size(names) == 1 .and. names(1) == "z", "complex data: the name")
+    call check(all(y == x), "complex data: the values")
+  end subroutine column_names_complex
+
+  subroutine column_names_tsv()
+    integer, allocatable      :: y(:,:)
+    type(String), allocatable :: names(:)
+
+    call write_raw(scratch()//".tsv", "a,b"//IOFL_TAB//"c"//IOFL_LF//"1"//IOFL_TAB//"2"//IOFL_LF)
+    call from_file(scratch()//".tsv", into=y, column_names=names)
+    call check(size(names) == 2 .and. names(1) == "a,b" .and. names(2) == "c", "the names in a .tsv header")
+    call check(all(y(1,:) == [1, 2]), "the data in a .tsv file")
+  end subroutine column_names_tsv
+
+  subroutine column_names_header_true()
+    !! Giving header=.true. as well is allowed, and changes nothing.
+    integer, allocatable      :: y(:)
+    type(String), allocatable :: names(:)
+
+    call write_raw(scratch()//".csv", "count"//IOFL_LF//"3"//IOFL_LF//"4"//IOFL_LF)
+    call from_file(scratch()//".csv", into=y, header=.true., column_names=names)
+    call check(size(names) == 1 .and. names(1) == "count", "the name, with header=.true.")
+    call check(all(y == [3, 4]), "the data, with header=.true.")
+  end subroutine column_names_header_true
+
+  subroutine column_names_header_false_stat()
+    !! column_names with header=.false. contradicts itself.
+    integer, allocatable      :: y(:)
+    type(String), allocatable :: names(:)
+    integer                   :: st
+    character(len=256)        :: msg
+
+    call write_raw(scratch()//".csv", "count"//IOFL_LF//"3"//IOFL_LF)
+    call from_file(scratch()//".csv", into=y, header=.false., column_names=names, stat=st, errmsg=msg)
+    call expect_equal(st, IOFL_ARG_ERR, "column_names with header=.false. should be an argument error.")
+    call check(index(msg, "column_names") > 0, "The message should name column_names.")
+  end subroutine column_names_header_false_stat
+
+  subroutine column_names_npy_stat()
+    !! A .npy file has no header row to return.
+    real(real64), allocatable :: y(:)
+    type(String), allocatable :: names(:)
+    integer                   :: st
+    character(len=256)        :: msg
+
+    call to_file([1.0_real64, 2.0_real64], file=scratch()//".npy")
+    call from_file(scratch()//".npy", into=y, column_names=names, stat=st, errmsg=msg)
+    call expect_equal(st, IOFL_ARG_ERR, "column_names for a .npy file should be an argument error.")
+  end subroutine column_names_npy_stat
 end module array_files_cases

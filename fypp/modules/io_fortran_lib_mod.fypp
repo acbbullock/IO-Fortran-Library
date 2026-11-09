@@ -1221,7 +1221,7 @@ module io_fortran_lib
 #ifdef IOFL_HAS_R128
 #:endif
     recursive module subroutine from_textfile_${k}$(file, into, header, locale, delim, fmt, im, stat, errmsg, &
-                                              format)
+                                              format, column_names)
       character(len=*), intent(in)                    :: file
       complex(${r}$),    intent(out), allocatable      :: into(..)
       logical,          intent(in),  optional :: header
@@ -1232,6 +1232,7 @@ module io_fortran_lib
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      type(String),     intent(out), optional, allocatable :: column_names(:)
     end subroutine from_textfile_${k}$
 #:if k in QUAD_KINDS
 #endif
@@ -1261,7 +1262,8 @@ module io_fortran_lib
 #:if k in QUAD_KINDS
 #ifdef IOFL_HAS_R128
 #:endif
-    recursive module subroutine from_textfile_${k}$(file, into, header, locale, delim, fmt, stat, errmsg, format)
+    recursive module subroutine from_textfile_${k}$(file, into, header, locale, delim, fmt, stat, errmsg, format, &
+                                              column_names)
       character(len=*), intent(in)                    :: file
       real(${k}$),       intent(out), allocatable      :: into(..)
       logical,          intent(in),  optional :: header
@@ -1271,6 +1273,7 @@ module io_fortran_lib
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      type(String),     intent(out), optional, allocatable :: column_names(:)
     end subroutine from_textfile_${k}$
 #:if k in QUAD_KINDS
 #endif
@@ -1297,7 +1300,8 @@ module io_fortran_lib
 #:endfor
 
 #:for k in INT_KINDS
-    recursive module subroutine from_textfile_${k}$(file, into, header, delim, fmt, stat, errmsg, format)
+    recursive module subroutine from_textfile_${k}$(file, into, header, delim, fmt, stat, errmsg, format, &
+                                              column_names)
       character(len=*), intent(in)                    :: file
       integer(${k}$),     intent(out), allocatable      :: into(..)
       logical,          intent(in),  optional :: header
@@ -1306,6 +1310,7 @@ module io_fortran_lib
       integer,          intent(out), optional, target :: stat
       character(len=*), intent(out), optional, target :: errmsg
       character(len=*), intent(in), optional :: format
+      type(String),     intent(out), optional, allocatable :: column_names(:)
     end subroutine from_textfile_${k}$
 
 #:endfor
@@ -1419,7 +1424,7 @@ module io_fortran_lib
 #:if k in QUAD_KINDS
 #ifdef IOFL_HAS_R128
 #:endif
-    recursive module subroutine from_text_${k}$(file, into, header, locale, delim, fmt, im, stat, errmsg)
+    recursive module subroutine from_text_${k}$(file, into, header, locale, delim, fmt, im, stat, errmsg, column_names)
       character(len=*), intent(in)               :: file
       complex(${r}$),    intent(out), allocatable :: into(..)
       logical,          intent(in)               :: header
@@ -1429,6 +1434,7 @@ module io_fortran_lib
       character(len=*), intent(in)               :: im
       integer,          intent(out)              :: stat
       character(len=*), intent(out)              :: errmsg
+      type(String),     intent(out), optional, allocatable :: column_names(:)
     end subroutine from_text_${k}$
 #:if k in QUAD_KINDS
 #endif
@@ -1440,7 +1446,7 @@ module io_fortran_lib
 #:if k in QUAD_KINDS
 #ifdef IOFL_HAS_R128
 #:endif
-    recursive module subroutine from_text_${k}$(file, into, header, locale, delim, fmt, stat, errmsg)
+    recursive module subroutine from_text_${k}$(file, into, header, locale, delim, fmt, stat, errmsg, column_names)
       character(len=*), intent(in)               :: file
       real(${k}$),       intent(out), allocatable :: into(..)
       logical,          intent(in)               :: header
@@ -1449,6 +1455,7 @@ module io_fortran_lib
       character(len=*), intent(in)               :: fmt
       integer,          intent(out)              :: stat
       character(len=*), intent(out)              :: errmsg
+      type(String),     intent(out), optional, allocatable :: column_names(:)
     end subroutine from_text_${k}$
 #:if k in QUAD_KINDS
 #endif
@@ -1457,7 +1464,7 @@ module io_fortran_lib
 #:endfor
 
 #:for k in INT_KINDS
-    recursive module subroutine from_text_${k}$(file, into, header, delim, fmt, stat, errmsg)
+    recursive module subroutine from_text_${k}$(file, into, header, delim, fmt, stat, errmsg, column_names)
       character(len=*), intent(in)               :: file
       integer(${k}$),     intent(out), allocatable :: into(..)
       logical,          intent(in)               :: header
@@ -1465,6 +1472,7 @@ module io_fortran_lib
       character(len=*), intent(in)               :: fmt
       integer,          intent(out)              :: stat
       character(len=*), intent(out)              :: errmsg
+      type(String),     intent(out), optional, allocatable :: column_names(:)
     end subroutine from_text_${k}$
 
 #:endfor
