@@ -169,6 +169,28 @@ submodule (io_fortran_lib) io_internal
     into%buf = complex_text(x, decimal_of(locale), real_fmt_of(fmt), decimals, im)
     into%n = len(into%buf, kind=i64)
   end procedure cast_c128_to_string
+
+  module procedure cast_column_c128
+    type(String), allocatable :: re(:), im_part(:)
+    character(len=5)          :: decimal
+    integer                   :: i
+
+    decimal = decimal_of(locale)
+
+    if ( (real_fmt_of(fmt) /= "e") .or. (size(x) == 0) ) then
+      call cast(x, into, locale, fmt, decimals, im); return
+    end if
+
+    allocate( re(size(x)), im_part(size(x)) )
+
+    call cast_column(x%re, re, locale, fmt, decimals)
+    call cast_column(x%im, im_part, locale, fmt, decimals)
+
+    do i = 1, size(x)
+      into(i)%buf = join_complex(re(i)%buf, im_part(i)%buf, ieee_is_negative(x(i)%im), decimal, "e", im)
+      into(i)%n = len(into(i)%buf, kind=i64)
+    end do
+  end procedure cast_column_c128
 #endif
 
   module procedure cast_c64_to_string
@@ -176,10 +198,54 @@ submodule (io_fortran_lib) io_internal
     into%n = len(into%buf, kind=i64)
   end procedure cast_c64_to_string
 
+  module procedure cast_column_c64
+    type(String), allocatable :: re(:), im_part(:)
+    character(len=5)          :: decimal
+    integer                   :: i
+
+    decimal = decimal_of(locale)
+
+    if ( (real_fmt_of(fmt) /= "e") .or. (size(x) == 0) ) then
+      call cast(x, into, locale, fmt, decimals, im); return
+    end if
+
+    allocate( re(size(x)), im_part(size(x)) )
+
+    call cast_column(x%re, re, locale, fmt, decimals)
+    call cast_column(x%im, im_part, locale, fmt, decimals)
+
+    do i = 1, size(x)
+      into(i)%buf = join_complex(re(i)%buf, im_part(i)%buf, ieee_is_negative(x(i)%im), decimal, "e", im)
+      into(i)%n = len(into(i)%buf, kind=i64)
+    end do
+  end procedure cast_column_c64
+
   module procedure cast_c32_to_string
     into%buf = complex_text(x, decimal_of(locale), real_fmt_of(fmt), decimals, im)
     into%n = len(into%buf, kind=i64)
   end procedure cast_c32_to_string
+
+  module procedure cast_column_c32
+    type(String), allocatable :: re(:), im_part(:)
+    character(len=5)          :: decimal
+    integer                   :: i
+
+    decimal = decimal_of(locale)
+
+    if ( (real_fmt_of(fmt) /= "e") .or. (size(x) == 0) ) then
+      call cast(x, into, locale, fmt, decimals, im); return
+    end if
+
+    allocate( re(size(x)), im_part(size(x)) )
+
+    call cast_column(x%re, re, locale, fmt, decimals)
+    call cast_column(x%im, im_part, locale, fmt, decimals)
+
+    do i = 1, size(x)
+      into(i)%buf = join_complex(re(i)%buf, im_part(i)%buf, ieee_is_negative(x(i)%im), decimal, "e", im)
+      into(i)%n = len(into(i)%buf, kind=i64)
+    end do
+  end procedure cast_column_c32
 
 
 #ifdef IOFL_HAS_R128
@@ -187,6 +253,44 @@ submodule (io_fortran_lib) io_internal
     into%buf = real_text(x, decimal_of(locale), real_fmt_of(fmt), decimals)
     into%n = len(into%buf, kind=i64)
   end procedure cast_r128_to_string
+
+  module procedure cast_column_r128
+    integer, parameter :: E_DECIMALS = 35, E_DIGITS = 4, CHUNK = 1024
+
+    character(len=:), allocatable :: chunk_text
+    character(len=32)             :: edit
+    character(len=5)              :: decimal
+    integer                       :: d, w, i, j, n
+
+    decimal = decimal_of(locale)
+
+    if ( (real_fmt_of(fmt) /= "e") .or. (size(x) == 0) ) then
+      call cast(x, into, locale, fmt, decimals); return
+    end if
+
+    d = E_DECIMALS
+    if ( present(decimals) ) d = max(min(decimals, E_DECIMALS), 0)
+
+    w    = d + E_DIGITS + 8
+    edit = "(*"//trim(e_edit(w, d, E_DIGITS))//")"
+
+    allocate( character(len=w*min(size(x), CHUNK)) :: chunk_text )
+
+    do j = 0, size(x) - 1, CHUNK                       ! One `write` formats a chunk of numbers, each in a w-wide field
+      n = min(CHUNK, size(x) - j)
+      write(unit=chunk_text, fmt=edit, decimal=decimal) x(j+1:j+n)
+
+      do i = 1, n
+        if ( ieee_is_finite(x(j+i)) .and. (x(j+i) /= 0e0_r128) ) then
+          into(j+i)%buf = e_field_text(chunk_text((i-1)*w+1:i*w))
+        else
+          into(j+i)%buf = real_text(x(j+i), decimal, "e", decimals)
+        end if
+
+        into(j+i)%n = len(into(j+i)%buf, kind=i64)
+      end do
+    end do
+  end procedure cast_column_r128
 #endif
 
   module procedure cast_r64_to_string
@@ -194,10 +298,86 @@ submodule (io_fortran_lib) io_internal
     into%n = len(into%buf, kind=i64)
   end procedure cast_r64_to_string
 
+  module procedure cast_column_r64
+    integer, parameter :: E_DECIMALS = 17, E_DIGITS = 3, CHUNK = 1024
+
+    character(len=:), allocatable :: chunk_text
+    character(len=32)             :: edit
+    character(len=5)              :: decimal
+    integer                       :: d, w, i, j, n
+
+    decimal = decimal_of(locale)
+
+    if ( (real_fmt_of(fmt) /= "e") .or. (size(x) == 0) ) then
+      call cast(x, into, locale, fmt, decimals); return
+    end if
+
+    d = E_DECIMALS
+    if ( present(decimals) ) d = max(min(decimals, E_DECIMALS), 0)
+
+    w    = d + E_DIGITS + 8
+    edit = "(*"//trim(e_edit(w, d, E_DIGITS))//")"
+
+    allocate( character(len=w*min(size(x), CHUNK)) :: chunk_text )
+
+    do j = 0, size(x) - 1, CHUNK                       ! One `write` formats a chunk of numbers, each in a w-wide field
+      n = min(CHUNK, size(x) - j)
+      write(unit=chunk_text, fmt=edit, decimal=decimal) x(j+1:j+n)
+
+      do i = 1, n
+        if ( ieee_is_finite(x(j+i)) .and. (x(j+i) /= 0e0_r64) ) then
+          into(j+i)%buf = e_field_text(chunk_text((i-1)*w+1:i*w))
+        else
+          into(j+i)%buf = real_text(x(j+i), decimal, "e", decimals)
+        end if
+
+        into(j+i)%n = len(into(j+i)%buf, kind=i64)
+      end do
+    end do
+  end procedure cast_column_r64
+
   module procedure cast_r32_to_string
     into%buf = real_text(x, decimal_of(locale), real_fmt_of(fmt), decimals)
     into%n = len(into%buf, kind=i64)
   end procedure cast_r32_to_string
+
+  module procedure cast_column_r32
+    integer, parameter :: E_DECIMALS = 8, E_DIGITS = 2, CHUNK = 1024
+
+    character(len=:), allocatable :: chunk_text
+    character(len=32)             :: edit
+    character(len=5)              :: decimal
+    integer                       :: d, w, i, j, n
+
+    decimal = decimal_of(locale)
+
+    if ( (real_fmt_of(fmt) /= "e") .or. (size(x) == 0) ) then
+      call cast(x, into, locale, fmt, decimals); return
+    end if
+
+    d = E_DECIMALS
+    if ( present(decimals) ) d = max(min(decimals, E_DECIMALS), 0)
+
+    w    = d + E_DIGITS + 8
+    edit = "(*"//trim(e_edit(w, d, E_DIGITS))//")"
+
+    allocate( character(len=w*min(size(x), CHUNK)) :: chunk_text )
+
+    do j = 0, size(x) - 1, CHUNK                       ! One `write` formats a chunk of numbers, each in a w-wide field
+      n = min(CHUNK, size(x) - j)
+      write(unit=chunk_text, fmt=edit, decimal=decimal) x(j+1:j+n)
+
+      do i = 1, n
+        if ( ieee_is_finite(x(j+i)) .and. (x(j+i) /= 0e0_r32) ) then
+          into(j+i)%buf = e_field_text(chunk_text((i-1)*w+1:i*w))
+        else
+          into(j+i)%buf = real_text(x(j+i), decimal, "e", decimals)
+        end if
+
+        into(j+i)%n = len(into(j+i)%buf, kind=i64)
+      end do
+    end do
+  end procedure cast_column_r32
 
 
   module procedure cast_i64_to_string
@@ -601,18 +781,43 @@ submodule (io_fortran_lib) io_internal
   end function zero_text
 
   pure function e_edit(width, d, e_digits) result(edit)
+    !-------------------------------------------------------------------------------------------------------------------
+    !! Returns the format `(esW.DeE)`. The edit descriptors are joined from digits, not written by an internal `write`,
+    !! which would cost as much as writing the number itself.
+    !-------------------------------------------------------------------------------------------------------------------
     integer, intent(in) :: width, d, e_digits
     character(len=32)   :: edit
 
-    write(unit=edit, fmt="(a,i0,a,i0,a,i0,a)") "(es", width, ".", d, "e", e_digits, ")"
+    edit = "(es"//digits(width)//"."//digits(d)//"e"//digits(e_digits)//")"
   end function e_edit
 
   pure function f_edit(width, d) result(edit)
     integer, intent(in) :: width, d
     character(len=32)   :: edit
 
-    write(unit=edit, fmt="(a,i0,a,i0,a)") "(f", width, ".", d, ")"
+    edit = "(f"//digits(width)//"."//digits(d)//")"
   end function f_edit
+
+  pure function e_field_text(field) result(text)
+    !-------------------------------------------------------------------------------------------------------------------
+    !! Returns a nonzero finite number written right-justified by an `es` edit descriptor, as the library writes it:
+    !! without the leading blanks, and with a lowercase exponent letter.
+    !-------------------------------------------------------------------------------------------------------------------
+    character(len=*), intent(in)  :: field
+    character(len=:), allocatable :: text
+
+    integer :: i
+
+    text = field(verify(field, SPACE):)
+    i = index(text, "E"); text(i:i) = "e"
+  end function e_field_text
+
+  pure function digits(n) result(text)
+    integer, intent(in)           :: n
+    character(len=:), allocatable :: text
+
+    text = int_text(int(n, kind=i64), 64, "i")
+  end function digits
 
   pure function small_f_text(e_text, d) result(text)
     !-------------------------------------------------------------------------------------------------------------------
@@ -674,8 +879,11 @@ submodule (io_fortran_lib) io_internal
     integer,          intent(in), optional :: decimals
     character(len=:), allocatable          :: text
 
-    integer, parameter :: E_DECIMALS = 35, E_DIGITS = 4, F_DIGITS = 36
-    integer            :: d, e, i, n
+    integer,          parameter :: E_DECIMALS = 35, E_DIGITS = 4, F_DIGITS = 36
+    character(len=*), parameter :: E_FMT = "(es47.35e4)"
+
+    character(len=64) :: field                                         ! Wider than any `es` text, at most 47 characters
+    integer           :: d, e, i, n
 
     if ( fmt == "z" ) then
       if ( (x == 0e0_r128) .and. (.not. ieee_is_negative(x)) ) then
@@ -711,11 +919,15 @@ submodule (io_fortran_lib) io_internal
       d = E_DECIMALS
       if ( present(decimals) ) d = max(min(decimals, E_DECIMALS), 0)
 
-      allocate( character(len=d+E_DIGITS+8) :: text )
-      write(unit=text, fmt=e_edit(len(text), d, E_DIGITS), decimal=decimal) x
-      text = trim(adjustl(text))
+      n = d + E_DIGITS + 8
 
-      i = index(text, "E"); text(i:i) = "e"
+      if ( d == E_DECIMALS ) then                            ! A constant format, which compilers can parse in advance
+        write(unit=field(:n), fmt=E_FMT, decimal=decimal) x
+      else
+        write(unit=field(:n), fmt=e_edit(n, d, E_DIGITS), decimal=decimal) x
+      end if
+
+      text = e_field_text(field(:n))
     else
       if ( abs(x) >= 1e0_r128 ) then
         e = 1 + floor(log10(abs(x)))
@@ -747,8 +959,11 @@ submodule (io_fortran_lib) io_internal
     integer,          intent(in), optional :: decimals
     character(len=:), allocatable          :: text
 
-    integer, parameter :: E_DECIMALS = 17, E_DIGITS = 3, F_DIGITS = 18
-    integer            :: d, e, i, n
+    integer,          parameter :: E_DECIMALS = 17, E_DIGITS = 3, F_DIGITS = 18
+    character(len=*), parameter :: E_FMT = "(es28.17e3)"
+
+    character(len=64) :: field                                         ! Wider than any `es` text, at most 47 characters
+    integer           :: d, e, i, n
 
     if ( fmt == "z" ) then
       if ( (x == 0e0_r64) .and. (.not. ieee_is_negative(x)) ) then
@@ -776,11 +991,15 @@ submodule (io_fortran_lib) io_internal
       d = E_DECIMALS
       if ( present(decimals) ) d = max(min(decimals, E_DECIMALS), 0)
 
-      allocate( character(len=d+E_DIGITS+8) :: text )
-      write(unit=text, fmt=e_edit(len(text), d, E_DIGITS), decimal=decimal) x
-      text = trim(adjustl(text))
+      n = d + E_DIGITS + 8
 
-      i = index(text, "E"); text(i:i) = "e"
+      if ( d == E_DECIMALS ) then                            ! A constant format, which compilers can parse in advance
+        write(unit=field(:n), fmt=E_FMT, decimal=decimal) x
+      else
+        write(unit=field(:n), fmt=e_edit(n, d, E_DIGITS), decimal=decimal) x
+      end if
+
+      text = e_field_text(field(:n))
     else
       if ( abs(x) >= 1e0_r64 ) then
         e = 1 + floor(log10(abs(x)))
@@ -811,8 +1030,11 @@ submodule (io_fortran_lib) io_internal
     integer,          intent(in), optional :: decimals
     character(len=:), allocatable          :: text
 
-    integer, parameter :: E_DECIMALS = 8, E_DIGITS = 2, F_DIGITS = 9
-    integer            :: d, e, i, n
+    integer,          parameter :: E_DECIMALS = 8, E_DIGITS = 2, F_DIGITS = 9
+    character(len=*), parameter :: E_FMT = "(es18.8e2)"
+
+    character(len=64) :: field                                         ! Wider than any `es` text, at most 47 characters
+    integer           :: d, e, i, n
 
     if ( fmt == "z" ) then
       if ( (x == 0e0_r32) .and. (.not. ieee_is_negative(x)) ) then
@@ -840,11 +1062,15 @@ submodule (io_fortran_lib) io_internal
       d = E_DECIMALS
       if ( present(decimals) ) d = max(min(decimals, E_DECIMALS), 0)
 
-      allocate( character(len=d+E_DIGITS+8) :: text )
-      write(unit=text, fmt=e_edit(len(text), d, E_DIGITS), decimal=decimal) x
-      text = trim(adjustl(text))
+      n = d + E_DIGITS + 8
 
-      i = index(text, "E"); text(i:i) = "e"
+      if ( d == E_DECIMALS ) then                            ! A constant format, which compilers can parse in advance
+        write(unit=field(:n), fmt=E_FMT, decimal=decimal) x
+      else
+        write(unit=field(:n), fmt=e_edit(n, d, E_DIGITS), decimal=decimal) x
+      end if
+
+      text = e_field_text(field(:n))
     else
       if ( abs(x) >= 1e0_r32 ) then
         e = 1 + floor(log10(abs(x)))

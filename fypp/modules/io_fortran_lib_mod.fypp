@@ -1158,6 +1158,46 @@ module io_fortran_lib
 #:endfor
   end interface cast
 
+  interface cast_column                                                                          ! Submodule io_internal
+    !-------------------------------------------------------------------------------------------------------------------
+    !! Private interface for casting a column of numbers into `String` cells, with the same text as `cast`. With
+    !! `fmt="e"`, one internal `write` formats a chunk of numbers, which is much faster than a `write` for each one.
+    !-------------------------------------------------------------------------------------------------------------------
+#:for k, r in COMPLEX_KINDS
+#:if k in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+    recursive module subroutine cast_column_${k}$(x, into, locale, fmt, decimals, im)
+      complex(${r}$),    intent(in)           :: x(:)
+      type(String),     intent(inout)        :: into(:)
+      character(len=*), intent(in)           :: locale
+      character(len=*), intent(in)           :: fmt
+      integer,          intent(in), optional :: decimals
+      character(len=*), intent(in)           :: im
+    end subroutine cast_column_${k}$
+#:if k in QUAD_KINDS
+#endif
+#:endif
+
+#:endfor
+#:for k in REAL_KINDS
+#:if k in QUAD_KINDS
+#ifdef IOFL_HAS_R128
+#:endif
+    recursive module subroutine cast_column_${k}$(x, into, locale, fmt, decimals)
+      real(${k}$),       intent(in)           :: x(:)
+      type(String),     intent(inout)        :: into(:)
+      character(len=*), intent(in)           :: locale
+      character(len=*), intent(in)           :: fmt
+      integer,          intent(in), optional :: decimals
+    end subroutine cast_column_${k}$
+#:if k in QUAD_KINDS
+#endif
+#:endif
+
+#:endfor
+  end interface cast_column
+
   interface join                                                                               ! Submodule io_join_split
     !-------------------------------------------------------------------------------------------------------------------
     !! Function for joining a vector of `tokens` into a scalar `character` or `String`.

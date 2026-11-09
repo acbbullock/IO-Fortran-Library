@@ -265,8 +265,12 @@ submodule (io_fortran_lib) io_text
     if ( header_present ) numerical_data => cells(2:,:)
 
     select rank(x)
-      rank(1); call cast(x, numerical_data(:,1), locale, fmt, decimals, im)
-      rank(2); call cast(x, numerical_data, locale, fmt, decimals, im)
+      rank(1)
+        call cast_column(x, numerical_data(:,1), locale, fmt, decimals, im)
+      rank(2)
+        do j = 1, ncols
+          call cast_column(x(:,j), numerical_data(:,j), locale, fmt, decimals, im)
+        end do
     end select
 
     call write_cells(text_file, .true., cells, file, NL, delim, .false., stat, errmsg, "text")
@@ -318,8 +322,12 @@ submodule (io_fortran_lib) io_text
     if ( header_present ) numerical_data => cells(2:,:)
 
     select rank(x)
-      rank(1); call cast(x, numerical_data(:,1), locale, fmt, decimals, im)
-      rank(2); call cast(x, numerical_data, locale, fmt, decimals, im)
+      rank(1)
+        call cast_column(x, numerical_data(:,1), locale, fmt, decimals, im)
+      rank(2)
+        do j = 1, ncols
+          call cast_column(x(:,j), numerical_data(:,j), locale, fmt, decimals, im)
+        end do
     end select
 
     call write_cells(text_file, .true., cells, file, NL, delim, .false., stat, errmsg, "text")
@@ -370,8 +378,12 @@ submodule (io_fortran_lib) io_text
     if ( header_present ) numerical_data => cells(2:,:)
 
     select rank(x)
-      rank(1); call cast(x, numerical_data(:,1), locale, fmt, decimals, im)
-      rank(2); call cast(x, numerical_data, locale, fmt, decimals, im)
+      rank(1)
+        call cast_column(x, numerical_data(:,1), locale, fmt, decimals, im)
+      rank(2)
+        do j = 1, ncols
+          call cast_column(x(:,j), numerical_data(:,j), locale, fmt, decimals, im)
+        end do
     end select
 
     call write_cells(text_file, .true., cells, file, NL, delim, .false., stat, errmsg, "text")
@@ -424,8 +436,12 @@ submodule (io_fortran_lib) io_text
     if ( header_present ) numerical_data => cells(2:,:)
 
     select rank(x)
-      rank(1); call cast(x, numerical_data(:,1), locale, fmt, decimals)
-      rank(2); call cast(x, numerical_data, locale, fmt, decimals)
+      rank(1)
+        call cast_column(x, numerical_data(:,1), locale, fmt, decimals)
+      rank(2)
+        do j = 1, ncols
+          call cast_column(x(:,j), numerical_data(:,j), locale, fmt, decimals)
+        end do
     end select
 
     call text_file%write_file(cells, file, NL, delim, .false., stat, errmsg, "text")
@@ -477,8 +493,12 @@ submodule (io_fortran_lib) io_text
     if ( header_present ) numerical_data => cells(2:,:)
 
     select rank(x)
-      rank(1); call cast(x, numerical_data(:,1), locale, fmt, decimals)
-      rank(2); call cast(x, numerical_data, locale, fmt, decimals)
+      rank(1)
+        call cast_column(x, numerical_data(:,1), locale, fmt, decimals)
+      rank(2)
+        do j = 1, ncols
+          call cast_column(x(:,j), numerical_data(:,j), locale, fmt, decimals)
+        end do
     end select
 
     call text_file%write_file(cells, file, NL, delim, .false., stat, errmsg, "text")
@@ -529,8 +549,12 @@ submodule (io_fortran_lib) io_text
     if ( header_present ) numerical_data => cells(2:,:)
 
     select rank(x)
-      rank(1); call cast(x, numerical_data(:,1), locale, fmt, decimals)
-      rank(2); call cast(x, numerical_data, locale, fmt, decimals)
+      rank(1)
+        call cast_column(x, numerical_data(:,1), locale, fmt, decimals)
+      rank(2)
+        do j = 1, ncols
+          call cast_column(x(:,j), numerical_data(:,j), locale, fmt, decimals)
+        end do
     end select
 
     call text_file%write_file(cells, file, NL, delim, .false., stat, errmsg, "text")

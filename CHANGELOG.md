@@ -18,6 +18,9 @@ Work toward 2.3, tracked in the [2.3 milestone](https://github.com/acbbullock/IO
   for an array of any rank (#93).
 * Writing an array to a `.npz` archive computes the archive's CRC-32 eight bytes at a time instead of one, which
   makes the checksum about four times as fast (#94).
+* Writing numbers as text is 2–4 times as fast. `to_file` formats a column of real or complex numbers a chunk at a
+  time instead of one number per `write`, and `cast`, `str` and `String` no longer build each number's format with a
+  second internal `write`, which roughly halves the time of `cast`. The text is unchanged (#91).
 
 ## [2.2.0](https://github.com/acbbullock/IO-Fortran-Library/releases/tag/v2.2.0) - 2026-11-09
 
