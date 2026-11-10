@@ -1,0 +1,31 @@
+name: Draft PDF
+
+# Renders paper/paper.md as a JOSS draft, as an artifact to download from the run. This doesn't submit or publish it.
+on:
+  push:
+    paths:
+      - paper/**
+      - .github/workflows/draft-pdf.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  paper:
+    runs-on: ubuntu-latest
+    name: Paper draft
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Build draft PDF
+        uses: openjournals/openjournals-draft-action@master
+        with:
+          journal: joss
+          paper-path: paper/paper.md
+      - name: Upload
+        uses: actions/upload-artifact@v7
+        with:
+          name: paper
+          path: paper/paper.pdf
+          archive: false
