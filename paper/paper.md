@@ -28,6 +28,7 @@ records, units and edit descriptors. They have no notion of a CSV file [@rfc4180
 NumPy `.npy` format that Python's analysis tools read and write [@harris2020].
 
 IO-Fortran-Library reads and writes these files from Fortran with one call each [@iofl]:
+
 - `to_file` writes an array to a delimited text file (CSV, TSV or any other delimiter), a raw binary file, a NumPy
   `.npy` file, or a named member of a `.npz` archive. It chooses the format from the file's extension.
 - `from_file` reads the array back and allocates it to the shape the file holds.
@@ -42,6 +43,7 @@ Fortran Package Manager [@curcic2021], or as plain source files.
 Researchers who write simulations in Fortran usually analyse and plot the results in Python, R or a spreadsheet.
 They also read parameters, meshes and measured data that come from those tools. Each exchange needs code that is easy
 to get subtly wrong:
+
 - format strings with enough digits for a `real64` value to read back exactly;
 - loops that read a CSV file whose number of rows isn't known in advance;
 - headers, empty cells, Windows line endings and a decimal comma;
@@ -51,6 +53,7 @@ Writing a NumPy file by hand needs the header layout, byte order and alignment o
 archive adds the ZIP container and its CRC-32 checksums [@appnote].
 
 IO-Fortran-Library gives researchers this functionality through a small, uniform interface:
+
 - **Exact round trips.** Every value written in the default scientific form, or in hexadecimal, reads back bit for
   bit.
 - **NumPy compatibility.** NumPy's `load`, `save` and `savez` read and write the library's `.npy` and `.npz` files
@@ -66,6 +69,7 @@ routines.
 
 Fortran's own input and output [@iso2018] can produce any of these files, but only with the per-format code described
 above. Several libraries cover parts of the problem:
+
 - **The Fortran Standard Library** [@stdlib; @kedward2022] provides `loadtxt` and `savetxt` for rank-2 arrays in text
   files, `load_npy` and `save_npy` for `.npy` files, and a `string_type`. Its file modules are marked experimental.
 - **csv-fortran** [@csvfortran] reads and writes CSV files through an object-oriented `csv_file` class.
@@ -87,6 +91,7 @@ between the two.
 # Software design
 
 The interface follows from three decisions:
+
 1. **Stateless, generic procedures.** There is no file object to open and close, and the format follows the file
    extension. Writing an array to CSV or to NumPy differs only in the file name. When `.npz` support was added, a
    stateful archive type was considered and rejected. Instead, an archive member is chosen with a `name=` argument,
@@ -99,6 +104,7 @@ The interface follows from three decisions:
    Fortran.
 
 **Portability and correctness.** About 300 test cases run in continuous integration:
+
 - **Compilers:** gfortran 13 to 16, Intel ifx and LLVM flang.
 - **Platforms:** x86-64 and ARM64 Linux, macOS, Windows, and big-endian s390x Linux.
 - **Checks with NumPy:** NumPy reads the files written on the big-endian machine.
@@ -109,6 +115,7 @@ Compiler bugs found along the way are reduced to small programs, worked around i
 library's checks, and it verifies that every result is exact (\autoref{tab:bench}). The benchmarks, added in version
 2.2, showed where the library cost more than it should. Version 2.3 removed most of those gaps without changing any
 output. Three changes illustrate the trade-offs:
+
 - **Block transfers.** With gfortran, writing an assumed-rank array inside `select rank` was three to five times
   slower than plain stream output. Contiguous arrays are now passed to a helper with an explicit-shape dummy argument
   and transferred as one block.
@@ -137,6 +144,7 @@ value, so that bad input is reported with its position, and it stores each cell 
 # Research impact statement
 
 The library has been public since December 2022, and each release is archived on Zenodo [@iofl]. It is used by:
+
 - **fLDPC** [@origlia2025], a Fortran library for decoding low-density parity-check codes. Its examples and tests
   read code definitions from CSV files with `from_file`. Its author also contributed a pull request to this library.
 - **The author's neural-network quantum-state solver** [@nnqs], which writes its energy and correlation results to
@@ -154,6 +162,7 @@ reproducible benchmark above.
 
 <!-- TODO(author): JOSS requires this section to be complete and accurate. Check every statement, and confirm the
 1.x sentence. -->
+
 - **Versions 1.0 to 1.3 (2022–2024)** were written by the author without generative AI.
 - **Versions 2.0 to 2.3 (November 2026)** were developed with Claude Code, using Anthropic's Claude Opus 5.5 model.
   The tool wrote code, tests, continuous-integration configuration, documentation and changelog entries under the
